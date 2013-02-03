@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created a very very simple AI for Chess, based on random moves plus capturing pieces when available. (veqryn)
+
 * Finished checking for Check and Check Mate in Chess. (veqryn)
 
 * Finishing movement validation for Chess. (veqryn)

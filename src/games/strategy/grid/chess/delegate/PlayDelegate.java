@@ -131,13 +131,15 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// should only be able to capture 1 piece at most
 		final Collection<Territory> captured = new HashSet<Territory>(1);
 		// except for the weird pawn rule (En passant), the captured piece will always be on the end territory
-		captured.add(end);
+		if (end.getUnits().getUnitCount() > 0)
+			captured.add(end);
 		// En passant
 		if (start.getUnits().someMatch(UnitIsPawn) && isValidEnPassant(start, end, player, data) == null)
 		{
 			final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
 			final Territory territoryOfEnemyPawn = data.getMap().getTerritoryFromCoordinates(false, end.getX(), (startsAtLowRank ? end.getY() - 1 : end.getY() + 1));
-			captured.add(territoryOfEnemyPawn);
+			if (territoryOfEnemyPawn.getUnits().getUnitCount() > 0)
+				captured.add(territoryOfEnemyPawn);
 		}
 		
 		return captured;

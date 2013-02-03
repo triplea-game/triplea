@@ -5,10 +5,10 @@ import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.grid.GridGame;
+import games.strategy.grid.chess.player.HeuristicAI;
 import games.strategy.grid.chess.ui.ChessMapPanel;
 import games.strategy.grid.chess.ui.ChessMenu;
 import games.strategy.grid.player.GridGamePlayer;
-import games.strategy.grid.player.RandomAI;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapPanel;
 
@@ -26,12 +26,13 @@ public class Chess extends GridGame implements IGameLoader
 {
 	private static final long serialVersionUID = 6963459871530489560L;
 	private static final String HUMAN_PLAYER_TYPE = "Human";
-	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
+	// private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
+	private static final String HEURISTIC_COMPUTER_PLAYER_TYPE = "Random AI";// "Heuristic AI";
 	
 	@Override
 	public String[] getServerPlayerTypes()
 	{
-		return new String[] { HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
+		return new String[] { HUMAN_PLAYER_TYPE, /*RANDOM_COMPUTER_PLAYER_TYPE,*/HEURISTIC_COMPUTER_PLAYER_TYPE };
 	}
 	
 	@Override
@@ -46,9 +47,15 @@ public class Chess extends GridGame implements IGameLoader
 				final GridGamePlayer player = new GridGamePlayer(name, type);
 				iplayers.add(player);
 			}
+			/*
 			else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
 			{
 				final RandomAI ai = new RandomAI(name, type);
+				iplayers.add(ai);
+			}*/
+			else if (type.equals(HEURISTIC_COMPUTER_PLAYER_TYPE))
+			{
+				final HeuristicAI ai = new HeuristicAI(name, type);
 				iplayers.add(ai);
 			}
 			else
