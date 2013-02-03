@@ -11,11 +11,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package games.strategy.grid.kingstable.player;
+package games.strategy.grid.player;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
-import games.strategy.grid.player.GridAbstractAI;
 
 import java.util.Collection;
 import java.util.Random;

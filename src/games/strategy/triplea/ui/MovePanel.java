@@ -1632,9 +1632,15 @@ public class MovePanel extends AbstractMovePanel
 		// N for center on next unit with movement left
 		if (keyCode == KeyEvent.VK_N)
 		{
+			final List<Territory> allTerritories;
 			getData().acquireReadLock();
-			final List<Territory> allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
-			getData().releaseReadLock();
+			try
+			{
+				allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
+			} finally
+			{
+				getData().releaseReadLock();
+			}
 			final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
 			if (!m_nonCombat)
 				moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units

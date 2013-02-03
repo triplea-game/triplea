@@ -171,9 +171,14 @@ public class ProductionPanel extends JPanel
 		panel.setLayout(new GridBagLayout());
 		final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());
 		m_data.acquireReadLock();
-		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
-		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
-		m_data.releaseReadLock();
+		try
+		{
+			totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
+			totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
 		final JLabel legendLabel = new JLabel("<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: " + totalWithoutTechTokensOrVPs.toString()
 					+ ")</html>");
 		this.add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
@@ -206,9 +211,14 @@ public class ProductionPanel extends JPanel
 	{
 		final ResourceCollection leftWithoutTechTokensOrVPs = new ResourceCollection(left);
 		m_data.acquireReadLock();
-		leftWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
-		leftWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
-		m_data.releaseReadLock();
+		try
+		{
+			leftWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
+			leftWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
 		m_left.setText(totalUnits + " total units purchased.  You have " + leftWithoutTechTokensOrVPs.toString() + " left");
 	}
 	
@@ -268,8 +278,13 @@ public class ProductionPanel extends JPanel
 			final int bid = m_data.getProperties().get(propertyName, 0);
 			final ResourceCollection bidCollection = new ResourceCollection(m_data);
 			m_data.acquireReadLock();
-			bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
-			m_data.releaseReadLock();
+			try
+			{
+				bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
 			return bidCollection;
 		}
 		else

@@ -157,9 +157,15 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	public Collection<PoliticalActionAttachment> getValidActions()
 	{
 		final GameData data = m_bridge.getData();
+		final HashMap<ICondition, Boolean> testedConditions;
 		data.acquireReadLock();
-		final HashMap<ICondition, Boolean> testedConditions = getTestedConditions();
-		data.releaseReadLock();
+		try
+		{
+			testedConditions = getTestedConditions();
+		} finally
+		{
+			data.releaseReadLock();
+		}
 		return PoliticalActionAttachment.getValidActions(m_player, testedConditions, data);
 	}
 	

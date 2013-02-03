@@ -277,15 +277,20 @@ public class TileManager
 	public void updateTerritory(final Territory territory, final GameData data, final MapData mapData)
 	{
 		data.acquireReadLock();
-		LockUtil.acquireLock(m_lock);
 		try
 		{
-			s_logger.log(Level.FINER, "Updating " + territory.getName());
-			clearTerritory(territory);
-			drawTerritory(territory, data, mapData);
+			LockUtil.acquireLock(m_lock);
+			try
+			{
+				s_logger.log(Level.FINER, "Updating " + territory.getName());
+				clearTerritory(territory);
+				drawTerritory(territory, data, mapData);
+			} finally
+			{
+				LockUtil.releaseLock(m_lock);
+			}
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
 			data.releaseReadLock();
 		}
 	}
@@ -735,22 +740,27 @@ public class TileManager
 		if (units == null)
 			return null;
 		data.acquireReadLock();
-		LockUtil.acquireLock(m_lock);
 		try
 		{
-			for (final UnitsDrawer drawer : m_allUnitDrawables)
+			LockUtil.acquireLock(m_lock);
+			try
 			{
-				final List<Unit> drawerUnits = drawer.getUnits(data).getSecond();
-				if (!drawerUnits.isEmpty() && units.containsAll(drawerUnits))
+				for (final UnitsDrawer drawer : m_allUnitDrawables)
 				{
-					final Point placementPoint = drawer.getPlacementPoint();
-					return new Rectangle(placementPoint.x, placementPoint.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(), m_uiContext.getUnitImageFactory().getUnitImageHeight());
+					final List<Unit> drawerUnits = drawer.getUnits(data).getSecond();
+					if (!drawerUnits.isEmpty() && units.containsAll(drawerUnits))
+					{
+						final Point placementPoint = drawer.getPlacementPoint();
+						return new Rectangle(placementPoint.x, placementPoint.y, m_uiContext.getUnitImageFactory().getUnitImageWidth(), m_uiContext.getUnitImageFactory().getUnitImageHeight());
+					}
 				}
+				return null;
+			} finally
+			{
+				LockUtil.releaseLock(m_lock);
 			}
-			return null;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
 			data.releaseReadLock();
 		}
 	}
@@ -758,24 +768,29 @@ public class TileManager
 	public Tuple<Territory, List<Unit>> getUnitsAtPoint(final double x, final double y, final GameData gameData)
 	{
 		gameData.acquireReadLock();
-		LockUtil.acquireLock(m_lock);
 		try
 		{
-			for (final UnitsDrawer drawer : m_allUnitDrawables)
+			LockUtil.acquireLock(m_lock);
+			try
 			{
-				final Point placementPoint = drawer.getPlacementPoint();
-				if (x > placementPoint.x && x < placementPoint.x + m_uiContext.getUnitImageFactory().getUnitImageWidth())
+				for (final UnitsDrawer drawer : m_allUnitDrawables)
 				{
-					if (y > placementPoint.y && y < placementPoint.y + m_uiContext.getUnitImageFactory().getUnitImageHeight())
+					final Point placementPoint = drawer.getPlacementPoint();
+					if (x > placementPoint.x && x < placementPoint.x + m_uiContext.getUnitImageFactory().getUnitImageWidth())
 					{
-						return drawer.getUnits(gameData);
+						if (y > placementPoint.y && y < placementPoint.y + m_uiContext.getUnitImageFactory().getUnitImageHeight())
+						{
+							return drawer.getUnits(gameData);
+						}
 					}
 				}
+				return null;
+			} finally
+			{
+				LockUtil.releaseLock(m_lock);
 			}
-			return null;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
 			gameData.releaseReadLock();
 		}
 	}

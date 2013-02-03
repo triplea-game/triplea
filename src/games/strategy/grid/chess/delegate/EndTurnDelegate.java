@@ -1,11 +1,15 @@
 package games.strategy.grid.chess.delegate;
 
 import games.strategy.common.delegate.AbstractDelegate;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class EndTurnDelegate extends AbstractDelegate
 {
@@ -68,7 +72,27 @@ public class EndTurnDelegate extends AbstractDelegate
 	 */
 	private PlayerID checkForWinner()
 	{
+		if (doWeWin(m_player, getData(), 1))
+			return m_player;
 		return null;
+	}
+	
+	public static boolean doWeWin(final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
+	{
+		if (player == null)
+			throw new IllegalArgumentException("Checking for winner can not have null player");
+		final Collection<PlayerID> enemies = new ArrayList<PlayerID>(data.getPlayerList().getPlayers());
+		enemies.remove(player);
+		final Iterator<PlayerID> iter = enemies.iterator();
+		while (iter.hasNext())
+		{
+			final PlayerID e = iter.next();
+			if (PlayDelegate.getKingTerritories(e, data).isEmpty() || !PlayDelegate.canWeMakeAValidMoveThatIsNotPuttingUsInCheck(e, data, testForCheckTurnsAhead))
+				iter.remove();
+		}
+		if (enemies.isEmpty())
+			return true;
+		return false;
 	}
 	
 	/**

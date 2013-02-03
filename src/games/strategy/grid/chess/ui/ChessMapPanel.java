@@ -26,7 +26,7 @@ public class ChessMapPanel extends GridMapPanel
 	@Override
 	protected String isValidPlay(final GridPlayData play)
 	{
-		return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData);
+		return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData, 2);
 	}
 	
 	/**

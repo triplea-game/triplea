@@ -1,4 +1,6 @@
 Changes for 1.7
+* Finished checking for Check and Check Mate in Chess. (veqryn)
+
 * Finishing movement validation for Chess. (veqryn)
 
 * Adding a visual cue for which moves are legal for Chess and other Grid games. (veqryn)

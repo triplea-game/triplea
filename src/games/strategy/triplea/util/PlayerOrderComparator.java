@@ -24,16 +24,28 @@ public class PlayerOrderComparator implements Comparator<PlayerID>
 	{
 		if (p1.equals(p2))
 			return 0;
-		m_data.acquireReadLock(); // TODO: see is needed
-		final GameSequence sequence = m_data.getSequence();
-		m_data.releaseReadLock();
+		final GameSequence sequence;
+		m_data.acquireReadLock();
+		try
+		{
+			sequence = m_data.getSequence();
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
 		for (final GameStep s : sequence)
 		{
 			if (s.getPlayerID() == null)
 				continue;
-			m_data.acquireReadLock(); // TODO: see is needed
-			final IDelegate delegate = s.getDelegate();
-			m_data.releaseReadLock();
+			final IDelegate delegate;
+			m_data.acquireReadLock();
+			try
+			{
+				delegate = s.getDelegate();
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
 			if (delegate != null && delegate.getClass() != null)
 			{
 				final String delegateClassName = delegate.getClass().getName();

@@ -52,7 +52,18 @@ public class HistoryWriter implements java.io.Serializable
 		s_logger.log(Level.FINE, "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player + " displayName:" + stepDisplayName);
 		// we are being called for the first time
 		if (m_current == null)
-			startNextRound(m_history.getGameData().getSequence().getRound());
+		{
+			int round = 0;
+			m_history.getGameData().acquireReadLock();
+			try
+			{
+				round = m_history.getGameData().getSequence().getRound();
+			} finally
+			{
+				m_history.getGameData().releaseReadLock();
+			}
+			startNextRound(round);
+		}
 		if (isCurrentEvent())
 			closeCurrent();
 		// stop the current step

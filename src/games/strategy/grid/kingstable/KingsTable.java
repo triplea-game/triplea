@@ -18,10 +18,10 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.grid.GridGame;
 import games.strategy.grid.kingstable.player.BetterAI;
-import games.strategy.grid.kingstable.player.RandomAI;
 import games.strategy.grid.kingstable.ui.KingsTableMapPanel;
 import games.strategy.grid.kingstable.ui.KingsTableMenu;
 import games.strategy.grid.player.GridGamePlayer;
+import games.strategy.grid.player.RandomAI;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapPanel;
 

@@ -109,12 +109,17 @@ public class UnitSupportAttachment extends DefaultAttachment
 	{
 		final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
 		data.acquireReadLock();
-		final Iterator<UnitType> i = data.getUnitTypeList().iterator();
-		while (i.hasNext())
+		try
 		{
-			supports.addAll(get(i.next()));
+			final Iterator<UnitType> i = data.getUnitTypeList().iterator();
+			while (i.hasNext())
+			{
+				supports.addAll(get(i.next()));
+			}
+		} finally
+		{
+			data.releaseReadLock();
 		}
-		data.releaseReadLock();
 		return supports;
 	}
 	

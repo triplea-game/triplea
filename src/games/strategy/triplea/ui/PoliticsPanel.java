@@ -322,9 +322,15 @@ class PoliticalActionComparator implements Comparator<PoliticalActionAttachment>
 			return 0;
 		final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
 		final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
-		m_data.acquireReadLock(); // TODO: see if needed
-		final RelationshipTypeList relationshipTypeList = m_data.getRelationshipTypeList();
-		m_data.releaseReadLock();
+		final RelationshipTypeList relationshipTypeList;
+		m_data.acquireReadLock();
+		try
+		{
+			relationshipTypeList = m_data.getRelationshipTypeList();
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
 		final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
 		final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
 		// sort by player

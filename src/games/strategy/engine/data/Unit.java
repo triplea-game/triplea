@@ -147,7 +147,7 @@ public class Unit extends GameDataComponent implements Serializable
 		// none of these should happen,... except that they did a couple times.
 		if (m_type == null && m_owner != null)
 		{
-			final String text = "Possible java de-serialization error: Unit of UNKNOWN TYPE owned by " + m_owner.getName() + " in territory: "
+			final String text = "Unit.toString() -> Possible java de-serialization error: Unit of UNKNOWN TYPE owned by " + m_owner.getName() + " in territory: "
 						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: "
 						+ getID();
 			System.err.println(text);
@@ -155,14 +155,14 @@ public class Unit extends GameDataComponent implements Serializable
 		}
 		else if (m_type != null && m_owner == null)
 		{
-			final String text = "Possible java de-serialization error: " + m_type.getName() + " owned by UNKNOWN OWNER in territory: "
+			final String text = "Unit.toString() -> Possible java de-serialization error: " + m_type.getName() + " owned by UNKNOWN OWNER in territory: "
 						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: " + getID();
 			System.err.println(text);
 			return text;
 		}
 		else if (m_type == null && m_owner == null)
 		{
-			final String text = "Possible java de-serialization error: Unit of UNKNOWN TYPE owned by UNKNOWN OWNER in territory: "
+			final String text = "Unit.toString() -> Possible java de-serialization error: Unit of UNKNOWN TYPE owned by UNKNOWN OWNER in territory: "
 						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: " + getID();
 			System.err.println(text);
 			return text;

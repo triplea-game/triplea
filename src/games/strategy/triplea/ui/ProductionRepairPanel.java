@@ -299,8 +299,13 @@ public class ProductionRepairPanel extends JPanel
 			final int bid = m_data.getProperties().get(propertyName, 0);
 			final ResourceCollection bidCollection = new ResourceCollection(m_data);
 			m_data.acquireReadLock();
-			bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
-			m_data.releaseReadLock();
+			try
+			{
+				bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
 			return bidCollection;
 		}
 		else

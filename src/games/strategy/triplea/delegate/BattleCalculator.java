@@ -841,9 +841,15 @@ public class BattleCalculator
 	 */
 	public static IntegerMap<UnitType> getCostsForTUV(final PlayerID player, final GameData data)
 	{
+		final Resource PUS;
 		data.acquireReadLock();
-		final Resource PUS = data.getResourceList().getResource(Constants.PUS);
-		data.releaseReadLock();
+		try
+		{
+			PUS = data.getResourceList().getResource(Constants.PUS);
+		} finally
+		{
+			data.releaseReadLock();
+		}
 		final IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
 		final ProductionFrontier frontier = player.getProductionFrontier();
 		// any one will do then
@@ -890,9 +896,15 @@ public class BattleCalculator
 	{
 		/*if (s_costsForTuvForAllPlayersMergedAndAveraged != null && s_costsForTuvForAllPlayersMergedAndAveraged.size() > 0)
 			return s_costsForTuvForAllPlayersMergedAndAveraged;*/
+		final Resource PUS;
 		data.acquireReadLock();
-		final Resource PUS = data.getResourceList().getResource(Constants.PUS);
-		data.releaseReadLock();
+		try
+		{
+			PUS = data.getResourceList().getResource(Constants.PUS);
+		} finally
+		{
+			data.releaseReadLock();
+		}
 		final IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
 		final HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
 		for (final ProductionRule rule : data.getProductionRuleList().getProductionRules())

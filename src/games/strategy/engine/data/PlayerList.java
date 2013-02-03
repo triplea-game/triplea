@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -88,11 +89,18 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 		return values;
 	}
 	
+	/**
+	 * 
+	 * @return a new arraylist copy of the players
+	 */
 	public Collection<PlayerID> getPlayers()
 	{
-		return m_players.values();
+		return new ArrayList<PlayerID>(m_players.values());
 	}
 	
+	/**
+	 * an iterator of a new arraylist copy of the players
+	 */
 	public Iterator<PlayerID> iterator()
 	{
 		return getPlayers().iterator();
