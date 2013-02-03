@@ -13,7 +13,14 @@
  */
 package games.strategy.grid.player;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.message.IRemote;
+
+import java.util.Collection;
 
 /**
  * Empty interface which all King's Table player classes must implement.
@@ -23,4 +30,5 @@ import games.strategy.engine.message.IRemote;
  */
 public interface IGridGamePlayer extends IRemote
 {
+	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message);
 }

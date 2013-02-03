@@ -361,4 +361,9 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		}
 		return validMovesList;
 	}
+	
+	public UnitImageFactory getUnitImageFactory()
+	{
+		return m_imageFactory;
+	}
 }

@@ -9,15 +9,19 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.chess.ChessUnit;
+import games.strategy.grid.chess.attachments.PlayerAttachment;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -45,12 +49,18 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	@Override
 	public Serializable saveState()
 	{
-		return null;
+		final ChessPlayExtendedDelegateState state = new ChessPlayExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
 	}
 	
 	@Override
 	public void loadState(final Serializable state)
 	{
+		final ChessPlayExtendedDelegateState s = (ChessPlayExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	public boolean stuffToDoInThisDelegate()
@@ -134,10 +144,21 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// should only be able to capture 1 piece at most
 		final Collection<Territory> captured = new HashSet<Territory>(1);
 		// except for the weird pawn rule (En passant), the captured piece will always be on the end territory
-		// TODO: En passant
 		captured.add(end);
+		// En passant
+		if (start.getUnits().someMatch(UnitIsPawn) && isValidEnPassant(start, end, m_player, getData()) == null)
+		{
+			final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(m_player);
+			final Territory territoryOfEnemyPawn = getData().getMap().getTerritoryFromCoordinates(false, end.getX(), (startsAtLowRank ? end.getY() - 1 : end.getY() + 1));
+			captured.add(territoryOfEnemyPawn);
+		}
 		
 		return captured;
+	}
+	
+	private IGridGamePlayer getRemotePlayer(final PlayerID id)
+	{
+		return (IGridGamePlayer) m_bridge.getRemote(id);
 	}
 	
 	/**
@@ -151,11 +172,24 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	private void performPlay(final Territory start, final Territory end, final Collection<Territory> captured, final PlayerID player)
 	{
 		final Collection<Unit> units = start.getUnits().getUnits();
+		final Collection<Unit> promotionUnits;
+		if (isValidPawnPromotion(start, end, m_player, getData()))
+		{
+			promotionUnits = new ArrayList<Unit>();
+			final UnitType selectedUnit = getRemotePlayer(player).selectUnit(units.iterator().next(), getData().getUnitTypeList().getAllUnitTypes(), end, player, getData(),
+						"Promote Pawn to what piece?");
+			if (selectedUnit == null)
+				promotionUnits.add(getData().getUnitTypeList().getUnitType("queen").create(player));
+			else
+				promotionUnits.add(getData().getUnitTypeList().getUnitType(selectedUnit.getName()).create(player));
+		}
+		else
+			promotionUnits = null;
 		final String transcriptText = player.getName() + " moved from " + start.getName() + " to " + end.getName();
 		m_bridge.getHistoryWriter().startEvent(transcriptText, units);
 		final Change removeUnit = ChangeFactory.removeUnits(start, units);
 		// final Change removeStartOwner = ChangeFactory.changeOwner(start, PlayerID.NULL_PLAYERID);
-		final Change addUnit = ChangeFactory.addUnits(end, units);
+		final Change addUnit = ChangeFactory.addUnits(end, (promotionUnits == null ? units : promotionUnits));
 		// final Change addEndOwner = ChangeFactory.changeOwner(end, player);
 		final CompositeChange change = new CompositeChange();
 		change.add(removeUnit);
@@ -172,16 +206,21 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			if (at != null)
 			{
 				final Collection<Unit> capturedUnits = at.getUnits().getUnits();
-				final Change capture = ChangeFactory.removeUnits(at, capturedUnits);
-				change.add(capture);
-				// final Change removeOwner = ChangeFactory.changeOwner(at, PlayerID.NULL_PLAYERID);
-				// change.add(removeOwner);
+				if (!capturedUnits.isEmpty())
+				{
+					final Change capture = ChangeFactory.removeUnits(at, capturedUnits);
+					change.add(capture);
+					// final Change removeOwner = ChangeFactory.changeOwner(at, PlayerID.NULL_PLAYERID);
+					// change.add(removeOwner);
+				}
 			}
 		}
 		final Collection<Territory> refresh = new HashSet<Territory>();
 		refresh.add(start);
 		refresh.add(end);
 		refresh.addAll(captured);
+		final Collection<Unit> lastMovedPieces = new ArrayList<Unit>();
+		lastMovedPieces.addAll(units);
 		// castling
 		if (start.getUnits().someMatch(UnitIsKing) && isValidKingCastling(start, end, player, getData()) == null)
 		{
@@ -204,6 +243,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 				}
 				refresh.add(rookTerOld);
 				refresh.add(rookTerNew);
+				lastMovedPieces.addAll(rook);
 			}
 			else
 			{
@@ -221,8 +261,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 				}
 				refresh.add(rookTerOld);
 				refresh.add(rookTerNew);
+				lastMovedPieces.addAll(rook);
 			}
 		}
+		change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(player), lastMovedPieces, PlayerAttachment.LAST_PIECES_MOVED));
 		m_bridge.addChange(change);
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.refreshTerritories(refresh);
@@ -350,7 +392,11 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 				else if (Math.abs(end.getX() - start.getX()) == 1)
 				{
 					if (map.getTerritoryFromCoordinates(false, end.getX(), end.getY()).getUnits().getUnitCount() == 0)
-						return "Must Capture A Piece To Move Diagonally";
+					{
+						// en passant
+						if (isValidEnPassant(start, end, player, data) != null)
+							return "Must Capture A Piece To Move Diagonally";
+					}
 					return null;
 				}
 			}
@@ -376,7 +422,11 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 				else if (Math.abs(end.getX() - start.getX()) == 1)
 				{
 					if (map.getTerritoryFromCoordinates(false, end.getX(), end.getY()).getUnits().getUnitCount() == 0)
-						return "Must Capture A Piece To Move Diagonally";
+					{
+						// en passant
+						if (isValidEnPassant(start, end, player, data) != null)
+							return "Must Capture A Piece To Move Diagonally";
+					}
 					return null;
 				}
 			}
@@ -390,6 +440,39 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			}
 		}
 		return "Invalid Move";
+	}
+	
+	public static String isValidEnPassant(final Territory start, final Territory end, final PlayerID player, final GameData data)
+	{
+		final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
+		final Territory territoryOfEnemyPawn = data.getMap().getTerritoryFromCoordinates(false, end.getX(), (startsAtLowRank ? end.getY() - 1 : end.getY() + 1));
+		if (!territoryOfEnemyPawn.getUnits().getMatches(new CompositeMatchAnd<Unit>(UnitIsPawn, UnitIsOwnedBy(player).invert())).isEmpty())
+		{
+			final Collection<Unit> lastMovedPiecesNotByCurrentPlayer = new ArrayList<Unit>();
+			for (final PlayerID enemy : data.getPlayerList().getPlayers())
+			{
+				if (enemy.equals(player))
+					continue;
+				lastMovedPiecesNotByCurrentPlayer.addAll(PlayerAttachment.get(enemy).getLastPiecesMoved());
+			}
+			if (lastMovedPiecesNotByCurrentPlayer.containsAll(territoryOfEnemyPawn.getUnits().getMatches(UnitIsOwnedBy(player).invert())))
+			{
+				return null;
+			}
+		}
+		return "Invalid Move";
+	}
+	
+	public static boolean isValidPawnPromotion(final Territory start, final Territory end, final PlayerID player, final GameData data)
+	{
+		final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
+		if (!start.getUnits().someMatch(UnitIsPawn))
+			return false;
+		if (startsAtLowRank && end.getY() == data.getMap().getYDimension() - 1)
+			return true;
+		if (!startsAtLowRank && end.getY() == 0)
+			return true;
+		return false;
 	}
 	
 	public static String isValidKnightMove(final Territory start, final Territory end, final PlayerID player, final GameData data)
@@ -664,4 +747,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		}
 		return "Invalid Move";
 	}
+}
+
+
+class ChessPlayExtendedDelegateState implements Serializable
+{
+	private static final long serialVersionUID = 2861231666229378075L;
+	Serializable superState;
+	// add other variables here:
 }

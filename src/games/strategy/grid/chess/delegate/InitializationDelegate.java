@@ -1,7 +1,9 @@
 package games.strategy.grid.chess.delegate;
 
 import games.strategy.common.delegate.AbstractDelegate;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.chess.attachments.PlayerAttachment;
 
 import java.io.Serializable;
 
@@ -14,6 +16,16 @@ public class InitializationDelegate extends AbstractDelegate
 	public void start()
 	{
 		super.start();
+		// make sure all players have a player attachment
+		for (final PlayerID player : getData().getPlayerList().getPlayers())
+		{
+			PlayerAttachment pattachment = PlayerAttachment.get(player);
+			if (pattachment == null)
+			{
+				pattachment = new PlayerAttachment(PlayerAttachment.ATTACHMENT_NAME, player, getData());
+				player.addAttachment(PlayerAttachment.ATTACHMENT_NAME, pattachment);
+			}
+		}
 	}
 	
 	@Override

@@ -14,6 +14,13 @@
 package games.strategy.grid.player;
 
 import games.strategy.common.player.AbstractBaseAI;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+
+import java.util.Collection;
 
 /**
  * Abstract class for a King's Table AI agent.
@@ -43,5 +50,10 @@ public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGame
 	public final Class<IGridGamePlayer> getRemotePlayerType()
 	{
 		return IGridGamePlayer.class;
+	}
+	
+	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)
+	{
+		return null;
 	}
 }

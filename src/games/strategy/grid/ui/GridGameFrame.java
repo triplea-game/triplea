@@ -13,12 +13,15 @@
  */
 package games.strategy.grid.ui;
 
+import games.strategy.common.image.UnitImageFactory;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
@@ -26,22 +29,34 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.ui.Util;
+import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Tuple;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 /**
  * User interface for King's Table.
@@ -329,5 +344,96 @@ public class GridGameFrame extends MainGameFrame
 	public JComponent getMainPanel()
 	{
 		return m_mapPanel;
+	}
+	
+	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)
+	{
+		if (options == null || options.isEmpty())
+			return null;
+		if (options.size() == 1)
+			return options.iterator().next();
+		final AtomicReference<UnitType> selected = new AtomicReference<UnitType>();
+		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
+		{
+			public Tuple<JPanel, JList> run()
+			{
+				final JList list = new JList(new Vector<UnitType>(options));
+				list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				list.setSelectedIndex(0);
+				list.setCellRenderer(new UnitCellRenderer(m_mapPanel.getUnitImageFactory(), player, data));
+				final JPanel panel = new JPanel();
+				panel.setLayout(new BorderLayout());
+				if (startUnit != null)
+					panel.add(new JLabel("Promoting: " + startUnit.getType().getName() + (territory == null ? "" : " in " + territory.getName())), BorderLayout.NORTH);
+				final JScrollPane scroll = new JScrollPane(list);
+				panel.add(scroll, BorderLayout.CENTER);
+				return new Tuple<JPanel, JList>(panel, list);
+			}
+		});
+		final JPanel panel = comps.getFirst();
+		final JList list = comps.getSecond();
+		final String[] selectionOptions = { "OK", "Cancel" };
+		final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, selectionOptions, null);
+		if (selection == 0) // OK
+			selected.set((UnitType) list.getSelectedValue());
+		// Unit selected = (Unit) list.getSelectedValue();
+		return selected.get();
+	}
+}
+
+
+class UnitCellRenderer extends DefaultListCellRenderer
+{
+	private static final long serialVersionUID = 3247984570687473808L;
+	private final UnitImageFactory m_imageFactory;
+	private final PlayerID m_player;
+	private final GameData m_data;
+	private final Hashtable<UnitType, ImageIcon> iconTable = new Hashtable<UnitType, ImageIcon>();
+	
+	public UnitCellRenderer(final UnitImageFactory imageFactory, final PlayerID player, final GameData data)
+	{
+		m_imageFactory = imageFactory;
+		m_player = player;
+		m_data = data;
+	}
+	
+	@Override
+	public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean hasFocus)
+	{
+		final JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+		PlayerID player;
+		UnitType type;
+		if (value instanceof Unit)
+		{
+			type = ((Unit) value).getType();
+			player = ((Unit) value).getOwner();
+		}
+		else if (value instanceof UnitType)
+		{
+			type = (UnitType) value;
+			player = m_player;
+		}
+		else
+		{
+			type = null;
+			player = m_player;
+		}
+		if (type != null)
+		{
+			ImageIcon icon = iconTable.get(type);
+			if (icon == null)
+			{
+				icon = new ImageIcon(m_imageFactory.getImage(type, player, m_data));
+				iconTable.put(type, icon);
+			}
+			label.setIcon(icon);
+			label.setText(type.getName());
+			label.setToolTipText(type.getName());
+		}
+		else
+		{
+			label.setIcon(null);
+		}
+		return (label);
 	}
 }

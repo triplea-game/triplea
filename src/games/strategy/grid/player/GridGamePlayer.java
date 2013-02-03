@@ -14,9 +14,16 @@
 package games.strategy.grid.player;
 
 import games.strategy.common.player.AbstractHumanPlayer;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridPlayData;
+
+import java.util.Collection;
 
 /**
  * Represents a human player of King's Table.
@@ -90,5 +97,10 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 				}
 			}
 		}
+	}
+	
+	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)
+	{
+		return m_ui.selectUnit(startUnit, options, territory, player, data, message);
 	}
 }

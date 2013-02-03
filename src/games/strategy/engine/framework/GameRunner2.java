@@ -53,6 +53,8 @@ public class GameRunner2
 	// proxy stuff
 	public static final String PROXY_HOST = "proxy.host";
 	public static final String PROXY_PORT = "proxy.port";
+	// other stuff
+	public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
 	
 	// first time we've run this version of triplea?
 	private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY = "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
@@ -69,7 +71,7 @@ public class GameRunner2
 	{
 		return new String[] { TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY,
 					TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN,
-					PROXY_HOST, PROXY_PORT };
+					PROXY_HOST, PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES };
 	}
 	
 	private static void usage()
@@ -87,10 +89,8 @@ public class GameRunner2
 					+ "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
 					+ "   " + PROXY_HOST + "=<Proxy_Host>\n"
 					+ "   " + PROXY_PORT + "=<Proxy_Port>\n"
-					+ "\n" + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
-					+ "taken as the name of the file to load.\n" + "\n"
-					+ "Example\n" + "   to start a game using the given file:\n" + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n"
-					+ "   or\n" + "\n" + "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n"
+					+ "\nExample\n" + "   to start a game using the given file:\n\n"
+					+ "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n"
 					+ "   to connect to a remote host:\n" + "\n"
 					+ "   triplea triplea.client=true triplea.host=127.0.0.0 triplea.port=3300 triplea.name=Paul\n" + "\n"
 					+ "   to start a server with the given game\n" + "\n"
@@ -151,53 +151,35 @@ public class GameRunner2
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		final String[] properties = getProperties();
-		// if only 1 arg, it must be the game name
-		// find it
-		// optionally, it may not start with the property name
-		if (args.length == 1)
+		
+		boolean usagePrinted = false;
+		for (int argIndex = 0; argIndex < args.length; argIndex++)
 		{
-			String value;
-			if (args[0].startsWith(TRIPLEA_GAME_PROPERTY))
+			boolean found = false;
+			String arg = args[argIndex];
+			final int indexOf = arg.indexOf('=');
+			if (indexOf > 0)
 			{
-				value = getValue(args[0]);
-			}
-			else
-			{
-				value = args[0];
-			}
-			System.setProperty(TRIPLEA_GAME_PROPERTY, value);
-		}
-		else
-		{
-			boolean usagePrinted = false;
-			for (int argIndex = 0; argIndex < args.length; argIndex++)
-			{
-				boolean found = false;
-				String arg = args[argIndex];
-				final int indexOf = arg.indexOf('=');
-				if (indexOf > 0)
+				arg = arg.substring(0, indexOf);
+				for (int propIndex = 0; propIndex < properties.length; propIndex++)
 				{
-					arg = arg.substring(0, indexOf);
-					for (int propIndex = 0; propIndex < properties.length; propIndex++)
+					if (arg.equals(properties[propIndex]))
 					{
-						if (arg.equals(properties[propIndex]))
-						{
-							final String value = getValue(args[argIndex]);
-							System.getProperties().setProperty(properties[propIndex], value);
-							System.out.println(properties[propIndex] + ":" + value);
-							found = true;
-							break;
-						}
+						final String value = getValue(args[argIndex]);
+						System.getProperties().setProperty(properties[propIndex], value);
+						System.out.println(properties[propIndex] + ":" + value);
+						found = true;
+						break;
 					}
 				}
-				if (!found)
+			}
+			if (!found)
+			{
+				System.out.println("Unrecogized:" + args[argIndex]);
+				if (!usagePrinted)
 				{
-					System.out.println("Unrecogized:" + args[argIndex]);
-					if (!usagePrinted)
-					{
-						usagePrinted = true;
-						usage();
-					}
+					usagePrinted = true;
+					usage();
 				}
 			}
 		}
@@ -520,7 +502,9 @@ public class GameRunner2
 						return;
 					if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true"))
 						return;
-					else if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true"))
+					if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true"))
+						return;
+					if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true"))
 						return;
 					
 					final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
