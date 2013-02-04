@@ -21,6 +21,8 @@ import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+import games.strategy.util.Quadruple;
+import games.strategy.util.Tuple;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -112,7 +114,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		
 		if (testForCheckTurnsAhead > 0)
 		{
-			if (testTerritoryForUsInCheck(start, end, player, data, testForCheckTurnsAhead - 1))
+			if (testTerritoryForUsInCheckAfter(start, end, player, data, testForCheckTurnsAhead - 1))
 				return "Illegal To Move Into Check Or Stay In Check";
 		}
 		
@@ -272,6 +274,19 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return IGridPlayDelegate.class;
 	}
 	
+	public static Match<Territory> TerritoryHasUnitsOwnedBy(final PlayerID player)
+	{
+		final Match<Unit> unitOwnedBy = UnitIsOwnedBy(player);
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				return t.getUnits().someMatch(unitOwnedBy);
+			}
+		};
+	}
+	
 	public static Match<Unit> UnitIsOwnedBy(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -371,37 +386,85 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return false;
 	}
 	
+	public static List<Tuple<Territory, Territory>> getMovesThatCaptureThisTerritory(final Territory end, final PlayerID player, final GameData data, final int testForCheckTurnsAhead,
+				final boolean endAsSoonAsFindOne)
+	{
+		final List<Tuple<Territory, Territory>> available = new ArrayList<Tuple<Territory, Territory>>();
+		final Collection<Territory> allTerritories = data.getMap().getTerritories();
+		final Collection<Territory> allOur = Match.getMatches(allTerritories, TerritoryHasUnitsOwnedBy(player));
+		for (final Territory t1 : allOur)
+		{
+			for (final Territory t2 : allTerritories)
+			{
+				final Collection<Territory> captured = PlayDelegate.checkForCaptures(t1, t2, player, data);
+				if (captured.contains(end))
+				{
+					if (PlayDelegate.isValidPlay(t1, t2, player, data, testForCheckTurnsAhead) == null)
+					{
+						available.add(new Tuple<Territory, Territory>(t1, t2));
+						if (endAsSoonAsFindOne)
+							return available;
+					}
+				}
+			}
+		}
+		return available;
+	}
+	
+	/**
+	 * How many of our pieces can be captured by the enemy?
+	 */
+	public static Collection<Tuple<Territory, List<Tuple<Territory, Territory>>>> whichOfOurPiecesCanBeCaptured(final PlayerID player, final GameData data)
+	{
+		final Collection<Tuple<Territory, List<Tuple<Territory, Territory>>>> capturedPieces = new ArrayList<Tuple<Territory, List<Tuple<Territory, Territory>>>>();
+		// check if any of our opponents are in check
+		final Collection<Territory> allOur = Match.getMatches(data.getMap().getTerritories(), TerritoryHasUnitsOwnedBy(player));
+		for (final PlayerID enemy : data.getPlayerList().getPlayers())
+		{
+			if (enemy.equals(player))
+				continue;
+			for (final Territory t : allOur)
+			{
+				final List<Tuple<Territory, Territory>> captures = getMovesThatCaptureThisTerritory(t, enemy, data, 1, true);
+				if (!captures.isEmpty())
+					capturedPieces.add(new Tuple<Territory, List<Tuple<Territory, Territory>>>(t, captures));
+			}
+		}
+		return capturedPieces;
+	}
+	
+	/**
+	 * If we move our piece from start to end, can an opponent capture it?
+	 */
+	public static boolean testTerritoryForEnemyCaptureUsAfter(final Territory start, final Territory end, final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
+	{
+		final Quadruple<Territory, Territory, PlayerID, GameData> temp = copyGameDataAndAttemptMove(start, end, player, data);
+		// final Territory newTempStart = temp.getFirst();
+		final Territory newTempEnd = temp.getSecond();
+		final PlayerID newTempPlayer = temp.getThird();
+		final GameData newTempData = temp.getForth();
+		
+		// check if any of our opponents are in check
+		for (final PlayerID enemy : newTempData.getPlayerList().getPlayers())
+		{
+			if (enemy.equals(newTempPlayer))
+				continue;
+			if (!getMovesThatCaptureThisTerritory(newTempEnd, enemy, newTempData, testForCheckTurnsAhead, true).isEmpty())
+				return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * If we move our piece from start to end, does that put any of our opponents into check?
 	 */
-	public static boolean testTerritoryForThemInCheck(final Territory start, final Territory end, final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
+	public static boolean testTerritoryForEnemyInCheckAfter(final Territory start, final Territory end, final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
 	{
-		final GameData newTempData;
-		final Territory newTempStart;
-		final Territory newTempEnd;
-		final PlayerID newTempPlayer;
-		data.acquireReadLock();
-		try
-		{
-			newTempData = GameDataUtils.cloneGameData(data, false);
-			newTempStart = (Territory) GameDataUtils.translateIntoOtherGameData(start, newTempData);
-			newTempEnd = (Territory) GameDataUtils.translateIntoOtherGameData(end, newTempData);
-			newTempPlayer = (PlayerID) GameDataUtils.translateIntoOtherGameData(player, newTempData);
-		} finally
-		{
-			data.releaseReadLock();
-		}
-		if (newTempData == null || newTempStart == null || newTempEnd == null || newTempPlayer == null)
-			throw new IllegalStateException("Game Data translation did not work");
-		// assume we have already checked the move is valid, and that any units in the end territory are captured/removed
-		final ChangePerformer changePerformer = new ChangePerformer(newTempData);
-		final Collection<Unit> unitsToMove = newTempStart.getUnits().getUnits();
-		for (final Territory t : checkForCaptures(newTempStart, newTempEnd, newTempPlayer, newTempData))
-		{
-			changePerformer.perform(ChangeFactory.removeUnits(t, t.getUnits().getUnits()));
-		}
-		changePerformer.perform(ChangeFactory.removeUnits(newTempStart, unitsToMove));
-		changePerformer.perform(ChangeFactory.addUnits(newTempEnd, unitsToMove));
+		final Quadruple<Territory, Territory, PlayerID, GameData> temp = copyGameDataAndAttemptMove(start, end, player, data);
+		// final Territory newTempStart = temp.getFirst();
+		// final Territory newTempEnd = temp.getSecond();
+		final PlayerID newTempPlayer = temp.getThird();
+		final GameData newTempData = temp.getForth();
 		
 		// check if any of our opponents are in check
 		for (final PlayerID enemy : newTempData.getPlayerList().getPlayers())
@@ -417,12 +480,26 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	/**
 	 * If we move our piece from start to end, does that put us in check?
 	 */
-	public static boolean testTerritoryForUsInCheck(final Territory start, final Territory end, final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
+	public static boolean testTerritoryForUsInCheckAfter(final Territory start, final Territory end, final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
 	{
-		final GameData newTempData;
+		final Quadruple<Territory, Territory, PlayerID, GameData> temp = copyGameDataAndAttemptMove(start, end, player, data);
+		// final Territory newTempStart = temp.getFirst();
+		// final Territory newTempEnd = temp.getSecond();
+		final PlayerID newTempPlayer = temp.getThird();
+		final GameData newTempData = temp.getForth();
+		if (EndTurnDelegate.doWeWin(newTempPlayer, newTempData, testForCheckTurnsAhead))
+			return false;
+		return areWeInCheck(newTempPlayer, newTempData, testForCheckTurnsAhead);
+	}
+	
+	public static Quadruple<Territory, Territory, PlayerID, GameData> copyGameDataAndAttemptMove(final Territory start, final Territory end, final PlayerID player, final GameData data)
+	{
+		if (start == null || end == null || player == null || data == null)
+			throw new IllegalArgumentException("copyGameDataAndAttemptMove can not accept null arguments");
 		final Territory newTempStart;
 		final Territory newTempEnd;
 		final PlayerID newTempPlayer;
+		final GameData newTempData;
 		data.acquireReadLock();
 		try
 		{
@@ -445,9 +522,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		}
 		changePerformer.perform(ChangeFactory.removeUnits(newTempStart, unitsToMove));
 		changePerformer.perform(ChangeFactory.addUnits(newTempEnd, unitsToMove));
-		if (EndTurnDelegate.doWeWin(newTempPlayer, newTempData, testForCheckTurnsAhead))
-			return false;
-		return areWeInCheck(newTempPlayer, newTempData, testForCheckTurnsAhead);
+		return new Quadruple<Territory, Territory, PlayerID, GameData>(newTempStart, newTempEnd, newTempPlayer, newTempData);
 	}
 	
 	public static Collection<Territory> getKingTerritories(final PlayerID player, final GameData data)
@@ -901,7 +976,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 									return "Can Not Castle King With Pieces In The Way";
 							}
 							final Territory moveThroughTerritoryForKing = map.getTerritoryFromCoordinates(false, end.getX() - 1, start.getY());
-							if (testTerritoryForUsInCheck(start, moveThroughTerritoryForKing, player, data, testForCheckTurnsAhead))
+							if (testTerritoryForUsInCheckAfter(start, moveThroughTerritoryForKing, player, data, testForCheckTurnsAhead))
 								return "Illegal To Move Through Check To Castle";
 							return null;
 						}
@@ -918,7 +993,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 									return "Can Not Castle King With Pieces In The Way";
 							}
 							final Territory moveThroughTerritoryForKing = map.getTerritoryFromCoordinates(false, end.getX() + 1, start.getY());
-							if (testTerritoryForUsInCheck(start, moveThroughTerritoryForKing, player, data, testForCheckTurnsAhead))
+							if (testTerritoryForUsInCheckAfter(start, moveThroughTerritoryForKing, player, data, testForCheckTurnsAhead))
 								return "Illegal To Move Through Check To Castle";
 							return null;
 						}
