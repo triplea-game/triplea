@@ -27,6 +27,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.kingstable.attachments.TerritoryAttachment;
+import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
@@ -348,6 +349,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		refresh.add(end);
 		refresh.addAll(captured);
 		display.refreshTerritories(refresh);
+		display.showGridPlayDataMove(new GridPlayData(start, end));
 	}
 	
 	/**

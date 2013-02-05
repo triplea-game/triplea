@@ -21,6 +21,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.player.GridAbstractAI;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +35,7 @@ import java.util.Stack;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class BetterAI extends AbstractAI
+public class BetterAI extends GridAbstractAI
 {
 	private int m_xDimension;
 	private int m_yDimension;

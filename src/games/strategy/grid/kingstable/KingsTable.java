@@ -23,6 +23,7 @@ import games.strategy.grid.kingstable.ui.KingsTableMenu;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.player.RandomAI;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 
 import java.util.HashSet;
@@ -98,6 +99,12 @@ public class KingsTable extends GridGame implements IGameLoader
 	protected Class<? extends GridMapPanel> getGridMapPanelClass()
 	{
 		return KingsTableMapPanel.class;
+	}
+	
+	@Override
+	protected Class<? extends GridMapData> getGridMapDataClass()
+	{
+		return GridMapData.class;
 	}
 	
 	@Override

@@ -29,19 +29,18 @@ import java.util.Map;
 public class GridMapData
 {
 	// maps String -> Polygons
-	private final Map<Territory, Polygon> m_polys;
-	private final int m_gridWidth;
-	private final int m_gridHeight;
-	private final int m_squareWidth;
-	private final int m_squareHeight;
-	private final int m_topLeftOffsetWidth;
-	private final int m_topLeftOffsetHeight;
-	private final GameMap m_map;
-	private final GameData m_gameData;
+	protected final Map<Territory, Polygon> m_polys = new HashMap<Territory, Polygon>();
+	protected final int m_gridWidth;
+	protected final int m_gridHeight;
+	protected final int m_squareWidth;
+	protected final int m_squareHeight;
+	protected final int m_topLeftOffsetWidth;
+	protected final int m_topLeftOffsetHeight;
+	protected final GameMap m_map;
+	protected final GameData m_gameData;
 	
 	public GridMapData(final GameData gameData, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight, final int topLeftOffsetWidth, final int topLeftOffsetHeight)
 	{
-		m_polys = new HashMap<Territory, Polygon>();
 		m_gridWidth = x_dim;
 		m_gridHeight = y_dim;
 		m_squareWidth = squareWidth;
@@ -65,6 +64,21 @@ public class GridMapData
 			x_offset = m_topLeftOffsetWidth;
 			y_offset += m_squareHeight;
 		}
+		initializeGridMapData();
+	}
+	
+	public int getTopLeftOffsetWidth()
+	{
+		return m_topLeftOffsetWidth;
+	}
+	
+	public int getTopLeftOffsetHeight()
+	{
+		return m_topLeftOffsetHeight;
+	}
+	
+	public void initializeGridMapData()
+	{
 	}
 	
 	public GameData getGameData()
@@ -87,8 +101,12 @@ public class GridMapData
 	 */
 	public Territory getTerritoryAt(final double x, final double y)
 	{
-		final int at_x = (int) ((x - m_topLeftOffsetWidth) / m_squareWidth);
-		final int at_y = (int) ((y - m_topLeftOffsetHeight) / m_squareHeight);
+		final int normal_x = (int) (x - m_topLeftOffsetWidth);
+		final int normal_y = (int) (y - m_topLeftOffsetHeight);
+		if (normal_x < 0 || normal_y < 0 || normal_x > ((m_gridWidth * m_squareWidth) + (m_topLeftOffsetWidth)) || normal_y > ((m_gridHeight * m_squareHeight) + (m_topLeftOffsetHeight)))
+			return null;
+		final int at_x = (normal_x / m_squareWidth);
+		final int at_y = (normal_y / m_squareHeight);
 		if (at_x < 0 || at_x >= m_gridWidth || at_y < 0 || at_y >= m_gridHeight)
 			return null;
 		else

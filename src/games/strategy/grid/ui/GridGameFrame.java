@@ -70,6 +70,7 @@ public class GridGameFrame extends MainGameFrame
 	public static final int SQUARE_SIZE = 50;
 	public static final int OUTSIDE_BEVEL_SIZE = 50;
 	protected GameData m_data;
+	final GridMapData m_mapData;
 	protected IGame m_game;
 	protected GridMapPanel m_mapPanel;
 	protected JLabel m_status;
@@ -84,7 +85,8 @@ public class GridGameFrame extends MainGameFrame
 	 * @param game
 	 * @param players
 	 */
-	public GridGameFrame(final IGame game, final Set<IGamePlayer> players, final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends BasicGameMenuBar<GridGameFrame>> menuBarClass)
+	public GridGameFrame(final IGame game, final Set<IGamePlayer> players, final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends GridMapData> gridMapDataClass,
+				final Class<? extends BasicGameMenuBar<GridGameFrame>> menuBarClass)
 	{
 		m_gameOver = false;
 		m_waiting = null;
@@ -96,13 +98,24 @@ public class GridGameFrame extends MainGameFrame
 		// The MapData holds info for the map,
 		// including the dimensions (x_dim and y_dim)
 		// and the size of each square (50 by 50)
-		final GridMapData mapData = new GridMapData(m_data, x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
+		// m_mapData = new GridMapData(m_data, x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
+		try
+		{
+			final Constructor<? extends GridMapData> mapDataConstructor = gridMapDataClass.getConstructor(new Class[] {
+						GameData.class, int.class, int.class, int.class, int.class, int.class, int.class });
+			final GridMapData gridMapData = mapDataConstructor.newInstance(m_data, x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
+			m_mapData = gridMapData;
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+			throw new IllegalStateException("Could not initalize map data for: " + gridMapDataClass);
+		}
 		// MapPanel is the Swing component that actually displays the gameboard.
 		// m_mapPanel = new KingsTableMapPanel(mapData);
 		try
 		{
 			final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] { GridMapData.class, GridGameFrame.class });
-			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(mapData, this);
+			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(m_mapData, this);
 			m_mapPanel = gridMapPanel;
 		} catch (final Exception e)
 		{
@@ -163,6 +176,22 @@ public class GridGameFrame extends MainGameFrame
 	public void refreshTerritories(final Collection<Territory> territories)
 	{
 		m_mapPanel.refreshTerritories(territories);
+	}
+	
+	/**
+	 * Update the user interface based on a game play.
+	 */
+	public void showGridPlayDataMove(final IGridPlayData move)
+	{
+		m_mapPanel.showGridPlayDataMove(move);
+	}
+	
+	/**
+	 * Set up the tiles.
+	 */
+	public void initializeGridMapData()
+	{
+		m_mapData.initializeGridMapData();
 	}
 	
 	/**

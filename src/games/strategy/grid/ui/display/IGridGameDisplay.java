@@ -15,6 +15,8 @@ package games.strategy.grid.ui.display;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.Collection;
 
@@ -44,4 +46,13 @@ public interface IGridGameDisplay extends IDisplay
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces have changed
 	 */
 	public void refreshTerritories(Collection<Territory> territories);
+	
+	public void showGridPlayDataMove(IGridPlayData move);
+	
+	/**
+	 * Initialize the board.
+	 */
+	public void initializeGridMapData();
+	
+	public GridGameFrame getGridGameFrame();
 }

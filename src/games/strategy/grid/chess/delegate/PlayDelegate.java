@@ -18,6 +18,7 @@ import games.strategy.grid.chess.ChessUnit;
 import games.strategy.grid.chess.attachments.PlayerAttachment;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.player.IGridGamePlayer;
+import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -261,6 +262,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		m_bridge.addChange(change);
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.refreshTerritories(refresh);
+		display.showGridPlayDataMove(new GridPlayData(start, end));
 	}
 	
 	/**

@@ -65,8 +65,10 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 	@Override
 	protected void paintComponentMiddleLayer(final Graphics2D g)
 	{
-		g.setColor(Color.white);
+		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.white);
+		g.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
 		{
 			final Polygon p = entry.getValue();

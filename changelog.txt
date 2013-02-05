@@ -1,4 +1,6 @@
 Changes for 1.7
+* Abstracting both Sliding Tiles (N-Puzzle) game and Tic Tac Toe game into Grid Game. (veqryn)
+
 * Created a min-max/alpha-beta type of AI, which takes a long time to think but actually makes OK moves. (veqryn)
 
 * Created a very very simple AI for Chess, based on random moves plus capturing pieces when available. (veqryn)

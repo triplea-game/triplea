@@ -16,6 +16,7 @@ package games.strategy.grid.ui.display;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.Collection;
 
@@ -42,6 +43,11 @@ public class GridGameDisplay implements IGridGameDisplay
 	public GridGameDisplay(final GridGameFrame ui)
 	{
 		m_ui = ui;
+	}
+	
+	public GridGameFrame getGridGameFrame()
+	{
+		return m_ui;
 	}
 	
 	/**
@@ -91,5 +97,15 @@ public class GridGameDisplay implements IGridGameDisplay
 	public void refreshTerritories(final Collection<Territory> territories)
 	{
 		m_ui.refreshTerritories(territories);
+	}
+	
+	public void showGridPlayDataMove(final IGridPlayData move)
+	{
+		m_ui.showGridPlayDataMove(move);
+	}
+	
+	public void initializeGridMapData()
+	{
+		m_ui.initializeGridMapData();
 	}
 }

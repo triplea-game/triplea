@@ -11,6 +11,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.display.GridGameDisplay;
 import games.strategy.grid.ui.display.IGridGameDisplay;
@@ -37,7 +38,13 @@ abstract public class GridGame implements IGameLoader
 	
 	abstract protected Class<? extends GridMapPanel> getGridMapPanelClass();
 	
+	abstract protected Class<? extends GridMapData> getGridMapDataClass();
+	
 	abstract protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass();
+	
+	protected void initializeGame()
+	{
+	}
 	
 	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
 	{
@@ -48,9 +55,10 @@ abstract public class GridGame implements IGameLoader
 			{
 				public void run()
 				{
-					final GridGameFrame frame = new GridGameFrame(game, players, getGridMapPanelClass(), getGridTableMenuClass());
+					final GridGameFrame frame = new GridGameFrame(game, players, getGridMapPanelClass(), getGridMapDataClass(), getGridTableMenuClass());
 					m_display = new GridGameDisplay(frame);
 					m_game.addDisplay(m_display);
+					initializeGame();
 					frame.setVisible(true);
 					connectPlayers(players, frame);
 					SwingUtilities.invokeLater(new Runnable()

@@ -16,22 +16,20 @@ package games.puzzle.slidingtiles;
 import games.puzzle.slidingtiles.player.BetterAI;
 import games.puzzle.slidingtiles.player.BetterAI.Algorithm;
 import games.puzzle.slidingtiles.player.BetterAI.Heuristic;
-import games.puzzle.slidingtiles.player.INPuzzlePlayer;
-import games.puzzle.slidingtiles.player.NPuzzlePlayer;
 import games.puzzle.slidingtiles.player.RandomAI;
-import games.puzzle.slidingtiles.ui.NPuzzleFrame;
-import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
-import games.puzzle.slidingtiles.ui.display.NPuzzleDisplay;
-import games.strategy.engine.data.DefaultUnitFactory;
-import games.strategy.engine.data.IUnitFactory;
-import games.strategy.engine.framework.IGame;
+import games.puzzle.slidingtiles.ui.NPuzzleMapData;
+import games.puzzle.slidingtiles.ui.NPuzzleMapPanel;
+import games.puzzle.slidingtiles.ui.NPuzzleMenu;
+import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
+import games.strategy.grid.GridGame;
+import games.strategy.grid.player.GridGamePlayer;
+import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridMapData;
+import games.strategy.grid.ui.GridMapPanel;
 
-import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -43,16 +41,14 @@ import java.util.Set;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class NPuzzle implements IGameLoader
+public class NPuzzle extends GridGame implements IGameLoader
 {
 	private static final long serialVersionUID = 6359686118939451301L;
-	// When serializing, do not save transient member variables
-	private transient NPuzzleDisplay m_display;
-	private transient IGame m_game;
 	private static final String HUMAN_PLAYER_TYPE = "Human";
 	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
 	private static final String DFS_COMPUTER_PLAYER_TYPE = "Depth First Search AI";
 	
+	@Override
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -63,7 +59,7 @@ public class NPuzzle implements IGameLoader
 			final String type = playerNames.get(name);
 			if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				final NPuzzlePlayer player = new NPuzzlePlayer(name, type);
+				final GridGamePlayer player = new GridGamePlayer(name, type);
 				players.add(player);
 			}
 			else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
@@ -84,88 +80,37 @@ public class NPuzzle implements IGameLoader
 		return players;
 	}
 	
+	@Override
+	protected void initializeGame()
+	{
+		final NPuzzleMapPanel panel = (NPuzzleMapPanel) m_display.getGridGameFrame().getMainPanel();
+		panel.setBackgroundImage((File) m_game.getData().getProperties().get("Background"));
+	}
+	
+	@Override
+	protected Class<? extends GridMapPanel> getGridMapPanelClass()
+	{
+		return NPuzzleMapPanel.class;
+	}
+	
+	@Override
+	protected Class<? extends GridMapData> getGridMapDataClass()
+	{
+		return NPuzzleMapData.class;
+	}
+	
+	@Override
+	protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass()
+	{
+		return NPuzzleMenu.class;
+	}
+	
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
+	@Override
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, DFS_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
-	}
-	
-	public void shutDown()
-	{
-		if (m_display != null)
-		{
-			m_game.removeDisplay(m_display);
-			m_display.shutDown();
-		}
-	}
-	
-	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
-	{
-		try
-		{
-			m_game = game;
-			SwingUtilities.invokeAndWait(new Runnable()
-			{
-				public void run()
-				{
-					final NPuzzleFrame frame = new NPuzzleFrame(game, players);
-					m_display = new NPuzzleDisplay(frame);
-					m_game.addDisplay(m_display);
-					frame.setVisible(true);
-					connectPlayers(players, frame);
-					SwingUtilities.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-							frame.toFront();
-						}
-					});
-				}
-			});
-		} catch (final InterruptedException e)
-		{
-			e.printStackTrace();
-		} catch (final InvocationTargetException e)
-		{
-			if (e.getCause() instanceof Exception)
-				throw (Exception) e.getCause();
-			else
-			{
-				e.printStackTrace();
-				throw new IllegalStateException(e.getCause().getMessage());
-			}
-		}
-	}
-	
-	private void connectPlayers(final Set<IGamePlayer> players, final NPuzzleFrame frame)
-	{
-		final Iterator<IGamePlayer> iter = players.iterator();
-		while (iter.hasNext())
-		{
-			final IGamePlayer player = iter.next();
-			if (player instanceof NPuzzlePlayer)
-				((NPuzzlePlayer) player).setFrame(frame);
-		}
-	}
-	
-	/**
-	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-	 */
-	public Class<? extends IChannelSubscribor> getDisplayType()
-	{
-		return INPuzzleDisplay.class;
-	}
-	
-	public Class<? extends IRemote> getRemotePlayerType()
-	{
-		return INPuzzlePlayer.class;
-	}
-	
-	public IUnitFactory getUnitFactory()
-	{
-		return new DefaultUnitFactory();
 	}
 }

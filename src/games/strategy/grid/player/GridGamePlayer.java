@@ -95,6 +95,10 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 					// ... then have the user try again.
 					play = null;
 				}
+				else
+				{
+					m_ui.notifyError("");
+				}
 			}
 		}
 	}

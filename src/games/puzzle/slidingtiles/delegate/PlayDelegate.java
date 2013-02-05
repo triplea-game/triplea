@@ -14,7 +14,6 @@
 package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -25,6 +24,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
 
@@ -108,7 +108,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	
 	public void signalStatus(final String status)
 	{
-		final INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 	}
 	
@@ -173,8 +173,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		change.add(fromChange);
 		change.add(toChange);
 		bridge.addChange(change);
-		final INPuzzleDisplay display = (INPuzzleDisplay) bridge.getDisplayChannelBroadcaster();
-		display.performPlay();
+		final IGridGameDisplay display = (IGridGameDisplay) bridge.getDisplayChannelBroadcaster();
+		display.refreshTerritories(null);
 		// return change;
 	}
 	

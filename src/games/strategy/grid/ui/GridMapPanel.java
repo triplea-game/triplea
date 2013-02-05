@@ -24,6 +24,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -68,6 +69,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	protected Point m_currentMouseLocation = new Point(0, 0);
 	protected Territory m_currentMouseLocationTerritory = null;
 	protected final GridGameFrame m_parentGridGameFrame;
+	protected IGridPlayData m_lastMove = null;
 	
 	public GridMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
 	{
@@ -114,8 +116,13 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	 */
 	protected void refreshTerritories(final Collection<Territory> territories)
 	{
-		for (final Territory at : territories)
-			updateImage(at);
+		if (territories != null)
+		{
+			for (final Territory at : territories)
+			{
+				updateImage(at);
+			}
+		}
 		// Ask Swing to repaint this panel when it's convenient
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -124,6 +131,11 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 				repaint();
 			}
 		});
+	}
+	
+	protected void showGridPlayDataMove(final IGridPlayData move)
+	{
+		m_lastMove = move;
 	}
 	
 	protected void updateAllImages()
@@ -183,6 +195,14 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 				g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
 			}
 		}
+		if (m_lastMove != null)
+		{
+			g2d.setColor(Color.gray);
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+			final Rectangle start = m_mapData.getPolygons().get(m_lastMove.getStart()).getBounds();
+			final Rectangle end = m_mapData.getPolygons().get(m_lastMove.getEnd()).getBounds();
+			g2d.drawLine(start.x + (start.width / 2), start.y + (start.height / 2), end.x + (end.width / 2), end.y + (end.height / 2));
+		}
 	}
 	
 	public void mouseClicked(final MouseEvent e)
@@ -207,8 +227,11 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		// will be stored in the private member variable m_clickedAt.
 		m_clickedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
 		// TODO: only shadow units if owned by current player
-		setMouseShadowUnits(m_clickedAt.getUnits().getUnits());
-		m_validMovesList = getValidMovesList(m_clickedAt);
+		if (m_clickedAt != null)
+		{
+			setMouseShadowUnits(m_clickedAt.getUnits().getUnits());
+			m_validMovesList = getValidMovesList(m_clickedAt);
+		}
 	}
 	
 	/**

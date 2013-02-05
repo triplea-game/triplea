@@ -26,6 +26,7 @@ import games.strategy.engine.data.Territory;
  */
 public class GridPlayData implements IGridPlayData
 {
+	private static final long serialVersionUID = -1450796130971955757L;
 	private final Territory m_start;
 	private final Territory m_end;
 	

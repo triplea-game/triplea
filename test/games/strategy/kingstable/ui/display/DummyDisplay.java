@@ -15,6 +15,8 @@ package games.strategy.kingstable.ui.display;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
+import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.util.Collection;
@@ -59,6 +61,19 @@ public class DummyDisplay implements IGridGameDisplay
 	 * @see games.strategy.grid.ui.display.IGridGameDisplay#shutDown()
 	 */
 	public void shutDown()
+	{
+	}
+	
+	public void initializeGridMapData()
+	{
+	}
+	
+	public GridGameFrame getGridGameFrame()
+	{
+		return null;
+	}
+	
+	public void showGridPlayDataMove(final IGridPlayData move)
 	{
 	}
 }

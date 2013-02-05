@@ -14,7 +14,6 @@
 package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -22,6 +21,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class InitializationDelegate extends AbstractDelegate
 		final int width = map.getXDimension();
 		final int height = map.getYDimension();
 		final Territory[][] board = new Territory[width][height];
-		final INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus("Shuffling tiles...");
 		m_bridge.getHistoryWriter().startEvent("Initializing board");
 		final CompositeChange initializingBoard = new CompositeChange();
@@ -63,8 +63,8 @@ public class InitializationDelegate extends AbstractDelegate
 			}
 		}
 		m_bridge.addChange(initializingBoard);
-		display.initializeBoard();
-		display.performPlay();
+		display.initializeGridMapData();
+		display.refreshTerritories(null);
 		m_bridge.getHistoryWriter().startEvent("Randomizing board");
 		// CompositeChange randomizingBoard = new CompositeChange();
 		Territory blank = board[0][0];

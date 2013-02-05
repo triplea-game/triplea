@@ -17,6 +17,7 @@ import games.puzzle.slidingtiles.attachments.Tile;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.player.GridAbstractAI;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import java.util.Random;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class RandomAI extends AbstractAI
+public class RandomAI extends GridAbstractAI
 {
 	public RandomAI(final String name, final String type)
 	{

@@ -12,6 +12,7 @@ import games.strategy.grid.chess.ui.ChessMenu;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.player.RandomAI;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 
 import java.util.HashSet;
@@ -78,6 +79,12 @@ public class Chess extends GridGame implements IGameLoader
 	protected Class<? extends GridMapPanel> getGridMapPanelClass()
 	{
 		return ChessMapPanel.class;
+	}
+	
+	@Override
+	protected Class<? extends GridMapData> getGridMapDataClass()
+	{
+		return GridMapData.class;
 	}
 	
 	@Override

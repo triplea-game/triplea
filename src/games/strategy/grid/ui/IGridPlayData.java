@@ -13,11 +13,18 @@
  */
 package games.strategy.grid.ui;
 
+import games.strategy.engine.data.Territory;
+
+import java.io.Serializable;
+
 /**
  * 
  * @author Lane Schwartz
  * 
  */
-public interface IGridPlayData
+public interface IGridPlayData extends Serializable
 {
+	public Territory getStart();
+	
+	public Territory getEnd();
 }

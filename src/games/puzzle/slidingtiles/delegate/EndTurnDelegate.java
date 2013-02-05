@@ -14,11 +14,11 @@
 package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
@@ -132,7 +132,7 @@ public class EndTurnDelegate extends AbstractDelegate
 	{
 		// If the game is over, we need to be able to alert all UIs to that fact.
 		// The display object can send a message to all UIs.
-		final INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 		display.setGameOver();
 		m_bridge.stopGameSequence();

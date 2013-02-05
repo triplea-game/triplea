@@ -14,6 +14,7 @@
 package games.puzzle.slidingtiles.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
+import games.strategy.grid.ui.GridGameFrame;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -30,11 +31,11 @@ import javax.swing.JScrollPane;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
+public class NPuzzleMenu extends BasicGameMenuBar<GridGameFrame>
 {
 	private static final long serialVersionUID = -5247149106915478051L;
 	
-	public NPuzzleMenu(final NPuzzleFrame frame)
+	public NPuzzleMenu(final GridGameFrame frame)
 	{
 		super(frame);
 	}
