@@ -92,7 +92,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 			updateImage(at);
 		}
 		this.addMouseListener(this);
-		this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
+		this.addMouseMotionListener(getMouseMotionListener());
 		this.setOpaque(true);
 	}
 	
@@ -124,6 +124,11 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 				repaint();
 			}
 		});
+	}
+	
+	protected void updateAllImages()
+	{
+		refreshTerritories(m_mapData.getPolygons().keySet());
 	}
 	
 	/**
@@ -223,28 +228,31 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 			m_waiting.countDown();
 	}
 	
-	private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
+	protected MouseMotionListener getMouseMotionListener()
 	{
-		@Override
-		public void mouseMoved(final MouseEvent e)
+		return new MouseMotionAdapter()
 		{
-			m_currentMouseLocation = new Point(e.getX(), e.getY());
-			m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX(), e.getY());
-			SwingUtilities.invokeLater(new Runnable()
+			@Override
+			public void mouseMoved(final MouseEvent e)
 			{
-				public void run()
+				m_currentMouseLocation = new Point(e.getX(), e.getY());
+				m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX(), e.getY());
+				SwingUtilities.invokeLater(new Runnable()
 				{
-					repaint();
-				}
-			});
-		}
-		
-		@Override
-		public void mouseDragged(final MouseEvent e)
-		{
-			mouseMoved(e);
-		}
-	};
+					public void run()
+					{
+						repaint();
+					}
+				});
+			}
+			
+			@Override
+			public void mouseDragged(final MouseEvent e)
+			{
+				mouseMoved(e);
+			}
+		};
+	}
 	
 	public void setMouseShadowUnits(final Collection<Unit> units)
 	{

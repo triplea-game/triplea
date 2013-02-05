@@ -14,27 +14,21 @@
 package games.puzzle.tictactoe;
 
 import games.puzzle.tictactoe.player.BetterAI;
-import games.puzzle.tictactoe.player.ITicTacToePlayer;
-import games.puzzle.tictactoe.player.RandomAI;
-import games.puzzle.tictactoe.player.TicTacToePlayer;
-import games.puzzle.tictactoe.ui.TicTacToeFrame;
-import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
-import games.puzzle.tictactoe.ui.display.TicTacToeDisplay;
-import games.strategy.engine.data.DefaultUnitFactory;
-import games.strategy.engine.data.IUnitFactory;
-import games.strategy.engine.framework.IGame;
+import games.puzzle.tictactoe.ui.TicTacToeMapPanel;
+import games.puzzle.tictactoe.ui.TicTacToeMenu;
+import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
+import games.strategy.grid.GridGame;
+import games.strategy.grid.player.GridGamePlayer;
+import games.strategy.grid.player.RandomAI;
+import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridMapPanel;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.SwingUtilities;
 
 /**
  * Main class responsible for a Tic Tac Toe game.
@@ -42,20 +36,27 @@ import javax.swing.SwingUtilities;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class TicTacToe implements IGameLoader
+public class TicTacToe extends GridGame implements IGameLoader
 {
 	private static final long serialVersionUID = 6817825634310618978L;
-	// When serializing, do not save transient member variables
-	private transient TicTacToeDisplay m_display;
-	private transient IGame m_game;
 	private static final String HUMAN_PLAYER_TYPE = "Human";
 	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
 	private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
 	private static final String ALPHABETA_COMPUTER_PLAYER_TYPE = "\u03B1\u03B2 AI";// "αβ AI";
 	
 	/**
+	 * Return an array of player types that can play on the server.
+	 */
+	@Override
+	public String[] getServerPlayerTypes()
+	{
+		return new String[] { HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
+	}
+	
+	/**
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
+	@Override
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -66,7 +67,7 @@ public class TicTacToe implements IGameLoader
 			final String type = playerNames.get(name);
 			if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				final TicTacToePlayer player = new TicTacToePlayer(name, type);
+				final GridGamePlayer player = new GridGamePlayer(name, type);
 				players.add(player);
 			}
 			else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
@@ -92,88 +93,15 @@ public class TicTacToe implements IGameLoader
 		return players;
 	}
 	
-	/**
-	 * Return an array of player types that can play on the server.
-	 */
-	public String[] getServerPlayerTypes()
+	@Override
+	protected Class<? extends GridMapPanel> getGridMapPanelClass()
 	{
-		return new String[] { HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
+		return TicTacToeMapPanel.class;
 	}
 	
-	public void shutDown()
+	@Override
+	protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass()
 	{
-		if (m_display != null)
-		{
-			m_game.removeDisplay(m_display);
-			m_display.shutDown();
-		}
-	}
-	
-	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
-	{
-		try
-		{
-			m_game = game;
-			SwingUtilities.invokeAndWait(new Runnable()
-			{
-				public void run()
-				{
-					final TicTacToeFrame frame = new TicTacToeFrame(game, players);
-					m_display = new TicTacToeDisplay(frame);
-					m_game.addDisplay(m_display);
-					frame.setVisible(true);
-					connectPlayers(players, frame);
-					SwingUtilities.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-							frame.toFront();
-						}
-					});
-				}
-			});
-		} catch (final InterruptedException e)
-		{
-			e.printStackTrace();
-		} catch (final InvocationTargetException e)
-		{
-			if (e.getCause() instanceof Exception)
-				throw (Exception) e.getCause();
-			else
-			{
-				e.printStackTrace();
-				throw new IllegalStateException(e.getCause().getMessage());
-			}
-		}
-	}
-	
-	private void connectPlayers(final Set<IGamePlayer> players, final TicTacToeFrame frame)
-	{
-		final Iterator<IGamePlayer> iter = players.iterator();
-		while (iter.hasNext())
-		{
-			final IGamePlayer player = iter.next();
-			if (player instanceof TicTacToePlayer)
-				((TicTacToePlayer) player).setFrame(frame);
-		}
-	}
-	
-	/**
-	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-	 */
-	public Class<? extends IChannelSubscribor> getDisplayType()
-	{
-		return ITicTacToeDisplay.class;
-	}
-	
-	public Class<? extends IRemote> getRemotePlayerType()
-	{
-		return ITicTacToePlayer.class;
-	}
-	
-	public IUnitFactory getUnitFactory()
-	{
-		return new DefaultUnitFactory();
+		return TicTacToeMenu.class;
 	}
 }

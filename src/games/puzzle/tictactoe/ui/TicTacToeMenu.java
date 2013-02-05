@@ -14,6 +14,7 @@
 package games.puzzle.tictactoe.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
+import games.strategy.grid.ui.GridGameFrame;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -28,11 +29,11 @@ import javax.swing.JScrollPane;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class TicTacToeMenu extends BasicGameMenuBar<TicTacToeFrame>
+public class TicTacToeMenu extends BasicGameMenuBar<GridGameFrame>
 {
 	private static final long serialVersionUID = 1378128476597319634L;
 	
-	public TicTacToeMenu(final TicTacToeFrame frame)
+	public TicTacToeMenu(final GridGameFrame frame)
 	{
 		super(frame);
 	}

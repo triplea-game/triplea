@@ -13,7 +13,6 @@
  */
 package games.puzzle.tictactoe.delegate;
 
-import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -23,6 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	public void start()
 	{
 		super.start();
-		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
 	
@@ -77,7 +77,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	
 	public void signalStatus(final String status)
 	{
-		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 	}
 	
@@ -128,8 +128,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		change.add(place);
 		change.add(owner);
 		m_bridge.addChange(change);
-		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
-		display.performPlay(at);
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final Collection<Territory> refresh = new ArrayList<Territory>();
+		refresh.add(at);
+		display.refreshTerritories(refresh);
 	}
 	
 	/**

@@ -13,58 +13,43 @@
  */
 package games.puzzle.tictactoe.ui;
 
-import games.strategy.common.image.UnitImageFactory;
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapData;
+import games.strategy.grid.ui.GridMapPanel;
+import games.strategy.grid.ui.GridPlayData;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-
-import javax.swing.JComponent;
 
 /**
  * Custom component for displaying a Tic Tac Toe gameboard and pieces.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
+ * @version $LastChangedDate: 2013-02-03 04:49:39 +0800 (Sun, 03 Feb 2013) $
  */
-public class MapPanel extends JComponent implements MouseListener
+public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 {
 	private static final long serialVersionUID = 96734493518077373L;
-	private final GridMapData m_mapData;
-	private final GameData m_gameData;
-	private Territory m_clickedAt = null;
-	private final Map<Territory, Image> m_images;
-	private CountDownLatch m_waiting;
 	
-	public MapPanel(final GridMapData mapData)
+	public TicTacToeMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
 	{
-		m_waiting = null;
-		m_mapData = mapData;
-		m_gameData = m_mapData.getGameData();
-		final Dimension mapDimension = m_mapData.getMapDimensions();
-		this.setMinimumSize(mapDimension);
-		this.setPreferredSize(mapDimension);
-		this.setSize(mapDimension);
-		m_images = new HashMap<Territory, Image>();
+		super(mapData, parentGridGameFrame);
 		updateAllImages();
-		this.addMouseListener(this);
-		this.setOpaque(true);
 		m_gameData.addDataChangeListener(new GameDataChangeListener()
 		{
 			public void gameDataChanged(final Change change)
@@ -74,69 +59,11 @@ public class MapPanel extends JComponent implements MouseListener
 		});
 	}
 	
-	private void updateAllImages()
-	{
-		for (final Territory at : m_mapData.getPolygons().keySet())
-		{
-			updateImage(at);
-		}
-		repaint();
-	}
-	
-	/**
-	 * Get the size of the map.
-	 * 
-	 * @return the size of the map
-	 */
-	public Dimension getMapDimensions()
-	{
-		return m_mapData.getMapDimensions();
-	}
-	
-	/**
-	 * Update the user interface based on a game play.
-	 * 
-	 * @param start
-	 *            <code>Territory</code> where the moving piece began
-	 * @param end
-	 *            <code>Territory</code> where the moving piece ended
-	 * @param captured
-	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
-	 */
-	protected void performPlay(final Territory at)
-	{
-	}
-	
-	/**
-	 * Update the image for a <code>Territory</code> based on the contents of that <code>Territory</code>.
-	 * 
-	 * @param at
-	 *            the <code>Territory</code> to update
-	 */
-	private void updateImage(final Territory at)
-	{
-		if (at != null)
-		{
-			if (at.getUnits().size() == 1)
-			{
-				final UnitImageFactory f = new UnitImageFactory();
-				// Get image for exactly one unit
-				final Unit u = (Unit) at.getUnits().getUnits().toArray()[0];
-				final Image image = f.getImage(u.getType(), u.getOwner(), m_gameData);
-				m_images.put(at, image);
-			}
-			else
-			{
-				m_images.remove(at);
-			}
-		}
-	}
-	
 	/**
 	 * Draw the current map and pieces.
 	 */
 	@Override
-	protected void paintComponent(final Graphics g)
+	protected void paintComponentMiddleLayer(final Graphics2D g)
 	{
 		g.setColor(Color.white);
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -156,21 +83,10 @@ public class MapPanel extends JComponent implements MouseListener
 		}
 	}
 	
-	public void mouseClicked(final MouseEvent e)
-	{
-	}
-	
-	public void mouseEntered(final MouseEvent e)
-	{
-	}
-	
-	public void mouseExited(final MouseEvent e)
-	{
-	}
-	
 	/**
 	 * Process the mouse button being pressed.
 	 */
+	@Override
 	public void mousePressed(final MouseEvent e)
 	{
 		// After this method has been called,
@@ -186,8 +102,17 @@ public class MapPanel extends JComponent implements MouseListener
 	/**
 	 * Process the mouse button being released.
 	 */
+	@Override
 	public void mouseReleased(final MouseEvent e)
 	{
+	}
+	
+	@Override
+	protected MouseMotionListener getMouseMotionListener()
+	{
+		return new MouseMotionAdapter()
+		{
+		};
 	}
 	
 	/**
@@ -203,7 +128,8 @@ public class MapPanel extends JComponent implements MouseListener
 	 * @throws InterruptedException
 	 *             if the play was interrupted
 	 */
-	public Territory waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
+	@Override
+	public GridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
 	{
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
@@ -226,7 +152,19 @@ public class MapPanel extends JComponent implements MouseListener
 			// Reset the member variables, and return the play.
 			final Territory play = m_clickedAt;
 			m_clickedAt = null;
-			return play;
+			return new GridPlayData(play, null);
 		}
+	}
+	
+	@Override
+	protected String isValidPlay(final GridPlayData play)
+	{
+		return null;
+	}
+	
+	@Override
+	protected Collection<Territory> getValidMovesList(final Territory clickedOn)
+	{
+		return null;
 	}
 }

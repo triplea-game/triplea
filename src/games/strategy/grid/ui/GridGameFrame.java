@@ -176,6 +176,19 @@ public class GridGameFrame extends MainGameFrame
 	 */
 	public GridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge)
 	{
+		/*
+		if (m_gameOver)
+		{
+			m_waiting = new CountDownLatch(1);
+			try
+			{
+				m_waiting.await();
+			} catch (final InterruptedException e)
+			{
+				// ignore
+			}
+			return null;
+		}*/
 		GridPlayData play = null;
 		try
 		{
@@ -226,10 +239,13 @@ public class GridGameFrame extends MainGameFrame
 	@Override
 	public void leaveGame()
 	{
-		// Make sure the user really wants to leave the game.
-		final int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
-		if (rVal != JOptionPane.OK_OPTION)
-			return;
+		if (!m_gameOver)
+		{
+			// Make sure the user really wants to leave the game.
+			final int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
+			if (rVal != JOptionPane.OK_OPTION)
+				return;
+		}
 		// We need to let the MapPanel know that we're leaving the game.
 		// Once the CountDownLatch has counted down to zero,
 		// the MapPanel will stop listening for mouse clicks,
