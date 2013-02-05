@@ -5,13 +5,14 @@ import games.strategy.grid.chess.delegate.PlayDelegate;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
-import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.Map;
 
 public class ChessMapPanel extends GridMapPanel
@@ -24,9 +25,15 @@ public class ChessMapPanel extends GridMapPanel
 	}
 	
 	@Override
-	protected String isValidPlay(final GridPlayData play)
+	protected String isValidPlay(final IGridPlayData play)
 	{
 		return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData, 2);
+	}
+	
+	@Override
+	protected Collection<Territory> getCapturesForPlay(final IGridPlayData play)
+	{
+		return PlayDelegate.checkForCaptures(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData);
 	}
 	
 	/**

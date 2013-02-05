@@ -22,6 +22,7 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
+import games.strategy.util.Tuple;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -65,7 +66,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	protected CountDownLatch m_waiting;
 	protected final UnitImageFactory m_imageFactory;
 	protected BufferedImage m_mouseShadowImage = null;
-	protected Collection<Territory> m_validMovesList = null;
+	protected Tuple<Collection<Territory>, Collection<Territory>> m_validMovesList = null;
 	protected Point m_currentMouseLocation = new Point(0, 0);
 	protected Territory m_currentMouseLocationTerritory = null;
 	protected final GridGameFrame m_parentGridGameFrame;
@@ -186,8 +187,17 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		}
 		if (m_validMovesList != null)
 		{
+			g2d.setColor(Color.black);
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-			for (final Territory t : m_validMovesList)
+			for (final Territory t : m_validMovesList.getFirst())
+			{
+				final Polygon p = m_mapData.getPolygons().get(t);
+				final Rectangle rect = p.getBounds();
+				g2d.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+				g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
+			}
+			g2d.setColor(Color.red);
+			for (final Territory t : m_validMovesList.getSecond())
 			{
 				final Polygon p = m_mapData.getPolygons().get(t);
 				final Rectangle rect = p.getBounds();
@@ -378,19 +388,26 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		}
 	}
 	
-	protected abstract String isValidPlay(final GridPlayData play);
+	protected abstract String isValidPlay(final IGridPlayData play);
 	
-	protected Collection<Territory> getValidMovesList(final Territory clickedOn)
+	protected abstract Collection<Territory> getCapturesForPlay(final IGridPlayData play);
+	
+	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn)
 	{
 		if (clickedOn == null)
 			return null;
 		final Collection<Territory> validMovesList = new HashSet<Territory>();
+		final Collection<Territory> capturesForValidMoves = new HashSet<Territory>();
 		for (final Territory t : m_gameData.getMap().getTerritories())
 		{
-			if (isValidPlay(new GridPlayData(clickedOn, t)) == null)
+			final GridPlayData play = new GridPlayData(clickedOn, t);
+			if (isValidPlay(play) == null)
+			{
 				validMovesList.add(t);
+				capturesForValidMoves.addAll(getCapturesForPlay(play));
+			}
 		}
-		return validMovesList;
+		return new Tuple<Collection<Territory>, Collection<Territory>>(validMovesList, capturesForValidMoves);
 	}
 	
 	public UnitImageFactory getUnitImageFactory()

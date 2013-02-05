@@ -22,6 +22,8 @@ import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
+import games.strategy.util.Tuple;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -196,13 +198,19 @@ public class NPuzzleMapPanel extends GridMapPanel
 	}
 	
 	@Override
-	protected String isValidPlay(final GridPlayData play)
+	protected String isValidPlay(final IGridPlayData play)
 	{
 		return null;
 	}
 	
 	@Override
-	protected Collection<Territory> getValidMovesList(final Territory clickedOn)
+	protected Collection<Territory> getCapturesForPlay(final IGridPlayData play)
+	{
+		return null;
+	}
+	
+	@Override
+	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn)
 	{
 		return null;
 	}

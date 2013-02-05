@@ -105,7 +105,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		final String error = isValidPlay(start, end, m_player, getData());
 		if (error != null)
 			return error;
-		final Collection<Territory> captured = checkForCaptures(end);
+		final Collection<Territory> captured = checkForCaptures(end, m_player, getData());
 		performPlay(start, end, captured, m_player);
 		return null;
 	}
@@ -117,8 +117,9 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 *            <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
 	 * @return
 	 */
-	private Collection<Territory> checkForCaptures(final Territory end)
+	public static Collection<Territory> checkForCaptures(final Territory end, final PlayerID player, final GameData data)
 	{
+		final Matches matches = new Matches(data);
 		// At most, four pieces will be captured
 		final Collection<Territory> captured = new HashSet<Territory>(4);
 		// Failsafe - end should never be null, so only check for captures if it isn't null
@@ -127,12 +128,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			// Get the coordinates where the move ended
 			final int endX = end.getX();
 			final int endY = end.getY();
-			final GameMap map = getData().getMap();
+			final GameMap map = data.getMap();
 			// Look above end for a potential capture
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
 				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY - 1);
-				if (matches.eligibleForCapture(possibleCapture, m_player))
+				if (matches.eligibleForCapture(possibleCapture, player))
 				{
 					// Get the territory to the left of the possible capture
 					final Territory above = map.getTerritoryFromCoordinates(endX, endY - 2);
@@ -141,13 +142,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 					{
 						final Territory left = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
 						final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
-						if (matches.eligibleParticipantsInKingCapture(m_player, above, left, right))
+						if (matches.eligibleParticipantsInKingCapture(player, above, left, right))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, above))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, above))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
-					else if (matches.eligibleParticipantInPawnCapture(m_player, above))
+					else if (matches.eligibleParticipantInPawnCapture(player, above))
 					{
 						captured.add(possibleCapture);
 					}
@@ -157,7 +158,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
 				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY + 1);
-				if (matches.eligibleForCapture(possibleCapture, m_player))
+				if (matches.eligibleForCapture(possibleCapture, player))
 				{
 					// Get the territory to the left of the possible capture
 					final Territory below = map.getTerritoryFromCoordinates(endX, endY + 2);
@@ -166,13 +167,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 					{
 						final Territory left = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
 						final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
-						if (matches.eligibleParticipantsInKingCapture(m_player, below, left, right))
+						if (matches.eligibleParticipantsInKingCapture(player, below, left, right))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, below))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, below))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
-					else if (matches.eligibleParticipantInPawnCapture(m_player, below))
+					else if (matches.eligibleParticipantInPawnCapture(player, below))
 					{
 						captured.add(possibleCapture);
 					}
@@ -182,7 +183,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
 				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX - 1, endY);
-				if (matches.eligibleForCapture(possibleCapture, m_player))
+				if (matches.eligibleForCapture(possibleCapture, player))
 				{
 					// Get the territory to the left of the possible capture
 					final Territory left = map.getTerritoryFromCoordinates(endX - 2, endY);
@@ -191,13 +192,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 					{
 						final Territory above = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
 						final Territory below = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
-						if (matches.eligibleParticipantsInKingCapture(m_player, left, above, below))
+						if (matches.eligibleParticipantsInKingCapture(player, left, above, below))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, left))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, left))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
-					else if (matches.eligibleParticipantInPawnCapture(m_player, left))
+					else if (matches.eligibleParticipantInPawnCapture(player, left))
 					{
 						captured.add(possibleCapture);
 					}
@@ -207,7 +208,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
 				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX + 1, endY);
-				if (matches.eligibleForCapture(possibleCapture, m_player))
+				if (matches.eligibleForCapture(possibleCapture, player))
 				{
 					// Get the territory to the left of the possible capture
 					final Territory right = map.getTerritoryFromCoordinates(endX + 2, endY);
@@ -216,13 +217,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 					{
 						final Territory above = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
 						final Territory below = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
-						if (matches.eligibleParticipantsInKingCapture(m_player, right, above, below))
+						if (matches.eligibleParticipantsInKingCapture(player, right, above, below))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, right))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, right))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
-					else if (matches.eligibleParticipantInPawnCapture(m_player, right))
+					else if (matches.eligibleParticipantInPawnCapture(player, right))
 					{
 						captured.add(possibleCapture);
 					}
