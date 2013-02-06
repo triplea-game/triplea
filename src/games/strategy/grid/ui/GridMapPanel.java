@@ -21,6 +21,9 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.ui.ImageScrollModel;
+import games.strategy.ui.ImageScrollerLargeView;
+import games.strategy.ui.ScrollListener;
 import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
@@ -46,7 +49,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 /**
@@ -55,7 +57,7 @@ import javax.swing.SwingUtilities;
  * @author Lane Schwartz
  * @version $LastChangedDate: 2012-04-19 18:13:58 +0800 (Thu, 19 Apr 2012) $
  */
-public abstract class GridMapPanel extends JComponent implements MouseListener
+public abstract class GridMapPanel extends ImageScrollerLargeView implements MouseListener
 {
 	private static final long serialVersionUID = -1318170171400997968L;
 	protected final GridMapData m_mapData;
@@ -72,8 +74,9 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	protected final GridGameFrame m_parentGridGameFrame;
 	protected IGridPlayData m_lastMove = null;
 	
-	public GridMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
+	public GridMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
+		super(mapData.getMapDimensions(), imageScrollModel);
 		m_waiting = null;
 		m_mapData = mapData;
 		m_parentGridGameFrame = parentGridGameFrame;
@@ -96,17 +99,42 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		}
 		this.addMouseListener(this);
 		this.addMouseMotionListener(getMouseMotionListener());
+		this.addScrollListener(new ScrollListener()
+		{
+			public void scrolled(final int x, final int y)
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						repaint();
+					}
+				});
+			}
+		});
 		this.setOpaque(true);
 	}
 	
-	/**
-	 * Get the size of the map.
-	 * 
-	 * @return the size of the map
-	 */
-	public Dimension getMapDimensions()
+	@Override
+	public Dimension getPreferredSize()
 	{
-		return m_mapData.getMapDimensions();
+		return getImageDimensions();
+	}
+	
+	@Override
+	public Dimension getMinimumSize()
+	{
+		return new Dimension(100, 100);
+	}
+	
+	boolean mapWidthFitsOnScreen()
+	{
+		return m_model.getMaxWidth() < getScaledWidth();
+	}
+	
+	boolean mapHeightFitsOnScreen()
+	{
+		return m_model.getMaxHeight() < getScaledHeight();
 	}
 	
 	/**
@@ -120,6 +148,13 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		if (territories != null)
 		{
 			for (final Territory at : territories)
+			{
+				updateImage(at);
+			}
+		}
+		else
+		{
+			for (final Territory at : m_mapData.m_polys.keySet())
 			{
 				updateImage(at);
 			}
@@ -168,7 +203,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		}
 	}
 	
-	protected abstract void paintComponentMiddleLayer(final Graphics2D g2d);
+	protected abstract void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY);
 	
 	@Override
 	protected void paintComponent(final Graphics g)
@@ -178,13 +213,11 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		paintComponentMiddleLayer(g2d);
-		if (m_mouseShadowImage != null)
-		{
-			final AffineTransform t = new AffineTransform();
-			t.translate(m_currentMouseLocation.x - (GridGameFrame.SQUARE_SIZE / 2), m_currentMouseLocation.y - (GridGameFrame.SQUARE_SIZE / 2));
-			g2d.drawImage(m_mouseShadowImage, t, this);
-		}
+		final int topLeftX = m_model.getX();
+		final int topLeftY = m_model.getY();
+		// translate our g2d so that our image scrolls
+		g2d.translate(-topLeftX, -topLeftY);
+		paintComponentMiddleLayer(g2d, topLeftX, topLeftY);
 		if (m_validMovesList != null)
 		{
 			g2d.setColor(Color.black);
@@ -213,6 +246,12 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 			final Rectangle end = m_mapData.getPolygons().get(m_lastMove.getEnd()).getBounds();
 			g2d.drawLine(start.x + (start.width / 2), start.y + (start.height / 2), end.x + (end.width / 2), end.y + (end.height / 2));
 		}
+		if (m_mouseShadowImage != null)
+		{
+			final AffineTransform t = new AffineTransform();
+			t.translate(m_currentMouseLocation.x - (GridGameFrame.SQUARE_SIZE / 2), m_currentMouseLocation.y - (GridGameFrame.SQUARE_SIZE / 2));
+			g2d.drawImage(m_mouseShadowImage, t, this);
+		}
 	}
 	
 	public void mouseClicked(final MouseEvent e)
@@ -235,7 +274,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was pressed
 		// will be stored in the private member variable m_clickedAt.
-		m_clickedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
+		m_clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY());
 		// TODO: only shadow units if owned by current player
 		if (m_clickedAt != null)
 		{
@@ -252,7 +291,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was released
 		// will be stored in the private member variable m_releasedAt.
-		m_releasedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
+		m_releasedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY());
 		setMouseShadowUnits(null);
 		m_validMovesList = null;
 		// The waitForPlay method is waiting for mouse input.
@@ -268,8 +307,8 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 			@Override
 			public void mouseMoved(final MouseEvent e)
 			{
-				m_currentMouseLocation = new Point(e.getX(), e.getY());
-				m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX(), e.getY());
+				m_currentMouseLocation = new Point(e.getX() + m_model.getX(), e.getY() + m_model.getY());
+				m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY());
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					public void run()
@@ -413,5 +452,18 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	public UnitImageFactory getUnitImageFactory()
 	{
 		return m_imageFactory;
+	}
+	
+	@Override
+	public void setTopLeft(final int x, final int y)
+	{
+		m_model.set(x, y);
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				repaint();
+			}
+		});
 	}
 }

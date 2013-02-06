@@ -50,6 +50,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		initComponents();
 	}
 	
+	public void clear()
+	{
+		this.dispose();
+		v_tabPaneMain = null;
+		v_logHolderTabbedPane = null;
+	}
+	
 	/**
 	 * This method is called from within the constructor to
 	 * initialize the form.

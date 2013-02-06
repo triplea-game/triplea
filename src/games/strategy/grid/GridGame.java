@@ -16,6 +16,9 @@ import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.display.GridGameDisplay;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
@@ -61,11 +64,21 @@ abstract public class GridGame implements IGameLoader
 					initializeGame();
 					frame.setVisible(true);
 					connectPlayers(players, frame);
+					final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+					final int availHeight = screenResolution.height - 30;
+					final int availWidth = screenResolution.width;
 					SwingUtilities.invokeLater(new Runnable()
 					{
 						public void run()
 						{
 							// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+							final Dimension currentSize = frame.getPreferredSize();
+							if (currentSize.height > availHeight - 100 && currentSize.width > availWidth - 200)
+								frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+							else if (currentSize.height > availHeight)
+								frame.setExtendedState(Frame.MAXIMIZED_VERT);
+							else if (currentSize.width > availWidth)
+								frame.setExtendedState(Frame.MAXIMIZED_HORIZ);
 							frame.toFront();
 						}
 					});
@@ -101,6 +114,7 @@ abstract public class GridGame implements IGameLoader
 		{
 			m_game.removeDisplay(m_display);
 			m_display.shutDown();
+			m_display = null;
 		}
 	}
 	

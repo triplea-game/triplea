@@ -7,6 +7,7 @@ import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.IGridPlayData;
+import games.strategy.ui.ImageScrollModel;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -20,9 +21,9 @@ public class KingsTableMapPanel extends GridMapPanel
 {
 	private static final long serialVersionUID = 9111624780451084800L;
 	
-	public KingsTableMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
+	public KingsTableMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
-		super(mapData, parentGridGameFrame);
+		super(mapData, parentGridGameFrame, imageScrollModel);
 	}
 	
 	@Override
@@ -41,12 +42,13 @@ public class KingsTableMapPanel extends GridMapPanel
 	 * Draw the current map and pieces.
 	 */
 	@Override
-	protected void paintComponentMiddleLayer(final Graphics2D g)
+	protected void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
-		g.setColor(Color.lightGray);
-		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(Color.white);
-		g.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
+		g2d.setColor(Color.lightGray);
+		g2d.fillRect(0, 0, getWidth(), getHeight());
+		g2d.setColor(Color.white);
+		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight()
+					- (m_mapData.getTopLeftOffsetHeight() * 2));
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
 		{
 			final Polygon p = entry.getValue();
@@ -59,21 +61,21 @@ public class KingsTableMapPanel extends GridMapPanel
 					backgroundColor = new Color(225, 225, 255);
 				else if (ta.getKingsSquare())
 					backgroundColor = new Color(235, 235, 235);
-				g.setColor(backgroundColor);
-				g.fillPolygon(p);
+				g2d.setColor(backgroundColor);
+				g2d.fillPolygon(p);
 			}
-			g.setColor(Color.black);
+			g2d.setColor(Color.black);
 			final Image image = m_images.get(at);
 			if (image != null)
 			{
 				final Rectangle square = p.getBounds();
 				if (at.equals(m_clickedAt))
-					g.drawImage(image, square.x - (GridGameFrame.SQUARE_SIZE / 5), square.y - (GridGameFrame.SQUARE_SIZE / 5),
+					g2d.drawImage(image, square.x - (GridGameFrame.SQUARE_SIZE / 5), square.y - (GridGameFrame.SQUARE_SIZE / 5),
 								square.width + (2 * GridGameFrame.SQUARE_SIZE / 5), square.height + (2 * GridGameFrame.SQUARE_SIZE / 5), null, null);
 				else
-					g.drawImage(image, square.x, square.y, square.width, square.height, null, null);
+					g2d.drawImage(image, square.x, square.y, square.width, square.height, null, null);
 			}
-			g.drawPolygon(p);
+			g2d.drawPolygon(p);
 		}
 	}
 	

@@ -17,6 +17,8 @@ import games.strategy.common.image.UnitImageFactory;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
+import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -29,12 +31,16 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Tuple;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -56,6 +62,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -68,16 +75,24 @@ public class GridGameFrame extends MainGameFrame
 {
 	private static final long serialVersionUID = -8888229639450608930L;
 	public static final int SQUARE_SIZE = 50;
-	public static final int OUTSIDE_BEVEL_SIZE = 50;
+	public static final int OUTSIDE_BEVEL_SIZE = 25;
 	protected GameData m_data;
-	final GridMapData m_mapData;
 	protected IGame m_game;
+	protected final GridMapData m_mapData;
 	protected GridMapPanel m_mapPanel;
 	protected JLabel m_status;
 	protected final JLabel m_error;
 	protected boolean m_gameOver;
 	protected CountDownLatch m_waiting;
 	protected PlayerID m_currentPlayer = PlayerID.NULL_PLAYERID;
+	
+	protected JPanel m_gameMainPanel = new JPanel();
+	private JPanel m_rightHandSidePanel = new JPanel();
+	protected JPanel m_mapAndChatPanel;
+	protected ChatPanel m_chatPanel;
+	protected JSplitPane m_chatSplit;
+	protected JSplitPane m_gameCenterPanel;
+	protected JPanel m_mainPanel;
 	
 	/**
 	 * Construct a new user interface for a King's Table game.
@@ -110,34 +125,83 @@ public class GridGameFrame extends MainGameFrame
 			e.printStackTrace();
 			throw new IllegalStateException("Could not initalize map data for: " + gridMapDataClass);
 		}
+		// create the scroll model
+		final ImageScrollModel model = new ImageScrollModel();
+		model.setScrollX(false);
+		model.setScrollY(false);
+		model.setMaxBounds(m_mapData.getMapDimensions().width, m_mapData.getMapDimensions().height);
+		
 		// MapPanel is the Swing component that actually displays the gameboard.
 		// m_mapPanel = new KingsTableMapPanel(mapData);
 		try
 		{
-			final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] { GridMapData.class, GridGameFrame.class });
-			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(m_mapData, this);
+			final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] { GridMapData.class, GridGameFrame.class, ImageScrollModel.class });
+			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(m_mapData, this, model);
 			m_mapPanel = gridMapPanel;
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException("Could not initalize map panel for: " + gridMapPanelClass);
 		}
+		// add arrow key listener
+		this.addKeyListener(m_arrowKeyActionListener);
+		m_mapPanel.addKeyListener(m_arrowKeyActionListener);
 		
 		// This label will display whose turn it is
 		m_status = new JLabel(" ");
 		m_status.setAlignmentX(Component.CENTER_ALIGNMENT);
-		m_status.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+		m_status.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		// This label will display any error messages
 		m_error = new JLabel(" ");
 		m_error.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
 		// We need somewhere to put the map panel, status label, and error label
-		final JPanel mainPanel = new JPanel();
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		mainPanel.add(m_mapPanel);
-		mainPanel.add(m_status);
-		mainPanel.add(m_error);
-		this.setContentPane(mainPanel);
+		m_mainPanel = new JPanel();
+		m_mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		m_mainPanel.setLayout(new BoxLayout(m_mainPanel, BoxLayout.Y_AXIS));
+		m_mainPanel.add(m_mapPanel);
+		m_mainPanel.add(m_status);
+		m_mainPanel.add(m_error);
+		
+		// next we add the chat panel, but only if there is one (only because we are hosting/network game)
+		m_mapAndChatPanel = new JPanel();
+		m_mapAndChatPanel.setLayout(new BorderLayout());
+		m_chatSplit = new JSplitPane();
+		m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		m_chatSplit.setOneTouchExpandable(true);
+		m_chatSplit.setDividerSize(8);
+		m_chatSplit.setResizeWeight(0.95);
+		if (MainFrame.getInstance().getChat() != null)
+		{
+			m_chatPanel = new ChatPanel(MainFrame.getInstance().getChat());
+			m_chatPanel.setPlayerRenderer(new PlayerChatRenderer(m_game, null));
+			final Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
+			m_chatPanel.setPreferredSize(chatPrefSize);
+			m_chatSplit.setTopComponent(m_mainPanel);
+			m_chatSplit.setBottomComponent(m_chatPanel);
+			m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
+		}
+		else
+		{
+			m_mapAndChatPanel.add(m_mainPanel, BorderLayout.CENTER);
+		}
+		
+		// now make right hand side panel, and add it to center panel
+		m_gameMainPanel.setLayout(new BorderLayout());
+		m_rightHandSidePanel.setLayout(new BorderLayout());
+		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mapAndChatPanel, m_rightHandSidePanel);
+		m_gameCenterPanel.setOneTouchExpandable(true);
+		m_gameCenterPanel.setDividerSize(8);
+		m_gameCenterPanel.setResizeWeight(1.0);
+		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
+		m_gameCenterPanel.resetToPreferredSizes();
+		hideRightHandSidePanel();
+		
+		// finally, set the content pane for this frame
+		// this.setContentPane(m_mainPanel);
+		this.getContentPane().setLayout(new BorderLayout());
+		this.getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+		
 		// Set up the menu bar and window title
 		// this.setJMenuBar(new KingsTableMenu(this));
 		try
@@ -322,6 +386,19 @@ public class GridGameFrame extends MainGameFrame
 		m_data = null;
 		m_mapPanel = null;
 		m_status = null;
+		m_mainPanel = null;
+		if (m_chatPanel != null)
+		{
+			m_chatPanel.setPlayerRenderer(null);
+			m_chatPanel.setChat(null);
+		}
+		m_chatPanel = null;
+		m_chatSplit = null;
+		m_gameMainPanel = null;
+		m_mapPanel = null;
+		m_mapAndChatPanel = null;
+		m_status = null;
+		m_rightHandSidePanel = null;
 		for (final WindowListener l : this.getWindowListeners())
 			this.removeWindowListener(l);
 	}
@@ -390,6 +467,45 @@ public class GridGameFrame extends MainGameFrame
 	{
 		return m_mapPanel;
 	}
+	
+	public void showRightHandSidePanel()
+	{
+		m_rightHandSidePanel.setVisible(true);
+	}
+	
+	public void hideRightHandSidePanel()
+	{
+		m_rightHandSidePanel.setVisible(false);
+	}
+	
+	final KeyListener m_arrowKeyActionListener = new KeyListener()
+	{
+		final int diffPixel = 50;
+		
+		public void keyPressed(final KeyEvent e)
+		{
+			// scroll map according to wasd/arrowkeys
+			final int x = m_mapPanel.getXOffset();
+			final int y = m_mapPanel.getYOffset();
+			final int keyCode = e.getKeyCode();
+			if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
+				m_mapPanel.setTopLeft(x + diffPixel, y);
+			else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
+				m_mapPanel.setTopLeft(x - diffPixel, y);
+			else if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S)
+				m_mapPanel.setTopLeft(x, y + diffPixel);
+			else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W)
+				m_mapPanel.setTopLeft(x, y - diffPixel);
+		}
+		
+		public void keyTyped(final KeyEvent e)
+		{
+		}
+		
+		public void keyReleased(final KeyEvent e)
+		{
+		}
+	};
 	
 	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)
 	{

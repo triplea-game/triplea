@@ -13,6 +13,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 	int m_maxIconCounter = 0;
 	
 	HashMap<String, List<Icon>> m_iconMap = new HashMap<String, List<Icon>>();
+	HashMap<String, Set<String>> m_playerMap = new HashMap<String, Set<String>>();
 	
 	public PlayerChatRenderer(final IGame game, final UIContext uiContext)
 	{
@@ -42,12 +44,30 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 	@Override
 	public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
 	{
-		super.getListCellRendererComponent(list, ((INode) value).getName(), index, isSelected, cellHasFocus);
 		final List<Icon> icons = m_iconMap.get(value.toString());
 		if (icons != null)
 		{
+			super.getListCellRendererComponent(list, ((INode) value).getName(), index, isSelected, cellHasFocus);
 			setHorizontalTextPosition(SwingConstants.LEFT);
 			setIcon(new CompositeIcon(icons));
+		}
+		else
+		{
+			final StringBuilder sb = new StringBuilder(((INode) value).getName());
+			final Set<String> players = m_playerMap.get(value.toString());
+			if (players != null && !players.isEmpty())
+			{
+				sb.append(" (");
+				final Iterator<String> iter = players.iterator();
+				while (iter.hasNext())
+				{
+					sb.append(iter.next());
+					if (iter.hasNext())
+						sb.append(", ");
+				}
+				sb.append(")");
+			}
+			super.getListCellRendererComponent(list, sb.toString(), index, isSelected, cellHasFocus);
 		}
 		return this;
 	}
@@ -73,10 +93,15 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 				final List<Icon> icons = new ArrayList<Icon>(players.size());
 				for (final String player : players)
 				{
-					icons.add(new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));
+					if (m_uiContext != null)
+						icons.add(new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));
 				}
 				m_maxIconCounter = Math.max(m_maxIconCounter, icons.size());
-				m_iconMap.put(playerNode.toString(), icons);
+				m_playerMap.put(playerNode.toString(), players);
+				if (m_uiContext == null)
+					m_iconMap.put(playerNode.toString(), null);
+				else
+					m_iconMap.put(playerNode.toString(), icons);
 			}
 		}
 	}

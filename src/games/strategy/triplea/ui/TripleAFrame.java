@@ -286,7 +286,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_gameSouthPanel.setLayout(new BorderLayout());
 		m_gameSouthPanel.add(m_message, BorderLayout.WEST);
 		m_message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-		m_message.setText("some text to set a reasonable preferred size");
+		m_message.setText("some text to set a reasonable preferred size for such things as territory production and effects");
 		m_message.setPreferredSize(m_message.getPreferredSize());
 		m_message.setText("");
 		m_gameSouthPanel.add(m_status, BorderLayout.CENTER);
@@ -312,6 +312,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				m_mapPanel.requestFocusInWindow();
 			}
 		};
+		m_rightHandSidePanel.addFocusListener(focusToMapPanelFocusListener);
 		m_smallView.addFocusListener(focusToMapPanelFocusListener);
 		m_tabsPanel.addFocusListener(focusToMapPanelFocusListener);
 		m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
@@ -457,6 +458,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		// we have already shut down
 		if (m_uiContext == null)
 			return;
+		this.dispose();
+		this.setVisible(false);
 		if (GameRunner.isMac())
 		{
 			// this frame should not handle shutdowns anymore
@@ -531,6 +534,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
 		if (rVal != JOptionPane.OK_OPTION)
 			return;
+		stopGame();
 		System.exit(0);
 	}
 	

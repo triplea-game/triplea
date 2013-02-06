@@ -1,4 +1,8 @@
 Changes for 1.7
+* Getting GridMapPanel to scroll by having it extend ImageScrollerLargeView, and fixing up all grid based games to use this. (veqryn)
+
+* Getting Grid Games to allow having a chat panel in multiplayer and networked games. (veqryn) 
+
 * Abstracting both Sliding Tiles (N-Puzzle) game and Tic Tac Toe game into Grid Game. (veqryn)
 
 * Created a min-max/alpha-beta type of AI, which takes a long time to think but actually makes OK moves. (veqryn)

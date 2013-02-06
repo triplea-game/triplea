@@ -36,6 +36,8 @@ public class UI
 	public static void clearCachedInstances()
 	{
 		s_frame = null;
+		if (s_settingsWindow != null)
+			s_settingsWindow.clear();
 		s_settingsWindow = null;
 	}
 	

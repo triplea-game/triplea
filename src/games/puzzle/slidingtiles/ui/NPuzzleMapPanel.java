@@ -23,6 +23,7 @@ import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridPlayData;
+import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Tuple;
 
 import java.awt.Color;
@@ -55,9 +56,9 @@ public class NPuzzleMapPanel extends GridMapPanel
 	private static final long serialVersionUID = 981372652838512191L;
 	private BufferedImage m_backgroundImage = null;
 	
-	public NPuzzleMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
+	public NPuzzleMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
-		super(mapData, parentGridGameFrame);
+		super(mapData, parentGridGameFrame, imageScrollModel);
 	}
 	
 	public void setBackgroundImage(final File file)
@@ -97,14 +98,15 @@ public class NPuzzleMapPanel extends GridMapPanel
 	 * Draw the current map and pieces.
 	 */
 	@Override
-	protected void paintComponentMiddleLayer(final Graphics2D g)
+	protected void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
 		final NPuzzleMapData nPuzzleMapData = (NPuzzleMapData) m_mapData;
 		final Dimension mapDimension = nPuzzleMapData.getMapDimensions();
-		g.setColor(Color.lightGray);
-		g.fillRect(0, 0, mapDimension.width, mapDimension.height);
-		g.setColor(Color.white);
-		g.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
+		g2d.setColor(Color.lightGray);
+		g2d.fillRect(0, 0, mapDimension.width, mapDimension.height);
+		g2d.setColor(Color.white);
+		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight()
+					- (m_mapData.getTopLeftOffsetHeight() * 2));
 		// g.fillRect(0, 0, getWidth(), getHeight());
 		for (final Map.Entry<Territory, Polygon> entry : nPuzzleMapData.getPolygons().entrySet())
 		{
@@ -120,24 +122,24 @@ public class NPuzzleMapPanel extends GridMapPanel
 					final Rectangle tileData = nPuzzleMapData.getLocation(value);
 					if (m_backgroundImage == null)
 					{
-						g.setColor(Color.black);
-						g.drawString(Integer.toString(value), square.x + (square.width * 5 / 12), square.y + (square.height * 7 / 12));
+						g2d.setColor(Color.black);
+						g2d.drawString(Integer.toString(value), square.x + (square.width * 5 / 12), square.y + (square.height * 7 / 12));
 					}
 					else if (tileData != null)
 					{
-						g.drawImage(m_backgroundImage, square.x, square.y, square.x + square.width, square.y + square.height, tileData.x, tileData.y, tileData.x + tileData.width, tileData.y
+						g2d.drawImage(m_backgroundImage, square.x, square.y, square.x + square.width, square.y + square.height, tileData.x, tileData.y, tileData.x + tileData.width, tileData.y
 									+ tileData.height,
 									this);
 					}
 					else
 					{
-						g.setColor(Color.white);
-						g.fillRect(square.x, square.y, square.width, square.height);
+						g2d.setColor(Color.white);
+						g2d.fillRect(square.x, square.y, square.width, square.height);
 					}
 				}
 			}
-			g.setColor(Color.black);
-			g.drawPolygon(p);
+			g2d.setColor(Color.black);
+			g2d.drawPolygon(p);
 		}
 	}
 	

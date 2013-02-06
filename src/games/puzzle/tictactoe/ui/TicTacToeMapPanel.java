@@ -23,6 +23,7 @@ import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridPlayData;
+import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Tuple;
 
 import java.awt.Color;
@@ -48,9 +49,9 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 {
 	private static final long serialVersionUID = 96734493518077373L;
 	
-	public TicTacToeMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
+	public TicTacToeMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
-		super(mapData, parentGridGameFrame);
+		super(mapData, parentGridGameFrame, imageScrollModel);
 		updateAllImages();
 		m_gameData.addDataChangeListener(new GameDataChangeListener()
 		{
@@ -65,25 +66,26 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 	 * Draw the current map and pieces.
 	 */
 	@Override
-	protected void paintComponentMiddleLayer(final Graphics2D g)
+	protected void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
-		g.setColor(Color.lightGray);
-		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(Color.white);
-		g.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
+		g2d.setColor(Color.lightGray);
+		g2d.fillRect(0, 0, getWidth(), getHeight());
+		g2d.setColor(Color.white);
+		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight()
+					- (m_mapData.getTopLeftOffsetHeight() * 2));
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
 		{
 			final Polygon p = entry.getValue();
 			final Territory at = entry.getKey();
 			final Color backgroundColor = Color.WHITE;
-			g.setColor(Color.black);
+			g2d.setColor(Color.black);
 			final Image image = m_images.get(at);
 			if (image != null)
 			{
 				final Rectangle square = p.getBounds();
-				g.drawImage(image, square.x, square.y, square.width, square.height, backgroundColor, null);
+				g2d.drawImage(image, square.x, square.y, square.width, square.height, backgroundColor, null);
 			}
-			g.drawPolygon(p);
+			g2d.drawPolygon(p);
 		}
 	}
 	
@@ -96,7 +98,7 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was pressed
 		// will be stored in the private member variable m_clickedAt.
-		m_clickedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
+		m_clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY());
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
 		if (m_waiting != null)
