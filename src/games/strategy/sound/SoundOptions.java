@@ -5,6 +5,7 @@ package games.strategy.sound;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.ui.PropertiesSelector;
+import games.strategy.sound.SoundPath.SoundType;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,7 +34,7 @@ public final class SoundOptions
 	 * @param parentMenu
 	 *            menu where to add the menu item "Sound Options..."
 	 */
-	public static void addToMenu(final JMenu parentMenu)
+	public static void addToMenu(final JMenu parentMenu, final SoundType soundType)
 	{
 		final JMenuItem soundOptions = new JMenuItem("Sound Options...");
 		soundOptions.setMnemonic(KeyEvent.VK_S);
@@ -41,33 +42,33 @@ public final class SoundOptions
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				new SoundOptions(parentMenu);
+				new SoundOptions(parentMenu, soundType);
 			}
 		});
 		parentMenu.add(soundOptions);
 	}
 	
-	public static void addToPanel(final JPanel parentPanel)
+	public static void addToPanel(final JPanel parentPanel, final SoundType soundType)
 	{
 		final JButton soundOptions = new JButton("Sound Options...");
 		soundOptions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				new SoundOptions(parentPanel);
+				new SoundOptions(parentPanel, soundType);
 			}
 		});
 		parentPanel.add(soundOptions);
 	}
 	
-	public SoundOptions(final JComponent parent)
+	public SoundOptions(final JComponent parent, final SoundType soundType)
 	{
 		m_clipPlayer = ClipPlayer.getInstance();
 		final String ok = "OK";
 		final String cancel = "Cancel";
 		final String selectAll = "All";
 		final String selectNone = "None";
-		final ArrayList<IEditableProperty> properties = m_clipPlayer.getSoundOptions(SoundPath.SoundType.TRIPLEA);
+		final ArrayList<IEditableProperty> properties = m_clipPlayer.getSoundOptions(soundType);
 		final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties, new Object[] { ok, selectAll, selectNone, cancel });
 		if (pressedButton == null || pressedButton.equals(cancel))
 		{

@@ -58,14 +58,14 @@ public class HistoryPanel extends JPanel
 	private static final long serialVersionUID = -8353246449552215276L;
 	private final GameData m_data;
 	private final JTree m_tree;
-	private final HistoryDetailsPanel m_details;
+	private final IHistoryDetailsPanel m_details;
 	private HistoryNode m_currentPopupNode;
 	private final JPopupMenu m_popup;
 	
 	// private final UIContext m_uiContext;
 	// private boolean m_lockBefore;
 	
-	public HistoryPanel(final GameData data, final HistoryDetailsPanel details, final JPopupMenu popup, final UIContext uiContext)
+	public HistoryPanel(final GameData data, final IHistoryDetailsPanel details, final JPopupMenu popup, final UIContext uiContext)
 	{
 		// m_uiContext = uiContext;
 		m_mouseOverPanel = false;
@@ -330,7 +330,8 @@ public class HistoryPanel extends JPanel
 		{
 			throw new IllegalStateException("Not EDT");
 		}
-		m_details.render(node);
+		if (m_details != null)
+			m_details.render(node);
 		m_data.getHistory().gotoNode(node);
 	}
 	
@@ -503,15 +504,26 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
 	@Override
 	public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean sel, final boolean expanded, final boolean leaf, final int row, final boolean haveFocus)
 	{
-		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
 		if (value instanceof Step)
 		{
 			final PlayerID player = ((Step) value).getPlayerID();
 			if (player != null)
 			{
-				icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
-				setIcon(icon);
+				if (m_uiContext != null)
+				{
+					icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
+					setIcon(icon);
+				}
+				super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
 			}
+			else
+			{
+				super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+			}
+		}
+		else
+		{
+			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
 		}
 		return this;
 	}

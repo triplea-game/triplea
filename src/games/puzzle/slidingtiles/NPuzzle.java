@@ -38,7 +38,7 @@ import java.util.Set;
 /**
  * Main class responsible for an n-puzzle game.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate$
  */
 public class NPuzzle extends GridGame implements IGameLoader

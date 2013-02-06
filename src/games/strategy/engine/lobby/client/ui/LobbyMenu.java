@@ -11,6 +11,7 @@ import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
+import games.strategy.sound.SoundPath;
 import games.strategy.util.MD5Crypt;
 
 import java.awt.BorderLayout;
@@ -384,7 +385,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenu settings = new JMenu("Settings");
 		menuBar.add(settings);
 		SoundOptions.addGlobalSoundSwitchMenu(settings);
-		SoundOptions.addToMenu(settings);
+		SoundOptions.addToMenu(settings, SoundPath.SoundType.TRIPLEA);
 		addChatTimeMenu(settings);
 	}
 	

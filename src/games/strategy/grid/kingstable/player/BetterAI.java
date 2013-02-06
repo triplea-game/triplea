@@ -29,6 +29,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+/**
+ * 
+ * @author Lane Schwartz
+ * 
+ */
 public class BetterAI extends GridAbstractAI
 {
 	private int m_xDimension;

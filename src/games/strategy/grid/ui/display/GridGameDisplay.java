@@ -13,6 +13,7 @@
  */
 package games.strategy.grid.ui.display;
 
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.grid.ui.GridGameFrame;
@@ -21,9 +22,9 @@ import games.strategy.grid.ui.IGridPlayData;
 import java.util.Collection;
 
 /**
- * Display for a King's Table game.
+ * Display for a Grid Game.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public class GridGameDisplay implements IGridGameDisplay
@@ -104,8 +105,8 @@ public class GridGameDisplay implements IGridGameDisplay
 		m_ui.showGridPlayDataMove(move);
 	}
 	
-	public void initializeGridMapData()
+	public void initializeGridMapData(final GameMap map)
 	{
-		m_ui.initializeGridMapData();
+		m_ui.initializeGridMapData(map);
 	}
 }

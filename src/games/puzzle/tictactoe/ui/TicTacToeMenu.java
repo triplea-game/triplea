@@ -13,8 +13,8 @@
  */
 package games.puzzle.tictactoe.ui;
 
-import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridGameMenu;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -29,7 +29,7 @@ import javax.swing.JScrollPane;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class TicTacToeMenu extends BasicGameMenuBar<GridGameFrame>
+public class TicTacToeMenu extends GridGameMenu<GridGameFrame>
 {
 	private static final long serialVersionUID = 1378128476597319634L;
 	
@@ -38,16 +38,11 @@ public class TicTacToeMenu extends BasicGameMenuBar<GridGameFrame>
 		super(frame);
 	}
 	
-	@Override
-	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
-	{
-		addHowToPlayHelpMenu(helpMenu);
-	}
-	
 	/**
 	 * @param parentMenu
 	 */
-	private void addHowToPlayHelpMenu(final JMenu parentMenu)
+	@Override
+	protected void addHowToPlayHelpMenu(final JMenu parentMenu)
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
@@ -74,25 +69,4 @@ public class TicTacToeMenu extends BasicGameMenuBar<GridGameFrame>
 			}
 		});
 	}
-	/*
-	protected void createGameSpecificMenus (JMenuBar menuBar) 
-	{
-	    if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
-	    {
-	        JMenu menuGame = new JMenu("Game");
-	        menuBar.add(menuGame);
-	        
-	        AbstractAction optionsAction = new AbstractAction("View Game Options...")
-	        {
-	            public void actionPerformed(ActionEvent e)
-	            {
-	                PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), true);
-	                JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
-	            }
-	        };
-
-	        menuGame.add(optionsAction);   
-	    }
-	}
-	*/
 }

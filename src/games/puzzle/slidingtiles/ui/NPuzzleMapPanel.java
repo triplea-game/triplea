@@ -14,6 +14,7 @@
 package games.puzzle.slidingtiles.ui;
 
 import games.puzzle.slidingtiles.attachments.Tile;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -27,7 +28,6 @@ import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Tuple;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -48,7 +48,7 @@ import javax.swing.SwingUtilities;
 /**
  * Custom component for displaying a n-puzzle gameboard.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate: 2013-02-03 04:49:39 +0800 (Sun, 03 Feb 2013) $
  */
 public class NPuzzleMapPanel extends GridMapPanel
@@ -56,9 +56,9 @@ public class NPuzzleMapPanel extends GridMapPanel
 	private static final long serialVersionUID = 981372652838512191L;
 	private BufferedImage m_backgroundImage = null;
 	
-	public NPuzzleMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
+	public NPuzzleMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
-		super(mapData, parentGridGameFrame, imageScrollModel);
+		super(data, mapData, parentGridGameFrame, imageScrollModel);
 	}
 	
 	public void setBackgroundImage(final File file)
@@ -101,14 +101,13 @@ public class NPuzzleMapPanel extends GridMapPanel
 	protected void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
 		final NPuzzleMapData nPuzzleMapData = (NPuzzleMapData) m_mapData;
-		final Dimension mapDimension = nPuzzleMapData.getMapDimensions();
 		g2d.setColor(Color.lightGray);
-		g2d.fillRect(0, 0, mapDimension.width, mapDimension.height);
+		// g2d.fillRect(0, 0, getWidth(), getHeight());
+		g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
 		g2d.setColor(Color.white);
-		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight()
-					- (m_mapData.getTopLeftOffsetHeight() * 2));
-		// g.fillRect(0, 0, getWidth(), getHeight());
-		for (final Map.Entry<Territory, Polygon> entry : nPuzzleMapData.getPolygons().entrySet())
+		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), m_model.getMaxWidth() - (m_mapData.getTopLeftOffsetWidth() * 2),
+					m_model.getMaxHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
+		for (final Map.Entry<Territory, Polygon> entry : nPuzzleMapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();
 			final Territory at = entry.getKey();

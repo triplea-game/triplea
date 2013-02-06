@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * Main class responsible for a Tic Tac Toe game.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate$
  */
 public class TicTacToe extends GridGame implements IGameLoader

@@ -2,7 +2,10 @@ package games.strategy.common.ui;
 
 import games.strategy.debug.Console;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.export.GameDataExporter;
+import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
@@ -11,23 +14,43 @@ import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
 import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
+import games.strategy.triplea.ui.UIContext;
+import games.strategy.ui.IntTextField;
+import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.util.Triple;
 
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,14 +59,20 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
@@ -679,6 +708,285 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			menuFileExit.setMnemonic(KeyEvent.VK_E);
 			parentMenu.add(menuFileExit);
 		}
+	}
+	
+	protected static boolean isJavaGreatThan5()
+	{
+		final String version = System.getProperties().getProperty("java.version");
+		return version.indexOf("1.5") == -1;
+	}
+	
+	protected static boolean isJavaGreatThan6()
+	{
+		final String version = System.getProperties().getProperty("java.version");
+		return version.indexOf("1.5") == -1 && version.indexOf("1.6") == -1;
+	}
+	
+	public static List<String> getLookAndFeelAvailableList()
+	{
+		final List<String> substanceLooks = new ArrayList<String>(Arrays.asList(new String[] {
+					UIManager.getSystemLookAndFeelClassName(),
+					MetalLookAndFeel.class.getName(),
+					UIManager.getCrossPlatformLookAndFeelClassName()
+		}));
+		if (isJavaGreatThan5())
+		{
+			substanceLooks.addAll(new ArrayList<String>(Arrays.asList(new String[] {
+						UIManager.getSystemLookAndFeelClassName(),
+						MetalLookAndFeel.class.getName(),
+						UIManager.getCrossPlatformLookAndFeelClassName(),
+						// Substance 5.x
+						"org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceCremeLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceDustLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceMagmaLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceModerateLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
+						"org.jvnet.substance.skin.SubstanceTwilightLookAndFeel"
+
+			/* Substance (insubstantial) 7.x
+			"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
+			"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"*/
+			})));
+		}
+		if (isJavaGreatThan6())
+			substanceLooks.add("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		return substanceLooks;
+	}
+	
+	/**
+	 * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
+	 * 
+	 * @return
+	 */
+	public static Triple<JList, Map<String, String>, String> getLookAndFeelList()
+	{
+		final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
+		try
+		{
+			final List<String> substanceLooks = getLookAndFeelAvailableList();
+			for (final String s : substanceLooks)
+			{
+				@SuppressWarnings("rawtypes")
+				final Class c = Class.forName(s);
+				final LookAndFeel lf = (LookAndFeel) c.newInstance();
+				lookAndFeels.put(lf.getName(), s);
+			}
+			
+		} catch (final Exception t)
+		{
+			t.printStackTrace();
+			// we know all machines have these 3, so use them
+			lookAndFeels.clear();
+			lookAndFeels.put("Original", UIManager.getSystemLookAndFeelClassName());
+			lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
+			lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
+		}
+		final JList list = new JList(new Vector<String>(lookAndFeels.keySet()));
+		String currentKey = null;
+		for (final String s : lookAndFeels.keySet())
+		{
+			final String currentName = UIManager.getLookAndFeel().getClass().getName();
+			if (lookAndFeels.get(s).equals(currentName))
+			{
+				currentKey = s;
+				break;
+			}
+		}
+		list.setSelectedValue(currentKey, false);
+		return new Triple<JList, Map<String, String>, String>(list, lookAndFeels, currentKey);
+	}
+	
+	protected void addSetLookAndFeel(final JMenu menuView)
+	{
+		menuView.add(new AbstractAction("Set Look and Feel...")
+		{
+			private static final long serialVersionUID = 379919988820952164L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
+				final JList list = lookAndFeel.getFirst();
+				final String currentKey = lookAndFeel.getThird();
+				final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
+				if (JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION)
+				{
+					final String selectedValue = (String) list.getSelectedValue();
+					if (selectedValue == null)
+					{
+						return;
+					}
+					if (selectedValue.equals(currentKey))
+					{
+						return;
+					}
+					GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
+					EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA");
+				}
+			}
+		}).setMnemonic(KeyEvent.VK_F);
+	}
+	
+	protected void addShowGameUuid(final JMenu menuView)
+	{
+		menuView.add(new AbstractAction("Game UUID...")
+		{
+			private static final long serialVersionUID = 119615303846107510L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final String id = (String) getData().getProperties().get(GameData.GAME_UUID);
+				final JTextField text = new JTextField();
+				text.setText(id);
+				final JPanel panel = new JPanel();
+				panel.setLayout(new GridBagLayout());
+				panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+				panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+				JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+							new String[] { "OK" }, "OK");
+			}
+		}).setMnemonic(KeyEvent.VK_U);
+	}
+	
+	protected void addChatTimeMenu(final JMenu parentMenu)
+	{
+		final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
+		chatTimeBox.setMnemonic(KeyEvent.VK_T);
+		chatTimeBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				m_frame.setShowChatTime(chatTimeBox.isSelected());
+			}
+		});
+		chatTimeBox.setSelected(false);
+		parentMenu.add(chatTimeBox);
+		chatTimeBox.setEnabled(MainFrame.getInstance().getChat() != null);
+	}
+	
+	protected void addAISleepDuration(final JMenu parentMenu)
+	{
+		final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
+		AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
+		AISleepDurationBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				final IntTextField text = new IntTextField(0, 10000);
+				text.setText(String.valueOf(UIContext.getAIPauseDuration()));
+				final JPanel panel = new JPanel();
+				panel.setLayout(new GridBagLayout());
+				panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+				panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+				JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+							new String[] { "OK" }, "OK");
+				try
+				{
+					UIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
+				} catch (final Exception ex)
+				{
+				}
+			}
+		});
+		parentMenu.add(AISleepDurationBox);
+	}
+	
+	protected void addGameOptionsMenu(final JMenu menuGame)
+	{
+		if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
+		{
+			final AbstractAction optionsAction = new AbstractAction("View Game Options...")
+			{
+				private static final long serialVersionUID = 8937205081994328616L;
+				
+				public void actionPerformed(final ActionEvent e)
+				{
+					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
+					JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
+				}
+			};
+			menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
+		}
+	}
+	
+	// TODO: create a second menu option for parsing current attachments
+	protected void addExportXML(final JMenu parentMenu)
+	{
+		final Action exportXML = new AbstractAction("Export game.xml file (Beta)...")
+		{
+			private static final long serialVersionUID = 8379478036021948990L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				exportXMLFile();
+			}
+			
+			private void exportXMLFile()
+			{
+				final JFileChooser chooser = new JFileChooser();
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				final File rootDir = new File(System.getProperties().getProperty("user.dir"));
+				final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
+				String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
+				defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+				defaultFileName = defaultFileName + ".xml";
+				chooser.setSelectedFile(new File(rootDir, defaultFileName));
+				if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
+					return;
+				final GameData data = getData();
+				final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
+				final String xmlFile = exporter.getXML();
+				try
+				{
+					final FileWriter writer = new FileWriter(chooser.getSelectedFile());
+					try
+					{
+						writer.write(xmlFile);
+					} finally
+					{
+						writer.close();
+					}
+				} catch (final IOException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		};
+		parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
 	}
 	
 	public IGame getGame()

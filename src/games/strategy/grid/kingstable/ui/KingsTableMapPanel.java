@@ -1,5 +1,6 @@
 package games.strategy.grid.kingstable.ui;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.kingstable.attachments.TerritoryAttachment;
 import games.strategy.grid.kingstable.delegate.PlayDelegate;
@@ -17,13 +18,18 @@ import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * 
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
+ * 
+ */
 public class KingsTableMapPanel extends GridMapPanel
 {
 	private static final long serialVersionUID = 9111624780451084800L;
 	
-	public KingsTableMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
+	public KingsTableMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
-		super(mapData, parentGridGameFrame, imageScrollModel);
+		super(data, mapData, parentGridGameFrame, imageScrollModel);
 	}
 	
 	@Override
@@ -45,11 +51,12 @@ public class KingsTableMapPanel extends GridMapPanel
 	protected void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
 		g2d.setColor(Color.lightGray);
-		g2d.fillRect(0, 0, getWidth(), getHeight());
+		// g2d.fillRect(0, 0, getWidth(), getHeight());
+		g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
 		g2d.setColor(Color.white);
-		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), getWidth() - (m_mapData.getTopLeftOffsetWidth() * 2), getHeight()
-					- (m_mapData.getTopLeftOffsetHeight() * 2));
-		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
+		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), m_model.getMaxWidth() - (m_mapData.getTopLeftOffsetWidth() * 2),
+					m_model.getMaxHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
+		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();
 			final Territory at = entry.getKey();

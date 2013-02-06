@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Random;
 
 /**
- * AI agent for King's Table.
+ * AI agent for most any Grid Games.
  * 
  * Plays by attempting to move a random piece to a random square on the board.
  * 

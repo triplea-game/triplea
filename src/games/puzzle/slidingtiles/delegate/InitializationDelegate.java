@@ -63,7 +63,7 @@ public class InitializationDelegate extends AbstractDelegate
 			}
 		}
 		m_bridge.addChange(initializingBoard);
-		display.initializeGridMapData();
+		display.initializeGridMapData(map);
 		display.refreshTerritories(null);
 		m_bridge.getHistoryWriter().startEvent("Randomizing board");
 		// CompositeChange randomizingBoard = new CompositeChange();

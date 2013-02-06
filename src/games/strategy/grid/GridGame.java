@@ -25,6 +25,12 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+/**
+ * Abstract Game Loader for grid games.
+ * 
+ * @author veqryn
+ * 
+ */
 abstract public class GridGame implements IGameLoader
 {
 	private static final long serialVersionUID = -7194416906783331148L;

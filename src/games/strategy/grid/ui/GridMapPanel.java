@@ -14,10 +14,12 @@
 package games.strategy.grid.ui;
 
 import games.strategy.common.image.UnitImageFactory;
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
@@ -52,16 +54,16 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.SwingUtilities;
 
 /**
- * Custom component for displaying a King's Table gameboard and pieces.
+ * Custom component for displaying a Grid Game gameboard and pieces.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction and major rewrite)
  * @version $LastChangedDate: 2012-04-19 18:13:58 +0800 (Thu, 19 Apr 2012) $
  */
 public abstract class GridMapPanel extends ImageScrollerLargeView implements MouseListener
 {
 	private static final long serialVersionUID = -1318170171400997968L;
 	protected final GridMapData m_mapData;
-	protected final GameData m_gameData;
+	protected GameData m_gameData;
 	protected Territory m_clickedAt = null;
 	protected Territory m_releasedAt = null;
 	protected final Map<Territory, Image> m_images;
@@ -74,13 +76,13 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	protected final GridGameFrame m_parentGridGameFrame;
 	protected IGridPlayData m_lastMove = null;
 	
-	public GridMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
+	public GridMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
 		super(mapData.getMapDimensions(), imageScrollModel);
 		m_waiting = null;
 		m_mapData = mapData;
 		m_parentGridGameFrame = parentGridGameFrame;
-		m_gameData = m_mapData.getGameData();
+		setGameData(data);
 		final String mapName = (String) m_gameData.getProperties().get(Constants.MAP_NAME);
 		if (mapName == null || mapName.trim().length() == 0)
 		{
@@ -93,7 +95,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		this.setPreferredSize(mapDimension);
 		this.setSize(mapDimension);
 		m_images = new HashMap<Territory, Image>();
-		for (final Territory at : m_mapData.getPolygons().keySet())
+		for (final Territory at : m_gameData.getMap().getTerritories())
 		{
 			updateImage(at);
 		}
@@ -154,7 +156,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		}
 		else
 		{
-			for (final Territory at : m_mapData.m_polys.keySet())
+			for (final Territory at : m_gameData.getMap().getTerritories())
 			{
 				updateImage(at);
 			}
@@ -176,7 +178,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	
 	protected void updateAllImages()
 	{
-		refreshTerritories(m_mapData.getPolygons().keySet());
+		refreshTerritories(m_gameData.getMap().getTerritories());
 	}
 	
 	/**
@@ -187,7 +189,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	 */
 	private void updateImage(final Territory at)
 	{
-		if (at != null)
+		if (at != null && m_images != null)
 		{
 			if (at.getUnits().size() == 1)
 			{
@@ -201,6 +203,17 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 				m_images.remove(at);
 			}
 		}
+	}
+	
+	public void setGameData(final GameData data)
+	{
+		if (m_gameData != null)
+		{
+			m_gameData.removeDataChangeListener(GAME_DATA_CHANGE_LISTENER);
+		}
+		m_gameData = data;
+		m_gameData.addDataChangeListener(GAME_DATA_CHANGE_LISTENER);
+		updateAllImages();
 	}
 	
 	protected abstract void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY);
@@ -224,7 +237,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
 			for (final Territory t : m_validMovesList.getFirst())
 			{
-				final Polygon p = m_mapData.getPolygons().get(t);
+				final Polygon p = m_mapData.getPolygon(t);
 				final Rectangle rect = p.getBounds();
 				g2d.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
 				g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
@@ -232,7 +245,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 			g2d.setColor(Color.red);
 			for (final Territory t : m_validMovesList.getSecond())
 			{
-				final Polygon p = m_mapData.getPolygons().get(t);
+				final Polygon p = m_mapData.getPolygon(t);
 				final Rectangle rect = p.getBounds();
 				g2d.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
 				g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
@@ -242,8 +255,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		{
 			g2d.setColor(Color.gray);
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-			final Rectangle start = m_mapData.getPolygons().get(m_lastMove.getStart()).getBounds();
-			final Rectangle end = m_mapData.getPolygons().get(m_lastMove.getEnd()).getBounds();
+			final Rectangle start = m_mapData.getPolygon(m_lastMove.getStart()).getBounds();
+			final Rectangle end = m_mapData.getPolygon(m_lastMove.getEnd()).getBounds();
 			g2d.drawLine(start.x + (start.width / 2), start.y + (start.height / 2), end.x + (end.width / 2), end.y + (end.height / 2));
 		}
 		if (m_mouseShadowImage != null)
@@ -274,7 +287,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was pressed
 		// will be stored in the private member variable m_clickedAt.
-		m_clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY());
+		m_clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 		// TODO: only shadow units if owned by current player
 		if (m_clickedAt != null)
 		{
@@ -291,7 +304,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was released
 		// will be stored in the private member variable m_releasedAt.
-		m_releasedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY());
+		m_releasedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 		setMouseShadowUnits(null);
 		m_validMovesList = null;
 		// The waitForPlay method is waiting for mouse input.
@@ -308,7 +321,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 			public void mouseMoved(final MouseEvent e)
 			{
 				m_currentMouseLocation = new Point(e.getX() + m_model.getX(), e.getY() + m_model.getY());
-				m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY());
+				m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					public void run()
@@ -325,6 +338,14 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 			}
 		};
 	}
+	
+	protected final GameDataChangeListener GAME_DATA_CHANGE_LISTENER = new GameDataChangeListener()
+	{
+		public void gameDataChanged(final Change aChange)
+		{
+			updateAllImages();
+		}
+	};
 	
 	public void setMouseShadowUnits(final Collection<Unit> units)
 	{

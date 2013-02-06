@@ -1,4 +1,6 @@
 Changes for 1.7
+* Getting Grid Games to use the History Panel, and adding the history panel and other options to their menu bar. (veqryn)
+
 * Getting GridMapPanel to scroll by having it extend ImageScrollerLargeView, and fixing up all grid based games to use this. (veqryn)
 
 * Getting Grid Games to allow having a chat panel in multiplayer and networked games. (veqryn) 

@@ -23,6 +23,11 @@ import games.strategy.engine.data.annotations.GameProperty;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author veqryn
+ * 
+ */
 public class PlayerAttachment extends DefaultAttachment
 {
 	private static final long serialVersionUID = -3602673484709292709L;

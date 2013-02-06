@@ -16,7 +16,7 @@ package games.strategy.grid.ui;
 import games.strategy.engine.data.Territory;
 
 /**
- * Represents a play in a game of King's Table.
+ * Represents a play in a game of a Grid Game.
  * 
  * A play has a start Territory and an end territory,
  * which correspond to the piece to be moved, and the desination for the move.

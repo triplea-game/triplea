@@ -20,17 +20,26 @@ import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ClientGame;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Round;
+import games.strategy.engine.history.Step;
+import games.strategy.triplea.ui.history.HistoryLog;
+import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
@@ -39,19 +48,26 @@ import games.strategy.util.Tuple;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -61,14 +77,16 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * User interface for King's Table.
+ * User interface for Grid Games.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction and major rewrite)
  * @version $LastChangedDate: 2012-11-11 02:04:07 +0800 (Sun, 11 Nov 2012) $
  */
 public class GridGameFrame extends MainGameFrame
@@ -81,18 +99,23 @@ public class GridGameFrame extends MainGameFrame
 	protected final GridMapData m_mapData;
 	protected GridMapPanel m_mapPanel;
 	protected JLabel m_status;
-	protected final JLabel m_error;
+	protected JLabel m_error;
 	protected boolean m_gameOver;
 	protected CountDownLatch m_waiting;
 	protected PlayerID m_currentPlayer = PlayerID.NULL_PLAYERID;
 	
 	protected JPanel m_gameMainPanel = new JPanel();
-	private JPanel m_rightHandSidePanel = new JPanel();
+	protected JPanel m_gameSouthPanel;
+	protected JPanel m_rightHandSidePanel = new JPanel();
 	protected JPanel m_mapAndChatPanel;
 	protected ChatPanel m_chatPanel;
 	protected JSplitPane m_chatSplit;
 	protected JSplitPane m_gameCenterPanel;
-	protected JPanel m_mainPanel;
+	protected HistoryPanel m_historyPanel;
+	protected boolean m_inHistory = false;
+	protected boolean m_inGame = true;
+	protected HistorySynchronizer m_historySyncher;
+	protected JPanel m_historyComponent = new JPanel();
 	
 	/**
 	 * Construct a new user interface for a King's Table game.
@@ -117,8 +140,8 @@ public class GridGameFrame extends MainGameFrame
 		try
 		{
 			final Constructor<? extends GridMapData> mapDataConstructor = gridMapDataClass.getConstructor(new Class[] {
-						GameData.class, int.class, int.class, int.class, int.class, int.class, int.class });
-			final GridMapData gridMapData = mapDataConstructor.newInstance(m_data, x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
+						GameMap.class, int.class, int.class, int.class, int.class, int.class, int.class });
+			final GridMapData gridMapData = mapDataConstructor.newInstance(m_data.getMap(), x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
 			m_mapData = gridMapData;
 		} catch (final Exception e)
 		{
@@ -135,8 +158,9 @@ public class GridGameFrame extends MainGameFrame
 		// m_mapPanel = new KingsTableMapPanel(mapData);
 		try
 		{
-			final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] { GridMapData.class, GridGameFrame.class, ImageScrollModel.class });
-			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(m_mapData, this, model);
+			final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] {
+						GameData.class, GridMapData.class, GridGameFrame.class, ImageScrollModel.class });
+			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(m_data, m_mapData, this, model);
 			m_mapPanel = gridMapPanel;
 		} catch (final Exception e)
 		{
@@ -148,20 +172,15 @@ public class GridGameFrame extends MainGameFrame
 		m_mapPanel.addKeyListener(m_arrowKeyActionListener);
 		
 		// This label will display whose turn it is
-		m_status = new JLabel(" ");
+		m_status = new JLabel("Some Text To Set A Reasonable preferred Size");
 		m_status.setAlignmentX(Component.CENTER_ALIGNMENT);
-		m_status.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		m_status.setPreferredSize(m_status.getPreferredSize());
+		m_status.setText(" ");
 		// This label will display any error messages
-		m_error = new JLabel(" ");
+		m_error = new JLabel("Some Text To Set A Reasonable preferred Size");
 		m_error.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		// We need somewhere to put the map panel, status label, and error label
-		m_mainPanel = new JPanel();
-		m_mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-		m_mainPanel.setLayout(new BoxLayout(m_mainPanel, BoxLayout.Y_AXIS));
-		m_mainPanel.add(m_mapPanel);
-		m_mainPanel.add(m_status);
-		m_mainPanel.add(m_error);
+		m_error.setPreferredSize(m_error.getPreferredSize());
+		m_error.setText(" ");
 		
 		// next we add the chat panel, but only if there is one (only because we are hosting/network game)
 		m_mapAndChatPanel = new JPanel();
@@ -177,17 +196,26 @@ public class GridGameFrame extends MainGameFrame
 			m_chatPanel.setPlayerRenderer(new PlayerChatRenderer(m_game, null));
 			final Dimension chatPrefSize = new Dimension((int) m_chatPanel.getPreferredSize().getWidth(), 95);
 			m_chatPanel.setPreferredSize(chatPrefSize);
-			m_chatSplit.setTopComponent(m_mainPanel);
+			m_chatSplit.setTopComponent(m_mapPanel);
 			m_chatSplit.setBottomComponent(m_chatPanel);
 			m_mapAndChatPanel.add(m_chatSplit, BorderLayout.CENTER);
 		}
 		else
 		{
-			m_mapAndChatPanel.add(m_mainPanel, BorderLayout.CENTER);
+			m_mapAndChatPanel.add(m_mapPanel, BorderLayout.CENTER);
 		}
 		
-		// now make right hand side panel, and add it to center panel
+		// status and error panel
 		m_gameMainPanel.setLayout(new BorderLayout());
+		m_gameMainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 0));
+		m_gameSouthPanel = new JPanel();
+		m_gameSouthPanel.setLayout(new BoxLayout(m_gameSouthPanel, BoxLayout.Y_AXIS));
+		m_gameSouthPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		m_gameSouthPanel.add(m_status);
+		m_gameSouthPanel.add(m_error);
+		m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+		
+		// now make right hand side panel, and add it to center panel
 		m_rightHandSidePanel.setLayout(new BorderLayout());
 		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mapAndChatPanel, m_rightHandSidePanel);
 		m_gameCenterPanel.setOneTouchExpandable(true);
@@ -231,6 +259,224 @@ public class GridGameFrame extends MainGameFrame
 		this.setVisible(true);
 	}
 	
+	Action getShowGameAction()
+	{
+		return m_showGameAction;
+	}
+	
+	Action getShowHistoryAction()
+	{
+		return m_showHistoryAction;
+	}
+	
+	protected final AbstractAction m_showHistoryAction = new AbstractAction("Show history")
+	{
+		private static final long serialVersionUID = -7099175363241411428L;
+		
+		public void actionPerformed(final ActionEvent e)
+		{
+			showHistory();
+			m_showGameAction.setEnabled(true);
+			this.setEnabled(false);
+		}
+	};
+	protected final AbstractAction m_showGameAction = new AbstractAction("Show current game")
+	{
+		private static final long serialVersionUID = 7470409812651698208L;
+		
+		{
+			setEnabled(false);
+		}
+		
+		public void actionPerformed(final ActionEvent e)
+		{
+			showGame();
+			m_showHistoryAction.setEnabled(true);
+			this.setEnabled(false);
+		}
+	};
+	
+	public void showGame()
+	{
+		m_inGame = true;
+		if (m_inHistory)
+		{
+			m_inHistory = false;
+			if (m_historySyncher != null)
+			{
+				m_historySyncher.deactivate();
+				m_historySyncher = null;
+			}
+			m_historyPanel.goToEnd();
+			m_historyPanel = null;
+			m_mapPanel.setGameData(m_data);
+		}
+		m_gameMainPanel.removeAll();
+		m_gameMainPanel.setLayout(new BorderLayout());
+		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
+		m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+		getContentPane().removeAll();
+		getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
+		validate();
+	}
+	
+	protected void showHistory()
+	{
+		m_inHistory = true;
+		m_inGame = false;
+		final GameData clonedGameData;
+		m_data.acquireReadLock();
+		try
+		{
+			// we want to use a clone of the data, so we can make changes to it
+			// as we walk up and down the history
+			clonedGameData = GameDataUtils.cloneGameData(m_data);
+			if (clonedGameData == null)
+				return;
+			clonedGameData.testLocksOnRead();
+			if (m_historySyncher != null)
+				throw new IllegalStateException("Two history synchers?");
+			m_historySyncher = new HistorySynchronizer(clonedGameData, m_game);
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
+		m_mapPanel.setGameData(clonedGameData);
+		final GridHistoryDetailsPanel historyDetailPanel = new GridHistoryDetailsPanel(clonedGameData, m_mapPanel);
+		m_rightHandSidePanel.removeAll();
+		m_rightHandSidePanel.add(historyDetailPanel);
+		m_historyComponent.removeAll();
+		m_historyComponent.setLayout(new BorderLayout());
+		// create history tree context menu
+		// actions need to clear the history panel popup state when done
+		final JPopupMenu popup = new JPopupMenu();
+		popup.add(new AbstractAction("Show Summary Log")
+		{
+			private static final long serialVersionUID = -6730966512179268157L;
+			
+			public void actionPerformed(final ActionEvent ae)
+			{
+				final HistoryLog historyLog = new HistoryLog();
+				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), false, m_data.getDiceSides(), null);
+				historyLog.printTerritorySummary(m_historyPanel.getCurrentPopupNode(), clonedGameData);
+				historyLog.printProductionSummary(clonedGameData);
+				m_historyPanel.clearCurrentPopupNode();
+				historyLog.setVisible(true);
+			}
+		});
+		popup.add(new AbstractAction("Show Detailed Log")
+		{
+			private static final long serialVersionUID = -8709762764495294671L;
+			
+			public void actionPerformed(final ActionEvent ae)
+			{
+				final HistoryLog historyLog = new HistoryLog();
+				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), true, m_data.getDiceSides(), null);
+				historyLog.printTerritorySummary(m_historyPanel.getCurrentPopupNode(), clonedGameData);
+				historyLog.printProductionSummary(clonedGameData);
+				m_historyPanel.clearCurrentPopupNode();
+				historyLog.setVisible(true);
+			}
+		});
+		/* TODO:
+		popup.add(new AbstractAction("Save Screenshot")
+		{
+			private static final long serialVersionUID = 1222760138263428443L;
+			
+			public void actionPerformed(final ActionEvent ae)
+			{
+				saveScreenshot(m_historyPanel.getCurrentPopupNode());
+				m_historyPanel.clearCurrentPopupNode();
+			}
+		});
+		*/
+		popup.add(new AbstractAction("Save Game at this point (BETA)")
+		{
+			private static final long serialVersionUID = 1430512376199927896L;
+			
+			public void actionPerformed(final ActionEvent ae)
+			{
+				m_data.acquireReadLock();
+				// m_data.acquireWriteLock();
+				try
+				{
+					final File f = BasicGameMenuBar.getSaveGameLocationDialog(GridGameFrame.this);
+					if (f != null)
+					{
+						FileOutputStream fout = null;
+						try
+						{
+							fout = new FileOutputStream(f);
+							final GameData datacopy = GameDataUtils.cloneGameData(m_data, true);
+							datacopy.getHistory().gotoNode(m_historyPanel.getCurrentPopupNode());
+							datacopy.getHistory().removeAllHistoryAfterNode(m_historyPanel.getCurrentPopupNode());
+							// TODO: the saved current delegate is still the current delegate, rather than the delegate at that history popup node
+							// TODO: it still shows the current round number, rather than the round at the history popup node
+							// TODO: this could be solved easily if rounds/steps were changes, but that could greatly increase the file size :(
+							// TODO: this also does not undo the runcount of each delegate step
+							@SuppressWarnings("rawtypes")
+							final Enumeration enumeration = ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
+							enumeration.nextElement();
+							int round = 0;
+							String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
+							PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerID();
+							while (enumeration.hasMoreElements())
+							{
+								final HistoryNode node = (HistoryNode) enumeration.nextElement();
+								if (node instanceof Round)
+								{
+									round = ((Round) node).getRoundNo();
+									currentPlayer = null;
+									stepDisplayName = node.getTitle();
+								}
+								else if (node instanceof Step)
+								{
+									currentPlayer = ((Step) node).getPlayerID();
+									stepDisplayName = node.getTitle();
+								}
+							}
+							datacopy.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
+							new GameDataManager().saveGame(fout, datacopy);
+							JOptionPane.showMessageDialog(GridGameFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+						} catch (final IOException e)
+						{
+							e.printStackTrace();
+						} finally
+						{
+							if (fout != null)
+							{
+								try
+								{
+									fout.close();
+								} catch (final IOException e)
+								{
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				} finally
+				{
+					// m_data.releaseWriteLock();
+					m_data.releaseReadLock();
+				}
+				m_historyPanel.clearCurrentPopupNode();
+			}
+		});
+		final JSplitPane split = new JSplitPane();
+		split.setOneTouchExpandable(true);
+		split.setDividerSize(8);
+		m_historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, null);
+		split.setLeftComponent(m_historyPanel);
+		split.setRightComponent(m_gameCenterPanel);
+		split.setDividerLocation(150);
+		m_historyComponent.add(split, BorderLayout.CENTER);
+		m_historyComponent.add(m_gameSouthPanel, BorderLayout.SOUTH);
+		getContentPane().removeAll();
+		getContentPane().add(m_historyComponent, BorderLayout.CENTER);
+		validate();
+	}
+	
 	/**
 	 * Update the user interface based on a game play.
 	 * 
@@ -253,9 +499,9 @@ public class GridGameFrame extends MainGameFrame
 	/**
 	 * Set up the tiles.
 	 */
-	public void initializeGridMapData()
+	public void initializeGridMapData(final GameMap map)
 	{
-		m_mapData.initializeGridMapData();
+		m_mapData.initializeGridMapData(map);
 	}
 	
 	/**
@@ -386,7 +632,7 @@ public class GridGameFrame extends MainGameFrame
 		m_data = null;
 		m_mapPanel = null;
 		m_status = null;
-		m_mainPanel = null;
+		m_gameSouthPanel = null;
 		if (m_chatPanel != null)
 		{
 			m_chatPanel.setPlayerRenderer(null);
@@ -447,7 +693,7 @@ public class GridGameFrame extends MainGameFrame
 	@Override
 	public void notifyError(final String error)
 	{
-		m_error.setText(error);
+		m_error.setText((error == null ? " " : error));
 	}
 	
 	/**
@@ -459,13 +705,19 @@ public class GridGameFrame extends MainGameFrame
 	public void setStatus(final String status)
 	{
 		m_error.setText(" ");
-		m_status.setText(status);
+		m_status.setText((status == null ? " " : status));
 	}
 	
 	@Override
 	public JComponent getMainPanel()
 	{
 		return m_mapPanel;
+	}
+	
+	@Override
+	public void setShowChatTime(final boolean showTime)
+	{
+		m_chatPanel.setShowChatTime(showTime);
 	}
 	
 	public void showRightHandSidePanel()

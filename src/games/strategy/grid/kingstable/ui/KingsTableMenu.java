@@ -13,9 +13,8 @@
  */
 package games.strategy.grid.kingstable.ui;
 
-import games.strategy.common.ui.BasicGameMenuBar;
-import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridGameMenu;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -23,7 +22,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JEditorPane;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
@@ -31,7 +29,7 @@ import javax.swing.JScrollPane;
  * @author Lane Schwartz
  * @version $LastChangedDate: 2012-04-19 18:13:58 +0800 (Thu, 19 Apr 2012) $
  */
-public class KingsTableMenu extends BasicGameMenuBar<GridGameFrame>
+public class KingsTableMenu extends GridGameMenu<GridGameFrame>
 {
 	private static final long serialVersionUID = 3249205650213769941L;
 	
@@ -40,45 +38,11 @@ public class KingsTableMenu extends BasicGameMenuBar<GridGameFrame>
 		super(frame);
 	}
 	
-	@Override
-	protected void createGameSpecificMenus(final JMenuBar menuBar)
-	{
-		createGameMenu(menuBar);
-	}
-	
-	@Override
-	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
-	{
-		addHowToPlayHelpMenu(helpMenu);
-	}
-	
-	/**
-	 * @param menuGame
-	 */
-	private void createGameMenu(final JMenuBar menuBar)
-	{
-		if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
-		{
-			final JMenu menuGame = new JMenu("Game");
-			menuBar.add(menuGame);
-			final AbstractAction optionsAction = new AbstractAction("View Game Options...")
-			{
-				private static final long serialVersionUID = -6060777134229949388L;
-				
-				public void actionPerformed(final ActionEvent e)
-				{
-					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
-					JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
-				}
-			};
-			menuGame.add(optionsAction);
-		}
-	}
-	
 	/**
 	 * @param parentMenu
 	 */
-	private void addHowToPlayHelpMenu(final JMenu parentMenu)
+	@Override
+	protected void addHowToPlayHelpMenu(final JMenu parentMenu)
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
@@ -105,25 +69,4 @@ public class KingsTableMenu extends BasicGameMenuBar<GridGameFrame>
 			}
 		});
 	}
-	/*
-	protected void createGameSpecificMenus (JMenuBar menuBar) 
-	{
-	    if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
-	    {
-	        JMenu menuGame = new JMenu("Game");
-	        menuBar.add(menuGame);
-	        
-	        AbstractAction optionsAction = new AbstractAction("View Game Options...")
-	        {
-	            public void actionPerformed(ActionEvent e)
-	            {
-	                PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), true);
-	                JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
-	            }
-	        };
-
-	        menuGame.add(optionsAction);   
-	    }
-	}
-	*/
 }

@@ -14,7 +14,7 @@
 package games.puzzle.slidingtiles.ui;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.ui.GridMapData;
 
@@ -23,22 +23,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public class NPuzzleMapData extends GridMapData
 {
 	protected final Map<Integer, Rectangle> m_rects = new HashMap<Integer, Rectangle>();
 	
-	public NPuzzleMapData(final GameData gameData, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight, final int topLeftOffsetWidth, final int topLeftOffsetHeight)
+	public NPuzzleMapData(final GameMap map, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight, final int topLeftOffsetWidth, final int topLeftOffsetHeight)
 	{
-		super(gameData, x_dim, y_dim, squareWidth, squareHeight, topLeftOffsetWidth, topLeftOffsetHeight);
+		super(map, x_dim, y_dim, squareWidth, squareHeight, topLeftOffsetWidth, topLeftOffsetHeight);
 	}
 	
 	@Override
-	public void initializeGridMapData()
+	public void initializeGridMapData(final GameMap map)
 	{
-		for (final Territory territory : m_map.getTerritories())
+		for (final Territory territory : map.getTerritories())
 		{
 			final Tile tile = (Tile) territory.getAttachment("tile");
 			if (tile != null)

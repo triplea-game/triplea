@@ -2493,7 +2493,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return m_statsPanel;
 	}
 	
-	void setShowChatTime(final boolean showTime)
+	@Override
+	public void setShowChatTime(final boolean showTime)
 	{
 		m_chatPanel.setShowChatTime(showTime);
 	}

@@ -13,6 +13,7 @@
  */
 package games.strategy.grid.ui.display;
 
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.grid.ui.GridGameFrame;
@@ -21,7 +22,7 @@ import games.strategy.grid.ui.IGridPlayData;
 import java.util.Collection;
 
 /**
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public interface IGridGameDisplay extends IDisplay
@@ -52,7 +53,7 @@ public interface IGridGameDisplay extends IDisplay
 	/**
 	 * Initialize the board.
 	 */
-	public void initializeGridMapData();
+	public void initializeGridMapData(GameMap map);
 	
 	public GridGameFrame getGridGameFrame();
 }

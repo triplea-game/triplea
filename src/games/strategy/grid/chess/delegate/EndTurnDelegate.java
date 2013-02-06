@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * 
+ * @author veqryn
+ * 
+ */
 public class EndTurnDelegate extends AbstractDelegate
 {
 	/**

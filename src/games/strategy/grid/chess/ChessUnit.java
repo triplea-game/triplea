@@ -8,6 +8,11 @@ import games.strategy.engine.data.annotations.GameProperty;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * @author veqryn
+ * 
+ */
 public class ChessUnit extends Unit implements Serializable
 {
 	private static final long serialVersionUID = -1633476469497003117L;

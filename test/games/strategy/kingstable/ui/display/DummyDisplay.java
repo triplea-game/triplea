@@ -13,6 +13,7 @@
  */
 package games.strategy.kingstable.ui.display;
 
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.grid.ui.GridGameFrame;
@@ -64,7 +65,7 @@ public class DummyDisplay implements IGridGameDisplay
 	{
 	}
 	
-	public void initializeGridMapData()
+	public void initializeGridMapData(final GameMap map)
 	{
 	}
 	

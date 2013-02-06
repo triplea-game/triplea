@@ -1,5 +1,6 @@
 package games.strategy.grid.chess.ui;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.chess.delegate.PlayDelegate;
 import games.strategy.grid.ui.GridGameFrame;
@@ -16,13 +17,18 @@ import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * 
+ * @author veqryn
+ * 
+ */
 public class ChessMapPanel extends GridMapPanel
 {
 	private static final long serialVersionUID = -8631830615396608727L;
 	
-	public ChessMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
+	public ChessMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
-		super(mapData, parentGridGameFrame, imageScrollModel);
+		super(data, mapData, parentGridGameFrame, imageScrollModel);
 	}
 	
 	@Override
@@ -44,11 +50,11 @@ public class ChessMapPanel extends GridMapPanel
 	protected void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
 		g2d.setColor(Color.lightGray);
-		g2d.fillRect(0, 0, getWidth(), getHeight());
+		// g2d.fillRect(0, 0, getWidth(), getHeight());
 		g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
 		final Color tileOdd = new Color(255, 206, 158);
 		final Color tileEven = new Color(209, 139, 71);
-		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
+		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();
 			final Territory at = entry.getKey();

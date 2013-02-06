@@ -6,6 +6,7 @@ import games.strategy.engine.framework.GameRunner2.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ui.TripleaMenu;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
@@ -101,7 +102,7 @@ public class EnginePreferences extends JDialog
 		// add buttons here:
 		SoundOptions.addGlobalSoundSwitchCheckbox(buttonsPanel);
 		buttonsPanel.add(new JLabel(" "));
-		SoundOptions.addToPanel(buttonsPanel);
+		SoundOptions.addToPanel(buttonsPanel, SoundPath.SoundType.TRIPLEA);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_lookAndFeel);
 		buttonsPanel.add(new JLabel(" "));

@@ -23,9 +23,9 @@ import games.strategy.engine.data.UnitType;
 import java.util.Collection;
 
 /**
- * Abstract class for a King's Table AI agent.
+ * Abstract class for a Grid AI agent.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGamePlayer

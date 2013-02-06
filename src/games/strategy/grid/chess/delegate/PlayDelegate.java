@@ -20,6 +20,7 @@ import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Quadruple;
@@ -32,6 +33,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 
+ * @author veqryn
+ * 
+ */
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 {
@@ -179,7 +185,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		}
 		else
 			promotionUnits = null;
-		final String transcriptText = player.getName() + " moved from " + start.getName() + " to " + end.getName();
+		final String transcriptText = player.getName() + " moved " + MyFormatter.unitsToTextNoOwner(units) + " from " + start.getName() + " to " + end.getName();
 		m_bridge.getHistoryWriter().startEvent(transcriptText, units);
 		final Change removeUnit = ChangeFactory.removeUnits(start, units);
 		// final Change removeStartOwner = ChangeFactory.changeOwner(start, PlayerID.NULL_PLAYERID);

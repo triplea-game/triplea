@@ -13,8 +13,8 @@
  */
 package games.puzzle.slidingtiles.ui;
 
-import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridGameMenu;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -31,7 +31,7 @@ import javax.swing.JScrollPane;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class NPuzzleMenu extends BasicGameMenuBar<GridGameFrame>
+public class NPuzzleMenu extends GridGameMenu<GridGameFrame>
 {
 	private static final long serialVersionUID = -5247149106915478051L;
 	
@@ -40,16 +40,11 @@ public class NPuzzleMenu extends BasicGameMenuBar<GridGameFrame>
 		super(frame);
 	}
 	
-	@Override
-	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
-	{
-		addHowToPlayHelpMenu(helpMenu);
-	}
-	
 	/**
 	 * @param parentMenu
 	 */
-	private void addHowToPlayHelpMenu(final JMenu parentMenu)
+	@Override
+	protected void addHowToPlayHelpMenu(final JMenu parentMenu)
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{

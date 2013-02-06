@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * Main class responsible for a Kings Table game.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original) and Veqryn (abstraction)
  * @version $LastChangedDate: 2012-04-19 18:13:58 +0800 (Thu, 19 Apr 2012) $
  */
 public class KingsTable extends GridGame implements IGameLoader

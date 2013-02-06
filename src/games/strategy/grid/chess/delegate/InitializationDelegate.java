@@ -7,6 +7,11 @@ import games.strategy.grid.chess.attachments.PlayerAttachment;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * @author veqryn
+ * 
+ */
 public class InitializationDelegate extends AbstractDelegate
 {
 	/**

@@ -19,12 +19,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.export.GameDataExporter;
-import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
@@ -33,6 +29,7 @@ import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.stats.IStat;
 import games.strategy.sound.SoundOptions;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.EndRoundDelegate;
@@ -42,9 +39,7 @@ import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
-import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
-import games.strategy.util.Triple;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -63,17 +58,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -87,7 +79,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -99,12 +90,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -206,7 +194,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuGame.add(m_frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
 		addShowVerifiedDice(menuGame);
 		SoundOptions.addGlobalSoundSwitchMenu(menuGame);
-		SoundOptions.addToMenu(menuGame);
+		SoundOptions.addToMenu(menuGame, SoundPath.SoundType.TRIPLEA);
 		menuGame.addSeparator();
 		addGameOptionsMenu(menuGame);
 		addPoliticsMenu(menuGame);
@@ -258,194 +246,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		addTabbedProduction(menuView);
 		addShowGameUuid(menuView);
 		addSetLookAndFeel(menuView);
-	}
-	
-	private static boolean isJavaGreatThan5()
-	{
-		final String version = System.getProperties().getProperty("java.version");
-		return version.indexOf("1.5") == -1;
-	}
-	
-	private static boolean isJavaGreatThan6()
-	{
-		final String version = System.getProperties().getProperty("java.version");
-		return version.indexOf("1.5") == -1 && version.indexOf("1.6") == -1;
-	}
-	
-	public static List<String> getLookAndFeelAvailableList()
-	{
-		final List<String> substanceLooks = new ArrayList<String>(Arrays.asList(new String[] {
-					UIManager.getSystemLookAndFeelClassName(),
-					MetalLookAndFeel.class.getName(),
-					UIManager.getCrossPlatformLookAndFeelClassName()
-		}));
-		if (isJavaGreatThan5())
-		{
-			substanceLooks.addAll(new ArrayList<String>(Arrays.asList(new String[] {
-						UIManager.getSystemLookAndFeelClassName(),
-						MetalLookAndFeel.class.getName(),
-						UIManager.getCrossPlatformLookAndFeelClassName(),
-						// Substance 5.x
-						"org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceCremeLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceDustLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceMagmaLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceModerateLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
-						"org.jvnet.substance.skin.SubstanceTwilightLookAndFeel"
-
-			/* Substance (insubstantial) 7.x
-			"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"*/
-			})));
-		}
-		if (isJavaGreatThan6())
-			substanceLooks.add("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-		return substanceLooks;
-	}
-	
-	/**
-	 * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
-	 * 
-	 * @return
-	 */
-	public static Triple<JList, Map<String, String>, String> getLookAndFeelList()
-	{
-		final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
-		try
-		{
-			final List<String> substanceLooks = getLookAndFeelAvailableList();
-			for (final String s : substanceLooks)
-			{
-				@SuppressWarnings("rawtypes")
-				final Class c = Class.forName(s);
-				final LookAndFeel lf = (LookAndFeel) c.newInstance();
-				lookAndFeels.put(lf.getName(), s);
-			}
-			
-		} catch (final Exception t)
-		{
-			t.printStackTrace();
-			// we know all machines have these 3, so use them
-			lookAndFeels.clear();
-			lookAndFeels.put("Original", UIManager.getSystemLookAndFeelClassName());
-			lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
-			lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
-		}
-		final JList list = new JList(new Vector<String>(lookAndFeels.keySet()));
-		String currentKey = null;
-		for (final String s : lookAndFeels.keySet())
-		{
-			final String currentName = UIManager.getLookAndFeel().getClass().getName();
-			if (lookAndFeels.get(s).equals(currentName))
-			{
-				currentKey = s;
-				break;
-			}
-		}
-		list.setSelectedValue(currentKey, false);
-		return new Triple<JList, Map<String, String>, String>(list, lookAndFeels, currentKey);
-	}
-	
-	private void addSetLookAndFeel(final JMenu menuView)
-	{
-		menuView.add(new AbstractAction("Set Look and Feel...")
-		{
-			private static final long serialVersionUID = 379919988820952164L;
-			
-			public void actionPerformed(final ActionEvent e)
-			{
-				final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
-				final JList list = lookAndFeel.getFirst();
-				final String currentKey = lookAndFeel.getThird();
-				final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-				if (JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION)
-				{
-					final String selectedValue = (String) list.getSelectedValue();
-					if (selectedValue == null)
-					{
-						return;
-					}
-					if (selectedValue.equals(currentKey))
-					{
-						return;
-					}
-					GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-					EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA");
-				}
-			}
-		}).setMnemonic(KeyEvent.VK_F);
-	}
-	
-	private void addShowGameUuid(final JMenu menuView)
-	{
-		menuView.add(new AbstractAction("Game UUID...")
-		{
-			private static final long serialVersionUID = 119615303846107510L;
-			
-			public void actionPerformed(final ActionEvent e)
-			{
-				final String id = (String) getData().getProperties().get(GameData.GAME_UUID);
-				final JTextField text = new JTextField();
-				text.setText(id);
-				final JPanel panel = new JPanel();
-				panel.setLayout(new GridBagLayout());
-				panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-				panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-				JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Game UUID", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
-							new String[] { "OK" }, "OK");
-			}
-		}).setMnemonic(KeyEvent.VK_U);
-	}
-	
-	private void addChatTimeMenu(final JMenu parentMenu)
-	{
-		final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-		chatTimeBox.setMnemonic(KeyEvent.VK_T);
-		chatTimeBox.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				m_frame.setShowChatTime(chatTimeBox.isSelected());
-			}
-		});
-		chatTimeBox.setSelected(false);
-		parentMenu.add(chatTimeBox);
-		chatTimeBox.setEnabled(MainFrame.getInstance().getChat() != null);
 	}
 	
 	/**
@@ -611,27 +411,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		});
 		parentMenu.add(tabbedProduction);
-	}
-	
-	/**
-	 * @param menuGame
-	 */
-	private void addGameOptionsMenu(final JMenu menuGame)
-	{
-		if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
-		{
-			final AbstractAction optionsAction = new AbstractAction("View Game Options...")
-			{
-				private static final long serialVersionUID = 8937205081994328616L;
-				
-				public void actionPerformed(final ActionEvent e)
-				{
-					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
-					JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
-				}
-			};
-			menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
-		}
 	}
 	
 	/**
@@ -836,33 +615,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		}
 	}
 	
-	private void addAISleepDuration(final JMenu parentMenu)
-	{
-		final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
-		AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
-		AISleepDurationBox.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				final IntTextField text = new IntTextField(0, 10000);
-				text.setText(String.valueOf(UIContext.getAIPauseDuration()));
-				final JPanel panel = new JPanel();
-				panel.setLayout(new GridBagLayout());
-				panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-				panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-				JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
-							new String[] { "OK" }, "OK");
-				try
-				{
-					UIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
-				} catch (final Exception ex)
-				{
-				}
-			}
-		});
-		parentMenu.add(AISleepDurationBox);
-	}
-	
 	/**
 	 * @param parentMenu
 	 */
@@ -944,52 +696,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
 		showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
 		showBattleMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-	}
-	
-	// TODO: create a second menu option for parsing current attachments
-	private void addExportXML(final JMenu parentMenu)
-	{
-		final Action exportXML = new AbstractAction("Export game.xml file (Beta)...")
-		{
-			private static final long serialVersionUID = 8379478036021948990L;
-			
-			public void actionPerformed(final ActionEvent e)
-			{
-				exportXMLFile();
-			}
-			
-			private void exportXMLFile()
-			{
-				final JFileChooser chooser = new JFileChooser();
-				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-				final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
-				String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
-				defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
-				defaultFileName = defaultFileName + ".xml";
-				chooser.setSelectedFile(new File(rootDir, defaultFileName));
-				if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
-					return;
-				final GameData data = getData();
-				final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
-				final String xmlFile = exporter.getXML();
-				try
-				{
-					final FileWriter writer = new FileWriter(chooser.getSelectedFile());
-					try
-					{
-						writer.write(xmlFile);
-					} finally
-					{
-						writer.close();
-					}
-				} catch (final IOException e1)
-				{
-					e1.printStackTrace();
-				}
-			}
-		};
-		parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
 	}
 	
 	/**

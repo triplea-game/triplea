@@ -23,7 +23,7 @@ import games.strategy.engine.message.IRemote;
 import java.util.Collection;
 
 /**
- * Empty interface which all King's Table player classes must implement.
+ * Empty interface which all Grid Game players classes must implement.
  * 
  * @author Lane Schwartz
  * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $

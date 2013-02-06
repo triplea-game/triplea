@@ -49,4 +49,6 @@ public abstract class MainGameFrame extends JFrame
 	public abstract void notifyError(String error);
 	
 	public abstract JComponent getMainPanel();
+	
+	public abstract void setShowChatTime(final boolean showTime);
 }

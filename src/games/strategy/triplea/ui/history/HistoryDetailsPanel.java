@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class HistoryDetailsPanel extends JPanel
+public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel
 {
 	private static final long serialVersionUID = 5092004144144006960L;
 	private final GameData m_data;
