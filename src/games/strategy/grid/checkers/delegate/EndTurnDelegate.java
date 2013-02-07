@@ -1,16 +1,12 @@
-package games.strategy.grid.chess.delegate;
+package games.strategy.grid.checkers.delegate;
 
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * 
@@ -82,54 +78,20 @@ public class EndTurnDelegate extends AbstractDelegate
 	 */
 	private PlayerID checkForWinner()
 	{
-		if (doWeWin(m_player, getData(), 1))
+		if (doWeWin(m_player, getData()))
 			return m_player;
 		return null;
 	}
 	
-	public static boolean doWeWin(final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
+	public static boolean doWeWin(final PlayerID player, final GameData data)
 	{
 		if (player == null)
 			throw new IllegalArgumentException("Checking for winner can not have null player");
-		final Collection<PlayerID> enemies = new ArrayList<PlayerID>(data.getPlayerList().getPlayers());
-		enemies.remove(player);
-		final Iterator<PlayerID> iter = enemies.iterator();
-		while (iter.hasNext())
-		{
-			final PlayerID e = iter.next();
-			if (PlayDelegate.getKingTerritories(e, data).isEmpty() || !PlayDelegate.canWeMakeAValidMoveThatIsNotPuttingUsInCheck(e, data, testForCheckTurnsAhead))
-				iter.remove();
-		}
-		if (enemies.isEmpty())
-			return true;
 		return false;
 	}
 	
 	private boolean isDraw(final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
 	{
-		// assume it is not checkmate, since we already checked for that
-		final Collection<PlayerID> enemies = new ArrayList<PlayerID>(data.getPlayerList().getPlayers());
-		enemies.remove(player);
-		final PlayerID nextPlayer = enemies.iterator().next();
-		if (!PlayDelegate.areWeInCheck(nextPlayer, data, testForCheckTurnsAhead))
-		{
-			boolean haveMovesAvailable = false;
-			for (final Territory t1 : data.getMap().getTerritories())
-			{
-				for (final Territory t2 : data.getMap().getTerritories())
-				{
-					if (PlayDelegate.isValidPlay(t1, t2, player, data, 2) == null)
-					{
-						haveMovesAvailable = true;
-						break;
-					}
-				}
-				if (haveMovesAvailable)
-					break;
-			}
-			if (!haveMovesAvailable)
-				return true;
-		}
 		return false;
 	}
 	

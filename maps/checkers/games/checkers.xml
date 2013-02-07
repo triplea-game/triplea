@@ -1,0 +1,107 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+
+	<info name="Checkers" version="1.0"/>
+	
+	<loader javaClass="games.strategy.grid.checkers.Checkers"/>
+	
+	<triplea minimumVersion="1.7"/>
+	
+	<map>
+		<grid name="board" type="square" x="8" y="8" diagonal-connections="implicit"/>
+	</map>
+	
+	
+	<playerList>
+		<!-- In turn order -->
+		<player name="Black" optional="false"/>
+		<player name="White" optional="false"/>
+		
+        <alliance player="Black" alliance="Black"/>
+        <alliance player="White" alliance="White"/>
+	</playerList>
+	
+	
+	<unitList>
+		<unit name="pawn"/>
+		<unit name="king"/>
+	</unitList>
+
+
+	<gamePlay>
+		<delegate name="init" javaClass="games.strategy.grid.checkers.delegate.InitializationDelegate" display="Initialize Game"/>
+		<delegate name="play" javaClass="games.strategy.grid.checkers.delegate.PlayDelegate" display="Play"/>
+		<delegate name="endTurn" javaClass="games.strategy.grid.checkers.delegate.EndTurnDelegate" display="Check for winner"/>
+		
+		<sequence>
+			<step name="gameInit" delegate="init" maxRunCount="1"/>
+			
+			<step name="blackPlay" delegate="play" player="Black"/>
+			<step name="blackEndTurn" delegate="endTurn" player="Black"/>
+
+			<step name="whitePlay" delegate="play" player="White"/>
+			<step name="whiteEndTurn" delegate="endTurn" player="White"/>
+
+		</sequence>
+	</gamePlay>
+
+	<!--
+	<attatchmentList>
+        
+	</attatchmentList>
+	-->
+
+	<initialize>
+		<unitInitialize>
+			
+			<unitPlacement unitType="pawn" territory="board_1_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_3_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_5_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_7_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_0_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_2_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_4_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_6_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_1_2" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_3_2" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_5_2" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_7_2" quantity="1" owner="Black" />
+			
+			<unitPlacement unitType="pawn" territory="board_0_5" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_2_5" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_4_5" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_6_5" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_1_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_3_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_5_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_7_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_0_7" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_2_7" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_4_7" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_6_7" quantity="1" owner="White" />
+			
+		</unitInitialize>
+	</initialize>
+
+	<propertyList>
+		<property name="mapName" value="checkers" editable="false" >
+			<string/>
+		</property>
+		
+		<property name="notes">
+			<value>
+			<![CDATA[
+				Checkers
+				<br />
+				<br />http://en.wikipedia.org/wiki/Checkers
+				<br />
+				<br />Beta Test version by Veqryn
+				<br />
+			]]>	
+			</value>
+		</property>
+	</propertyList>
+	
+</game>
