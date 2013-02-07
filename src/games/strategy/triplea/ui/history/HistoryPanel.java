@@ -511,10 +511,15 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
 			{
 				if (m_uiContext != null)
 				{
+					super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
 					icon.setImage(m_uiContext.getFlagImageFactory().getSmallFlag(player));
 					setIcon(icon);
 				}
-				super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
+				else
+				{
+					final String text = ((Step) value).toString() + " (" + player.getName() + ")";
+					super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, haveFocus);
+				}
 			}
 			else
 			{

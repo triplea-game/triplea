@@ -13,6 +13,7 @@
  */
 package games.strategy.grid.ui;
 
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 
 /**
@@ -29,6 +30,7 @@ public class GridPlayData implements IGridPlayData
 	private static final long serialVersionUID = -1450796130971955757L;
 	private final Territory m_start;
 	private final Territory m_end;
+	private final PlayerID m_player;
 	
 	/**
 	 * Construct a new play, with the given start location and end location.
@@ -38,10 +40,11 @@ public class GridPlayData implements IGridPlayData
 	 * @param end
 	 *            <code>Territory</code> where the play should end
 	 */
-	public GridPlayData(final Territory start, final Territory end)
+	public GridPlayData(final Territory start, final Territory end, final PlayerID player)
 	{
 		m_start = start;
 		m_end = end;
+		m_player = player;
 	}
 	
 	/**
@@ -62,5 +65,13 @@ public class GridPlayData implements IGridPlayData
 	public Territory getEnd()
 	{
 		return m_end;
+	}
+	
+	/**
+	 * Returns the player making this move.
+	 */
+	public PlayerID getPlayerID()
+	{
+		return m_player;
 	}
 }

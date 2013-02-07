@@ -133,7 +133,7 @@
 	</initialize>
 
 	<propertyList>
-		<property name="mapName" value="kings_table" editable="false" />
+		<property name="mapName" value="unclassified" editable="false" />
 		<property name="King can participate in captures" value="true" editable="true"><boolean/></property>
 		<property name="Corner squares can be used to capture pawns" value="true" editable="true"><boolean/></property>
 		<property name="Center square can be used to capture pawns" value="false" editable="true"><boolean/></property>		

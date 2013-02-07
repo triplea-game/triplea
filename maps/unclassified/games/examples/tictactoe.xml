@@ -46,7 +46,7 @@
 
 
 	<propertyList>
-		<property name="mapName" value="tictactoe" editable="false" />		
+		<property name="mapName" value="unclassified" editable="false" />	
 		
 		<property name="notes">
         	<value><![CDATA[   

@@ -13,6 +13,7 @@
  */
 package games.strategy.grid.ui;
 
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 
 import java.io.Serializable;
@@ -27,4 +28,6 @@ public interface IGridPlayData extends Serializable
 	public Territory getStart();
 	
 	public Territory getEnd();
+	
+	public PlayerID getPlayerID();
 }

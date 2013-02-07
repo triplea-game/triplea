@@ -1051,7 +1051,6 @@ class AddAttachmentChange extends Change
 		/*if (m_attachment == null || m_originalAttachmentName == null || m_originalAttachable == null || m_attachable == null || m_name == null)
 			throw new IllegalStateException("AddAttachmentChange may not have null arguments");*/
 		m_attachable.addAttachment(m_name, m_attachment);
-		// m_attachment.setData(data); // why set the data again?
 		m_attachment.setName(m_name);
 		m_attachment.setAttachedTo(m_attachable);
 	}
@@ -1094,14 +1093,13 @@ class RemoveAttachmentChange extends Change
 	{
 		/*if (m_attachment == null || m_originalAttachmentName == null || m_originalAttachable == null || m_attachable == null || m_name == null)
 			throw new IllegalStateException("RemoveAttachmentChange may not have null arguments");*/
-		m_attachable.getAttachments().remove(m_name);
-		m_attachment.setAttachedTo(null);
-		/*final Map<String, IAttachment> attachments = m_attachable.getAttachments();
-		attachments.remove(m_attachment);
+		m_originalAttachable.removeAttachment(m_originalAttachmentName);
 		m_attachment.setAttachedTo(m_attachable);
 		m_attachment.setName(m_name);
-		if (m_attachable != null)
-			m_attachable.addAttachment(m_name, m_attachment);*/
+		if (m_attachable != null && m_name != null)
+		{
+			m_attachable.addAttachment(m_name, m_attachment);
+		}
 	}
 	
 	@Override

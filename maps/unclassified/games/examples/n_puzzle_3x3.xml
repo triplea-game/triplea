@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Eight puzzle" version="1.1"/>
+	<info name="3x3 Sliding Tiles" version="1.1"/>
 	
 	<loader javaClass="games.puzzle.slidingtiles.NPuzzle"/>
 	
@@ -35,8 +35,8 @@
 	</gamePlay>
 
 	<propertyList>
-		<property name="mapName" value="8_puzzle" editable="false" />
-	    <property name="Difficulty Level" value="7" editable="true">
+		<property name="mapName" value="unclassified" editable="false" />
+	    <property name="Difficulty Level" value="8" editable="true">
         	<number min="0" max="10000"/>
         </property>
         <property name="Background" value="" editable="true"><file/></property>

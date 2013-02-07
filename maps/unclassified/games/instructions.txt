@@ -1,0 +1,13 @@
+The "examples" folder contains several game xml's.
+Because these games are not that popular, 
+and because we do not want to crowd out our user's "Choose Games" menu with them,
+so we have moved them to this "examples" folder.
+
+Instructions on how to play these games:
+
+1. Go into "examples" folder.
+2. Click and drag the game xml files out of the "examples" folder, and into the "games" folder.  (or copy/cut and paste them there)
+(the "games" folder is the same foldere that the "examples" folder is in)
+
+After you do the above steps, the games will magically appear in your "Choose Games" menu.
+Just close and relaunch TripleA, then click choose games.

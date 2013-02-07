@@ -294,6 +294,8 @@ public class MyFormatter
 		final StringBuilder buf = new StringBuilder();
 		for (final DefaultNamed o : collection)
 		{
+			if (o == null)
+				continue;
 			buf.append(", ");
 			buf.append(o.getName());
 		}

@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+
+	<info name="Chess" version="1.0"/>
+	
+	<loader javaClass="games.strategy.grid.chess.Chess"/>
+	
+	<triplea minimumVersion="1.7"/>
+	
+	<map>
+		<grid name="board" type="square" x="8" y="8" horizontal-connections="implicit" vertical-connections="implicit" diagonal-connections="implicit"/>
+	</map>
+	
+	
+	<playerList>
+		<!-- In turn order -->
+		<player name="White" optional="false"/>
+		<player name="Black" optional="false"/>
+		
+        <alliance player="White" alliance="White"/>
+        <alliance player="Black" alliance="Black"/>
+	</playerList>
+	
+	
+	<unitList>
+		<unit name="pawn"/>
+		<unit name="knight"/>
+		<unit name="bishop"/>
+		<unit name="rook"/>
+		<unit name="queen"/>
+		<unit name="king"/>
+	</unitList>
+
+
+	<gamePlay>
+		<delegate name="init" javaClass="games.strategy.grid.chess.delegate.InitializationDelegate" display="Initialize Game"/>
+		<delegate name="play" javaClass="games.strategy.grid.chess.delegate.PlayDelegate" display="Play"/>
+		<delegate name="endTurn" javaClass="games.strategy.grid.chess.delegate.EndTurnDelegate" display="Check for winner"/>
+		
+		<sequence>
+			<step name="gameInit" delegate="init" maxRunCount="1"/>
+
+			<step name="whitePlay" delegate="play" player="White"/>
+			<step name="whiteEndTurn" delegate="endTurn" player="White"/>
+			
+			<step name="blackPlay" delegate="play" player="Black"/>
+			<step name="blackEndTurn" delegate="endTurn" player="Black"/>
+
+		</sequence>
+	</gamePlay>
+
+	<!--
+	<attatchmentList>
+        
+	</attatchmentList>
+	-->
+
+	<initialize>
+		<unitInitialize>
+			
+			<unitPlacement unitType="pawn" territory="board_0_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_1_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_2_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_3_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_4_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_5_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_6_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="pawn" territory="board_7_1" quantity="1" owner="Black" />
+			<unitPlacement unitType="rook" territory="board_0_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="knight" territory="board_1_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="bishop" territory="board_2_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="queen" territory="board_3_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="king" territory="board_4_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="bishop" territory="board_5_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="knight" territory="board_6_0" quantity="1" owner="Black" />
+			<unitPlacement unitType="rook" territory="board_7_0" quantity="1" owner="Black" />
+			
+			<unitPlacement unitType="pawn" territory="board_0_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_1_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_2_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_3_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_4_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_5_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_6_6" quantity="1" owner="White" />
+			<unitPlacement unitType="pawn" territory="board_7_6" quantity="1" owner="White" />
+			<unitPlacement unitType="rook" territory="board_0_7" quantity="1" owner="White" />
+			<unitPlacement unitType="knight" territory="board_1_7" quantity="1" owner="White" />
+			<unitPlacement unitType="bishop" territory="board_2_7" quantity="1" owner="White" />
+			<unitPlacement unitType="queen" territory="board_3_7" quantity="1" owner="White" />
+			<unitPlacement unitType="king" territory="board_4_7" quantity="1" owner="White" />
+			<unitPlacement unitType="bishop" territory="board_5_7" quantity="1" owner="White" />
+			<unitPlacement unitType="knight" territory="board_6_7" quantity="1" owner="White" />
+			<unitPlacement unitType="rook" territory="board_7_7" quantity="1" owner="White" />
+			
+		</unitInitialize>
+	</initialize>
+
+	<propertyList>
+		<property name="mapName" value="chess" editable="false" >
+			<string/>
+		</property>
+		
+		<property name="AI Search Depth" value="3" editable="true">
+			<number min="1" max="10"/>
+		</property>
+		
+		<property name="notes">
+			<value>
+			<![CDATA[
+				Chess
+				<br />
+				<br />http://en.wikipedia.org/wiki/Rules_of_chess
+				<br />
+				<br />Beta Test version by Veqryn
+				<br />
+			]]>	
+			</value>
+		</property>
+	</propertyList>
+	
+</game>

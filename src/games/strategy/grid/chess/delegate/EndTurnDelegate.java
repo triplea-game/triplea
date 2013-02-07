@@ -3,6 +3,7 @@ package games.strategy.grid.chess.delegate;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
@@ -29,6 +30,10 @@ public class EndTurnDelegate extends AbstractDelegate
 		if (winner != null)
 		{
 			signalGameOver(winner.getName() + " wins!");
+		}
+		else if (isDraw(m_player, getData(), 1))
+		{
+			
 		}
 	}
 	
@@ -97,6 +102,34 @@ public class EndTurnDelegate extends AbstractDelegate
 		}
 		if (enemies.isEmpty())
 			return true;
+		return false;
+	}
+	
+	private boolean isDraw(final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
+	{
+		// assume it is not checkmate, since we already checked for that
+		final Collection<PlayerID> enemies = new ArrayList<PlayerID>(data.getPlayerList().getPlayers());
+		enemies.remove(player);
+		final PlayerID nextPlayer = enemies.iterator().next();
+		if (!PlayDelegate.areWeInCheck(nextPlayer, data, testForCheckTurnsAhead))
+		{
+			boolean haveMovesAvailable = false;
+			for (final Territory t1 : data.getMap().getTerritories())
+			{
+				for (final Territory t2 : data.getMap().getTerritories())
+				{
+					if (PlayDelegate.isValidPlay(t1, t2, player, data, 2) == null)
+					{
+						haveMovesAvailable = true;
+						break;
+					}
+				}
+				if (haveMovesAvailable)
+					break;
+			}
+			if (!haveMovesAvailable)
+				return true;
+		}
 		return false;
 	}
 	

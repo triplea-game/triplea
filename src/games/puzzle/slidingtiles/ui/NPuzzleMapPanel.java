@@ -186,7 +186,7 @@ public class NPuzzleMapPanel extends GridMapPanel
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			final GridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt);
+			final GridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt, player);
 			m_clickedAt = null;
 			m_releasedAt = null;
 			return play;
@@ -211,7 +211,7 @@ public class NPuzzleMapPanel extends GridMapPanel
 	}
 	
 	@Override
-	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn)
+	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player)
 	{
 		return null;
 	}

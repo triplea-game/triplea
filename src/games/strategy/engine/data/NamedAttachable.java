@@ -52,4 +52,9 @@ public class NamedAttachable extends DefaultNamed implements Attachable
 	{
 		m_attachments.put(key, value);
 	}
+	
+	public void removeAttachment(final String keyString)
+	{
+		m_attachments.remove(keyString);
+	}
 }

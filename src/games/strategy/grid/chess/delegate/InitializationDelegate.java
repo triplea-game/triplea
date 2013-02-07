@@ -1,6 +1,8 @@
 package games.strategy.grid.chess.delegate;
 
 import games.strategy.common.delegate.AbstractDelegate;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.chess.attachments.PlayerAttachment;
@@ -21,6 +23,7 @@ public class InitializationDelegate extends AbstractDelegate
 	public void start()
 	{
 		super.start();
+		final CompositeChange initializingBoard = new CompositeChange();
 		// make sure all players have a player attachment
 		for (final PlayerID player : getData().getPlayerList().getPlayers())
 		{
@@ -28,8 +31,14 @@ public class InitializationDelegate extends AbstractDelegate
 			if (pattachment == null)
 			{
 				pattachment = new PlayerAttachment(PlayerAttachment.ATTACHMENT_NAME, player, getData());
-				player.addAttachment(PlayerAttachment.ATTACHMENT_NAME, pattachment);
+				// player.addAttachment(PlayerAttachment.ATTACHMENT_NAME, pattachment);
+				initializingBoard.add(ChangeFactory.addAttachmentChange(pattachment, player, PlayerAttachment.ATTACHMENT_NAME));
 			}
+		}
+		if (!initializingBoard.isEmpty())
+		{
+			m_bridge.getHistoryWriter().startEvent("Initializing board");
+			m_bridge.addChange(initializingBoard);
 		}
 	}
 	

@@ -176,6 +176,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			promotionUnits = new ArrayList<Unit>();
 			final Set<UnitType> allowed = getData().getUnitTypeList().getAllUnitTypes();
 			allowed.remove(getData().getUnitTypeList().getUnitType("king"));
+			allowed.remove(getData().getUnitTypeList().getUnitType("pawn"));
 			final UnitType selectedUnit = getRemotePlayer(player).selectUnit(units.iterator().next(), allowed, end, player, getData(),
 						"Promote Pawn to what piece?");
 			if (selectedUnit == null)
@@ -268,7 +269,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		m_bridge.addChange(change);
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.refreshTerritories(refresh);
-		display.showGridPlayDataMove(new GridPlayData(start, end));
+		display.showGridPlayDataMove(new GridPlayData(start, end, player));
 	}
 	
 	/**

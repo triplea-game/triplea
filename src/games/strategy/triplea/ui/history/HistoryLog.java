@@ -2,6 +2,7 @@ package games.strategy.triplea.ui.history;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.history.HistoryNode;
@@ -557,7 +558,7 @@ public class HistoryLog extends JFrame
 		{
 			final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
 			// see if there's a flag
-			final TerritoryAttachment ta = TerritoryAttachment.get(t);
+			final TerritoryAttachment ta = (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			boolean hasFlag = false;
 			if (ta == null)
 				hasFlag = false;
@@ -599,18 +600,22 @@ public class HistoryLog extends JFrame
 	{
 		final PrintWriter logWriter = m_printWriter;
 		Collection<PlayerID> players;
-		logWriter.println("Production/PUs Summary :\n");
+		Resource pus;
 		data.acquireReadLock();
 		try
 		{
+			pus = data.getResourceList().getResource(Constants.PUS);
 			players = data.getPlayerList().getPlayers();
 		} finally
 		{
 			data.releaseReadLock();
 		}
+		if (pus == null)
+			return;
+		logWriter.println("Production/PUs Summary :\n");
 		for (final PlayerID player : players)
 		{
-			final int PUs = player.getResources().getQuantity(Constants.PUS);
+			final int PUs = player.getResources().getQuantity(pus);
 			final int production = getProduction(player, data);
 			logWriter.println("    " + player.getName() + " : " + production + " / " + PUs);
 		}

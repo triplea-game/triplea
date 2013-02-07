@@ -33,6 +33,7 @@ import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
@@ -46,33 +47,48 @@ import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Tuple;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -80,7 +96,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -217,13 +237,15 @@ public class GridGameFrame extends MainGameFrame
 		
 		// now make right hand side panel, and add it to center panel
 		m_rightHandSidePanel.setLayout(new BorderLayout());
+		// final Dimension rightSidePanel = new Dimension((GridGameFrame.SQUARE_SIZE * 2), (GridGameFrame.SQUARE_SIZE * 2));
+		// m_rightHandSidePanel.setMinimumSize(rightSidePanel);
+		// m_rightHandSidePanel.setPreferredSize(rightSidePanel);
 		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mapAndChatPanel, m_rightHandSidePanel);
 		m_gameCenterPanel.setOneTouchExpandable(true);
 		m_gameCenterPanel.setDividerSize(8);
 		m_gameCenterPanel.setResizeWeight(1.0);
 		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
 		m_gameCenterPanel.resetToPreferredSizes();
-		hideRightHandSidePanel();
 		
 		// finally, set the content pane for this frame
 		// this.setContentPane(m_mainPanel);
@@ -253,10 +275,78 @@ public class GridGameFrame extends MainGameFrame
 				leaveGame();
 			}
 		});
-		// Resize the window, then make it visible
 		this.pack();
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
+		// minimizeRightSidePanel();
+	}
+	
+	void minimizeRightSidePanel()
+	{
+		// click the minimize button so that the right side starts minimized
+		final BasicSplitPaneUI ui = (BasicSplitPaneUI) m_gameCenterPanel.getUI();
+		final Container divider = ui.getDivider();
+		final JButton max = (JButton) divider.getComponent(1);
+		max.doClick();
+	}
+	
+	public static void renderUnits(final Container container, final GridBagConstraints mainConstraints, final Collection<Unit> units, final GridMapPanel mapPanel, final GameData data)
+	{
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		for (final Unit u : units)
+		{
+			final JLabel label = new JLabel(new ImageIcon(mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner(), data)));
+			label.setToolTipText(u.getType().getName());
+			panel.add(label);
+		}
+		container.add(panel, mainConstraints);
+	}
+	
+	public static void renderObject(final Container container, final GridBagConstraints mainConstraints, final Object renderObject, final GridMapPanel mapPanel, final GameData data)
+	{
+		if (renderObject instanceof Collection)
+		{
+			@SuppressWarnings("unchecked")
+			final Collection<Object> objects = (Collection<Object>) renderObject;
+			final Iterator<Object> objIter = objects.iterator();
+			if (objIter.hasNext())
+			{
+				final Object obj = objIter.next();
+				if (obj instanceof Unit)
+				{
+					@SuppressWarnings("unchecked")
+					final Collection<Unit> units = (Collection<Unit>) renderObject;
+					renderUnits(container, mainConstraints, units, mapPanel, data);
+				}
+			}
+		}
+	}
+	
+	public void updateRightSidePanel(final String message, final Object renderObject)
+	{
+		final JPanel rightSide = new JPanel();
+		final JTextArea title = new JTextArea();
+		final JScrollPane scroll = new JScrollPane(title);
+		rightSide.setLayout(new GridBagLayout());
+		title.setWrapStyleWord(true);
+		title.setBackground(this.getBackground());
+		title.setLineWrap(true);
+		title.setBorder(null);
+		title.setEditable(false);
+		scroll.setBorder(null);
+		final Insets insets = new Insets(5, 0, 0, 0);
+		title.setText(message);
+		rightSide.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
+		final GridBagConstraints mainConstraints = new GridBagConstraints(0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
+		renderObject(rightSide, mainConstraints, renderObject, m_mapPanel, m_data);
+		rightSide.add(Box.createGlue());
+		updateRightSidePanel(rightSide);
+	}
+	
+	public void updateRightSidePanel(final Component component)
+	{
+		m_rightHandSidePanel.removeAll();
+		m_rightHandSidePanel.add(component, BorderLayout.CENTER);
+		m_rightHandSidePanel.validate();
 	}
 	
 	Action getShowGameAction()
@@ -267,6 +357,11 @@ public class GridGameFrame extends MainGameFrame
 	Action getShowHistoryAction()
 	{
 		return m_showHistoryAction;
+	}
+	
+	Action getSaveScreenshotAction()
+	{
+		return m_saveScreenshotAction;
 	}
 	
 	protected final AbstractAction m_showHistoryAction = new AbstractAction("Show history")
@@ -293,6 +388,20 @@ public class GridGameFrame extends MainGameFrame
 			showGame();
 			m_showHistoryAction.setEnabled(true);
 			this.setEnabled(false);
+		}
+	};
+	protected final AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...")
+	{
+		private static final long serialVersionUID = -5908032486008953815L;
+		
+		public void actionPerformed(final ActionEvent e)
+		{
+			HistoryNode curNode = null;
+			if (m_historyPanel == null)
+				curNode = m_data.getHistory().getLastNode();
+			else
+				curNode = m_historyPanel.getCurrentNode();
+			saveScreenshot(curNode, m_data);
 		}
 	};
 	
@@ -346,6 +455,7 @@ public class GridGameFrame extends MainGameFrame
 		m_rightHandSidePanel.removeAll();
 		m_rightHandSidePanel.add(historyDetailPanel);
 		m_historyComponent.removeAll();
+		m_historyComponent.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 0));
 		m_historyComponent.setLayout(new BorderLayout());
 		// create history tree context menu
 		// actions need to clear the history panel popup state when done
@@ -358,38 +468,27 @@ public class GridGameFrame extends MainGameFrame
 			{
 				final HistoryLog historyLog = new HistoryLog();
 				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), false, m_data.getDiceSides(), null);
-				historyLog.printTerritorySummary(m_historyPanel.getCurrentPopupNode(), clonedGameData);
-				historyLog.printProductionSummary(clonedGameData);
+				for (final PlayerID player : m_data.getPlayerList().getPlayers())
+				{
+					final Collection<PlayerID> players = new ArrayList<PlayerID>();
+					players.add(player);
+					historyLog.printTerritorySummary(clonedGameData, players);
+				}
+				// historyLog.printProductionSummary(clonedGameData);
 				m_historyPanel.clearCurrentPopupNode();
 				historyLog.setVisible(true);
 			}
 		});
-		popup.add(new AbstractAction("Show Detailed Log")
-		{
-			private static final long serialVersionUID = -8709762764495294671L;
-			
-			public void actionPerformed(final ActionEvent ae)
-			{
-				final HistoryLog historyLog = new HistoryLog();
-				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), true, m_data.getDiceSides(), null);
-				historyLog.printTerritorySummary(m_historyPanel.getCurrentPopupNode(), clonedGameData);
-				historyLog.printProductionSummary(clonedGameData);
-				m_historyPanel.clearCurrentPopupNode();
-				historyLog.setVisible(true);
-			}
-		});
-		/* TODO:
 		popup.add(new AbstractAction("Save Screenshot")
 		{
 			private static final long serialVersionUID = 1222760138263428443L;
 			
 			public void actionPerformed(final ActionEvent ae)
 			{
-				saveScreenshot(m_historyPanel.getCurrentPopupNode());
+				saveScreenshot(m_historyPanel.getCurrentPopupNode(), clonedGameData);
 				m_historyPanel.clearCurrentPopupNode();
 			}
 		});
-		*/
 		popup.add(new AbstractAction("Save Game at this point (BETA)")
 		{
 			private static final long serialVersionUID = 1430512376199927896L;
@@ -475,6 +574,140 @@ public class GridGameFrame extends MainGameFrame
 		getContentPane().removeAll();
 		getContentPane().add(m_historyComponent, BorderLayout.CENTER);
 		validate();
+	}
+	
+	public void saveScreenshot(final HistoryNode node, final GameData data)
+	{
+		final FileFilter pngFilter = new FileFilter()
+		{
+			@Override
+			public boolean accept(final File f)
+			{
+				if (f.isDirectory())
+					return true;
+				else
+					return f.getName().endsWith(".png");
+			}
+			
+			@Override
+			public String getDescription()
+			{
+				return "Saved Screenshots, *.png";
+			}
+		};
+		final JFileChooser fileChooser = new SaveGameFileChooser();
+		fileChooser.setFileFilter(pngFilter);
+		final int rVal = fileChooser.showSaveDialog(this);
+		if (rVal == JFileChooser.APPROVE_OPTION)
+		{
+			File f = fileChooser.getSelectedFile();
+			if (!f.getName().toLowerCase().endsWith(".png"))
+				f = new File(f.getParent(), f.getName() + ".png");
+			// A small warning so users will not over-write a file,
+			if (f.exists())
+			{
+				final int choice = JOptionPane.showConfirmDialog(this, "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
+							JOptionPane.WARNING_MESSAGE);
+				if (choice != JOptionPane.OK_OPTION)
+					return;
+			}
+			final File file = f;
+			final Runnable t = new Runnable()
+			{
+				public void run()
+				{
+					if (saveScreenshot(node, data, file))
+						JOptionPane.showMessageDialog(GridGameFrame.this, "Screenshot Saved", "Screenshot Saved", JOptionPane.INFORMATION_MESSAGE);
+				}
+			};
+			if (!SwingUtilities.isEventDispatchThread())
+			{
+				try
+				{
+					SwingUtilities.invokeAndWait(t);
+				} catch (final Exception e2)
+				{
+					e2.printStackTrace();
+				}
+			}
+			else
+			{
+				t.run();
+			}
+		}
+	}
+	
+	public boolean saveScreenshot(final HistoryNode node, final GameData data, final File file)
+	{
+		// get current history node. if we are in history view, get the selected node.
+		boolean retval = true;
+		// get round/step/player from history tree
+		int round = 0;
+		// String step = null;
+		// PlayerID player = null;
+		final Object[] pathFromRoot = node.getPath();
+		for (final Object pathNode : pathFromRoot)
+		{
+			final HistoryNode curNode = (HistoryNode) pathNode;
+			if (curNode instanceof Round)
+				round = ((Round) curNode).getRoundNo();
+			if (curNode instanceof Step)
+			{
+				// player = ((Step) curNode).getPlayerID();
+				// step = curNode.getTitle();
+			}
+		}
+		final double scale = 1;
+		// print map panel to image
+		final BufferedImage mapImage = Util.createImage((int) (scale * m_mapPanel.getImageWidth()), (int) (scale * m_mapPanel.getImageHeight()), false);
+		final Graphics2D mapGraphics = mapImage.createGraphics();
+		try
+		{
+			data.acquireReadLock();
+			try
+			{
+				// workaround to get the whole map
+				// (otherwise the map is cut if current window is not on top of map)
+				final int xOffset = m_mapPanel.getXOffset();
+				final int yOffset = m_mapPanel.getYOffset();
+				m_mapPanel.setTopLeft(0, 0);
+				m_mapPanel.print(mapGraphics);
+				m_mapPanel.setTopLeft(xOffset, yOffset);
+			} finally
+			{
+				data.releaseReadLock();
+			}
+			// overlay title
+			final Color title_color = Color.BLACK;
+			final int title_x = (int) (GridGameFrame.OUTSIDE_BEVEL_SIZE * scale);
+			final int title_y = (int) (20 * scale);
+			final int title_size = (int) (16 * scale);
+			// everything else should be scaled down onto map image
+			final AffineTransform transform = new AffineTransform();
+			transform.scale(scale, scale);
+			mapGraphics.setTransform(transform);
+			mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
+			mapGraphics.setColor(title_color);
+			mapGraphics.drawString(data.getGameName() + "    Round " + round, title_x, title_y); // + ": " + (player != null ? player.getName() : "") + " - " + step
+			
+			// save Image as .png
+			try
+			{
+				ImageIO.write(mapImage, "png", file);
+			} catch (final Exception e2)
+			{
+				e2.printStackTrace();
+				JOptionPane.showMessageDialog(GridGameFrame.this, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
+				retval = false;
+			}
+			// Clean up objects. There might be some overkill here,
+			// but there were memory leaks that are fixed by some/all of these.
+		} finally
+		{
+			mapImage.flush();
+			mapGraphics.dispose();
+		}
+		return retval;
 	}
 	
 	/**

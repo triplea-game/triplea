@@ -350,7 +350,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		refresh.add(end);
 		refresh.addAll(captured);
 		display.refreshTerritories(refresh);
-		display.showGridPlayDataMove(new GridPlayData(start, end));
+		display.showGridPlayDataMove(new GridPlayData(start, end, player));
 	}
 	
 	/**

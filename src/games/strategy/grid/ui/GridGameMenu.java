@@ -63,6 +63,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		menuGame.setMnemonic(KeyEvent.VK_E);
 		menuBar.add(menuGame);
 		addExportXML(menuGame);
+		addSaveScreenshot(menuGame);
 	}
 	
 	protected void createViewMenu(final JMenuBar menuBar)
@@ -73,6 +74,11 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		addChatTimeMenu(menuView);
 		addShowGameUuid(menuView);
 		addSetLookAndFeel(menuView);
+	}
+	
+	protected void addSaveScreenshot(final JMenu parentMenu)
+	{
+		parentMenu.add(m_frame.getSaveScreenshotAction()).setMnemonic(KeyEvent.VK_E);
 	}
 	
 	protected abstract void addHowToPlayHelpMenu(final JMenu parentMenu);

@@ -103,7 +103,7 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 		m_clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
-		if (m_waiting != null)
+		if (m_waiting != null && m_clickedAt != null)
 			m_waiting.countDown();
 	}
 	
@@ -160,7 +160,7 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 			// Reset the member variables, and return the play.
 			final Territory play = m_clickedAt;
 			m_clickedAt = null;
-			return new GridPlayData(play, null);
+			return new GridPlayData(play, null, player);
 		}
 	}
 	
@@ -177,7 +177,7 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 	}
 	
 	@Override
-	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn)
+	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player)
 	{
 		return null;
 	}

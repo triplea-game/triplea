@@ -44,6 +44,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashMap;
@@ -174,6 +175,14 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	protected void showGridPlayDataMove(final IGridPlayData move)
 	{
 		m_lastMove = move;
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_parentGridGameFrame.updateRightSidePanel(move.getPlayerID().getName() + " moves from "
+							+ move.getStart().getName() + " to " + move.getEnd().getName(), m_lastMove.getEnd().getUnits().getUnits());
+			}
+		});
 	}
 	
 	protected void updateAllImages()
@@ -223,6 +232,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 		super.paintComponent(g);
 		final Graphics2D g2d = (Graphics2D) g;
+		g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -292,7 +302,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		if (m_clickedAt != null)
 		{
 			setMouseShadowUnits(m_clickedAt.getUnits().getUnits());
-			m_validMovesList = getValidMovesList(m_clickedAt);
+			m_validMovesList = getValidMovesList(m_clickedAt, m_parentGridGameFrame.getActivePlayer());
 		}
 	}
 	
@@ -309,8 +319,10 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		m_validMovesList = null;
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
-		if (m_waiting != null)
+		if (m_waiting != null && (m_clickedAt != null && m_releasedAt != null))
+		{
 			m_waiting.countDown();
+		}
 	}
 	
 	protected MouseMotionListener getMouseMotionListener()
@@ -435,7 +447,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			final GridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt);
+			final GridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt, player);
 			m_clickedAt = null;
 			m_releasedAt = null;
 			// check first if a valid move
@@ -452,7 +464,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	
 	protected abstract Collection<Territory> getCapturesForPlay(final IGridPlayData play);
 	
-	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn)
+	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player)
 	{
 		if (clickedOn == null)
 			return null;
@@ -460,7 +472,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		final Collection<Territory> capturesForValidMoves = new HashSet<Territory>();
 		for (final Territory t : m_gameData.getMap().getTerritories())
 		{
-			final GridPlayData play = new GridPlayData(clickedOn, t);
+			final GridPlayData play = new GridPlayData(clickedOn, t, player);
 			if (isValidPlay(play) == null)
 			{
 				validMovesList.add(t);

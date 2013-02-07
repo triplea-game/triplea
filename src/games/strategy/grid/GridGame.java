@@ -68,23 +68,29 @@ abstract public class GridGame implements IGameLoader
 					m_display = new GridGameDisplay(frame);
 					m_game.addDisplay(m_display);
 					initializeGame();
-					frame.setVisible(true);
 					connectPlayers(players, frame);
-					final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-					final int availHeight = screenResolution.height - 30;
-					final int availWidth = screenResolution.width;
 					SwingUtilities.invokeLater(new Runnable()
 					{
 						public void run()
 						{
+							final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+							final int availHeight = screenResolution.height - 30;
+							final int availWidth = screenResolution.width;
 							// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 							final Dimension currentSize = frame.getPreferredSize();
+							// add a little, since we have stuff like history tab, etc, that increases the width
+							currentSize.height = Math.min(availHeight, currentSize.height + 10);
+							currentSize.width = Math.min(availWidth, currentSize.width + 10);
+							frame.setPreferredSize(currentSize);
+							frame.setSize(currentSize);
 							if (currentSize.height > availHeight - 100 && currentSize.width > availWidth - 200)
 								frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 							else if (currentSize.height > availHeight)
 								frame.setExtendedState(Frame.MAXIMIZED_VERT);
 							else if (currentSize.width > availWidth)
 								frame.setExtendedState(Frame.MAXIMIZED_HORIZ);
+							frame.setLocationRelativeTo(null);
+							frame.setVisible(true);
 							frame.toFront();
 						}
 					});
