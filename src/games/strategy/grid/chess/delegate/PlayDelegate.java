@@ -97,7 +97,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		if (error != null)
 			return error;
 		final Collection<Territory> captured = checkForCaptures(start, end, m_player, getData());
-		performPlay(start, end, captured, m_player);
+		performPlay(play, captured, m_player);
 		if (start.getUnits().getUnitCount() > 1 || end.getUnits().getUnitCount() > 1)
 			throw new IllegalStateException("Can not have more than 1 unit in any territory");
 		return null;
@@ -170,8 +170,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	private void performPlay(final Territory start, final Territory end, final Collection<Territory> captured, final PlayerID player)
+	private void performPlay(final IGridPlayData play, final Collection<Territory> captured, final PlayerID player)
 	{
+		final Territory start = play.getStart();
+		final Territory end = play.getEnd();
 		final Collection<Unit> units = start.getUnits().getUnits();
 		final Collection<Unit> promotionUnits;
 		if (isValidPawnPromotion(start, end, m_player, getData()))
@@ -189,8 +191,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		}
 		else
 			promotionUnits = null;
-		final String transcriptText = player.getName() + " moved " + MyFormatter.unitsToTextNoOwner(units) + " from " + start.getName() + " to " + end.getName();
-		m_bridge.getHistoryWriter().startEvent(transcriptText, units);
+		m_bridge.getHistoryWriter().startEvent(play.toString(), units);
 		final Change removeUnit = ChangeFactory.removeUnits(start, units);
 		// final Change removeStartOwner = ChangeFactory.changeOwner(start, PlayerID.NULL_PLAYERID);
 		final Change addUnit = ChangeFactory.addUnits(end, (promotionUnits == null ? units : promotionUnits));
@@ -205,6 +206,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			final int numMoves = ((ChessUnit) u).getHasMoved();
 			change.add(ChangeFactory.unitPropertyChange(u, numMoves + 1, ChessUnit.HAS_MOVED));
 		}
+		final Set<Unit> capturedUnitsTotal = new HashSet<Unit>();
 		for (final Territory at : captured)
 		{
 			if (at != null)
@@ -216,9 +218,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 					change.add(capture);
 					// final Change removeOwner = ChangeFactory.changeOwner(at, PlayerID.NULL_PLAYERID);
 					// change.add(removeOwner);
+					capturedUnitsTotal.addAll(capturedUnits);
 				}
 			}
 		}
+		if (!capturedUnitsTotal.isEmpty())
+			m_bridge.getHistoryWriter().addChildToEvent(player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal), capturedUnitsTotal);
 		final Collection<Territory> refresh = new HashSet<Territory>();
 		refresh.add(start);
 		refresh.add(end);

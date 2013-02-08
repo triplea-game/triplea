@@ -37,4 +37,6 @@ public interface IGridPlayData extends Serializable
 	public List<Territory> getAllStepsExceptStart();
 	
 	public PlayerID getPlayerID();
+	
+	public boolean isBiggerThanAndContains(IGridPlayData otherPlay);
 }

@@ -18,6 +18,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.formatter.MyFormatter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -107,6 +108,67 @@ public class GridPlayData implements IGridPlayData
 		all.add(m_end);
 		return all;
 	}
+	
+	/**
+	 * Returns true if the other play in the argument is smaller than this play, and has all the same steps in the same order.
+	 */
+	public boolean isBiggerThanAndContains(final IGridPlayData otherPlay)
+	{
+		final List<Territory> otherSteps = otherPlay.getAllSteps();
+		final List<Territory> mySteps = this.getAllSteps();
+		if (otherSteps.size() >= mySteps.size())
+			return false;
+		for (int i = 0; i < otherSteps.size(); i++)
+		{
+			if (!otherSteps.get(i).equals(mySteps.get(i)))
+				return false;
+		}
+		return true;
+	}
+	
+	public static Comparator<IGridPlayData> LargestToSmallestPlays = new Comparator<IGridPlayData>()
+	{
+		public int compare(final IGridPlayData p1, final IGridPlayData p2)
+		{
+			if ((p1 == null && p2 == null) || p1 == p2)
+				return 0;
+			if (p1 == null && p2 != null)
+				return 1;
+			if (p1 != null && p2 == null)
+				return -1;
+			if (p1.equals(p2))
+				return 0;
+			final int size1 = p1.getAllSteps().size();
+			final int size2 = p2.getAllSteps().size();
+			if (size1 == size2)
+				return 0;
+			if (size1 > size2)
+				return -1;
+			return 1;
+		}
+	};
+	
+	public static Comparator<IGridPlayData> SmallestToLargestPlays = new Comparator<IGridPlayData>()
+	{
+		public int compare(final IGridPlayData p1, final IGridPlayData p2)
+		{
+			if ((p1 == null && p2 == null) || p1 == p2)
+				return 0;
+			if (p1 == null && p2 != null)
+				return 1;
+			if (p1 != null && p2 == null)
+				return -1;
+			if (p1.equals(p2))
+				return 0;
+			final int size1 = p1.getAllSteps().size();
+			final int size2 = p2.getAllSteps().size();
+			if (size1 == size2)
+				return 0;
+			if (size1 > size2)
+				return 1;
+			return -1;
+		}
+	};
 	
 	@Override
 	public int hashCode()

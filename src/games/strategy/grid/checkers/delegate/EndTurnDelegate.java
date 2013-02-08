@@ -22,14 +22,17 @@ public class EndTurnDelegate extends AbstractDelegate
 	public void start()
 	{
 		super.start();
-		final PlayerID winner = checkForWinner();
-		if (winner != null)
-		{
-			signalGameOver(winner.getName() + " wins!");
-		}
-		else if (isDraw(m_player, getData()))
+		if (isDraw(getData()))
 		{
 			signalGameOver("Game Is A Draw!");
+		}
+		else
+		{
+			final PlayerID winner = checkForWinner();
+			if (winner != null)
+			{
+				signalGameOver(winner.getName() + " wins!");
+			}
 		}
 	}
 	
@@ -87,12 +90,24 @@ public class EndTurnDelegate extends AbstractDelegate
 	{
 		if (player == null)
 			throw new IllegalArgumentException("Checking for winner can not have null player");
-		return false;
+		for (final PlayerID enemy : data.getPlayerList().getPlayers())
+		{
+			if (player.equals(enemy))
+				continue;
+			if (!PlayDelegate.canNotMakeMoves(enemy, data))
+				return false;
+		}
+		return true;
 	}
 	
-	private boolean isDraw(final PlayerID player, final GameData data)
+	private static boolean isDraw(final GameData data)
 	{
-		return false;
+		for (final PlayerID player : data.getPlayerList().getPlayers())
+		{
+			if (!PlayDelegate.canNotMakeMoves(player, data))
+				return false;
+		}
+		return true;
 	}
 	
 	/**

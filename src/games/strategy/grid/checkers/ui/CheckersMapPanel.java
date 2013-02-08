@@ -45,7 +45,7 @@ public class CheckersMapPanel extends GridMapPanel
 	@Override
 	protected String isValidPlay(final IGridPlayData play)
 	{
-		return PlayDelegate.isValidPlay(play, m_parentGridGameFrame.getActivePlayer(), m_gameData, true);
+		return PlayDelegate.isValidPlayOverall(play, m_parentGridGameFrame.getActivePlayer(), m_gameData);
 	}
 	
 	@Override
@@ -63,8 +63,11 @@ public class CheckersMapPanel extends GridMapPanel
 		final Collection<Territory> capturesForValidMoves = new HashSet<Territory>();
 		for (final GridPlayData play : PlayDelegate.getAllValidMovesFromHere(clickedOn, player, m_gameData))
 		{
-			validMovesList.add(play);
-			capturesForValidMoves.addAll(getCapturesForPlay(play));
+			if (PlayDelegate.isValidPlayOverall(play, player, m_gameData) == null)
+			{
+				validMovesList.add(play);
+				capturesForValidMoves.addAll(getCapturesForPlay(play));
+			}
 		}
 		return new Tuple<Collection<IGridPlayData>, Collection<Territory>>(validMovesList, capturesForValidMoves);
 	}
