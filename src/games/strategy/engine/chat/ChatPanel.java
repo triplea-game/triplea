@@ -16,6 +16,7 @@
  */
 package games.strategy.engine.chat;
 
+import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
@@ -48,10 +49,10 @@ public class ChatPanel extends JPanel
 	private ChatMessagePanel m_chatMessagePanel;
 	
 	/** Creates a new instance of ChatFrame */
-	public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger, final String chatName)
+	public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile)
 	{
 		init();
-		final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger);
+		final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
 		setChat(chat);
 	}
 	

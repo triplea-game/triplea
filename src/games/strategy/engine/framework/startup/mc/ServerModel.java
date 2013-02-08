@@ -13,6 +13,7 @@
  */
 package games.strategy.engine.framework.startup.mc;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
@@ -220,7 +221,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			final NullModeratorController moderatorController = new NullModeratorController(m_serverMessenger);
 			moderatorController.register(m_remoteMessenger);
 			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger, moderatorController);
-			m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
+			m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
 			m_serverMessenger.setAcceptNewConnections(true);
 			gameDataChanged();
 			return true;

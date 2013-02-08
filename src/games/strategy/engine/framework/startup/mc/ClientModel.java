@@ -13,6 +13,7 @@
  */
 package games.strategy.engine.framework.startup.mc;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
@@ -166,7 +167,7 @@ public class ClientModel implements IMessengerErrorListener
 		m_channelMessenger = new ChannelMessenger(unifiedMessenger);
 		m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
 		m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
-		m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME);
+		m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
 		m_remoteMessenger.registerRemote(m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
 		// save this, it will be cleared later
 		m_gameDataOnStartup = m_gameSelectorModel.getGameData();

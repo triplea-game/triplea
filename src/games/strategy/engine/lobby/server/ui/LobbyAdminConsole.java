@@ -78,7 +78,7 @@ public class LobbyAdminConsole extends JFrame
 		m_executor = new DBExplorerPanel();
 		m_allUsers = new AllUsersPanel(m_server.getMessenger());
 		m_lobbyGamePanel = new LobbyGamePanel(m_server.getMessengers());
-		final Chat chat = new Chat(LobbyServer.LOBBY_CHAT, m_server.getMessengers());
+		final Chat chat = new Chat(LobbyServer.LOBBY_CHAT, m_server.getMessengers(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
 		m_chatPanel = new ChatMessagePanel(chat);
 	}
 	

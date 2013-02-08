@@ -65,6 +65,13 @@ public class Chat
 	private final ChatIgnoreList m_ignoreList = new ChatIgnoreList();
 	private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<INode, LinkedHashSet<String>>();
 	private static final String TAG_MODERATOR = "[Mod]";
+	private final CHAT_SOUND_PROFILE m_chatSoundProfile;
+	
+	
+	public enum CHAT_SOUND_PROFILE
+	{
+		LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
+	}
 	
 	private void addToNotesMap(final INode node, final Tag tag)
 	{
@@ -100,8 +107,9 @@ public class Chat
 	}
 	
 	/** Creates a new instance of Chat */
-	public Chat(final String chatName, final Messengers messengers)
+	public Chat(final String chatName, final Messengers messengers, final CHAT_SOUND_PROFILE chatSoundProfile)
 	{
+		m_chatSoundProfile = chatSoundProfile;
 		m_messengers = messengers;
 		m_statusManager = new StatusManager(messengers);
 		m_chatChannelName = ChatController.getChatChannelName(chatName);
@@ -110,9 +118,9 @@ public class Chat
 		init();
 	}
 	
-	public Chat(final IMessenger messenger, final String chatName, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger)
+	public Chat(final IMessenger messenger, final String chatName, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger, final CHAT_SOUND_PROFILE chatSoundProfile)
 	{
-		this(chatName, new Messengers(messenger, remoteMessenger, channelMessenger));
+		this(chatName, new Messengers(messenger, remoteMessenger, channelMessenger), chatSoundProfile);
 	}
 	
 	public SentMessagesHistory getSentMessagesHistory()
@@ -382,7 +390,10 @@ public class Chat
 				for (final IChatListener listener : m_listeners)
 				{
 					listener.addStatusMessage(node.getName() + " has joined");
-					ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME, null);
+					if (m_chatSoundProfile == CHAT_SOUND_PROFILE.GAME_CHATROOM)
+					{
+						ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME, null);
+					}
 				}
 			}
 		}
