@@ -1,4 +1,6 @@
 Changes for 1.7
+* Adding sound for joining a game chat room. (cpp-ose & jeparedes)
+
 * Creating framework and loader for Checkers. (veqryn)
 
 * Adding Chess to available games that come with TripleA, and cleaning up source and UI, and fixing various bugs in the grid games framework. (veqryn)

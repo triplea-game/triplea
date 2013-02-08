@@ -38,6 +38,7 @@ public class SoundPath
 	// standard sounds (files can be found in corresponding data/... folder to this package)
 	public static final String CLIP_CHAT_MESSAGE = "chat_message";
 	public static final String CLIP_CHAT_SLAP = "chat_slap";
+	public static final String CLIP_CHAT_JOIN_GAME = "chat_join_game";
 	public static final String CLIP_CLICK_BUTTON = "click_button"; // TODO
 	public static final String CLIP_CLICK_PLOT = "click_plot"; // TODO
 	public static final String CLIP_GAME_START = "game_start";
@@ -91,6 +92,7 @@ public class SoundPath
 			case GENERAL:
 				clipPlayer.preLoadClip(CLIP_CHAT_MESSAGE);
 				clipPlayer.preLoadClip(CLIP_CHAT_SLAP);
+				clipPlayer.preLoadClip(CLIP_CHAT_JOIN_GAME);
 				clipPlayer.preLoadClip(CLIP_CLICK_BUTTON);
 				clipPlayer.preLoadClip(CLIP_CLICK_PLOT);
 				clipPlayer.preLoadClip(CLIP_GAME_START);
@@ -144,6 +146,7 @@ public class SoundPath
 		final HashSet<String> rVal = new HashSet<String>();
 		rVal.add(CLIP_CHAT_MESSAGE);
 		rVal.add(CLIP_CHAT_SLAP);
+		rVal.add(CLIP_CHAT_JOIN_GAME);
 		rVal.add(CLIP_CLICK_BUTTON);
 		rVal.add(CLIP_CLICK_PLOT);
 		rVal.add(CLIP_GAME_START);
@@ -195,6 +198,7 @@ public class SoundPath
 		final ArrayList<IEditableProperty> rVal = new ArrayList<IEditableProperty>();
 		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_MESSAGE, "Chat Messaging"));
 		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_SLAP, "Chat Slapping"));
+		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CHAT_JOIN_GAME, "Joined Chat"));
 		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CLICK_BUTTON, "Click Button"));
 		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CLICK_PLOT, "Click Plot"));
 		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_GAME_START, "Game Start"));

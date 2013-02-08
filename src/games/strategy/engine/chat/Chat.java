@@ -24,6 +24,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.util.Tuple;
 
@@ -381,6 +382,7 @@ public class Chat
 				for (final IChatListener listener : m_listeners)
 				{
 					listener.addStatusMessage(node.getName() + " has joined");
+					ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME, null);
 				}
 			}
 		}
