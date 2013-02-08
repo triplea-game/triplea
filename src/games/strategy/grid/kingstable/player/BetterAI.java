@@ -22,6 +22,8 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.kingstable.attachments.PlayerAttachment;
 import games.strategy.grid.player.GridAbstractAI;
+import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,9 +118,11 @@ public class BetterAI extends GridAbstractAI
 				move = AIAlgorithm.minimaxSearch(initial_state);
 			// System.out.println(m_id.getName() + " should move from (" + move.getStart().getFirst() + "," +move.getStart().getSecond() + ") to (" + move.getEnd().getFirst()+ "," +move.getEnd().getSecond() + ")");
 			final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
+			final PlayerID me = getPlayerID();
 			final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
 			final Territory end = getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
-			playDel.play(start, end);
+			final IGridPlayData play = new GridPlayData(start, end, me);
+			playDel.play(play);
 		} catch (final OutOfMemoryError e)
 		{
 			System.out.println("Ran out of memory while searching for next move: " + counter + " moves examined.");

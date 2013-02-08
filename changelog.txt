@@ -1,4 +1,8 @@
 Changes for 1.7
+* Creating UI for Checkers. (veqryn)
+
+* Adding all game logic for Checkers. (veqryn)
+
 * Adding sound for joining a game chat room. (cpp-ose & jeparedes)
 
 * Creating framework and loader for Checkers. (veqryn)

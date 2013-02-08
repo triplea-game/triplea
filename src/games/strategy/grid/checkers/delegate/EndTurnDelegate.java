@@ -27,7 +27,7 @@ public class EndTurnDelegate extends AbstractDelegate
 		{
 			signalGameOver(winner.getName() + " wins!");
 		}
-		else if (isDraw(m_player, getData(), 1))
+		else if (isDraw(m_player, getData()))
 		{
 			signalGameOver("Game Is A Draw!");
 		}
@@ -90,7 +90,7 @@ public class EndTurnDelegate extends AbstractDelegate
 		return false;
 	}
 	
-	private boolean isDraw(final PlayerID player, final GameData data, final int testForCheckTurnsAhead)
+	private boolean isDraw(final PlayerID player, final GameData data)
 	{
 		return false;
 	}

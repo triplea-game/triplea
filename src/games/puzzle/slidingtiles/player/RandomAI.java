@@ -15,9 +15,12 @@ package games.puzzle.slidingtiles.player;
 
 import games.puzzle.slidingtiles.attachments.Tile;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.player.GridAbstractAI;
+import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +53,7 @@ public class RandomAI extends GridAbstractAI
 		final Collection<Territory> territories = map.getTerritories();
 		// Get the play delegate
 		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
+		final PlayerID me = getPlayerID();
 		// Find the blank tile
 		Territory blank = null;
 		for (final Territory t : territories)
@@ -70,6 +74,7 @@ public class RandomAI extends GridAbstractAI
 		final Random random = new Random();
 		final List<Territory> neighbors = new ArrayList<Territory>(map.getNeighbors(blank));
 		final Territory swap = neighbors.get(random.nextInt(neighbors.size()));
-		playDel.play(swap, blank);
+		final IGridPlayData play = new GridPlayData(swap, blank, me);
+		playDel.play(play);
 	}
 }

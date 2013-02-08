@@ -9,6 +9,8 @@ import games.strategy.grid.chess.delegate.EndTurnDelegate;
 import games.strategy.grid.chess.delegate.PlayDelegate;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.player.GridAbstractAI;
+import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.util.Quadruple;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
@@ -61,14 +63,14 @@ public class HeuristicAI extends GridAbstractAI
 			// if null, we do the move and return
 			if (move == null)
 			{
-				doMove(move1.getFirst(), move1.getSecond(), data, playDel);
+				doMove(move1.getFirst(), move1.getSecond(), data, playDel, me);
 				return;
 			}
 			movesWithPoints.add(move);
 		}
 		Collections.sort(movesWithPoints, getBestPointsComparatorInt());
 		final Triple<Territory, Territory, Integer> ourMove = movesWithPoints.iterator().next();
-		doMove(ourMove.getFirst(), ourMove.getSecond(), data, playDel);
+		doMove(ourMove.getFirst(), ourMove.getSecond(), data, playDel, me);
 		return;
 	}
 	
@@ -218,18 +220,19 @@ public class HeuristicAI extends GridAbstractAI
 		};
 	}
 	
-	static final void doMove(final Territory start, final Territory end, final GameData data, final IGridPlayDelegate playDel)
+	static final void doMove(final Territory start, final Territory end, final GameData data, final IGridPlayDelegate playDel, final PlayerID me)
 	{
 		String error;
-		error = playDel.play(start, end);
+		final IGridPlayData play = new GridPlayData(start, end, me);
+		error = playDel.play(play);
 		if (error != null)
 		{
 			System.err.println("Attempted Move Did Not Work: start: " + start.getName() + " end: " + end.getName());
-			doRandomMove(data, playDel);
+			doRandomMove(data, playDel, me);
 		}
 	}
 	
-	static void doRandomMove(final GameData data, final IGridPlayDelegate playDel)
+	static void doRandomMove(final GameData data, final IGridPlayDelegate playDel, final PlayerID me)
 	{
 		// Get the collection of territories from the map
 		final Collection<Territory> territories = data.getMap().getTerritories();
@@ -244,7 +247,8 @@ public class HeuristicAI extends GridAbstractAI
 		{
 			trymeStart = generator.nextInt(territoryArray.length);
 			trymeEnd = generator.nextInt(territoryArray.length);
-			error = playDel.play(territoryArray[trymeStart], territoryArray[trymeEnd]);
+			final IGridPlayData play = new GridPlayData(territoryArray[trymeStart], territoryArray[trymeEnd], me);
+			error = playDel.play(play);
 		} while (error != null);
 	}
 }

@@ -24,6 +24,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
@@ -82,8 +83,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
-	public String play(final Territory from, Territory to)
+	public String play(final IGridPlayData play)
 	{
+		final Territory from = play.getStart();
+		Territory to = play.getEnd();
 		if (from.equals(to))
 		{
 			final Tile fromTile = (Tile) from.getAttachment("tile");

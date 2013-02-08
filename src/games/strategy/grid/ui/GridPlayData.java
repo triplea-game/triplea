@@ -15,6 +15,10 @@ package games.strategy.grid.ui;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.formatter.MyFormatter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a play in a game of a Grid Game.
@@ -29,6 +33,7 @@ public class GridPlayData implements IGridPlayData
 {
 	private static final long serialVersionUID = -1450796130971955757L;
 	private final Territory m_start;
+	private final List<Territory> m_middleSteps;
 	private final Territory m_end;
 	private final PlayerID m_player;
 	
@@ -42,8 +47,14 @@ public class GridPlayData implements IGridPlayData
 	 */
 	public GridPlayData(final Territory start, final Territory end, final PlayerID player)
 	{
+		this(start, new ArrayList<Territory>(), end, player);
+	}
+	
+	public GridPlayData(final Territory start, final List<Territory> middleSteps, final Territory end, final PlayerID player)
+	{
 		m_start = start;
 		m_end = end;
+		m_middleSteps = (middleSteps == null ? new ArrayList<Territory>() : middleSteps);
 		m_player = player;
 	}
 	
@@ -74,4 +85,89 @@ public class GridPlayData implements IGridPlayData
 	{
 		return m_player;
 	}
+	
+	public List<Territory> getMiddleSteps()
+	{
+		return m_middleSteps;
+	}
+	
+	public List<Territory> getAllSteps()
+	{
+		final List<Territory> all = new ArrayList<Territory>();
+		all.add(m_start);
+		all.addAll(m_middleSteps);
+		all.add(m_end);
+		return all;
+	}
+	
+	public List<Territory> getAllStepsExceptStart()
+	{
+		final List<Territory> all = new ArrayList<Territory>();
+		all.addAll(m_middleSteps);
+		all.add(m_end);
+		return all;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((m_end == null) ? 0 : m_end.hashCode());
+		result = prime * result + ((m_middleSteps == null) ? 0 : m_middleSteps.hashCode());
+		result = prime * result + ((m_player == null) ? 0 : m_player.hashCode());
+		result = prime * result + ((m_start == null) ? 0 : m_start.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof GridPlayData))
+			return false;
+		final GridPlayData other = (GridPlayData) obj;
+		if (m_end == null)
+		{
+			if (other.m_end != null)
+				return false;
+		}
+		else if (!m_end.equals(other.m_end))
+			return false;
+		if (m_middleSteps == null)
+		{
+			if (other.m_middleSteps != null)
+				return false;
+		}
+		else if (!m_middleSteps.equals(other.m_middleSteps))
+			return false;
+		if (m_player == null)
+		{
+			if (other.m_player != null)
+				return false;
+		}
+		else if (!m_player.equals(other.m_player))
+			return false;
+		if (m_start == null)
+		{
+			if (other.m_start != null)
+				return false;
+		}
+		else if (!m_start.equals(other.m_start))
+			return false;
+		return true;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return (m_player == null ? "" : m_player.getName() + " moving ")
+					+ (m_start == null ? "" : (m_start.getUnits().getUnitCount() > 0 ? MyFormatter.unitsToTextNoOwner(m_start.getUnits().getUnits()) + " " : ""))
+					+ (m_end == null ? "to " : "from ") + (m_start == null ? "null" : m_start.getName())
+					+ (m_end == null ? "" : " to " + m_end.getName()) + (m_middleSteps == null || m_middleSteps.isEmpty() ? "" : " by way of: " + MyFormatter.asList(m_middleSteps));
+	}
+	
 }

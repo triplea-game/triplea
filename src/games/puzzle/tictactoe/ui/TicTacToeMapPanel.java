@@ -177,7 +177,7 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 	}
 	
 	@Override
-	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player)
+	protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player)
 	{
 		return null;
 	}

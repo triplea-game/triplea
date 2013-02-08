@@ -71,7 +71,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	protected CountDownLatch m_waiting;
 	protected final UnitImageFactory m_imageFactory;
 	protected BufferedImage m_mouseShadowImage = null;
-	protected Tuple<Collection<Territory>, Collection<Territory>> m_validMovesList = null;
+	protected Tuple<Collection<IGridPlayData>, Collection<Territory>> m_validMovesList = null;
 	protected Point m_currentMouseLocation = new Point(0, 0);
 	protected Territory m_currentMouseLocationTerritory = null;
 	protected final GridGameFrame m_parentGridGameFrame;
@@ -179,8 +179,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		{
 			public void run()
 			{
-				m_parentGridGameFrame.updateRightSidePanel(move.getPlayerID().getName() + " moves from "
-							+ move.getStart().getName() + " to " + move.getEnd().getName(), m_lastMove.getEnd().getUnits().getUnits());
+				m_parentGridGameFrame.updateRightSidePanel(move.toString(), m_lastMove.getEnd().getUnits().getUnits());
 			}
 		});
 	}
@@ -245,12 +244,15 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		{
 			g2d.setColor(Color.black);
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-			for (final Territory t : m_validMovesList.getFirst())
+			for (final IGridPlayData play : m_validMovesList.getFirst())
 			{
-				final Polygon p = m_mapData.getPolygon(t);
-				final Rectangle rect = p.getBounds();
-				g2d.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
-				g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
+				for (final Territory t : play.getAllStepsExceptStart())
+				{
+					final Polygon p = m_mapData.getPolygon(t);
+					final Rectangle rect = p.getBounds();
+					g2d.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+					g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
+				}
 			}
 			g2d.setColor(Color.red);
 			for (final Territory t : m_validMovesList.getSecond())
@@ -264,10 +266,15 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		if (m_lastMove != null)
 		{
 			g2d.setColor(Color.gray);
-			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-			final Rectangle start = m_mapData.getPolygon(m_lastMove.getStart()).getBounds();
-			final Rectangle end = m_mapData.getPolygon(m_lastMove.getEnd()).getBounds();
-			g2d.drawLine(start.x + (start.width / 2), start.y + (start.height / 2), end.x + (end.width / 2), end.y + (end.height / 2));
+			Territory last = m_lastMove.getStart();
+			for (final Territory t : m_lastMove.getAllStepsExceptStart())
+			{
+				g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+				final Rectangle start = m_mapData.getPolygon(last).getBounds();
+				final Rectangle end = m_mapData.getPolygon(t).getBounds();
+				g2d.drawLine(start.x + (start.width / 2), start.y + (start.height / 2), end.x + (end.width / 2), end.y + (end.height / 2));
+				last = t;
+			}
 		}
 		if (m_mouseShadowImage != null)
 		{
@@ -415,7 +422,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	 * @throws InterruptedException
 	 *             if the play was interrupted
 	 */
-	public GridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
+	public IGridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
 	{
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
@@ -447,7 +454,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			final GridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt, player);
+			final IGridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt, player);
 			m_clickedAt = null;
 			m_releasedAt = null;
 			// check first if a valid move
@@ -464,22 +471,22 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	
 	protected abstract Collection<Territory> getCapturesForPlay(final IGridPlayData play);
 	
-	protected Tuple<Collection<Territory>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player)
+	protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player)
 	{
 		if (clickedOn == null)
 			return null;
-		final Collection<Territory> validMovesList = new HashSet<Territory>();
+		final Collection<IGridPlayData> validMovesList = new HashSet<IGridPlayData>();
 		final Collection<Territory> capturesForValidMoves = new HashSet<Territory>();
 		for (final Territory t : m_gameData.getMap().getTerritories())
 		{
-			final GridPlayData play = new GridPlayData(clickedOn, t, player);
+			final IGridPlayData play = new GridPlayData(clickedOn, t, player);
 			if (isValidPlay(play) == null)
 			{
-				validMovesList.add(t);
+				validMovesList.add(play);
 				capturesForValidMoves.addAll(getCapturesForPlay(play));
 			}
 		}
-		return new Tuple<Collection<Territory>, Collection<Territory>>(validMovesList, capturesForValidMoves);
+		return new Tuple<Collection<IGridPlayData>, Collection<Territory>>(validMovesList, capturesForValidMoves);
 	}
 	
 	public UnitImageFactory getUnitImageFactory()

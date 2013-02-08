@@ -21,7 +21,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.ui.GridGameFrame;
-import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.Collection;
 
@@ -71,7 +71,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		m_ui.changeActivePlayer(getPlayerID());
 		// Get the relevant delegate
 		final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
-		GridPlayData play = null;
+		// final PlayerID me = getPlayerID();
+		IGridPlayData play = null;
 		while (play == null)
 		{
 			play = m_ui.waitForPlay(getPlayerID(), getPlayerBridge());
@@ -87,7 +88,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 				// A play was returned from the user interface.
 				// We need to have the relevant delegate process it
 				// and see if there are any problems with the play.
-				final String error = playDel.play(play.getStart(), play.getEnd());
+				final String error = playDel.play(play);
 				if (error != null)
 				{
 					// If there is a problem with the play, notify the user...

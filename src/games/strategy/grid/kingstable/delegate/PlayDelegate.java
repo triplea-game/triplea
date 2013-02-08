@@ -28,6 +28,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.kingstable.attachments.TerritoryAttachment;
 import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
@@ -100,8 +101,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	public String play(final Territory start, final Territory end)
+	public String play(final IGridPlayData play)
 	{
+		final Territory start = play.getStart();
+		final Territory end = play.getEnd();
 		final String error = isValidPlay(start, end, m_player, getData());
 		if (error != null)
 			return error;

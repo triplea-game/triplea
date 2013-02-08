@@ -13,11 +13,19 @@
  */
 package games.strategy.grid.player;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.grid.checkers.delegate.PlayDelegate;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.ui.GridPlayData;
+import games.strategy.util.Match;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * AI agent for most any Grid Games.
@@ -41,21 +49,31 @@ public class RandomAI extends GridAbstractAI
 		// pause for 0.8 seconds to give the impression of thinking
 		pause();
 		// Get the collection of territories from the map
-		final Collection<Territory> territories = getGameData().getMap().getTerritories();
-		final Territory[] territoryArray = territories.toArray(new Territory[territories.size()]);
-		final Random generator = new Random();
-		int trymeStart;
-		int trymeEnd;
-		String error;
-		// Get the play delegate
+		final GameData data = getGameData();
+		final PlayerID me = getPlayerID();
+		Territory tWithUnits = null;
+		for (final Territory t : data.getMap().getTerritories())
+		{
+			if (t.getUnits().getUnitCount() > 0)
+			{
+				tWithUnits = t;
+				break;
+			}
+		}
+		final Collection<Territory> allTerritories = PlayDelegate.getAllTerritoriesOnMapWhichCanHaveUnits(tWithUnits, data);
+		final Collection<Territory> myTerritories = Match.getMatches(allTerritories, PlayDelegate.TerritoryHasUnitsOwnedBy(me));
+		final List<GridPlayData> validMoves = new ArrayList<GridPlayData>();
+		for (final Territory t : myTerritories)
+		{
+			validMoves.addAll(PlayDelegate.getAllValidMovesFromHere(t, me, data));
+		}
+		Collections.shuffle(validMoves);
 		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
-		// Randomly select a territory and try playing there
-		// If that play isn't legal, try again
+		final Iterator<GridPlayData> iter = validMoves.iterator();
+		String error;
 		do
 		{
-			trymeStart = generator.nextInt(territoryArray.length);
-			trymeEnd = generator.nextInt(territoryArray.length);
-			error = playDel.play(territoryArray[trymeStart], territoryArray[trymeEnd]);
-		} while (error != null);
+			error = playDel.play(iter.next());
+		} while (error != null && iter.hasNext());
 	}
 }

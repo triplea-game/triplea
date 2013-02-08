@@ -20,6 +20,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.player.GridAbstractAI;
+import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,8 +85,10 @@ public class BetterAI extends GridAbstractAI
 		else
 			move = AIAlgorithm.alphaBetaSearch(initial_state);
 		final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
+		final PlayerID me = getPlayerID();
 		final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getX(), move.getY());
-		playDel.play(start, null);
+		final IGridPlayData play = new GridPlayData(start, null, me);
+		playDel.play(play);
 	}
 	
 	private State getInitialState()

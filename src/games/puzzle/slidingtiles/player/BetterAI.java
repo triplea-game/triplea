@@ -22,6 +22,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.player.GridAbstractAI;
+import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,6 +82,7 @@ public class BetterAI extends GridAbstractAI
 	protected void play()
 	{
 		final IGridPlayDelegate iPlayDelegate = (IGridPlayDelegate) getPlayerBridge().getRemote();
+		final PlayerID me = getPlayerID();
 		if (m_moves == null)
 		{
 			iPlayDelegate.signalStatus("Thinking...");
@@ -121,7 +124,8 @@ public class BetterAI extends GridAbstractAI
 			final Move move = m_moves.pop();
 			final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
 			final Territory end = getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
-			iPlayDelegate.play(start, end);
+			final IGridPlayData play = new GridPlayData(start, end, me);
+			iPlayDelegate.play(play);
 			// if (playDel.play(start,end)==null)
 			// System.out.println("Moving from " + start + " to " + end);
 			// else

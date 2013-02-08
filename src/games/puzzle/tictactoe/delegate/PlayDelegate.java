@@ -22,6 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
@@ -87,12 +88,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
-	public String play(final Territory play, final Territory ignore)
+	public String play(final IGridPlayData play)
 	{
-		final String error = isValidPlay(play);
+		final Territory from = play.getStart();
+		final String error = isValidPlay(from);
 		if (error != null)
 			return error;
-		performPlay(play, m_player);
+		performPlay(from, m_player);
 		return null;
 	}
 	

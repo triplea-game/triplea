@@ -58,7 +58,7 @@ public class AlphaBeta extends HeuristicAI
 		Collections.sort(movesWithPoints, getBestPointsComparatorLong());
 		// printMovesSet(movesWithPoints);
 		final Triple<Territory, Territory, Long> ourMove = movesWithPoints.iterator().next();
-		doMove(ourMove.getFirst(), ourMove.getSecond(), data, playDel);
+		doMove(ourMove.getFirst(), ourMove.getSecond(), data, playDel, me);
 		return;
 	}
 	

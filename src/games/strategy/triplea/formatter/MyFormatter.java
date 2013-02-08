@@ -75,7 +75,9 @@ public class MyFormatter
 			final Unit unit = iter.next();
 			if (unit == null || unit.getUnitType() == null)
 				throw new IllegalStateException(
-							"Trying to format a unit that does not exist.  If you are using Dynamix AI, then this is being caused by switching maps with the ai (it is still thinking about the last map's units).  Try restarting TripleA every time you switch maps and wish to play with Dynamix AI.");
+							"Trying to format a unit that does not exist.  " +
+										"If you are using Dynamix AI, then this is being caused by switching maps with the ai (it is still thinking about the last map's units).  " +
+										"Try restarting TripleA every time you switch maps and wish to play with Dynamix AI.");
 			if (owner == null || owner.equals(unit.getOwner()))
 				map.add(unit.getUnitType(), 1);
 		}

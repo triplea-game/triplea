@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 
@@ -27,7 +28,13 @@ public interface IGridPlayData extends Serializable
 {
 	public Territory getStart();
 	
+	public List<Territory> getMiddleSteps();
+	
 	public Territory getEnd();
+	
+	public List<Territory> getAllSteps();
+	
+	public List<Territory> getAllStepsExceptStart();
 	
 	public PlayerID getPlayerID();
 }

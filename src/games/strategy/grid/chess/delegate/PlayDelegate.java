@@ -19,6 +19,7 @@ import games.strategy.grid.chess.attachments.PlayerAttachment;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
@@ -86,8 +87,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		display.setStatus(status);
 	}
 	
-	public String play(final Territory start, final Territory end)
+	public String play(final IGridPlayData play)
 	{
+		final Territory start = play.getStart();
+		final Territory end = play.getEnd();
 		if (start.getUnits().getUnitCount() > 1 || end.getUnits().getUnitCount() > 1)
 			throw new IllegalStateException("Can not have more than 1 unit in any territory");
 		final String error = isValidPlay(start, end, m_player, getData(), 2);

@@ -746,7 +746,7 @@ public class GridGameFrame extends MainGameFrame
 	 *            the bridge for player
 	 * @return PlayData representing a play, or <code>null</code> if the play was interrupted
 	 */
-	public GridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge)
+	public IGridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge)
 	{
 		/*
 		if (m_gameOver)
@@ -761,7 +761,7 @@ public class GridGameFrame extends MainGameFrame
 			}
 			return null;
 		}*/
-		GridPlayData play = null;
+		IGridPlayData play = null;
 		try
 		{
 			while (play == null)

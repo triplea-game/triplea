@@ -17,6 +17,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.grid.kingstable.delegate.PlayDelegate;
+import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.kingstable.ui.display.DummyDisplay;
 
 /**
@@ -79,7 +81,8 @@ public class PlayDelegateTest extends DelegateTest
 	{
 		final Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
 		final Territory end = m_data.getMap().getTerritoryFromCoordinates(4, 3);
-		final String results = m_delegate.play(start, end);
+		final IGridPlayData play = new GridPlayData(start, end, null);
+		final String results = m_delegate.play(play);
 		assertValid(results);
 	}
 	
@@ -90,7 +93,8 @@ public class PlayDelegateTest extends DelegateTest
 	{
 		final Territory start = m_data.getMap().getTerritoryFromCoordinates(2, 2);
 		final Territory end = m_data.getMap().getTerritoryFromCoordinates(2, 3);
-		final String results = m_delegate.play(start, end);
+		final IGridPlayData play = new GridPlayData(start, end, null);
+		final String results = m_delegate.play(play);
 		assertError(results);
 	}
 	
@@ -101,7 +105,8 @@ public class PlayDelegateTest extends DelegateTest
 	{
 		final Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
 		final Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 0);
-		final String results = m_delegate.play(start, end);
+		final IGridPlayData play = new GridPlayData(start, end, null);
+		final String results = m_delegate.play(play);
 		assertError(results);
 	}
 	
@@ -112,7 +117,8 @@ public class PlayDelegateTest extends DelegateTest
 	{
 		final Territory start = m_data.getMap().getTerritoryFromCoordinates(5, 0);
 		final Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 2);
-		final String results = m_delegate.play(start, end);
+		final IGridPlayData play = new GridPlayData(start, end, null);
+		final String results = m_delegate.play(play);
 		assertError(results);
 	}
 	/*
