@@ -73,8 +73,8 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 		// g2d.fillRect(0, 0, getWidth(), getHeight());
 		g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
 		g2d.setColor(Color.white);
-		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), m_model.getMaxWidth() - (m_mapData.getTopLeftOffsetWidth() * 2),
-					m_model.getMaxHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
+		g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(), m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
+					m_model.getMaxHeight() - (m_mapData.getBevelHeight() * 2));
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();

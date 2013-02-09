@@ -72,8 +72,8 @@ public class ChessMapPanel extends GridMapPanel
 			{
 				final Rectangle square = p.getBounds();
 				if (at.equals(m_clickedAt))
-					g2d.drawImage(image, square.x - (GridGameFrame.SQUARE_SIZE / 5), square.y - (GridGameFrame.SQUARE_SIZE / 5),
-								square.width + (2 * GridGameFrame.SQUARE_SIZE / 5), square.height + (2 * GridGameFrame.SQUARE_SIZE / 5), null, null);
+					g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5), square.y - (m_mapData.getSquareHeight() / 5),
+								square.width + (2 * m_mapData.getSquareWidth() / 5), square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
 				else
 					g2d.drawImage(image, square.x, square.y, square.width, square.height, null, null);
 			}

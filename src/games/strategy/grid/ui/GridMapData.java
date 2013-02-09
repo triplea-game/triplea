@@ -34,8 +34,8 @@ public class GridMapData
 	protected final int m_gridHeight;
 	protected final int m_squareWidth;
 	protected final int m_squareHeight;
-	protected final int m_topLeftOffsetWidth;
-	protected final int m_topLeftOffsetHeight;
+	protected final int m_bevelWidth;
+	protected final int m_bevelHeight;
 	
 	// protected final GameMap m_map;
 	// protected final GameData m_gameData;
@@ -46,12 +46,12 @@ public class GridMapData
 		m_gridHeight = y_dim;
 		m_squareWidth = squareWidth;
 		m_squareHeight = squareHeight;
-		m_topLeftOffsetWidth = topLeftOffsetWidth;
-		m_topLeftOffsetHeight = topLeftOffsetHeight;
+		m_bevelWidth = topLeftOffsetWidth;
+		m_bevelHeight = topLeftOffsetHeight;
 		// m_gameData = gameData;
 		// m_map = gameData.getMap();
-		int x_offset = m_topLeftOffsetWidth;
-		int y_offset = m_topLeftOffsetHeight;
+		int x_offset = m_bevelWidth;
+		int y_offset = m_bevelHeight;
 		// here we create the polygons for each territory in the grid
 		for (int y = 0; y < y_dim; y++)
 		{
@@ -62,20 +62,40 @@ public class GridMapData
 													new int[] { y_offset, y_offset, y_offset + m_squareHeight, y_offset + m_squareHeight }, 4));
 				x_offset += m_squareWidth;
 			}
-			x_offset = m_topLeftOffsetWidth;
+			x_offset = m_bevelWidth;
 			y_offset += m_squareHeight;
 		}
 		initializeGridMapData(map);
 	}
 	
-	public int getTopLeftOffsetWidth()
+	public int getBevelWidth()
 	{
-		return m_topLeftOffsetWidth;
+		return m_bevelWidth;
 	}
 	
-	public int getTopLeftOffsetHeight()
+	public int getBevelHeight()
 	{
-		return m_topLeftOffsetHeight;
+		return m_bevelHeight;
+	}
+	
+	public int getGridWidthNumber()
+	{
+		return m_gridWidth;
+	}
+	
+	public int getGridHeightNumber()
+	{
+		return m_gridHeight;
+	}
+	
+	public int getSquareWidth()
+	{
+		return m_squareWidth;
+	}
+	
+	public int getSquareHeight()
+	{
+		return m_squareHeight;
 	}
 	
 	public void initializeGridMapData(final GameMap map)
@@ -118,9 +138,9 @@ public class GridMapData
 	 */
 	public Territory getTerritoryAt(final double x, final double y, final GameMap map)
 	{
-		final int normal_x = (int) (x - m_topLeftOffsetWidth);
-		final int normal_y = (int) (y - m_topLeftOffsetHeight);
-		if (normal_x < 0 || normal_y < 0 || normal_x > ((m_gridWidth * m_squareWidth) + (m_topLeftOffsetWidth)) || normal_y > ((m_gridHeight * m_squareHeight) + (m_topLeftOffsetHeight)))
+		final int normal_x = (int) (x - m_bevelWidth);
+		final int normal_y = (int) (y - m_bevelHeight);
+		if (normal_x < 0 || normal_y < 0 || normal_x > ((m_gridWidth * m_squareWidth) + (m_bevelWidth)) || normal_y > ((m_gridHeight * m_squareHeight) + (m_bevelHeight)))
 			return null;
 		final int at_x = (normal_x / m_squareWidth);
 		final int at_y = (normal_y / m_squareHeight);
@@ -132,6 +152,6 @@ public class GridMapData
 	
 	public Dimension getMapDimensions()
 	{
-		return new Dimension(((m_gridWidth * m_squareWidth) + (m_topLeftOffsetWidth * 2) + 1), ((m_gridHeight * m_squareHeight) + (m_topLeftOffsetHeight * 2) + 1));
+		return new Dimension(((m_gridWidth * m_squareWidth) + (m_bevelWidth * 2) + 1), ((m_gridHeight * m_squareHeight) + (m_bevelHeight * 2) + 1));
 	}
 }

@@ -58,7 +58,7 @@ public class CheckersMenu extends GridGameMenu<GridGameFrame>
 							+ "thus jumping directly over the square containing the opponent's piece. "
 							+ "<br />An uncrowned piece may only jump diagonally forward, kings may also jump diagonally backward. A piece that is jumped is captured and removed from the board. "
 							+ "<br />Multiple-jump moves are possible if when the jumping piece lands, there is another immediate piece that can be jumped; even if the jump is in a different direction. "
-							+ "<br />Jumping is mandatory – whenever a player has the option to jump, that person must jump (even if it's to the jumping player's disadvantage; "
+							+ "<br />Jumping is mandatory: whenever a player has the option to jump, that person must jump (even if it's to the jumping player's disadvantage; "
 							+ "for example, a player can choose to allow one of his men to get captured to set up capturing two or more of his/her opponent's men)."
 							+ "<br />When multiple-option jumping moves are available, whether with the one piece in different directions or multiple pieces that can make various jumping moves, "
 							+ "the player may choose which piece to jump with and which jumping option or sequence of jumps to make. "

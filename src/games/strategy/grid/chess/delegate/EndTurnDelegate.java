@@ -97,7 +97,8 @@ public class EndTurnDelegate extends AbstractDelegate
 		while (iter.hasNext())
 		{
 			final PlayerID e = iter.next();
-			if (PlayDelegate.getKingTerritories(e, data).isEmpty() || !PlayDelegate.canWeMakeAValidMoveThatIsNotPuttingUsInCheck(e, data, testForCheckTurnsAhead))
+			if (PlayDelegate.getKingTerritories(e, data).isEmpty() ||
+						(PlayDelegate.areWeInCheck(e, data, testForCheckTurnsAhead) && !PlayDelegate.canWeMakeAValidMoveThatIsNotPuttingUsInCheck(e, data, testForCheckTurnsAhead)))
 				iter.remove();
 		}
 		if (enemies.isEmpty())
@@ -110,26 +111,34 @@ public class EndTurnDelegate extends AbstractDelegate
 		// assume it is not checkmate, since we already checked for that
 		final Collection<PlayerID> enemies = new ArrayList<PlayerID>(data.getPlayerList().getPlayers());
 		enemies.remove(player);
-		final PlayerID nextPlayer = enemies.iterator().next();
-		if (!PlayDelegate.areWeInCheck(nextPlayer, data, testForCheckTurnsAhead))
+		boolean haveMovesAvailable = false;
+		for (final PlayerID enemy : enemies)
 		{
-			boolean haveMovesAvailable = false;
-			for (final Territory t1 : data.getMap().getTerritories())
+			if (!PlayDelegate.areWeInCheck(enemy, data, testForCheckTurnsAhead))
 			{
-				for (final Territory t2 : data.getMap().getTerritories())
+				for (final Territory t1 : data.getMap().getTerritories())
 				{
-					if (PlayDelegate.isValidPlay(t1, t2, player, data, 2) == null)
+					for (final Territory t2 : data.getMap().getTerritories())
 					{
-						haveMovesAvailable = true;
-						break;
+						if (PlayDelegate.isValidPlay(t1, t2, enemy, data, 2) == null)
+						{
+							haveMovesAvailable = true;
+							break;
+						}
 					}
+					if (haveMovesAvailable)
+						break;
 				}
-				if (haveMovesAvailable)
-					break;
 			}
-			if (!haveMovesAvailable)
-				return true;
+			else
+			{
+				haveMovesAvailable = true;
+			}
+			if (haveMovesAvailable)
+				break;
 		}
+		if (!haveMovesAvailable)
+			return true;
 		return false;
 	}
 	

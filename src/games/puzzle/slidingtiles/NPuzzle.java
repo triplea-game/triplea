@@ -113,4 +113,22 @@ public class NPuzzle extends GridGame implements IGameLoader
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, DFS_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
 	}
+	
+	@Override
+	public int getSquareWidth()
+	{
+		return 100;
+	}
+	
+	@Override
+	public int getSquareHeight()
+	{
+		return 100;
+	}
+	
+	@Override
+	public int getBevelSize()
+	{
+		return 25;
+	}
 }

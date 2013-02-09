@@ -51,6 +51,33 @@ abstract public class GridGame implements IGameLoader
 	
 	abstract protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass();
 	
+	/**
+	 * Should be evenly divided by 2, or else your map might get drawn funny.
+	 * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
+	 * 
+	 * @return
+	 */
+	public int getSquareWidth()
+	{
+		return 50;
+	}
+	
+	/**
+	 * Should be evenly divided by 2, or else your map might get drawn funny.
+	 * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
+	 * 
+	 * @return
+	 */
+	public int getSquareHeight()
+	{
+		return 50;
+	}
+	
+	public int getBevelSize()
+	{
+		return 25;
+	}
+	
 	protected void initializeGame()
 	{
 	}
@@ -64,7 +91,8 @@ abstract public class GridGame implements IGameLoader
 			{
 				public void run()
 				{
-					final GridGameFrame frame = new GridGameFrame(game, players, getGridMapPanelClass(), getGridMapDataClass(), getGridTableMenuClass());
+					final GridGameFrame frame = new GridGameFrame(game, players, getGridMapPanelClass(), getGridMapDataClass(), getGridTableMenuClass(), getSquareWidth(), getSquareHeight(),
+								getBevelSize());
 					m_display = new GridGameDisplay(frame);
 					m_game.addDisplay(m_display);
 					initializeGame();

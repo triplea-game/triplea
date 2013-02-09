@@ -99,6 +99,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -112,8 +113,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class GridGameFrame extends MainGameFrame
 {
 	private static final long serialVersionUID = -8888229639450608930L;
-	public static final int SQUARE_SIZE = 50;
-	public static final int OUTSIDE_BEVEL_SIZE = 25;
 	protected GameData m_data;
 	protected IGame m_game;
 	protected final GridMapData m_mapData;
@@ -144,7 +143,7 @@ public class GridGameFrame extends MainGameFrame
 	 * @param players
 	 */
 	public GridGameFrame(final IGame game, final Set<IGamePlayer> players, final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends GridMapData> gridMapDataClass,
-				final Class<? extends BasicGameMenuBar<GridGameFrame>> menuBarClass)
+				final Class<? extends BasicGameMenuBar<GridGameFrame>> menuBarClass, final int squareWidth, final int squareHeight, final int bevelSize)
 	{
 		m_gameOver = false;
 		m_waiting = null;
@@ -161,7 +160,7 @@ public class GridGameFrame extends MainGameFrame
 		{
 			final Constructor<? extends GridMapData> mapDataConstructor = gridMapDataClass.getConstructor(new Class[] {
 						GameMap.class, int.class, int.class, int.class, int.class, int.class, int.class });
-			final GridMapData gridMapData = mapDataConstructor.newInstance(m_data.getMap(), x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
+			final GridMapData gridMapData = mapDataConstructor.newInstance(m_data.getMap(), x_dim, y_dim, squareWidth, squareHeight, bevelSize, bevelSize);
 			m_mapData = gridMapData;
 		} catch (final Exception e)
 		{
@@ -267,6 +266,7 @@ public class GridGameFrame extends MainGameFrame
 		
 		this.setTitle(m_game.getData().getGameName());
 		// If a user tries to close this frame, treat it as if they have asked to leave the game
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter()
 		{
 			@Override
@@ -679,7 +679,7 @@ public class GridGameFrame extends MainGameFrame
 			}
 			// overlay title
 			final Color title_color = Color.BLACK;
-			final int title_x = (int) (GridGameFrame.OUTSIDE_BEVEL_SIZE * scale);
+			final int title_x = (int) (m_mapData.getBevelWidth() * scale);
 			final int title_y = (int) (20 * scale);
 			final int title_size = (int) (16 * scale);
 			// everything else should be scaled down onto map image

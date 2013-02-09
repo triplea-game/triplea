@@ -279,7 +279,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		if (m_mouseShadowImage != null)
 		{
 			final AffineTransform t = new AffineTransform();
-			t.translate(m_currentMouseLocation.x - (GridGameFrame.SQUARE_SIZE / 2), m_currentMouseLocation.y - (GridGameFrame.SQUARE_SIZE / 2));
+			t.translate(m_currentMouseLocation.x - (m_mapData.getSquareWidth() / 2), m_currentMouseLocation.y - (m_mapData.getSquareHeight() / 2));
 			g2d.drawImage(m_mouseShadowImage, t, this);
 		}
 	}
@@ -380,9 +380,9 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 			});
 			return;
 		}
-		final int icon_width = GridGameFrame.SQUARE_SIZE;
-		final int icon_height = GridGameFrame.SQUARE_SIZE;
-		final int xSpace = GridGameFrame.SQUARE_SIZE / 5;
+		final int icon_width = m_mapData.getSquareWidth();
+		final int icon_height = m_mapData.getSquareHeight();
+		final int xSpace = m_mapData.getSquareWidth() / 5;
 		final BufferedImage img = Util.createImage(units.size() * (xSpace + icon_width), icon_height, true);
 		final Graphics2D g = (Graphics2D) img.getGraphics();
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));

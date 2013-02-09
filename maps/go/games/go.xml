@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+
+<game>
+
+	<info name="Go" version="1.0"/>
+	
+	<loader javaClass="games.strategy.grid.go.Go"/>
+	
+	<triplea minimumVersion="1.7"/>
+	
+	<map>
+		<grid name="board" type="square" x="19" y="19" horizontal-connections="implicit" vertical-connections="implicit"/>
+	</map>
+	
+	
+	<playerList>
+		<!-- In turn order -->
+		<player name="White" optional="false"/>
+		<player name="Black" optional="false"/>
+		
+        <alliance player="White" alliance="White"/>
+        <alliance player="Black" alliance="Black"/>
+	</playerList>
+	
+	
+	<unitList>
+		<unit name="pawn"/>
+	</unitList>
+
+
+	<gamePlay>
+		<delegate name="init" javaClass="games.strategy.grid.go.delegate.InitializationDelegate" display="Initialize Game"/>
+		<delegate name="play" javaClass="games.strategy.grid.go.delegate.PlayDelegate" display="Play"/>
+		<delegate name="endTurn" javaClass="games.strategy.grid.go.delegate.EndTurnDelegate" display="Check for winner"/>
+		
+		<sequence>
+			<step name="gameInit" delegate="init" maxRunCount="1"/>
+
+			<step name="whitePlay" delegate="play" player="White"/>
+			<step name="whiteEndTurn" delegate="endTurn" player="White"/>
+			
+			<step name="blackPlay" delegate="play" player="Black"/>
+			<step name="blackEndTurn" delegate="endTurn" player="Black"/>
+
+		</sequence>
+	</gamePlay>
+
+	<!--
+	<attatchmentList>
+        
+	</attatchmentList>
+	-->
+
+	<!--
+	<initialize>
+		<unitInitialize>
+			
+		</unitInitialize>
+	</initialize>
+	-->
+
+	<propertyList>
+		<property name="mapName" value="go" editable="false" >
+			<string/>
+		</property>
+		
+		<property name="notes">
+			<value>
+			<![CDATA[
+				Go
+				<br />
+				<br />
+				<br />
+				<br />Beta Test version by Veqryn
+				<br />
+			]]>	
+			</value>
+		</property>
+	</propertyList>
+	
+</game>

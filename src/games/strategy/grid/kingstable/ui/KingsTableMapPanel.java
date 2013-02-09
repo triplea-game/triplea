@@ -54,8 +54,8 @@ public class KingsTableMapPanel extends GridMapPanel
 		// g2d.fillRect(0, 0, getWidth(), getHeight());
 		g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
 		g2d.setColor(Color.white);
-		g2d.fillRect(m_mapData.getTopLeftOffsetWidth(), m_mapData.getTopLeftOffsetHeight(), m_model.getMaxWidth() - (m_mapData.getTopLeftOffsetWidth() * 2),
-					m_model.getMaxHeight() - (m_mapData.getTopLeftOffsetHeight() * 2));
+		g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(), m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
+					m_model.getMaxHeight() - (m_mapData.getBevelHeight() * 2));
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();
@@ -77,8 +77,8 @@ public class KingsTableMapPanel extends GridMapPanel
 			{
 				final Rectangle square = p.getBounds();
 				if (at.equals(m_clickedAt))
-					g2d.drawImage(image, square.x - (GridGameFrame.SQUARE_SIZE / 5), square.y - (GridGameFrame.SQUARE_SIZE / 5),
-								square.width + (2 * GridGameFrame.SQUARE_SIZE / 5), square.height + (2 * GridGameFrame.SQUARE_SIZE / 5), null, null);
+					g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5), square.y - (m_mapData.getSquareHeight() / 5),
+								square.width + (2 * m_mapData.getSquareWidth() / 5), square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
 				else
 					g2d.drawImage(image, square.x, square.y, square.width, square.height, null, null);
 			}
