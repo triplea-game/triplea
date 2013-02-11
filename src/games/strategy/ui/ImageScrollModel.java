@@ -13,6 +13,7 @@
  */
 package games.strategy.ui;
 
+import java.awt.Dimension;
 import java.util.Observable;
 
 /**
@@ -45,6 +46,11 @@ public class ImageScrollModel extends Observable
 		m_maxHeight = maxHeight;
 		enforceBounds();
 		updateListeners();
+	}
+	
+	public void setMaxBounds(final Dimension mapDimensions)
+	{
+		setMaxBounds(mapDimensions.width, mapDimensions.height);
 	}
 	
 	public void setBoxDimensions(final int maxX, final int maxy)

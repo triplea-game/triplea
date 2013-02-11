@@ -92,20 +92,29 @@ public class GridPlayData implements IGridPlayData
 		return m_middleSteps;
 	}
 	
+	/**
+	 * Will not return any null territories.
+	 */
 	public List<Territory> getAllSteps()
 	{
 		final List<Territory> all = new ArrayList<Territory>();
-		all.add(m_start);
+		if (m_start != null)
+			all.add(m_start);
 		all.addAll(m_middleSteps);
-		all.add(m_end);
+		if (m_end != null)
+			all.add(m_end);
 		return all;
 	}
 	
+	/**
+	 * Will not return any null territories.
+	 */
 	public List<Territory> getAllStepsExceptStart()
 	{
 		final List<Territory> all = new ArrayList<Territory>();
 		all.addAll(m_middleSteps);
-		all.add(m_end);
+		if (m_end != null)
+			all.add(m_end);
 		return all;
 	}
 	

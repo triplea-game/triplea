@@ -1,9 +1,14 @@
 package games.strategy.grid.go.delegate;
 
 import games.strategy.common.delegate.AbstractDelegate;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 /**
  * 
@@ -19,6 +24,17 @@ public class InitializationDelegate extends AbstractDelegate
 	public void start()
 	{
 		super.start();
+		final GameData data = getData();
+		final GameMap map = data.getMap();
+		final int newWidth = data.getProperties().get("Width", map.getXDimension());
+		final int newHeight = data.getProperties().get("Height", map.getYDimension());
+		if (newWidth != map.getXDimension() || newHeight != map.getYDimension())
+		{
+			m_bridge.getHistoryWriter().startEvent("Changing Map Dimensions");
+			final Territory t1 = map.getTerritories().iterator().next();
+			final String name = t1.getName().substring(0, t1.getName().indexOf("_"));
+			m_bridge.addChange(ChangeFactory.addGridGameMapChange(map, "square", name, newWidth, newHeight, new HashSet<String>(), "implicit", "implicit", "explicit"));
+		}
 	}
 	
 	@Override

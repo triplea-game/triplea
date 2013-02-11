@@ -36,9 +36,19 @@
 
 	<propertyList>
 		<property name="mapName" value="unclassified" editable="false" />
+		
+		<property name="Width" value="3" editable="true">
+			<number min="2" max="100"/>
+		</property>
+		
+		<property name="Height" value="3" editable="true">
+			<number min="2" max="100"/>
+		</property>
+		
 	    <property name="Difficulty Level" value="8" editable="true">
         	<number min="0" max="10000"/>
         </property>
+		
         <property name="Background" value="" editable="true"><file/></property>
         
         <property name="notes">

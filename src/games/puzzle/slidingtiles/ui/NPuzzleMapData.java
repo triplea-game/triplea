@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class NPuzzleMapData extends GridMapData
 {
-	protected final Map<Integer, Rectangle> m_rects = new HashMap<Integer, Rectangle>();
+	protected volatile Map<Integer, Rectangle> m_rects;
 	
 	public NPuzzleMapData(final GameMap map, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight, final int topLeftOffsetWidth, final int topLeftOffsetHeight)
 	{
@@ -38,6 +38,7 @@ public class NPuzzleMapData extends GridMapData
 	@Override
 	public void initializeGridMapData(final GameMap map)
 	{
+		m_rects = new HashMap<Integer, Rectangle>();
 		for (final Territory territory : map.getTerritories())
 		{
 			final Tile tile = (Tile) territory.getAttachment("tile");

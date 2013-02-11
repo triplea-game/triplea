@@ -18,6 +18,7 @@ import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
@@ -25,6 +26,7 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -43,9 +45,17 @@ public class InitializationDelegate extends AbstractDelegate
 	public void start()
 	{
 		super.start();
-		final GameMap map = getData().getMap();
-		final int width = map.getXDimension();
-		final int height = map.getYDimension();
+		final GameData data = getData();
+		final GameMap map = data.getMap();
+		final int width = data.getProperties().get("Width", map.getXDimension());
+		final int height = data.getProperties().get("Height", map.getYDimension());
+		if (width != map.getXDimension() || height != map.getYDimension())
+		{
+			m_bridge.getHistoryWriter().startEvent("Changing Map Dimensions");
+			final Territory t1 = map.getTerritories().iterator().next();
+			final String name = t1.getName().substring(0, t1.getName().indexOf("_"));
+			m_bridge.addChange(ChangeFactory.addGridGameMapChange(map, "square", name, width, height, new HashSet<String>(), "implicit", "implicit", "explicit"));
+		}
 		final Territory[][] board = new Territory[width][height];
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus("Shuffling tiles...");

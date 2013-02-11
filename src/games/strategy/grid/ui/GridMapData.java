@@ -29,18 +29,23 @@ import java.util.Map.Entry;
 public class GridMapData
 {
 	// maps String -> Polygons
-	protected final Map<String, Polygon> m_polys = new HashMap<String, Polygon>();
-	protected final int m_gridWidth;
-	protected final int m_gridHeight;
-	protected final int m_squareWidth;
-	protected final int m_squareHeight;
-	protected final int m_bevelWidth;
-	protected final int m_bevelHeight;
+	protected volatile Map<String, Polygon> m_polys;
+	protected int m_gridWidth;
+	protected int m_gridHeight;
+	protected int m_squareWidth;
+	protected int m_squareHeight;
+	protected int m_bevelWidth;
+	protected int m_bevelHeight;
 	
 	// protected final GameMap m_map;
 	// protected final GameData m_gameData;
 	
 	public GridMapData(final GameMap map, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight, final int topLeftOffsetWidth, final int topLeftOffsetHeight)
+	{
+		setMapData(map, x_dim, y_dim, squareWidth, squareHeight, topLeftOffsetWidth, topLeftOffsetHeight);
+	}
+	
+	public synchronized void setMapData(final GameMap map, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight, final int topLeftOffsetWidth, final int topLeftOffsetHeight)
 	{
 		m_gridWidth = x_dim;
 		m_gridHeight = y_dim;
@@ -53,13 +58,15 @@ public class GridMapData
 		int x_offset = m_bevelWidth;
 		int y_offset = m_bevelHeight;
 		// here we create the polygons for each territory in the grid
+		m_polys = new HashMap<String, Polygon>();
 		for (int y = 0; y < y_dim; y++)
 		{
 			for (int x = 0; x < x_dim; x++)
 			{
 				final Territory territory = map.getTerritoryFromCoordinates(x, y);
-				m_polys.put(territory.getName(), new Polygon(new int[] { x_offset, x_offset + m_squareWidth, x_offset + m_squareWidth, x_offset },
-													new int[] { y_offset, y_offset, y_offset + m_squareHeight, y_offset + m_squareHeight }, 4));
+				final Polygon p = new Polygon(new int[] { x_offset, x_offset + m_squareWidth, x_offset + m_squareWidth, x_offset },
+							new int[] { y_offset, y_offset, y_offset + m_squareHeight, y_offset + m_squareHeight }, 4);
+				m_polys.put(territory.getName(), p);
 				x_offset += m_squareWidth;
 			}
 			x_offset = m_bevelWidth;
@@ -108,12 +115,12 @@ public class GridMapData
 		return m_gameData;
 	}*/
 
-	public Map<String, Polygon> getStringPolygons()
+	public synchronized Map<String, Polygon> getStringPolygons()
 	{
 		return m_polys;
 	}
 	
-	public Map<Territory, Polygon> getTerritoryPolygons(final GameMap map)
+	public synchronized Map<Territory, Polygon> getTerritoryPolygons(final GameMap map)
 	{
 		final Map<Territory, Polygon> polys = new HashMap<Territory, Polygon>();
 		for (final Entry<String, Polygon> entry : m_polys.entrySet())
@@ -123,12 +130,12 @@ public class GridMapData
 		return polys;
 	}
 	
-	public Polygon getPolygon(final Territory at)
+	public synchronized Polygon getPolygon(final Territory at)
 	{
 		return m_polys.get(at.getName());
 	}
 	
-	public Polygon getPolygon(final String at)
+	public synchronized Polygon getPolygon(final String at)
 	{
 		return m_polys.get(at);
 	}

@@ -19,6 +19,7 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.IGameLoader;
@@ -81,6 +82,7 @@ public class GameData implements java.io.Serializable
 	private int m_diceSides;
 	private transient ListenerList<TerritoryListener> m_territoryListeners = new ListenerList<TerritoryListener>();
 	private transient ListenerList<GameDataChangeListener> m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
+	private transient ListenerList<GameMapListener> m_gameMapListeners = new ListenerList<GameMapListener>();
 	private final AllianceTracker m_alliances = new AllianceTracker(this);
 	// Tracks current relationships between players, this is empty if relationships aren't used
 	private final RelationshipTracker m_relationships = new RelationshipTracker(this);
@@ -294,6 +296,16 @@ public class GameData implements java.io.Serializable
 		m_dataChangeListeners.remove(listener);
 	}
 	
+	public void addGameMapListener(final GameMapListener listener)
+	{
+		m_gameMapListeners.add(listener);
+	}
+	
+	public void removeGameMapListener(final GameMapListener listener)
+	{
+		m_gameMapListeners.remove(listener);
+	}
+	
 	void notifyTerritoryUnitsChanged(final Territory t)
 	{
 		final Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
@@ -331,6 +343,16 @@ public class GameData implements java.io.Serializable
 		{
 			final GameDataChangeListener listener = iter.next();
 			listener.gameDataChanged(aChange);
+		}
+	}
+	
+	void notifyMapDataChanged()
+	{
+		final Iterator<GameMapListener> iter = m_gameMapListeners.iterator();
+		while (iter.hasNext())
+		{
+			final GameMapListener listener = iter.next();
+			listener.gameMapDataChanged();
 		}
 	}
 	
@@ -392,6 +414,7 @@ public class GameData implements java.io.Serializable
 	{
 		m_territoryListeners = new ListenerList<TerritoryListener>();
 		m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
+		m_gameMapListeners = new ListenerList<GameMapListener>();
 	}
 	
 	/**
@@ -442,6 +465,7 @@ public class GameData implements java.io.Serializable
 	{
 		m_dataChangeListeners.clear();
 		m_territoryListeners.clear();
+		m_gameMapListeners.clear();
 		if (m_resourceLoader != null)
 		{
 			m_resourceLoader.close();

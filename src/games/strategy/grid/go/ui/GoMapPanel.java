@@ -85,6 +85,8 @@ public class GoMapPanel extends GridMapPanel
 		{
 			final Polygon p = entry.getValue();
 			final Territory at = entry.getKey();
+			if (at == null || p == null)
+				continue;
 			final Color backgroundColor;
 			if ((at.getX() + at.getY()) % 2 == 0)
 				backgroundColor = tileEven;

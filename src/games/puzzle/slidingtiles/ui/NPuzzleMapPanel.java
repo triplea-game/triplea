@@ -61,6 +61,12 @@ public class NPuzzleMapPanel extends GridMapPanel
 		super(data, mapData, parentGridGameFrame, imageScrollModel);
 	}
 	
+	@Override
+	protected void mapDataAndDimensionsChanged()
+	{
+		setBackgroundImage((File) m_gameData.getProperties().get("Background"));
+	}
+	
 	public void setBackgroundImage(final File file)
 	{
 		if (file != null)
@@ -72,7 +78,7 @@ public class NPuzzleMapPanel extends GridMapPanel
 				final double scalex = m_mapData.getMapDimensions().getWidth() / bigimage.getWidth();
 				final double scaley = m_mapData.getMapDimensions().getHeight() / bigimage.getHeight();
 				trans.scale(scalex, scaley);
-				final AffineTransformOp scale = new AffineTransformOp(trans, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+				final AffineTransformOp scale = new AffineTransformOp(trans, AffineTransformOp.TYPE_BICUBIC);
 				m_backgroundImage = new BufferedImage(((int) m_mapData.getMapDimensions().getWidth()), ((int) m_mapData.getMapDimensions().getHeight()), bigimage.getType());
 				scale.filter(bigimage, m_backgroundImage);
 			} catch (final IOException e)

@@ -26,10 +26,13 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -115,6 +118,61 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		return ((ArrayList<Territory>) m_territories).get(listIndex);
 	}
 	
+	protected void reorderTerritoryList()
+	{
+		Collections.sort((List<Territory>) m_territories, TERRITORY_GRID_ORDERING);
+	}
+	
+	private static Comparator<Territory> TERRITORY_GRID_ORDERING = new Comparator<Territory>()
+	{
+		public int compare(final Territory t1, final Territory t2)
+		{
+			if ((t1 == null && t2 == null) || t1 == t2)
+				return 0;
+			if (t1 == null && t2 != null)
+				return 1;
+			if (t1 != null && t2 == null)
+				return -1;
+			if (t1.equals(t2))
+				return 0;
+			final int t1index = t1.getName().indexOf("_");
+			final int t2index = t2.getName().indexOf("_");
+			if (t1index == -1 && t2index == -1)
+				return 0;
+			if (t1index == -1 && t2index != -1)
+				return 1;
+			if (t1index != -1 && t2index == -1)
+				return -1;
+			final String name1 = t1.getName().substring(0, t1index);
+			final String name2 = t1.getName().substring(0, t2index);
+			if (!name1.equals(name2))
+				return name1.compareTo(name2);
+			
+			String tname1y = t1.getName().replaceFirst(name1 + "_", "");
+			tname1y = tname1y.substring(tname1y.indexOf("_") + 1, tname1y.length());
+			final int ty1 = Integer.parseInt(tname1y);
+			String tname2y = t2.getName().replaceFirst(name2 + "_", "");
+			tname2y = tname2y.substring(tname2y.indexOf("_") + 1, tname2y.length());
+			final int ty2 = Integer.parseInt(tname2y);
+			if (ty1 < ty2)
+				return -1;
+			else if (ty1 > ty2)
+				return 1;
+			
+			String tname1x = t1.getName().replaceFirst(name1 + "_", "");
+			tname1x = tname1x.substring(0, tname1x.indexOf("_"));
+			final int tx1 = Integer.parseInt(tname1x);
+			String tname2x = t2.getName().replaceFirst(name2 + "_", "");
+			tname2x = tname2x.substring(0, tname2x.indexOf("_"));
+			final int tx2 = Integer.parseInt(tname2x);
+			if (tx1 < tx2)
+				return -1;
+			else if (tx1 > tx2)
+				return 1;
+			return 0;
+		}
+	};
+	
 	public boolean isCoordinateValid(final int... coordinate)
 	{
 		if (coordinate.length != m_gridDimensions.length)
@@ -136,6 +194,38 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		m_territoryLookup.put(t1.getName(), t1);
 	}
 	
+	protected void removeTerritory(final Territory t1)
+	{
+		if (!m_territories.contains(t1))
+			throw new IllegalArgumentException("Map does not contain " + t1.getName());
+		m_territories.remove(t1);
+		m_connections.remove(t1);
+		m_territoryLookup.remove(t1.getName());
+		// remove territory from other connections
+		final Map<Territory, Set<Territory>> tempConnections = new HashMap<Territory, Set<Territory>>();
+		for (final Entry<Territory, Set<Territory>> entry : m_connections.entrySet())
+		{
+			if (entry.getValue().contains(t1))
+			{
+				final Set<Territory> current = entry.getValue();
+				final Set<Territory> modified = new HashSet<Territory>(current);
+				modified.remove(t1);
+				tempConnections.put(entry.getKey(), modified);
+			}
+		}
+		// preserve unmodifiable nature
+		for (final Entry<Territory, Set<Territory>> entry : tempConnections.entrySet())
+		{
+			m_connections.put(entry.getKey(), Collections.unmodifiableSet(entry.getValue()));
+		}
+	}
+	
+	/**
+	 * Bi-directional. T1 connects to T2, and T2 connects to T1.
+	 * 
+	 * @param t1
+	 * @param t2
+	 */
 	protected void addConnection(final Territory t1, final Territory t2)
 	{
 		if (t1.equals(t2))
@@ -145,6 +235,22 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		// connect t1 to t2
 		setConnection(t1, t2);
 		setConnection(t2, t1);
+	}
+	
+	/**
+	 * Uni-directional. T1 connects to T2, while T2 does NOT connect to T1.
+	 * 
+	 * @param t1
+	 * @param t2
+	 */
+	protected void addOneWayConnection(final Territory t1, final Territory t2)
+	{
+		if (t1.equals(t2))
+			throw new IllegalArgumentException("Cannot connect a territory to itself");
+		if (!m_territories.contains(t1) || !m_territories.contains(t2))
+			throw new IllegalArgumentException("Map doesnt know about one of " + t1 + " " + t2);
+		// connect t1 to t2
+		setConnection(t1, t2);
 	}
 	
 	private void setConnection(final Territory from, final Territory to)
@@ -511,5 +617,13 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 			previous = t;
 		}
 		return true;
+	}
+	
+	/**
+	 * If the actual territories in the map are deleted, or new ones added, call this.
+	 */
+	public void notifyChanged()
+	{
+		getData().notifyMapDataChanged();
 	}
 }

@@ -1,4 +1,6 @@
 Changes for 1.7
+* Allowing Grid Games to change their width and height mid-game, like through game options. (veqryn)
+
 * Creating initial framework and loader for Go. (veqryn)
 
 * Creating simple AI for Checkers, and adding rules to enforce the forcing of jump capture moves when available. (veqryn)

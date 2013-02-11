@@ -20,6 +20,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
@@ -76,10 +77,12 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	protected Territory m_currentMouseLocationTerritory = null;
 	protected final GridGameFrame m_parentGridGameFrame;
 	protected IGridPlayData m_lastMove = null;
+	protected final ImageScrollModel m_imageScrollModel;
 	
 	public GridMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
 		super(mapData.getMapDimensions(), imageScrollModel);
+		m_imageScrollModel = imageScrollModel;
 		m_waiting = null;
 		m_mapData = mapData;
 		m_parentGridGameFrame = parentGridGameFrame;
@@ -217,11 +220,30 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 		if (m_gameData != null)
 		{
+			m_gameData.removeGameMapListener(GAME_MAP_LISTENER);
 			m_gameData.removeDataChangeListener(GAME_DATA_CHANGE_LISTENER);
 		}
 		m_gameData = data;
+		m_gameData.addGameMapListener(GAME_MAP_LISTENER);
 		m_gameData.addDataChangeListener(GAME_DATA_CHANGE_LISTENER);
 		updateAllImages();
+	}
+	
+	protected GameMapListener GAME_MAP_LISTENER = new GameMapListener()
+	{
+		
+		public void gameMapDataChanged()
+		{
+			m_mapData.setMapData(m_gameData.getMap(), m_gameData.getMap().getXDimension(), m_gameData.getMap().getYDimension(), m_mapData.getSquareWidth(), m_mapData.getSquareHeight(),
+						m_mapData.getBevelHeight(), m_mapData.getBevelHeight());
+			m_imageScrollModel.setMaxBounds(m_mapData.getMapDimensions());
+			mapDataAndDimensionsChanged();
+			updateAllImages();
+		}
+	};
+	
+	protected void mapDataAndDimensionsChanged()
+	{
 	}
 	
 	protected abstract void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY);
@@ -231,6 +253,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 		super.paintComponent(g);
 		final Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(this.getBackground());
+		g2d.fillRect(0, 0, getWidth(), getHeight());
 		g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
