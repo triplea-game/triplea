@@ -1,4 +1,8 @@
 Changes for 1.7
+* Creating all game logic for Go. (veqryn)
+
+* Creating UI for Go. (veqryn)
+
 * Allowing Grid Games to change their width and height mid-game, like through game options. (veqryn)
 
 * Creating initial framework and loader for Go. (veqryn)

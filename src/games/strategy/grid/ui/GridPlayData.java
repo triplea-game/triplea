@@ -59,6 +59,11 @@ public class GridPlayData implements IGridPlayData
 		m_player = player;
 	}
 	
+	public GridPlayData(final Territory start, final PlayerID player)
+	{
+		this(start, new ArrayList<Territory>(), null, player);
+	}
+	
 	/**
 	 * Returns the start location for this play.
 	 * 

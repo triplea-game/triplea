@@ -29,7 +29,7 @@ import java.util.Map.Entry;
 public class GridMapData
 {
 	// maps String -> Polygons
-	protected volatile Map<String, Polygon> m_polys;
+	protected Map<String, Polygon> m_polys;
 	protected int m_gridWidth;
 	protected int m_gridHeight;
 	protected int m_squareWidth;

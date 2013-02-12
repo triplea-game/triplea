@@ -246,8 +246,6 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 	}
 	
-	protected abstract void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY);
-	
 	@Override
 	protected void paintComponent(final Graphics g)
 	{
@@ -264,6 +262,15 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		// translate our g2d so that our image scrolls
 		g2d.translate(-topLeftX, -topLeftY);
 		paintComponentMiddleLayer(g2d, topLeftX, topLeftY);
+		paintValidMoves(g2d, topLeftX, topLeftY);
+		paintLastMove(g2d, topLeftX, topLeftY);
+		paintMouseShadow(g2d, topLeftX, topLeftY);
+	}
+	
+	protected abstract void paintComponentMiddleLayer(final Graphics2D g2d, final int topLeftX, final int topLeftY);
+	
+	protected void paintValidMoves(final Graphics2D g2d, final int topLeftX, final int topLeftY)
+	{
 		if (m_validMovesList != null)
 		{
 			g2d.setColor(Color.black);
@@ -287,6 +294,10 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 				g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
 			}
 		}
+	}
+	
+	protected void paintLastMove(final Graphics2D g2d, final int topLeftX, final int topLeftY)
+	{
 		if (m_lastMove != null)
 		{
 			g2d.setColor(Color.gray);
@@ -300,6 +311,10 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 				last = t;
 			}
 		}
+	}
+	
+	protected void paintMouseShadow(final Graphics2D g2d, final int topLeftX, final int topLeftY)
+	{
 		if (m_mouseShadowImage != null)
 		{
 			final AffineTransform t = new AffineTransform();
