@@ -2,12 +2,15 @@ package games.strategy.grid;
 
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.data.DefaultUnitFactory;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.go.delegate.PlayDelegate;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.GridGameFrame;
@@ -174,5 +177,18 @@ abstract public class GridGame implements IGameLoader
 	public IUnitFactory getUnitFactory()
 	{
 		return new DefaultUnitFactory();
+	}
+	
+	protected static final IDelegate findDelegate(final GameData data, final String delegate_name)
+	{
+		final IDelegate delegate = data.getDelegateList().getDelegate(delegate_name);
+		if (delegate == null)
+			throw new IllegalStateException(delegate_name + " delegate not found");
+		return delegate;
+	}
+	
+	public static final PlayDelegate playDelegate(final GameData data)
+	{
+		return (PlayDelegate) findDelegate(data, "play");
 	}
 }

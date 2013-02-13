@@ -37,6 +37,7 @@ public class GridPlayData implements IGridPlayData
 	private final List<Territory> m_middleSteps;
 	private final Territory m_end;
 	private final PlayerID m_player;
+	private final boolean m_pass;
 	
 	/**
 	 * Construct a new play, with the given start location and end location.
@@ -57,11 +58,26 @@ public class GridPlayData implements IGridPlayData
 		m_end = end;
 		m_middleSteps = (middleSteps == null ? new ArrayList<Territory>() : middleSteps);
 		m_player = player;
+		m_pass = false;
 	}
 	
 	public GridPlayData(final Territory start, final PlayerID player)
 	{
 		this(start, new ArrayList<Territory>(), null, player);
+	}
+	
+	public GridPlayData(final boolean pass, final PlayerID player)
+	{
+		m_start = null;
+		m_end = null;
+		m_middleSteps = new ArrayList<Territory>();
+		m_player = player;
+		m_pass = pass;
+	}
+	
+	public boolean isPass()
+	{
+		return m_pass;
 	}
 	
 	/**
@@ -240,6 +256,8 @@ public class GridPlayData implements IGridPlayData
 	@Override
 	public String toString()
 	{
+		if (m_pass)
+			return "Pass of turn" + (m_player == null ? "" : " by " + m_player.getName());
 		return (m_player == null ? "" : m_player.getName() + " moving ")
 					+ (m_start == null ? "" : (m_start.getUnits().getUnitCount() > 0 ? MyFormatter.unitsToTextNoOwner(m_start.getUnits().getUnits()) + " " : ""))
 					+ (m_end == null ? "to " : "from ") + (m_start == null ? "null" : m_start.getName())

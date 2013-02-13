@@ -981,6 +981,9 @@ public class GridGameFrame extends MainGameFrame
 				m_mapPanel.setTopLeft(x, y + diffPixel);
 			else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W)
 				m_mapPanel.setTopLeft(x, y - diffPixel);
+			
+			// do other map panel specific things
+			m_mapPanel.doKeyListenerEvents(e);
 		}
 		
 		public void keyTyped(final KeyEvent e)

@@ -40,6 +40,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
@@ -544,5 +545,9 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 				repaint();
 			}
 		});
+	}
+	
+	public void doKeyListenerEvents(final KeyEvent e)
+	{
 	}
 }

@@ -54,6 +54,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		}*/
 		if (stepName.endsWith("Play"))
 			play();
+		else if (stepName.endsWith("EndTurn"))
+			endTurn();
 		else
 			throw new IllegalArgumentException("Unrecognized step stepName:" + stepName);
 	}
@@ -102,6 +104,11 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 				}
 			}
 		}
+	}
+	
+	private void endTurn()
+	{
+		
 	}
 	
 	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)

@@ -11,6 +11,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.GridGame;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridPlayData;
@@ -23,8 +24,10 @@ import games.strategy.util.Tuple;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -35,6 +38,9 @@ import java.util.Set;
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 {
+	private List<Map<Territory, PlayerID>> m_previousMapStates = new ArrayList<Map<Territory, PlayerID>>();
+	private int m_passesInARow = 0;
+	
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -58,6 +64,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		final GoPlayExtendedDelegateState state = new GoPlayExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
+		state.m_previousMapStates = this.m_previousMapStates;
+		state.m_passesInARow = this.m_passesInARow;
 		return state;
 	}
 	
@@ -67,6 +75,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		final GoPlayExtendedDelegateState s = (GoPlayExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+		this.m_previousMapStates = s.m_previousMapStates;
+		this.m_passesInARow = s.m_passesInARow;
 	}
 	
 	public boolean stuffToDoInThisDelegate()
@@ -110,6 +120,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 */
 	public static String isValidPlay(final IGridPlayData play, final PlayerID player, final GameData data)
 	{
+		if (play.isPass())
+			return null;
 		// System.out.println("Start: " + start.getX() + "," + start.getY() + "    End: " + end.getX() + "," + end.getY());
 		final String basic = isValidMoveBasic(play, player, data);
 		if (basic != null)
@@ -118,6 +130,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		final String pieceBasic = isValidPieceMoveBasic(play, player, data);
 		if (pieceBasic != null)
 			return pieceBasic;
+		
+		final String superko = isValidNonSuperPositionalKo(play, player, data);
+		if (superko != null)
+			return superko;
 		
 		return null;
 	}
@@ -160,6 +176,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	{
 		// assume it is a legal move
 		final Collection<Territory> captured = new HashSet<Territory>();
+		if (play.isPass())
+			return captured;
 		final Territory start = play.getStart();
 		// final Set<Territory> chain = getOwnedStoneChainsConnectedToThisTerritory(start, player, data, true);
 		final List<Set<Territory>> enemyChains = getEnemyStoneChainsConnectedToThisTerritory(start, player, data);
@@ -189,6 +207,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 */
 	private void performPlay(final IGridPlayData play, final Collection<Territory> captured, final PlayerID player)
 	{
+		if (play.isPass())
+		{
+			m_bridge.getHistoryWriter().startEvent(play.toString());
+			m_passesInARow += 1;
+			return;
+		}
 		final Collection<Unit> units = new ArrayList<Unit>();
 		units.add(getData().getUnitTypeList().getUnitType("stone").create(player));
 		m_bridge.getHistoryWriter().startEvent(play.toString(), units);
@@ -217,6 +241,59 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.refreshTerritories(refresh);
 		display.showGridPlayDataMove(play);
+		m_previousMapStates.add(getCurrentMapState(getData()));
+		// this is not strictly by the rules, but might as well for memory management since it is basically impossible to have superko 10 turns later
+		while (m_previousMapStates.size() > 10)
+		{
+			m_previousMapStates.remove(0);
+		}
+		m_passesInARow = 0;
+	}
+	
+	public static Map<Territory, PlayerID> getCurrentMapState(final GameData data)
+	{
+		final Map<Territory, PlayerID> state = new HashMap<Territory, PlayerID>();
+		for (final Territory t : data.getMap().getTerritories())
+		{
+			final Collection<Unit> units = t.getUnits().getUnits();
+			if (!units.isEmpty())
+			{
+				state.put(t, units.iterator().next().getOwner());
+			}
+		}
+		return state;
+	}
+	
+	public List<Map<Territory, PlayerID>> getPreviousMapStates()
+	{
+		return m_previousMapStates;
+	}
+	
+	public int getPassesInARow()
+	{
+		return m_passesInARow;
+	}
+	
+	public static String isValidNonSuperPositionalKo(final IGridPlayData play, final PlayerID player, final GameData data)
+	{
+		// first create the current state, then perform the move on it, then test if this state has existed before.
+		final Map<Territory, PlayerID> currentState = getCurrentMapState(data);
+		// there are only 2 changes: add our unit, and remove any captures
+		currentState.put(play.getStart(), player);
+		for (final Territory t : checkForCaptures(play, player, data))
+		{
+			currentState.remove(t);
+		}
+		
+		final PlayDelegate playDelegate = GridGame.playDelegate(data);
+		if (playDelegate == null)
+			return null;
+		final List<Map<Territory, PlayerID>> previousStates = playDelegate.getPreviousMapStates();
+		if (previousStates == null || previousStates.isEmpty())
+			return null;
+		if (previousStates.contains(currentState))
+			return "Can Not Recreate Any State That Previously Existed";
+		return null;
 	}
 	
 	/**
@@ -363,4 +440,6 @@ class GoPlayExtendedDelegateState implements Serializable
 	private static final long serialVersionUID = 5105340295270130144L;
 	Serializable superState;
 	// add other variables here:
+	List<Map<Territory, PlayerID>> m_previousMapStates;
+	int m_passesInARow;
 }

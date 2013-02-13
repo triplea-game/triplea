@@ -51,7 +51,8 @@ public class RandomAI extends GridAbstractAI
 			if (error == null)
 				return;
 		}
-		if (!validNonCaptureMoves.isEmpty())
+		// pass if there are very few moves left
+		if (validNonCaptureMoves.size() > (2 + ((data.getMap().getXDimension() * data.getMap().getYDimension()) / 5)))
 		{
 			Collections.shuffle(validNonCaptureMoves);
 			final Iterator<Territory> iter = validNonCaptureMoves.iterator();
@@ -63,6 +64,9 @@ public class RandomAI extends GridAbstractAI
 			if (error == null)
 				return;
 		}
+		// pass
+		final IGridPlayData pass = new GridPlayData(true, me);
+		playDel.play(pass);
 	}
 	
 	static Comparator<Tuple<Territory, Collection<Territory>>> getBestCaptureComparator(final PlayerID player, final GameData data)

@@ -22,6 +22,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
@@ -44,6 +45,7 @@ public class GoMapPanel extends GridMapPanel
 {
 	private static final long serialVersionUID = 2560185139493126853L;
 	protected Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> m_allMovesPossibleList = null;
+	protected boolean m_passing = false;
 	
 	public GoMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
@@ -240,7 +242,23 @@ public class GoMapPanel extends GridMapPanel
 		m_allMovesPossibleList = null;
 		if (m_waiting != null && (m_clickedAt != null))
 		{
+			m_passing = false;
 			m_waiting.countDown();
+		}
+	}
+	
+	@Override
+	public void doKeyListenerEvents(final KeyEvent e)
+	{
+		final int keyCode = e.getKeyCode();
+		if (keyCode == KeyEvent.VK_P)
+		{
+			// we are passing
+			m_passing = true;
+			if (m_waiting != null)
+			{
+				m_waiting.countDown();
+			}
 		}
 	}
 	
@@ -269,7 +287,7 @@ public class GoMapPanel extends GridMapPanel
 		m_waiting = waiting;
 		// Wait for a play or an attempt to leave the game
 		m_waiting.await();
-		if (m_clickedAt == null)
+		if (m_clickedAt == null && !m_passing)
 		{
 			// If either m_clickedAt==null or m_releasedAt==null,
 			// the play is invalid and must have been interrupted.
@@ -282,8 +300,13 @@ public class GoMapPanel extends GridMapPanel
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			final GridPlayData play = new GridPlayData(m_clickedAt, player);
+			final GridPlayData play;
+			if (m_passing)
+				play = new GridPlayData(true, player);
+			else
+				play = new GridPlayData(m_clickedAt, player);
 			m_clickedAt = null;
+			m_passing = false;
 			// m_releasedAt = null;
 			return play;
 		}

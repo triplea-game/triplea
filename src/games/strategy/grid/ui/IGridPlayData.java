@@ -39,4 +39,6 @@ public interface IGridPlayData extends Serializable
 	public PlayerID getPlayerID();
 	
 	public boolean isBiggerThanAndContains(IGridPlayData otherPlay);
+	
+	public boolean isPass();
 }
