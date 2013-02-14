@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.Collection;
@@ -103,6 +104,11 @@ public class GridGameDisplay implements IGridGameDisplay
 	public void showGridPlayDataMove(final IGridPlayData move)
 	{
 		m_ui.showGridPlayDataMove(move);
+	}
+	
+	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
+	{
+		m_ui.showGridEndTurnData(endTurnData);
 	}
 	
 	public void initializeGridMapData(final GameMap map)

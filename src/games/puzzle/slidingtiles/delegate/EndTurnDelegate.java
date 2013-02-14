@@ -132,6 +132,7 @@ public class EndTurnDelegate extends AbstractDelegate
 	{
 		// If the game is over, we need to be able to alert all UIs to that fact.
 		// The display object can send a message to all UIs.
+		m_bridge.getHistoryWriter().startEvent(status);
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 		display.setGameOver();

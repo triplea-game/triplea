@@ -67,7 +67,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	    return endDel.isGameOver();
 	}
 	*/
-	private void play()
+	protected void play()
 	{
 		// change to active player
 		m_ui.changeActivePlayer(getPlayerID());
@@ -106,9 +106,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		}
 	}
 	
-	private void endTurn()
+	protected void endTurn()
 	{
-		
 	}
 	
 	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)

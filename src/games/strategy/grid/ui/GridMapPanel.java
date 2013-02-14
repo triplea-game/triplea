@@ -188,6 +188,17 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		});
 	}
 	
+	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_parentGridGameFrame.updateRightSidePanel(endTurnData.toString(), null);
+			}
+		});
+	}
+	
 	protected void updateAllImages()
 	{
 		refreshTerritories(m_gameData.getMap().getTerritories());
@@ -505,6 +516,17 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 			m_parentGridGameFrame.notifyError(error);
 			return null;
 		}
+	}
+	
+	public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
+	{
+		// Make sure we have a valid CountDownLatch.
+		if (waiting == null || waiting.getCount() != 1)
+			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
+		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
+		m_waiting = waiting;
+		m_waiting.await();
+		return null;
 	}
 	
 	protected abstract String isValidPlay(final IGridPlayData play);

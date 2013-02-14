@@ -3,10 +3,13 @@ package games.strategy.grid.go.player;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.go.delegate.PlayDelegate;
+import games.strategy.grid.go.delegate.remote.IGoEndTurnDelegate;
+import games.strategy.grid.go.delegate.remote.IGoPlayDelegate;
 import games.strategy.grid.player.GridAbstractAI;
+import games.strategy.grid.ui.GridEndTurnData;
 import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
@@ -14,6 +17,7 @@ import games.strategy.util.Tuple;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,15 +31,23 @@ public class RandomAI extends GridAbstractAI
 	@Override
 	protected void play()
 	{
-		// Unless the triplea.ai.pause system property is set to false,
-		// pause for 0.8 seconds to give the impression of thinking
-		pause();
-		// Get the collection of territories from the map
-		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGoPlayDelegate playDel = (IGoPlayDelegate) this.getPlayerBridge().getRemote();
 		final PlayerID me = getPlayerID();
 		final GameData data = getGameData();
+		// if (playDel.haveTwoPassedInARow())
+		// return;
+		
+		pause();
 		String error;
-		final Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> totalMoves = PlayDelegate.getAllValidMovesCaptureMovesAndInvalidMoves(me, data);
+		final Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> totalMoves;
+		try
+		{
+			data.acquireReadLock();
+			totalMoves = PlayDelegate.getAllValidMovesCaptureMovesAndInvalidMoves(me, data);
+		} finally
+		{
+			data.releaseReadLock();
+		}
 		final List<Territory> validNonCaptureMoves = totalMoves.getFirst();
 		final List<Tuple<Territory, Collection<Territory>>> validCaptureMoves = totalMoves.getSecond();
 		if (!validCaptureMoves.isEmpty())
@@ -67,6 +79,25 @@ public class RandomAI extends GridAbstractAI
 		// pass
 		final IGridPlayData pass = new GridPlayData(true, me);
 		playDel.play(pass);
+	}
+	
+	@Override
+	protected void endTurn()
+	{
+		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemote();
+		// if (!endTurnDel.haveTwoPassedInARow())
+		// return;
+		pause();
+		final IGridEndTurnData lastPlayersEndTurn = endTurnDel.getTerritoryAdjustment();
+		if (lastPlayersEndTurn == null)
+		{
+			final IGridEndTurnData endPlay = new GridEndTurnData(new HashSet<Territory>(), false, getPlayerID());
+			endTurnDel.territoryAdjustment(endPlay);
+		}
+		else
+		{
+			endTurnDel.territoryAdjustment(lastPlayersEndTurn);
+		}
 	}
 	
 	static Comparator<Tuple<Territory, Collection<Territory>>> getBestCaptureComparator(final PlayerID player, final GameData data)

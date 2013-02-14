@@ -37,6 +37,10 @@ public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGame
 	
 	protected abstract void play();
 	
+	protected void endTurn()
+	{
+	}
+	
 	/**
 	 * The given phase has started. Parse the phase name and call the appropiate method.
 	 */
@@ -45,6 +49,10 @@ public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGame
 	{
 		if (stepName.endsWith("Play"))
 			play();
+		else if (stepName.endsWith("EndTurn"))
+			endTurn();
+		else
+			throw new IllegalArgumentException("Unrecognized step stepName:" + stepName);
 	}
 	
 	public final Class<IGridGamePlayer> getRemotePlayerType()

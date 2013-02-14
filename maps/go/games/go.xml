@@ -66,11 +66,11 @@
 		</property>
 		
 		<property name="Width" value="19" editable="true">
-			<number min="1" max="100"/>
+			<number min="1" max="101"/>
 		</property>
 		
 		<property name="Height" value="19" editable="true">
-			<number min="1" max="100"/>
+			<number min="1" max="101"/>
 		</property>
 		
 		<property name="White Bonus Komi" value="6" editable="true">
@@ -106,6 +106,13 @@
 				<br /><br /><b>How To Pass Your Turn</b> 
 				<br />Press 'P' on your keyboard to pass your turn. 
 				<br />If both players pass in a row, the game ends. 
+				<br /><br /><b>How To End The Game</b> 
+				<br />After two passes, Players must decide if any groups of stones on the board are actually 'dead' stones. 
+				This allows players to end a game when it is obvious that some stones are alive and others are dead.
+				<br />Click on any groups that are dead, and the map will change colors to show Territory control.
+				<br />When finished, press 'C' to confirm, which will send your choices to your opponent. 
+				He will then get to confirm it, which ends the game, or make some changes and send it back to you.
+				<br />If you are in disagreement, you may press 'R' to reject the choices, and continue the game where it left off.
 				<br /><br /><br /><b>The Goal of Go</b> 
 				<br />The goal of Go is to score points by surrounding and occupying territory. 
 				<br />The is done by placing pieces on the board in such a way as to claim more of the board for yourself, and/or capture enemy pieces. 

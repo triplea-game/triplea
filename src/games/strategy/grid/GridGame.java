@@ -10,7 +10,6 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.grid.go.delegate.PlayDelegate;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.GridGameFrame;
@@ -179,16 +178,15 @@ abstract public class GridGame implements IGameLoader
 		return new DefaultUnitFactory();
 	}
 	
+	/**
+	 * Only use this method from WITHIN a non-static Delegate class method.
+	 * (Because only the host has the delegates)
+	 */
 	protected static final IDelegate findDelegate(final GameData data, final String delegate_name)
 	{
 		final IDelegate delegate = data.getDelegateList().getDelegate(delegate_name);
 		if (delegate == null)
 			throw new IllegalStateException(delegate_name + " delegate not found");
 		return delegate;
-	}
-	
-	public static final PlayDelegate playDelegate(final GameData data)
-	{
-		return (PlayDelegate) findDelegate(data, "play");
 	}
 }

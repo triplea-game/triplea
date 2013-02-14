@@ -11,8 +11,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.message.IRemote;
-import games.strategy.grid.GridGame;
-import games.strategy.grid.delegate.remote.IGridPlayDelegate;
+import games.strategy.grid.go.Go;
+import games.strategy.grid.go.delegate.remote.IGoPlayDelegate;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
@@ -36,10 +36,12 @@ import java.util.Set;
  * 
  */
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
-public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
+public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 {
-	private List<Map<Territory, PlayerID>> m_previousMapStates = new ArrayList<Map<Territory, PlayerID>>();
-	private int m_passesInARow = 0;
+	protected List<Map<Territory, PlayerID>> m_previousMapStates = new ArrayList<Map<Territory, PlayerID>>();
+	protected int m_passesInARow = 0;
+	protected PlayerID m_firstPlayerToPass = null;
+	protected int m_blackHandicap = -1;
 	
 	/**
 	 * Called before the delegate will run.
@@ -48,14 +50,23 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	public void start()
 	{
 		super.start();
-		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
-		display.setStatus(m_player.getName() + "'s turn");
+		if (m_blackHandicap < 0)
+		{
+			m_blackHandicap = getData().getProperties().get("Black Player Handicap", 0);
+		}
+		if (stuffToDoInThisDelegate())
+		{
+			final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
+			display.setStatus(m_player.getName() + "'s turn. (Click to place stone, or 'P' to pass.)");
+		}
 	}
 	
 	@Override
 	public void end()
 	{
 		super.end();
+		if (m_blackHandicap > 0 && !m_player.getName().equalsIgnoreCase("Black"))
+			m_blackHandicap--;
 	}
 	
 	@Override
@@ -66,6 +77,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// add other variables to state here:
 		state.m_previousMapStates = this.m_previousMapStates;
 		state.m_passesInARow = this.m_passesInARow;
+		state.m_firstPlayerToPass = this.m_firstPlayerToPass;
+		state.m_blackHandicap = this.m_blackHandicap;
 		return state;
 	}
 	
@@ -77,11 +90,14 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// load other variables from state here:
 		this.m_previousMapStates = s.m_previousMapStates;
 		this.m_passesInARow = s.m_passesInARow;
+		this.m_firstPlayerToPass = s.m_firstPlayerToPass;
+		this.m_blackHandicap = s.m_blackHandicap;
 	}
 	
 	public boolean stuffToDoInThisDelegate()
 	{
-		return true;
+		return !haveTwoPassedInARow() && (m_firstPlayerToPass == null || m_passesInARow == 1 || m_firstPlayerToPass.equals(m_player))
+					&& (m_player.getName().equalsIgnoreCase("Black") || m_blackHandicap <= 0);
 	}
 	
 	public void signalStatus(final String status)
@@ -92,6 +108,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	
 	public String play(final IGridPlayData play)
 	{
+		if (!stuffToDoInThisDelegate())
+			return null;
 		for (final Territory t : play.getAllSteps())
 		{
 			if (t.getUnits().getUnitCount() > 1)
@@ -210,7 +228,11 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		if (play.isPass())
 		{
 			m_bridge.getHistoryWriter().startEvent(play.toString());
+			if (m_passesInARow == 0 && m_firstPlayerToPass == null)
+				m_firstPlayerToPass = player;
 			m_passesInARow += 1;
+			final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
+			display.showGridPlayDataMove(play);
 			return;
 		}
 		final Collection<Unit> units = new ArrayList<Unit>();
@@ -248,6 +270,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			m_previousMapStates.remove(0);
 		}
 		m_passesInARow = 0;
+		m_firstPlayerToPass = null;
 	}
 	
 	public static Map<Territory, PlayerID> getCurrentMapState(final GameData data)
@@ -269,9 +292,19 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return m_previousMapStates;
 	}
 	
+	public boolean haveTwoPassedInARow()
+	{
+		return m_passesInARow >= 2;
+	}
+	
 	public int getPassesInARow()
 	{
 		return m_passesInARow;
+	}
+	
+	public void setPassesInARow(final int passesInARow)
+	{
+		m_passesInARow = passesInARow;
 	}
 	
 	public static String isValidNonSuperPositionalKo(final IGridPlayData play, final PlayerID player, final GameData data)
@@ -285,14 +318,20 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			currentState.remove(t);
 		}
 		
-		final PlayDelegate playDelegate = GridGame.playDelegate(data);
-		if (playDelegate == null)
-			return null;
-		final List<Map<Territory, PlayerID>> previousStates = playDelegate.getPreviousMapStates();
-		if (previousStates == null || previousStates.isEmpty())
-			return null;
-		if (previousStates.contains(currentState))
-			return "Can Not Recreate Any State That Previously Existed";
+		{
+			// should we change to be part of the IDelegate, and call through remote?
+			// the client will not be able to use this block at all, because it doesn't have the local delegate, (only the remote)
+			// the reason we are not using remote -> IDelegate, is because we do not want this called a million times
+			// better to let the host check the validity of the play for this one, and leave the client out of it
+			final PlayDelegate localPlayDelegate = Go.playDelegate(data);
+			if (localPlayDelegate == null)
+				return null;
+			final List<Map<Territory, PlayerID>> previousStates = localPlayDelegate.getPreviousMapStates();
+			if (previousStates == null || previousStates.isEmpty())
+				return null;
+			if (previousStates.contains(currentState))
+				return "Can Not Recreate Any State That Previously Existed";
+		}
 		return null;
 	}
 	
@@ -304,7 +343,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	public Class<? extends IRemote> getRemoteType()
 	{
 		// This class implements IPlayDelegate, which inherits from IRemote.
-		return IGridPlayDelegate.class;
+		return IGoPlayDelegate.class;
 	}
 	
 	public static Match<Territory> TerritoryHasNoUnits = new Match<Territory>()
@@ -442,4 +481,6 @@ class GoPlayExtendedDelegateState implements Serializable
 	// add other variables here:
 	List<Map<Territory, PlayerID>> m_previousMapStates;
 	int m_passesInARow;
+	PlayerID m_firstPlayerToPass;
+	int m_blackHandicap;
 }

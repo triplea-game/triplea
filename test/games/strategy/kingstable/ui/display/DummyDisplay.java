@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
@@ -75,6 +76,10 @@ public class DummyDisplay implements IGridGameDisplay
 	}
 	
 	public void showGridPlayDataMove(final IGridPlayData move)
+	{
+	}
+	
+	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
 	{
 	}
 }

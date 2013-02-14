@@ -303,6 +303,8 @@ public class GridGameFrame extends MainGameFrame
 	
 	public static void renderObject(final Container container, final GridBagConstraints mainConstraints, final Object renderObject, final GridMapPanel mapPanel, final GameData data)
 	{
+		if (renderObject == null)
+			return;
 		if (renderObject instanceof Collection)
 		{
 			@SuppressWarnings("unchecked")
@@ -729,6 +731,11 @@ public class GridGameFrame extends MainGameFrame
 		m_mapPanel.showGridPlayDataMove(move);
 	}
 	
+	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
+	{
+		m_mapPanel.showGridEndTurnData(endTurnData);
+	}
+	
 	/**
 	 * Set up the tiles.
 	 */
@@ -774,6 +781,23 @@ public class GridGameFrame extends MainGameFrame
 			return null;
 		}
 		return play;
+	}
+	
+	public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge)
+	{
+		IGridEndTurnData endTurn = null;
+		try
+		{
+			while (endTurn == null)
+			{
+				m_waiting = new CountDownLatch(1);
+				endTurn = m_mapPanel.waitForEndTurn(player, bridge, m_waiting);
+			}
+		} catch (final InterruptedException e)
+		{
+			return null;
+		}
+		return endTurn;
 	}
 	
 	public void changeActivePlayer(final PlayerID player)

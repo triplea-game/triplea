@@ -5,11 +5,14 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.go.delegate.EndTurnDelegate;
 import games.strategy.grid.go.delegate.PlayDelegate;
+import games.strategy.grid.ui.GridEndTurnData;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.GridPlayData;
+import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Match;
@@ -29,9 +32,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.SwingUtilities;
@@ -44,18 +49,41 @@ import javax.swing.SwingUtilities;
 public class GoMapPanel extends GridMapPanel
 {
 	private static final long serialVersionUID = 2560185139493126853L;
+	protected Set<Territory> m_territoryGroupsThatShouldDie = null; // which stones are dead?
 	protected Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> m_allMovesPossibleList = null;
-	protected boolean m_passing = false;
+	protected boolean m_passing = false; // two passes sends us to end turn (end game) delegate
+	protected boolean m_wantToContinuePlaying = false; // after we get to end game, if players disagree on score, game will continue
+	protected GO_DELEGATE_PHASE m_phase = GO_DELEGATE_PHASE.PLAY;
+	
+	
+	public enum GO_DELEGATE_PHASE
+	{
+		PLAY, ENDGAME
+	}
 	
 	public GoMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
 		super(data, mapData, parentGridGameFrame, imageScrollModel);
 	}
 	
+	public void changePhase(final GO_DELEGATE_PHASE newPhase)
+	{
+		m_phase = newPhase;
+	}
+	
 	@Override
 	protected String isValidPlay(final IGridPlayData play)
 	{
-		return PlayDelegate.isValidPlay(play, m_parentGridGameFrame.getActivePlayer(), m_gameData);
+		final String error;
+		try
+		{
+			m_gameData.acquireReadLock();
+			error = PlayDelegate.isValidPlay(play, m_parentGridGameFrame.getActivePlayer(), m_gameData);
+		} finally
+		{
+			m_gameData.releaseReadLock();
+		}
+		return error;
 	}
 	
 	@Override
@@ -82,7 +110,16 @@ public class GoMapPanel extends GridMapPanel
 	
 	protected Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> getAllPossibleMovesList(final PlayerID activePlayer)
 	{
-		return PlayDelegate.getAllValidMovesCaptureMovesAndInvalidMoves(activePlayer, m_gameData);
+		final Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> moves;
+		try
+		{
+			m_gameData.acquireReadLock();
+			moves = PlayDelegate.getAllValidMovesCaptureMovesAndInvalidMoves(activePlayer, m_gameData);
+		} finally
+		{
+			m_gameData.releaseReadLock();
+		}
+		return moves;
 	}
 	
 	/**
@@ -151,7 +188,7 @@ public class GoMapPanel extends GridMapPanel
 	@Override
 	protected void paintLastMove(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
-		if (m_lastMove != null)
+		if (m_lastMove != null && m_lastMove.getStart() != null)
 		{
 			g2d.setColor(Color.gray);
 			final Territory last = m_lastMove.getStart();
@@ -198,6 +235,39 @@ public class GoMapPanel extends GridMapPanel
 	}
 	
 	@Override
+	protected void paintValidMoves(final Graphics2D g2d, final int topLeftX, final int topLeftY)
+	{
+		if (m_phase == GO_DELEGATE_PHASE.ENDGAME)
+		{
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+			final Map<Territory, PlayerID> currentScoreState = EndTurnDelegate.getCurrentAreaScoreState(m_territoryGroupsThatShouldDie, m_gameData);
+			final Map<PlayerID, Color> playerColors = new HashMap<PlayerID, Color>();
+			playerColors.put(null, Color.blue);
+			for (final PlayerID player : m_gameData.getPlayerList().getPlayers())
+			{
+				if (player.getName().equalsIgnoreCase("white"))
+					playerColors.put(player, Color.white);
+				else if (player.getName().equalsIgnoreCase("black"))
+					playerColors.put(player, Color.black);
+				else
+					playerColors.put(player, Color.red);
+			}
+			for (final Territory t : m_gameData.getMap().getTerritories())
+			{
+				final PlayerID player = currentScoreState.get(t);
+				g2d.setColor(playerColors.get(player));
+				final Polygon p2 = m_mapData.getPolygon(t);
+				final Rectangle rect2 = p2.getBounds();
+				g2d.fillRect(rect2.x, rect2.y, rect2.width, rect2.height);
+				// g2d.fillRoundRect(rect2.x, rect2.y, rect2.width, rect2.height, rect2.width / 3, rect2.height / 3);
+				// g2d.drawLine(rect2.x, rect2.y, rect2.x + rect2.width, rect2.y + rect2.height);
+				// g2d.drawLine(rect2.x, rect2.y + rect2.height, rect2.x + rect2.width, rect2.y);
+				// g2d.drawRect(rect2.x + 1, rect2.y + 1, rect2.width - 2, rect2.height - 2);
+			}
+		}
+	}
+	
+	@Override
 	protected void showGridPlayDataMove(final IGridPlayData move)
 	{
 		m_lastMove = move;
@@ -205,27 +275,86 @@ public class GoMapPanel extends GridMapPanel
 		{
 			public void run()
 			{
-				m_parentGridGameFrame.updateRightSidePanel(move.toString(), m_lastMove.getStart().getUnits().getUnits());
+				if (move != null)
+					m_parentGridGameFrame.updateRightSidePanel(move.toString(),
+								(m_lastMove.getStart() == null ? null : m_lastMove.getStart().getUnits().getUnits()));
 			}
 		});
 	}
 	
 	@Override
+	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
+	{
+		super.showGridEndTurnData(endTurnData);
+		m_territoryGroupsThatShouldDie = endTurnData.getTerritoryUnitsRemovalAdjustment();
+		this.updateAllImages();
+	}
+	
+	@Override
 	public void mousePressed(final MouseEvent e)
 	{
-		m_clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
-		if (m_clickedAt != null && e.getButton() != MouseEvent.BUTTON1)
+		if (m_phase == GO_DELEGATE_PHASE.PLAY)
 		{
-			// setMouseShadowUnits(m_clickedAt.getUnits().getUnits());
-			// m_validMovesList = getValidMovesList(m_clickedAt, m_parentGridGameFrame.getActivePlayer());
-			m_allMovesPossibleList = getAllPossibleMovesList(m_parentGridGameFrame.getActivePlayer());
+			m_clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+			if (m_clickedAt != null && e.getButton() != MouseEvent.BUTTON1)
+			{
+				// setMouseShadowUnits(m_clickedAt.getUnits().getUnits());
+				// m_validMovesList = getValidMovesList(m_clickedAt, m_parentGridGameFrame.getActivePlayer());
+				m_allMovesPossibleList = getAllPossibleMovesList(m_parentGridGameFrame.getActivePlayer());
+			}
+		}
+		else if (m_phase == GO_DELEGATE_PHASE.ENDGAME)
+		{
+			final Territory clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+			if (clickedAt == null)
+				return;
+			if (m_territoryGroupsThatShouldDie == null)
+				m_territoryGroupsThatShouldDie = new HashSet<Territory>();
+			final Collection<Unit> units = clickedAt.getUnits().getUnits();
+			if (units.isEmpty())
+			{
+				// TODO: allow switching ownership of blank spaces
+				return;
+			}
+			else
+			{
+				final PlayerID owner = units.iterator().next().getOwner();
+				final Set<Territory> group = PlayDelegate.getOwnedStoneChainsConnectedToThisTerritory(clickedAt, new HashSet<Territory>(), owner, m_gameData, true);
+				if (m_territoryGroupsThatShouldDie.containsAll(group))
+					m_territoryGroupsThatShouldDie.removeAll(group);
+				else
+					m_territoryGroupsThatShouldDie.addAll(group);
+			}
 		}
 	}
 	
 	@Override
 	public void mouseReleased(final MouseEvent e)
 	{
-		if (e.getButton() != MouseEvent.BUTTON1) // (e.isControlDown() || e.isAltDown() || e.isShiftDown())
+		if (m_phase == GO_DELEGATE_PHASE.PLAY)
+		{
+			if (e.getButton() != MouseEvent.BUTTON1) // (e.isControlDown() || e.isAltDown() || e.isShiftDown())
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						repaint();
+					}
+				});
+				return;
+			}
+			// m_releasedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+			// setMouseShadowUnits(null);
+			// m_validMovesList = null;
+			m_allMovesPossibleList = null;
+			if (m_waiting != null && (m_clickedAt != null))
+			{
+				m_passing = false;
+				m_waiting.countDown();
+			}
+		}
+		else if (m_phase == GO_DELEGATE_PHASE.ENDGAME)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
@@ -234,16 +363,6 @@ public class GoMapPanel extends GridMapPanel
 					repaint();
 				}
 			});
-			return;
-		}
-		// m_releasedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
-		// setMouseShadowUnits(null);
-		// m_validMovesList = null;
-		m_allMovesPossibleList = null;
-		if (m_waiting != null && (m_clickedAt != null))
-		{
-			m_passing = false;
-			m_waiting.countDown();
 		}
 	}
 	
@@ -253,11 +372,41 @@ public class GoMapPanel extends GridMapPanel
 		final int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_P)
 		{
-			// we are passing
-			m_passing = true;
-			if (m_waiting != null)
+			if (m_phase == GO_DELEGATE_PHASE.PLAY)
 			{
-				m_waiting.countDown();
+				// we are passing
+				m_passing = true;
+				if (m_waiting != null)
+				{
+					m_waiting.countDown();
+				}
+			}
+		}
+		if (keyCode == KeyEvent.VK_R)
+		{
+			if (m_phase == GO_DELEGATE_PHASE.ENDGAME)
+			{
+				// we want to play on, because we disagree
+				m_wantToContinuePlaying = true;
+				m_territoryGroupsThatShouldDie = null;
+				if (m_waiting != null)
+				{
+					m_waiting.countDown();
+				}
+			}
+		}
+		if (keyCode == KeyEvent.VK_C)
+		{
+			if (m_phase == GO_DELEGATE_PHASE.ENDGAME)
+			{
+				// send our score to the other player
+				m_wantToContinuePlaying = false;
+				if (m_territoryGroupsThatShouldDie == null)
+					m_territoryGroupsThatShouldDie = new HashSet<Territory>();
+				if (m_waiting != null)
+				{
+					m_waiting.countDown();
+				}
 			}
 		}
 	}
@@ -286,6 +435,7 @@ public class GoMapPanel extends GridMapPanel
 		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
 		m_waiting = waiting;
 		// Wait for a play or an attempt to leave the game
+		this.updateAllImages();
 		m_waiting.await();
 		if (m_clickedAt == null && !m_passing)
 		{
@@ -309,6 +459,43 @@ public class GoMapPanel extends GridMapPanel
 			m_passing = false;
 			// m_releasedAt = null;
 			return play;
+		}
+	}
+	
+	@Override
+	public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
+	{
+		// Make sure we have a valid CountDownLatch.
+		if (waiting == null || waiting.getCount() != 1)
+			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
+		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
+		m_waiting = waiting;
+		// before we 'await', set the players data to show what the other player is reporting
+		/* might no longer need, since we have the IDisplay do this instead....
+		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) bridge.getRemote();
+		final IGridEndTurnData otherPlayersTerritoryAdjustment = endTurnDel.getTerritoryAdjustment();
+		if (otherPlayersTerritoryAdjustment != null)
+		{
+			m_territoryGroupsThatShouldDie = otherPlayersTerritoryAdjustment.getTerritoryUnitsRemovalAdjustment();
+		}
+		*/
+		this.updateAllImages();
+		// Wait for a play or an attempt to leave the game
+		m_waiting.await();
+		if (m_territoryGroupsThatShouldDie == null && !m_wantToContinuePlaying)
+		{
+			// the play is invalid and must have been interrupted. So, reset the member variables, and throw an exception.
+			m_territoryGroupsThatShouldDie = null;
+			m_wantToContinuePlaying = false;
+			throw new InterruptedException("Interrupted while waiting for play.");
+		}
+		else
+		{
+			// We have a valid play! Reset the member variables, and return the play.
+			final IGridEndTurnData endTurn = new GridEndTurnData(m_territoryGroupsThatShouldDie, m_wantToContinuePlaying, player);
+			m_territoryGroupsThatShouldDie = null;
+			m_wantToContinuePlaying = false;
+			return endTurn;
 		}
 	}
 }

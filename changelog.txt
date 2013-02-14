@@ -1,4 +1,6 @@
 Changes for 1.7
+* Creating victory conditions for Go, and creating a UI for players to negotiate which groups of stones are alive or dead. (veqryn)
+
 * Creating all game logic for Go. (veqryn)
 
 * Creating UI for Go. (veqryn)

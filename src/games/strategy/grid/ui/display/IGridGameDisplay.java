@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 
 import java.util.Collection;
@@ -50,10 +51,13 @@ public interface IGridGameDisplay extends IDisplay
 	
 	public void showGridPlayDataMove(IGridPlayData move);
 	
+	public void showGridEndTurnData(IGridEndTurnData endTurnData);
+	
 	/**
 	 * Initialize the board.
 	 */
 	public void initializeGridMapData(GameMap map);
 	
 	public GridGameFrame getGridGameFrame();
+	
 }
