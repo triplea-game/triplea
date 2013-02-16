@@ -241,9 +241,19 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		return games.strategy.triplea.Properties.getWW2V3(getData());
 	}
 	
-	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title)
+	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
-		return poster.post(m_bridge.getHistoryWriter(), title);
+		// nothing for now
+	}
+	
+	public boolean getHasPostedTurnSummary()
+	{
+		return false;
+	}
+	
+	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
+	{
+		return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
 	}
 	
 	protected ITripleaPlayer getRemotePlayer()

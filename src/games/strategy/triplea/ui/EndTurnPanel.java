@@ -21,7 +21,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
 /**
  * 
@@ -74,34 +74,40 @@ public class EndTurnPanel extends AbstractForumPosterPanel
 	}
 	
 	@Override
+	protected IAbstractForumPosterDelegate getForumPosterDelegate()
+	{
+		return (IAbstractForumPosterDelegate) m_bridge.getRemote();
+	}
+	
+	@Override
 	protected boolean getHasPostedTurnSummary()
 	{
-		final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
 		return delegate.getHasPostedTurnSummary();
 	}
 	
 	@Override
 	protected void setHasPostedTurnSummary(final boolean posted)
 	{
-		final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
 		delegate.setHasPostedTurnSummary(posted);
 	}
 	
-	public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge)
-	{
-		super.waitForDone(frame, bridge);
-	}
-	
 	@Override
-	protected boolean postTurnSummary(final PBEMMessagePoster poster)
+	protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame)
 	{
-		final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
-		return delegate.postTurnSummary(poster, getTitle());
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		return delegate.postTurnSummary(poster, getTitle(), includeSaveGame);
 	}
 	
 	@Override
 	protected boolean skipPosting()
 	{
 		return false;
+	}
+	
+	public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge)
+	{
+		super.waitForDone(frame, bridge);
 	}
 }

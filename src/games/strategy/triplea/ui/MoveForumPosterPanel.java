@@ -3,7 +3,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
 /**
  * 
@@ -56,32 +56,41 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel
 	}
 	
 	@Override
+	protected IAbstractForumPosterDelegate getForumPosterDelegate()
+	{
+		return (IAbstractForumPosterDelegate) m_bridge.getRemote();
+	}
+	
+	@Override
 	protected boolean getHasPostedTurnSummary()
 	{
-		return false;
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		return delegate.getHasPostedTurnSummary();
 	}
 	
 	@Override
 	protected void setHasPostedTurnSummary(final boolean posted)
 	{
-		// nothing
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		delegate.setHasPostedTurnSummary(posted);
 	}
 	
 	@Override
-	public void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge)
+	protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame)
 	{
-		super.waitForDone(frame, bridge);
-	}
-	
-	@Override
-	protected boolean postTurnSummary(final PBEMMessagePoster poster)
-	{
-		return DelegateFinder.moveDelegate(getData()).postTurnSummary(poster, getTitle());
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		return delegate.postTurnSummary(poster, getTitle(), includeSaveGame);
 	}
 	
 	@Override
 	protected boolean skipPosting()
 	{
 		return !m_poster.alsoPostMoveSummary();
+	}
+	
+	@Override
+	public void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge)
+	{
+		super.waitForDone(frame, bridge);
 	}
 }

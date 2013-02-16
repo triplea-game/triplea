@@ -24,25 +24,15 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.engine.pbem.IForumPoster;
+import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.engine.random.IRandomStats;
-import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.ProgressWindow;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -57,198 +47,13 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	protected IPlayerBridge m_bridge;
 	protected PBEMMessagePoster m_poster;
 	protected TripleAFrame m_frame;
-	protected HistoryLog m_historyLog;
-	protected JButton m_postButton;
-	protected JCheckBox m_includeTerritoryCheckbox;
-	protected JCheckBox m_includeProductionCheckbox;
-	protected JCheckBox m_showDetailsCheckbox;
-	protected JCheckBox m_showDiceStatisticsCheckbox;
-	protected Action m_viewAction;
-	protected Action m_postAction;
-	protected Action m_includeTerritoryAction;
-	protected Action m_includeProductionAction;
-	protected Action m_showDetailsAction;
-	protected Action m_showDiceStatisticsAction;
 	protected Action m_doneAction;
-	
-	abstract protected String getTitle();
+	protected ForumPosterComponent m_forumPosterComponent;
 	
 	public AbstractForumPosterPanel(final GameData data, final MapPanel map)
 	{
 		super(data, map);
 		m_actionLabel = new JLabel();
-		m_viewAction = new AbstractAction("View " + getTitle())
-		{
-			private static final long serialVersionUID = -2619980789206699839L;
-			
-			public void actionPerformed(final ActionEvent event)
-			{
-				m_historyLog.setVisible(true);
-			}
-		};
-		m_postAction = new AbstractAction("Post " + getTitle())
-		{
-			private static final long serialVersionUID = 8317441736305744524L;
-			
-			public void actionPerformed(final ActionEvent event)
-			{
-				updateHistoryLog();
-				String message = "";
-				final IForumPoster turnSummaryMsgr = m_poster.getForumPoster();
-				
-				final StringBuilder sb = new StringBuilder();
-				if (turnSummaryMsgr != null)
-				{
-					sb.append(message).append("Post " + getTitle() + " ");
-					if (turnSummaryMsgr.getIncludeSaveGame())
-					{
-						sb.append("and save game ");
-					}
-					sb.append("to ").append(turnSummaryMsgr.getDisplayName()).append("?\n");
-				}
-				
-				final IEmailSender emailSender = m_poster.getEmailSender();
-				if (emailSender != null)
-				{
-					sb.append("Send email to ").append(emailSender.getToAddress()).append("?\n");
-				}
-				
-				message = sb.toString();
-				final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Post " + getTitle() + "?", 2, -1, null);
-				if (choice != 0)
-				{
-					return;
-				}
-				else
-				{
-					m_postButton.setEnabled(false);
-					final ProgressWindow progressWindow = new ProgressWindow(m_frame, "Posting " + getTitle() + "...");
-					progressWindow.setVisible(true);
-					final Runnable t = new Runnable()
-					{
-						public void run()
-						{
-							boolean postOk = true;
-							
-							File saveGameFile = null;
-							
-							try
-							{
-								saveGameFile = File.createTempFile("triplea", ".tsvg");
-								if (saveGameFile != null)
-								{
-									m_frame.getGame().saveGame(saveGameFile);
-									m_poster.setSaveGame(saveGameFile);
-								}
-							} catch (final Exception e)
-							{
-								postOk = false;
-								e.printStackTrace();
-							}
-							
-							m_poster.setTurnSummary(m_historyLog.toString());
-							
-							try
-							{
-								// forward the poster to the delegate which invokes post() on the poster
-								if (!postTurnSummary(m_poster))
-									postOk = false;
-							} catch (final Exception e)
-							{
-								postOk = false;
-								e.printStackTrace();
-							}
-							
-							final StringBuilder sb = new StringBuilder();
-							if (m_poster.getForumPoster() != null)
-							{
-								final String saveGameRef = m_poster.getSaveGameRef();
-								final String turnSummaryRef = m_poster.getTurnSummaryRef();
-								
-								if (saveGameRef != null)
-									sb.append("\nSave Game : ").append(saveGameRef);
-								if (turnSummaryRef != null)
-									sb.append("\nSummary Text: ").append(turnSummaryRef);
-							}
-							if (m_poster.getEmailSender() != null)
-							{
-								sb.append("\nEmails: ").append(m_poster.getEmailSendStatus());
-							}
-							
-							m_historyLog.getWriter().println(sb.toString());
-							
-							if (m_historyLog.isVisible()) // todo(kg) I think this is a brain fart, unless is is a workaround for some bug
-								m_historyLog.setVisible(true);
-							try
-							{
-								if (saveGameFile != null && !saveGameFile.delete())
-									System.err.println((new StringBuilder()).append("couldn't delete ").append(saveGameFile.getCanonicalPath()).toString());
-							} catch (final IOException ioe)
-							{
-								ioe.printStackTrace();
-							}
-							progressWindow.setVisible(false);
-							progressWindow.removeAll();
-							progressWindow.dispose();
-							setHasPostedTurnSummary(postOk);
-							
-							final boolean finalPostOk = postOk;
-							final String finalMessage = sb.toString();
-							final Runnable runnable = new Runnable()
-							{
-								public void run()
-								{
-									m_postButton.setEnabled(!finalPostOk);
-									if (finalPostOk)
-										JOptionPane.showMessageDialog(m_frame, finalMessage, getTitle() + " Posted", JOptionPane.INFORMATION_MESSAGE);
-									else
-										JOptionPane.showMessageDialog(m_frame, finalMessage, getTitle() + " Posted", JOptionPane.ERROR_MESSAGE);
-								}
-							};
-							SwingUtilities.invokeLater(runnable);
-						}
-					};
-					// start a new thread for posting the summary.
-					new Thread(t).start();
-				}
-			}
-		};
-		m_includeTerritoryAction = new AbstractAction("Include territory summary")
-		{
-			private static final long serialVersionUID = 207279881318712095L;
-			
-			public void actionPerformed(final ActionEvent event)
-			{
-				updateHistoryLog();
-			}
-		};
-		m_includeProductionAction = new AbstractAction("Include production summary")
-		{
-			private static final long serialVersionUID = 2298448099326090293L;
-			
-			public void actionPerformed(final ActionEvent event)
-			{
-				updateHistoryLog();
-			}
-		};
-		m_showDetailsAction = new AbstractAction("Show dice/battle details")
-		{
-			private static final long serialVersionUID = -4248518090232071926L;
-			
-			public void actionPerformed(final ActionEvent event)
-			{
-				updateHistoryLog();
-			}
-		};
-		m_showDiceStatisticsAction = new AbstractAction("Include overall dice statistics")
-		{
-			private static final long serialVersionUID = 1431745626173286692L;
-			
-			public void actionPerformed(final ActionEvent event)
-			{
-				updateHistoryLog();
-			}
-		};
 		m_doneAction = new AbstractAction("Done")
 		{
 			private static final long serialVersionUID = -3658752576117043053L;
@@ -258,10 +63,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 				release();
 			}
 		};
-		m_includeTerritoryCheckbox = new JCheckBox(m_includeTerritoryAction);
-		m_includeProductionCheckbox = new JCheckBox(m_includeProductionAction);
-		m_showDetailsCheckbox = new JCheckBox(m_showDetailsAction);
-		m_showDiceStatisticsCheckbox = new JCheckBox(m_showDiceStatisticsAction);
+		m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
 	}
 	
 	private int getRound()
@@ -309,47 +111,20 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	
 	abstract protected boolean allowDiceStatistics();
 	
-	abstract protected boolean postTurnSummary(final PBEMMessagePoster poster);
+	abstract protected IAbstractForumPosterDelegate getForumPosterDelegate();
 	
-	@Override
-	abstract public String toString();
-	
-	private void updateHistoryLog()
-	{
-		// parse allowed players
-		final String allowedPlayers = m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);
-		final Collection<PlayerID> allowedIDs;
-		if (allowedPlayers != null)
-		{
-			allowedIDs = new HashSet<PlayerID>();
-			for (final String p : allowedPlayers.split(":"))
-			{
-				final PlayerID id = getData().getPlayerList().getPlayerID(p);
-				if (id == null)
-					System.err.println("gamePlay sequence step: " + m_bridge.getStepName() + " stepProperty: " + GameStep.PROPERTY_turnSummaryPlayers + " player: " + p + " DOES NOT EXIST");
-				else
-					allowedIDs.add(id);
-			}
-		}
-		else
-			allowedIDs = null;
-		// clear first, then update
-		m_historyLog.clear();
-		m_historyLog.printFullTurn(getData(), m_showDetailsCheckbox.isSelected(), allowedIDs);
-		if (m_includeTerritoryCheckbox.isSelected())
-			m_historyLog.printTerritorySummary(getData(), allowedIDs);
-		if (m_includeProductionCheckbox.isSelected())
-			m_historyLog.printProductionSummary(getData());
-		if (m_showDiceStatisticsCheckbox.isSelected())
-			m_historyLog.printDiceStatistics(getData(), (IRandomStats) m_frame.getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
-		m_historyLog.requestFocus();
-	}
+	abstract protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame);
 	
 	abstract protected boolean getHasPostedTurnSummary();
 	
 	abstract protected void setHasPostedTurnSummary(boolean posted);
 	
 	abstract protected boolean skipPosting();
+	
+	abstract protected String getTitle();
+	
+	@Override
+	abstract public String toString();
 	
 	protected void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge)
 	{
@@ -367,24 +142,10 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		{
 			public void run()
 			{
-				m_historyLog = new HistoryLog();
-				updateHistoryLog();
-				// only show widgets if there are PBEM messengers
 				removeAll();
 				add(m_actionLabel);
-				if (allowIncludeTerritorySummary())
-					add(m_includeTerritoryCheckbox);
-				if (allowIncludeProductionSummary())
-					add(m_includeProductionCheckbox);
-				if (allowDiceBattleDetails())
-					add(m_showDetailsCheckbox);
-				if (allowDiceStatistics())
-					add(m_showDiceStatisticsCheckbox);
-				add(new JButton(m_viewAction));
-				m_postButton = new JButton(m_postAction);
-				m_postButton.setEnabled(!hasPosted);
-				add(m_postButton);
-				add(new JButton(m_doneAction));
+				add(m_forumPosterComponent.layoutComponents(m_poster, getForumPosterDelegate(), m_bridge, m_frame, hasPosted,
+							allowIncludeTerritorySummary(), allowIncludeProductionSummary(), allowDiceBattleDetails(), allowDiceStatistics()));
 				validate();
 			}
 		});

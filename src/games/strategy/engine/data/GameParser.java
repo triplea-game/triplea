@@ -118,8 +118,8 @@ public class GameParser
 		final Element root = doc.getDocumentElement();
 		data = new GameData();
 		// mandatory fields
+		parseInfo(getSingleChild("info", root)); // get the name of the map
 		parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true)); // test minimum engine version FIRST
-		parseInfo(getSingleChild("info", root));
 		parseGameLoader(getSingleChild("loader", root));
 		// if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and see if we have any SAX errors we need to show
 		if (!errorsSAX.isEmpty())

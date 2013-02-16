@@ -7,6 +7,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.grid.go.delegate.EndTurnDelegate;
 import games.strategy.grid.go.delegate.PlayDelegate;
+import games.strategy.grid.go.delegate.remote.IGoEndTurnDelegate;
 import games.strategy.grid.ui.GridEndTurnData;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapData;
@@ -468,34 +469,46 @@ public class GoMapPanel extends GridMapPanel
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
 			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
-		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
-		m_waiting = waiting;
-		// before we 'await', set the players data to show what the other player is reporting
-		/* might no longer need, since we have the IDisplay do this instead....
 		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) bridge.getRemote();
-		final IGridEndTurnData otherPlayersTerritoryAdjustment = endTurnDel.getTerritoryAdjustment();
-		if (otherPlayersTerritoryAdjustment != null)
+		final boolean hasTwoPasses = endTurnDel.haveTwoPassedInARow();
+		// we might be doing PBEM but not actually have enough passes to be in end game
+		final boolean waitForPBEM = waitForPlayByEmailOrForumPoster(player, bridge);
+		IGridEndTurnData endPhaseData = new GridEndTurnData(null, true, player);
+		// returning null = loop this method; so we don't want to return null
+		if (!waitForPBEM && !hasTwoPasses)
+			return endPhaseData;
+		
+		if (hasTwoPasses)
 		{
-			m_territoryGroupsThatShouldDie = otherPlayersTerritoryAdjustment.getTerritoryUnitsRemovalAdjustment();
+			// The mouse listeners need access to the CountDownLatch, so store as a member variable.
+			m_waiting = waiting;
+			this.updateAllImages();
+			// Wait for a play or an attempt to leave the game
+			m_waiting.await();
+			
+			if (m_territoryGroupsThatShouldDie == null && !m_wantToContinuePlaying)
+			{
+				// the play is invalid and must have been interrupted. So, reset the member variables, and throw an exception.
+				m_territoryGroupsThatShouldDie = null;
+				m_wantToContinuePlaying = false;
+				throw new InterruptedException("Interrupted while waiting for play.");
+			}
+			else
+			{
+				// We have a valid play! Reset the member variables, and return the play.
+				endPhaseData = new GridEndTurnData(m_territoryGroupsThatShouldDie, m_wantToContinuePlaying, player);
+				m_territoryGroupsThatShouldDie = null;
+				m_wantToContinuePlaying = false;
+			}
 		}
-		*/
-		this.updateAllImages();
-		// Wait for a play or an attempt to leave the game
-		m_waiting.await();
-		if (m_territoryGroupsThatShouldDie == null && !m_wantToContinuePlaying)
+		
+		if (waitForPBEM)
 		{
-			// the play is invalid and must have been interrupted. So, reset the member variables, and throw an exception.
-			m_territoryGroupsThatShouldDie = null;
-			m_wantToContinuePlaying = false;
-			throw new InterruptedException("Interrupted while waiting for play.");
+			final CountDownLatch waitingPBEM = new CountDownLatch(1);
+			showPlayByEmailOrForumPosterPanel(player, bridge, waitingPBEM);
+			m_parentGridGameFrame.setStatus("Click Done To Continue");
+			waitingPBEM.await();
 		}
-		else
-		{
-			// We have a valid play! Reset the member variables, and return the play.
-			final IGridEndTurnData endTurn = new GridEndTurnData(m_territoryGroupsThatShouldDie, m_wantToContinuePlaying, player);
-			m_territoryGroupsThatShouldDie = null;
-			m_wantToContinuePlaying = false;
-			return endTurn;
-		}
+		return endPhaseData;
 	}
 }

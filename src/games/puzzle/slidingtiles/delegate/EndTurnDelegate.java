@@ -14,10 +14,9 @@
 package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.message.IRemote;
+import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
@@ -29,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class EndTurnDelegate extends AbstractDelegate
+public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate
 {
 	private CountDownLatch m_waiting;
 	
@@ -84,11 +83,6 @@ public class EndTurnDelegate extends AbstractDelegate
 		// load other variables from state here:
 	}
 	
-	public boolean stuffToDoInThisDelegate()
-	{
-		return false;
-	}
-	
 	public boolean gameOver(final GameMap map)
 	{
 		final int width = map.getXDimension();
@@ -137,17 +131,6 @@ public class EndTurnDelegate extends AbstractDelegate
 		display.setStatus(status);
 		display.setGameOver();
 		m_bridge.stopGameSequence();
-	}
-	
-	/**
-	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
-	 * Otherwise, returns null.
-	 */
-	@Override
-	public Class<? extends IRemote> getRemoteType()
-	{
-		// This class does not implement the IRemote interface, so return null.
-		return null;
 	}
 }
 

@@ -20,9 +20,9 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 /**
  * @author Tony Clayton
  */
-public interface IAbstractEndTurnDelegate extends IRemote, IDelegate
+public interface IAbstractForumPosterDelegate extends IRemote, IDelegate
 {
-	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title);
+	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame);
 	
 	public void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
 	

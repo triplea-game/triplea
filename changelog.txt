@@ -1,4 +1,8 @@
 Changes for 1.7
+* Allowing all Grid Games to use the play by email and forum posters. (veqryn)
+
+* Abstracted the Forum Poster to its own component and static methods. Added new checkboxes for including savegame and for reposting the turn if it failed the first time. (veqryn)
+
 * Creating victory conditions for Go, and creating a UI for players to negotiate which groups of stones are alive or dead. (veqryn)
 
 * Creating all game logic for Go. (veqryn)

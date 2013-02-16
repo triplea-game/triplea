@@ -42,6 +42,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 	protected int m_passesInARow = 0;
 	protected PlayerID m_firstPlayerToPass = null;
 	protected int m_blackHandicap = -1;
+	protected Set<Unit> m_capturedUnits = new HashSet<Unit>();
 	
 	/**
 	 * Called before the delegate will run.
@@ -79,6 +80,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		state.m_passesInARow = this.m_passesInARow;
 		state.m_firstPlayerToPass = this.m_firstPlayerToPass;
 		state.m_blackHandicap = this.m_blackHandicap;
+		state.m_capturedUnits = this.m_capturedUnits;
 		return state;
 	}
 	
@@ -92,6 +94,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		this.m_passesInARow = s.m_passesInARow;
 		this.m_firstPlayerToPass = s.m_firstPlayerToPass;
 		this.m_blackHandicap = s.m_blackHandicap;
+		this.m_capturedUnits = s.m_capturedUnits;
 	}
 	
 	public boolean stuffToDoInThisDelegate()
@@ -257,6 +260,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		}
 		if (!capturedUnitsTotal.isEmpty())
 			m_bridge.getHistoryWriter().addChildToEvent(player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal), capturedUnitsTotal);
+		m_capturedUnits.addAll(capturedUnitsTotal);
 		final Collection<Territory> refresh = new HashSet<Territory>(play.getAllSteps());
 		refresh.addAll(captured);
 		m_bridge.addChange(change);
@@ -305,6 +309,11 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 	public void setPassesInARow(final int passesInARow)
 	{
 		m_passesInARow = passesInARow;
+	}
+	
+	public Set<Unit> getCapturedUnits()
+	{
+		return m_capturedUnits;
 	}
 	
 	public static String isValidNonSuperPositionalKo(final IGridPlayData play, final PlayerID player, final GameData data)
@@ -483,4 +492,5 @@ class GoPlayExtendedDelegateState implements Serializable
 	int m_passesInARow;
 	PlayerID m_firstPlayerToPass;
 	int m_blackHandicap;
+	Set<Unit> m_capturedUnits;
 }

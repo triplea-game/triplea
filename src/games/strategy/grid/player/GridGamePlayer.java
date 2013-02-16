@@ -108,6 +108,11 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	
 	protected void endTurn()
 	{
+		// change to active player
+		m_ui.changeActivePlayer(getPlayerID());
+		// do forum posting, if we can, otherwise we just end and skip this
+		m_ui.waitForEndTurn(getPlayerID(), getPlayerBridge());
+		// we do nothing, unless someone overrides this method
 	}
 	
 	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)

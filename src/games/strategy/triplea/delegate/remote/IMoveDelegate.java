@@ -26,7 +26,7 @@ import java.util.Map;
  * 
  * @author Sean Bridges
  */
-public interface IMoveDelegate extends IAbstractMoveDelegate
+public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPosterDelegate
 {
 	/**
 	 * 

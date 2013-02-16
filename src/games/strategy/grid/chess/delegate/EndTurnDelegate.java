@@ -1,10 +1,9 @@
 package games.strategy.grid.chess.delegate;
 
-import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.message.IRemote;
+import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
@@ -17,7 +16,7 @@ import java.util.Iterator;
  * @author veqryn
  * 
  */
-public class EndTurnDelegate extends AbstractDelegate
+public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate
 {
 	/**
 	 * Called before the delegate will run.
@@ -46,17 +45,18 @@ public class EndTurnDelegate extends AbstractDelegate
 	@Override
 	public Serializable saveState()
 	{
-		return null;
+		final EndTurnExtendedDelegateState state = new EndTurnExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
 	}
 	
 	@Override
 	public void loadState(final Serializable state)
 	{
-	}
-	
-	public boolean stuffToDoInThisDelegate()
-	{
-		return false;
+		final EndTurnExtendedDelegateState s = (EndTurnExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	/**
@@ -142,14 +142,12 @@ public class EndTurnDelegate extends AbstractDelegate
 			return true;
 		return false;
 	}
-	
-	/**
-	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
-	 * Otherwise, returns null.
-	 */
-	@Override
-	public Class<? extends IRemote> getRemoteType()
-	{
-		return null;
-	}
+}
+
+
+class EndTurnExtendedDelegateState implements Serializable
+{
+	private static final long serialVersionUID = -4466893582763431210L;
+	Serializable superState;
+	// add other variables here:
 }

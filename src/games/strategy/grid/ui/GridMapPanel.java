@@ -16,14 +16,18 @@ package games.strategy.grid.ui;
 import games.strategy.common.image.UnitImageFactory;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.pbem.ForumPosterComponent;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.ScrollListener;
@@ -40,6 +44,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -54,7 +59,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Custom component for displaying a Grid Game gameboard and pieces.
@@ -79,6 +90,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	protected final GridGameFrame m_parentGridGameFrame;
 	protected IGridPlayData m_lastMove = null;
 	protected final ImageScrollModel m_imageScrollModel;
+	protected PBEMMessagePoster m_posterPBEM = null;
+	protected ForumPosterComponent m_forumPosterComponent;
 	
 	public GridMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
@@ -524,9 +537,71 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		if (waiting == null || waiting.getCount() != 1)
 			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
 		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
+		final boolean waitForPBEM = waitForPlayByEmailOrForumPoster(player, bridge);
+		final IGridEndTurnData skipPhaseData = new GridEndTurnData(null, true, player);
+		// returning null = loop this method; so we don't want to return null
+		if (!waitForPBEM)
+			return skipPhaseData;
+		else
+			showPlayByEmailOrForumPosterPanel(player, bridge, waiting);
 		m_waiting = waiting;
 		m_waiting.await();
-		return null;
+		return skipPhaseData;
+	}
+	
+	protected boolean waitForPlayByEmailOrForumPoster(final PlayerID player, final IPlayerBridge bridge)
+	{
+		m_posterPBEM = new PBEMMessagePoster(m_gameData, player, m_gameData.getSequence().getRound(), "Turn Summary");
+		if (!m_posterPBEM.hasMessengers())
+			return false;
+		if (skipPosting() || Boolean.parseBoolean(bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))
+			return false;
+		return true;
+	}
+	
+	protected boolean skipPosting()
+	{
+		return false;
+	}
+	
+	protected void showPlayByEmailOrForumPosterPanel(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_parentGridGameFrame.updateRightSidePanel(getPlayByEmailOrForumPosterPanel(player, bridge, waiting, m_posterPBEM, true, false, false, false));
+				m_parentGridGameFrame.maximizeRightSidePanel();
+			}
+		});
+	}
+	
+	protected JPanel getPlayByEmailOrForumPosterPanel(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting, final PBEMMessagePoster poster,
+				final boolean allowIncludeTerritorySummary, final boolean allowIncludeProductionSummary, final boolean allowDiceBattleDetails, final boolean allowDiceStatistics)
+	{
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(new EmptyBorder(5, 5, 0, 0));
+		panel.add(new JLabel("PBEM/PBF " + player.getName() + " Turn Summary"));
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) bridge.getRemote();
+		final boolean hasPosted = delegate.getHasPostedTurnSummary();
+		final Action doneAction = new AbstractAction("Done")
+		{
+			private static final long serialVersionUID = 2574764222648059066L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				if (waiting != null)
+				{
+					waiting.countDown();
+					m_parentGridGameFrame.updateRightSidePanel(new JLabel(""));
+				}
+			}
+		};
+		m_forumPosterComponent = new ForumPosterComponent(m_gameData, doneAction, "Turn Summary");
+		panel.add(m_forumPosterComponent.layoutComponents(poster, delegate, bridge, m_parentGridGameFrame, hasPosted,
+							allowIncludeTerritorySummary, allowIncludeProductionSummary, allowDiceBattleDetails, allowDiceStatistics));
+		return panel;
 	}
 	
 	protected abstract String isValidPlay(final IGridPlayData play);
@@ -571,5 +646,10 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	
 	public void doKeyListenerEvents(final KeyEvent e)
 	{
+	}
+	
+	public void countDownLatchWaiter()
+	{
+		m_waiting.countDown();
 	}
 }

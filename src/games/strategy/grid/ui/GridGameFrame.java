@@ -236,9 +236,9 @@ public class GridGameFrame extends MainGameFrame
 		
 		// now make right hand side panel, and add it to center panel
 		m_rightHandSidePanel.setLayout(new BorderLayout());
-		// final Dimension rightSidePanel = new Dimension((GridGameFrame.SQUARE_SIZE * 2), (GridGameFrame.SQUARE_SIZE * 2));
+		final Dimension rightSidePanel = new Dimension(200, 200);
 		// m_rightHandSidePanel.setMinimumSize(rightSidePanel);
-		// m_rightHandSidePanel.setPreferredSize(rightSidePanel);
+		m_rightHandSidePanel.setPreferredSize(rightSidePanel);
 		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mapAndChatPanel, m_rightHandSidePanel);
 		m_gameCenterPanel.setOneTouchExpandable(true);
 		m_gameCenterPanel.setDividerSize(8);
@@ -276,16 +276,27 @@ public class GridGameFrame extends MainGameFrame
 			}
 		});
 		this.pack();
-		// minimizeRightSidePanel();
+		// minimizeRightSidePanel(); // for whatever reason it is better to do this after we show the frame
 	}
 	
-	void minimizeRightSidePanel()
+	public void minimizeRightSidePanel()
 	{
 		// click the minimize button so that the right side starts minimized
 		final BasicSplitPaneUI ui = (BasicSplitPaneUI) m_gameCenterPanel.getUI();
 		final Container divider = ui.getDivider();
 		final JButton max = (JButton) divider.getComponent(1);
 		max.doClick();
+	}
+	
+	public void maximizeRightSidePanel()
+	{
+		m_gameCenterPanel.resetToPreferredSizes();
+		/*
+		final BasicSplitPaneUI ui = (BasicSplitPaneUI) m_gameCenterPanel.getUI();
+		final Container divider = ui.getDivider();
+		final JButton max = (JButton) divider.getComponent(0);
+		max.doClick();
+		*/
 	}
 	
 	public static void renderUnits(final Container container, final GridBagConstraints mainConstraints, final Collection<Unit> units, final GridMapPanel mapPanel, final GameData data)
@@ -790,6 +801,8 @@ public class GridGameFrame extends MainGameFrame
 		{
 			while (endTurn == null)
 			{
+				if (m_mapPanel == null)
+					return null; // we are exiting the game
 				m_waiting = new CountDownLatch(1);
 				endTurn = m_mapPanel.waitForEndTurn(player, bridge, m_waiting);
 			}
@@ -887,6 +900,7 @@ public class GridGameFrame extends MainGameFrame
 		if (m_data != null)
 			m_data.clearAllListeners();
 		m_data = null;
+		m_mapPanel.countDownLatchWaiter();
 		m_mapPanel = null;
 		m_status = null;
 		m_gameSouthPanel = null;
@@ -1005,6 +1019,16 @@ public class GridGameFrame extends MainGameFrame
 				m_mapPanel.setTopLeft(x, y + diffPixel);
 			else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W)
 				m_mapPanel.setTopLeft(x, y - diffPixel);
+			
+			// minimize or maximize the right side panel
+			if (keyCode == KeyEvent.VK_N)
+			{
+				minimizeRightSidePanel();
+			}
+			if (keyCode == KeyEvent.VK_M)
+			{
+				maximizeRightSidePanel();
+			}
 			
 			// do other map panel specific things
 			m_mapPanel.doKeyListenerEvents(e);

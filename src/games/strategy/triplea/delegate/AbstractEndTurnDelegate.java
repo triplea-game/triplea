@@ -40,7 +40,7 @@ import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  *          At the end of the turn collect income.
  */
-public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractEndTurnDelegate
+public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractForumPosterDelegate
 {
 	private boolean m_needToInitialize = true;
 	private boolean m_hasPostedTurnSummary = false;
@@ -238,7 +238,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	public boolean stuffToDoInThisDelegate()
 	{
 		// we could have a pbem/forum post to do
-		return true;
+		return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData());
 	}
 	
 	private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data)
@@ -488,9 +488,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		return m_hasPostedTurnSummary;
 	}
 	
-	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title)
+	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
 	{
-		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter(), title);
+		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
 		return m_hasPostedTurnSummary;
 	}
 	
@@ -512,7 +512,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
-		return IAbstractEndTurnDelegate.class;
+		return IAbstractForumPosterDelegate.class;
 	}
 	
 	/*private static Comparator<Territory> getHighestToLowestProduction()

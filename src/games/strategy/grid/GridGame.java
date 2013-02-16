@@ -122,6 +122,7 @@ abstract public class GridGame implements IGameLoader
 							frame.setLocationRelativeTo(null);
 							frame.setVisible(true);
 							frame.toFront();
+							frame.minimizeRightSidePanel();
 						}
 					});
 				}

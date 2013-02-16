@@ -13,12 +13,11 @@
  */
 package games.strategy.grid.kingstable.delegate;
 
-import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.message.IRemote;
+import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.kingstable.attachments.PlayerAttachment;
 import games.strategy.grid.kingstable.attachments.TerritoryAttachment;
 import games.strategy.grid.ui.display.IGridGameDisplay;
@@ -31,7 +30,7 @@ import java.io.Serializable;
  * @author Lane Schwartz
  * @version $LastChangedDate: 2012-12-25 06:54:45 +0800 (Tue, 25 Dec 2012) $
  */
-public class EndTurnDelegate extends AbstractDelegate// implements IEndTurnDelegate
+public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate
 {
 	// private boolean gameOver = false;
 	/**
@@ -79,11 +78,6 @@ public class EndTurnDelegate extends AbstractDelegate// implements IEndTurnDeleg
 		final KingsTableEndTurnExtendedDelegateState s = (KingsTableEndTurnExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
-	}
-	
-	public boolean stuffToDoInThisDelegate()
-	{
-		return false;
 	}
 	
 	/*
@@ -156,18 +150,6 @@ public class EndTurnDelegate extends AbstractDelegate// implements IEndTurnDeleg
 			return attacker;
 		if (numAttackerPieces == 0)
 			return defender;
-		return null;
-	}
-	
-	/**
-	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
-	 * Otherwise, returns null.
-	 */
-	@Override
-	public Class<? extends IRemote> getRemoteType()
-	{
-		// This class does not implement the IRemote interface, so return null.
-		// return IEndTurnDelegate.class;
 		return null;
 	}
 }

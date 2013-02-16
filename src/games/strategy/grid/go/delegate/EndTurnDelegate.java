@@ -1,17 +1,18 @@
 package games.strategy.grid.go.delegate;
 
-import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.go.Go;
 import games.strategy.grid.go.delegate.remote.IGoEndTurnDelegate;
 import games.strategy.grid.ui.GridEndTurnData;
 import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.io.Serializable;
@@ -28,7 +29,7 @@ import java.util.Set;
  * @author veqryn
  * 
  */
-public class EndTurnDelegate extends AbstractDelegate implements IGoEndTurnDelegate
+public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implements IGoEndTurnDelegate
 {
 	protected Tuple<PlayerID, IGridEndTurnData> m_groupsThatShouldDie = null;
 	protected boolean m_canScore = false;
@@ -40,7 +41,7 @@ public class EndTurnDelegate extends AbstractDelegate implements IGoEndTurnDeleg
 	public void start()
 	{
 		super.start();
-		if (stuffToDoInThisDelegate())
+		if (haveTwoPassedInARow())
 		{
 			final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 			display.setStatus("End Game: " + m_player.getName() + " must click all dead groups. Pless 'C' to confirm, or 'R' to reject and continue playing.");
@@ -52,7 +53,7 @@ public class EndTurnDelegate extends AbstractDelegate implements IGoEndTurnDeleg
 	public void end()
 	{
 		super.end();
-		if (m_canScore && stuffToDoInThisDelegate())
+		if (m_canScore && haveTwoPassedInARow())
 		{
 			final Tuple<Tuple<PlayerID, Integer>, Tuple<PlayerID, Integer>> scores = getFinalScores((m_groupsThatShouldDie == null ? new HashSet<Territory>() :
 						m_groupsThatShouldDie.getSecond().getTerritoryUnitsRemovalAdjustment()), getData());
@@ -84,8 +85,15 @@ public class EndTurnDelegate extends AbstractDelegate implements IGoEndTurnDeleg
 		final Iterator<PlayerID> iter = players.iterator();
 		final PlayerID p1 = iter.next();
 		final PlayerID p2 = iter.next();
-		final int score1 = score.getInt(p1);
-		final int score2 = score.getInt(p2) + data.getProperties().get("White Bonus Komi", 0);
+		int score1 = score.getInt(p1);
+		int score2 = score.getInt(p2) + data.getProperties().get("White Bonus Komi", 0);
+		final boolean countCaptures = data.getProperties().get("Captured Pieces Count Towards Score", false);
+		if (countCaptures)
+		{
+			final Set<Unit> capturedAll = getCapturedUnits(data);
+			score1 += Match.countMatches(capturedAll, PlayDelegate.UnitIsOwnedBy(p2));
+			score2 += Match.countMatches(capturedAll, PlayDelegate.UnitIsOwnedBy(p1));
+		}
 		return new Tuple<Tuple<PlayerID, Integer>, Tuple<PlayerID, Integer>>(new Tuple<PlayerID, Integer>(p1, score1), new Tuple<PlayerID, Integer>(p2, score2));
 	}
 	
@@ -110,13 +118,16 @@ public class EndTurnDelegate extends AbstractDelegate implements IGoEndTurnDeleg
 		this.m_canScore = s.m_canScore;
 	}
 	
+	@Override
 	public boolean stuffToDoInThisDelegate()
 	{
-		return haveTwoPassedInARow();
+		// we are either end game, or we have forum poster
+		return haveTwoPassedInARow() || super.stuffToDoInThisDelegate();
 	}
 	
 	public static Map<Territory, PlayerID> getCurrentAreaScoreState(final Collection<Territory> deadGroups, final GameData data)
 	{
+		final boolean onlySurroundedTerritoryNotAllArea = data.getProperties().get("Territory Not Area Counts Towards Score", false);
 		final Map<Territory, PlayerID> currentAreaScoreState = new HashMap<Territory, PlayerID>();
 		for (final Territory t : data.getMap().getTerritories())
 		{
@@ -125,7 +136,8 @@ public class EndTurnDelegate extends AbstractDelegate implements IGoEndTurnDeleg
 			// zero or two owners, we do not count it, because it belongs to no one
 			if (towners.size() == 1)
 			{
-				currentAreaScoreState.put(t, towners.iterator().next());
+				if (!onlySurroundedTerritoryNotAllArea || t.getUnits().getUnitCount() <= 0)
+					currentAreaScoreState.put(t, towners.iterator().next());
 			}
 		}
 		return currentAreaScoreState;
@@ -201,6 +213,14 @@ public class EndTurnDelegate extends AbstractDelegate implements IGoEndTurnDeleg
 		if (localPlayDel != null)
 			return localPlayDel.haveTwoPassedInARow();
 		return false;
+	}
+	
+	static Set<Unit> getCapturedUnits(final GameData data)
+	{
+		final PlayDelegate localPlayDel = Go.playDelegate(data);
+		if (localPlayDel != null)
+			return localPlayDel.getCapturedUnits();
+		return null;
 	}
 	
 	public String territoryAdjustment(final IGridEndTurnData groupsThatShouldDie)
