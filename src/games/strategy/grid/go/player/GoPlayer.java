@@ -8,6 +8,8 @@ import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 
+import java.util.concurrent.CountDownLatch;
+
 public class GoPlayer extends GridGamePlayer
 {
 	public GoPlayer(final String name, final String type)
@@ -102,6 +104,28 @@ public class GoPlayer extends GridGamePlayer
 					m_ui.notifyError("");
 				}
 			}
+		}
+		
+		// TODO: move all end game stuff to play delegate. it is such a hack sitting here
+		IGridEndTurnData forumPoster = null;
+		CountDownLatch waiting = null;
+		try
+		{
+			while (forumPoster == null)
+			{
+				if (mapPanel == null)
+					return; // we are exiting the game
+				mapPanel.removeShutdownLatch(waiting);
+				waiting = new CountDownLatch(1);
+				mapPanel.addShutdownLatch(waiting);
+				forumPoster = mapPanel.waitForEndTurnForumPoster(getPlayerID(), getPlayerBridge(), waiting);
+			}
+		} catch (final InterruptedException e)
+		{
+			return;
+		} finally
+		{
+			mapPanel.removeShutdownLatch(waiting);
 		}
 	}
 	

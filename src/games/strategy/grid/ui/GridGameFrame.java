@@ -794,6 +794,9 @@ public class GridGameFrame extends MainGameFrame
 		} catch (final InterruptedException e)
 		{
 			return null;
+		} finally
+		{
+			m_mapPanel.removeShutdownLatch(m_waiting);
 		}
 		return play;
 	}
@@ -815,6 +818,9 @@ public class GridGameFrame extends MainGameFrame
 		} catch (final InterruptedException e)
 		{
 			return null;
+		} finally
+		{
+			m_mapPanel.removeShutdownLatch(m_waiting);
 		}
 		return endTurn;
 	}

@@ -46,6 +46,8 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
 			final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 			display.setStatus("End Game: " + m_player.getName() + " must click all dead groups. Pless 'C' to confirm, or 'R' to reject and continue playing.");
 			display.refreshTerritories(getData().getMap().getTerritories());
+			if (m_groupsThatShouldDie != null && m_groupsThatShouldDie.getSecond() != null)
+				display.showGridEndTurnData(m_groupsThatShouldDie.getSecond());
 		}
 	}
 	
@@ -232,19 +234,32 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
 			return null;
 		if (groupsThatShouldDie == null)
 			return "Can Not Have Null For End Turn Data";
+		final String text;
 		if (!groupsThatShouldDie.getWantToContinuePlaying())
 		{
 			final Tuple<PlayerID, IGridEndTurnData> oldGroupsFromLastPlayer = m_groupsThatShouldDie;
-			if (oldGroupsFromLastPlayer != null)
+			if (oldGroupsFromLastPlayer == null)
 			{
-				if (!oldGroupsFromLastPlayer.getSecond().getTerritoryUnitsRemovalAdjustment().equals(groupsThatShouldDie.getTerritoryUnitsRemovalAdjustment()))
+				text = groupsThatShouldDie.toString();
+			}
+			else
+			{
+				if (m_player.equals(oldGroupsFromLastPlayer.getFirst()))
+				{
+					// we reloaded the game, so ignore
+					text = null;
+					return null;
+				}
+				else if (!oldGroupsFromLastPlayer.getSecond().getTerritoryUnitsRemovalAdjustment().equals(groupsThatShouldDie.getTerritoryUnitsRemovalAdjustment()))
 				{
 					// the players disagree, so let it go back to the other player
+					text = groupsThatShouldDie.toString();
 				}
 				else
 				{
 					// the players agree, so let the game be scored
 					m_canScore = true;
+					text = m_player.getName() + " agrees to the adjustments, game will now be scored.";
 				}
 			}
 			m_groupsThatShouldDie = new Tuple<PlayerID, IGridEndTurnData>(m_player, new GridEndTurnData(groupsThatShouldDie));
@@ -254,7 +269,10 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
 			m_groupsThatShouldDie = null;
 			// reset passes, so that play can continue
 			Go.playDelegate(getData()).setPassesInARow(0);
+			text = m_player.getName() + " decides to play it out.";
 		}
+		if (text != null)
+			m_bridge.getHistoryWriter().startEvent(text);
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.showGridEndTurnData(groupsThatShouldDie);
 		return null;

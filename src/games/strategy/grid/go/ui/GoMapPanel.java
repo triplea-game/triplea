@@ -463,19 +463,26 @@ public class GoMapPanel extends GridMapPanel
 		}
 	}
 	
+	// TODO: move all end game input stuff to play delegate (or a new delegate), and leave the end turn delegate to just pbem input
 	@Override
 	public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
 	{
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
 			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
+		
+		IGridEndTurnData endPhaseData = new GridEndTurnData(null, false, player);
 		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) bridge.getRemote();
+		final IGridEndTurnData lastEndTurnData = endTurnDel.getTerritoryAdjustment();
+		// if we are reloading a pbem game, we don't want to re-do the last player's turn (this would be fixed if we moved this stuff to play delegate)
+		if (lastEndTurnData != null && player.equals(lastEndTurnData.getPlayer()))
+			return endPhaseData;
+		
 		final boolean hasTwoPasses = endTurnDel.haveTwoPassedInARow();
 		// we might be doing PBEM but not actually have enough passes to be in end game
-		final boolean waitForPBEM = waitForPlayByEmailOrForumPoster(player, bridge);
-		IGridEndTurnData endPhaseData = new GridEndTurnData(null, true, player);
+		// final boolean waitForPBEM = waitForPlayByEmailOrForumPoster(player, bridge);
 		// returning null = loop this method; so we don't want to return null
-		if (!waitForPBEM && !hasTwoPasses)
+		if (/*!waitForPBEM && */!hasTwoPasses)
 			return endPhaseData;
 		
 		if (hasTwoPasses)
@@ -501,7 +508,7 @@ public class GoMapPanel extends GridMapPanel
 				m_wantToContinuePlaying = false;
 			}
 		}
-		
+		/*
 		if (waitForPBEM)
 		{
 			final CountDownLatch waitingPBEM = new CountDownLatch(1);
@@ -509,7 +516,23 @@ public class GoMapPanel extends GridMapPanel
 			showPlayByEmailOrForumPosterPanel(player, bridge, waitingPBEM);
 			m_parentGridGameFrame.setStatus("Click Done To Continue");
 			waitingPBEM.await();
-		}
+			this.removeShutdownLatch(waitingPBEM);
+		}*/
+		return endPhaseData;
+	}
+	
+	// TODO: such a hack. do it right by moving the end game crap to play delegate, and have the only interaction in end turn be the forum poster
+	public IGridEndTurnData waitForEndTurnForumPoster(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
+	{
+		if (waiting == null || waiting.getCount() != 1)
+			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
+		final boolean waitForPBEM = waitForPlayByEmailOrForumPoster(player, bridge);
+		final IGridEndTurnData endPhaseData = new GridEndTurnData(null, false, player);
+		if (!waitForPBEM)
+			return endPhaseData;
+		showPlayByEmailOrForumPosterPanel(player, bridge, waiting);
+		m_parentGridGameFrame.setStatus("Click Done To Continue");
+		waiting.await();
 		return endPhaseData;
 	}
 }
