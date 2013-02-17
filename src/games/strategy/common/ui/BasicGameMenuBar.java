@@ -23,6 +23,7 @@ import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.ui.UIContext;
 import games.strategy.ui.IntTextField;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Triple;
@@ -855,7 +856,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 						return;
 					}
 					GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-					EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA");
+					EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
 				}
 			}
 		}).setMnemonic(KeyEvent.VK_F);

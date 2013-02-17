@@ -37,9 +37,9 @@ import javax.swing.SwingUtilities;
  */
 public class EventThreadJOptionPane
 {
-	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType)
+	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final CountDownLatchHandler latchHandler)
 	{
-		EventThreadJOptionPane.showMessageDialog(parentComponent, message, title, messageType, false);
+		EventThreadJOptionPane.showMessageDialog(parentComponent, message, title, messageType, false, latchHandler);
 	}
 	
 	private static JScrollPane createJLabelInScrollPane(final String message)
@@ -58,7 +58,8 @@ public class EventThreadJOptionPane
 		return scroll;
 	}
 	
-	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final boolean useJLabel)
+	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final boolean useJLabel,
+				final CountDownLatchHandler latchHandler)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -74,6 +75,8 @@ public class EventThreadJOptionPane
 				latch.countDown();
 			}
 		});
+		if (latchHandler != null)
+			latchHandler.addShutdownLatch(latch);
 		boolean done = false;
 		while (!done)
 		{
@@ -83,13 +86,16 @@ public class EventThreadJOptionPane
 				done = true;
 			} catch (final InterruptedException e)
 			{
-				// ignore
+				if (latchHandler != null)
+					latchHandler.interruptLatch(latch);
 			}
 		}
+		if (latchHandler != null)
+			latchHandler.removeShutdownLatch(latch);
 		return;
 	}
 	
-	public static void showMessageDialog(final Frame parentComponent, final String message)
+	public static void showMessageDialog(final Frame parentComponent, final String message, final CountDownLatchHandler latchHandler)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -105,6 +111,8 @@ public class EventThreadJOptionPane
 				latch.countDown();
 			}
 		});
+		if (latchHandler != null)
+			latchHandler.addShutdownLatch(latch);
 		boolean done = false;
 		while (!done)
 		{
@@ -114,13 +122,16 @@ public class EventThreadJOptionPane
 				done = true;
 			} catch (final InterruptedException e)
 			{
-				// ignore
+				if (latchHandler != null)
+					latchHandler.interruptLatch(latch);
 			}
 		}
+		if (latchHandler != null)
+			latchHandler.removeShutdownLatch(latch);
 		return;
 	}
 	
-	public static void showMessageDialog(final Component parentComponent, final Object message) throws HeadlessException
+	public static void showMessageDialog(final Component parentComponent, final Object message, final CountDownLatchHandler latchHandler) throws HeadlessException
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -136,6 +147,8 @@ public class EventThreadJOptionPane
 				latch.countDown();
 			}
 		});
+		if (latchHandler != null)
+			latchHandler.addShutdownLatch(latch);
 		boolean done = false;
 		while (!done)
 		{
@@ -145,19 +158,22 @@ public class EventThreadJOptionPane
 				done = true;
 			} catch (final InterruptedException e)
 			{
-				// ignore
+				if (latchHandler != null)
+					latchHandler.interruptLatch(latch);
 			}
 		}
+		if (latchHandler != null)
+			latchHandler.removeShutdownLatch(latch);
 		return;
 	}
 	
-	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final Icon icon)
+	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final Icon icon, final CountDownLatchHandler latchHandler)
 	{
-		showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, messageType, icon, null, null);
+		showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, messageType, icon, null, null, latchHandler);
 	}
 	
 	public static int showOptionDialog(final Component parentComponent, final Object message, final String title, final int optionType, final int messageType, final Icon icon, final Object[] options,
-				final Object initialValue)
+				final Object initialValue, final CountDownLatchHandler latchHandler)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -173,6 +189,8 @@ public class EventThreadJOptionPane
 				latch.countDown();
 			}
 		});
+		if (latchHandler != null)
+			latchHandler.addShutdownLatch(latch);
 		boolean done = false;
 		while (!done)
 		{
@@ -182,13 +200,17 @@ public class EventThreadJOptionPane
 				done = true;
 			} catch (final InterruptedException e)
 			{
-				// ignore
+				if (latchHandler != null)
+					latchHandler.interruptLatch(latch);
 			}
 		}
+		if (latchHandler != null)
+			latchHandler.removeShutdownLatch(latch);
 		return rVal.get();
 	}
 	
-	public static int showConfirmDialog(final Component parentComponent, final Object message, final String title, final int optionType) throws HeadlessException
+	public static int showConfirmDialog(final Component parentComponent, final Object message, final String title, final int optionType, final CountDownLatchHandler latchHandler)
+				throws HeadlessException
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -204,6 +226,8 @@ public class EventThreadJOptionPane
 				latch.countDown();
 			}
 		});
+		if (latchHandler != null)
+			latchHandler.addShutdownLatch(latch);
 		boolean done = false;
 		while (!done)
 		{
@@ -213,9 +237,12 @@ public class EventThreadJOptionPane
 				done = true;
 			} catch (final InterruptedException e)
 			{
-				// ignore
+				if (latchHandler != null)
+					latchHandler.interruptLatch(latch);
 			}
 		}
+		if (latchHandler != null)
+			latchHandler.removeShutdownLatch(latch);
 		return rVal.get();
 	}
 }

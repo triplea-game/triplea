@@ -8,6 +8,7 @@ import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ui.TripleaMenu;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
 
@@ -162,7 +163,7 @@ public class EnginePreferences extends JDialog
 						return;
 					}
 					GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-					EventThreadJOptionPane.showMessageDialog(m_parentFrame, "The look and feel will update when you restart TripleA");
+					EventThreadJOptionPane.showMessageDialog(m_parentFrame, "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
 				}
 			}
 		});
@@ -185,7 +186,7 @@ public class EnginePreferences extends JDialog
 				if (delay == current)
 					return;
 				GameRunner2.setDelayedParsing(delay);
-				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors");
+				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors", new CountDownLatchHandler(true));
 			}
 		});
 		m_setupProxies.addActionListener(new AbstractAction()

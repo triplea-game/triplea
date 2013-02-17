@@ -784,7 +784,11 @@ public class GridGameFrame extends MainGameFrame
 		{
 			while (play == null)
 			{
+				if (m_mapPanel == null)
+					return null; // we are exiting the game
+				m_mapPanel.removeShutdownLatch(m_waiting);
 				m_waiting = new CountDownLatch(1);
+				m_mapPanel.addShutdownLatch(m_waiting);
 				play = m_mapPanel.waitForPlay(player, bridge, m_waiting);
 			}
 		} catch (final InterruptedException e)
@@ -803,7 +807,9 @@ public class GridGameFrame extends MainGameFrame
 			{
 				if (m_mapPanel == null)
 					return null; // we are exiting the game
+				m_mapPanel.removeShutdownLatch(m_waiting);
 				m_waiting = new CountDownLatch(1);
+				m_mapPanel.addShutdownLatch(m_waiting);
 				endTurn = m_mapPanel.waitForEndTurn(player, bridge, m_waiting);
 			}
 		} catch (final InterruptedException e)
@@ -900,7 +906,7 @@ public class GridGameFrame extends MainGameFrame
 		if (m_data != null)
 			m_data.clearAllListeners();
 		m_data = null;
-		m_mapPanel.countDownLatchWaiter();
+		m_mapPanel.shutDown();
 		m_mapPanel = null;
 		m_status = null;
 		m_gameSouthPanel = null;
@@ -1070,7 +1076,8 @@ public class GridGameFrame extends MainGameFrame
 		final JPanel panel = comps.getFirst();
 		final JList list = comps.getSecond();
 		final String[] selectionOptions = { "OK", "Cancel" };
-		final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, selectionOptions, null);
+		final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, selectionOptions, null,
+					m_mapPanel.getCountDownLatchHandler());
 		if (selection == 0) // OK
 			selected.set((UnitType) list.getSelectedValue());
 		// Unit selected = (Unit) list.getSelectedValue();

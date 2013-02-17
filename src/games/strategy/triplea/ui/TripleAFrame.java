@@ -531,7 +531,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	@Override
 	public void shutdown()
 	{
-		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
+		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION, getUIContext()
+					.getCountDownLatchHandler());
 		if (rVal != JOptionPane.OK_OPTION)
 			return;
 		stopGame();
@@ -541,7 +542,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	@Override
 	public void leaveGame()
 	{
-		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
+		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION, getUIContext()
+					.getCountDownLatchHandler());
 		if (rVal != JOptionPane.OK_OPTION)
 			return;
 		if (m_game instanceof ServerGame)
@@ -739,17 +741,17 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	@Override
 	public void notifyError(final String message)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE, true);
+		EventThreadJOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE, true, getUIContext().getCountDownLatchHandler());
 	}
 	
 	public void notifyMessage(final String message, final String title)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE, true);
+		EventThreadJOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
 	}
 	
 	public void notification(final String message)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, "Notification", JOptionPane.INFORMATION_MESSAGE, true);
+		EventThreadJOptionPane.showMessageDialog(this, message, "Notification", JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
 	}
 	
 	public boolean getOKToLetAirDie(final PlayerID m_id, String message, final boolean movePhase)
@@ -764,7 +766,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final String ok = movePhase ? "End Move Phase" : "Kill Planes";
 		final String cancel = movePhase ? "Keep Moving" : "Change Placement";
 		final String[] options = { cancel, ok };
-		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel);
+		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext()
+					.getCountDownLatchHandler());
 		return choice == 1;
 	}
 	
@@ -773,19 +776,20 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final String ok = movePhase ? "Done Moving" : "Kill Units";
 		final String cancel = movePhase ? "Keep Moving" : "Change Placement";
 		final String[] options = { cancel, ok };
-		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Units cannot fight", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel);
+		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Units cannot fight", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext()
+					.getCountDownLatchHandler());
 		return choice == 1;
 	}
 	
 	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
-		final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept Political Proposal?", JOptionPane.YES_NO_OPTION);
+		final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept Political Proposal?", JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
 		return choice == JOptionPane.YES_OPTION;
 	}
 	
 	public boolean getOK(final String message)
 	{
-		final int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION);
+		final int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION, getUIContext().getCountDownLatchHandler());
 		return choice == JOptionPane.OK_OPTION;
 	}
 	
@@ -809,7 +813,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		{
 			throw new IllegalStateException();
 		}
-		EventThreadJOptionPane.showOptionDialog(this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] { "OK" }, "OK");
+		EventThreadJOptionPane.showOptionDialog(this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] { "OK" }, "OK", getUIContext()
+					.getCountDownLatchHandler());
 	}
 	
 	public boolean getStrategicBombingRaid(final Territory location)
@@ -818,7 +823,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final String bomb = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb");
 		final String normal = "Attack";
 		final String[] choices = { bomb, normal };
-		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, choices, bomb);
+		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, choices, bomb, getUIContext()
+					.getCountDownLatchHandler());
 		return choice == 0;
 	}
 	
@@ -849,7 +855,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final JPanel panel = comps.getFirst();
 		final JList list = comps.getSecond();
 		final String[] options = { "OK", "Cancel" };
-		final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null, getUIContext()
+					.getCountDownLatchHandler());
 		if (selection == 0) // OK
 			selected.set((Unit) list.getSelectedValue());
 		// Unit selected = (Unit) list.getSelectedValue();
@@ -867,7 +874,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		});
 		do
 		{
-			EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE);
+			EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE, getUIContext().getCountDownLatchHandler());
 		} while (chooser.getDice() == null);
 		return chooser.getDice();
 	}
@@ -898,7 +905,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final JList list = comps.getSecond();
 		final String[] options = { "OK" };
 		final String title = "Select territory for air units to land, current territory is " + currentTerritory.getName();
-		EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null, getUIContext().getCountDownLatchHandler());
 		final Territory selected = (Territory) list.getSelectedValue();
 		return selected;
 	}
@@ -1000,12 +1007,16 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				});
 			}
 		});
+		m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 		try
 		{
 			continueLatch.await();
 		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
+		} finally
+		{
+			m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
 		}
 		return selection;
 	}
@@ -1116,12 +1127,16 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				});
 			}
 		});
+		m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 		try
 		{
 			continueLatch.await();
 		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
+		} finally
+		{
+			m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
 		}
 		return selection;
 	}
@@ -1217,19 +1232,23 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				});
 			}
 		});
+		m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 		try
 		{
 			continueLatch.await();
 		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
+		} finally
+		{
+			m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
 		}
 		return selection;
 	}
 	
 	public void notifyPoliticalMessage(final String message)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, "Political Alert", JOptionPane.INFORMATION_MESSAGE);
+		EventThreadJOptionPane.showMessageDialog(this, message, "Political Alert", JOptionPane.INFORMATION_MESSAGE, getUIContext().getCountDownLatchHandler());
 	}
 	
 	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate)
@@ -2393,7 +2412,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			throw new IllegalStateException(e);
 		}
 		final int choice = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(), "Place fighters on new carrier?", JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new String[] {
-					"OK", "Cancel" }, "OK");
+					"OK", "Cancel" }, "OK", getUIContext().getCountDownLatchHandler());
 		if (choice == 0)
 		{
 			// arrayList.subList() is not serializable

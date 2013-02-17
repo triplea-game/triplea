@@ -105,6 +105,8 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	
 	abstract protected boolean allowIncludeTerritorySummary();
 	
+	abstract protected boolean allowIncludeTerritoryAllPlayersSummary();
+	
 	abstract protected boolean allowIncludeProductionSummary();
 	
 	abstract protected boolean allowDiceBattleDetails();
@@ -145,7 +147,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 				removeAll();
 				add(m_actionLabel);
 				add(m_forumPosterComponent.layoutComponents(m_poster, getForumPosterDelegate(), m_bridge, m_frame, hasPosted,
-							allowIncludeTerritorySummary(), allowIncludeProductionSummary(), allowDiceBattleDetails(), allowDiceStatistics()));
+							allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(), allowDiceBattleDetails(), allowDiceStatistics()));
 				validate();
 			}
 		});

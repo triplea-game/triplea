@@ -505,6 +505,7 @@ public class GoMapPanel extends GridMapPanel
 		if (waitForPBEM)
 		{
 			final CountDownLatch waitingPBEM = new CountDownLatch(1);
+			this.addShutdownLatch(waitingPBEM);
 			showPlayByEmailOrForumPosterPanel(player, bridge, waitingPBEM);
 			m_parentGridGameFrame.setStatus("Click Done To Continue");
 			waitingPBEM.await();

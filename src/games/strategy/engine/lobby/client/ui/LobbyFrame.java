@@ -26,6 +26,7 @@ import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.MD5Crypt;
 
@@ -386,6 +387,6 @@ public class LobbyFrame extends JFrame
 	private void connectionToServerLost()
 	{
 		EventThreadJOptionPane.showMessageDialog(LobbyFrame.this, "Connection to Server Lost.  Please close this instance and reconnect to the lobby.", "Connection Lost", JOptionPane.ERROR_MESSAGE,
-					null);
+					new CountDownLatchHandler(true));
 	}
 }

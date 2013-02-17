@@ -708,12 +708,16 @@ public class BattleDisplay extends JPanel
 				action.actionPerformed(null);
 			}
 		});
+		m_mapPanel.getUIContext().addShutdownLatch(latch);
 		try
 		{
 			latch.await();
 		} catch (final InterruptedException e1)
 		{
 			e1.printStackTrace();
+		} finally
+		{
+			m_mapPanel.getUIContext().removeShutdownLatch(latch);
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -912,12 +916,16 @@ public class BattleDisplay extends JPanel
 				});
 			}
 		});
+		m_mapPanel.getUIContext().addShutdownLatch(continueLatch);
 		try
 		{
 			continueLatch.await();
 		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
+		} finally
+		{
+			m_mapPanel.getUIContext().removeShutdownLatch(continueLatch);
 		}
 		return casualtyDetails.get();
 	}

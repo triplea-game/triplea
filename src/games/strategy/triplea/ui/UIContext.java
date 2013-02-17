@@ -28,6 +28,7 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
+import games.strategy.util.CountDownLatchHandler;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -79,9 +80,9 @@ public class UIContext
 	private boolean m_drawTerritoryEffects = false;
 	private boolean m_drawMapOnly = false;
 	private OptionalExtraBorderLevel m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
-	private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
 	private final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
 	private final List<Active> m_activeToDeactivate = new ArrayList<Active>();
+	private final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false); // List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
 	private final static String LOCK_MAP = "LockMap";
 	private final static String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
 	private final static String AI_PAUSE_DURATION = "AIPauseDuration";
@@ -306,26 +307,11 @@ public class UIContext
 		return m_diceImageFactory;
 	}
 	
-	/**
-	 * Add a latch that will be released when the game shuts down.
-	 */
-	public void addShutdownLatch(final CountDownLatch latch)
-	{
-		synchronized (this)
-		{
-			if (m_isShutDown)
-			{
-				releaseLatch(latch);
-				return;
-			}
-			m_latchesToCloseOnShutdown.add(latch);
-		}
-	}
-	
 	public void removeACtive(final Active actor)
 	{
 		synchronized (this)
 		{
+			// closeActor(actor);
 			m_activeToDeactivate.remove(actor);
 		}
 	}
@@ -346,12 +332,36 @@ public class UIContext
 		}
 	}
 	
+	/**
+	 * Add a latch that will be released when the game shuts down.
+	 */
+	public void addShutdownLatch(final CountDownLatch latch)
+	{
+		m_latchesToCloseOnShutdown.addShutdownLatch(latch);
+		/* synchronized (this)
+		{
+			if (m_isShutDown)
+			{
+				releaseLatch(latch);
+				return;
+			}
+			m_latchesToCloseOnShutdown.add(latch);
+		} */
+	}
+	
 	public void removeShutdownLatch(final CountDownLatch latch)
 	{
-		synchronized (this)
+		m_latchesToCloseOnShutdown.removeShutdownLatch(latch);
+		/* synchronized (this)
 		{
+			releaseLatch(latch);
 			m_latchesToCloseOnShutdown.remove(latch);
-		}
+		} */
+	}
+	
+	public CountDownLatchHandler getCountDownLatchHandler()
+	{
+		return m_latchesToCloseOnShutdown;
 	}
 	
 	/**
@@ -421,18 +431,19 @@ public class UIContext
 	{
 		synchronized (this)
 		{
-			m_latchesToCloseOnShutdown.remove(window);
+			// closeWindow(window);
+			m_windowsToCloseOnShutdown.remove(window);
 		}
 	}
 	
-	private void releaseLatch(final CountDownLatch latch)
+	/* private void releaseLatch(final CountDownLatch latch)
 	{
 		while (latch.getCount() > 0)
 		{
 			latch.countDown();
 		}
-	}
-	
+	} */
+
 	public boolean isShutDown()
 	{
 		return m_isShutDown;
@@ -446,10 +457,11 @@ public class UIContext
 				return;
 			m_isShutDown = true;
 		}
-		for (final CountDownLatch latch : m_latchesToCloseOnShutdown)
+		m_latchesToCloseOnShutdown.shutDown();
+		/* for (final CountDownLatch latch : m_latchesToCloseOnShutdown)
 		{
 			releaseLatch(latch);
-		}
+		}*/
 		for (final Window window : m_windowsToCloseOnShutdown)
 		{
 			closeWindow(window);
@@ -460,7 +472,7 @@ public class UIContext
 		}
 		m_activeToDeactivate.clear();
 		m_windowsToCloseOnShutdown.clear();
-		m_latchesToCloseOnShutdown.clear();
+		// m_latchesToCloseOnShutdown.clear();
 		m_mapData.close();
 	}
 	

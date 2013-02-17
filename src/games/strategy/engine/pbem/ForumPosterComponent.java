@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.history.HistoryLog;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -32,6 +33,7 @@ public class ForumPosterComponent extends JPanel
 	protected HistoryLog m_historyLog;
 	protected JButton m_postButton;
 	protected JCheckBox m_includeTerritoryCheckbox;
+	protected JCheckBox m_includeTerritoryAllPlayersCheckbox;
 	protected JCheckBox m_includeProductionCheckbox;
 	protected JCheckBox m_showDetailsCheckbox;
 	protected JCheckBox m_showDiceStatisticsCheckbox;
@@ -41,6 +43,7 @@ public class ForumPosterComponent extends JPanel
 	protected Action m_postAction;
 	protected Action m_repostAction;
 	protected Action m_includeTerritoryAction;
+	protected Action m_includeTerritoryAllPlayersAction;
 	protected Action m_includeProductionAction;
 	protected Action m_showDetailsAction;
 	protected Action m_showDiceStatisticsAction;
@@ -78,6 +81,15 @@ public class ForumPosterComponent extends JPanel
 			}
 		};
 		m_includeTerritoryAction = new AbstractAction("Include territory summary")
+		{
+			private static final long serialVersionUID = 207279881318712095L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				updateHistoryLog();
+			}
+		};
+		m_includeTerritoryAllPlayersAction = new AbstractAction("Include full territory summary")
 		{
 			private static final long serialVersionUID = 207279881318712095L;
 			
@@ -130,6 +142,7 @@ public class ForumPosterComponent extends JPanel
 		};
 		m_doneAction = doneAction;
 		m_includeTerritoryCheckbox = new JCheckBox(m_includeTerritoryAction);
+		m_includeTerritoryAllPlayersCheckbox = new JCheckBox(m_includeTerritoryAllPlayersAction);
 		m_includeProductionCheckbox = new JCheckBox(m_includeProductionAction);
 		m_showDetailsCheckbox = new JCheckBox(m_showDetailsAction);
 		m_showDiceStatisticsCheckbox = new JCheckBox(m_showDiceStatisticsAction);
@@ -138,7 +151,8 @@ public class ForumPosterComponent extends JPanel
 	}
 	
 	public ForumPosterComponent layoutComponents(final PBEMMessagePoster poster, final IAbstractForumPosterDelegate forumPosterDelegate, final IPlayerBridge bridge, final MainGameFrame frame,
-				final boolean hasPosted, final boolean allowIncludeTerritorySummary, final boolean allowIncludeProductionSummary, final boolean allowDiceBattleDetails,
+				final boolean hasPosted, final boolean allowIncludeTerritorySummary, final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary,
+				final boolean allowDiceBattleDetails,
 				final boolean allowDiceStatistics)
 	{
 		m_forumPosterDelegate = forumPosterDelegate;
@@ -162,6 +176,8 @@ public class ForumPosterComponent extends JPanel
 		// add(m_actionLabel);
 		if (allowIncludeTerritorySummary)
 			add(m_includeTerritoryCheckbox);
+		if (allowIncludeTerritoryAllPlayersSummary)
+			add(m_includeTerritoryAllPlayersCheckbox);
 		if (allowIncludeProductionSummary)
 			add(m_includeProductionCheckbox);
 		if (allowDiceBattleDetails)
@@ -207,8 +223,18 @@ public class ForumPosterComponent extends JPanel
 		// clear first, then update
 		m_historyLog.clear();
 		m_historyLog.printFullTurn(m_data, m_showDetailsCheckbox.isSelected(), allowedIDs);
-		if (m_includeTerritoryCheckbox.isSelected())
+		if (m_includeTerritoryAllPlayersCheckbox.isSelected())
+		{
+			for (final PlayerID player : m_data.getPlayerList().getPlayers())
+			{
+				final Collection<PlayerID> players = new ArrayList<PlayerID>();
+				players.add(player);
+				m_historyLog.printTerritorySummary(m_data, players);
+			}
+		}
+		else if (m_includeTerritoryCheckbox.isSelected())
 			m_historyLog.printTerritorySummary(m_data, allowedIDs);
+		
 		if (m_includeProductionCheckbox.isSelected())
 			m_historyLog.printProductionSummary(m_data);
 		if (m_showDiceStatisticsCheckbox.isSelected())

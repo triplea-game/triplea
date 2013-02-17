@@ -60,7 +60,7 @@ public class UnifiedMessenger
 	// threads wait on these latches for the hub to return invocations
 	// the latch should be removed from the map when you countdown the last result
 	// access should be synchronized on m_pendingLock
-	private final Map<GUID, CountDownLatch> m_pendingInvocations = new HashMap<GUID, CountDownLatch>();
+	private final Map<GUID, CountDownLatch> m_pendingInvocations = new HashMap<GUID, CountDownLatch>(); // TODO: how do these get shutdown when we exit a game or close triplea?
 	// after the remote has invoked, the results are placed here
 	// access should be synchronized on m_pendingLock
 	private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<GUID, RemoteMethodCallResults>();

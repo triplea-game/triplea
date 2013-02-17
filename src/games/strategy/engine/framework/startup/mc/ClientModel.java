@@ -44,6 +44,7 @@ import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.ui.Util;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.Component;
@@ -144,7 +145,7 @@ public class ClientModel implements IMessengerErrorListener
 		final int port = props.getPort();
 		if (port >= 65536 || port <= 0)
 		{
-			EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+			EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
 			return false;
 		}
 		final String address = props.getHost();
@@ -159,7 +160,7 @@ public class ClientModel implements IMessengerErrorListener
 		} catch (final Exception ioe)
 		{
 			ioe.printStackTrace(System.out);
-			EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
 			return false;
 		}
 		m_messenger.addErrorListener(this);
@@ -254,7 +255,7 @@ public class ClientModel implements IMessengerErrorListener
 				public void run()
 				{
 					m_typePanelModel.showSelectType();
-					EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason);
+					EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason, new CountDownLatchHandler(true));
 				}
 			});
 		}
@@ -416,7 +417,7 @@ public class ClientModel implements IMessengerErrorListener
 	
 	private void connectionLost()
 	{
-		EventThreadJOptionPane.showMessageDialog(m_ui, " Connection To Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE);
+		EventThreadJOptionPane.showMessageDialog(m_ui, " Connection To Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
 		if (m_game != null)
 		{
 			m_game.shutDown();

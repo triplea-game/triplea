@@ -35,6 +35,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
 
@@ -305,7 +306,7 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			m_winners = winners;
 			ClipPlayer.play(SoundPath.CLIP_GAME_WON, ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
 			// Make sure the user really wants to leave the game.
-			final int rVal = EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION);
+			final int rVal = EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true));
 			if (rVal != JOptionPane.OK_OPTION)
 				a_bridge.stopGameSequence();
 		}

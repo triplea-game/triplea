@@ -4,6 +4,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
 
@@ -234,7 +235,8 @@ public class InstallMapDialog extends JDialog
 				{
 					// TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
 					// https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
-					EventThreadJOptionPane.showMessageDialog(getRootPane(), ((toDownload.size() > 1) ? "Maps" : "Map") + " successfully installed, please restart TripleA before playing");
+					EventThreadJOptionPane.showMessageDialog(getRootPane(), ((toDownload.size() > 1) ? "Maps" : "Map") + " successfully installed, please restart TripleA before playing",
+								new CountDownLatchHandler(true));
 					setVisible(false);
 				}
 			}
@@ -250,7 +252,7 @@ public class InstallMapDialog extends JDialog
 	
 	private boolean replaceOldQuestion(final String message)
 	{
-		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, message, "Overwrite?", JOptionPane.YES_NO_OPTION);
+		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, message, "Overwrite?", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true));
 		if (rVal != JOptionPane.OK_OPTION)
 			return false;
 		return true;

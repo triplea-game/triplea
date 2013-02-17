@@ -6,6 +6,7 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.triplea.ui.TripleaMenu;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
 
@@ -522,7 +523,8 @@ public class GameRunner2
 						{
 							public void run()
 							{
-								EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false);
+								EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false,
+											new CountDownLatchHandler(true));
 							}
 						});
 					}
@@ -536,7 +538,8 @@ public class GameRunner2
 							{
 								public void run()
 								{
-									EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(), "What is New?", JOptionPane.INFORMATION_MESSAGE, false);
+									EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(), "What is New?", JOptionPane.INFORMATION_MESSAGE, false,
+												new CountDownLatchHandler(true));
 								}
 							});
 							pref.putBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, false);

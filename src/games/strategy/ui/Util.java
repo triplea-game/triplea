@@ -18,6 +18,7 @@
  */
 package games.strategy.ui;
 
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.Color;
@@ -130,7 +131,7 @@ public class Util
 	
 	public static void notifyError(final Component parent, final String message)
 	{
-		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error", JOptionPane.ERROR_MESSAGE);
+		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
 	}
 	
 	// public static Image createVolatileImage(int width, int height)

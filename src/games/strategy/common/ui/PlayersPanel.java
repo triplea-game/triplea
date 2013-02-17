@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 import java.awt.Component;
@@ -54,6 +55,6 @@ public class PlayersPanel extends JPanel
 	public static void showPlayers(final IGame game, final Component parent)
 	{
 		final PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), game.getData());
-		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players", JOptionPane.PLAIN_MESSAGE);
+		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players", JOptionPane.PLAIN_MESSAGE, new CountDownLatchHandler(true));
 	}
 }

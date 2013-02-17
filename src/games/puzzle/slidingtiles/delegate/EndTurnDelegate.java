@@ -20,7 +20,6 @@ import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.io.Serializable;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Responsible for checking for a winner in a game of n-puzzle.
@@ -30,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate
 {
-	private CountDownLatch m_waiting;
+	// private CountDownLatch m_waiting;
 	
 	/**
 	 * Called before the delegate will run.
@@ -59,11 +58,13 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate
 	public void end()
 	{
 		super.end();
+		/*
 		if (m_waiting == null)
 			return;
 		else
 			while (m_waiting.getCount() > 0)
 				m_waiting.countDown();
+		*/
 	}
 	
 	@Override

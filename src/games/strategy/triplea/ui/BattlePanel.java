@@ -385,29 +385,30 @@ public class BattlePanel extends ActionPanel
 		int option = JOptionPane.NO_OPTION;
 		while (option != JOptionPane.OK_OPTION)
 		{
-			option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION);
+			option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION, getMap().getUIContext().getCountDownLatchHandler());
 		}
 		return comp.getSelection();
 	}
 	
 	public boolean getAttackSubs(final Territory terr)
 	{
-		return EventThreadJOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;
+		return EventThreadJOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
 	}
 	
 	public boolean getAttackTransports(final Territory terr)
 	{
-		return EventThreadJOptionPane.showConfirmDialog(null, "Attack transports in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;
+		return EventThreadJOptionPane.showConfirmDialog(null, "Attack transports in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
 	}
 	
 	public boolean getAttackUnits(final Territory terr)
 	{
-		return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION) == 0;
+		return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
 	}
 	
 	public boolean getShoreBombard(final Territory terr)
 	{
-		return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION) == 0;
+		return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION, getMap().getUIContext()
+					.getCountDownLatchHandler()) == 0;
 	}
 	
 	public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed, final Collection<Unit> damaged,
@@ -496,7 +497,8 @@ public class BattlePanel extends ActionPanel
 				dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
 				panel.add(dicePanel, BorderLayout.SOUTH);
 				final String[] options = { "OK" };
-				EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+				EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null, getMap()
+							.getUIContext().getCountDownLatchHandler());
 				final List<Unit> killed = chooser.getSelected(false);
 				final CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
 				return response;

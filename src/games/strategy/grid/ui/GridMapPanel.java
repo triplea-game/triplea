@@ -32,6 +32,7 @@ import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.ScrollListener;
 import games.strategy.ui.Util;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.Tuple;
 
 import java.awt.AlphaComposite;
@@ -92,6 +93,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	protected final ImageScrollModel m_imageScrollModel;
 	protected PBEMMessagePoster m_posterPBEM = null;
 	protected ForumPosterComponent m_forumPosterComponent;
+	private final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false);
 	
 	public GridMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
@@ -570,14 +572,15 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		{
 			public void run()
 			{
-				m_parentGridGameFrame.updateRightSidePanel(getPlayByEmailOrForumPosterPanel(player, bridge, waiting, m_posterPBEM, true, false, false, false));
+				m_parentGridGameFrame.updateRightSidePanel(getPlayByEmailOrForumPosterPanel(player, bridge, waiting, m_posterPBEM, false, true, false, false, false));
 				m_parentGridGameFrame.maximizeRightSidePanel();
 			}
 		});
 	}
 	
 	protected JPanel getPlayByEmailOrForumPosterPanel(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting, final PBEMMessagePoster poster,
-				final boolean allowIncludeTerritorySummary, final boolean allowIncludeProductionSummary, final boolean allowDiceBattleDetails, final boolean allowDiceStatistics)
+				final boolean allowIncludeTerritorySummary, final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary, final boolean allowDiceBattleDetails,
+				final boolean allowDiceStatistics)
 	{
 		final JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -600,7 +603,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		};
 		m_forumPosterComponent = new ForumPosterComponent(m_gameData, doneAction, "Turn Summary");
 		panel.add(m_forumPosterComponent.layoutComponents(poster, delegate, bridge, m_parentGridGameFrame, hasPosted,
-							allowIncludeTerritorySummary, allowIncludeProductionSummary, allowDiceBattleDetails, allowDiceStatistics));
+							allowIncludeTerritorySummary, allowIncludeTerritoryAllPlayersSummary, allowIncludeProductionSummary, allowDiceBattleDetails, allowDiceStatistics));
 		return panel;
 	}
 	
@@ -648,8 +651,23 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 	}
 	
-	public void countDownLatchWaiter()
+	public void shutDown()
 	{
-		m_waiting.countDown();
+		m_latchesToCloseOnShutdown.shutDown();
+	}
+	
+	public void addShutdownLatch(final CountDownLatch latch)
+	{
+		m_latchesToCloseOnShutdown.addShutdownLatch(latch);
+	}
+	
+	public void removeShutdownLatch(final CountDownLatch latch)
+	{
+		m_latchesToCloseOnShutdown.removeShutdownLatch(latch);
+	}
+	
+	public CountDownLatchHandler getCountDownLatchHandler()
+	{
+		return m_latchesToCloseOnShutdown;
 	}
 }

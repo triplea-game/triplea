@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.login;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.net.IConnectionLogin;
+import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.MD5Crypt;
 
@@ -31,7 +32,8 @@ public class ClientLogin implements IConnectionLogin
 		{
 			final JPasswordField passwordField = new JPasswordField();
 			passwordField.setColumns(15);
-			EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), passwordField, "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE);
+			EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), passwordField, "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE,
+						new CountDownLatchHandler(true));
 			final String password = new String(passwordField.getPassword());
 			rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
 		}
@@ -42,6 +44,6 @@ public class ClientLogin implements IConnectionLogin
 	
 	public void notifyFailedLogin(final String message)
 	{
-		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message);
+		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message, new CountDownLatchHandler(true));
 	}
 }
