@@ -43,6 +43,7 @@ import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
@@ -513,9 +514,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		final GameData data = getGameData();
 		// play a sound for this phase
+		final IAbstractForumPosterDelegate endTurnDelegate = (IAbstractForumPosterDelegate) getPlayerBridge().getRemote();
 		if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), data))
 		{
-			ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
+			// do not play if we are reloading a savegame from pbem (gets annoying)
+			if (!endTurnDelegate.getHasPostedTurnSummary())
+				ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
 			m_soundPlayedAlreadyEndTurn = true;
 		}
 		m_ui.waitForEndTurn(getPlayerID(), getPlayerBridge());

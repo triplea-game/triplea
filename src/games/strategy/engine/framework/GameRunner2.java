@@ -508,7 +508,9 @@ public class GameRunner2
 					if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true"))
 						return;
 					
+					// System.out.println("Checking for latest version");
 					final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
+					// System.out.println("Check complete: " + (latestEngineOut == null ? "null" : latestEngineOut.getLatestVersionOut().toString()));
 					if (latestEngineOut == null)
 						return;
 					try

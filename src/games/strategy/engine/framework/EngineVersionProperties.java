@@ -20,6 +20,8 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
@@ -144,6 +146,7 @@ public class EngineVersionProperties
 	
 	private static Properties getProperties(final URL url)
 	{
+		Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.SEVERE);
 		final Properties props = new Properties();
 		final HttpClient client = new HttpClient();
 		final HostConfiguration config = client.getHostConfiguration();
@@ -166,6 +169,7 @@ public class EngineVersionProperties
 		{
 			method.releaseConnection();
 		}
+		Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.INFO);
 		return props;
 	}
 	

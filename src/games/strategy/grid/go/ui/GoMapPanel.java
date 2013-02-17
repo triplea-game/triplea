@@ -238,7 +238,7 @@ public class GoMapPanel extends GridMapPanel
 	@Override
 	protected void paintValidMoves(final Graphics2D g2d, final int topLeftX, final int topLeftY)
 	{
-		if (m_phase == GO_DELEGATE_PHASE.ENDGAME)
+		if (m_parentGridGameFrame.isGameOver() || m_phase == GO_DELEGATE_PHASE.ENDGAME)
 		{
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 			final Map<Territory, PlayerID> currentScoreState = EndTurnDelegate.getCurrentAreaScoreState(m_territoryGroupsThatShouldDie, m_gameData);
