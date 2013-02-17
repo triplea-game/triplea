@@ -28,6 +28,7 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
@@ -105,6 +106,7 @@ public class MapPanel extends ImageScrollerLargeView
 	private final TileManager m_tileManager;
 	private final BackgroundDrawer m_backgroundDrawer;
 	private BufferedImage m_mouseShadowImage = null;
+	private String m_movementLeftForCurrentUnits = "";
 	private final UIContext m_uiContext;
 	private final LinkedBlockingQueue<Tile> m_undrawnTiles = new LinkedBlockingQueue<Tile>();
 	private List<Unit> m_highlightUnits;
@@ -684,7 +686,7 @@ public class MapPanel extends ImageScrollerLargeView
 			t.scale(m_scale, m_scale);
 			g2d.drawImage(m_mouseShadowImage, t, this);
 		}
-		MapRouteDrawer.drawRoute(g2d, m_routeDescription, this, m_uiContext.getMapData());
+		MapRouteDrawer.drawRoute(g2d, m_routeDescription, this, m_uiContext.getMapData(), m_movementLeftForCurrentUnits);
 		// used to keep strong references to what is on the screen so it wont be garbage collected
 		// other references to the images are weak references
 		m_images.clear();
@@ -886,6 +888,7 @@ public class MapPanel extends ImageScrollerLargeView
 	{
 		if (units == null || units.isEmpty())
 		{
+			m_movementLeftForCurrentUnits = "";
 			m_mouseShadowImage = null;
 			SwingUtilities.invokeLater(new Runnable()
 			{
@@ -896,6 +899,8 @@ public class MapPanel extends ImageScrollerLargeView
 			});
 			return;
 		}
+		final Tuple<Integer, Integer> movementLeft = TripleAUnit.getMinAndMaxMovementLeft(units);
+		m_movementLeftForCurrentUnits = movementLeft.getFirst() + (movementLeft.getSecond() > movementLeft.getFirst() ? "+" : "");
 		final Set<UnitCategory> categories = UnitSeperator.categorize(units);
 		final int icon_width = m_uiContext.getUnitImageFactory().getUnitImageWidth();
 		final int xSpace = 5;

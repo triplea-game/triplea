@@ -143,6 +143,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	 */
 	protected void addAllowObserversToJoin(final JMenu parentMenu)
 	{
+		/* 
+		// People can use setpassword instead of this.  It is annoying joining a game only to get socket errors that confuse people and stuff. 
+		// Either setup a new column or some kind of indicator to show that a lobby game isn't accepting new connections, or keep this off.
 		if (!getGame().getMessenger().isServer())
 			return;
 		final IServerMessenger messeneger = (IServerMessenger) getGame().getMessenger();
@@ -159,6 +162,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		parentMenu.add(allowObservers);
 		return;
+		*/
 	}
 	
 	/**

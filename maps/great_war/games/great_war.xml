@@ -2366,6 +2366,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="London" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
 			<option name="capital" value="British"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Portugal" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2463,6 +2464,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Paris" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
 			<option name="capital" value="French"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Orleans" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2508,6 +2510,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Berlin" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
 			<option name="capital" value="Germans"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Pomerania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2573,6 +2576,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Rome" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
 			<option name="capital" value="Italians"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Naples" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2630,6 +2634,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Vienna" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
 			<option name="capital" value="Austrians"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Bohemia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2735,6 +2740,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Petrograd" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
 			<option name="capital" value="Russians"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Belgrade" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2756,6 +2762,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Istanbul" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
 			<option name="capital" value="Ottomans"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Ankara" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2801,6 +2808,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="50"/>
 			<option name="capital" value="Americans"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Albania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -4184,6 +4192,18 @@
                 <property name="Americans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
+				
+				<property name="Honorable Surrender" value="true" editable="true">
+					<boolean/>
+				</property>
+
+				<property name="Central Powers Honorable Victory VCs" value="6" editable="false">
+					<number min="4" max="8"/>
+				</property>
+
+				<property name="Allies Honorable Victory VCs" value="7" editable="false">
+					<number min="6" max="8"/>
+				</property>
 
 				<!-- Low Luck -->
 

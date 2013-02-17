@@ -1665,6 +1665,11 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		getGlassPane().setVisible(false);
 	}
 	
+	public void showActionPanelTab()
+	{
+		m_tabsPanel.setSelectedIndex(0);
+	}
+	
 	public void showRightHandSidePanel()
 	{
 		m_rightHandSidePanel.setVisible(true);

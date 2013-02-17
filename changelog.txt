@@ -1,4 +1,6 @@
 Changes for 1.7
+* Creating a mouse shadow image to go with the route image, showing how much movement you have left for any selected units, in blue font. (veqryn)
+
 * Possibly fixing bug where the game host process does not end, even though all windows close. (veqryn)
 
 * Allowing all Grid Games to use the play by email and forum posters. (veqryn)

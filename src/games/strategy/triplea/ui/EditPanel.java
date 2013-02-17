@@ -73,6 +73,7 @@ public class EditPanel extends ActionPanel
 {
 	private static final long serialVersionUID = 5043639777373556106L;
 	private TripleAFrame m_frame;
+	private Action m_performMoveAction;
 	private Action m_addUnitsAction;
 	private Action m_delUnitsAction;
 	private Action m_changePUsAction;
@@ -96,6 +97,17 @@ public class EditPanel extends ActionPanel
 		super(data, map);
 		m_frame = frame;
 		m_actionLabel = new JLabel();
+		m_performMoveAction = new AbstractAction("Perform Move or Other Actions")
+		{
+			private static final long serialVersionUID = 2205085537962024476L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				m_currentAction = this;
+				m_frame.showActionPanelTab();
+				CANCEL_EDIT_ACTION.actionPerformed(null);
+			}
+		};
 		m_addUnitsAction = new AbstractAction("Add Units")
 		{
 			private static final long serialVersionUID = 2205085537962024476L;
@@ -470,6 +482,11 @@ public class EditPanel extends ActionPanel
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(new EmptyBorder(5, 5, 0, 0));
 		add(m_actionLabel);
+		final JButton performMove = new JButton(m_performMoveAction);
+		performMove.setToolTipText("<html>When in Edit Mode, you can perform special actions according to whatever phase you are in, by switching back to the 'Action' tab.<br /> "
+					+ "So if you are in the 'Move' phase, you can move units virtually anywhere, because Edit Mode turns off the movement validation.<br /> "
+					+ "You can use 'Action' tab during Edit Mode to do things not available by the other edit buttons.</html>");
+		add(performMove);
 		add(new JButton(m_addUnitsAction));
 		add(new JButton(m_delUnitsAction));
 		add(new JButton(m_changeTerritoryOwnerAction));
@@ -547,6 +564,7 @@ public class EditPanel extends ActionPanel
 		if (m_frame.getEditDelegate() == null)
 		{
 			// current turn belongs to remote player or AI player
+			m_performMoveAction.setEnabled(false);
 			m_addUnitsAction.setEnabled(false);
 			m_delUnitsAction.setEnabled(false);
 			m_changeTerritoryOwnerAction.setEnabled(false);
@@ -558,14 +576,15 @@ public class EditPanel extends ActionPanel
 		}
 		else
 		{
+			m_performMoveAction.setEnabled(m_currentAction == null);
 			m_addUnitsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-			m_delUnitsAction.setEnabled(!m_selectedUnits.isEmpty());
+			m_delUnitsAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
 			m_changeTerritoryOwnerAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 			m_changePUsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 			m_addTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 			m_removeTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
-			m_changeUnitHitDamageAction.setEnabled(!m_selectedUnits.isEmpty());
-			m_changeUnitBombingDamageAction.setEnabled(!m_selectedUnits.isEmpty());
+			m_changeUnitHitDamageAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
+			m_changeUnitBombingDamageAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
 		}
 	}
 	

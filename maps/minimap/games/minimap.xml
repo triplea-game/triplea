@@ -96,10 +96,10 @@
                 <player name="Italians" optional="false"/>
 
                 <!-- Axis Alliances -->
-                <alliance player="Italians" alliance="Axis"/>
+                <alliance player="Italians" alliance="Italians"/>
 
                 <!-- Allies Alliances -->
-                <alliance player="Russians" alliance="Allies"/>
+                <alliance player="Russians" alliance="Russians"/>
         </playerList>
 
         <unitList>
@@ -437,11 +437,13 @@
                     <attatchment name="territoryAttatchment" attatchTo="red capitol" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
 						<option name="capital" value="Russians"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="blue capitol" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>  
-						<option name="capital" value="Italians"/> 
+						<option name="capital" value="Italians"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="red north 1" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -580,6 +582,18 @@
 				<property name="Italians bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
+
+				<property name="Total Victory" value="true" editable="true">
+					<boolean/>
+				</property>
+
+				<property name="Russians Total Victory VCs" value="2" editable="false">
+					<number min="2" max="2"/>
+				</property>
+
+				<property name="Italians Total Victory VCs" value="2" editable="false">
+					<number min="2" max="2"/>
+				</property>
 
 				<!-- Low Luck -->
                 <property name="Low Luck" value="false" editable="true">

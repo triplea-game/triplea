@@ -1790,6 +1790,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Rivendell" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Elves"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Lorien" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1828,6 +1829,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Minas Tirith" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
                         <option name="capital" value="Gondor"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Tolfolas" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1870,6 +1872,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Helms Deep" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
                         <option name="capital" value="Rohan"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Westfold" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1888,6 +1891,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Rhun" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
                         <option name="capital" value="Rhun"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="S. Rhun" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1909,6 +1913,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Isengard" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="10"/>
                         <option name="capital" value="Saruman"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Minas Morgul" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1922,6 +1927,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Barad Dur" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Mordor"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Nurn" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1940,6 +1946,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="City of Corsairs" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
                         <option name="capital" value="Haradrim"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Umbar Peninsula" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1953,6 +1960,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Khand" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
                         <option name="capital" value="Khand"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="S. Khand" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1987,7 +1995,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Moria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="8"/>
                         <option name="capital" value="Goblins"/>
-                        <!--<option name="victoryCity" value="true"/>-->
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <!-- Neutral Lands -->
@@ -2006,6 +2014,7 @@
                     <attatchment name="territoryAttatchment" attatchTo="Bree" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                         <option name="capital" value="Freefolk"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Shire" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2148,11 +2157,13 @@
                     <attatchment name="territoryAttatchment" attatchTo="Lonely Mtn." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="12"/>
                         <option name="capital" value="Dwarves"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Lake Town" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="5"/>
                         <option name="capital" value="Dale"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Carrock" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2681,6 +2692,18 @@
                 <property name="Dwarves bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
+
+				<property name="Total Victory" value="true" editable="true">
+					<boolean/>
+				</property>
+
+				<property name="Evil Total Victory VCs" value="12" editable="false">
+					<number min="7" max="12"/>
+				</property>
+
+				<property name="Good Total Victory VCs" value="12" editable="false">
+					<number min="7" max="12"/>
+				</property>
 
 				
 				<!-- Low Luck -->

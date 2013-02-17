@@ -39,10 +39,10 @@
 			<step name="gameInit" delegate="init" maxRunCount="1"/>
 			
 			<step name="blackPlay" delegate="play" player="Black"/>
-			<step name="blackEndTurn" delegate="endTurn" />
+			<step name="blackEndTurn" delegate="endTurn" player="Black"/>
 
 			<step name="whitePlay" delegate="play" player="White"/>
-			<step name="whiteEndTurn" delegate="endTurn" />
+			<step name="whiteEndTurn" delegate="endTurn" player="White"/>
 
 		</sequence>
 	</gamePlay>

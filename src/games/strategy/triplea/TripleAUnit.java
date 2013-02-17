@@ -29,6 +29,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -249,6 +250,23 @@ public class TripleAUnit extends Unit
 	public int getMovementLeft()
 	{
 		return Math.max(0, UnitAttachment.get(getType()).getMovement(getOwner()) + m_bonusMovement - m_alreadyMoved);
+	}
+	
+	public static Tuple<Integer, Integer> getMinAndMaxMovementLeft(final Collection<Unit> units)
+	{
+		int min = 100000;
+		int max = 0;
+		for (final Unit u : units)
+		{
+			final int left = ((TripleAUnit) u).getMovementLeft();
+			if (left > max)
+				max = left;
+			if (left < min)
+				min = left;
+		}
+		if (max < min)
+			min = max;
+		return new Tuple<Integer, Integer>(min, max);
 	}
 	
 	public int getUnitDamage()

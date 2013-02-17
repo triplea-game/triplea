@@ -2093,26 +2093,31 @@
 <attatchment name="territoryAttatchment" attatchTo="Moscow" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                        <option name="production" value="10"/>
 						<option name="capital" value="Russians"/>
+                        <option name="victoryCity" value="true"/>
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="Roma" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                        <option name="production" value="8"/>
 						<option name="capital" value="Italians"/>
+                        <option name="victoryCity" value="true"/>
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="Berlin" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                        <option name="production" value="15"/>
 						<option name="capital" value="Germans"/>
+                        <option name="victoryCity" value="true"/>
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="Washington" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                        <option name="production" value="20"/>
 						<option name="capital" value="Americans"/>
+                        <option name="victoryCity" value="true"/>
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="London" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                        <option name="production" value="8"/>
 						<option name="capital" value="British"/>
+                        <option name="victoryCity" value="true"/>
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="Brest" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2161,7 +2166,9 @@
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="W.Romania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                       <option name="production" value="4"/><option name="capital" value="Romanians"/>
+                       <option name="production" value="4"/>
+					   <option name="capital" value="Romanians"/>
+                        <option name="victoryCity" value="true"/>
 
 </attatchment>
 
@@ -2257,7 +2264,9 @@
 
                    </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="N.Finnland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                       <option name="production" value="6"/><option name="capital" value="Finns"/>
+                       <option name="production" value="6"/>
+					   <option name="capital" value="Finns"/>
+                        <option name="victoryCity" value="true"/>
 
 
 
@@ -2347,7 +2356,9 @@
                    </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="Paris" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                       <option name="production" value="8"/><option name="capital" value="French"/>
+                       <option name="production" value="8"/>
+					   <option name="capital" value="French"/>
+                        <option name="victoryCity" value="true"/>
 
                    </attatchment>
 
@@ -3047,7 +3058,9 @@
                    </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="S.Canada" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                       <option name="production" value="3"/><option name="capital" value="ColonialFrench"/>
+                       <option name="production" value="3"/>
+					   <option name="capital" value="ColonialFrench"/>
+                        <option name="victoryCity" value="true"/>
 
                    </attatchment>
 
@@ -4097,6 +4110,18 @@
 		<property name="Americans bid" value="0" editable="true">
                        <number min="0" max="1000"/>
                </property>
+
+		<property name="Honorable Surrender" value="true" editable="true">
+			<boolean/>
+		</property>
+
+		<property name="Axis Honorable Victory VCs" value="7" editable="false">
+			<number min="6" max="9"/>
+		</property>
+
+		<property name="Allies Honorable Victory VCs" value="7" editable="false">
+			<number min="6" max="9"/>
+		</property>
 
 			   
 		<!-- Use WW2V2 Rules --> 

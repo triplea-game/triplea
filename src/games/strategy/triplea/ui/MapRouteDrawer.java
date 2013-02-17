@@ -31,6 +31,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class MapRouteDrawer
 	/**
 	 * Draw m_route to the screen, do nothing if null.
 	 */
-	public static void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel view, final MapData mapData)
+	public static void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final MapPanel view, final MapData mapData, final String movementLeftForCurrentUnits)
 	{
 		final AffineTransform original = graphics.getTransform();
 		final AffineTransform newTransform = new AffineTransform();
@@ -138,32 +139,78 @@ public class MapRouteDrawer
 			// draw the length of the move
 			if (numTerritories > 1)
 			{
-				double textXOffset;
+				final double textXOffset;
+				double cursorXOffset;
 				final double xDir = points[numTerritories - 1].x - points[numTerritories - 2].x;
 				if (xDir > 0)
-					textXOffset = 2;
+				{
+					textXOffset = 6;
+					cursorXOffset = -10;
+				}
 				else if (xDir == 0)
+				{
 					textXOffset = 0;
+					cursorXOffset = -5;
+				}
 				else
-					textXOffset = -8;
-				double textyOffset;
+				{
+					textXOffset = -14;
+					cursorXOffset = 0;
+				}
+				final double textyOffset;
+				double cursorYOffset;
 				final double yDir = points[numTerritories - 1].y - points[numTerritories - 2].y;
 				if (yDir > 0)
-					textyOffset = 2;
+				{
+					textyOffset = 18;
+					cursorYOffset = -8;
+				}
 				else if (yDir == 0)
-					textyOffset = 0;
+				{
+					textyOffset = -24;
+					cursorYOffset = -2;
+				}
 				else
-					textyOffset = -8;
-				graphics.setColor(Color.YELLOW);
-				graphics.setFont(new Font("Dialog", Font.BOLD, 18));
-				final String text = String.valueOf(numTerritories - 1);
-				graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
-				if (scrollWrapX /*&& !scrollWrapY*/)
+				{
+					textyOffset = -24;
+					cursorYOffset = 0;
+				}
+				final String textRouteMovement = String.valueOf(numTerritories - 1);
+				final String unitMovementLeft = (movementLeftForCurrentUnits == null || movementLeftForCurrentUnits.trim().length() <= 0 ? "" : "    /" + movementLeftForCurrentUnits);
+				final BufferedImage movementImage = new BufferedImage(72, 24, BufferedImage.TYPE_INT_ARGB);
+				final Graphics2D textG2D = movementImage.createGraphics();
+				textG2D.setColor(Color.YELLOW);
+				textG2D.setFont(new Font("Dialog", Font.BOLD, 20));
+				textG2D.drawString(textRouteMovement, 0, 20);
+				textG2D.setColor(new Color(33, 0, 127));
+				textG2D.setFont(new Font("Dialog", Font.BOLD, 16));
+				textG2D.drawString(unitMovementLeft, 0, 20);
+				
+				graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+				if (scrollWrapX) // && !scrollWrapY
+				{
+					graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+					graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+				}
+				if (scrollWrapY)// &&!scrollWrapX
+				{
+					graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
+					graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
+				}
+				if (scrollWrapX && scrollWrapY)
+				{
+					graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX),
+								(int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
+					graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX),
+								(int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
+				}
+				/* graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
+				if (scrollWrapX) //&& !scrollWrapY
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
 				}
-				if (/*!scrollWrapX &&*/scrollWrapY)
+				if (scrollWrapY)// &&!scrollWrapX
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
@@ -172,27 +219,32 @@ public class MapRouteDrawer
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
-				}
+				}*/
+
 				final Image cursorImage = routeDescription.getCursorImage();
 				if (cursorImage != null)
 				{
-					graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+					graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset), (int) (points[numTerritories - 1].y + cursorYOffset - yOffset), null);
 					if (scrollWrapX /*&& !scrollWrapY*/)
 					{
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset + translateX), (int) (points[numTerritories - 1].y + cursorYOffset - yOffset),
+									null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset - translateX), (int) (points[numTerritories - 1].y + cursorYOffset - yOffset),
+									null);
 					}
 					if (/*!scrollWrapX &&*/scrollWrapY)
 					{
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset), (int) (points[numTerritories - 1].y + cursorYOffset - yOffset + translateY),
+									null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset), (int) (points[numTerritories - 1].y + cursorYOffset - yOffset - translateY),
+									null);
 					}
 					if (scrollWrapX && scrollWrapY)
 					{
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX),
-									(int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX),
-									(int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset + translateX),
+									(int) (points[numTerritories - 1].y + cursorXOffset - yOffset + translateY), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset - translateX),
+									(int) (points[numTerritories - 1].y + cursorXOffset - yOffset - translateY), null);
 					}
 				}
 			}
