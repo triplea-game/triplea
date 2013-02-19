@@ -30,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -135,6 +136,10 @@ public class GoMapPanel extends GridMapPanel
 		final Color tileEven = new Color(225, 161, 101);
 		final int maxX = m_gameData.getMap().getXDimension() - 1;
 		final int maxY = m_gameData.getMap().getYDimension() - 1;
+		// we want to draw the squares offset, so that it looks like we are placing pieces on the intersections of lines, not in a square
+		final int xOffset = m_mapData.getSquareWidth() / 2;
+		final int yOffset = m_mapData.getSquareHeight() / 2;
+		// draw the board
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();
@@ -151,9 +156,6 @@ public class GoMapPanel extends GridMapPanel
 			
 			g2d.setColor(Color.black);
 			
-			// we want to draw the squares offset, so that it looks like we are placing pieces on the intersections of lines, not in a square
-			final int xOffset = m_mapData.getSquareWidth() / 2;
-			final int yOffset = m_mapData.getSquareHeight() / 2;
 			g2d.translate(-xOffset, -yOffset);
 			if (at.getY() != 0 && at.getX() != 0)
 				g2d.drawPolygon(p);
@@ -169,6 +171,23 @@ public class GoMapPanel extends GridMapPanel
 			// return it to original position
 			g2d.translate(xOffset, -yOffset);
 		}
+		// draw star points. they start at 4th intersection (3,3) and then every 6 intersections after that.
+		g2d.setColor(Color.black);
+		for (int x = 0; x <= maxX; x++)
+		{
+			for (int y = 0; y <= maxY; y++)
+			{
+				final boolean starx = (x - 3) % 6 == 0;
+				final boolean stary = (y - 3) % 6 == 0;
+				if (starx && stary)
+				{
+					final Ellipse2D.Double circle = new Ellipse2D.Double(m_mapData.getBevelWidth() + (x * m_mapData.getSquareWidth()) + xOffset - 4,
+								m_mapData.getBevelHeight() + (y * m_mapData.getSquareHeight()) + xOffset - 4, 8, 8);
+					g2d.fill(circle);
+				}
+			}
+		}
+		// draw our stones
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();
