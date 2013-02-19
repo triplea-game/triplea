@@ -339,26 +339,34 @@ public class ClipPlayer
 	{
 		String resourcePath = SoundProperties.getInstance(m_resourceLoader).getProperty(pathName);
 		if (resourcePath == null)
-			resourcePath = SoundProperties.getInstance(m_resourceLoader).getDefaultEraFolder() + File.separator + pathName;
-		resourcePath = resourcePath.replace('/', File.separatorChar);
-		resourcePath = resourcePath.replace('\\', File.separatorChar);
+			resourcePath = SoundProperties.getInstance(m_resourceLoader).getDefaultEraFolder() + "/" + pathName;
+		// URL uses "/", not File.separator or "\"
+		// resourcePath = resourcePath.replace('/', File.separatorChar);
+		// resourcePath = resourcePath.replace('\\', File.separatorChar);
+		resourcePath = resourcePath.replace('\\', '/');
 		final List<File> availableSounds = new ArrayList<File>();
 		for (final String path : resourcePath.split(";"))
 		{
-			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + path));
+			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + path));
 		}
 		if (availableSounds.isEmpty())
 		{
-			final String genericPath = SoundProperties.GENERIC_FOLDER + File.separator + pathName;
-			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + genericPath));
+			final String genericPath = SoundProperties.GENERIC_FOLDER + "/" + pathName;
+			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + genericPath));
 		}
 		m_sounds.put(pathName, availableSounds);
 	}
 	
-	private List<File> createAndAddClips(final String resourceAndPath)
+	/**
+	 * 
+	 * @param resourceAndPathURL
+	 *            (URL uses '/', not File.separator or '\')
+	 * @return
+	 */
+	private List<File> createAndAddClips(final String resourceAndPathURL)
 	{
 		final List<File> availableSounds = new ArrayList<File>();
-		final URL thisSoundURL = m_resourceLoader.getResource(resourceAndPath);
+		final URL thisSoundURL = m_resourceLoader.getResource(resourceAndPathURL);
 		if (thisSoundURL == null)
 		{
 			// if (!subFolder)
@@ -485,9 +493,9 @@ public class ClipPlayer
 			{
 				if (file.getName().indexOf("svn") != -1)
 					continue;
-				final String name = folder.getName() + File.separator + file.getName();
+				final String name = folder.getName() + "/" + file.getName();
 				final List<File> availableSounds = new ArrayList<File>();
-				availableSounds.addAll(getInstance().createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + name));
+				availableSounds.addAll(getInstance().createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + name));
 				getInstance().m_sounds.put(name, availableSounds);
 			}
 		}
@@ -501,7 +509,7 @@ public class ClipPlayer
 				{
 					if (file.getName().indexOf("svn") != -1)
 						continue;
-					play(folder.getName() + File.separator + file.getName(), null);
+					play(folder.getName() + "/" + file.getName(), null);
 					try
 					{
 						Thread.sleep(4000);

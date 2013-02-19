@@ -21,7 +21,6 @@ import games.strategy.ui.Util;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +77,8 @@ public class UnitImageFactory
 	
 	private Image getBaseImage(final String baseImageName, final PlayerID id)
 	{
-		final String fileName = FILE_NAME_BASE + id.getName() + File.separator + baseImageName + ".png";
+		// URL uses '/' not '\'
+		final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
 		final URL url = m_resourceLoader.getResource(fileName);
 		if (url == null)
 			throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
@@ -97,7 +97,7 @@ public class UnitImageFactory
 	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), ResourceLoader.RESOURCE_FOLDER + "/units/");
 	private BufferedImage getBaseImage(final String baseImageName, final PlayerID id)
 	{
-		final String fileName = id.getName() + File.separator + baseImageName + ".png";
+		final String fileName = id.getName() + "/" + baseImageName + ".png";
 		BufferedImage image = null;
 		try
 		{

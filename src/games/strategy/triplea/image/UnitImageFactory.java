@@ -34,7 +34,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -202,7 +201,8 @@ public class UnitImageFactory
 	
 	private Image getBaseImage(final String baseImageName, final PlayerID id, final boolean damaged)
 	{
-		final String fileName = FILE_NAME_BASE + id.getName() + File.separator + baseImageName + ".png";
+		// URL uses '/' not '\'
+		final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
 		final URL url = m_resourceLoader.getResource(fileName);
 		if (url == null)
 			throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);

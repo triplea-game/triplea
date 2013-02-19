@@ -161,9 +161,15 @@ public class ResourceLoader
 		return true;
 	}
 	
-	public URL getResource(final String path)
+	/**
+	 * 
+	 * @param pathURL
+	 *            (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or File.separator)
+	 * @return
+	 */
+	public URL getResource(final String pathURL)
 	{
-		final URL rVal = m_loader.getResource(path);
+		final URL rVal = m_loader.getResource(pathURL);
 		if (rVal == null)
 		{
 			return null;
@@ -176,9 +182,9 @@ public class ResourceLoader
 		{
 			throw new IllegalStateException(e);
 		}
-		if (!fileName.endsWith(path))
+		if (!fileName.endsWith(pathURL))
 		{
-			throw new IllegalStateException("The file:" + fileName + "  does not have the correct case.  It must match the case declared in the xml:" + path);
+			throw new IllegalStateException("The file:" + fileName + "  does not have the correct case.  It must match the case declared in the xml:" + pathURL);
 		}
 		return rVal;
 	}

@@ -248,7 +248,7 @@ public class UIContext
 		// load a new cursor
 		m_cursor = Cursor.getDefaultCursor();
 		final Toolkit toolkit = Toolkit.getDefaultToolkit();
-		final URL cursorURL = m_resourceLoader.getResource("misc" + File.separator + "cursor.gif");
+		final URL cursorURL = m_resourceLoader.getResource("misc" + "/" + "cursor.gif"); // URL's use "/" not "\"
 		if (cursorURL != null)
 		{
 			try
