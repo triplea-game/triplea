@@ -32,7 +32,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	}
 	
 	@Override
-	protected void doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge)
+	protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge)
 	{
 		final GameData data = getData();
 		final PlayerList playerList = data.getPlayerList();
@@ -54,12 +54,12 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				bridge.getHistoryWriter().startEvent("Japanese win.");
 			}
 		}
+		return "";
 	}
 	
 	@Override
-	protected void addOtherResources(final IDelegateBridge bridge)
+	protected String addOtherResources(final IDelegateBridge bridge)
 	{
-		// TODO Auto-generated method stub
-		
+		return "";
 	}
 }

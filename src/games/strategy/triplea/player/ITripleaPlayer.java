@@ -281,7 +281,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @param message
 	 *            the message sent
 	 */
-	void reportPoliticalMessage(String message);
+	public void reportPoliticalMessage(String message);
 	
 	/**
 	 * Asks the player if they wish to perform any kamikaze suicide attacks

@@ -45,7 +45,6 @@ public abstract class MainGameFrame extends JFrame
 	
 	public abstract void shutdown();
 	
-	// public abstract IPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge);
 	public abstract void notifyError(String error);
 	
 	public abstract JComponent getMainPanel();

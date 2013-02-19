@@ -65,7 +65,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -109,7 +108,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	public void reportPoliticalMessage(final String message)
 	{
-		m_ui.notifyPoliticalMessage(message);
+		m_ui.notifyMessage(message, "Political Alert");
 	}
 	
 	@Override
@@ -316,14 +315,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			return true;
 		else
 		{
-			final StringBuilder buf = new StringBuilder("Air in following territories cant land:");
-			final Iterator<Territory> iter = airCantLand.iterator();
-			while (iter.hasNext())
-			{
-				buf.append((iter.next()).getName());
-				buf.append(" ");
-			}
-			if (!m_ui.getOKToLetAirDie(getPlayerID(), buf.toString(), movePhase))
+			if (!m_ui.getOKToLetAirDie(getPlayerID(), airCantLand, movePhase))
 				return false;
 			return true;
 		}
@@ -337,14 +329,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			return false;
 		else
 		{
-			final StringBuilder buf = new StringBuilder("Units in the following territories will die:");
-			final Iterator<Territory> iter = unitsCantFight.iterator();
-			while (iter.hasNext())
-			{
-				buf.append((iter.next()).getName());
-				buf.append(" ");
-			}
-			if (m_ui.getOKToLetUnitsDie(getPlayerID(), buf.toString(), true))
+			if (m_ui.getOKToLetUnitsDie(getPlayerID(), unitsCantFight, true))
 				return false;
 			return true;
 		}

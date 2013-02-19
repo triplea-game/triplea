@@ -44,6 +44,7 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -100,12 +101,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		super.start();
 		if (!m_needToInitialize)
 			return;
+		final StringBuilder endTurnReport = new StringBuilder();
 		m_hasPostedTurnSummary = false;
 		final PlayerAttachment pa = PlayerAttachment.get(m_player);
 		// can't collect unless you own your own capital
 		if (!canPlayerCollectIncome(m_player, data))
 		{
-			rollWarBondsForFriends(m_bridge, m_player, data);
+			endTurnReport.append(rollWarBondsForFriends(m_bridge, m_player, data));
 			// we do not collect any income this turn
 		}
 		else
@@ -113,7 +115,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			// just collect resources
 			final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 			int toAdd = getProduction(territories);
-			final int blockadeLoss = getProductionLoss(m_player, data, m_bridge);
+			final int blockadeLoss = getProductionLoss(m_player, data, m_bridge, endTurnReport);
 			toAdd -= blockadeLoss;
 			toAdd *= Properties.getPU_Multiplier(data);
 			int total = m_player.getResources().getQuantity(PUs) + toAdd;
@@ -124,15 +126,17 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 				transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss + " lost to blockades)" + "; end with " + total
 							+ MyFormatter.pluralize(" PU", total) + " total";
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
-			
+			endTurnReport.append(transcriptText + "<br />");
 			// do war bonds
 			final int bonds = rollWarBonds(m_bridge, m_player, data);
 			if (bonds > 0)
 			{
 				total += bonds;
 				toAdd += bonds;
-				m_bridge.getHistoryWriter().startEvent(
-							m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total");
+				final String bondText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total)
+							+ " total";
+				m_bridge.getHistoryWriter().startEvent(bondText);
+				endTurnReport.append("<br />" + bondText + "<br />");
 			}
 			
 			if (total < 0)
@@ -150,9 +154,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 				m_bridge.addChange(ccVP);
 			}
 			
-			addOtherResources(m_bridge);
+			endTurnReport.append("<br />" + addOtherResources(m_bridge));
 			
-			doNationalObjectivesAndOtherEndTurnEffects(m_bridge);
+			endTurnReport.append("<br />" + doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
 			
 			// now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
 			final int currentPUs = m_player.getResources().getQuantity(PUs);
@@ -187,6 +191,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 							+ MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
 							+ MyFormatter.pluralize(" PU", newTotal);
 				m_bridge.getHistoryWriter().startEvent(transcriptText2);
+				endTurnReport.append("<br />" + transcriptText2 + "<br />");
 				final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
 				m_bridge.addChange(upkeep);
 			}
@@ -201,6 +206,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			changeUnitOwnership(m_bridge);
 		}
 		m_needToInitialize = false;
+		if (endTurnReport.toString().trim().length() > 6)
+		{
+			EventThreadJOptionPane.showNonBlockingMessageDialog(null, "<html><b>End of Turn Report for " + m_player.getName() + "</b><br /><br />" + endTurnReport.toString() + "</html>",
+						"End of Turn Report for " + m_player.getName());
+		}
 	}
 	
 	/**
@@ -259,19 +269,19 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		return total;
 	}
 	
-	private void rollWarBondsForFriends(final IDelegateBridge aBridge, final PlayerID player, final GameData data)
+	private String rollWarBondsForFriends(final IDelegateBridge aBridge, final PlayerID player, final GameData data)
 	{
 		final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
 		final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
 		if (sides <= 0 || count <= 0)
-			return;
+			return "";
 		// basically, if we are sharing our technology with someone, and we have warbonds but they do not, then we roll our warbonds and give them the proceeds (Global 1940)
 		final PlayerAttachment playerattachment = PlayerAttachment.get(player);
 		if (playerattachment == null)
-			return;
+			return "";
 		final Collection<PlayerID> shareWith = playerattachment.getShareTechnology();
 		if (shareWith == null || shareWith.isEmpty())
-			return;
+			return "";
 		PlayerID giveWarBondsTo = null; // take first one
 		for (final PlayerID p : shareWith)
 		{
@@ -288,7 +298,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			}
 		}
 		if (giveWarBondsTo == null)
-			return;
+			return "";
 		final String annotation = player.getName() + " rolling to resolve War Bonds, and giving results to " + giveWarBondsTo.getName() + ": ";
 		final DiceRoll dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
 		int totalWarBonds = 0;
@@ -304,7 +314,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, PUs, totalWarBonds);
 		aBridge.addChange(change);
 		getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
-		return;
+		return transcriptText + "<br />";
 	}
 	
 	private ITripleaPlayer getRemotePlayer(final PlayerID player)
@@ -362,9 +372,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		}
 	}
 	
-	protected abstract void addOtherResources(IDelegateBridge bridge);
+	protected abstract String addOtherResources(IDelegateBridge bridge);
 	
-	protected abstract void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge);
+	protected abstract String doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge);
 	
 	protected int getProduction(final Collection<Territory> territories)
 	{
@@ -387,7 +397,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	}
 	
 	// finds losses due to blockades etc, positive value returned.
-	protected int getProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge aBridge)
+	protected int getProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge aBridge, final StringBuilder endTurnReport)
 	{
 		final GameMap map = data.getMap();
 		final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone);
@@ -469,11 +479,15 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		final int realTotalLoss = Math.max(0, totalDamageTracker.totalValues());
 		if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || (rolledDice && !transcripts.isEmpty())))
 		{
-			aBridge.getHistoryWriter().startEvent("Total Cost from Convoy Blockades: " + realTotalLoss);
+			final String mainline = "Total Cost from Convoy Blockades: " + realTotalLoss;
+			aBridge.getHistoryWriter().startEvent(mainline);
+			endTurnReport.append(mainline + "<br />");
 			for (final String t : transcripts)
 			{
 				aBridge.getHistoryWriter().addChildToEvent(t);
+				endTurnReport.append("    " + t + "<br />");
 			}
+			endTurnReport.append("<br />");
 		}
 		return realTotalLoss;
 	}

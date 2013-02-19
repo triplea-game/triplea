@@ -63,24 +63,33 @@ import java.util.Set;
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
 	@Override
-	protected void doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge)
+	protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge)
 	{
+		final StringBuilder endTurnReport = new StringBuilder();
 		// do national objectives
 		if (isNationalObjectives())
 		{
-			determineNationalObjectives(bridge);
+			endTurnReport.append(determineNationalObjectives(bridge));
 		}
+		if (endTurnReport.toString().trim().length() > 0)
+			endTurnReport.append("<br />");
 		// create resources if any owned units have the ability
-		createResources(bridge);
+		final String createsResourcesText = createResources(bridge);
+		if (createsResourcesText.trim().length() > 0)
+			endTurnReport.append(createsResourcesText + "<br />");
 		// create units if any owned units have the ability
-		createUnits(bridge);
+		final String createsUnitsText = createUnits(bridge);
+		if (createsUnitsText.trim().length() > 0)
+			endTurnReport.append(createsUnitsText + "<br />");
+		return endTurnReport.toString();
 	}
 	
 	/**
      *
      */
-	private void createUnits(final IDelegateBridge bridge)
+	private String createUnits(final IDelegateBridge bridge)
 	{
+		final StringBuilder endTurnReport = new StringBuilder();
 		final GameData data = getData();
 		final PlayerID player = data.getSequence().getStep().getPlayerID();
 		final Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesUnits);
@@ -112,6 +121,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				{
 					final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAdd) + " in " + t.getName();
 					bridge.getHistoryWriter().startEvent(transcriptText, toAdd);
+					endTurnReport.append(transcriptText + "<br />");
 					final Change place = ChangeFactory.addUnits(t, toAdd);
 					change.add(place);
 				}
@@ -124,6 +134,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 						final Territory tw = waterNeighbors.iterator().next();
 						final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddSea) + " in " + tw.getName();
 						bridge.getHistoryWriter().startEvent(transcriptText, toAddSea);
+						endTurnReport.append(transcriptText + "<br />");
 						final Change place = ChangeFactory.addUnits(tw, toAddSea);
 						change.add(place);
 					}
@@ -137,6 +148,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 						final Territory tl = landNeighbors.iterator().next();
 						final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddLand) + " in " + tl.getName();
 						bridge.getHistoryWriter().startEvent(transcriptText, toAddLand);
+						endTurnReport.append(transcriptText + "<br />");
 						final Change place = ChangeFactory.addUnits(tl, toAddLand);
 						change.add(place);
 					}
@@ -145,6 +157,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		}
 		if (!change.isEmpty())
 			bridge.addChange(change);
+		return endTurnReport.toString();
 	}
 	
 	/**
@@ -152,8 +165,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	 * @param data
 	 * @param bridge
 	 */
-	private void createResources(final IDelegateBridge bridge)
+	private String createResources(final IDelegateBridge bridge)
 	{
+		final StringBuilder endTurnReport = new StringBuilder();
 		final GameData data = getData();
 		final PlayerID player = data.getSequence().getStep().getPlayerID();
 		final Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
@@ -182,6 +196,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 						final String transcriptText = u.getUnitType().getName() + " in " + t.getName() + " creates " + toAdd + " " + r.getName() + "; " + player.getName() + " end with " + total + " "
 									+ r.getName();
 						bridge.getHistoryWriter().startEvent(transcriptText);
+						endTurnReport.append(transcriptText + "<br />");
 						final Change resources = ChangeFactory.changeResourcesChange(player, r, toAdd);
 						change.add(resources);
 					}
@@ -190,6 +205,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				}
 			}
 		}
+		return endTurnReport.toString();
 	}
 	
 	/**
@@ -197,7 +213,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	 * 
 	 * @param data
 	 */
-	private void determineNationalObjectives(final IDelegateBridge bridge)
+	private String determineNationalObjectives(final IDelegateBridge bridge)
 	{
 		final GameData data = getData();
 		final PlayerID player = data.getSequence().getStep().getPlayerID();
@@ -221,7 +237,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		final List<RulesAttachment> natObjs = Match.getMatches(RulesAttachment.getNationalObjectives(player, data), availableUses);
 		allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(natObjs), null));
 		if (allConditionsNeeded.isEmpty())
-			return;
+			return "";
+		final StringBuilder endTurnReport = new StringBuilder();
 		// now test all the conditions
 		final HashMap<ICondition, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
 		
@@ -233,7 +250,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
-				TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
+				endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true) + "<br />");
 			}
 		}
 		
@@ -264,7 +281,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			final String PUMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName() + " met a national objective for an additional " + toAdd
 						+ MyFormatter.pluralize(" PU", toAdd) + "; end with " + total + MyFormatter.pluralize(" PU", total);
 			bridge.getHistoryWriter().startEvent(PUMessage);
+			endTurnReport.append(PUMessage + "<br />");
 		}
+		return endTurnReport.toString();
 	}
 	
 	private boolean isNationalObjectives()
@@ -282,8 +301,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	};
 	
 	@Override
-	protected void addOtherResources(final IDelegateBridge aBridge)
+	protected String addOtherResources(final IDelegateBridge aBridge)
 	{
+		final StringBuilder endTurnReport = new StringBuilder();
 		final GameData data = aBridge.getData();
 		final CompositeChange change = new CompositeChange();
 		final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
@@ -299,14 +319,17 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				toAdd -= total;
 				total = 0;
 			}
-			aBridge.getHistoryWriter().startEvent(m_player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd)
-						+ "; ends with " + total + " " + MyFormatter.pluralize(r.getName(), total) + " total");
+			final String resourceText = m_player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd)
+						+ "; ends with " + total + " " + MyFormatter.pluralize(r.getName(), total) + " total";
+			aBridge.getHistoryWriter().startEvent(resourceText);
+			endTurnReport.append(resourceText + "<br />");
 			change.add(ChangeFactory.changeResourcesChange(m_player, r, toAdd));
 		}
 		if (!change.isEmpty())
 		{
 			aBridge.addChange(change);
 		}
+		return endTurnReport.toString();
 	}
 	
 	/**

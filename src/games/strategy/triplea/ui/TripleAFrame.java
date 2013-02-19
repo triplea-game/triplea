@@ -170,7 +170,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * 
  *         Main frame for the triple a game
  */
-public class TripleAFrame extends MainGameFrame // extends JFrame
+public class TripleAFrame extends MainGameFrame
 {
 	private static final long serialVersionUID = 7640069668264418976L;
 	private GameData m_data;
@@ -749,35 +749,59 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		EventThreadJOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
 	}
 	
-	public void notification(final String message)
+	public void notifyNonBlockingMessage(final String message, final String title)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, "Notification", JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
+		final JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+		final JDialog dialog = new JDialog(this, title, false);
+		dialog.setContentPane(optionPane);
+		dialog.setAlwaysOnTop(true);
+		dialog.setVisible(true);
 	}
 	
-	public boolean getOKToLetAirDie(final PlayerID m_id, String message, final boolean movePhase)
+	public boolean getOKToLetAirDie(final PlayerID m_id, final Collection<Territory> airCantLand, final boolean movePhase)
 	{
+		if (airCantLand == null || airCantLand.isEmpty())
+			return true;
+		final StringBuilder buf = new StringBuilder("Air in following territories cant land: ");
+		final Iterator<Territory> iter = airCantLand.iterator();
+		while (iter.hasNext())
+		{
+			buf.append((iter.next()).getName());
+			buf.append(" ");
+		}
 		final boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(m_data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(m_data);
 		final int carrierCount = m_id.getUnits().getMatches(Matches.UnitIsCarrier).size();
 		final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
 		if (canProduceCarriersUnderFighter && carrierCount > 0)
 		{
-			message = message + "\nYou have " + carrierCount + " " + MyFormatter.pluralize("carrier", carrierCount) + " on which planes can land";
+			buf.append("\nYou have " + carrierCount + " " + MyFormatter.pluralize("carrier", carrierCount) + " on which planes can land");
 		}
 		final String ok = movePhase ? "End Move Phase" : "Kill Planes";
 		final String cancel = movePhase ? "Keep Moving" : "Change Placement";
 		final String[] options = { cancel, ok };
-		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext()
-					.getCountDownLatchHandler());
+		this.m_mapPanel.centerOn(airCantLand.iterator().next());
+		final int choice = EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel,
+					getUIContext().getCountDownLatchHandler());
 		return choice == 1;
 	}
 	
-	public boolean getOKToLetUnitsDie(final PlayerID m_id, final String message, final boolean movePhase)
+	public boolean getOKToLetUnitsDie(final PlayerID m_id, final Collection<Territory> unitsCantFight, final boolean movePhase)
 	{
+		if (unitsCantFight == null || unitsCantFight.isEmpty())
+			return true;
+		final StringBuilder buf = new StringBuilder("Units in the following territories will die: ");
+		final Iterator<Territory> iter = unitsCantFight.iterator();
+		while (iter.hasNext())
+		{
+			buf.append((iter.next()).getName());
+			buf.append(" ");
+		}
 		final String ok = movePhase ? "Done Moving" : "Kill Units";
 		final String cancel = movePhase ? "Keep Moving" : "Change Placement";
 		final String[] options = { cancel, ok };
-		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Units cannot fight", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext()
-					.getCountDownLatchHandler());
+		this.m_mapPanel.centerOn(unitsCantFight.iterator().next());
+		final int choice = EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Units cannot fight", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, cancel,
+					getUIContext().getCountDownLatchHandler());
 		return choice == 1;
 	}
 	
@@ -1246,11 +1270,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return selection;
 	}
 	
-	public void notifyPoliticalMessage(final String message)
-	{
-		EventThreadJOptionPane.showMessageDialog(this, message, "Political Alert", JOptionPane.INFORMATION_MESSAGE, getUIContext().getCountDownLatchHandler());
-	}
-	
 	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate)
 	{
 		m_actionButtons.changeToPolitics(player);
@@ -1310,6 +1329,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	public Territory getRocketAttack(final Collection<Territory> candidates, final Territory from)
 	{
+		m_mapPanel.centerOn(from);
 		final AtomicReference<Territory> selected = new AtomicReference<Territory>();
 		try
 		{
@@ -2390,6 +2410,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where)
 	{
+		m_mapPanel.centerOn(where);
 		final AtomicReference<ScrollableTextField> textRef = new AtomicReference<ScrollableTextField>();
 		final AtomicReference<JPanel> panelRef = new AtomicReference<JPanel>();
 		try

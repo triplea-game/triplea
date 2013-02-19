@@ -2469,7 +2469,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+	public static String triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
 		final GameData data = aBridge.getData();
@@ -2478,6 +2478,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
 		if (testUses)
 			trigs = Match.getMatches(trigs, availableUses);
+		final StringBuilder strbuf = new StringBuilder();
 		for (final TriggerAttachment t : trigs)
 		{
 			if (testChance && !t.testChance(aBridge))
@@ -2502,9 +2503,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					final String PUMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " "
 								+ t.getResource() + "; end with " + total + " " + t.getResource();
 					aBridge.getHistoryWriter().startEvent(PUMessage);
+					strbuf.append(PUMessage + " <br />");
 				}
 			}
 		}
+		return strbuf.toString();
 	}
 	
 	public static void triggerActivateTriggerOther(final HashMap<ICondition, Boolean> testedConditionsSoFar, final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
