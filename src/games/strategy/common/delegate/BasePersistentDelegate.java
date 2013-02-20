@@ -1,7 +1,13 @@
 package games.strategy.common.delegate;
 
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
+import games.strategy.triplea.TripleA;
+import games.strategy.triplea.ai.weakAI.WeakAI;
+import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 /**
  * Base class designed to make writing custom persistent delegates simpler.
@@ -43,5 +49,38 @@ public abstract class BasePersistentDelegate extends AbstractDelegate implements
 	public void end()
 	{
 		super.end();
+	}
+	
+	protected ITripleaDisplay getDisplay()
+	{
+		return getDisplay(m_bridge);
+	}
+	
+	protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge)
+	{
+		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
+	}
+	
+	protected ITripleaPlayer getRemotePlayer()
+	{
+		return getRemotePlayer(m_bridge);
+	}
+	
+	protected static ITripleaPlayer getRemotePlayer(final IDelegateBridge bridge)
+	{
+		return (ITripleaPlayer) bridge.getRemote();
+	}
+	
+	protected ITripleaPlayer getRemotePlayer(final PlayerID player)
+	{
+		return getRemotePlayer(player, m_bridge);
+	}
+	
+	protected static ITripleaPlayer getRemotePlayer(final PlayerID player, final IDelegateBridge bridge)
+	{
+		// if its the null player, return a do nothing proxy
+		if (player.isNull())
+			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 }

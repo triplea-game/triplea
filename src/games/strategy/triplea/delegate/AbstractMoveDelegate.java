@@ -10,7 +10,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.triplea.player.ITripleaPlayer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -254,16 +253,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
 	{
 		return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
-	}
-	
-	protected ITripleaPlayer getRemotePlayer()
-	{
-		return getRemotePlayer(m_player);
-	}
-	
-	protected ITripleaPlayer getRemotePlayer(final PlayerID id)
-	{
-		return (ITripleaPlayer) m_bridge.getRemote(id);
 	}
 	
 	public abstract int PUsAlreadyLost(final Territory t);

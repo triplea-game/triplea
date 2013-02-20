@@ -247,7 +247,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		final int diceSides = data.getDiceSides();
 		if (EditDelegate.getEditMode(data))
 		{
-			final ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
+			final ITripleaPlayer tripleaPlayer = getRemotePlayer();
 			random = tripleaPlayer.selectFixedDice(techRolls, diceSides, true, annotation, diceSides);
 			techHits = getTechHits(random);
 		}
@@ -422,7 +422,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		int[] random;
 		if (isSelectableTechRoll() || EditDelegate.getEditMode(getData()))
 		{
-			final ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
+			final ITripleaPlayer tripleaPlayer = getRemotePlayer();
 			random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, available.size());
 		}
 		else

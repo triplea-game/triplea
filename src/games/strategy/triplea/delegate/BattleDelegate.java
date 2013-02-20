@@ -32,9 +32,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.TripleA;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -295,7 +293,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	private void addBombardmentSources()
 	{
 		final PlayerID attacker = m_bridge.getPlayerID();
-		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+		final ITripleaPlayer remotePlayer = getRemotePlayer();
 		final Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
 		final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
 		final Iterator<Territory> territories = adjBombardment.keySet().iterator();
@@ -426,7 +424,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			}
 			battleTerritories.put(battle.getTerritory(), battle);
 		}
-		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+		final ITripleaPlayer remotePlayer = getRemotePlayer();
 		Territory bombardingTerritory = null;
 		if (!territories.isEmpty())
 			bombardingTerritory = remotePlayer.selectBombardingTerritory(u, uTerritory, territories, true);
@@ -540,7 +538,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			if (!attackingUnits.isEmpty() && (ignoreTransports || ignoreSubs))
 			{
 				// TODO check if incoming units can attack before asking
-				final ITripleaPlayer remotePlayer = (ITripleaPlayer) aBridge.getRemote();
+				final ITripleaPlayer remotePlayer = getRemotePlayer(aBridge);
 				// if only enemy transports... attack them?
 				if (ignoreTransports && Match.allMatch(enemyUnits, seaTransports))
 				{
@@ -730,7 +728,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				if (scramblers.isEmpty())
 					continue;
 				
-				final HashMap<Territory, Collection<Unit>> toScramble = getRemote(defender, m_bridge).scrambleUnitsQuery(to, scramblers);
+				final HashMap<Territory, Collection<Unit>> toScramble = getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
 				if (toScramble == null)
 					continue;
 				
@@ -931,7 +929,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 					final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
 								m_battleTracker, carrierCostOfCurrentTerr, 1, true, !mustReturnToBase, true);
 					if (possible.size() > 1)
-						landingTerr = getRemote(u.getOwner(), m_bridge).selectTerritoryForAirToLand(possible, t, MyFormatter.unitsToText(Collections.singletonList(u)));
+						landingTerr = getRemotePlayer(u.getOwner()).selectTerritoryForAirToLand(possible, t, MyFormatter.unitsToText(Collections.singletonList(u)));
 					else if (possible.size() == 1)
 						landingTerr = possible.iterator().next();
 					if (landingTerr == null || landingTerr.equals(t))
@@ -1056,7 +1054,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				Territory territory = null;
 				while (canLandHere.size() > 1 && defendingAir.size() > 0)
 				{
-					territory = getRemote(defender, m_bridge).selectTerritoryForAirToLand(canLandHere, battleSite, MyFormatter.unitsToText(defendingAir));
+					territory = getRemotePlayer(defender).selectTerritoryForAirToLand(canLandHere, battleSite, MyFormatter.unitsToText(defendingAir));
 					// added for test script
 					if (territory == null)
 					{
@@ -1268,7 +1266,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				if (!validTargets.isEmpty())
 					possibleUnitsToAttack.put(t, validTargets);
 			}
-			final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks = getRemote(currentEnemy, m_bridge).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
+			final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks = getRemotePlayer(currentEnemy).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
 			if (attacks == null || attacks.isEmpty())
 				continue;
 			// now validate that we have the resources and those units are valid targets
@@ -1393,8 +1391,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		m_battleTracker.addNoBombardAllowedFromHere(location);
 		// TODO: display this as actual dice for both players
 		// TODO: display to all players, and only once per physical machine
-		getRemote(m_player, m_bridge).reportMessage(title + dice, title);
-		getRemote(firingEnemy, m_bridge).reportMessage(title + dice, title);
+		getRemotePlayer(m_player).reportMessage(title + dice, title);
+		getRemotePlayer(firingEnemy).reportMessage(title + dice, title);
 	}
 	
 	public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
@@ -1512,14 +1510,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return IBattleDelegate.class;
-	}
-	
-	static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge)
-	{
-		// if its the null player, return a do nothing proxy
-		if (player.isNull())
-			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
-		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 	
 	public Territory getCurrentBattleTerritory()

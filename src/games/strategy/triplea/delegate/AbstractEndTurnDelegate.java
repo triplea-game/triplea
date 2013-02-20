@@ -44,7 +44,6 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -208,8 +207,20 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		m_needToInitialize = false;
 		if (endTurnReport.toString().trim().length() > 6)
 		{
-			EventThreadJOptionPane.showNonBlockingMessageDialog(null, "<html><b>End of Turn Report for " + m_player.getName() + "</b><br /><br />" + endTurnReport.toString() + "</html>",
-						"End of Turn Report for " + m_player.getName());
+			// since the delegate will change to a new player, we must get our variables out now
+			final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
+			final PlayerID player = m_player;
+			// we do NOT want to block the next player from beginning their turn
+			(new Thread()
+			{
+				@Override
+				public void run()
+				{
+					// TODO: fix this shit!
+					currentPlayer.reportMessage("<html><b>End of Turn Report for " + player.getName() + "</b><br /><br />" + endTurnReport.toString() + "</html>",
+								"End of Turn Report for " + player.getName());
+				}
+			}).start();
 		}
 	}
 	
@@ -315,11 +326,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		aBridge.addChange(change);
 		getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
 		return transcriptText + "<br />";
-	}
-	
-	private ITripleaPlayer getRemotePlayer(final PlayerID player)
-	{
-		return (ITripleaPlayer) m_bridge.getRemote(player);
 	}
 	
 	private void changeUnitOwnership(final IDelegateBridge aBridge)

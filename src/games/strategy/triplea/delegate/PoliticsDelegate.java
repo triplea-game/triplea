@@ -36,7 +36,6 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.PoliticsText;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -239,7 +238,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		{
 			for (final PlayerID player : paa.getActionAccept())
 			{
-				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
+				if (!(getRemotePlayer(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
 					return false;
 			}
 		}
@@ -267,12 +266,12 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 					actionText = m_player.getName() + " wants to take the following action: " + MyFormatter.attachmentNameToText(paa.getName()) + ".  Do you approve? \r\n\r\n " + m_player.getName()
 								+ " will ask " + MyFormatter.asList(paa.getActionAccept()) + ", the following question: \r\n " + actionText;
 				}
-				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(actionText))
+				if (!(getRemotePlayer(player)).acceptPoliticalAction(actionText))
 					return false;
 			}
 			for (final PlayerID player : paa.getActionAccept())
 			{
-				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
+				if (!(getRemotePlayer(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
 					return false;
 			}
 		}
@@ -411,7 +410,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	private void sendNotification(final PlayerID player, final String text)
 	{
 		if (!"NONE".equals(text))
-			((ITripleaPlayer) m_bridge.getRemote(player)).reportMessage("To " + player.getName() + ": " + text, "To " + player.getName() + ": " + text);
+			(getRemotePlayer(player)).reportMessage("To " + player.getName() + ": " + text, "To " + player.getName() + ": " + text);
 	}
 	
 	/**

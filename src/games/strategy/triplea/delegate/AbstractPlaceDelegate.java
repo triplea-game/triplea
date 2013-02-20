@@ -46,7 +46,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -1750,11 +1749,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return IAbstractPlaceDelegate.class;
-	}
-	
-	private ITripleaPlayer getRemotePlayer()
-	{
-		return (ITripleaPlayer) m_bridge.getRemote();
 	}
 	
 	/*
