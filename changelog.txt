@@ -1,5 +1,9 @@
 Changes for 1.7
-* Forced all non-returning void dialogs to run in a separate process as to not block the game from moving forward. Forced all UI interactions to either go through a single thread, or wait for thread to finish, so as not to have multiple popups at same time. (veqryn)
+* Creating a method in IDisplay to send messages to all player's computers, but only once per computer. Also includes ability to send to certain players only. (veqryn)
+
+* Forced all non-returning void dialogs to run in a separate process as to not block the game from moving forward. 
+
+* Forced all UI interactions to either go through a single thread, or wait for thread to finish, so as not to have multiple popups at same time. (veqryn)
 
 * Creating simple message dialog report for end of turn collection of PUs and national objectives and any blockade action. (veqryn)
 

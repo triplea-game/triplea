@@ -17,7 +17,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplayBridge;
+import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -163,5 +166,64 @@ public class TripleaDisplay implements ITripleaDisplay
 	public void shutDown()
 	{
 		m_ui.stopGame();
+	}
+	
+	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients)
+	{
+		if (doNotIncludeHost && doNotIncludeClients)
+			return;
+		boolean isHost = false;
+		boolean isClient = false;
+		if (doNotIncludeHost || doNotIncludeClients)
+		{
+			for (final IGamePlayer player : m_ui.GetLocalPlayers())
+			{
+				if (player instanceof TripleAPlayer)
+				{
+					if (IGameLoader.CLIENT_PLAYER_TYPE.equals(((TripleAPlayer) player).getType()))
+						isClient = true;
+					else
+						isHost = true;
+				}
+				else
+				{
+					// AIs are run by the host machine
+					isHost = true;
+				}
+			}
+		}
+		if ((!doNotIncludeHost && !doNotIncludeClients) || (doNotIncludeHost && !isHost) || (doNotIncludeClients && !isClient))
+		{
+			m_ui.notifyMessage(message, title);
+		}
+	}
+	
+	public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers, final String message, final String title)
+	{
+		if (playersToSendTo == null || playersToSendTo.isEmpty())
+			return;
+		if (butNotThesePlayers != null)
+		{
+			for (final PlayerID p : butNotThesePlayers)
+			{
+				if (m_ui.playing(p))
+				{
+					return;
+				}
+			}
+		}
+		boolean isPlaying = false;
+		for (final PlayerID p : playersToSendTo)
+		{
+			if (m_ui.playing(p))
+			{
+				isPlaying = true;
+				break;
+			}
+		}
+		if (isPlaying)
+		{
+			m_ui.notifyMessage(message, title);
+		}
 	}
 }

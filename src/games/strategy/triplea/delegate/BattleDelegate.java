@@ -1390,9 +1390,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		// kamikaze suicide attacks, even if unsuccessful, deny the ability to bombard from this sea zone
 		m_battleTracker.addNoBombardAllowedFromHere(location);
 		// TODO: display this as actual dice for both players
-		// TODO: display to all players, and only once per physical machine
-		getRemotePlayer(m_player).reportMessage(title + dice, title);
-		getRemotePlayer(firingEnemy).reportMessage(title + dice, title);
+		final Collection<PlayerID> playersInvolved = new ArrayList<PlayerID>();
+		playersInvolved.add(m_player);
+		playersInvolved.add(firingEnemy);
+		this.getDisplay().reportMessageToPlayers(playersInvolved, null, title + dice, title);
 	}
 	
 	public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)

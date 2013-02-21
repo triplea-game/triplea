@@ -35,6 +35,25 @@ import java.util.Map;
 public interface ITripleaDisplay extends IDisplay
 {
 	/**
+	 * Sends a message to all TripleAFrame's that are playing. (Not to any observers though.)
+	 * 
+	 * @param message
+	 * @param title
+	 */
+	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients);
+	
+	/**
+	 * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but NOT any of the players listed as butNotThesePlayers.
+	 * (No message to any observers or players not in the list.)
+	 * 
+	 * @param playersToSendTo
+	 * @param butNotThesePlayers
+	 * @param message
+	 * @param title
+	 */
+	public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers, final String message, final String title);
+	
+	/**
 	 * Display info about the battle.
 	 * This is the first message to be displayed in a battle
 	 * 

@@ -20,6 +20,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.CompositeMatchAnd;
@@ -174,6 +175,8 @@ public class EditValidator
 			return "No player selected";
 		if (!games.strategy.triplea.Properties.getTechDevelopment(data))
 			return "Technology not enabled";
+		if (player.getAttachment(Constants.TECH_ATTACHMENT_NAME) == null)
+			return "Player has no Tech Attachment";
 		if (!TechnologyDelegate.getAvailableTechs(player, data).contains(tech))
 			return "Technology not available for this player";
 		return result;

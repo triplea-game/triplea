@@ -205,13 +205,17 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			changeUnitOwnership(m_bridge);
 		}
 		m_needToInitialize = false;
-		if (endTurnReport.toString().trim().length() > 6)
+		showEndTurnReport(endTurnReport.toString());
+	}
+	
+	protected void showEndTurnReport(final String endTurnReport)
+	{
+		if (endTurnReport.trim().length() > 6)
 		{
-			// since the delegate will change to a new player, we must get our variables out now
 			final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
-			final PlayerID player = m_player;
-			currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >End of Turn Report for " + player.getName() + "</b><br /><br />" + endTurnReport.toString() + "</html>",
-						"End of Turn Report for " + player.getName());
+			final String player = m_player.getName();
+			currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >End of Turn Report for " + player + "</b><br /><br />" + endTurnReport + "</html>",
+						"End of Turn Report for " + player);
 		}
 	}
 	
@@ -482,7 +486,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			for (final String t : transcripts)
 			{
 				aBridge.getHistoryWriter().addChildToEvent(t);
-				endTurnReport.append("    " + t + "<br />");
+				endTurnReport.append("* " + t + "<br />");
 			}
 			endTurnReport.append("<br />");
 		}

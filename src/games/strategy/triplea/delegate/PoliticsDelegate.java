@@ -42,6 +42,7 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -287,12 +288,12 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	 */
 	private void notifyNoValidAction(final PoliticalActionAttachment paa)
 	{
-		sendNotification(m_player, "This action isn't available anymore (this shouldn't happen!?!)");
+		sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
 	}
 	
 	private void notifyPoliticsTurnedOff()
 	{
-		sendNotification(m_player, "Politics is turned off in the game options");
+		sendNotification("Politics is turned off in the game options");
 	}
 	
 	/**
@@ -308,11 +309,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	{
 		if (ennough)
 		{
-			sendNotification(m_player, "Charging " + paa.getCostPU() + " PU's to perform this action");
+			sendNotification("Charging " + paa.getCostPU() + " PU's to perform this action");
 		}
 		else
 		{
-			sendNotification(m_player, "You don't have ennough money, you need " + paa.getCostPU() + " PU's to perform this action");
+			sendNotification("You don't have ennough money, you need " + paa.getCostPU() + " PU's to perform this action");
 		}
 	}
 	
@@ -367,7 +368,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player.getName());
 		final String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
-		sendNotification(m_player, PoliticsText.getInstance().getNotificationFailure(paa.getText()));
+		sendNotification(PoliticsText.getInstance().getNotificationFailure(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
 	}
 	
@@ -381,36 +382,40 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	{
 		// play a sound
 		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player.getName());
-		sendNotification(m_player, PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
+		sendNotification(PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
 	}
 	
 	/**
 	 * Send a notification to the other players involved in this action (all
-	 * players except the player starting teh action)
+	 * players except the player starting the action)
 	 * 
 	 * @param paa
 	 * @param notification
 	 */
 	private void notifyOtherPlayers(final PoliticalActionAttachment paa, final String notification)
 	{
-		for (final PlayerID otherPlayer : paa.getOtherPlayers())
+		if (!"NONE".equals(notification))
 		{
-			sendNotification(otherPlayer, notification);
+			// we can send it to just paa.getOtherPlayers(), or we can send it to all players. both are good options.
+			final Collection<PlayerID> currentPlayer = new ArrayList<PlayerID>();
+			currentPlayer.add(m_player);
+			final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
+			otherPlayers.removeAll(currentPlayer);
+			this.getDisplay().reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
 		}
 	}
 	
 	/**
-	 * Send a notification to the players
+	 * Send a notification to the current player
 	 * 
-	 * @param player
 	 * @param text
 	 *            if NONE don't send a notification
 	 */
-	private void sendNotification(final PlayerID player, final String text)
+	private void sendNotification(final String text)
 	{
 		if (!"NONE".equals(text))
-			(getRemotePlayer(player)).reportMessage("To " + player.getName() + ": " + text, "To " + player.getName() + ": " + text);
+			this.getRemotePlayer().reportMessage(text, text); // "To " + m_player.getName() + ": " +
 	}
 	
 	/**
@@ -459,7 +464,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		final int rollResult = m_bridge.getRandom(paa.diceSides(), m_player, DiceType.NONCOMBAT, "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
 		final boolean success = rollResult <= paa.toHit();
 		final String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
-		sendNotification(m_player, notificationMessage);
+		sendNotification(notificationMessage);
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : " + notificationMessage);
 		return success;
 	}

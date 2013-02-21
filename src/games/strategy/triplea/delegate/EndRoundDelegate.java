@@ -305,7 +305,9 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			m_gameOver = true;
 			m_winners = winners;
 			ClipPlayer.play(SoundPath.CLIP_GAME_WON, ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
-			// Make sure the user really wants to leave the game.
+			// send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
+			this.getDisplay().reportMessageToAll(status, status, true, false);
+			// now tell the HOST, and see if they want to continue the game.
 			final int rVal = EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true));
 			if (rVal != JOptionPane.OK_OPTION)
 				a_bridge.stopGameSequence();
