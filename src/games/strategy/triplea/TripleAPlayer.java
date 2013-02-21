@@ -106,11 +106,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		m_ui.notifyMessage(message, title);
 	}
 	
-	public void reportPoliticalMessage(final String message)
-	{
-		m_ui.notifyMessage(message, "Political Alert");
-	}
-	
 	@Override
 	public void start(final String name)
 	{

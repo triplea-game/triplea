@@ -54,6 +54,7 @@ import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -213,6 +214,7 @@ public class TripleAFrame extends MainGameFrame
 	private List<Unit> m_unitsBeingMousedOver;
 	private PlayerID m_lastStepPlayer;
 	private final Map<PlayerID, Boolean> m_requiredTurnSeries = new HashMap<PlayerID, Boolean>();
+	private ThreadPool m_messageAndDialogThreadPool;
 	
 	/** Creates new TripleAFrame */
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
@@ -221,6 +223,7 @@ public class TripleAFrame extends MainGameFrame
 		m_game = game;
 		m_data = game.getData();
 		m_localPlayers = players;
+		m_messageAndDialogThreadPool = new ThreadPool(1, "Message And Dialog Thread Pool");
 		addZoomKeyboardShortcuts();
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(WINDOW_LISTENER);
@@ -465,6 +468,7 @@ public class TripleAFrame extends MainGameFrame
 			// this frame should not handle shutdowns anymore
 			MacWrapper.unregisterShutdownHandler();
 		}
+		m_messageAndDialogThreadPool.shutDown();
 		m_uiContext.shutDown();
 		if (m_chatPanel != null)
 		{
@@ -524,6 +528,7 @@ public class TripleAFrame extends MainGameFrame
 		m_showCommentLogAction = null;
 		m_localPlayers = null;
 		m_editPanel = null;
+		m_messageAndDialogThreadPool = null;
 		removeWindowListener(WINDOW_LISTENER);
 		WINDOW_LISTENER = null;
 	}
@@ -672,18 +677,21 @@ public class TripleAFrame extends MainGameFrame
 	
 	public IntegerMap<ProductionRule> getProduction(final PlayerID player, final boolean bid)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToProduce(player);
 		return m_actionButtons.waitForPurchase(bid);
 	}
 	
 	public HashMap<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, final boolean bid)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToRepair(player);
 		return m_actionButtons.waitForRepair(bid);
 	}
 	
 	public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat, final String stepName)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToMove(player, nonCombat, stepName);
 		// workaround for panel not receiving focus at beginning of n/c move phase
 		if (!getBattlePanel().getBattleFrame().isVisible())
@@ -716,39 +724,65 @@ public class TripleAFrame extends MainGameFrame
 	
 	public PlaceData waitForPlace(final PlayerID player, final boolean bid, final IPlayerBridge bridge)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToPlace(player);
 		return m_actionButtons.waitForPlace(bid, bridge);
 	}
 	
 	public void waitForMoveForumPoster(final PlayerID player, final IPlayerBridge bridge)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToMoveForumPosterPanel(player);
 		m_actionButtons.waitForMoveForumPosterPanel(this, bridge);
 	}
 	
 	public void waitForEndTurn(final PlayerID player, final IPlayerBridge bridge)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToEndTurn(player);
 		m_actionButtons.waitForEndTurn(this, bridge);
 	}
 	
 	public FightBattleDetails getBattle(final PlayerID player, final Collection<Territory> battles, final Collection<Territory> bombingRaids)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToBattle(player, battles, bombingRaids);
 		return m_actionButtons.waitForBattleSelection();
 	}
 	
+	/**
+	 * We do NOT want to block the next player from beginning their turn.
+	 */
 	@Override
 	public void notifyError(final String message)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE, true, getUIContext().getCountDownLatchHandler());
+		m_messageAndDialogThreadPool.runTask(new Runnable()
+		{
+			public void run()
+			{
+				EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE, true, getUIContext().getCountDownLatchHandler());
+			}
+		});
 	}
 	
+	/**
+	 * We do NOT want to block the next player from beginning their turn.
+	 * 
+	 * @param message
+	 * @param title
+	 */
 	public void notifyMessage(final String message, final String title)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
+		m_messageAndDialogThreadPool.runTask(new Runnable()
+		{
+			public void run()
+			{
+				EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, message, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
+			}
+		});
 	}
 	
+	/*
 	public void notifyNonBlockingMessage(final String message, final String title)
 	{
 		final JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
@@ -757,9 +791,11 @@ public class TripleAFrame extends MainGameFrame
 		dialog.setAlwaysOnTop(true);
 		dialog.setVisible(true);
 	}
-	
+	*/
+
 	public boolean getOKToLetAirDie(final PlayerID m_id, final Collection<Territory> airCantLand, final boolean movePhase)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		if (airCantLand == null || airCantLand.isEmpty())
 			return true;
 		final StringBuilder buf = new StringBuilder("Air in following territories cant land: ");
@@ -787,6 +823,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public boolean getOKToLetUnitsDie(final PlayerID m_id, final Collection<Territory> unitsCantFight, final boolean movePhase)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		if (unitsCantFight == null || unitsCantFight.isEmpty())
 			return true;
 		final StringBuilder buf = new StringBuilder("Units in the following territories will die: ");
@@ -807,42 +844,51 @@ public class TripleAFrame extends MainGameFrame
 	
 	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept Political Proposal?", JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
 		return choice == JOptionPane.YES_OPTION;
 	}
 	
 	public boolean getOK(final String message)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		final int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION, getUIContext().getCountDownLatchHandler());
 		return choice == JOptionPane.OK_OPTION;
 	}
 	
 	public void notifyTechResults(final TechResults msg)
 	{
-		final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<TechResultsDisplay>();
-		try
+		m_messageAndDialogThreadPool.runTask(new Runnable()
 		{
-			SwingUtilities.invokeAndWait(new Runnable()
+			public void run()
 			{
-				public void run()
+				final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<TechResultsDisplay>();
+				try
 				{
-					final TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext, m_data);
-					displayRef.set(display);
+					SwingUtilities.invokeAndWait(new Runnable()
+					{
+						public void run()
+						{
+							final TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext, m_data);
+							displayRef.set(display);
+						}
+					});
+				} catch (final InterruptedException e)
+				{
+					throw new IllegalStateException();
+				} catch (final InvocationTargetException e)
+				{
+					throw new IllegalStateException();
 				}
-			});
-		} catch (final InterruptedException e)
-		{
-			throw new IllegalStateException();
-		} catch (final InvocationTargetException e)
-		{
-			throw new IllegalStateException();
-		}
-		EventThreadJOptionPane.showOptionDialog(this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] { "OK" }, "OK", getUIContext()
-					.getCountDownLatchHandler());
+				EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] { "OK" }, "OK",
+							getUIContext().getCountDownLatchHandler());
+			}
+		});
 	}
 	
 	public boolean getStrategicBombingRaid(final Territory location)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		final String message = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb") + " in " + location.getName();
 		final String bomb = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb");
 		final String normal = "Attack";
@@ -854,6 +900,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public Unit getStrategicBombingRaidTarget(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		if (potentialTargets == null || potentialTargets.size() == 0)
 			return null;
 		if (potentialTargets.size() == 1)
@@ -889,6 +936,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		final DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>()
 		{
 			public DiceChooser run()
@@ -905,6 +953,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
 			public Tuple<JPanel, JList> run()
@@ -937,6 +986,7 @@ public class TripleAFrame extends MainGameFrame
 	public HashMap<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack, final Resource attackResourceToken,
 				final int maxNumberOfAttacksAllowed)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			throw new IllegalStateException("Should not be called from dispatch thread");
@@ -1047,6 +1097,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			throw new IllegalStateException("Should not be called from dispatch thread");
@@ -1167,6 +1218,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			throw new IllegalStateException("Should not be called from dispatch thread");
@@ -1272,6 +1324,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToPolitics(player);
 		if (!SwingUtilities.isEventDispatchThread())
 		{
@@ -1300,6 +1353,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public TechRoll getTechRolls(final PlayerID id)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToTech(id);
 		// workaround for panel not receiving focus at beginning of tech phase
 		if (!SwingUtilities.isEventDispatchThread())
@@ -1329,6 +1383,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public Territory getRocketAttack(final Collection<Territory> candidates, final Territory from)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_mapPanel.centerOn(from);
 		final AtomicReference<Territory> selected = new AtomicReference<Territory>();
 		try
@@ -2410,6 +2465,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where)
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		m_mapPanel.centerOn(where);
 		final AtomicReference<ScrollableTextField> textRef = new AtomicReference<ScrollableTextField>();
 		final AtomicReference<JPanel> panelRef = new AtomicReference<JPanel>();
@@ -2450,26 +2506,31 @@ public class TripleAFrame extends MainGameFrame
 	
 	public BattlePanel getBattlePanel()
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getBattlePanel();
 	}
 	
 	public AbstractMovePanel getMovePanel()
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getMovePanel();
 	}
 	
 	public TechPanel getTechPanel()
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getTechPanel();
 	}
 	
 	public PlacePanel getPlacePanel()
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getPlacePanel();
 	}
 	
 	public PurchasePanel getPurchasePanel()
 	{
+		m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getPurchasePanel();
 	}
 	

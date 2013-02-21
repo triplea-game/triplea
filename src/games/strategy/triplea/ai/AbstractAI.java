@@ -244,10 +244,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	{
 	}
 	
-	public void reportPoliticalMessage(final String message)
-	{
-	}
-	
 	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 	}

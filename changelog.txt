@@ -1,4 +1,6 @@
 Changes for 1.7
+* Forced all non-returning void dialogs to run in a separate process as to not block the game from moving forward. Forced all UI interactions to either go through a single thread, or wait for thread to finish, so as not to have multiple popups at same time. (veqryn)
+
 * Creating simple message dialog report for end of turn collection of PUs and national objectives and any blockade action. (veqryn)
 
 * Creating a mouse shadow image to go with the route image, showing how much movement you have left for any selected units, in blue font. (veqryn)

@@ -140,6 +140,14 @@ public interface ITripleaPlayer extends IRemote
 	 */
 	public void reportMessage(String message, String title);
 	
+	/*
+	 * send a political notification to this player
+	 * 
+	 * @param message
+	 *            the message sent
+	public void reportPoliticalMessage(String message);
+	 */
+
 	/**
 	 * One or more bombers have just moved into a territory where a strategic bombing
 	 * raid can be conducted, should the bomber bomb?
@@ -274,14 +282,6 @@ public interface ITripleaPlayer extends IRemote
 	 * @return wether the player accepts the actionproposal
 	 */
 	public boolean acceptPoliticalAction(String acceptanceQuestion);
-	
-	/**
-	 * send a political notification to this player
-	 * 
-	 * @param message
-	 *            the message sent
-	 */
-	public void reportPoliticalMessage(String message);
 	
 	/**
 	 * Asks the player if they wish to perform any kamikaze suicide attacks

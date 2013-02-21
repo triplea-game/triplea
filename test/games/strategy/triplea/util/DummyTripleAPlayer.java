@@ -78,10 +78,6 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	{
 	}
 	
-	public void reportPoliticalMessage(final String message)
-	{
-	}
-	
 	public boolean acceptPoliticalAction(final String message)
 	{
 		return true;
