@@ -35,12 +35,12 @@ import java.util.Map;
 public interface ITripleaDisplay extends IDisplay
 {
 	/**
-	 * Sends a message to all TripleAFrame's that are playing. (Not to any observers though.)
+	 * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
 	 * 
 	 * @param message
 	 * @param title
 	 */
-	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients);
+	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
 	
 	/**
 	 * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but NOT any of the players listed as butNotThesePlayers.

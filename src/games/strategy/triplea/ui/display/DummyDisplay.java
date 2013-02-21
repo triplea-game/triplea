@@ -23,7 +23,7 @@ public class DummyDisplay implements ITripleaDisplay
 	{
 	}
 	
-	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients)
+	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
 	{
 	}
 	

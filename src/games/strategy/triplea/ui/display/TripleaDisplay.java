@@ -168,16 +168,18 @@ public class TripleaDisplay implements ITripleaDisplay
 		m_ui.stopGame();
 	}
 	
-	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients)
+	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
 	{
-		if (doNotIncludeHost && doNotIncludeClients)
+		if (doNotIncludeHost && doNotIncludeClients && doNotIncludeObservers)
 			return;
 		boolean isHost = false;
 		boolean isClient = false;
-		if (doNotIncludeHost || doNotIncludeClients)
+		boolean isObserver = true;
+		if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers)
 		{
 			for (final IGamePlayer player : m_ui.GetLocalPlayers())
 			{
+				isObserver = false; // if we have any local players, we are not an observer
 				if (player instanceof TripleAPlayer)
 				{
 					if (IGameLoader.CLIENT_PLAYER_TYPE.equals(((TripleAPlayer) player).getType()))
@@ -192,7 +194,7 @@ public class TripleaDisplay implements ITripleaDisplay
 				}
 			}
 		}
-		if ((!doNotIncludeHost && !doNotIncludeClients) || (doNotIncludeHost && !isHost) || (doNotIncludeClients && !isClient))
+		if ((!doNotIncludeHost && !doNotIncludeClients && !doNotIncludeObservers) || (doNotIncludeHost && !isHost) || (doNotIncludeClients && !isClient) || (doNotIncludeObservers && !isObserver))
 		{
 			m_ui.notifyMessage(message, title);
 		}

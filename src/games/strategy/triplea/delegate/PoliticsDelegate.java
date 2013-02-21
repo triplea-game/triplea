@@ -191,7 +191,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			{ // See if the player has got enough money to pay for the action
 				chargeForAction(paa); // Charge for attempting the action
 				paa.useAttempt(getBridge()); // take one of the uses this round
-				if (actionSucceeds(paa))
+				if (actionRollSucceeds(paa))
 				{ // See if the action is successful
 					if (actionIsAccepted(paa))
 					{
@@ -457,7 +457,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	 *            the action to check if it succeeds
 	 * @return true if the action succeeds, usually because the die-roll succeeded.
 	 */
-	private boolean actionSucceeds(final PoliticalActionAttachment paa)
+	private boolean actionRollSucceeds(final PoliticalActionAttachment paa)
 	{
 		if (paa.diceSides() == paa.toHit())
 			return true;
