@@ -29,6 +29,7 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
@@ -42,6 +43,7 @@ import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.ScrollListener;
 import games.strategy.ui.Util;
 import games.strategy.util.ListenerList;
+import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.awt.AlphaComposite;
@@ -899,7 +901,7 @@ public class MapPanel extends ImageScrollerLargeView
 			});
 			return;
 		}
-		final Tuple<Integer, Integer> movementLeft = TripleAUnit.getMinAndMaxMovementLeft(units);
+		final Tuple<Integer, Integer> movementLeft = TripleAUnit.getMinAndMaxMovementLeft(Match.getMatches(units, Matches.unitIsBeingTransported().invert()));
 		m_movementLeftForCurrentUnits = movementLeft.getFirst() + (movementLeft.getSecond() > movementLeft.getFirst() ? "+" : "");
 		final Set<UnitCategory> categories = UnitSeperator.categorize(units);
 		final int icon_width = m_uiContext.getUnitImageFactory().getUnitImageWidth();

@@ -25,11 +25,11 @@ public class ProcessRunnerUtil
 		populateBasicJavaArgs(commands, System.getProperty("java.class.path"), maxMemory);
 	}
 	
-	public static void populateBasicJavaArgs(final List<String> commands, final String classpath)
+	public static void populateBasicJavaArgs(final List<String> commands, final String newClasspath)
 	{
 		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
 		final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
-		populateBasicJavaArgs(commands, System.getProperty("java.class.path"), maxMemory);
+		populateBasicJavaArgs(commands, newClasspath, maxMemory);
 	}
 	
 	public static void populateBasicJavaArgs(final List<String> commands, final String classpath, final long maxMemory)

@@ -7,7 +7,7 @@
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
-		<triplea minimumVersion="1.5"/>
+		<triplea minimumVersion="1.6.1"/>
 		
         <map>
                 <!-- Territory Definitions -->

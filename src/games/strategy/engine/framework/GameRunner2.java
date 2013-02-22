@@ -90,8 +90,10 @@ public class GameRunner2
 					+ "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
 					+ "   " + PROXY_HOST + "=<Proxy_Host>\n"
 					+ "   " + PROXY_PORT + "=<Proxy_Port>\n"
-					+ "\nExample\n" + "   to start a game using the given file:\n\n"
-					+ "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n"
+					+ "\n" + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
+					+ "taken as the name of the file to load.\n" + "\n"
+					+ "Example\n" + "   to start a game using the given file:\n" + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n"
+					+ "   or\n" + "\n" + "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n"
 					+ "   to connect to a remote host:\n" + "\n"
 					+ "   triplea triplea.client=true triplea.host=127.0.0.0 triplea.port=3300 triplea.name=Paul\n" + "\n"
 					+ "   to start a server with the given game\n" + "\n"
@@ -152,6 +154,26 @@ public class GameRunner2
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		final String[] properties = getProperties();
+		
+		// if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
+		// optionally, it may not start with the property name
+		if (args.length == 1)
+		{
+			boolean startsWithPropertyKey = false;
+			for (final String prop : properties)
+			{
+				if (args[0].startsWith(prop))
+				{
+					startsWithPropertyKey = true;
+					break;
+				}
+			}
+			if (!startsWithPropertyKey)
+			{
+				// change it to start with the key
+				args[0] = TRIPLEA_GAME_PROPERTY + "=" + args[0];
+			}
+		}
 		
 		boolean usagePrinted = false;
 		for (int argIndex = 0; argIndex < args.length; argIndex++)

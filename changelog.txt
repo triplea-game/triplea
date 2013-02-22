@@ -1,4 +1,6 @@
 Changes for 1.7
+* Fixed serious bug with process runner util that prevented a new classpath from being used, most notably preventing the 'old jars' from getting run. (veqryn)
+
 * Creating a method in IDisplay to send messages to all player's computers, but only once per computer. Also includes ability to send to certain players only. (veqryn)
 
 * Forced all non-returning void dialogs to run in a separate process as to not block the game from moving forward. 
