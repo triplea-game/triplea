@@ -194,10 +194,9 @@ public class TripleaDisplay implements ITripleaDisplay
 				}
 			}
 		}
-		if ((!doNotIncludeHost && !doNotIncludeClients && !doNotIncludeObservers) || (doNotIncludeHost && !isHost) || (doNotIncludeClients && !isClient) || (doNotIncludeObservers && !isObserver))
-		{
-			m_ui.notifyMessage(message, title);
-		}
+		if ((doNotIncludeHost && isHost) || (doNotIncludeClients && isClient) || (doNotIncludeObservers && isObserver))
+			return;
+		m_ui.notifyMessage(message, title);
 	}
 	
 	public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers, final String message, final String title)
