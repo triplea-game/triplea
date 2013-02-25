@@ -125,7 +125,7 @@ public class ImageScrollerSmallView extends JComponent
 	public void paintComponent(final Graphics g)
 	{
 		g.drawImage(m_image, 0, 0, this);
-		g.setColor(Color.white);
+		g.setColor(Color.lightGray);
 		drawViewBox((Graphics2D) g);
 	}
 	

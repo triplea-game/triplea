@@ -356,7 +356,7 @@ public final class TileImageFactory
 		if (baseFile == null)
 		{
 			Color baseColor = null;
-			baseColor = Color.white;
+			baseColor = Color.lightGray;
 			baseFile = makeMissingBaseTile(reliefFile, baseColor);
 		}
 		/*reversing the to/from files leaves white underlays visible*/

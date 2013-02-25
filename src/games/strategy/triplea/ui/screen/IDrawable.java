@@ -153,8 +153,8 @@ class TerritoryNameDrawable implements IDrawable
 				return;
 		}
 		final Rectangle territoryBounds = mapData.getBoundingRect(territory);
-		graphics.setFont(MapImage.MAP_FONT);
-		graphics.setColor(Color.black);
+		graphics.setFont(MapImage.getPropertyMapFont());
+		graphics.setColor(MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
 		final FontMetrics fm = graphics.getFontMetrics();
 		int x;
 		int y;

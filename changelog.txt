@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created option in game 'View' menu to change the font size and font colors of things like territory names, pu's, unit count, and factory damage count. (veqryn)
+
 * Fixed serious bug with process runner util that prevented a new classpath from being used, most notably preventing the 'old jars' from getting run. (veqryn)
 
 * Creating a method in IDisplay to send messages to all player's computers, but only once per computer. Also includes ability to send to certain players only. (veqryn)

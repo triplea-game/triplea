@@ -19,6 +19,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.ColorProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.data.properties.NumberProperty;
+import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -33,6 +37,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.EndRoundDelegate;
+import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
@@ -42,7 +47,9 @@ import games.strategy.ui.IntTextField;
 import games.strategy.util.IllegalCharacterRemover;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -240,6 +247,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		addShowMapDetails(menuView);
 		addShowMapBlends(menuView);
 		addDrawTerritoryBordersAgain(menuView);
+		addMapFontAndColorEditorMenu(menuView);
 		addChatTimeMenu(menuView);
 		addShowCommentLog(menuView);
 		// The menuItem to turn TabbedProduction on or off
@@ -534,6 +542,49 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		drawBordersMenu.add(mediumButton);
 		drawBordersMenu.add(highButton);
 		parentMenu.add(drawBordersMenu);
+	}
+	
+	private void addMapFontAndColorEditorMenu(final JMenu parentMenu)
+	{
+		final Action mapFontOptions = new AbstractAction("Edit Map Font and Color...")
+		{
+			private static final long serialVersionUID = 2788608972531414309L;
+			
+			public void actionPerformed(final ActionEvent arg0)
+			{
+				final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
+				final NumberProperty fontsize = new NumberProperty("Font Size", null, 42, 6, MapImage.getPropertyMapFont().getSize());
+				final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null, MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
+				final ColorProperty unitCountColor = new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
+				final ColorProperty factoryDamageColor = new ColorProperty("Factory Damage Color", null, MapImage.getPropertyUnitFactoryDamageColor());
+				properties.add(fontsize);
+				properties.add(territoryNameColor);
+				properties.add(unitCountColor);
+				properties.add(factoryDamageColor);
+				final PropertiesUI pui = new PropertiesUI(properties, true);
+				final Object[] options = { "Set Properties", "Reset To Default", "Cancel" };
+				final int result = JOptionPane.showOptionDialog(m_frame, pui, "Edit Map Font and Color", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
+				if (result == 2)
+					return;
+				else if (result == 1)
+				{
+					MapImage.resetPropertyMapFont();
+					MapImage.resetPropertyTerritoryNameAndPUAndCommentcolor();
+					MapImage.resetPropertyUnitCountColor();
+					MapImage.resetPropertyUnitFactoryDamageColor();
+					m_frame.getMapPanel().resetMap();
+				}
+				else if (result == 0)
+				{
+					MapImage.setPropertyMapFont(new Font("Ariel", Font.BOLD, fontsize.getValue()));
+					MapImage.setPropertyTerritoryNameAndPUAndCommentcolor((Color) territoryNameColor.getValue());
+					MapImage.setPropertyUnitCountColor((Color) unitCountColor.getValue());
+					MapImage.setPropertyUnitFactoryDamageColor((Color) factoryDamageColor.getValue());
+					m_frame.getMapPanel().resetMap();
+				}
+			}
+		};
+		parentMenu.add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
 	}
 	
 	private void addShowTerritoryEffects(final JMenu parentMenu)
