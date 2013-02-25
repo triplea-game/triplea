@@ -169,7 +169,7 @@ public class PoliticsPanel extends ActionPanel
 			int row = 0;
 			final JPanel politicalChoicePanel = new JPanel();
 			politicalChoicePanel.setLayout(new GridBagLayout());
-			final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUIContext());
+			final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUIContext(), false);
 			final JScrollPane overviewScroll = new JScrollPane(overview);
 			overviewScroll.setBorder(BorderFactory.createEmptyBorder());
 			// add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong (again)...

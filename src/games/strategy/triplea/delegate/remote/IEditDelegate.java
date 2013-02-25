@@ -14,12 +14,14 @@
 package games.strategy.triplea.delegate.remote;
 
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Triple;
 
 import java.util.Collection;
 
@@ -53,4 +55,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate
 	public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
 	
 	public String addComment(String message);
+	
+	public String changePoliticalRelationships(Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges);
 }

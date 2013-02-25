@@ -16,6 +16,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -34,6 +35,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Triple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -351,6 +353,30 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 		logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap), unitsFinal);
 		m_bridge.addChange(changes);
 		territory.notifyChanged();
+		return null;
+	}
+	
+	public String changePoliticalRelationships(final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges)
+	{
+		String result = null;
+		if (relationshipChanges == null || relationshipChanges.isEmpty())
+			return result;
+		if (null != (result = checkEditMode()))
+			return result;
+		if (null != (result = EditValidator.validateChangePoliticalRelationships(getData(), relationshipChanges)))
+			return result;
+		final BattleTracker battleTracker = MoveDelegate.getBattleTracker(getData());
+		for (final Triple<PlayerID, PlayerID, RelationshipType> relationshipChange : relationshipChanges)
+		{
+			final RelationshipType currentRelation = getData().getRelationshipTracker().getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());
+			if (!currentRelation.equals(relationshipChange.getThird()))
+			{
+				logEvent("Editing Political Relationship for " + relationshipChange.getFirst().getName() + " and " + relationshipChange.getSecond().getName() + " from " +
+							currentRelation.getName() + " to " + relationshipChange.getThird().getName(), null);
+				m_bridge.addChange(ChangeFactory.relationshipChange(relationshipChange.getFirst(), relationshipChange.getSecond(), currentRelation, relationshipChange.getThird()));
+				battleTracker.addRelationshipChangesThisTurn(relationshipChange.getFirst(), relationshipChange.getSecond(), currentRelation, relationshipChange.getThird());
+			}
+		}
 		return null;
 	}
 	

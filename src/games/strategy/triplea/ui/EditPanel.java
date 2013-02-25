@@ -16,6 +16,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -39,8 +40,11 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +60,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -63,6 +68,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -82,6 +88,7 @@ public class EditPanel extends ActionPanel
 	private Action m_changeUnitHitDamageAction;
 	private Action m_changeUnitBombingDamageAction;
 	private Action m_changeTerritoryOwnerAction;
+	private Action m_changePoliticalRelationships;
 	private Action m_currentAction = null;
 	private JLabel m_actionLabel;
 	private boolean m_active = false;
@@ -478,6 +485,49 @@ public class EditPanel extends ActionPanel
 				CANCEL_EDIT_ACTION.actionPerformed(null);
 			}
 		};
+		m_changePoliticalRelationships = new AbstractAction("Change Political Relationships")
+		{
+			private static final long serialVersionUID = -2950034347058147592L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				m_currentAction = this;
+				setWidgetActivation();
+				final JPanel panel = new JPanel();
+				panel.setLayout(new BorderLayout());
+				panel.setBorder(BorderFactory.createEmptyBorder());
+				final JLabel helpText = new JLabel("<html><b>Click the buttons inside the relationship squares to change the relationships between players.</b>"
+							+ "<br />Please note that none of this is validated by the engine or map, so the results are not guaranteed to be perfectly what you expect."
+							+ "<br />In addition, any maps that use triggers could be royalled messed up by changing editing political relationships:"
+							+ "<br /><em>Example: Take a map where America gets some benefit (like upgraded factories) after it goes to war for the first time, "
+							+ "<br />and the american player accidentally clicked to go to war, and now wishes to undo that change. Changing America from being at war to "
+							+ "<br />not being at war will not undo the benefit if it has already happened. And later, when America goes to war (for real this time), that "
+							+ "<br />benefit may or may not be applied a second time, totally depending on how the map was coded (and this is not the map's fault either, "
+							+ "<br />since you are using edit mode).  So if you change anything here, be on the look out for unintended consequences!</em></html>");
+				panel.add(helpText, BorderLayout.NORTH);
+				final PoliticalStateOverview pui = new PoliticalStateOverview(getData(), m_frame.getUIContext(), true);
+				panel.add(pui, BorderLayout.CENTER);
+				final JScrollPane scroll = new JScrollPane(panel);
+				scroll.setBorder(BorderFactory.createEmptyBorder());
+				final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+				final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to account for
+				final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
+				scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
+							(scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
+				final int option = JOptionPane.showConfirmDialog(m_frame, scroll, "Change Political Relationships", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+				if (option == JOptionPane.OK_OPTION)
+				{
+					final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges = pui.getEditChanges();
+					if (relationshipChanges != null && !relationshipChanges.isEmpty())
+					{
+						final String result = m_frame.getEditDelegate().changePoliticalRelationships(relationshipChanges);
+						if (result != null)
+							JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				CANCEL_EDIT_ACTION.actionPerformed(null);
+			}
+		};
 		m_actionLabel.setText("Edit Mode Actions");
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(new EmptyBorder(5, 5, 0, 0));
@@ -509,6 +559,7 @@ public class EditPanel extends ActionPanel
 		{
 			data.releaseReadLock();
 		}
+		add(new JButton(m_changePoliticalRelationships));
 		add(Box.createVerticalStrut(15));
 		setWidgetActivation();
 	}
@@ -573,6 +624,7 @@ public class EditPanel extends ActionPanel
 			m_removeTechAction.setEnabled(false);
 			m_changeUnitHitDamageAction.setEnabled(false);
 			m_changeUnitBombingDamageAction.setEnabled(false);
+			m_changePoliticalRelationships.setEnabled(false);
 		}
 		else
 		{
@@ -585,6 +637,7 @@ public class EditPanel extends ActionPanel
 			m_removeTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 			m_changeUnitHitDamageAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
 			m_changeUnitBombingDamageAction.setEnabled(m_currentAction == null && !m_selectedUnits.isEmpty());
+			m_changePoliticalRelationships.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 		}
 	}
 	

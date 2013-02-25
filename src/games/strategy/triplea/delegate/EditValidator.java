@@ -18,6 +18,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
@@ -26,6 +27,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Triple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -256,6 +258,21 @@ public class EditValidator
 				return "Territory does not have attachment, can not damage this territory.";
 			if (!unitDamageMap.allValuesAreSame())
 				return "For this map damage is done to the territory not the unit, therefore all units in this territory must have same damage.";
+		}
+		return result;
+	}
+	
+	public static String validateChangePoliticalRelationships(final GameData data, final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges)
+	{
+		final String result = null;
+		if (relationshipChanges == null || relationshipChanges.isEmpty())
+			return "Relationship Changes are empty";
+		for (final Triple<PlayerID, PlayerID, RelationshipType> relationshipChange : relationshipChanges)
+		{
+			if (relationshipChange.getFirst() == null || relationshipChange.getSecond() == null)
+				return "Players are null";
+			if (relationshipChange.getThird() == null)
+				return "New Relationship is null";
 		}
 		return result;
 	}

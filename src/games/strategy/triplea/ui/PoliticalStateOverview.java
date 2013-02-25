@@ -17,14 +17,26 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
+import games.strategy.util.Triple;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
@@ -38,9 +50,11 @@ import javax.swing.JSeparator;
 public class PoliticalStateOverview extends JPanel
 {
 	private static final long serialVersionUID = -8445782272897831080L;
+	public final static String LABEL_SELF = "----";
 	private final UIContext m_uic;
 	private final GameData m_data;
-	public final static String LABEL_SELF = "----";
+	private final boolean m_editable;
+	private final Set<Triple<PlayerID, PlayerID, RelationshipType>> m_editChanges = new HashSet<Triple<PlayerID, PlayerID, RelationshipType>>();
 	
 	/**
 	 * Constructs this panel
@@ -50,10 +64,11 @@ public class PoliticalStateOverview extends JPanel
 	 * @param uic
 	 *            uicontext to use to show this panel.
 	 */
-	public PoliticalStateOverview(final GameData data, final UIContext uic)
+	public PoliticalStateOverview(final GameData data, final UIContext uic, final boolean editable)
 	{
 		m_uic = uic;
 		m_data = data;
+		m_editable = editable;
 		drawPoliticsUI();
 	}
 	
@@ -108,20 +123,88 @@ public class PoliticalStateOverview extends JPanel
 	 */
 	private JPanel getRelationshipLabel(final PlayerID player1, final PlayerID player2)
 	{
-		final RelationshipType relType;
-		m_data.acquireReadLock();
-		try
+		RelationshipType relType = null;
+		for (final Triple<PlayerID, PlayerID, RelationshipType> changesSoFar : m_editChanges)
 		{
-			relType = m_data.getRelationshipTracker().getRelationshipType(player1, player2);
-		} finally
-		{
-			m_data.releaseReadLock();
+			if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond())) || (player2.equals(changesSoFar.getFirst()) && player1.equals(changesSoFar.getSecond())))
+				relType = changesSoFar.getThird();
 		}
-		final JLabel relationshipLabel = new JLabel(relType.getName());
+		if (relType == null)
+		{
+			m_data.acquireReadLock();
+			try
+			{
+				relType = m_data.getRelationshipTracker().getRelationshipType(player1, player2);
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
+		}
+		final JComponent relationshipLabel = getRelationshipComponent(player1, player2, relType);
 		final JPanel relationshipLabelPanel = new JPanel();
 		relationshipLabelPanel.add(relationshipLabel);
 		relationshipLabelPanel.setBackground(getRelationshipTypeColor(relType));
 		return relationshipLabelPanel;
+	}
+	
+	private JComponent getRelationshipComponent(final PlayerID player1, final PlayerID player2, final RelationshipType relType)
+	{
+		if (!m_editable)
+		{
+			return new JLabel(relType.getName());
+		}
+		else
+		{
+			final JButton button = new JButton(new AbstractAction(relType.getName())
+			{
+				private static final long serialVersionUID = 629987410235293178L;
+				
+				public void actionPerformed(final ActionEvent e)
+				{
+					final List<RelationshipType> types = new ArrayList<RelationshipType>(m_data.getRelationshipTypeList().getAllRelationshipTypes());
+					types.remove(m_data.getRelationshipTypeList().getNullRelation());
+					types.remove(m_data.getRelationshipTypeList().getSelfRelation());
+					final Object[] possibilities = types.toArray();
+					final RelationshipType chosenRelationship = (RelationshipType) JOptionPane.showInputDialog(PoliticalStateOverview.this,
+								"Change Current Relationship between " + player1.getName() + " and " + player2.getName(),
+								"Change Current Relationship", JOptionPane.PLAIN_MESSAGE, null, possibilities, relType);
+					if (chosenRelationship != null)
+					{
+						// remove any old ones
+						final Iterator<Triple<PlayerID, PlayerID, RelationshipType>> iter = m_editChanges.iterator();
+						while (iter.hasNext())
+						{
+							final Triple<PlayerID, PlayerID, RelationshipType> changesSoFar = iter.next();
+							if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
+										|| (player2.equals(changesSoFar.getFirst()) && player1.equals(changesSoFar.getSecond())))
+								iter.remove();
+						}
+						// final RelationshipType newRelation = m_data.getRelationshipTypeList().getRelationshipType(chosenRelationship);
+						// if (newRelation == null)
+						// return;
+						// see if there is actually a change
+						RelationshipType actualRelationship = null;
+						m_data.acquireReadLock();
+						try
+						{
+							actualRelationship = m_data.getRelationshipTracker().getRelationshipType(player1, player2);
+						} finally
+						{
+							m_data.releaseReadLock();
+						}
+						if (!chosenRelationship.equals(actualRelationship))
+						{
+							// add new change
+							m_editChanges.add(new Triple<PlayerID, PlayerID, RelationshipType>(player1, player2, chosenRelationship));
+						}
+						// redraw everything
+						redrawPolitics();
+					}
+				}
+			});
+			button.setBackground(getRelationshipTypeColor(relType));
+			return button;
+		}
 	}
 	
 	/**
@@ -163,6 +246,14 @@ public class PoliticalStateOverview extends JPanel
 	{
 		this.removeAll();
 		this.drawPoliticsUI();
-		this.updateUI();
+		this.revalidate();
+		// this.updateUI();
+	}
+	
+	public Collection<Triple<PlayerID, PlayerID, RelationshipType>> getEditChanges()
+	{
+		if (!m_editable)
+			return null;
+		return m_editChanges;
 	}
 }

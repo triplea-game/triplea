@@ -435,7 +435,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				final PoliticalStateOverview ui = new PoliticalStateOverview(getData(), getUIContext());
+				final PoliticalStateOverview ui = new PoliticalStateOverview(getData(), getUIContext(), false);
 				final JScrollPane scroll = new JScrollPane(ui);
 				scroll.setBorder(BorderFactory.createEmptyBorder());
 				final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
