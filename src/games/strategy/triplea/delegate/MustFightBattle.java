@@ -109,6 +109,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private List<String> m_stepStrings;
 	protected List<Unit> m_defendingAA;
 	protected Set<String> m_AAtypes;
+	private final List<Unit> m_attackingUnitsRetreated = new ArrayList<Unit>();
+	private final List<Unit> m_defendingUnitsRetreated = new ArrayList<Unit>();
 	
 	public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data, final BattleTracker battleTracker)
 	{
@@ -855,7 +857,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 							endBattle(bridge);
 							defenderWins(bridge);
 						}
-						else if (m_round == 0)
+						else if (m_round <= 1)
 						{
 							// TODO Need to determine how combined forces on attack work- trn left in terr by prev player, ally moves in and attacks
 							// add back in the non-combat units (Trns)
@@ -1217,7 +1219,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// TODO: air should always be able to retreat. paratrooped land units can only retreat if there are other non-paratrooper non-amphibious land units.
 		// If attacker is all planes, just return collection of current
 		// territory
-		if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+		if (m_headless || Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
 		{
 			final Collection<Territory> oneTerritory = new ArrayList<Territory>(2);
 			oneTerritory.add(m_battleSite);
@@ -1348,8 +1350,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private boolean canDefenderRetreatSubs()
 	{
-		if (m_headless)
-			return false;
+		// if (m_headless)
+		// return false;
 		if (Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer))
 			return false;
 		if (Match.someMatch(m_attackingWaitingToDie, Matches.UnitIsDestroyer))
@@ -1376,6 +1378,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private Collection<Territory> getEmptyOrFriendlySeaNeighbors(final PlayerID player, final Collection<Unit> unitsToRetreat)
 	{
 		Collection<Territory> possible = m_data.getMap().getNeighbors(m_battleSite);
+		if (m_headless)
+			return possible;
 		final CompositeMatch<Territory> match = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, m_data));
 		// make sure we can move through the any canals
 		final Match<Territory> canalMatch = new Match<Territory>()
@@ -1545,6 +1549,22 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 	}
 	
+	@Override
+	public List<Unit> getRemainingAttackingUnits()
+	{
+		final ArrayList<Unit> remaining = new ArrayList<Unit>(m_attackingUnits);
+		remaining.addAll(m_attackingUnitsRetreated);
+		return remaining;
+	}
+	
+	@Override
+	public List<Unit> getRemainingDefendingUnits()
+	{
+		final ArrayList<Unit> remaining = new ArrayList<Unit>(m_defendingUnits);
+		remaining.addAll(m_defendingUnitsRetreated);
+		return remaining;
+	}
+	
 	private Change retreatFromDependents(final Collection<Unit> units, final IDelegateBridge bridge, final Territory retreatTo, final Collection<IBattle> dependentBattles)
 	{
 		final CompositeChange change = new CompositeChange();
@@ -1602,8 +1622,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		final String transcriptText = MyFormatter.unitsToText(retreating) + " retreated";
 		final Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
+		final Collection<Unit> unitsRetreated = defender ? m_defendingUnitsRetreated : m_attackingUnitsRetreated;
 		/** @todo Does this need to happen with planes retreating too? */
 		units.removeAll(retreating);
+		unitsRetreated.removeAll(retreating);
 		if (units.isEmpty() || m_isOver)
 		{
 			endBattle(bridge);
@@ -1623,6 +1645,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
 		final Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
+		final Collection<Unit> unitsRetreated = defender ? m_defendingUnitsRetreated : m_attackingUnitsRetreated;
 		final CompositeChange change = new CompositeChange();
 		for (final Unit u : submerging)
 		{
@@ -1630,6 +1653,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		bridge.addChange(change);
 		units.removeAll(submerging);
+		unitsRetreated.addAll(submerging);
 		if (!units.isEmpty() && !m_isOver)
 		{
 			getDisplay(bridge).notifyRetreat(m_battleID, submerging);
@@ -1664,7 +1688,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		bridge.addChange(change);
 		final Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
+		final Collection<Unit> unitsRetreated = defender ? m_defendingUnitsRetreated : m_attackingUnitsRetreated;
 		units.removeAll(retreating);
+		unitsRetreated.addAll(retreating);
 		if (units.isEmpty() || m_isOver)
 		{
 			endBattle(bridge);
@@ -1683,6 +1709,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		// Remove air from battle
 		final Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
+		final Collection<Unit> unitsRetreated = defender ? m_defendingUnitsRetreated : m_attackingUnitsRetreated;
 		units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
 		// add all land units' dependents
 		// retreating.addAll(getDependentUnits(retreating));
@@ -1706,6 +1733,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		bridge.addChange(change);
 		units.removeAll(nonAirRetreating);
+		unitsRetreated.addAll(nonAirRetreating);
 		if (units.isEmpty() || m_isOver)
 		{
 			endBattle(bridge);

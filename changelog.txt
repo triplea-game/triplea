@@ -1,4 +1,8 @@
 Changes for 1.7
+* Adding ability to specify when the attacker should retreat after how many rounds, to the battle calculator. (veqryn)
+
+* Added fields for average number of rounds, average attacking units left when attacker won, and average defending units left when defender won, to the battle calculator. (veqryn)
+
 * Added new Edit option to change political relationships between players. (veqryn)
 
 * Created option in game 'View' menu to change the font size and font colors of things like territory names, pu's, unit count, and factory damage count. (veqryn)

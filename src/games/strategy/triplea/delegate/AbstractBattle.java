@@ -43,7 +43,7 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	protected PlayerID m_defender;
 	protected final BattleTracker m_battleTracker;
 	protected final GameData m_data;
-	protected int m_round = 0;
+	protected int m_round = 1;
 	protected final boolean m_isBombingRun;
 	protected boolean m_isAmphibious = false;
 	protected BattleType m_battleType;

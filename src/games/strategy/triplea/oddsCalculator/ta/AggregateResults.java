@@ -2,6 +2,7 @@ package games.strategy.triplea.oddsCalculator.ta;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +21,6 @@ public class AggregateResults implements Serializable
 	public void addResult(final BattleResults result)
 	{
 		m_results.add(result);
-	}
-	
-	public double getAttackerWinPercent()
-	{
-		double count = 0;
-		for (final BattleResults result : m_results)
-		{
-			if (result.attackerWon())
-				count++;
-		}
-		return count / m_results.size();
 	}
 	
 	public BattleResults GetBattleResultsClosestToAverage()
@@ -70,12 +60,57 @@ public class AggregateResults implements Serializable
 		return count / m_results.size();
 	}
 	
+	public double getAverageAttackingUnitsLeftWhenAttackerWon()
+	{
+		double count = 0;
+		double total = 0;
+		for (final BattleResults result : m_results)
+		{
+			if (result.attackerWon())
+			{
+				count += result.getAttackingCombatUnitsLeft();
+				total += 1;
+			}
+		}
+		if (total <= 0)
+			return 0;
+		return count / total;
+	}
+	
 	public double getAverageDefendingUnitsLeft()
 	{
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
 			count += result.getDefendingCombatUnitsLeft();
+		}
+		return count / m_results.size();
+	}
+	
+	public double getAverageDefendingUnitsLeftWhenDefenderWon()
+	{
+		double count = 0;
+		double total = 0;
+		for (final BattleResults result : m_results)
+		{
+			if (result.defenderWon())
+			{
+				count += result.getDefendingCombatUnitsLeft();
+				total += 1;
+			}
+		}
+		if (total <= 0)
+			return 0;
+		return count / total;
+	}
+	
+	public double getAttackerWinPercent()
+	{
+		double count = 0;
+		for (final BattleResults result : m_results)
+		{
+			if (result.attackerWon())
+				count++;
 		}
 		return count / m_results.size();
 	}

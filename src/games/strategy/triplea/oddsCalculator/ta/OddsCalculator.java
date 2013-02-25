@@ -35,6 +35,8 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -59,6 +61,7 @@ public class OddsCalculator
 	private boolean m_keepOneAttackingLandUnit = false;
 	private boolean m_amphibious = false;
 	private volatile boolean m_cancelled = false;
+	private int m_retreatAfterRound = Integer.MAX_VALUE;
 	
 	public OddsCalculator()
 	{
@@ -93,21 +96,35 @@ public class OddsCalculator
 		m_amphibious = aBool;
 	}
 	
+	public void setRetreatAfterRound(final int value)
+	{
+		m_retreatAfterRound = value;
+	}
+	
 	private AggregateResults calculate(final int count)
 	{
 		final long start = System.currentTimeMillis();
+		// just say we are attacking from all territories surrounding this one, for now
+		/* final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<Territory, Collection<Unit>>();
+		attackingFromMap.put(m_location, m_attackingUnits);
+		for (final Territory t : m_data.getMap().getNeighbors(m_location))
+		{
+			attackingFromMap.put(t, m_attackingUnits);
+		}*/
 		final AggregateResults rVal = new AggregateResults(count);
 		final BattleTracker battleTracker = new BattleTracker();
 		BattleCalculator.EnableCasualtySortingCaching();
 		for (int i = 0; i < count && !m_cancelled; i++)
 		{
 			final CompositeChange allChanges = new CompositeChange();
-			final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit);
+			final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit, m_retreatAfterRound);
 			final TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
 			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
+			bridge1.setBattle(battle);
 			battle.setHeadless(true);
 			battle.isAmphibious();
 			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, (m_amphibious ? m_attackingUnits : new ArrayList<Unit>()), m_defender, m_territoryEffects);
+			// battle.setAttackingFromAndMap(attackingFromMap);
 			battle.fight(bridge);
 			rVal.addResult(new BattleResults(battle, m_data));
 			// restore the game to its original state
@@ -138,11 +155,12 @@ class DummyDelegateBridge implements IDelegateBridge
 	private final CompositeChange m_allChanges;
 	private final GameData m_data;
 	private final ChangePerformer m_changePerformer;
+	private MustFightBattle m_battle = null;
 	
-	public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges, final boolean attackerKeepOneLandUnit)
+	public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges, final boolean attackerKeepOneLandUnit, final int retreatAfterRound)
 	{
-		m_attackingPlayer = new DummyPlayer("battle calc dummy", "None (AI)", attackerKeepOneLandUnit);
-		m_defendingPlayer = new DummyPlayer("battle calc dummy", "None (AI)", false);
+		m_attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerKeepOneLandUnit, retreatAfterRound);
+		m_defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", false, retreatAfterRound);
 		m_data = data;
 		m_attacker = attacker;
 		m_allChanges = allChanges;
@@ -222,6 +240,16 @@ class DummyDelegateBridge implements IDelegateBridge
 	public void stopGameSequence()
 	{
 	}
+	
+	public MustFightBattle getBattle()
+	{
+		return m_battle;
+	}
+	
+	public void setBattle(final MustFightBattle battle)
+	{
+		m_battle = battle;
+	}
 };
 
 
@@ -260,11 +288,38 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 class DummyPlayer extends AbstractAI
 {
 	private final boolean m_keepAtLeastOneLand;
+	private final int m_retreatAfterRound;
+	private final DummyDelegateBridge m_bridge;
+	private final boolean m_isAttacker;
 	
-	public DummyPlayer(final String name, final String type, final boolean keepAtLeastOneLand)
+	public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name, final String type, final boolean keepAtLeastOneLand, final int retreatAfterRound)
 	{
 		super(name, type);
 		m_keepAtLeastOneLand = keepAtLeastOneLand;
+		m_retreatAfterRound = retreatAfterRound;
+		m_bridge = dummyDelegateBridge;
+		m_isAttacker = attacker;
+	}
+	
+	private MustFightBattle getBattle()
+	{
+		return m_bridge.getBattle();
+	}
+	
+	private Collection<Unit> getOurUnits()
+	{
+		final MustFightBattle battle = getBattle();
+		if (battle == null)
+			return null;
+		return (m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits());
+	}
+	
+	private Collection<Unit> getEnemyUnits()
+	{
+		final MustFightBattle battle = getBattle();
+		if (battle == null)
+			return null;
+		return (m_isAttacker ? battle.getDefendingUnits() : battle.getAttackingUnits());
 	}
 	
 	@Override
@@ -297,10 +352,35 @@ class DummyPlayer extends AbstractAI
 		throw new UnsupportedOperationException();
 	}
 	
+	/**
+	 * The battle calc doesn't actually care if you have available territories to retreat to or not.
+	 * It will always let you retreat to the 'current' territory (the battle territory), even if that is illegal.
+	 * This is because the battle calc does not know where the attackers are actually coming from.
+	 */
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite, final Collection<Territory> possibleTerritories, final String message)
 	{
-		// no retreat, no surrender
-		return null;
+		// null = do not retreat
+		if (possibleTerritories.isEmpty())
+			return null;
+		if (submerge)
+		{
+			// submerge if all air vs subs
+			final CompositeMatch<Unit> seaSub = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsSub);
+			final CompositeMatch<Unit> planeNotDestroyer = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
+			final Collection<Unit> enemyUnits = getEnemyUnits();
+			if (enemyUnits.size() > 0 && Match.allMatch(getOurUnits(), seaSub) && Match.allMatch(enemyUnits, planeNotDestroyer))
+				return possibleTerritories.iterator().next();
+			return null;
+		}
+		else
+		{
+			final MustFightBattle battle = getBattle();
+			if (battle == null)
+				return null;
+			if (battle.getBattleRound() >= m_retreatAfterRound)
+				return possibleTerritories.iterator().next();
+			return null;
+		}
 	}
 	
 	/*public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
