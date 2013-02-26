@@ -553,7 +553,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
-				final NumberProperty fontsize = new NumberProperty("Font Size", null, 42, 6, MapImage.getPropertyMapFont().getSize());
+				final NumberProperty fontsize = new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
 				final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null, MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
 				final ColorProperty unitCountColor = new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
 				final ColorProperty factoryDamageColor = new ColorProperty("Factory Damage Color", null, MapImage.getPropertyUnitFactoryDamageColor());

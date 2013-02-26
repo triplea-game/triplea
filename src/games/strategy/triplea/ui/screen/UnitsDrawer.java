@@ -18,6 +18,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -154,19 +155,27 @@ public class UnitsDrawer implements IDrawable
 				}
 				if (m_count > stackSize)
 				{
-					graphics.setColor(MapImage.getPropertyUnitCountColor());
-					graphics.setFont(MapImage.getPropertyMapFont());
-					graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + 2 * stackSize
-								+ (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10), m_placementPoint.y - 2 * stackSize - bounds.y
-								+ m_uiContext.getUnitImageFactory().getUnitImageHeight() * 1 / 3);
+					final Font font = MapImage.getPropertyMapFont();
+					if (font.getSize() > 0)
+					{
+						graphics.setColor(MapImage.getPropertyUnitCountColor());
+						graphics.setFont(font);
+						graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + 2 * stackSize
+									+ (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10), m_placementPoint.y - 2 * stackSize - bounds.y
+									+ m_uiContext.getUnitImageFactory().getUnitImageHeight() * 1 / 3);
+					}
 				}
 			}
 			else
 			{ // Display a white number at the bottom of the unit
-				graphics.setColor(MapImage.getPropertyUnitCountColor());
-				graphics.setFont(MapImage.getPropertyMapFont());
-				graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()), m_placementPoint.y - bounds.y
-							+ m_uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
+				final Font font = MapImage.getPropertyMapFont();
+				if (font.getSize() > 0)
+				{
+					graphics.setColor(MapImage.getPropertyUnitCountColor());
+					graphics.setFont(font);
+					graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()), m_placementPoint.y - bounds.y
+								+ m_uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
+				}
 			}
 		}
 		// Display Factory Damage
@@ -178,10 +187,11 @@ public class UnitsDrawer implements IDrawable
 	
 	private void displayFactoryDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type, final Image img)
 	{
-		graphics.setColor(MapImage.getPropertyUnitFactoryDamageColor());
-		graphics.setFont(MapImage.getPropertyMapFont());
-		if (m_territoryName.length() != 0)
+		final Font font = MapImage.getPropertyMapFont();
+		if (m_territoryName.length() != 0 && font.getSize() > 0)
 		{
+			graphics.setColor(MapImage.getPropertyUnitFactoryDamageColor());
+			graphics.setFont(font);
 			if (isSBRAffectsUnitProduction(data))
 			{
 				final TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));

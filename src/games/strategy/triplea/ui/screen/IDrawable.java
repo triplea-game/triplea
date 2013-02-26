@@ -212,16 +212,19 @@ class TerritoryNameDrawable implements IDrawable
 		}
 	}
 	
-	private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, int y, final Image img, final String prod, final boolean drawFromTopLeft)
+	private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img, final String prod, final boolean drawFromTopLeft)
 	{
+		int yNormal = y;
 		if (img == null)
 		{
+			if (graphics.getFont().getSize() <= 0)
+				return;
 			if (drawFromTopLeft)
 			{
 				final FontMetrics fm = graphics.getFontMetrics();
-				y += fm.getHeight();
+				yNormal += fm.getHeight();
 			}
-			graphics.drawString(prod, x - bounds.x, y - bounds.y);
+			graphics.drawString(prod, x - bounds.x, yNormal - bounds.y);
 		}
 		else
 		{
@@ -229,8 +232,8 @@ class TerritoryNameDrawable implements IDrawable
 			// drawString takes y as the base line position
 			// drawImage takes x as the top right corner
 			if (!drawFromTopLeft)
-				y -= img.getHeight(null);
-			graphics.drawImage(img, x - bounds.x, y - bounds.y, null);
+				yNormal -= img.getHeight(null);
+			graphics.drawImage(img, x - bounds.x, yNormal - bounds.y, null);
 		}
 	}
 	
