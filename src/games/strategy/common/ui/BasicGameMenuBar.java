@@ -26,6 +26,7 @@ import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Triple;
 
 import java.awt.BorderLayout;
@@ -466,9 +467,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 		// allow the game developer to write notes that appear in the game
 		// displays whatever is in the notes field in html
-		final String notes = getData().getProperties().get("notes", "");
-		if (notes != null && notes.trim().length() != 0)
+		final String notesProperty = getData().getProperties().get("notes", "");
+		if (notesProperty != null && notesProperty.trim().length() != 0)
 		{
+			final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
 			parentMenu.add(new AbstractAction("Game Notes...")
 			{
 				private static final long serialVersionUID = -1817640666359299617L;

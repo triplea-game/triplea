@@ -20,6 +20,7 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.ui.TooltipProperties;
+import games.strategy.util.LocalizeHTML;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class UnitType extends NamedAttachable implements Serializable
 	
 	public String getTooltip(final PlayerID playerId, final boolean useHTML)
 	{
-		if (TooltipProperties.getInstance().getToolTip(this, playerId) == null || TooltipProperties.getInstance().getToolTip(this, playerId).equals(""))
+		if (TooltipProperties.getInstance().getToolTip(this, playerId) == null || TooltipProperties.getInstance().getToolTip(this, playerId).trim().length() <= 0)
 		{
 			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(playerId, useHTML, false);
 			/*for(IAttachment at:this.getAttachments().values()) {
@@ -104,7 +105,7 @@ public class UnitType extends NamedAttachable implements Serializable
 		}
 		else
 		{
-			return TooltipProperties.getInstance().getToolTip(this, playerId);
+			return LocalizeHTML.localizeImgLinksInHTML(TooltipProperties.getInstance().getToolTip(this, playerId));
 		}
 	}
 }

@@ -160,7 +160,9 @@ public class TechPanel extends ActionPanel
 				panel.add(list, BorderLayout.CENTER);
 				panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
 				list.setSelectedIndex(0);
-				JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select advance", JOptionPane.PLAIN_MESSAGE);
+				final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select advance", JOptionPane.PLAIN_MESSAGE);
+				if (choice != JOptionPane.OK_OPTION)
+					return;
 				advance = (TechAdvance) list.getSelectedValue();
 			}
 			final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);

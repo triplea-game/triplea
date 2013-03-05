@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.util.LocalizeHTML;
 
 import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
@@ -53,9 +54,13 @@ public class NotesPanel extends JPanel
 	{
 		final String notes = m_data.getProperties().get("notes", "");
 		if (notes == null || notes.trim().length() <= 0)
+		{
 			m_textArea.setText("");
+		}
 		else
-			m_textArea.setText(notes);
+		{
+			m_textArea.setText(LocalizeHTML.localizeImgLinksInHTML(notes.trim()));
+		}
 		m_textArea.setCaretPosition(0);
 	}
 	

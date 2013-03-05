@@ -35,6 +35,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -1728,7 +1729,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		while (notificationMessages.hasNext())
 		{
 			final String notificationMessageKey = notificationMessages.next();
-			final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+			final String message = LocalizeHTML.localizeImgLinksInHTML(NotificationMessages.getInstance().getMessage(notificationMessageKey));
 			String messageForRecord = message;
 			if (messageForRecord.length() > 150)
 			{

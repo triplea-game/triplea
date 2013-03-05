@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.util.LocalizeHTML;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -141,12 +142,19 @@ public class NewGameChooser extends JDialog
 			final GameData data = getSelected().getGameData();
 			final StringBuilder notes = new StringBuilder();
 			notes.append("<h1>").append(data.getGameName()).append("</h1>");
-			appendListItem("Map Name", data.getProperties().get("mapName", ""), notes);
+			final String mapNameDir = data.getProperties().get("mapName", "");
+			appendListItem("Map Name", mapNameDir, notes);
 			appendListItem("Number Of Players", data.getPlayerList().size() + "", notes);
 			appendListItem("Location", getSelected().getLocation() + "", notes);
 			appendListItem("Version", data.getGameVersion() + "", notes);
 			notes.append("<p></p>");
-			notes.append(data.getProperties().get("notes", ""));
+			final String notesProperty = data.getProperties().get("notes", "");
+			if (notesProperty != null && notesProperty.trim().length() != 0)
+			{
+				// UIContext resource loader should be null (or potentially is still the last game we played's loader),
+				// so we send the map dir name so that our localizing of image links can get a new resource loader if needed
+				notes.append(LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim(), null, mapNameDir));
+			}
 			m_notesPanel.setText(notes.toString());
 		}
 		else
