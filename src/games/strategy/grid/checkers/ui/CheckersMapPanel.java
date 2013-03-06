@@ -168,8 +168,7 @@ public class CheckersMapPanel extends GridMapPanel
 		final Territory at = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 		if (at != null)
 		{
-			if (at != null)
-				notifyTerritorySelected(at, new MouseDetails(e, e.getX(), e.getY()));
+			notifyTerritorySelected(at, new MouseDetails(e, e.getX(), e.getY()));
 			if (!at.equals(m_clickedAt) && !at.equals(m_releasedAt))
 			{
 				// they must be clicking and dragging, so treat this as if it was a new click

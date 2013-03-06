@@ -893,9 +893,13 @@ public class TripleAFrame extends MainGameFrame
 		final String bomb = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb");
 		final String normal = "Attack";
 		final String[] choices = { bomb, normal };
-		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, choices, bomb, getUIContext()
-					.getCountDownLatchHandler());
-		return choice == 0;
+		int choice = -1;
+		while (choice < 0 || choice > 1)
+		{
+			choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, choices, bomb, getUIContext()
+						.getCountDownLatchHandler());
+		}
+		return choice == JOptionPane.OK_OPTION;
 	}
 	
 	public Unit getStrategicBombingRaidTarget(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
