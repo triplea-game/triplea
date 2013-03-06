@@ -67,6 +67,8 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		final String result = null;
 		if (units.isEmpty())
 			return "No units selected";
+		if (territory.getUnits().getUnitCount() > 0)
+			return "Territory already contains units";
 		return result;
 	}
 	

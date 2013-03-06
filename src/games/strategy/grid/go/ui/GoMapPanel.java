@@ -1,5 +1,6 @@
 package games.strategy.grid.go.ui;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -15,6 +16,7 @@ import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
+import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
@@ -351,6 +353,12 @@ public class GoMapPanel extends GridMapPanel
 	@Override
 	public void mouseReleased(final MouseEvent e)
 	{
+		final Territory at = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+		if (at != null)
+			notifyTerritorySelected(at, new MouseDetails(e, e.getX(), e.getY()));
+		if (BaseEditDelegate.getEditMode(m_gameData))
+			return;
+		
 		if (m_phase == GO_DELEGATE_PHASE.PLAY)
 		{
 			if (e.getButton() != MouseEvent.BUTTON1) // (e.isControlDown() || e.isAltDown() || e.isShiftDown())
@@ -389,6 +397,8 @@ public class GoMapPanel extends GridMapPanel
 	@Override
 	public void doKeyListenerEvents(final KeyEvent e)
 	{
+		if (BaseEditDelegate.getEditMode(m_gameData))
+			return;
 		final int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_P)
 		{

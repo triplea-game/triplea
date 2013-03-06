@@ -11,7 +11,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package games.strategy.triplea.delegate;
+package games.strategy.common.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -30,10 +30,10 @@ import java.util.Properties;
  * 
  * @author Tony Clayton
  */
-public class TripleADelegateBridge implements IDelegateBridge
+public class GameDelegateBridge implements IDelegateBridge
 {
 	private final IDelegateBridge m_bridge;
-	private final TripleADelegateHistoryWriter m_historyWriter;
+	private final GameDelegateHistoryWriter m_historyWriter;
 	
 	/**
 	 * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge
@@ -43,10 +43,10 @@ public class TripleADelegateBridge implements IDelegateBridge
 	 * @param data
 	 *            GameData object
 	 * */
-	public TripleADelegateBridge(final IDelegateBridge bridge)
+	public GameDelegateBridge(final IDelegateBridge bridge)
 	{
 		m_bridge = bridge;
-		m_historyWriter = new TripleADelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
+		m_historyWriter = new GameDelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
 	}
 	
 	public GameData getData()

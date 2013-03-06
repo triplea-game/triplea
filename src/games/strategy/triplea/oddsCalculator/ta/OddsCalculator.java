@@ -1,5 +1,6 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import games.strategy.common.delegate.GameDelegateBridge;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
@@ -27,7 +28,6 @@ import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
-import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -118,7 +118,7 @@ public class OddsCalculator
 		{
 			final CompositeChange allChanges = new CompositeChange();
 			final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit, m_retreatAfterRound);
-			final TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
+			final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
 			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
 			bridge1.setBattle(battle);
 			battle.setHeadless(true);

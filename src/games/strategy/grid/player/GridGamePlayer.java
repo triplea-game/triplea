@@ -153,13 +153,13 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	
 	private void disableEditModeMenu()
 	{
+		m_ui.setEditDelegate(null);
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
 				m_ui.getEditModeButtonModel().setEnabled(false);
 				m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
-				m_ui.setEditDelegate(null);
 			}
 		});
 	}

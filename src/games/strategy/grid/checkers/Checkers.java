@@ -1,6 +1,5 @@
 package games.strategy.grid.checkers;
 
-import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.grid.GridGame;
@@ -9,6 +8,7 @@ import games.strategy.grid.checkers.ui.CheckersMapPanel;
 import games.strategy.grid.checkers.ui.CheckersMenu;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridGameMenu;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 
@@ -72,7 +72,7 @@ public class Checkers extends GridGame implements IGameLoader
 	}
 	
 	@Override
-	protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass()
+	protected Class<? extends GridGameMenu<GridGameFrame>> getGridTableMenuClass()
 	{
 		return CheckersMenu.class;
 	}

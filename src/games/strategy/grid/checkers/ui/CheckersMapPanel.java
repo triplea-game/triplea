@@ -1,5 +1,6 @@
 package games.strategy.grid.checkers.ui;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -10,6 +11,7 @@ import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridPlayData;
+import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Tuple;
 
@@ -166,6 +168,8 @@ public class CheckersMapPanel extends GridMapPanel
 		final Territory at = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 		if (at != null)
 		{
+			if (at != null)
+				notifyTerritorySelected(at, new MouseDetails(e, e.getX(), e.getY()));
 			if (!at.equals(m_clickedAt) && !at.equals(m_releasedAt))
 			{
 				// they must be clicking and dragging, so treat this as if it was a new click
@@ -173,7 +177,8 @@ public class CheckersMapPanel extends GridMapPanel
 			}
 		}
 		// we right click to create middle steps, so only countDown if it is a normal click
-		if (!(e.isControlDown() || e.isAltDown() || e.isShiftDown()) && e.getButton() == MouseEvent.BUTTON1 && (m_clickedAt != null && m_releasedAt != null))
+		if (!BaseEditDelegate.getEditMode(m_gameData)
+					&& (!(e.isControlDown() || e.isAltDown() || e.isShiftDown()) && e.getButton() == MouseEvent.BUTTON1 && (m_clickedAt != null && m_releasedAt != null)))
 		{
 			setMouseShadowUnits(null);
 			m_validMovesList = null;

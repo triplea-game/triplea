@@ -1,6 +1,5 @@
 package games.strategy.grid;
 
-import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.data.DefaultUnitFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
@@ -15,6 +14,7 @@ import games.strategy.grid.delegate.EditDelegate;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridGameMenu;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.display.GridGameDisplay;
@@ -53,7 +53,7 @@ abstract public class GridGame implements IGameLoader
 	
 	abstract protected Class<? extends GridMapData> getGridMapDataClass();
 	
-	abstract protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass();
+	abstract protected Class<? extends GridGameMenu<GridGameFrame>> getGridTableMenuClass();
 	
 	/**
 	 * Should be evenly divided by 2, or else your map might get drawn funny.

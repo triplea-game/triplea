@@ -9,7 +9,6 @@ import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.TripleADelegateBridge;
 
 /**
  * 
@@ -27,7 +26,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 	@Override
 	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
 	{
-		super.setDelegateBridgeAndPlayer(new TripleADelegateBridge(iDelegateBridge));
+		super.setDelegateBridgeAndPlayer(new GameDelegateBridge(iDelegateBridge));
 	}
 	
 	/**

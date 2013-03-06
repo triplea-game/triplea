@@ -20,12 +20,15 @@ import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
@@ -54,6 +57,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -150,7 +154,7 @@ public class GridGameFrame extends MainGameFrame
 	 * @param players
 	 */
 	public GridGameFrame(final IGame game, final Set<IGamePlayer> players, final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends GridMapData> gridMapDataClass,
-				final Class<? extends BasicGameMenuBar<GridGameFrame>> menuBarClass, final int squareWidth, final int squareHeight, final int bevelSize)
+				final Class<? extends GridGameMenu<GridGameFrame>> menuBarClass, final int squareWidth, final int squareHeight, final int bevelSize)
 	{
 		m_gameOver = false;
 		m_waiting = null;
@@ -257,17 +261,31 @@ public class GridGameFrame extends MainGameFrame
 		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
 		m_gameCenterPanel.resetToPreferredSizes();
 		
+		// set up the edit mode overlay text
+		this.setGlassPane(new JComponent()
+		{
+			private static final long serialVersionUID = 9077566112856052017L;
+			
+			@Override
+			protected void paintComponent(final Graphics g)
+			{
+				g.setFont(new Font("Ariel", Font.BOLD, 50));
+				g.setColor(Color.GRAY);
+				g.drawString("Edit Mode", 200, 200);
+			}
+		});
+		
 		// finally, set the content pane for this frame
 		// this.setContentPane(m_mainPanel);
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
 		
 		// Set up the menu bar and window title
-		// this.setJMenuBar(new KingsTableMenu(this));
+		final GridGameMenu<GridGameFrame> menuBar;
 		try
 		{
-			final Constructor<? extends BasicGameMenuBar<GridGameFrame>> menuConstructor = menuBarClass.getConstructor(new Class[] { GridGameFrame.class });
-			final BasicGameMenuBar<GridGameFrame> menuBar = menuConstructor.newInstance(this);
+			final Constructor<? extends GridGameMenu<GridGameFrame>> menuConstructor = menuBarClass.getConstructor(new Class[] { GridGameFrame.class });
+			menuBar = menuConstructor.newInstance(this);
 			this.setJMenuBar(menuBar);
 		} catch (final Exception e)
 		{
@@ -286,6 +304,10 @@ public class GridGameFrame extends MainGameFrame
 				leaveGame();
 			}
 		});
+		
+		m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+		m_data.addDataChangeListener(m_dataChangeListener);
+		
 		this.pack();
 		// minimizeRightSidePanel(); // for whatever reason it is better to do this after we show the frame
 	}
@@ -397,6 +419,7 @@ public class GridGameFrame extends MainGameFrame
 			showHistory();
 			m_showGameAction.setEnabled(true);
 			this.setEnabled(false);
+			m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
 		}
 	};
 	protected final AbstractAction m_showGameAction = new AbstractAction("Show current game")
@@ -412,6 +435,7 @@ public class GridGameFrame extends MainGameFrame
 			showGame();
 			m_showHistoryAction.setEnabled(true);
 			this.setEnabled(false);
+			m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
 		}
 	};
 	protected final AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...")
@@ -442,7 +466,9 @@ public class GridGameFrame extends MainGameFrame
 			}
 			m_historyPanel.goToEnd();
 			m_historyPanel = null;
+			m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
 			m_mapPanel.setGameData(m_data);
+			m_data.addDataChangeListener(m_dataChangeListener);
 		}
 		m_gameMainPanel.removeAll();
 		m_gameMainPanel.setLayout(new BorderLayout());
@@ -466,10 +492,12 @@ public class GridGameFrame extends MainGameFrame
 			clonedGameData = GameDataUtils.cloneGameData(m_data);
 			if (clonedGameData == null)
 				return;
+			m_data.removeDataChangeListener(m_dataChangeListener);
 			clonedGameData.testLocksOnRead();
 			if (m_historySyncher != null)
 				throw new IllegalStateException("Two history synchers?");
 			m_historySyncher = new HistorySynchronizer(clonedGameData, m_game);
+			clonedGameData.addDataChangeListener(m_dataChangeListener);
 		} finally
 		{
 			m_data.releaseReadLock();
@@ -1015,6 +1043,11 @@ public class GridGameFrame extends MainGameFrame
 		return m_mapPanel;
 	}
 	
+	public GridMapPanel getMapPanel()
+	{
+		return m_mapPanel;
+	}
+	
 	@Override
 	public void setShowChatTime(final boolean showTime)
 	{
@@ -1112,7 +1145,6 @@ public class GridGameFrame extends MainGameFrame
 	{
 		if (m_editDelegate != null)
 		{
-			// TODO:
 			m_editModeButtonModel.setSelected(true);
 			getGlassPane().setVisible(true);
 		}
@@ -1120,7 +1152,6 @@ public class GridGameFrame extends MainGameFrame
 	
 	protected void hideEditMode()
 	{
-		// TODO:
 		m_editModeButtonModel.setSelected(false);
 		getGlassPane().setVisible(false);
 	}
@@ -1155,7 +1186,8 @@ public class GridGameFrame extends MainGameFrame
 	public void setEditDelegate(final IGridEditDelegate editDelegate)
 	{
 		m_editDelegate = editDelegate;
-		updateAllImages();
+		// force a data change event to update the UI for edit mode
+		m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
 		setWidgetActivation();
 	}
 	
@@ -1172,6 +1204,8 @@ public class GridGameFrame extends MainGameFrame
 	public boolean getEditMode()
 	{
 		boolean isEditMode = false;
+		if (m_mapPanel == null)
+			return false;
 		// use GameData from mapPanel since it will follow current history node
 		m_mapPanel.getData().acquireReadLock();
 		try
@@ -1183,6 +1217,33 @@ public class GridGameFrame extends MainGameFrame
 		}
 		return isEditMode;
 	}
+	
+	GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
+	{
+		public void gameDataChanged(final Change change)
+		{
+			try
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						if (getEditMode())
+						{
+							showEditMode();
+						}
+						else
+						{
+							hideEditMode();
+						}
+					}
+				});
+			} catch (final Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	};
 }
 
 

@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseEditDelegate;
+import games.strategy.common.delegate.GameDelegateBridge;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -53,7 +54,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	@Override
 	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
 	{
-		super.setDelegateBridgeAndPlayer(new TripleADelegateBridge(iDelegateBridge));
+		super.setDelegateBridgeAndPlayer(new GameDelegateBridge(iDelegateBridge));
 	}
 	
 	@Override

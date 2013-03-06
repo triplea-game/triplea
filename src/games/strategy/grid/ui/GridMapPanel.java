@@ -13,6 +13,7 @@
  */
 package games.strategy.grid.ui;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.image.UnitImageFactory;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -28,11 +29,14 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.triplea.ui.MapSelectionListener;
+import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.ScrollListener;
 import games.strategy.ui.Util;
 import games.strategy.util.CountDownLatchHandler;
+import games.strategy.util.ListenerList;
 import games.strategy.util.Tuple;
 
 import java.awt.AlphaComposite;
@@ -390,9 +394,11 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		m_releasedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 		setMouseShadowUnits(null);
 		m_validMovesList = null;
+		if (m_releasedAt != null)
+			notifyTerritorySelected(m_releasedAt, new MouseDetails(e, e.getX(), e.getY()));
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
-		if (m_waiting != null && (m_clickedAt != null && m_releasedAt != null))
+		if (!BaseEditDelegate.getEditMode(m_gameData) && (m_waiting != null && (m_clickedAt != null && m_releasedAt != null)))
 		{
 			m_waiting.countDown();
 		}
@@ -674,5 +680,41 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	public GameData getData()
 	{
 		return m_gameData;
+	}
+	
+	protected final ListenerList<MapSelectionListener> m_mapSelectionListeners = new ListenerList<MapSelectionListener>();
+	
+	public void addMapSelectionListener(final MapSelectionListener listener)
+	{
+		m_mapSelectionListeners.add(listener);
+	}
+	
+	public void removeMapSelectionListener(final MapSelectionListener listener)
+	{
+		m_mapSelectionListeners.remove(listener);
+	}
+	
+	protected void notifyTerritorySelected(final Territory t, final MouseDetails me)
+	{
+		for (final MapSelectionListener msl : m_mapSelectionListeners)
+		{
+			msl.territorySelected(t, me);
+		}
+	}
+	
+	protected void notifyMouseMoved(final Territory t, final MouseDetails me)
+	{
+		for (final MapSelectionListener msl : m_mapSelectionListeners)
+		{
+			msl.mouseMoved(t, me);
+		}
+	}
+	
+	protected void notifyMouseEntered(final Territory t)
+	{
+		for (final MapSelectionListener msl : m_mapSelectionListeners)
+		{
+			msl.mouseEntered(t);
+		}
 	}
 }

@@ -11,9 +11,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package games.strategy.triplea.delegate;
+package games.strategy.common.delegate;
 
-import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
@@ -25,12 +24,12 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
  * 
  * 
  */
-public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
+public class GameDelegateHistoryWriter implements IDelegateHistoryWriter
 {
 	IDelegateHistoryWriter m_delegateHistoryWriter;
 	GameData m_data;
 	
-	public TripleADelegateHistoryWriter(final IDelegateHistoryWriter delegateHistoryWriter, final GameData data)
+	public GameDelegateHistoryWriter(final IDelegateHistoryWriter delegateHistoryWriter, final GameData data)
 	{
 		m_delegateHistoryWriter = delegateHistoryWriter;
 		m_data = data;

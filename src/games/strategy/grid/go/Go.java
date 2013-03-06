@@ -1,6 +1,5 @@
 package games.strategy.grid.go;
 
-import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -10,6 +9,7 @@ import games.strategy.grid.go.player.RandomAI;
 import games.strategy.grid.go.ui.GoMapPanel;
 import games.strategy.grid.go.ui.GoMenu;
 import games.strategy.grid.ui.GridGameFrame;
+import games.strategy.grid.ui.GridGameMenu;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 
@@ -73,7 +73,7 @@ public class Go extends GridGame implements IGameLoader
 	}
 	
 	@Override
-	protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass()
+	protected Class<? extends GridGameMenu<GridGameFrame>> getGridTableMenuClass()
 	{
 		return GoMenu.class;
 	}

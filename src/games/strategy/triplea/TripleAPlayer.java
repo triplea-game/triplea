@@ -118,20 +118,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		
 		m_ui.requiredTurnSeries(getPlayerID());
 		boolean badStep = false;
-		try
-		{
-			m_ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemote("edit"));
-		} catch (final Exception e)
-		{
-		}
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
-				m_ui.getEditModeButtonModel().setEnabled(true);
-			}
-		});
+		enableEditModeMenu();
 		if (name.endsWith("Bid"))
 			purchase(true);
 		else if (name.endsWith("Tech"))
@@ -171,17 +158,40 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 		else
 			badStep = true;
+		disableEditModeMenu();
+		if (badStep)
+			throw new IllegalArgumentException("Unrecognized step name:" + name);
+	}
+	
+	private void enableEditModeMenu()
+	{
+		try
+		{
+			m_ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemote("edit"));
+		} catch (final Exception e)
+		{
+		}
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+				m_ui.getEditModeButtonModel().setEnabled(true);
+			}
+		});
+	}
+	
+	private void disableEditModeMenu()
+	{
+		m_ui.setEditDelegate(null);
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
 				m_ui.getEditModeButtonModel().setEnabled(false);
 				m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
-				m_ui.setEditDelegate(null);
 			}
 		});
-		if (badStep)
-			throw new IllegalArgumentException("Unrecognized step name:" + name);
 	}
 	
 	private final AbstractAction m_editModeAction = new AbstractAction()
