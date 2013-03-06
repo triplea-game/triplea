@@ -129,12 +129,14 @@ public class LocalizeHTML
 		while (matcherTag.find())
 		{
 			final String href = matcherTag.group(1); // img tag
+			if (href == null)
+				continue;
 			// System.out.println("Tag Contents: " + href);
 			matcherLink = patternLink.matcher(href);
 			while (matcherLink.find())
 			{
 				final String fullLink = matcherLink.group(1); // src link
-				if (fullLink.length() > 2)
+				if (fullLink != null && fullLink.length() > 2)
 				{
 					if (ourResourceLoader == null)
 					{
@@ -142,7 +144,7 @@ public class LocalizeHTML
 					}
 					final String link = fullLink.substring(1, fullLink.length() - 1); // remove quotes
 					// System.out.println("Link: " + link);
-					final String imageFileName = link.substring(link.lastIndexOf("/") + 1); // remove full parent path
+					final String imageFileName = link.substring(Math.max((link.lastIndexOf("/") + 1), 0)); // remove full parent path
 					URL replacementURL = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName); // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
 					if (replacementURL == null || replacementURL.toString().length() == 0)
 					{
