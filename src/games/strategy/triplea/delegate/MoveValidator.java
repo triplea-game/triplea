@@ -20,6 +20,7 @@
  */
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
@@ -800,7 +801,7 @@ public class MoveValidator
 	
 	private static boolean getEditMode(final GameData data)
 	{
-		return EditDelegate.getEditMode(data);
+		return BaseEditDelegate.getEditMode(data);
 	}
 	
 	public static boolean hasConqueredNonBlitzedNonWaterOnRoute(final Route route, final GameData data)

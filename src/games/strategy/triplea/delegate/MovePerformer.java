@@ -75,7 +75,7 @@ public class MovePerformer implements Serializable
 	
 	private ITripleaPlayer getRemotePlayer(final PlayerID id)
 	{
-		return (ITripleaPlayer) m_bridge.getRemote(id);
+		return (ITripleaPlayer) m_bridge.getRemotePlayer(id);
 	}
 	
 	private ITripleaPlayer getRemotePlayer()

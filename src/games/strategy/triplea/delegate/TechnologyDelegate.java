@@ -19,6 +19,7 @@
  */
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
@@ -245,7 +246,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		int techHits = 0;
 		int remainder = 0;
 		final int diceSides = data.getDiceSides();
-		if (EditDelegate.getEditMode(data))
+		if (BaseEditDelegate.getEditMode(data))
 		{
 			final ITripleaPlayer tripleaPlayer = getRemotePlayer();
 			random = tripleaPlayer.selectFixedDice(techRolls, diceSides, true, annotation, diceSides);
@@ -420,7 +421,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		final Collection<TechAdvance> newAdvances = new ArrayList<TechAdvance>(hits);
 		final String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
 		int[] random;
-		if (isSelectableTechRoll() || EditDelegate.getEditMode(getData()))
+		if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData()))
 		{
 			final ITripleaPlayer tripleaPlayer = getRemotePlayer();
 			random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, available.size());

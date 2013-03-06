@@ -1,4 +1,6 @@
 Changes for 1.7
+* Creating Edit Mode for Grid Based games like chess, checkers, and go. (veqryn)
+
 * Added feature to automatically parse HTML text in game notes and in notifications, and replace all image links with links to the map folder's "doc/images/" directory, thereby allowing local image files to be used. (veqryn)
 
 * Adding ability to specify when the attacker should retreat after how many rounds, to the battle calculator. (veqryn)

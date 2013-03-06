@@ -90,7 +90,8 @@ public class UnitType extends NamedAttachable implements Serializable
 	
 	public String getTooltip(final PlayerID playerId, final boolean useHTML)
 	{
-		if (TooltipProperties.getInstance().getToolTip(this, playerId) == null || TooltipProperties.getInstance().getToolTip(this, playerId).trim().length() <= 0)
+		final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
+		if (customTip == null || customTip.trim().length() <= 0)
 		{
 			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(playerId, useHTML, false);
 			/*for(IAttachment at:this.getAttachments().values()) {
@@ -105,7 +106,7 @@ public class UnitType extends NamedAttachable implements Serializable
 		}
 		else
 		{
-			return LocalizeHTML.localizeImgLinksInHTML(TooltipProperties.getInstance().getToolTip(this, playerId));
+			return LocalizeHTML.localizeImgLinksInHTML(customTip.trim());
 		}
 	}
 }

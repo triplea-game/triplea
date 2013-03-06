@@ -17,7 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.message.IRemote;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -34,7 +34,7 @@ import java.util.Map;
  * 
  * @author Sean Bridges
  */
-public interface ITripleaPlayer extends IRemote
+public interface ITripleaPlayer extends IRemotePlayer
 {
 	/**
 	 * Select casualties
@@ -271,8 +271,6 @@ public interface ITripleaPlayer extends IRemote
 	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer);
 	
 	public void confirmOwnCasualties(GUID battleId, String message);
-	
-	public PlayerID getPlayerID();
 	
 	/**
 	 * Does the player accept the proposed political action?

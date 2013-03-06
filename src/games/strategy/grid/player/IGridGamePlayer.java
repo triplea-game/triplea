@@ -18,17 +18,16 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.message.IRemote;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 
 import java.util.Collection;
 
 /**
- * Empty interface which all Grid Game players classes must implement.
+ * Interface which all Grid Game players classes must implement.
  * 
- * @author Lane Schwartz
- * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
+ * @author Veqryn
  */
-public interface IGridGamePlayer extends IRemote
+public interface IGridGamePlayer extends IRemotePlayer
 {
 	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message);
 }

@@ -13,6 +13,7 @@
  */
 package games.strategy.grid.ui;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.image.UnitImageFactory;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
@@ -39,6 +40,7 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
+import games.strategy.grid.delegate.remote.IGridEditDelegate;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.ImageScrollModel;
@@ -84,6 +86,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -97,6 +100,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -122,6 +126,9 @@ public class GridGameFrame extends MainGameFrame
 	protected boolean m_gameOver;
 	protected CountDownLatch m_waiting;
 	protected PlayerID m_currentPlayer = PlayerID.NULL_PLAYERID;
+	
+	protected IGridEditDelegate m_editDelegate;
+	private final ButtonModel m_editModeButtonModel;
 	
 	protected JPanel m_gameMainPanel = new JPanel();
 	protected JPanel m_gameSouthPanel;
@@ -200,6 +207,10 @@ public class GridGameFrame extends MainGameFrame
 		m_error.setAlignmentX(Component.CENTER_ALIGNMENT);
 		m_error.setPreferredSize(m_error.getPreferredSize());
 		m_error.setText(" ");
+		
+		// initialize m_editModeButtonModel before setJMenuBar()
+		m_editModeButtonModel = new JToggleButton.ToggleButtonModel();
+		m_editModeButtonModel.setEnabled(false);
 		
 		// next we add the chat panel, but only if there is one (only because we are hosting/network game)
 		m_mapAndChatPanel = new JPanel();
@@ -731,7 +742,14 @@ public class GridGameFrame extends MainGameFrame
 	 */
 	public void refreshTerritories(final Collection<Territory> territories)
 	{
-		m_mapPanel.refreshTerritories(territories);
+		if (m_mapPanel != null)
+			m_mapPanel.refreshTerritories(territories);
+	}
+	
+	public void updateAllImages()
+	{
+		if (m_mapPanel != null)
+			m_mapPanel.updateAllImages();
 	}
 	
 	/**
@@ -1088,6 +1106,82 @@ public class GridGameFrame extends MainGameFrame
 			selected.set((UnitType) list.getSelectedValue());
 		// Unit selected = (Unit) list.getSelectedValue();
 		return selected.get();
+	}
+	
+	protected void showEditMode()
+	{
+		if (m_editDelegate != null)
+		{
+			// TODO:
+			m_editModeButtonModel.setSelected(true);
+			getGlassPane().setVisible(true);
+		}
+	}
+	
+	protected void hideEditMode()
+	{
+		// TODO:
+		m_editModeButtonModel.setSelected(false);
+		getGlassPane().setVisible(false);
+	}
+	
+	protected void setWidgetActivation()
+	{
+		if (!SwingUtilities.isEventDispatchThread())
+		{
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					setWidgetActivation();
+				}
+			});
+			return;
+		}
+		if (m_editModeButtonModel != null)
+		{
+			if (m_editDelegate == null)
+			{
+				m_editModeButtonModel.setEnabled(false);
+			}
+			else
+			{
+				m_editModeButtonModel.setEnabled(true);
+			}
+		}
+	}
+	
+	// setEditDelegate is called by the Player at the start and end of a turn
+	public void setEditDelegate(final IGridEditDelegate editDelegate)
+	{
+		m_editDelegate = editDelegate;
+		updateAllImages();
+		setWidgetActivation();
+	}
+	
+	public IGridEditDelegate getEditDelegate()
+	{
+		return m_editDelegate;
+	}
+	
+	public ButtonModel getEditModeButtonModel()
+	{
+		return m_editModeButtonModel;
+	}
+	
+	public boolean getEditMode()
+	{
+		boolean isEditMode = false;
+		// use GameData from mapPanel since it will follow current history node
+		m_mapPanel.getData().acquireReadLock();
+		try
+		{
+			isEditMode = BaseEditDelegate.getEditMode(m_mapPanel.getData());
+		} finally
+		{
+			m_mapPanel.getData().releaseReadLock();
+		}
+		return isEditMode;
 	}
 }
 

@@ -19,11 +19,17 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.grid.delegate.remote.IGridEditDelegate;
 import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.IGridPlayData;
 
+import java.awt.event.ActionEvent;
 import java.util.Collection;
+
+import javax.swing.AbstractAction;
+import javax.swing.ButtonModel;
+import javax.swing.SwingUtilities;
 
 /**
  * Represents a human player of Grid Games.
@@ -44,6 +50,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		// if (m_ui!=null && ((KingsTableFrame)m_ui).isGameOver())
 		if (m_ui != null && m_ui.isGameOver())
 			return;
+		enableEditModeMenu();
 		/*{
 		    CountDownLatch waitToLeaveGame = new CountDownLatch(1);
 		    try {
@@ -52,11 +59,17 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		        waitToLeaveGame.await();
 		    } catch (InterruptedException e) {}
 		}*/
+		boolean badStep = false;
 		if (stepName.endsWith("Play"))
 			play();
 		else if (stepName.endsWith("EndTurn"))
 			endTurn();
 		else
+			badStep = true;
+		
+		disableEditModeMenu();
+		
+		if (badStep)
 			throw new IllegalArgumentException("Unrecognized step stepName:" + stepName);
 	}
 	
@@ -119,4 +132,57 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	{
 		return m_ui.selectUnit(startUnit, options, territory, player, data, message);
 	}
+	
+	private void enableEditModeMenu()
+	{
+		try
+		{
+			m_ui.setEditDelegate((IGridEditDelegate) getPlayerBridge().getRemote("edit"));
+		} catch (final Exception e)
+		{
+		}
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
+				m_ui.getEditModeButtonModel().setEnabled(true);
+			}
+		});
+	}
+	
+	private void disableEditModeMenu()
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_ui.getEditModeButtonModel().setEnabled(false);
+				m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
+				m_ui.setEditDelegate(null);
+			}
+		});
+	}
+	
+	private final AbstractAction m_editModeAction = new AbstractAction()
+	{
+		private static final long serialVersionUID = -6514835498581811786L;
+		
+		public void actionPerformed(final ActionEvent ae)
+		{
+			final boolean editMode = ((ButtonModel) ae.getSource()).isSelected();
+			try
+			{
+				// Set edit mode
+				// All GameDataChangeListeners will be notified upon success
+				final IGridEditDelegate editDelegate = (IGridEditDelegate) getPlayerBridge().getRemote("edit");
+				editDelegate.setEditMode(editMode);
+			} catch (final Exception e)
+			{
+				e.printStackTrace();
+				// toggle back to previous state since setEditMode failed
+				m_ui.getEditModeButtonModel().setSelected(!m_ui.getEditModeButtonModel().isSelected());
+			}
+		}
+	};
 }

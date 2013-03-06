@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -137,7 +138,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 	protected PlayerID getUnitsOwner(final Collection<Unit> units)
 	{
 		// if we are not in edit mode, return m_player. if we are in edit mode, we use whoever's units these are.
-		if (units.isEmpty() || !EditDelegate.getEditMode(getData()))
+		if (units.isEmpty() || !BaseEditDelegate.getEditMode(getData()))
 			return m_player;
 		else
 			return units.iterator().next().getOwner();

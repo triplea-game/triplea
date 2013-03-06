@@ -17,6 +17,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.message.IRemote;
 
 import java.io.Serializable;
@@ -25,7 +27,7 @@ import java.io.Serializable;
  * Base class designed to make writing custom delegates simpler.
  * Code common to all delegates is implemented here.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (abstracted by Chris Duncan)
  */
 public abstract class AbstractDelegate implements IDelegate
 {
@@ -115,6 +117,43 @@ public abstract class AbstractDelegate implements IDelegate
 	protected GameData getData()
 	{
 		return m_bridge.getData();
+	}
+	
+	protected IDisplay getDisplay()
+	{
+		return getDisplay(m_bridge);
+	}
+	
+	protected static IDisplay getDisplay(final IDelegateBridge bridge)
+	{
+		return bridge.getDisplayChannelBroadcaster();
+	}
+	
+	protected IRemotePlayer getRemotePlayer()
+	{
+		return getRemotePlayer(m_bridge);
+	}
+	
+	protected static IRemotePlayer getRemotePlayer(final IDelegateBridge bridge)
+	{
+		return bridge.getRemotePlayer();
+	}
+	
+	/**
+	 * You should override this class with some variation of the following code (changing the AI to be something meaningful if needed)
+	 * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote:
+	 * <p>
+	 * if (player.isNull()) { return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);} return bridge.getRemotePlayer(player);
+	 * </p>
+	 */
+	protected IRemotePlayer getRemotePlayer(final PlayerID player)
+	{
+		// you should over ride this. (also, do not make a static version of this, in this class.)
+		
+		// if its the null player, return a do nothing proxy
+		// if (player.isNull())
+		// return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+		return m_bridge.getRemotePlayer(player);
 	}
 }
 

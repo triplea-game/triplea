@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
@@ -385,12 +386,12 @@ public class BattleCalculator
 				final boolean defending, final GUID battleID, final boolean headLess, final int extraHits)
 	{
 		final GameData data = bridge.getData();
-		final boolean isEditMode = EditDelegate.getEditMode(data);
+		final boolean isEditMode = BaseEditDelegate.getEditMode(data);
 		ITripleaPlayer tripleaPlayer;
 		if (player.isNull())
 			tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
 		else
-			tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
+			tripleaPlayer = (ITripleaPlayer) bridge.getRemotePlayer(player);
 		Map<Unit, Collection<Unit>> dependents;
 		if (headLess)
 			dependents = Collections.emptyMap();

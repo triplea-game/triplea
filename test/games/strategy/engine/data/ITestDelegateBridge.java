@@ -17,7 +17,7 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.message.IRemote;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 
@@ -40,7 +40,7 @@ public interface ITestDelegateBridge extends IDelegateBridge
 	
 	public void setRandomSource(IRandomSource randomSource);
 	
-	public void setRemote(IRemote remote);
+	public void setRemote(IRemotePlayer remote);
 	
 	public void setDisplay(ITripleaDisplay display);
 }

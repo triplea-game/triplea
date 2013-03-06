@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.ui;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -30,7 +31,6 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
-import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -152,7 +152,7 @@ public class MovePanel extends AbstractMovePanel
 	
 	private PlayerID getUnitOwner(final Collection<Unit> units)
 	{
-		if (EditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
+		if (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
 			return units.iterator().next().getOwner();
 		else
 			return getCurrentPlayer();
@@ -364,7 +364,7 @@ public class MovePanel extends AbstractMovePanel
 	private CompositeMatch<Unit> getMovableMatch(final Route route, final Collection<Unit> units)
 	{
 		final CompositeMatch<Unit> movable = new CompositeMatchAnd<Unit>();
-		if (!EditDelegate.getEditMode(getData()))
+		if (!BaseEditDelegate.getEditMode(getData()))
 			movable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
 		/*
 		 * if you do not have selection of zero-movement units enabled,
@@ -381,7 +381,7 @@ public class MovePanel extends AbstractMovePanel
 				@Override
 				public boolean match(final Unit u)
 				{
-					if (EditDelegate.getEditMode(getData()))
+					if (BaseEditDelegate.getEditMode(getData()))
 						return true;
 					return TripleAUnit.get(u).getMovementLeft() >= route.getMovementCost(u);
 				}
@@ -411,7 +411,7 @@ public class MovePanel extends AbstractMovePanel
 		{
 			// force all units to have the same owner in edit mode
 			final PlayerID owner = getUnitOwner(units);
-			if (EditDelegate.getEditMode(getData()))
+			if (BaseEditDelegate.getEditMode(getData()))
 				movable.add(Matches.unitIsOwnedBy(owner));
 			final CompositeMatch<Unit> rightUnitTypeMatch = new CompositeMatchOr<Unit>();
 			for (final Unit unit : units)
@@ -831,7 +831,7 @@ public class MovePanel extends AbstractMovePanel
 		private void selectUnitsToMove(final List<Unit> units, final Territory t, final MouseDetails me)
 		{
 			// are any of the units ours, note - if no units selected thats still ok
-			if (!EditDelegate.getEditMode(getData()) || !m_selectedUnits.isEmpty())
+			if (!BaseEditDelegate.getEditMode(getData()) || !m_selectedUnits.isEmpty())
 			{
 				for (final Unit unit : units)
 				{
@@ -866,7 +866,7 @@ public class MovePanel extends AbstractMovePanel
 						return;
 					final String text = "Select units to move from " + t.getName();
 					UnitChooser chooser;
-					if (EditDelegate.getEditMode(getData()) && !Match.getMatches(unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove))).containsAll(unitsToMove))
+					if (BaseEditDelegate.getEditMode(getData()) && !Match.getMatches(unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove))).containsAll(unitsToMove))
 					{
 						// use matcher to prevent units of different owners being chosen
 						chooser = new UnitChooser(unitsToMove, m_selectedUnits,
@@ -905,7 +905,7 @@ public class MovePanel extends AbstractMovePanel
 			{
 				// prevent units of multiple owners from being chosen in edit mode
 				final CompositeMatch<Unit> ownedNotFactory = new CompositeMatchAnd<Unit>();
-				if (!EditDelegate.getEditMode(getData()))
+				if (!BaseEditDelegate.getEditMode(getData()))
 				{
 					ownedNotFactory.add(unitsToMoveMatch);
 				}

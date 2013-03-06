@@ -13,6 +13,7 @@
  */
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
@@ -37,7 +38,7 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 	
 	public String getEventPrefix()
 	{
-		if (EditDelegate.getEditMode(m_data))
+		if (BaseEditDelegate.getEditMode(m_data))
 			return "EDIT: ";
 		return "";
 	}

@@ -19,14 +19,13 @@
 package games.strategy.engine.data;
 
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.DummyMessenger;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -47,10 +46,10 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	private final GameData m_data;
 	private PlayerID m_id;
 	private String m_stepName = "no name specified";
-	private IChannelSubscribor m_dummyDisplay;
+	private IDisplay m_dummyDisplay;
 	private IRandomSource m_randomSource;
 	private final IDelegateHistoryWriter m_historyWriter;
-	private IRemote m_remote;
+	private IRemotePlayer m_remote;
 	
 	/** Creates new TestDelegateBridge */
 	public TestDelegateBridge(final GameData data, final PlayerID id, final IDisplay dummyDisplay)
@@ -129,7 +128,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
-	public IRemote getRemote()
+	public IRemotePlayer getRemotePlayer()
 	{
 		return m_remote;
 	}
@@ -137,7 +136,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
-	public IRemote getRemote(final PlayerID id)
+	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		return m_remote;
 	}
@@ -145,7 +144,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
-	public IChannelSubscribor getDisplayChannelBroadcaster()
+	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_dummyDisplay;
 	}
@@ -168,7 +167,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 		m_randomSource = randomSource;
 	}
 	
-	public void setRemote(final IRemote remote)
+	public void setRemote(final IRemotePlayer remote)
 	{
 		m_remote = remote;
 	}

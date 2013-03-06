@@ -16,6 +16,7 @@
  */
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -325,7 +326,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
 			// TODO: is this even allowed? I think we shouldn't have nested executables, cus it doesn't make sense...
-			final boolean isEditMode = EditDelegate.getEditMode(bridge.getData());
+			final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
 			for (final String currentTypeAA : m_AAtypes)
 			{
 				final Collection<Unit> currentPossibleAA = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
@@ -429,7 +430,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	
 	private Collection<Unit> calculateCasualties(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA, final IDelegateBridge bridge, final DiceRoll dice)
 	{
-		final boolean isEditMode = EditDelegate.getEditMode(m_data);
+		final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
 		if (isEditMode)
 		{
 			final String text = "AA guns fire";
@@ -453,13 +454,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		{
 			public void run()
 			{
-				final ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemote(m_defender);
+				final ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemotePlayer(m_defender);
 				defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
 			}
 		};
 		final Thread t = new Thread(r, "click to continue waiter");
 		t.start();
-		final ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
+		final ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemotePlayer(m_attacker);
 		attacker.confirmOwnCasualties(m_battleID, "Press space to continue");
 		try
 		{
@@ -528,11 +529,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				return;
 			}
 			m_dice = new int[rollCount];
-			final boolean isEditMode = EditDelegate.getEditMode(m_data);
+			final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
 			if (isEditMode)
 			{
 				final String annotation = m_attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against " + m_defender.getName() + " in " + m_battleSite.getName();
-				final ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemote(m_attacker);
+				final ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemotePlayer(m_attacker);
 				m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides()); // does not take into account bombers with dice sides higher than getDiceSides
 			}
 			else

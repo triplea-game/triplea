@@ -7,9 +7,11 @@ import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.delegate.EditDelegate;
 import games.strategy.grid.player.GridGamePlayer;
 import games.strategy.grid.player.IGridGamePlayer;
 import games.strategy.grid.ui.GridGameFrame;
@@ -89,6 +91,20 @@ abstract public class GridGame implements IGameLoader
 		try
 		{
 			m_game = game;
+			if (game.getData().getDelegateList().getDelegate("edit") == null)
+			{
+				// an evil awful hack
+				// we don't want to change the game xml
+				// and invalidate mods so hack it
+				// and force the addition here
+				final EditDelegate delegate = new EditDelegate();
+				delegate.initialize("edit", "edit");
+				m_game.getData().getDelegateList().addDelegate(delegate);
+				if (game instanceof ServerGame)
+				{
+					((ServerGame) game).addDelegateMessenger(delegate);
+				}
+			}
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
 				public void run()

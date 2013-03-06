@@ -345,7 +345,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		final ResourceCollection rVal = new ResourceCollection(data);
 		for (final Territory current : territories)
 		{
-			final TerritoryAttachment attachment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+			final TerritoryAttachment attachment = TerritoryAttachment.get(current);
 			if (attachment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
 			final ResourceCollection toAdd = attachment.getResources();

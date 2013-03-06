@@ -317,7 +317,7 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	
 	protected static ITripleaPlayer getRemote(final IDelegateBridge bridge)
 	{
-		return (ITripleaPlayer) bridge.getRemote();
+		return (ITripleaPlayer) bridge.getRemotePlayer();
 	}
 	
 	protected static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge)
@@ -325,6 +325,6 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		// if its the null player, return a do nothing proxy
 		if (player.isNull())
 			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
-		return (ITripleaPlayer) bridge.getRemote(player);
+		return (ITripleaPlayer) bridge.getRemotePlayer(player);
 	}
 }

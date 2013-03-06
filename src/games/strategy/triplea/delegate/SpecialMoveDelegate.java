@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -359,7 +360,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	
 	private static boolean getEditMode(final GameData data)
 	{
-		return EditDelegate.getEditMode(data);
+		return BaseEditDelegate.getEditMode(data);
 	}
 	
 	@Override

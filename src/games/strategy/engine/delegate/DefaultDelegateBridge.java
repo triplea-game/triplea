@@ -18,11 +18,11 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -129,20 +129,20 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
-	public IRemote getRemote()
+	public IRemotePlayer getRemotePlayer()
 	{
-		return getRemote(getPlayerID());
+		return getRemotePlayer(getPlayerID());
 	}
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
-	public IRemote getRemote(final PlayerID id)
+	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		try
 		{
 			final Object implementor = m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, m_data));
-			return (IRemote) getOutbound(implementor);
+			return (IRemotePlayer) getOutbound(implementor);
 		} catch (final MessengerException me)
 		{
 			throw new GameOverException("Game Over");
@@ -152,10 +152,10 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
-	public IChannelSubscribor getDisplayChannelBroadcaster()
+	public IDisplay getDisplayChannelBroadcaster()
 	{
 		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_data));
-		return (IChannelSubscribor) getOutbound(implementor);
+		return (IDisplay) getOutbound(implementor);
 	}
 	
 	public Properties getStepProperties()

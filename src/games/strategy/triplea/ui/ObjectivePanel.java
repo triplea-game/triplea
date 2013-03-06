@@ -8,12 +8,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
@@ -629,12 +629,12 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 		throw new UnsupportedOperationException();
 	}
 	
-	public IRemote getRemote(final PlayerID id)
+	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		return m_dummyAI;
 	}
 	
-	public IRemote getRemote()
+	public IRemotePlayer getRemotePlayer()
 	{
 		return m_dummyAI;
 	}
@@ -668,7 +668,7 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 		return m_writer;
 	}
 	
-	public IChannelSubscribor getDisplayChannelBroadcaster()
+	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
 	}

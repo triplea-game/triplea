@@ -241,7 +241,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (testChance ? "Success!" : "Failure!") + " (for "
 					+ MyFormatter.attachmentNameToText(this.getName()) + ")";
 		aBridge.getHistoryWriter().startEvent(notificationMessage);
-		((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+		((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
 		return testChance;
 	}
 	

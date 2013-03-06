@@ -333,7 +333,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		final Collection<Tuple<Territory, Collection<Unit>>> changeList = new ArrayList<Tuple<Territory, Collection<Unit>>>();
 		for (final Territory currTerritory : territories)
 		{
-			final TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+			final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory, true);
 			// if ownership should change in this territory
 			if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty())
 			{
@@ -387,7 +387,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		int value = 0;
 		for (final Territory current : territories)
 		{
-			final TerritoryAttachment attachment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+			final TerritoryAttachment attachment = TerritoryAttachment.get(current);
 			if (attachment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
 			// Check if territory is originally owned convoy center

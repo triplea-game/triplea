@@ -11,12 +11,12 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHitsChange;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.IGameModifiedChannel;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
@@ -186,7 +186,7 @@ class DummyDelegateBridge implements IDelegateBridge
 		throw new UnsupportedOperationException();
 	}
 	
-	public IRemote getRemote(final PlayerID id)
+	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		if (id.equals(m_attacker))
 			return m_attackingPlayer;
@@ -194,7 +194,7 @@ class DummyDelegateBridge implements IDelegateBridge
 			return m_defendingPlayer;
 	}
 	
-	public IRemote getRemote()
+	public IRemotePlayer getRemotePlayer()
 	{
 		// the current player is attacker
 		return m_attackingPlayer;
@@ -220,7 +220,7 @@ class DummyDelegateBridge implements IDelegateBridge
 		return m_writer;
 	}
 	
-	public IChannelSubscribor getDisplayChannelBroadcaster()
+	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
 	}

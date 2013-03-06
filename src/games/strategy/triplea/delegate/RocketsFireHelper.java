@@ -201,7 +201,7 @@ public class RocketsFireHelper
 	private Territory getTarget(final Collection<Territory> targets, final PlayerID player, final IDelegateBridge bridge, final Territory from)
 	{
 		// ask even if there is only once choice, that will allow the user to not attack if he doesn't want to
-		return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttack(targets, from);
+		return ((ITripleaPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
 	}
 	
 	private void fireRocket(final PlayerID player, final Territory attackedTerritory, final IDelegateBridge bridge, final Territory attackFrom)
@@ -249,7 +249,7 @@ public class RocketsFireHelper
 			{
 				while (target == null)
 				{
-					final ITripleaPlayer iplayer = (ITripleaPlayer) bridge.getRemote(player);
+					final ITripleaPlayer iplayer = (ITripleaPlayer) bridge.getRemotePlayer(player);
 					target = iplayer.whatShouldBomberBomb(attackedTerritory, enemyTargets, rockets);
 				}
 			}
@@ -503,6 +503,6 @@ public class RocketsFireHelper
 	
 	private ITripleaPlayer getRemote(final IDelegateBridge bridge)
 	{
-		return (ITripleaPlayer) bridge.getRemote();
+		return (ITripleaPlayer) bridge.getRemotePlayer();
 	}
 }

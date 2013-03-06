@@ -17,9 +17,9 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 
 import java.util.Properties;
@@ -101,23 +101,23 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
-	public IRemote getRemote()
+	public IRemotePlayer getRemotePlayer()
 	{
-		return m_bridge.getRemote();
+		return m_bridge.getRemotePlayer();
 	}
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
-	public IRemote getRemote(final PlayerID id)
+	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
-		return m_bridge.getRemote(id);
+		return m_bridge.getRemotePlayer(id);
 	}
 	
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
-	public IChannelSubscribor getDisplayChannelBroadcaster()
+	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_bridge.getDisplayChannelBroadcaster();
 	}

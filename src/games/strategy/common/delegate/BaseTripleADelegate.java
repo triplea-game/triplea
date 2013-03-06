@@ -126,6 +126,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
 		PoliticsDelegate.chainAlliancesTogether(m_bridge);
 	}
 	
+	@Override
 	protected ITripleaDisplay getDisplay()
 	{
 		return getDisplay(m_bridge);
@@ -136,6 +137,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
 		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
 	}
 	
+	@Override
 	protected ITripleaPlayer getRemotePlayer()
 	{
 		return getRemotePlayer(m_bridge);
@@ -143,9 +145,10 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
 	
 	protected static ITripleaPlayer getRemotePlayer(final IDelegateBridge bridge)
 	{
-		return (ITripleaPlayer) bridge.getRemote();
+		return (ITripleaPlayer) bridge.getRemotePlayer();
 	}
 	
+	@Override
 	protected ITripleaPlayer getRemotePlayer(final PlayerID player)
 	{
 		return getRemotePlayer(player, m_bridge);
@@ -156,7 +159,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
 		// if its the null player, return a do nothing proxy
 		if (player.isNull())
 			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
-		return (ITripleaPlayer) bridge.getRemote(player);
+		return (ITripleaPlayer) bridge.getRemotePlayer(player);
 	}
 }
 

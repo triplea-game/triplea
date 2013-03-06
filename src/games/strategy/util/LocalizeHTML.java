@@ -24,6 +24,9 @@ public class LocalizeHTML
 	 * Regex's found at http://www.mkyong.com/
 	 */
 
+	// frigoref suggested we use this one instead:
+	// private static final String PATTERN_HTML_IMG_SRC_URL = ".*<img [^>\"]*src\\s*=\\s*\"((https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})[^\"]*)\".*";
+	
 	/* Match an <a></a> tag.
 		(							#	start of group #1
 		 ?i							#		all checking are case insensive

@@ -1729,17 +1729,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		while (notificationMessages.hasNext())
 		{
 			final String notificationMessageKey = notificationMessages.next();
-			final String message = LocalizeHTML.localizeImgLinksInHTML(NotificationMessages.getInstance().getMessage(notificationMessageKey));
+			final String message = LocalizeHTML.localizeImgLinksInHTML(NotificationMessages.getInstance().getMessage(notificationMessageKey).trim());
 			String messageForRecord = message;
-			if (messageForRecord.length() > 150)
+			if (messageForRecord.length() > 190)
 			{
+				// We don't want to record a giant string in the history panel, so just put a shortened version in instead.
 				messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
 				messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
-				if (messageForRecord.length() > 155)
-					messageForRecord = messageForRecord.substring(0, 150) + "....";
+				if (messageForRecord.length() > 195)
+					messageForRecord = messageForRecord.substring(0, 190) + "....";
 			}
 			aBridge.getHistoryWriter().startEvent("Note to player " + aBridge.getPlayerID().getName() + ": " + messageForRecord);
-			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), "Notification");
+			((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), "Notification");
 		}
 	}
 	

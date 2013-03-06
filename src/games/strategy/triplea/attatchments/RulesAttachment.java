@@ -1008,7 +1008,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (objectiveMet ? "Success!" : "Failure!") + " (for "
 						+ MyFormatter.attachmentNameToText(this.getName()) + ")";
 			aBridge.getHistoryWriter().startEvent(notificationMessage);
-			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+			((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
 		}
 		
 		return objectiveMet != m_invert;

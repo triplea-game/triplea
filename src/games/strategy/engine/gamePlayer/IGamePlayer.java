@@ -30,7 +30,7 @@ import games.strategy.engine.data.PlayerID;
  * @version 1.0
  * 
  */
-public interface IGamePlayer
+public interface IGamePlayer extends IRemotePlayer
 {
 	/**
 	 * Called before the game starts.
@@ -50,16 +50,16 @@ public interface IGamePlayer
 	public String getType();
 	
 	/**
-	 * 
-	 * @return the id of this player. This id is initialized by the initialize method.
-	 */
-	public PlayerID getPlayerID();
-	
-	/**
 	 * Start the given step. stepName appears as it does in the game xml file.
 	 * 
 	 * The game step will finish executing when this method returns.
 	 * 
 	 */
 	public void start(String stepName);
+	
+	/*
+	 * (now in superclass)
+	 * @return the id of this player. This id is initialized by the initialize method in IGamePlayer.
+	public PlayerID getPlayerID();
+	 */
 }

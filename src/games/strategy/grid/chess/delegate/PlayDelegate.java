@@ -157,11 +157,6 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return captured;
 	}
 	
-	private IGridGamePlayer getRemotePlayer(final PlayerID id)
-	{
-		return (IGridGamePlayer) m_bridge.getRemote(id);
-	}
-	
 	/**
 	 * Move a piece from the start <code>Territory</code> to the end <code>Territory</code>.
 	 * 
@@ -182,7 +177,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 			final Set<UnitType> allowed = getData().getUnitTypeList().getAllUnitTypes();
 			allowed.remove(getData().getUnitTypeList().getUnitType("king"));
 			allowed.remove(getData().getUnitTypeList().getUnitType("pawn"));
-			final UnitType selectedUnit = getRemotePlayer(player).selectUnit(units.iterator().next(), allowed, end, player, getData(),
+			final UnitType selectedUnit = ((IGridGamePlayer) getRemotePlayer(player)).selectUnit(units.iterator().next(), allowed, end, player, getData(),
 						"Promote Pawn to what piece?");
 			if (selectedUnit == null)
 				promotionUnits.add(getData().getUnitTypeList().getUnitType("queen").create(player));

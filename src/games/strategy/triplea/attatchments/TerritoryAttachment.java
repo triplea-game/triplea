@@ -152,8 +152,13 @@ public class TerritoryAttachment extends DefaultAttachment
 	 */
 	public static TerritoryAttachment get(final Territory t)
 	{
+		return get(t, false);
+	}
+	
+	public static TerritoryAttachment get(final Territory t, final boolean allowNull)
+	{
 		final TerritoryAttachment rVal = (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
-		if (rVal == null && !t.isWater())
+		if (!allowNull && rVal == null && !t.isWater())
 			throw new IllegalStateException("No territory attachment for:" + t.getName());
 		return rVal;
 	}

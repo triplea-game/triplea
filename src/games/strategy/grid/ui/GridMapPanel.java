@@ -670,4 +670,9 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 		return m_latchesToCloseOnShutdown;
 	}
+	
+	public GameData getData()
+	{
+		return m_gameData;
+	}
 }

@@ -21,9 +21,9 @@ package games.strategy.engine.delegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.IChannelSubscribor;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 
 import java.util.Properties;
@@ -46,18 +46,18 @@ import java.util.Properties;
 public interface IDelegateBridge
 {
 	/**
-	 * equivalent to getRemote(getPlayerID())
+	 * equivalent to getRemotePlayer(getPlayerID())
 	 * 
 	 * @return remote for the current player.
 	 */
-	public IRemote getRemote();
+	public IRemotePlayer getRemotePlayer();
 	
 	/**
 	 * Get a remote reference to the given player.
 	 * 
 	 * @see games.strategy.engine.message.IRemoteMessenger
 	 */
-	public IRemote getRemote(PlayerID id);
+	public IRemotePlayer getRemotePlayer(PlayerID id);
 	
 	public PlayerID getPlayerID();
 	
@@ -111,7 +111,7 @@ public interface IDelegateBridge
 	 * Methods called on this returned object will be invoked on all displays in the game, including those on remote machines
 	 * <p>
 	 */
-	public IChannelSubscribor getDisplayChannelBroadcaster();
+	public IDisplay getDisplayChannelBroadcaster();
 	
 	/**
 	 * 

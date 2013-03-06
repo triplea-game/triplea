@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.ui;
 
+import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
@@ -62,7 +63,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
-import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
@@ -2354,7 +2354,7 @@ public class TripleAFrame extends MainGameFrame
 		m_mapPanel.getData().acquireReadLock();
 		try
 		{
-			isEditMode = EditDelegate.getEditMode(m_mapPanel.getData());
+			isEditMode = BaseEditDelegate.getEditMode(m_mapPanel.getData());
 		} finally
 		{
 			m_mapPanel.getData().releaseReadLock();

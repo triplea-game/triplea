@@ -171,7 +171,7 @@ public class UndoableMove extends AbstractUndoableMove
 						{
 							while (target == null)
 							{
-								target = ((ITripleaPlayer) bridge.getRemote(bridge.getPlayerID())).whatShouldBomberBomb(end, enemyTargets, Collections.singletonList(unit));
+								target = ((ITripleaPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).whatShouldBomberBomb(end, enemyTargets, Collections.singletonList(unit));
 							}
 						}
 						else if (!enemyTargets.isEmpty())
