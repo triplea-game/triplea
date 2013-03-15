@@ -215,6 +215,7 @@ public class TripleAFrame extends MainGameFrame
 	private PlayerID m_lastStepPlayer;
 	private final Map<PlayerID, Boolean> m_requiredTurnSeries = new HashMap<PlayerID, Boolean>();
 	private ThreadPool m_messageAndDialogThreadPool;
+	private TripleaMenu m_menu;
 	
 	/** Creates new TripleAFrame */
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
@@ -238,7 +239,8 @@ public class TripleAFrame extends MainGameFrame
 		m_showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
 		m_showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
 		m_showCommentLogButtonModel.setSelected(false);
-		createMenuBar();
+		m_menu = new TripleaMenu(this);
+		this.setJMenuBar(m_menu);
 		final ImageScrollModel model = new ImageScrollModel();
 		model.setScrollX(m_uiContext.getMapData().scrollWrapX());
 		model.setScrollY(m_uiContext.getMapData().scrollWrapY());
@@ -338,7 +340,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			m_tabsPanel.addTab(m_objectivePanel.getName(), m_objectivePanel);
 		}
-		m_notesPanel = new NotesPanel(m_data);
+		m_notesPanel = new NotesPanel(m_data, m_menu.getGameNotesJEditorPane());
 		m_tabsPanel.addTab("Notes", m_notesPanel);
 		m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext, this);
 		m_tabsPanel.addTab("Territory", m_details);
@@ -461,6 +463,8 @@ public class TripleAFrame extends MainGameFrame
 		// we have already shut down
 		if (m_uiContext == null)
 			return;
+		m_menu.dispose();
+		m_menu = null;
 		this.dispose();
 		this.setVisible(false);
 		if (GameRunner.isMac())
@@ -563,12 +567,6 @@ public class TripleAFrame extends MainGameFrame
 			// way to get the main frame
 			MainFrame.getInstance().clientLeftGame();
 		}
-	}
-	
-	private void createMenuBar()
-	{
-		final TripleaMenu menu = new TripleaMenu(this);
-		this.setJMenuBar(menu);
 	}
 	
 	private WindowListener WINDOW_LISTENER = new WindowAdapter()

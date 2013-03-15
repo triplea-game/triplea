@@ -84,6 +84,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 {
 	private static final long serialVersionUID = -1447295944297939539L;
 	protected final CustomGameFrame m_frame;
+	protected JEditorPane m_gameNotesPane = new JEditorPane();
 	
 	public BasicGameMenuBar(final CustomGameFrame frame)
 	{
@@ -460,6 +461,17 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		}
 	}
 	
+	public void dispose()
+	{
+		m_gameNotesPane.setText("");
+		m_gameNotesPane.removeAll();
+	}
+	
+	public JEditorPane getGameNotesJEditorPane()
+	{
+		return m_gameNotesPane;
+	}
+	
 	/**
 	 * @param parentMenu
 	 */
@@ -471,6 +483,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		if (notesProperty != null && notesProperty.trim().length() != 0)
 		{
 			final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
+			m_gameNotesPane.setEditable(false);
+			m_gameNotesPane.setContentType("text/html");
+			m_gameNotesPane.setText(notes);
+			
 			parentMenu.add(new AbstractAction("Game Notes...")
 			{
 				private static final long serialVersionUID = -1817640666359299617L;
@@ -481,11 +497,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 					{
 						public void run()
 						{
-							final JEditorPane editorPane = new JEditorPane();
-							editorPane.setEditable(false);
-							editorPane.setContentType("text/html");
-							editorPane.setText(notes);
-							final JScrollPane scroll = new JScrollPane(editorPane);
+							final JScrollPane scroll = new JScrollPane(m_gameNotesPane);
 							final JDialog dialog = new JDialog(m_frame);
 							dialog.setModal(false);
 							// dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
@@ -499,6 +511,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 								public void actionPerformed(final ActionEvent e)
 								{
 									dialog.setVisible(false);
+									dialog.removeAll();
 									dialog.dispose();
 								}
 							});

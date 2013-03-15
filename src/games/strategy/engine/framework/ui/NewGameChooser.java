@@ -107,7 +107,7 @@ public class NewGameChooser extends JDialog
 	
 	public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
 	{
-		final NewGameChooser chooser = new NewGameChooser(parent);
+		NewGameChooser chooser = new NewGameChooser(parent);
 		chooser.setSize(800, 600);
 		chooser.setLocationRelativeTo(parent);
 		if (defaultGameName != null)
@@ -117,8 +117,14 @@ public class NewGameChooser extends JDialog
 		chooser.setVisible(true);
 		// chooser is now visible and waits for user action
 		final NewGameChooserEntry choosen = chooser.m_choosen;
+		// remove all system resources (we have been having a problem with a memory leak related to this somehow)
 		chooser.setVisible(false);
+		chooser.removeAll();
+		chooser.m_notesPanel.setText("");
+		chooser.m_notesPanel.removeAll();
+		chooser.m_notesPanel = null;
 		chooser.dispose();
+		chooser = null;
 		return choosen;
 	}
 	
@@ -159,14 +165,20 @@ public class NewGameChooser extends JDialog
 		}
 		else
 		{
-			m_notesPanel.setText("");
+			if (m_notesPanel != null)
+			{
+				m_notesPanel.setText("");
+			}
 		}
 		// scroll to the top of the notes screen
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				m_notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+				if (m_notesPanel != null)
+				{
+					m_notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+				}
 			}
 		});
 	}
