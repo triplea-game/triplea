@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="Great War" version="3.2"/>
+        <info name="Great War" version="3.3"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -3066,6 +3066,14 @@
                         <option name="production" value="1"/>
                     </attatchment>
 
+                    <attatchment name="territoryAttatchment" attatchTo="SZ 83 Mariana Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="SZ 84 Caroline Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
                     <attatchment name="territoryAttatchment" attatchTo="SZ 87 Gulf of Alaska" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                     </attatchment>
@@ -3272,7 +3280,6 @@
             		<territoryOwner territory="SZ 52 Balearic Sea" owner="Italians"/>
             		<territoryOwner territory="SZ 56 Central Mediterranean" owner="Italians"/>
             		<territoryOwner territory="SZ 57 Ionian Sea" owner="Italians"/>
-			<territoryOwner territory="SZ 58 Adriatic Sea" owner="Italians"/>
 
 			<!-- Americans Owned Territories -->
             		<territoryOwner territory="United States" owner="Americans"/>
@@ -3347,6 +3354,8 @@
 			<territoryOwner territory="SZ 34 Skagerrak" owner="Germans"/>
 			<territoryOwner territory="SZ 35 Helgoland Bight" owner="Germans"/>
 			<territoryOwner territory="SZ 63 Aegean Sea" owner="Germans"/>
+			<territoryOwner territory="SZ 83 Mariana Islands" owner="Germans"/>
+			<territoryOwner territory="SZ 84 Caroline Islands" owner="Germans"/>
 
 			<!-- Austrians Owned Territory -->
             		<territoryOwner territory="Tyrol" owner="Austrians"/>
@@ -3365,6 +3374,7 @@
 
 			<!-- Austrians Owned Convoy Zones -->
 			<territoryOwner territory="SZ 59 Adriatic Sea" owner="Austrians"/>
+			<territoryOwner territory="SZ 58 Adriatic Sea" owner="Austrians"/>
 
 			<!-- Ottomans Owned Territory -->
             		<territoryOwner territory="Anatolia" owner="Ottomans"/>
@@ -3431,7 +3441,7 @@
 
                         <unitPlacement unitType="battleship" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
                         <unitPlacement unitType="cruiser" territory="SZ 38 Norwegian Sea" quantity="2" owner="British"/>                    
-                        <unitPlacement unitType="submarine" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
                         <unitPlacement unitType="transport" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
 				<unitPlacement unitType="battlecruiser" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
 
@@ -3468,10 +3478,8 @@
 
 				<unitPlacement unitType="infantry" territory="Cyprus" quantity="1" owner="British"/>
 
-                        <unitPlacement unitType="battleship" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
-                        <unitPlacement unitType="cruiser" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 64 Sea of Crete" quantity="3" owner="British"/>
-                        <unitPlacement unitType="submarine" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
+                        <unitPlacement unitType="battlecruiser" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 64 Sea of Crete" quantity="5" owner="British"/>
                         <unitPlacement unitType="transport" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="transport" territory="SZ 66 East Mediterranean" quantity="1" owner="British"/>
@@ -3522,12 +3530,10 @@
 				<unitPlacement unitType="artillery" territory="Japan" quantity="1" owner="British"/>
 				<unitPlacement unitType="factory" territory="Japan" quantity="1" owner="British"/>
 
-                        <unitPlacement unitType="battleship" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
-                        <unitPlacement unitType="battlecruiser" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
+                        <unitPlacement unitType="battlecruiser" territory="SZ 89 Sea of Japan" quantity="2" owner="British"/>
                         <unitPlacement unitType="cruiser" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
-				<unitPlacement unitType="destroyer" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
-                        <unitPlacement unitType="submarine" territory="SZ 89 Sea of Japan" quantity="1" owner="British"/>
-				<unitPlacement unitType="transport" territory="SZ 89 Sea of Japan" quantity="2" owner="British"/>
+				<unitPlacement unitType="destroyer" territory="SZ 89 Sea of Japan" quantity="2" owner="British"/>
+                        <unitPlacement unitType="transport" territory="SZ 89 Sea of Japan" quantity="2" owner="British"/>
 
                         <unitPlacement unitType="infantry" territory="Port Harcourt" quantity="2" owner="British"/>
 
@@ -3693,8 +3699,8 @@
                         <unitPlacement unitType="infantry" territory="Suzdal" quantity="3" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Moscow" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Moscow" quantity="6" owner="Russians"/>
-				<unitPlacement unitType="artillery" territory="Moscow" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Moscow" quantity="7" owner="Russians"/>
+				<unitPlacement unitType="artillery" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Moscow" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Moscow" quantity="1" owner="Russians"/>
 
@@ -3710,9 +3716,9 @@
                         <unitPlacement unitType="infantry" territory="Novgorod" quantity="4" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Petrograd" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="6" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="7" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Petrograd" quantity="1" owner="Russians"/>
-				<unitPlacement unitType="artillery" territory="Petrograd" quantity="2" owner="Russians"/>
+				<unitPlacement unitType="artillery" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="aaGun" territory="Petrograd" quantity="1" owner="Russians"/>
 
@@ -3721,8 +3727,7 @@
 
                         <unitPlacement unitType="infantry" territory="Karelia" quantity="3" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="2" owner="Russians"/>
-                        <unitPlacement unitType="artillery" territory="Arkhangelsk" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="3" owner="Russians"/>
                         
                         <unitPlacement unitType="infantry" territory="Kazan" quantity="3" owner="Russians"/>
 				<unitPlacement unitType="cavalry" territory="Kazan" quantity="1" owner="Russians"/>
@@ -3813,8 +3818,7 @@
 				<unitPlacement unitType="cruiser" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
 				<unitPlacement unitType="transport" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
 
-                        <unitPlacement unitType="destroyer" territory="SZ 58 Adriatic Sea" quantity="1" owner="Italians"/>
-
+                        
 
                         <!-- Americans  Unit Placements -->
                         <unitPlacement unitType="factory" territory="United States" quantity="1" owner="Americans"/>
@@ -3836,9 +3840,9 @@
                         <unitPlacement unitType="cavalry" territory="Saxony" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Saxony" quantity="2" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Pomerania" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Pomerania" quantity="4" owner="Germans"/>
                         <unitPlacement unitType="factory" territory="Berlin" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="infantry" territory="Berlin" quantity="4" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Berlin" quantity="5" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Berlin" quantity="3" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Berlin" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Berlin" quantity="1" owner="Germans"/>
@@ -3865,20 +3869,21 @@
                         <unitPlacement unitType="infantry" territory="Munich" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Bulgaria" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="infantry" territory="Bulgaria" quantity="7" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Bulgaria" quantity="6" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Bulgaria" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="artillery" territory="Bulgaria" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Bulgaria" quantity="3" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Nsanakang" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Garoua" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Mora" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Mora" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Mora" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Karas" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Karas" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Windhoek" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Windhoek" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Tanga" quantity="2" owner="Germans"/>
 
@@ -3985,7 +3990,7 @@
                         <unitPlacement unitType="infantry" territory="Guise" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Guise" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Sambre River" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Sambre River" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Sambre River" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Brussels" quantity="3" owner="Germans"/>
@@ -4114,13 +4119,13 @@
                         <unitPlacement unitType="cavalry" territory="Smyrna" quantity="2" owner="Ottomans"/>
                         <unitPlacement unitType="artillery" territory="Smyrna" quantity="1" owner="Ottomans"/>
 
-                        <unitPlacement unitType="infantry" territory="Armenia" quantity="2" owner="Ottomans"/>
+                        <unitPlacement unitType="infantry" territory="Armenia" quantity="4" owner="Ottomans"/>
                         <unitPlacement unitType="cavalry" territory="Armenia" quantity="1" owner="Ottomans"/>
                         <unitPlacement unitType="artillery" territory="Armenia" quantity="1" owner="Ottomans"/>
 
-                        <unitPlacement unitType="infantry" territory="Baghdad" quantity="3" owner="Ottomans"/>
+                        <unitPlacement unitType="infantry" territory="Baghdad" quantity="2" owner="Ottomans"/>
 
-			<unitPlacement unitType="infantry" territory="Mosul" quantity="2" owner="Ottomans"/>
+			<unitPlacement unitType="infantry" territory="Mosul" quantity="1" owner="Ottomans"/>
 
 
                         <unitPlacement unitType="battleship" territory="SZ 62 Black Sea" quantity="1" owner="Ottomans"/>
@@ -4146,9 +4151,9 @@
                         <resourceGiven player="British" resource="PUs" quantity="75"/>
                         <resourceGiven player="French" resource="PUs" quantity="60"/>
                         <resourceGiven player="Russians" resource="PUs" quantity="60"/>
-                        <resourceGiven player="Italians" resource="PUs" quantity="35"/>
-                        <resourceGiven player="Germans" resource="PUs" quantity="100"/>
-				<resourceGiven player="Austrians" resource="PUs" quantity="50"/>
+                        <resourceGiven player="Italians" resource="PUs" quantity="34"/>
+                        <resourceGiven player="Germans" resource="PUs" quantity="102"/>
+				<resourceGiven player="Austrians" resource="PUs" quantity="51"/>
 				<resourceGiven player="Ottomans" resource="PUs" quantity="50"/>
                         <resourceGiven player="Americans" resource="PUs" quantity="50"/>
                 </resourceInitialize>
@@ -4327,6 +4332,8 @@
 						required that we make some abstractions to the map.
 					<br>These include several game boxes/inserts which connect to the major areas of conflict 
 						around Europe, Africa and the Middle East. 
+					<br>Cairo and Istanbul are canals.
+					<br>
 					<br>
 					<br>
 					<br><h2>Great War Newbie Guide by 'ice'</h2>
@@ -4344,9 +4351,7 @@
 						trying to win in both these fronts will result in failure. 
 						In the oceans they have multiple fleets with multiple options, 
 						but a good start is that Central Powers should own the Mediterranean early and get allot of production from it.  
-						A good but not obvious attack is attacking the Italian destroyer in sz58 with all 3 zeppelins, 
-						as this will give the Austrians a good attack on the remaining Italian fleet.  
-						Also trying to slow down USA could be hard but on the other hand this could also pay off in the long run.  
+						Trying to slow down USA could be hard but on the other hand this could also pay off in the long run.  
 					<br>
 					<br><b>French: </b>
 					<br>Priority 1 should be the west front, and Germany to its knees as fast as you can there, and getting a hold of all that production.  
@@ -4407,7 +4412,6 @@
 						Other than that its pretty much the same as the old game, just with a slight upgrade. 
 						I fixed some centers and included new flags for a cleaner look. 
 						Thanks again for playing, and good gaming all! -Elk
-					<br>Changes to 3.2 include: moving some Central Power units away from Russia and towards France, along with minor xml updates.
 					<br>
 					<br>
 					<br><h2>Rules Help:</h2>
