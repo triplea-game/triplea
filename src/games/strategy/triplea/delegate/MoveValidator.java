@@ -763,6 +763,9 @@ public class MoveValidator
 		{
 			steps = route.getSteps();
 		}
+		// if there are no steps, then we began in this sea zone, so see if there are ignored units in this sea zone (not sure if we need !ignoreRouteEnd here).
+		if (steps.isEmpty() && route.numberOfStepsIncludingStart() == 1 && !ignoreRouteEnd)
+			steps.add(route.getStart());
 		for (final Territory current : steps)
 		{
 			if (current.isWater())

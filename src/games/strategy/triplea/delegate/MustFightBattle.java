@@ -2501,6 +2501,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void markNoMovementLeft(final IDelegateBridge bridge)
 	{
+		if (m_headless)
+			return;
 		final Collection<Unit> attackingNonAir = Match.getMatches(m_attackingUnits, Matches.UnitIsAir.invert());
 		final Change noMovementChange = ChangeFactory.markNoMovementChange(attackingNonAir);
 		if (!noMovementChange.isEmpty())

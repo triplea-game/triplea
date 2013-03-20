@@ -1,4 +1,6 @@
 Changes for 1.7
+* Fixed bug where having sea units begin the turn on top of an enemy sub, and then not moving them but also not attacking, caused them to lose their movement anyway. (veqryn)
+
 * Fixed bug where you could move a destroyer after it had killed a sub, during noncombat move. (veqryn)
 
 * Updating text xml's and adding TWW xml for new tests. (veqryn)
