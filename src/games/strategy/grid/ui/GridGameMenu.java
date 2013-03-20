@@ -14,6 +14,7 @@ import games.strategy.triplea.ui.MapSelectionListener;
 import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.PlayerChooser;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -37,6 +38,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 {
 	private static final long serialVersionUID = -8512774312859744827L;
 	protected CurrentEditAction m_currentEditAction = CurrentEditAction.None;
+	protected JMenu m_editOptionsMenu;
 	
 	
 	protected enum CurrentEditAction
@@ -86,12 +88,30 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		
 		// and edit mode actions:
 		m_frame.getMapPanel().addMapSelectionListener(getMapSelectionListener());
-		final JMenu editOptionsMenu = new JMenu();
-		editOptionsMenu.setText("Edit...");
-		addEditAddUnitsMode(editOptionsMenu);
-		addEditRemoveUnitsMode(editOptionsMenu);
+		m_editOptionsMenu = new JMenu();
+		m_editOptionsMenu.setText("Edit...");
+		addEditAddUnitsMode(m_editOptionsMenu);
+		addEditRemoveUnitsMode(m_editOptionsMenu);
 		// addEditChangeTerritoryOwnershipMode(editOptionsMenu);
-		parentMenu.add(editOptionsMenu);
+		parentMenu.add(m_editOptionsMenu);
+	}
+	
+	public void enableEditOptionsMenu()
+	{
+		m_editOptionsMenu.setEnabled(true);
+		for (final Component item : m_editOptionsMenu.getComponents())
+		{
+			item.setEnabled(true);
+		}
+	}
+	
+	public void disableEditOptionsMenu()
+	{
+		m_editOptionsMenu.setEnabled(false);
+		for (final Component item : m_editOptionsMenu.getComponents())
+		{
+			item.setEnabled(false);
+		}
 	}
 	
 	protected void addEditAddUnitsMode(final JMenu parentMenu)

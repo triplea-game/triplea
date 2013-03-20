@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -288,14 +287,14 @@ public class ChangeFactory
 	 */
 	public static Change markNoMovementChange(final Collection<Unit> units)
 	{
-		if (units.isEmpty())
-			return EMPTY_CHANGE;
 		final CompositeChange change = new CompositeChange();
-		final Iterator<Unit> iter = units.iterator();
-		while (iter.hasNext())
+		for (final Unit unit : units)
 		{
-			change.add(markNoMovementChange(iter.next()));
+			if (TripleAUnit.get(unit).getMovementLeft() > 0)
+				change.add(markNoMovementChange(unit));
 		}
+		if (change.isEmpty())
+			return EMPTY_CHANGE;
 		return change;
 	}
 	

@@ -756,7 +756,17 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				landParatroops(bridge);
 			}
 		};
+		final IExecutable markNoMovementLeft = new IExecutable()
+		{
+			private static final long serialVersionUID = -6676306363537467594L;
+			
+			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+			{
+				markNoMovementLeft(bridge);
+			}
+		};
 		// push in opposite order of execution
+		m_stack.push(markNoMovementLeft);
 		m_stack.push(landParatroops);
 		m_stack.push(removeNonCombatants);
 		m_stack.push(fireSuicideUnitsDefend);
@@ -2487,6 +2497,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				}
 			}
 		}
+	}
+	
+	private void markNoMovementLeft(final IDelegateBridge bridge)
+	{
+		final Collection<Unit> attackingNonAir = Match.getMatches(m_attackingUnits, Matches.UnitIsAir.invert());
+		final Change noMovementChange = ChangeFactory.markNoMovementChange(attackingNonAir);
+		if (!noMovementChange.isEmpty())
+			bridge.addChange(noMovementChange);
 	}
 	
 	// Figure out what units a transport is transported and has unloaded

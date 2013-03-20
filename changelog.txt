@@ -1,4 +1,6 @@
 Changes for 1.7
+* Fixed bug where you could move a destroyer after it had killed a sub, during noncombat move. (veqryn)
+
 * Updating text xml's and adding TWW xml for new tests. (veqryn)
 
 * Fixing bug in air movement validation for complex movement cases. (veqryn)

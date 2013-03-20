@@ -125,6 +125,7 @@ public class GridGameFrame extends MainGameFrame
 	protected IGame m_game;
 	protected final GridMapData m_mapData;
 	protected GridMapPanel m_mapPanel;
+	protected GridGameMenu<GridGameFrame> m_menuBar;
 	protected JLabel m_status;
 	protected JLabel m_error;
 	protected boolean m_gameOver;
@@ -281,12 +282,11 @@ public class GridGameFrame extends MainGameFrame
 		this.getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
 		
 		// Set up the menu bar and window title
-		final GridGameMenu<GridGameFrame> menuBar;
 		try
 		{
 			final Constructor<? extends GridGameMenu<GridGameFrame>> menuConstructor = menuBarClass.getConstructor(new Class[] { GridGameFrame.class });
-			menuBar = menuConstructor.newInstance(this);
-			this.setJMenuBar(menuBar);
+			m_menuBar = menuConstructor.newInstance(this);
+			this.setJMenuBar(m_menuBar);
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
@@ -1148,6 +1148,7 @@ public class GridGameFrame extends MainGameFrame
 		{
 			m_editModeButtonModel.setSelected(true);
 			getGlassPane().setVisible(true);
+			m_menuBar.enableEditOptionsMenu();
 		}
 	}
 	
@@ -1155,6 +1156,7 @@ public class GridGameFrame extends MainGameFrame
 	{
 		m_editModeButtonModel.setSelected(false);
 		getGlassPane().setVisible(false);
+		m_menuBar.disableEditOptionsMenu();
 	}
 	
 	protected void setWidgetActivation()
