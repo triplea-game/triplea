@@ -30,14 +30,14 @@ public class UnitsThatCantFightUtilTest extends TestCase
 	public void testNoSuicideAttacksAA50AtStart()
 	{
 		// at the start of the game, there are no suicide attacks
-		final GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
+		final GameData data = LoadGameUtil.loadGame("World War II v3 1941 Test", "ww2v3_1941_test.xml");
 		final Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
 		assertTrue(territories.isEmpty());
 	}
 	
 	public void testSuicideAttackInAA50()
 	{
-		final GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
+		final GameData data = LoadGameUtil.loadGame("World War II v3 1941 Test", "ww2v3_1941_test.xml");
 		// add a german sub to sz 12
 		final Territory sz12 = territory("12 Sea Zone", data);
 		addTo(sz12, transports(data).create(1, germans(data)));
@@ -47,7 +47,7 @@ public class UnitsThatCantFightUtilTest extends TestCase
 	
 	public void testSuicideAttackInAA50WithTransportedUnits()
 	{
-		final GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
+		final GameData data = LoadGameUtil.loadGame("World War II v3 1941 Test", "ww2v3_1941_test.xml");
 		// add a german sub to sz 12
 		final Territory sz12 = territory("12 Sea Zone", data);
 		addTo(sz12, transports(data).create(1, germans(data)));
@@ -57,7 +57,7 @@ public class UnitsThatCantFightUtilTest extends TestCase
 	
 	public void testSuicideAttackInRevised()
 	{
-		final GameData data = LoadGameUtil.loadGame("revised", "revised.xml");
+		final GameData data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
 		final Territory sz15 = territory("15 Sea Zone", data);
 		addTo(sz15, transports(data).create(1, germans(data)));
 		final Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));

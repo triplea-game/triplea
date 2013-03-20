@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="3.5"/>
+        <info name="World War II Global Test Alpha 3" version="3.7"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6.1"/>
 		<diceSides value="6"/>
@@ -1411,10 +1411,14 @@
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
 						
                         <step name="britishNoAirCheckPlace" delegate="placeNoAirCheck" player="British"/>
-                        <step name="britishEndTurn" delegate="endTurn" player="British"/>
+                        <step name="britishEndTurn" delegate="endTurn" player="British">
+								<stepProperty name="skipPosting" value="true"/>
+						</step>
 						
                         <step name="UK_PacificPlace" delegate="place" player="UK_Pacific"/>
-                        <step name="UK_PacificEndTurn" delegate="endTurn" player="UK_Pacific"/>
+                        <step name="UK_PacificEndTurn" delegate="endTurn" player="UK_Pacific">
+								<stepProperty name="turnSummaryPlayers" value="British:UK_Pacific"/>
+						</step>
 						
 						<!-- Italians Game Sequence -->
 						<step name="italiansPolitics" delegate="politics" player="Italians"/>
@@ -3864,7 +3868,7 @@
 				</attatchment>
 				<attatchment name="objectiveAttachment_Japanese_3_Control_Honolulu_Or_Sydney_Or_Calcutta_Or_Western_United_States" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="objectiveValue" value="5"/>
-					<option name="directOwnershipTerritories" value="Hawaiian Islands:New South Wales:India:Western United States" count="each"/>
+					<option name="alliedOwnershipTerritories" value="Hawaiian Islands:New South Wales:India:Western United States" count="each"/>
 				</attatchment>
 				<attatchment name="objectiveAttachment_Japanese_4_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="objectiveValue" value="5"/>
@@ -6520,7 +6524,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Rocket Attack Per Factory Restricted" value="true" editable="false">
+				<property name="Rocket Attacks Per Factory Infinite" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -7068,6 +7072,13 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>3.7
+<br>Fixing Japanese objective for taking local power centers like India, to allow allies to take them as well.
+<br>Fixing rockets so that many rockets can target the same infrastructure per turn.
+<br>
+<br>3.6
+<br>Getting British and UK Pacific turn summary posting to be combined.
 <br>
 <br>3.5
 <br>Deleted connection between 115 Sea Zones and Poland, and changed map tiles to show a connection.

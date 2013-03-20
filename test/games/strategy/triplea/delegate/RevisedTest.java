@@ -95,7 +95,7 @@ public class RevisedTest extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
-		m_data = LoadGameUtil.loadGame("revised", "revised.xml");
+		m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
 	}
 	
 	@Override

@@ -82,7 +82,7 @@ public class PacificTest extends DelegateTest
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		m_data = LoadGameUtil.loadGame("pacific", "pacific_incomplete.xml");
+		m_data = LoadGameUtil.loadGame("pacific test", "pacific_incomplete_test.xml");
 		// Define units
 		infantry = m_data.getUnitTypeList().getUnitType("infantry");
 		armor = m_data.getUnitTypeList().getUnitType("armour");

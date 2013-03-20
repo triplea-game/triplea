@@ -137,7 +137,7 @@ public class UnitAutoChooserTest extends TestCase
 	@Override
 	public void setUp() throws Exception
 	{
-		m_data = LoadGameUtil.loadGame("revised", "revised.xml");
+		m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
 		british = m_data.getPlayerList().getPlayerID(Constants.BRITISH);
 		armour = m_data.getUnitTypeList().getUnitType(Constants.ARMOUR_TYPE);
 		infantry = m_data.getUnitTypeList().getUnitType(Constants.INFANTRY_TYPE);

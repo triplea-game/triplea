@@ -3754,7 +3754,7 @@
 					<value>
 					<![CDATA[  
 <div style="padding:10px;font-size:14px;background-color:white;text-align:justify;">
-<b>Europe 1940</b><br>
+<b>Europe 1940 Original</b><br>
 <br>
 <b>Credits:</b> Bung, Veqryn<br>
 <b>QA:</b> zlefin, yamamot0<br>
@@ -3883,15 +3883,15 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 
 <b>Italy</b>
 <ul>
+<li>5 PUs if Axis controll all of: Egypt, Southern France and Greece.</li>
 <li>5 PUs if no Allied ships are in the Med: sz99,...,sz92.</li>
 <li>5 PUs if Africa has no allied units.</li>
-<li>5 PUs if Axis controll all of: Egypt, Southern France and Greece.</li>
 </ul>
 
 <b>USA</b>
 <ul>
-<li>5 PUs <b>one-time</b> for the <b>first USA liberation of one of</b> Holland/Belgium, Normandy/Bordeaux, or Western Germany. (5 only, not 10, not 15.)</li>
 <li>30 PUs if USA is at war and both EUS and CUS are American-controlled.</li>
+<li>5 PUs <b>one-time</b> for the <b>first USA liberation of one of</b> Holland/Belgium, Normandy/Bordeaux, or Western Germany. (5 only, not 10, not 15.)</li>
 </ul>
 
 <b>French</b>

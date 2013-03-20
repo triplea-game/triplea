@@ -12,7 +12,7 @@ Coded by Iron__Cross
 -->
 
 <game>
-    <info name="Pacific - Alpha" version="1.4"/>
+    <info name="pacific test" version="1.4"/>
     
     <loader javaClass="games.strategy.triplea.TripleA"/>
     
@@ -2166,7 +2166,7 @@ Coded by Iron__Cross
 				
 		
         <!-- Map Name: also used for map utils when asked -->
-        <property name="mapName" value="pacific" editable="false"/>
+        <property name="mapName" value="pacific test" editable="false"/>
         
 		<!-- notes appear in the notes menu in the main screen, format as html -->
  		

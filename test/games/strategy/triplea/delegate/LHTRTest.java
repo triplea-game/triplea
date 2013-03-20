@@ -33,7 +33,7 @@ public class LHTRTest extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
-		m_data = LoadGameUtil.loadGame("revised", "lhtr.xml");
+		m_data = LoadGameUtil.loadGame("World War II Revised LHTR Test", "lhtr_test.xml");
 	}
 	
 	@Override

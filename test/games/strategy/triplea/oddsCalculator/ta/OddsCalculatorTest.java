@@ -25,7 +25,7 @@ public class OddsCalculatorTest extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
-		m_data = LoadGameUtil.loadGame("revised", "revised.xml");
+		m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class OddsCalculatorTest extends TestCase
 	
 	public void testSubInfLoop()
 	{
-		m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1942.xml");
+		m_data = LoadGameUtil.loadGame("World War II v3 1942 Test", "ww2v3_1942_test.xml");
 		final Territory sz1 = territory("1 Sea Zone", m_data);
 		final List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
 		final List<Unit> defending = submarine(m_data).create(2, germans(m_data));
@@ -134,7 +134,7 @@ public class OddsCalculatorTest extends TestCase
 	
 	public void testAttackingTransports()
 	{
-		m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1942.xml");
+		m_data = LoadGameUtil.loadGame("World War II v3 1942 Test", "ww2v3_1942_test.xml");
 		final Territory sz1 = territory("1 Sea Zone", m_data);
 		final List<Unit> attacking = transports(m_data).create(2, americans(m_data));
 		final List<Unit> defending = submarine(m_data).create(2, germans(m_data));
@@ -148,7 +148,7 @@ public class OddsCalculatorTest extends TestCase
 	
 	public void testDefendingTransports()
 	{
-		m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1942.xml");
+		m_data = LoadGameUtil.loadGame("World War II v3 1942 Test", "ww2v3_1942_test.xml");
 		final Territory sz1 = territory("1 Sea Zone", m_data);
 		final List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
 		final List<Unit> defending = transports(m_data).create(2, germans(m_data));

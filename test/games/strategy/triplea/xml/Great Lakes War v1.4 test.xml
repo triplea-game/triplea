@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="Great Lakes War" version="1.4"/>
+        <info name="Great Lakes War Test" version="1.4"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
         <map>
                 <!-- Territory Definitions -->
@@ -1503,7 +1503,7 @@
                 <property name="Neutrals Are Blitzable" value="true" editable="false">
                         <boolean/>
                 </property>
-                <property name="mapName" value="Great Lakes War" editable="false"/>
+                <property name="mapName" value="Great Lakes War Test" editable="false"/>
                 <property name="notes">
                         <value>
                         <![CDATA[A war between five independent players for control of the great lakes.]]>

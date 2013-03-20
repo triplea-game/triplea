@@ -243,7 +243,7 @@ public class ObjectivePanel extends AbstractStatPanel
 				try
 				{
 					if (key[1].indexOf(Constants.RULES_OBJECTIVE_PREFIX) != -1 || key[1].indexOf(Constants.RULES_CONDITION_PREFIX) != -1)
-						attachment = RulesAttachment.get(player, key[1], allPlayers);
+						attachment = RulesAttachment.get(player, key[1], allPlayers, true);
 					else if (key[1].indexOf(Constants.TRIGGER_ATTACHMENT_PREFIX) != -1)
 						attachment = TriggerAttachment.get(player, key[1], allPlayers);
 					else if (key[1].indexOf(Constants.POLITICALACTION_ATTACHMENT_PREFIX) != -1)

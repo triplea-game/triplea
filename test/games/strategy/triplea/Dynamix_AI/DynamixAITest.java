@@ -35,7 +35,7 @@ public class DynamixAITest extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
-		m_data = LoadGameUtil.loadGame("Great Lakes War", "Great Lakes War v1.4.xml");
+		m_data = LoadGameUtil.loadGame("Great Lakes War Test", "Great Lakes War v1.4 test.xml");
 		m_ai = new Dynamix_AI("Superior", TripleA.DYNAMIX_COMPUTER_PLAYER_TYPE);
 	}
 	

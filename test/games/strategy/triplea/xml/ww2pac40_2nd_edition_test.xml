@@ -1,9 +1,10 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific Test" version="2.7"/>
+        <info name="World War II Pacific Test 2nd Edition" version="3.0"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
-		<triplea minimumVersion="1.5.2"/>
+		<triplea minimumVersion="1.6.1"/>
+		<diceSides value="6"/>
         <map>
                 <!-- Territory Definitions -->
                 <territory name="Caroline Islands"/>
@@ -499,8 +500,8 @@
         
 		
 		<resourceList>
-                <resource name="PUs"/>
                 <resource name="techTokens"/>
+                <resource name="PUs"/>
                 <resource name="SuicideAttackTokens"/>
         </resourceList>
 		
@@ -534,25 +535,25 @@
 		
         <unitList>
                 <unit name="infantry"/>
+                <unit name="artillery"/>
+				<unit name="mech_infantry"/>
                 <unit name="armour"/>
                 <unit name="fighter"/>
+				<unit name="tactical_bomber"/>
                 <unit name="bomber"/>
                 <unit name="transport"/>
-                <unit name="battleship"/>
-                <unit name="carrier"/>
                 <unit name="submarine"/>
-                <unit name="aaGun"/>
-                <unit name="artillery"/>
                 <unit name="destroyer"/>
 				<unit name="cruiser"/>
-				<unit name="mech_infantry"/>
-				<unit name="tactical_bomber"/>
+                <unit name="carrier"/>
+                <unit name="battleship"/>
+                <unit name="aaGun"/>
 				
 				<unit name="airfield"/>
 				<unit name="harbour"/>
-				<unit name="factory_major"/>
 				<unit name="factory_minor"/>
 				<unit name="factory_upgrade"/>
+				<unit name="factory_major"/>
         </unitList>
 		
         <!--  this is the list of relationshipTypes you can create between players -->
@@ -562,9 +563,14 @@
 		<relationshipTypes>
 				<relationshipType name="Allied"/>
 				<relationshipType name="War"/>
+				<relationshipType name="Unprovoked"/>
 				<relationshipType name="Neutrality"/>
+				<relationshipType name="Concordant"/>
 				<relationshipType name="Custodianship"/>
 				<relationshipType name="Friendly"/>
+				<relationshipType name="Strict_Neutral"/>
+				<relationshipType name="Friendly_Neutral"/>
+				<relationshipType name="Unfriendly_Neutral"/>
 		</relationshipTypes>
 		
         <gamePlay>
@@ -574,16 +580,17 @@
                 <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
                 <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
                 <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+                <delegate name="placeNoAirCheck" javaClass="games.strategy.triplea.delegate.NoAirCheckPlaceDelegate" display="Place Units"/>
                 <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
-				<!--<delegate name="purchaseNoPU" javaClass="games.strategy.triplea.delegate.NoPUPurchaseDelegate" display="Purchase Units"/>-->
-                <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
-				<!--<delegate name="endTurnNoPU" javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate" display="Turn Complete"/>-->
+				<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
                 <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
                 <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
-                <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
-                
-				<sequence>
+				<delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
+				
+				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Airborne Attack Move"/>
+				
+                <sequence>
                         <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
 						
                         <step name="japaneseBid" delegate="bid" player="Japanese" maxRunCount="1"/>
@@ -608,6 +615,7 @@
 						<step name="japaneseTech" delegate="tech" player="Japanese"/>
                         <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
                         <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
+                        <step name="japaneseAirborneCombatMove" delegate="specialCombatMove" player="Japanese" display="Airborne Attack Move"/>
                         <step name="japaneseBattle" delegate="battle" player="Japanese"/>
                         <step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
                         <step name="japanesePlace" delegate="place" player="Japanese"/>
@@ -618,6 +626,7 @@
 						<step name="americansTech" delegate="tech" player="Americans"/>
                         <step name="americansPurchase" delegate="purchase" player="Americans"/>
 						<step name="americansCombatMove" delegate="move" player="Americans"/>
+                        <step name="americansAirborneCombatMove" delegate="specialCombatMove" player="Americans" display="Airborne Attack Move"/>
                         <step name="americansBattle" delegate="battle" player="Americans"/>
                         <step name="americansNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
 						<step name="americansPlace" delegate="place" player="Americans"/>
@@ -638,6 +647,7 @@
 						<step name="britishTech" delegate="tech" player="British"/>
                         <step name="britishPurchase" delegate="purchase" player="British"/>
                         <step name="britishCombatMove" delegate="move" player="British"/>
+                        <step name="britishAirborneCombatMove" delegate="specialCombatMove" player="British" display="Airborne Attack Move"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
                         <step name="britishPlace" delegate="place" player="British"/>
@@ -648,6 +658,7 @@
 						<step name="anzacTech" delegate="tech" player="ANZAC"/>
                         <step name="anzacPurchase" delegate="purchase" player="ANZAC"/>
                         <step name="anzacCombatMove" delegate="move" player="ANZAC"/>
+                        <step name="anzacAirborneCombatMove" delegate="specialCombatMove" player="ANZAC" display="Airborne Attack Move"/>
                         <step name="anzacBattle" delegate="battle" player="ANZAC"/>
                         <step name="anzacNonCombatMove" delegate="move" player="ANZAC" display="Non Combat Move"/>
                         <step name="anzacPlace" delegate="place" player="ANZAC"/>
@@ -767,19 +778,19 @@
                         <cost resource="PUs" quantity="20" />
                         <result resourceOrUnit="factory_upgrade" quantity="1"/>
                 </productionRule>
-                
+				
                 <productionRule name="buyAirfield">
                         <cost resource="PUs" quantity="15" />
                         <result resourceOrUnit="airfield" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyHarbour">
                         <cost resource="PUs" quantity="15" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
                 
                 <productionRule name="buyAAGun">
-                        <cost resource="PUs" quantity="6" />
+                        <cost resource="PUs" quantity="5" />
                         <result resourceOrUnit="aaGun" quantity="1"/>
                 </productionRule>
 				
@@ -837,7 +848,7 @@
                 </productionRule>
 				
 				<productionRule name="buyCruiserIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
+                        <cost resource="PUs" quantity="9" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
                 
@@ -851,6 +862,7 @@
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
                 
+                
 				<productionRule name="buyFactory_MinorIndustrialTechnology">
                         <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="factory_minor" quantity="1"/>
@@ -862,12 +874,12 @@
                 </productionRule>
                 
                 <productionRule name="buyAirfieldIndustrialTechnology">
-                        <cost resource="PUs" quantity="15" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="airfield" quantity="1"/>
                 </productionRule>
-                
+
                 <productionRule name="buyHarbourIndustrialTechnology">
-                        <cost resource="PUs" quantity="15" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
                 
@@ -895,7 +907,7 @@
                 </productionRule>
 				
 				<productionRule name="buyCruiserShipyards">
-                        <cost resource="PUs" quantity="10" />
+                        <cost resource="PUs" quantity="9" />
                         <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
                 
@@ -909,7 +921,7 @@
                         <result resourceOrUnit="submarine" quantity="1"/>
                 </productionRule>
                 
-               <!-- Repair rules -->
+			<!-- Repair rules -->
 				<repairRule name="repairFactory_Minor">
                         <cost resource="PUs" quantity="1" />
                         <result resourceOrUnit="factory_minor" quantity="1"/>
@@ -959,9 +971,7 @@
                         <cost resource="PUs" quantity="1" />
                         <result resourceOrUnit="harbour" quantity="2"/>
                 </repairRule>
-                
-				
-				
+
 				<repairFrontier name="repair">
                 	<repairRules name="repairFactory_Minor"/>
 					<repairRules name="repairFactory_Major"/>
@@ -970,7 +980,6 @@
 					<repairRules name="repairHarbour"/>
                 </repairFrontier>
 				
-                
                 <repairFrontier name="repairIndustrialTechnology">
                 	<repairRules name="repairFactory_MinorIndustrialTechnology"/>
 					<repairRules name="repairFactory_MajorIndustrialTechnology"/>
@@ -1008,7 +1017,7 @@
 				<productionFrontier name="productionChinese_Burma_Road_Closed">
                         <frontierRules name="buyInfantry"/>
                 </productionFrontier>
-                
+				
                 <!--<productionFrontier name="productionIndustrialTechnology">
                         <frontierRules name="buyInfantryIndustrialTechnology"/>
                         <frontierRules name="buyMech_InfantryIndustrialTechnology"/>
@@ -1026,8 +1035,8 @@
                         <frontierRules name="buyAAGunIndustrialTechnology"/>
 						<frontierRules name="buyFactory_MinorIndustrialTechnology"/>
 						<frontierRules name="buyFactory_MajorIndustrialTechnology"/>
-						<frontierRules name="buyAirfieldIndustrialTechnology"/>
-						<frontierRules name="buyHarbourIndustrialTechnology"/>
+                        <frontierRules name="buyAirfieldIndustrialTechnology"/>
+                        <frontierRules name="buyHarbourIndustrialTechnology"/>
                 </productionFrontier>-->
                 
                 <productionFrontier name="productionShipyards">
@@ -1038,28 +1047,142 @@
 						<frontierRules name="buyCruiserShipyards"/>
                         <frontierRules name="buyBattleshipShipyards"/>   
                 </productionFrontier>
-                
-                <playerProduction player="Japanese" frontier="production"/>
-				<playerProduction player="Americans" frontier="production"/>
+								
+                <playerProduction player="Americans" frontier="production"/>
                 <playerProduction player="Chinese" frontier="productionChinese_Burma_Road_Open"/>
                 <playerProduction player="British" frontier="production"/>
-                <playerProduction player="ANZAC" frontier="production"/>
-				<playerProduction player="Russians" frontier="production"/>
-				<playerProduction player="French" frontier="production"/>
-				<playerProduction player="Dutch" frontier="production"/>
+                <playerProduction player="French" frontier="production"/>
+                <playerProduction player="Dutch" frontier="production"/>
+				<playerProduction player="Japanese" frontier="production"/>
+                <playerProduction player="Russians" frontier="production"/>
+				<playerProduction player="ANZAC" frontier="production"/>
 				
-                <playerRepair player="Japanese" frontier="repair"/>
-				<playerRepair player="Americans" frontier="repair"/>
-				<playerRepair player="Chinese" frontier="repair"/>
+                <playerRepair player="Americans" frontier="repair"/>
+				<!-- Chinese are not allowed to repair
+				<playerRepair player="Chinese" frontier="repair"/> -->
 				<playerRepair player="British" frontier="repair"/>
 				<playerRepair player="ANZAC" frontier="repair"/>
-                <playerRepair player="Russians" frontier="repair"/>
-				<playerRepair player="French" frontier="repair"/>
-                <playerRepair player="Dutch" frontier="repair"/>
+				<playerRepair player="Japanese" frontier="repair"/>
 				
         </production>
+		
+		<technology>
+				<technologies>
+						<techname name="superSub"/>
+						<techname name="jetPower"/>
+						<techname name="shipyards"/>
+						<techname name="aARadar"/>
+						<techname name="longRangeAir"/>
+						<techname name="heavyBomber"/>
+						
+						<techname name="improvedArtillerySupport"/>
+						<techname name="rocket"/>
+						<techname name="Airborne_Forces"/>
+						<techname name="increasedFactoryProduction"/>
+						<techname name="warBonds"/>
+						<techname name="Improved_Mech_Inf"/>
+						<!-- Airborne_Forces and Improved_Mech_Inf are custom techs... but all will end up being customized -->
+				</technologies>
+				<playerTech player="Japanese">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="Americans">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="Chinese">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="British">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="ANZAC">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+		</technology>
+		
         <attatchmentList>
+
+			<!--  relationshipType Attachments -->
 					<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="war"/>
+					</attatchment>
+					
+					<attatchment name="relationshipTypeAttachment" attatchTo="Unprovoked" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="war"/>
 					</attatchment>
 
@@ -1069,6 +1192,15 @@
 
 					<attatchment name="relationshipTypeAttachment" attatchTo="Neutrality" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
+						<option name="rocketsCanFlyOver" value="false"/>
+					</attatchment>
+
+					<attatchment name="relationshipTypeAttachment" attatchTo="Concordant" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="neutral"/>
+						<option name="rocketsCanFlyOver" value="true"/>
+						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
+						<option name="canMoveAirUnitsOverOwnedLand" value="true"/>
+						<option name="canLandAirUnitsOnOwnedLand" value="true"/>
 					</attatchment>
 
 					<attatchment name="relationshipTypeAttachment" attatchTo="Friendly" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1085,7 +1217,35 @@
 						<option name="archeType" value="allied"/>
 						<option name="canTakeOverOwnedTerritory" value="true"/>
 					</attatchment>
+
+					<attatchment name="relationshipTypeAttachment" attatchTo="Strict_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="neutral"/>
+						<option name="rocketsCanFlyOver" value="false"/>
+					</attatchment>
+					
+					<attatchment name="relationshipTypeAttachment" attatchTo="Friendly_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="allied"/>
+						<option name="canTakeOverOwnedTerritory" value="true"/>
+						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
+						<option name="canMoveAirUnitsOverOwnedLand" value="false"/>
+						<option name="canLandAirUnitsOnOwnedLand" value="false"/>
+						<option name="canMoveIntoDuringCombatMove" value="false"/>
+						<option name="rocketsCanFlyOver" value="false"/>
+						<!-- How Friendly Neutrals work:
+								They may not be attacked. (IE: can not move into during combat move phase) (DONE)
+								They can not be flown over. (Done)
+								They can not be moved through, or blitzed. (TODO)
+								During non-combat move, you may move land units into them to capture them and all their units. (Done)
+								May only capture with units that have attack power (no aa guns). (TODO)
+						-->
+					</attatchment>
+					
+					<attatchment name="relationshipTypeAttachment" attatchTo="Unfriendly_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="war"/>
+						<option name="rocketsCanFlyOver" value="false"/>
+					</attatchment>
 				
+                    <!-- Players Tech -->
                     <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
@@ -1095,39 +1255,10 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
-                    <!--<attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="superSub" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="shipyards" value="false"/>
-                        <option name="aARadar" value="false"/>
-                        <option name="longRangeAir" value="false"/>
-                        <option name="heavyBomber" value="false"/>
-                        <option name="improvedArtillerySupport" value="false"/>
-                        <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
-                        <option name="increasedFactoryProduction" value="false"/>
-                        <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
-                    </attatchment>-->
-                    <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="superSub" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="shipyards" value="false"/>
-                        <option name="aARadar" value="false"/>
-                        <option name="longRangeAir" value="false"/>
-                        <option name="heavyBomber" value="false"/>
-                        <option name="improvedArtillerySupport" value="false"/>
-                        <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
-                        <option name="increasedFactoryProduction" value="false"/>
-                        <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
-                    </attatchment>
+					
                     <attatchment name="techAttatchment" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
@@ -1137,11 +1268,36 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
+					
+                    <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                        <option name="superSub" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
+                        <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                    </attatchment>
+					
+                    <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                        <option name="superSub" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
+                        <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                    </attatchment>
+					
                     <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
@@ -1151,25 +1307,10 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
-                    <!--<attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="superSub" value="false"/>
-                        <option name="jetPower" value="false"/>
-                        <option name="shipyards" value="false"/>
-                        <option name="aARadar" value="false"/>
-                        <option name="longRangeAir" value="false"/>
-                        <option name="heavyBomber" value="false"/>
-                        <option name="improvedArtillerySupport" value="false"/>
-                        <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
-                        <option name="increasedFactoryProduction" value="false"/>
-                        <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
-                    </attatchment>
+					
                     <attatchment name="techAttatchment" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
@@ -1179,12 +1320,11 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
-                    <attatchment name="techAttatchment" attatchTo="Dutch" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+					
+                    <attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="shipyards" value="false"/>
@@ -1193,24 +1333,37 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
-                    </attatchment>-->
+                    </attatchment>
+					
+					<attatchment name="techAttatchment" attatchTo="Dutch" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                        <option name="superSub" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
+                        <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                    </attatchment>
 					
 					
-                    <!-- Infantry -->
+			<!-- Unit Attachments -->
+			
+				<!-- Infantry -->
                 <attatchment name="unitAttatchment" attatchTo="infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="2"/>
                          <option name="isInfantry" value="true"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
-                         <option name="artillerySupportable" value="true"/>
+                         <!--<option name="artillerySupportable" value="true"/>-->
 						 <option name="isAirTransportable" value="true"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
-				
 				
                 <!-- Mech Infantry -->
                 <attatchment name="unitAttatchment" attatchTo="mech_infantry" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -1218,10 +1371,9 @@
                          <option name="transportCost" value="3"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
-                         <option name="artillerySupportable" value="true"/>
-						 <!-- only supposed to get blitz when paired with a tank -->
-                         <!--<option name="canBlitz" value="true"/>-->
+                         <!--<option name="artillerySupportable" value="true"/>-->
 						 <option name="receivesAbilityWhenWith" value="canBlitz:armour"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
                 <!-- Artillery -->
@@ -1230,7 +1382,8 @@
                          <option name="transportCost" value="3"/>
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
-                         <option name="artillery" value="true"/>
+                         <!--<option name="artillery" value="true"/>-->
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
                 <!-- Armour -->
@@ -1241,6 +1394,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
 						 <option name="isLandTransport" value="true"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
             
                 <!-- Fighter -->
@@ -1254,8 +1408,10 @@
                          <option name="maxScrambleDistance" value="1"/>
 						 <option name="canIntercept" value="true"/>
 						 <option name="canEscort" value="true"/>
-                         <option name="airDefense" value="2"/>
+                         <option name="airDefense" value="1"/>
                          <option name="airAttack" value="1"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
+						 <option name="blockade" value="2"/>
                 </attatchment>
             
                 <!-- Bomber -->
@@ -1267,7 +1423,10 @@
                          <option name="isStrategicBomber" value="true"/>
 						 <option name="isAirTransport" value="true"/>
                          <option name="transportCapacity" value="2"/>
-						 <!-- new rules have scrambling for fighters to defend against a strat bombing raid against anything that can be strat bombed (factories, bases)-->
+						 <option name="bombingMaxDieSides" value="6"/>
+						 <option name="bombingBonus" value="2"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
+                         <option name="airAttack" value="1"/>
                 </attatchment>
 
                 <!-- Tactical Bomber -->
@@ -1277,8 +1436,15 @@
                          <option name="isAir" value="true"/>   
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
+						 <option name="isStrategicBomber" value="true"/>
 						 <option name="canScramble" value="true"/>
                          <option name="maxScrambleDistance" value="1"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
+                         <option name="airAttack" value="1"/>
+						 <option name="blockade" value="2"/>
+						 <option name="bombingMaxDieSides" value="6"/>
+						 <option name="bombingBonus" value="0"/>
+						 <option name="bombingTargets" value="airfield:harbour"/>
                 </attatchment>
             
                 <!-- Transport -->
@@ -1288,6 +1454,7 @@
                          <option name="transportCapacity" value="5"/>   
                          <option name="attack" value="0"/>
                          <option name="defense" value="0"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
             
                 <!-- Battle Ship -->
@@ -1299,6 +1466,7 @@
                          <option name="canBombard" value="true"/>
                          <option name="isTwoHit" value="true"/>
 						 <option name="blockade" value="1"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                  </attatchment>
 				 
 				 <!-- Cruiser -->
@@ -1310,6 +1478,7 @@
                          <option name="canBombard" value="true"/>
                          <option name="isTwoHit" value="false"/>
 						 <option name="blockade" value="1"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                  </attatchment>
                  
                 <!-- Destroyer -->
@@ -1320,32 +1489,33 @@
                          <option name="defense" value="2"/>
                          <option name="isDestroyer" value="true"/>
 						 <option name="blockade" value="1"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
                 
                 <!-- Carrier -->
                 <attatchment name="unitAttatchment" attatchTo="carrier" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
-                         <option name="isSea" value="true"/>   
+                         <option name="isSea" value="true"/>
                          <option name="attack" value="0"/>
                          <option name="defense" value="2"/>
 						 <option name="carrierCapacity" value="2"/>
                          <option name="isTwoHit" value="true"/>
-						 <option name="blockade" value="1"/>
+						 <option name="blockade" value="0"/>
 						 <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect -->
 						 <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>
 						 <option name="whenCombatDamaged" value="unitsMayNotLeaveAlliedCarrier" count="1:2"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
                 <!-- Submarine -->
                 <attatchment name="unitAttatchment" attatchTo="submarine" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
-                         <option name="isSea" value="true"/>   
+                         <option name="isSea" value="true"/>
                          <option name="isSub" value="true"/>
                          <option name="attack" value="2"/>
                          <option name="defense" value="1"/>
 						 <option name="blockade" value="2"/>
-							<!-- stuff for targeting unescorted transports (we are using the new-fangled aa-gun code) -->
-						 <!--<option name="isAAforCombatOnly" value="true"/>-->
+						 <!-- stuff for targeting unescorted transports (we are using the new-fangled aa-gun code)
 						 <option name="isAAforFlyOverOnly" value="true"/>
 						 <option name="targetsAA" value="transport"/>
 						 <option name="willNotFireIfPresent" value="destroyer:cruiser:battleship:carrier"/>
@@ -1353,18 +1523,17 @@
 						 <option name="maxAAattacks" value="1"/>
 						 <option name="attackAA" value="2"/>
 						 <option name="attackAAmaxDieSides" value="6"/>
-						 <option name="typeAA" value="Submarine Strike on Unescorted Transports"/>
+						 <option name="typeAA" value="Submarine Strike on Unescorted Transports"/>-->
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
+						 <!-- TODO: submarines now prevent amphibious assaults unless there is an owned warship present -->
                 </attatchment>
-				
-				
 				
                 <!-- Factory Minor -->
                 <attatchment name="unitAttatchment" attatchTo="factory_minor" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-                         <option name="isFactory" value="true"/>   
-						 <!-- costs 20 ipcs to upgrade to a major -->
+                         <option name="isFactory" value="true"/>
 						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa"/>
-						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
-						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						<option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
+						 <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canProduceXUnits" value="3"/>
 						 <option name="maxDamage" value="6"/>
@@ -1375,48 +1544,52 @@
                          <option name="isFactory" value="true"/>
 						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa"/>
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="3"/>
-						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canProduceXUnits" value="10"/>
 						 <option name="maxDamage" value="20"/>
 						 <option name="whenCapturedChangesInto" value="any:any:true:factory_minor:1"/>
-						 <!--<option name="special" value="canOnlyPlaceInOriginalTerritories"/>-->
+						 <option name="special" value="canOnlyPlaceInOriginalTerritories"/>
                 </attatchment>
-            
+                
                 <!-- Factory Upgrade -->
                 <attatchment name="unitAttatchment" attatchTo="factory_upgrade" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isFactory" value="true"/>
 						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa"/>
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="3"/>
-						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canProduceXUnits" value="10"/>
 						 <option name="maxDamage" value="20"/>
 						 <option name="consumesUnits" value="1:factory_minor"/>
 						 <option name="whenCapturedChangesInto" value="any:any:true:factory_minor:1"/>
-						 <!--<option name="special" value="canOnlyPlaceInOriginalTerritories"/>-->
+						 <option name="special" value="canOnlyPlaceInOriginalTerritories"/>
                 </attatchment>
-            
-				<!-- Air Base -->
+				
+				<!-- Airfield -->
                 <attatchment name="unitAttatchment" attatchTo="airfield" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
 						 <option name="maxOperationalDamage" value="2"/>
 						 <option name="isAirBase" value="true"/>
+						 <option name="maxScrambleCount" value="3"/>
 						 <option name="isConstruction" value="true"/>
 						 <option name="constructionType" value="airfield_structure"/>
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
                          <option name="movement" value="0"/>
-						 <!--option name="unitPlacementRestrictions" value="Box2:Box3"/>-->
 						 <option name="givesMovement" value="1:fighter"/>
 						 <option name="givesMovement" value="1:bomber"/>
 						 <option name="givesMovement" value="1:tactical_bomber"/>
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
+						 <!--<option name="canBeGivenByTerritoryTo" value="British"/>-->
+						 <option name="isRocket" value="true"/>
+						 <option name="bombingMaxDieSides" value="6"/>
+						 <option name="bombingBonus" value="0"/>
                 </attatchment>
-            
-				<!-- Naval Base -->
+				
+				<!-- Harbour -->
                 <attatchment name="unitAttatchment" attatchTo="harbour" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
@@ -1428,7 +1601,6 @@
 						 <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
 						 <option name="maxConstructionsPerTypePerTerr" value="1"/>
                          <option name="movement" value="0"/>
-						 <!--<option name="unitPlacementRestrictions" value="Box2:Box3"/>-->
 						 <option name="givesMovement" value="1:transport"/>
 						 <option name="givesMovement" value="1:submarine"/>
 						 <option name="givesMovement" value="1:destroyer"/>
@@ -1436,17 +1608,20 @@
 						 <option name="givesMovement" value="1:carrier"/>
 						 <option name="givesMovement" value="1:battleship"/>
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
+						 <!--<option name="canBeGivenByTerritoryTo" value="British"/>-->
                 </attatchment>
-            
+				
                 <!-- AA Gun -->
                 <attatchment name="unitAttatchment" attatchTo="aaGun" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isAAforCombatOnly" value="true"/>
-						 <option name="isRocket" value="true"/>
+						 <!--<option name="isRocket" value="true"/>-->
 						 <option name="canNotMoveDuringCombatMove" value="true"/>
-						 <option name="isInfrastructure" value="true"/>
-						 <option name="canBeDamaged" value="false"/>
+						 <!--<option name="isInfrastructure" value="true"/>
+						 <option name="canBeDamaged" value="false"/>-->
                          <option name="movement" value="1"/>
 						 <option name="transportCost" value="3"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
+						 <option name="maxAAattacks" value="3"/>
                 </attatchment>
 				
 		
@@ -1824,322 +1999,713 @@
 				   
 				   <!-- No Canals -->
 				   
-				   <!-- Support Attachments -->
-					<attatchment name="supportAttachmentFighter" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
-						<option name="unitType" value="tactical_bomber"/>
-						<option name="faction" value="allied"/>
-						<option name="side" value="offence"/>
-						<option name="dice" value="strength"/>
-						<option name="bonus" value="1"/>
-						<option name="number" value="1"/>
-						<option name="bonusType" value="combined_arms"/>
-						<option name="impArtTech" value="false"/>
-						<option name="players" value="Japanese:Americans:Chinese:British:ANZAC:Russians:French:Dutch"/>
-					</attatchment>
-					<attatchment name="supportAttachmentFighter" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
-						<option name="unitType" value="tactical_bomber"/>
-						<option name="faction" value="allied"/>
-						<option name="side" value="offence"/>
-						<option name="dice" value="strength"/>
-						<option name="bonus" value="1"/>
-						<option name="number" value="1"/>
-						<option name="bonusType" value="combined_arms"/>
-						<option name="impArtTech" value="false"/>
-						<option name="players" value="Japanese:Americans:Chinese:British:ANZAC:Russians:French:Dutch"/>
-					</attatchment>
+			   <!-- Support Attachments -->
+				<attatchment name="supportAttachmentInfantryAndMechInf" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+					<option name="unitType" value="infantry:mech_infantry"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="offence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="infantry_bonus"/>
+					<option name="impArtTech" value="true"/>
+					<option name="players" value="Russians:Americans:British:French:Japanese:Chinese:ANZAC:French:Dutch"/>
+				</attatchment>
+				<attatchment name="supportAttachmentTacticalBomber1" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+					<option name="unitType" value="tactical_bomber"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="offence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="combined_arms"/>
+					<option name="impArtTech" value="false"/>
+					<option name="players" value="Russians:Americans:British:French:Japanese:Chinese:ANZAC:French:Dutch"/>
+				</attatchment>
+				<attatchment name="supportAttachmentTacticalBomber2" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+					<option name="unitType" value="tactical_bomber"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="offence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="combined_arms"/>
+					<option name="impArtTech" value="false"/>
+					<option name="players" value="Russians:Americans:British:French:Japanese:Chinese:ANZAC:French:Dutch"/>
+				</attatchment>
+				<attatchment name="supportAttachmentMechanizedTechnology" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+					<option name="unitType" value="mech_infantry"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="offence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="infantry_bonus"/>
+					<option name="impArtTech" value="false"/>
+					<!-- left blank on purpose: <option name="players" value=""/>-->
+				</attatchment>
+				
+				<attatchment name="conditionAttachment_Russians_Improved_Mech_Inf" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Japanese_Improved_Mech_Inf" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_Improved_Mech_Inf" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Chinese_Improved_Mech_Inf" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_British_Improved_Mech_Inf" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_ANZAC_Improved_Mech_Inf" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_French_Improved_Mech_Inf" attatchTo="French" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				
+				<attatchment name="triggerAttachment_Russians_Improved_Mech_Inf" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Russians_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Improved_Mech_Inf" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Americans_Improved_Mech_Inf" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Americans_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Chinese_Improved_Mech_Inf" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Chinese_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_British_Improved_Mech_Inf" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_ANZAC_Improved_Mech_Inf" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_ANZAC_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_French_Improved_Mech_Inf" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_French_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
 				   
 				   <!--  National Objectives -->
-					<attatchment name="objectiveAttachment_Japanese1_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment_Japanese_2_Control_Honolulu_Sydney_Calcutta" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Hawaiian Islands:New South Wales:India" count="each"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment_Japanese3_Control_Strategic_Islands" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
-					</attatchment>
-					
-					<attatchment name="objectiveAttachment_Americans1_Wartime_Economy" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="40"/>
-						<option name="relationship" value="Americans:Japanese:anyWar"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment_Americans2_Control_Philippines" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="directOwnershipTerritories" value="Philippines" count="1"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment_Americans3_Control_Japanese_Islands" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="directOwnershipTerritories" value="Okinawa:Iwo Jima" count="2"/>
-					</attatchment>
-					
-					<attatchment name="conditionAttachmentJapaneseDoNotControlBurmaRoad" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedOwnershipTerritories" value="India:Burma:Yunnan:Szechwan" count="1"/>
-						<option name="invert" value="true"/>
-					</attatchment>
-					
-					<attatchment name="objectiveAttachment_Chinese1_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="6"/>
-						<option name="conditions" value="conditionAttachmentJapaneseDoNotControlBurmaRoad"/>
-					</attatchment>
-					
-					<attatchment name="objectiveAttachment_British1_Control_Dutch_East_Indies" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="directOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
-							<!-- we do not want dutch control of the east indies to count towards this goal -->
-						<option name="players" value="British:Americans:ANZAC"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment_British2_Retaining_Empire" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="directOwnershipTerritories" value="Kwangtung:Malaya" count="2"/>
-					</attatchment>
-					
-					<attatchment name="objectiveAttachment_ANZAC1_Control_Strategic_Islands" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="directOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
-							<!-- we do not want dutch control of new guinea to count towards this goal -->
-						<option name="players" value="British:Americans:ANZAC"/>
-					</attatchment>
-					
-					<attatchment name="objectiveAttachment_ANZAC2_High_Morale" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="uses" value="1"/>
-						<!-- occupy means any unit <option name="directOwnershipTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>-->
-						<option name="directPresenceTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>
-						<!--<option name="unitPresence" value="ANY" count="1"/>-->
-					</attatchment>
-					
-					
-					<!-- Victory Conditions -->
-					<attatchment name="conditionAttachmentAxisVictory1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedOwnershipTerritories" value="Japan" count="1"/>
-					</attatchment>
-					<attatchment name="conditionAttachmentAxisVictory2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedOwnershipTerritories" value="Kiangsu:India:Kwangtung:New South Wales:Philippines:Western United States:Hawaiian Islands" count="5"/>
-					</attatchment>
-					
-					<attatchment name="conditionAttachmentAlliesVictory1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedOwnershipTerritories" value="India:New South Wales:Western United States" count="1"/>
-					</attatchment>
-					<attatchment name="conditionAttachmentAlliesVictory2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedOwnershipTerritories" value="Japan" count="1"/>
-					</attatchment>
-					
-					
-					<!-- Conditions -->
-					<attatchment name="conditionAttachmentAmericansNotYetAtWar" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="turns" value="3"/>
-						<option name="relationship" value="Americans:Japanese:anyNeutral"/>
-					</attatchment>
-					
-					<attatchment name="conditionAttachmentBritishNotYetAtWar" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="relationship" value="British:Japanese:anyNeutral"/>
-					</attatchment>
-					
-					<attatchment name="conditionAttachmentJapaneseNotYetAtWar" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="relationship" value="Americans:Japanese:anyNeutral"/>
-					</attatchment>
-					
-					<attatchment name="conditionAttachmentAllies_Conquer_Japanese_Islands" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedPresenceTerritories" value="Iwo Jima:Marianas:Okinawa" count="1"/>
-						<option name="unitPresence" value="ANY" count="1"/>
-					</attatchment>
-					
-					<attatchment name="conditionAttachmentAllies_Retake_the_Philippines" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedPresenceTerritories" value="Philippines" count="1"/>
-						<option name="unitPresence" value="ANY" count="1"/>
-					</attatchment>
-					
-					<attatchment name="conditionAttachmentJapan_Takes_the_Philippines" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedPresenceTerritories" value="Philippines" count="1"/>
-						<option name="unitPresence" value="ANY" count="1"/>
-					</attatchment>
-					
-					
-					
-					<!-- Triggers -->
-					<attatchment name="triggerAttachment_Axis_Victory" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentAxisVictory1:conditionAttachmentAxisVictory2"/>
-						<option name="victory" value="The Japan (Axis) achieve a Triggered Victory, by controlling Japan plus 5 victory cities!"/>
-						<option name="players" value="Japanese"/>
-					</attatchment>
-					
-					<attatchment name="triggerAttachment_Allies_Victory" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentAlliesVictory1:conditionAttachmentAlliesVictory2"/>
-						<option name="victory" value="The Allies achieve a Triggered Victory, by controlling 1 Allied Capital plus Japan!"/>
-						<option name="when" value="after:japaneseEndTurn"/>
-						<option name="players" value="British:ANZAC:Americans:Chinese:French:Dutch"/>
-					</attatchment>
+			<!-- Japanese Objectives -->
+				<attatchment name="conditionAttachment_Japanese_1_Not_Attacked_French_Indo_China" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="French Indo China" count="1"/>
+					<option name="invert" value="true" />
+                </attatchment>
+				<attatchment name="conditionAttachment_Japanese_1_Not_Attacked_UK" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Japanese:War"/>
+					<option name="invert" value="true" />
+                </attatchment>
+				<attatchment name="objectiveAttachment_Japanese_1_Trade_With_America" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_1_Not_Attacked_French_Indo_China:conditionAttachment_Japanese_1_Not_Attacked_UK"/>
+					<option name="objectiveValue" value="10"/>
+					<option name="atWarPlayers" value="Americans" count="0" />
+				</attatchment>
+				<attatchment name="objectiveAttachment_Japanese_2_Strategic_Defense_Perimeter" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="alliedOwnershipTerritories" value="Guam:Midway:Wake Island:Gilbert Islands:Solomon Islands" count="5"/>
+				</attatchment>
+				<attatchment name="objectiveAttachment_Japanese_3_Control_Honolulu_Or_Sydney_Or_Calcutta_Or_Western_United_States" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="directOwnershipTerritories" value="Hawaiian Islands:New South Wales:India:Western United States" count="each"/>
+				</attatchment>
+				<attatchment name="objectiveAttachment_Japanese_4_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="alliedOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
+				</attatchment>
+			
+			<!-- British Objectives -->
+				<attatchment name="objectiveAttachment_UK_Pacific_2_Kwangtung_And_Malaya" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="directOwnershipTerritories" value="Malaya:Kwangtung" count="2"/>
+					<option name="atWarPlayers" value="Japanese" count="1" />
+				</attatchment>
+			
+			<!-- ANZAC Objectives -->
+				<attatchment name="conditionAttachmentANZAC_At_War_With_Japanese" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="ANZAC:Japanese:anyWar"/>
+				</attatchment>
+				<attatchment name="objectiveAttachment_ANZAC_2_Control_Strategic_Islands" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentANZAC_At_War_With_Japanese"/>
+					<option name="objectiveValue" value="5"/>
+					<option name="directOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
+						<!-- we do not want dutch control of new guinea to count towards this goal -->
+					<option name="players" value="British:Americans:ANZAC"/>
+				</attatchment>
+			
+			<!-- Americans Objectives -->
+                <attatchment name="objectiveAttachment_Americans_1_Homeland" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="30"/>
+					<option name="atWarPlayers" value="Japanese" count="1" />
+                	<option name="directOwnershipTerritories" value="Western United States" count="1"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Americans_2_Outer_Territories" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+					<option name="atWarPlayers" value="Japanese" count="1" />
+                	<option name="directOwnershipTerritories" value="Aleutian Islands:Hawaiian Islands:Johnston Island:Line Islands" count="4"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Americans_3_Defense_Obligations" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+					<option name="atWarPlayers" value="Japanese" count="1" />
+                	<option name="directOwnershipTerritories" value="Alaska:Mexico" count="2"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Americans_4_Philippines" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+					<option name="atWarPlayers" value="Japanese" count="1" />
+                	<option name="directOwnershipTerritories" value="Philippines" count="1"/>
+                </attatchment>
+				
+			<!-- Chinese Objectives -->
+				<attatchment name="conditionAttachmentJapaneseDoNotControlBurmaRoad" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="India:Burma:Yunnan:Szechwan" count="1"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="objectiveAttachment_Chinese_1_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="6"/>
+					<option name="conditions" value="conditionAttachmentJapaneseDoNotControlBurmaRoad"/>
+				</attatchment>
+
+			<!-- Victory Conditions -->
+			
+				<!-- Axis Victory -->
+				
+				<!-- 6 Pacific VCs -->
+				<attatchment name="conditionAttachmentAxisVictory2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="Western United States:Hawaiian Islands:Philippines:New South Wales:India:Kwangtung:Kiangsu:Japan" count="6"/>
+				</attatchment>
+				
+				<!-- Maintain A Capital -->
+				<attatchment name="conditionAttachmentAxisVictory3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="Japan" count="1"/>
+				</attatchment>
+			
+			
+				<!-- Allied Victory -->
+				
+				<!-- Maintain A Capital -->
+				<attatchment name="conditionAttachmentAlliedVictory1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="New South Wales:India:Western United States" count="1"/>
+				</attatchment>
+				
+				<!-- Control An Axis Capital -->
+				<!-- TODO: For a complete round of play -->
+				<attatchment name="conditionAttachmentAlliedVictory2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="Japan" count="1"/>
+				</attatchment>
+				
+			<!-- Conditions -->
+				<!-- Japanese Conditions 
+				<attatchment name="conditionAttachmentAllies_Conquer_Japanese_Islands" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedPresenceTerritories" value="Iwo Jima:Marianas:Okinawa" count="1"/>
+					<option name="unitPresence" value="ANY" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentAllies_Retake_the_Philippines" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedPresenceTerritories" value="Philippines" count="1"/>
+					<option name="unitPresence" value="ANY" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentJapan_Takes_the_Philippines" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedPresenceTerritories" value="Philippines" count="1"/>
+					<option name="unitPresence" value="ANY" count="1"/>
+				</attatchment>
+				-->
+				
+				<!-- British Conditions -->
+				<attatchment name="conditionAttachment_ANZAC_1_Original" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="original"/>
+                </attatchment>
+				<!--<attatchment name="conditionAttachment_UK_Pacific_1_Original" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="original"/>
+                </attatchment>
+				<attatchment name="conditionAttachment_British_1_Original" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="conditions" value="conditionAttachment_ANZAC_1_Original:conditionAttachment_UK_Pacific_1_Original"/>
+                	<option name="directOwnershipTerritories" value="original"/>
+                </attatchment>-->
+				
+				<!-- ANZAC Conditions -->
+				<attatchment name="conditionAttachment_ANZAC_1_Malaya" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="alliedOwnershipTerritories" value="Malaya" count="1"/>
+                </attatchment>
+						
+				<!-- Chinese Conditions -->
+				<attatchment name="conditionAttachment_Chinese_Own_Kiangsu" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Kiangsu" count="1"/>
+                </attatchment>
+				<attatchment name="conditionAttachment_Chinese_Own_Shantung" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Shantung" count="1"/>
+                </attatchment>
+				<attatchment name="conditionAttachment_Chinese_Own_Manchuria" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Manchuria" count="1"/>
+                </attatchment>
+				
+				<!-- Americans Conditions -->
+						
+				<!-- French Conditions -->
+				
+			<!-- Political related conditions -->
+				<attatchment name="conditionAttachmentTurn4OrHigher" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="4-+"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_British_Not_Provoked" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Japanese:Unprovoked"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_British_Provoked_War_With_Japan" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Not_Provoked"/>
+					<option name="atWarPlayers" value="Japanese" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_At_War_With_At_Least_One_Axis" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="atWarPlayers" value="Japanese" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentAmericansNotYetAtWarWithAll" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="atWarPlayers" value="Japanese" count="1"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentAmericansNotYetAtWarWithAllAndTurn3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAmericansNotYetAtWarWithAll"/>
+					<option name="turns" value="3"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_May_Declare_War_On_Axis_Early" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentTurn4OrHigher:conditionAttachment_Americans_At_War_With_At_Least_One_Axis:conditionAttachment_British_Provoked_War_With_Japan"/>
+					<option name="conditionType" value="OR"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_May_Declare_War_On_Axis" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAmericansNotYetAtWarWithAll:conditionAttachment_Americans_May_Declare_War_On_Axis_Early"/>
+					<option name="conditionType" value="AND"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_And_Japanese_At_War" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="atWarPlayers" value="Americans" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentJapaneseNotYetAtWarWithFrench" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Japanese:French:anyNeutral"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Japanese_Not_Yet_At_War_With_Americans" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Americans:Japanese:anyNeutral"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_British_Not_Yet_At_War_With_Japanese" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Japanese:anyNeutral"/>
+				</attatchment>
+				
+			<!-- Trigger Attachments -->
+			
+				<!-- Victory Triggers -->
+				 <attatchment name="triggerAttachmentAxisVictory1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="trigger" value="conditionAttachmentAxisVictory2:conditionAttachmentAxisVictory3"/>
+					<option name="victory" value="The Axis achieve victory by controlling 6 Pacific VCs and keeping control of one of their own capitals!"/>
+					<option name="players" value="Japanese"/>
+				</attatchment>
+				
+				 <attatchment name="triggerAttachmentAlliedVictory1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="trigger" value="conditionAttachmentAlliedVictory1:conditionAttachmentAlliedVictory2"/>
+					<option name="victory" value="The Allies achieve victory by controlling Japan and keeping control of one of their own capitals!"/>
+					<option name="players" value="British:ANZAC:Americans:Chinese"/>
+				</attatchment>
+				
+				<!-- Japanese Triggers -->
+				<!-- OLD Kamikaze trigger:
+				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+					<option name="conditionType" value="OR"/>
+					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+					<option name="territoryProperty" value="kamikazeZone" count="true"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:britishEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots"/>
+					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:japaneseEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+					<option name="conditionType" value="OR"/>
+					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+					<option name="territoryProperty" value="kamikazeZone" count="true"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:americansEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2"/>
+					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:japaneseEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+					<option name="conditionType" value="OR"/>
+					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+					<option name="territoryProperty" value="kamikazeZone" count="true"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:anzacEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
+					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:japaneseEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots4" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+					<option name="conditionType" value="OR"/>
+					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+					<option name="territoryProperty" value="kamikazeZone" count="true"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:frenchEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines4" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
+					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:japaneseEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots5" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
+					<option name="conditionType" value="OR"/>
+					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+					<option name="territoryProperty" value="kamikazeZone" count="true"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:russiansEndTurn"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines5" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
+					<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
+					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:japaneseEndTurn"/>
+				</attatchment>-->
+				<!-- New Kamikaze Trigger: -->
+				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots_alpha" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAxisVictory3"/>
+					<!-- just using a condition that is sure to be true at the start of the game, so that this trigger definitely fires at the beginning of each game -->
+					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+					<option name="territoryProperty" value="kamikazeZone" count="true"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:gameInitDelegate"/>
+				</attatchment>
+
+				<!-- British Triggers -->
+
+				<!-- ANZAC Triggers -->
+                <attatchment name="triggerAttachment_ANZAC_1_Control_Original_And_Malaya" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentANZAC_At_War_With_Japanese:conditionAttachment_ANZAC_1_Original:conditionAttachment_ANZAC_1_Malaya"/>
+					<option name="resource" value="PUs"/>
+					<option name="resourceCount" value="5"/>
+                </attatchment>
+				
+				<!-- Chinese Triggers -->
+				<attatchment name="triggerAttachment_Chinese_Artillery_Supplies" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="objectiveAttachment_Chinese_1_Burma_Road"/>
+					<option name="frontier" value="productionChinese_Burma_Road_Open"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Chinese_Loses_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="objectiveAttachment_Chinese_1_Burma_Road"/>
+					<option name="frontier" value="productionChinese_Burma_Road_Closed"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_Americans" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:americansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_Chinese" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:chineseBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_British" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:britishBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_ANZAC" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:anzacBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_Americans" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:americansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_Chinese" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:chineseBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_British" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:britishBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_ANZAC" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:anzacBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_Americans" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:americansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_Chinese" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:chineseBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_British" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:britishBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_ANZAC" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:anzacBattle"/>
+                </attatchment>
 				
 				
-					<attatchment name="triggerAttachment_Chinese_Artillery_Supplies" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="objectiveAttachment_Chinese1_Burma_Road"/>
-						<option name="frontier" value="productionChinese_Burma_Road_Open"/>
-					</attatchment>
 				
-					<attatchment name="triggerAttachment_Chinese_Loses_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="objectiveAttachment_Chinese1_Burma_Road"/>
-						<option name="frontier" value="productionChinese_Burma_Road_Closed"/>
-						<option name="invert" value="true"/>
-					</attatchment>
-					
-					<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-						<option name="conditionType" value="OR"/>
-						<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-						<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
-						<option name="territoryProperty" value="kamikazeZone" count="true"/>
-						<option name="uses" value="1"/>
-						<option name="when" value="after:britishEndTurn"/>
-					</attatchment>
-					
-					<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-						<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots"/>
-						<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-						<option name="uses" value="1"/>
-						<option name="when" value="after:japaneseEndTurn"/>
-					</attatchment>
-					
-					<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-						<option name="conditionType" value="OR"/>
-						<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-						<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
-						<option name="territoryProperty" value="kamikazeZone" count="true"/>
-						<option name="uses" value="1"/>
-						<option name="when" value="after:americansEndTurn"/>
-					</attatchment>
-					
-					<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-						<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots2"/>
-						<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-						<option name="uses" value="1"/>
-						<option name="when" value="after:japaneseEndTurn"/>
-					</attatchment>
-					
-					<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
-						<option name="conditionType" value="OR"/>
-						<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
-						<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
-						<option name="territoryProperty" value="kamikazeZone" count="true"/>
-						<option name="uses" value="1"/>
-						<option name="when" value="after:anzacEndTurn"/>
-					</attatchment>
-					
-					<attatchment name="triggerAttachment_Japanese_Takes_the_Philippines3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentJapan_Takes_the_Philippines"/>
-						<option name="playerAttachmentName" value="TriggerAttachment" count="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots3"/>
-						<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
-						<option name="uses" value="1"/>
-						<option name="when" value="after:japaneseEndTurn"/>
-					</attatchment>
 				
-					<attatchment name="triggerAttachment_Americans_War_Japanese" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentAmericansNotYetAtWar"/>
-						<option name="relationshipChange" value="Japanese:Americans:anyNeutral:War"/>
-						<option name="relationshipChange" value="Japanese:British:anyNeutral:War"/>
-						<option name="relationshipChange" value="Japanese:ANZAC:anyNeutral:War"/>
-						<option name="relationshipChange" value="Japanese:Dutch:anyNeutral:War"/>
-						<option name="relationshipChange" value="Chinese:Americans:anyNeutral:Allied"/>
-						<option name="relationshipChange" value="Chinese:British:anyNeutral:Allied"/>
-						<option name="relationshipChange" value="Chinese:ANZAC:anyNeutral:Allied"/>
-						<option name="relationshipChange" value="British:Americans:anyNeutral:Allied"/>
-						<option name="relationshipChange" value="ANZAC:Americans:anyNeutral:Allied"/>
-						<option name="relationshipChange" value="Americans:French:anyNeutral:Friendly"/>
-						<option name="relationshipChange" value="Americans:Dutch:anyNeutral:Friendly"/>
-						<option name="notification" value="Americans_War_Japanese"/>
-						<option name="when" value="after:americansPlace"/>
-						<option name="uses" value="1"/>
-					</attatchment>
-				    
+			<!-- Political Related Triggers -->
+                <attatchment name="triggerAttachment_Japanese_Unrestricted_Movement" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="conditions" value="conditionAttachment_Americans_And_Japanese_At_War"/>
+					<option name="uses" value="1"/>
+                	<option name="players" value="Japanese"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
+                	<option name="playerProperty" value="movementRestrictionTerritories" count=""/>
+                	<option name="playerProperty" value="movementRestrictionType" count="disallowed"/>
+					<option name="when" value="before:japaneseCombatMove"/>
+                </attatchment>
+				<attatchment name="triggerAttachment_Americans_War_Japanese" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAmericansNotYetAtWarWithAllAndTurn3"/>
+					<option name="relationshipChange" value="Japanese:Americans:anyNeutral:War"/>
+					<option name="relationshipChange" value="Chinese:Americans:anyNeutral:Allied"/>
+					<option name="relationshipChange" value="British:Americans:anyNeutral:Allied"/>
+					<option name="relationshipChange" value="ANZAC:Americans:anyNeutral:Allied"/>
+					<option name="relationshipChange" value="Americans:French:anyNeutral:Allied"/>
+					<option name="relationshipChange" value="Americans:Dutch:anyNeutral:Friendly"/>
+					<option name="notification" value="Americans_War_Japanese"/>
+					<option name="when" value="after:americansPlace"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+                <attatchment name="triggerAttachment_Americans_Unrestricted_Movement" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="conditions" value="conditionAttachment_Americans_At_War_With_At_Least_One_Axis"/>
+					<option name="uses" value="1"/>
+                	<option name="players" value="Americans"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
+                	<option name="playerProperty" value="movementRestrictionTerritories" count=""/>
+                	<option name="playerProperty" value="movementRestrictionType" count="disallowed"/>
+					<option name="when" value="before:americansCombatMove"/>
+                </attatchment>
+                
+				
+		<!-- Player Attatchments -->
+				<attatchment name="playerAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/>
+					<option name="suicideAttackTargets" value="battleship:carrier:cruiser:destroyer"/>
+				</attatchment>
+				
+				
+		<!--  Rules Restrictions -->
+				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="movementRestrictionTerritories" value="Shantung:Kwangsi:Kiangsi:Kiangsu:Jehol:Manchuria:Shensi:Yunnan:Suiyuan:Kweichow:Hunan:Kansu:Hopei:Tsinghai:Szechwan:Chahar:Sikang:Anhwe:Kwangtung:Burma"/>
+					<option name="movementRestrictionType" value="allowed"/>
+					<!--<option name="productionPerXTerritories" value="1"/>-->
+					<option name="placementAnyTerritory" value="true"/>
+					<option name="placementCapturedTerritory" value="true"/>
+					<option name="placementPerTerritory" value="9999999"/>
+					<option name="unlimitedProduction" value="true"/>
+				</attatchment>
+				
+				<!-- Americans in OOB are not allowed to move to or through these sea zones:
+						125 Sea Zone:111 Sea Zone:119 Sea Zone:109 Sea Zone:104 Sea Zone:91 Sea Zone:87 Sea Zone:83 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:76 Sea Zone:80 Sea Zone:79 Sea Zone
 					
-					<!--  Rules Restrictions -->
-					<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Shantung:Kwangsi:Kiangsi:Kiangsu:Jehol:Manchuria:Shensi:Yunnan:Suiyuan:Kweichow:Hunan:Kansu:Hopei:Tsinghai:Szechwan:Chahar:Sikang:Anhwe:Kwangtung:Burma"/>
-						<option name="movementRestrictionType" value="allowed"/>
-						<!--<option name="productionPerXTerritories" value="1"/>-->
-						<option name="placementAnyTerritory" value="true"/>
-						<option name="placementCapturedTerritory" value="true"/>
-						<option name="placementPerTerritory" value="255"/>
-						<option name="unlimitedProduction" value="true"/>
-					</attatchment>
-					
-					<attatchment name="rulesAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Sakha:Moscow:Evenkiyskiy:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Tunguska:Siberia:Kazakhstan:Buryatia"/>
-						<option name="movementRestrictionType" value="allowed"/>
-					</attatchment>
-					<attatchment name="rulesAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Sakha:Moscow:Evenkiyskiy:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Tunguska:Siberia:Kazakhstan:Buryatia"/>
-						<option name="movementRestrictionType" value="disallowed"/>
-					</attatchment>
-					<attatchment name="rulesAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Sakha:Moscow:Evenkiyskiy:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Tunguska:Siberia:Kazakhstan:Buryatia"/>
-						<option name="movementRestrictionType" value="disallowed"/>
-					</attatchment>
-					<attatchment name="rulesAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Sakha:Moscow:Evenkiyskiy:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Tunguska:Siberia:Kazakhstan:Buryatia"/>
-						<option name="movementRestrictionType" value="disallowed"/>
-					</attatchment>
-					<attatchment name="rulesAttatchment" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Sakha:Moscow:Evenkiyskiy:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Tunguska:Siberia:Kazakhstan:Buryatia"/>
-						<option name="movementRestrictionType" value="disallowed"/>
-					</attatchment>
-					<attatchment name="rulesAttatchment" attatchTo="French" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Sakha:Moscow:Evenkiyskiy:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Tunguska:Siberia:Kazakhstan:Buryatia"/>
-						<option name="movementRestrictionType" value="disallowed"/>
-					</attatchment>
-					<attatchment name="rulesAttatchment" attatchTo="Dutch" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="movementRestrictionTerritories" value="Sakha:Moscow:Evenkiyskiy:Yenisey:Soviet Far East:Amur:Yakut S.S.R.:Tunguska:Siberia:Kazakhstan:Buryatia"/>
-						<option name="movementRestrictionType" value="disallowed"/>
-					</attatchment>
-					
-					<!-- Player attachments -->
-					<attatchment name="playerAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
-						<option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/>
-						<!--<option name="suicideAttackTargets" value="battleship:carrier:cruiser:destroyer"/>-->
-					</attatchment>
-					
-					<!-- Political Action Attachments -->
-					<attatchment name="politicalActionAttachment_Japanese_To_War" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentJapaneseNotYetAtWar"/>
-						<option name="relationshipChange" value="Japanese:Americans:War"/>
-						<option name="relationshipChange" value="Japanese:British:War"/>
-						<option name="relationshipChange" value="Japanese:ANZAC:War"/>
-						<option name="relationshipChange" value="Japanese:Dutch:War"/>
-						<option name="relationshipChange" value="Chinese:Americans:Allied"/>
-						<option name="relationshipChange" value="Chinese:British:Allied"/>
-						<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
-						<option name="relationshipChange" value="British:Americans:Allied"/>
-						<option name="relationshipChange" value="ANZAC:Americans:Allied"/>
-						<option name="relationshipChange" value="Americans:French:Friendly"/>
-						<option name="relationshipChange" value="Americans:Dutch:Friendly"/>
-						<option name="text" value="Japanese_War_Americans"/>
-					</attatchment>
-					<attatchment name="politicalActionAttachment_British_To_War" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentBritishNotYetAtWar"/>
-						<option name="relationshipChange" value="Japanese:British:War"/>
-						<option name="relationshipChange" value="Japanese:ANZAC:War"/>
-						<option name="relationshipChange" value="Japanese:Dutch:War"/>
-						<option name="relationshipChange" value="Chinese:British:Allied"/>
-						<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
-						<option name="text" value="British_War_Japanese"/>
-					</attatchment>
-					<attatchment name="politicalActionAttachment_ANZAC_To_War" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-						<option name="conditions" value="conditionAttachmentBritishNotYetAtWar"/>
-						<option name="relationshipChange" value="Japanese:British:War"/>
-						<option name="relationshipChange" value="Japanese:ANZAC:War"/>
-						<option name="relationshipChange" value="Japanese:Dutch:War"/>
-						<option name="relationshipChange" value="Chinese:British:Allied"/>
-						<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
-						<option name="text" value="British_War_Japanese"/>
-					</attatchment>
-					
-					
+					 Americans in Alpha +3 are not allowed to end their movement in:
+						Europe board: any sea zone not touching an American territory, plus 102 sz
+						TODO: We need to disallow a movement ending in a territory
+						TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 106 and 116 could be moved into on the way to 121.
+							65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone
+						Pacific board: any sea zone touching a Japanese controlled territory
+						TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 17, 22, 32, 33, 34, and 37 could all be moved through on the way to another territory.
+						TODO: Currently we have a "set list" of territories. Obviously if Japan conquers more territories, then this list should expand, but it doesn't yet.
+							6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone
+				-->
+				<attatchment name="rulesAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<!-- 65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone: -->
+                	<option name="movementRestrictionTerritories" value="6 Sea Zone:19 Sea Zone:20 Sea Zone:36 Sea Zone"/>
+					<!-- :17 Sea Zone:22 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:37 Sea Zone -->
+                	<option name="movementRestrictionType" value="disallowed"/>
+                </attatchment>
+				
+				<!-- Japanese in Alpha +3 are not allowed to end their movement in:
+						Any Sea zone within 2 spaces of Alaska or Western United States
+							1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone
+				-->
+				<attatchment name="rulesAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="movementRestrictionTerritories" value="1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone"/>
+                	<option name="movementRestrictionType" value="disallowed"/>
+                </attatchment>
+				
+			
+		<!-- Political Action Attachments -->
+				<attatchment name="politicalActionAttachment_Japanese_To_War_With_French" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentJapaneseNotYetAtWarWithFrench"/>
+					<option name="relationshipChange" value="Japanese:French:War"/>
+					<option name="relationshipChange" value="Chinese:French:Allied"/>
+					<option name="text" value="Japanese_War_French"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_British_To_War_With_Japanese" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Not_Yet_At_War_With_Japanese"/>
+					<option name="relationshipChange" value="Japanese:British:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:ANZAC:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:Dutch:War"/>
+					<option name="relationshipChange" value="Chinese:British:Allied"/>
+					<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
+					<option name="relationshipChange" value="Chinese:Dutch:Friendly"/>
+					<option name="text" value="British_War_Japanese"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_ANZAC_To_War_With_Japanese" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Not_Yet_At_War_With_Japanese"/>
+					<option name="relationshipChange" value="Japanese:British:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:ANZAC:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:Dutch:War"/>
+					<option name="relationshipChange" value="Chinese:British:Allied"/>
+					<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
+					<option name="relationshipChange" value="Chinese:Dutch:Friendly"/>
+					<option name="text" value="British_War_Japanese"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_Japanese_To_War_With_Allies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Not_Yet_At_War_With_Japanese:conditionAttachment_Japanese_Not_Yet_At_War_With_Americans"/>
+					<option name="relationshipChange" value="Japanese:Americans:War"/>
+					<option name="relationshipChange" value="Japanese:British:War"/>
+					<option name="relationshipChange" value="Japanese:ANZAC:War"/>
+					<option name="relationshipChange" value="Japanese:Dutch:War"/>
+					<option name="relationshipChange" value="Japanese:French:War"/>
+					<option name="relationshipChange" value="Chinese:Americans:Allied"/>
+					<option name="relationshipChange" value="Chinese:British:Allied"/>
+					<option name="relationshipChange" value="Chinese:French:Allied"/>
+					<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
+					<option name="relationshipChange" value="Chinese:Dutch:Friendly"/>
+					<option name="relationshipChange" value="British:Americans:Allied"/>
+					<option name="relationshipChange" value="ANZAC:Americans:Allied"/>
+					<option name="relationshipChange" value="Americans:French:Allied"/>
+					<option name="relationshipChange" value="Americans:Dutch:Friendly"/>
+					<option name="text" value="Japanese_War_Americans"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_Japanese_To_War_With_British_And_ANZAC" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Not_Yet_At_War_With_Japanese"/>
+					<option name="relationshipChange" value="Japanese:British:War"/>
+					<option name="relationshipChange" value="Japanese:ANZAC:War"/>
+					<option name="relationshipChange" value="Japanese:Dutch:War"/>
+					<option name="relationshipChange" value="Chinese:British:Allied"/>
+					<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
+					<option name="relationshipChange" value="Chinese:Dutch:Friendly"/>
+					<option name="text" value="Japanese_War_UK"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_Japanese_To_War_With_Americans" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_Not_Yet_At_War_With_Americans"/>
+					<option name="relationshipChange" value="Japanese:Americans:War"/>
+					<option name="relationshipChange" value="Chinese:Americans:Allied"/>
+					<option name="relationshipChange" value="British:Americans:Allied"/>
+					<option name="relationshipChange" value="ANZAC:Americans:Allied"/>
+					<option name="relationshipChange" value="Americans:French:Allied"/>
+					<option name="relationshipChange" value="Americans:Dutch:Friendly"/>
+					<option name="text" value="Japanese_War_Americans_Only"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_Americans_To_War_With_Japanese" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_Not_Yet_At_War_With_Americans:conditionAttachment_Americans_May_Declare_War_On_Axis"/>
+					<option name="relationshipChange" value="Japanese:Americans:War"/>
+					<option name="relationshipChange" value="Chinese:Americans:Allied"/>
+					<option name="relationshipChange" value="British:Americans:Allied"/>
+					<option name="relationshipChange" value="ANZAC:Americans:Allied"/>
+					<option name="relationshipChange" value="Americans:French:Allied"/>
+					<option name="relationshipChange" value="Americans:Dutch:Friendly"/>
+					<option name="text" value="Americans_War_Japanese"/>
+				</attatchment>
+				
+				
+<!-- Tech Ability Attachment -->
+				<attatchment name="techAbilityAttachment" attatchTo="superSub" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="attackBonus" value="1:submarine"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="jetPower" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="attackBonus" value="1:fighter"/>
+						<option name="airAttackBonus" value="1:fighter"/>
+						<option name="airDefenseBonus" value="1:fighter"/>
+				</attatchment>
+				<!-- shipyards can either be done with triggers, or the old way (old way only works if all nations have the same production frontier, and it requires a special shipyard frontier) -->
+				<attatchment name="techAbilityAttachment" attatchTo="aARadar" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="radarBonus" value="1:aaGun"/>
+						<option name="radarBonus" value="1:airfield"/>
+						<option name="radarBonus" value="1:harbour"/>
+						<option name="radarBonus" value="1:factory_minor"/>
+						<option name="radarBonus" value="1:factory_upgrade"/>
+						<option name="radarBonus" value="1:factory_major"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="movementBonus" value="1:fighter"/>
+						<option name="movementBonus" value="1:bomber"/>
+						<option name="movementBonus" value="1:tactical_bomber"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="heavyBomber" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="attackRollsBonus" value="1:bomber"/>
+				</attatchment>
+				<!-- Advanced Artillery (improvedArtillerySupport) is handled via Support Attachments -->
+				<attatchment name="techAbilityAttachment" attatchTo="rocket" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="rocketDiceNumber" value="1:airfield"/>
+						<option name="rocketDistance" value="4"/>
+						<option name="rocketNumberPerTerritory" value="1"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="Airborne_Forces" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="airborneForces" value="true"/>
+						<option name="airborneCapacity" value="2:airfield"/>
+						<option name="airborneBases" value="airfield"/>
+						<option name="airborneTypes" value="infantry"/>
+						<option name="airborneDistance" value="3"/>
+						<option name="airborneTargettedByAA" value="AA:infantry"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="increasedFactoryProduction" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="productionBonus" value="2:factory_major"/>
+						<option name="productionBonus" value="2:factory_upgrade"/>
+						<option name="productionBonus" value="1:factory_minor"/>
+						<option name="minimumTerritoryValueForProductionBonus" value="0"/>
+						<option name="repairDiscount" value="50"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="warBonds" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="warBondDiceSides" value="6"/>
+						<option name="warBondDiceNumber" value="1"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="Improved_Mech_Inf" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="unitAbilitiesGained" value="mech_infantry:canBlitz"/>
+				</attatchment>
+				
         </attatchmentList>
         <initialize>
                 <ownerInitialize>
@@ -2234,150 +2800,196 @@
                         <territoryOwner territory="22 Sea Zone" owner="Japanese"/>
                         <territoryOwner territory="35 Sea Zone" owner="Japanese"/>
                 </ownerInitialize>
-                <unitInitialize>
 				
-						<unitPlacement unitType="infantry" territory="Korea" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Manchuria" quantity="4" owner="Japanese"/>
-						<unitPlacement unitType="artillery" territory="Manchuria" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="mech_infantry" territory="Manchuria" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="bomber" territory="Manchuria" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="fighter" territory="Manchuria" quantity="3" owner="Japanese"/>
-						<unitPlacement unitType="tactical_bomber" territory="Manchuria" quantity="2" owner="Japanese"/>
-						<unitPlacement unitType="aaGun" territory="Manchuria" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Jehol" quantity="2" owner="Japanese"/>
-						<unitPlacement unitType="artillery" territory="Jehol" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Shantung" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Kiangsu" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="fighter" territory="Kiangsu" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="tactical_bomber" territory="Kiangsu" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="bomber" territory="Kiangsu" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Kiangsi" quantity="3" owner="Japanese"/>
-						<unitPlacement unitType="artillery" territory="Kiangsi" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Kwangsi" quantity="3" owner="Japanese"/>
-						<unitPlacement unitType="artillery" territory="Kwangsi" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Siam" quantity="2" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Caroline Islands" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="aaGun" territory="Caroline Islands" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="airfield" territory="Caroline Islands" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="harbour" territory="Caroline Islands" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Paulau Island" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="fighter" territory="Formosa" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Okinawa" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="fighter" territory="Okinawa" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Iwo Jima" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="infantry" territory="Japan" quantity="8" owner="Japanese"/>
+                <unitInitialize>
+						<unitPlacement unitType="infantry" territory="Ulaanbaatar" quantity="1"/>
+						<unitPlacement unitType="infantry" territory="Buyant-Uhaa" quantity="2"/>
+						<unitPlacement unitType="infantry" territory="Olgiy" quantity="2"/>
+						<unitPlacement unitType="infantry" territory="Dzavhan" quantity="1"/>
+						
+						<!-- Japan -->
+						<unitPlacement unitType="infantry" territory="Japan" quantity="6" owner="Japanese"/>
 						<unitPlacement unitType="artillery" territory="Japan" quantity="2" owner="Japanese"/>
 						<unitPlacement unitType="armour" territory="Japan" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="fighter" territory="Japan" quantity="2" owner="Japanese"/>
+						<unitPlacement unitType="tactical_bomber" territory="Japan" quantity="2" owner="Japanese"/>
 						<unitPlacement unitType="bomber" territory="Japan" quantity="2" owner="Japanese"/>
-						<unitPlacement unitType="fighter" territory="Japan" quantity="5" owner="Japanese"/>
-						<unitPlacement unitType="tactical_bomber" territory="Japan" quantity="4" owner="Japanese"/>
-						<unitPlacement unitType="aaGun" territory="Japan" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="aaGun" territory="Japan" quantity="3" owner="Japanese"/>
 						<unitPlacement unitType="airfield" territory="Japan" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="harbour" territory="Japan" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="factory_major" territory="Japan" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="destroyer" territory="19 Sea Zone" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="submarine" territory="19 Sea Zone" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="cruiser" territory="19 Sea Zone" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="transport" territory="6 Sea Zone" quantity="2" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Manchuria" quantity="6" owner="Japanese"/>
+						<unitPlacement unitType="mech_infantry" territory="Manchuria" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="artillery" territory="Manchuria" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="aaGun" territory="Manchuria" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="fighter" territory="Manchuria" quantity="2" owner="Japanese"/>
+						<unitPlacement unitType="tactical_bomber" territory="Manchuria" quantity="2" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Paulau Island" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Kiangsi" quantity="3" owner="Japanese"/>
+						<unitPlacement unitType="artillery" territory="Kiangsi" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="fighter" territory="Formosa" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Shantung" quantity="3" owner="Japanese"/>
+						<unitPlacement unitType="artillery" territory="Shantung" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Kwangsi" quantity="3" owner="Japanese"/>
+						<unitPlacement unitType="artillery" territory="Kwangsi" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Iwo Jima" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Jehol" quantity="2" owner="Japanese"/>
+						<unitPlacement unitType="artillery" territory="Jehol" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Caroline Islands" quantity="2" owner="Japanese"/>
+						<unitPlacement unitType="aaGun" territory="Caroline Islands" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="airfield" territory="Caroline Islands" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="harbour" territory="Caroline Islands" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Siam" quantity="2" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Okinawa" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="fighter" territory="Okinawa" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Kiangsu" quantity="3" owner="Japanese"/>
+						<unitPlacement unitType="artillery" territory="Kiangsu" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="fighter" territory="Kiangsu" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="tactical_bomber" territory="Kiangsu" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="infantry" territory="Korea" quantity="4" owner="Japanese"/>
+						<unitPlacement unitType="fighter" territory="Korea" quantity="1" owner="Japanese"/>
+						
+						<unitPlacement unitType="submarine" territory="6 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="destroyer" territory="6 Sea Zone" quantity="2" owner="Japanese"/>
 						<unitPlacement unitType="carrier" territory="6 Sea Zone" quantity="2" owner="Japanese"/>
 						<unitPlacement unitType="fighter" territory="6 Sea Zone" quantity="2" owner="Japanese"/>
 						<unitPlacement unitType="tactical_bomber" territory="6 Sea Zone" quantity="2" owner="Japanese"/>
-						<unitPlacement unitType="submarine" territory="6 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="cruiser" territory="6 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="battleship" territory="6 Sea Zone" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="transport" territory="33 Sea Zone" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="transport" territory="6 Sea Zone" quantity="1" owner="Japanese"/>
+
+						<unitPlacement unitType="submarine" territory="19 Sea Zone" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="battleship" territory="19 Sea Zone" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="destroyer" territory="19 Sea Zone" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="transport" territory="19 Sea Zone" quantity="1" owner="Japanese"/>
+						
 						<unitPlacement unitType="destroyer" territory="33 Sea Zone" quantity="1" owner="Japanese"/>
-						<unitPlacement unitType="battleship" territory="33 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="carrier" territory="33 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="fighter" territory="33 Sea Zone" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="tactical_bomber" territory="33 Sea Zone" quantity="1" owner="Japanese"/>
 						
-						<unitPlacement unitType="infantry" territory="Philippines" quantity="2" owner="Americans"/>
-						<unitPlacement unitType="fighter" territory="Philippines" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="bomber" territory="Philippines" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="airfield" territory="Philippines" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="harbour" territory="Philippines" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="airfield" territory="Guam" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="airfield" territory="Wake Island" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="infantry" territory="Hawaiian Islands" quantity="2" owner="Americans"/>
-						<unitPlacement unitType="bomber" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="fighter" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="tactical_bomber" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="airfield" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="harbour" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="airfield" territory="Midway" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="infantry" territory="Western United States" quantity="3" owner="Americans"/>
-						<unitPlacement unitType="artillery" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="mech_infantry" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="armour" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="bomber" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="fighter" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="tactical_bomber" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="aaGun" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="airfield" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="harbour" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="factory_major" territory="Western United States" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="destroyer" territory="35 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="transport" territory="35 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="destroyer" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="transport" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="submarine" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="cruiser" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="carrier" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="fighter" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="tactical_bomber" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="battleship" territory="10 Sea Zone" quantity="1" owner="Americans"/>
-						<unitPlacement unitType="transport" territory="26 Sea Zone" quantity="1" owner="Americans"/>
-						<!--<unitPlacement unitType="infantry" territory="Box2" quantity="1" owner="Americans"/>-->
-						
-						<unitPlacement unitType="infantry" territory="Suiyuan" quantity="2" owner="Chinese"/>
-						<unitPlacement unitType="infantry" territory="Shensi" quantity="1" owner="Chinese"/>
-						<unitPlacement unitType="infantry" territory="Szechwan" quantity="4" owner="Chinese"/>
-						<unitPlacement unitType="fighter" territory="Szechwan" quantity="1" owner="Chinese"/>
-						<unitPlacement unitType="infantry" territory="Kweichow" quantity="1" owner="Chinese"/>
-						<unitPlacement unitType="infantry" territory="Hunan" quantity="1" owner="Chinese"/>
-						<unitPlacement unitType="infantry" territory="Yunnan" quantity="3" owner="Chinese"/>
-						
-						<unitPlacement unitType="infantry" territory="Kwangtung" quantity="2" owner="British"/>
-						<unitPlacement unitType="harbour" territory="Kwangtung" quantity="1" owner="British"/>
-						<unitPlacement unitType="infantry" territory="Malaya" quantity="4" owner="British"/>
-						<unitPlacement unitType="harbour" territory="Malaya" quantity="1" owner="British"/>
-						<unitPlacement unitType="infantry" territory="Burma" quantity="1" owner="British"/>
-						<unitPlacement unitType="fighter" territory="Burma" quantity="1" owner="British"/>
-						<unitPlacement unitType="infantry" territory="India" quantity="4" owner="British"/>
-						<unitPlacement unitType="artillery" territory="India" quantity="1" owner="British"/>
-						<unitPlacement unitType="fighter" territory="India" quantity="3" owner="British"/>
-						<unitPlacement unitType="tactical_bomber" territory="India" quantity="1" owner="British"/>
-						<unitPlacement unitType="aaGun" territory="India" quantity="1" owner="British"/>
-						<unitPlacement unitType="airfield" territory="India" quantity="1" owner="British"/>
-						<unitPlacement unitType="harbour" territory="India" quantity="1" owner="British"/>
-						<unitPlacement unitType="factory_major" territory="India" quantity="1" owner="British"/>
-						<unitPlacement unitType="destroyer" territory="39 Sea Zone" quantity="1" owner="British"/>
-						<unitPlacement unitType="cruiser" territory="39 Sea Zone" quantity="1" owner="British"/>
-						<unitPlacement unitType="transport" territory="37 Sea Zone" quantity="2" owner="British"/>
-						<unitPlacement unitType="battleship" territory="37 Sea Zone" quantity="1" owner="British"/>
-						
-						<unitPlacement unitType="infantry" territory="Malaya" quantity="1" owner="ANZAC"/>
-						<unitPlacement unitType="infantry" territory="New South Wales" quantity="1" owner="ANZAC"/>
+						<unitPlacement unitType="cruiser" territory="20 Sea Zone" quantity="1" owner="Japanese"/>
+						<unitPlacement unitType="transport" territory="20 Sea Zone" quantity="1" owner="Japanese"/>
+				
+				
+						<!-- ANZAC -->
+						<unitPlacement unitType="infantry" territory="New South Wales" quantity="2" owner="ANZAC"/>
+						<unitPlacement unitType="aaGun" territory="New South Wales" quantity="2" owner="ANZAC"/>
 						<unitPlacement unitType="factory_minor" territory="New South Wales" quantity="1" owner="ANZAC"/>
+						<unitPlacement unitType="harbour" territory="New South Wales" quantity="1" owner="ANZAC"/>
+						
+						<unitPlacement unitType="infantry" territory="New Zealand" quantity="1" owner="ANZAC"/>
+						<unitPlacement unitType="fighter" territory="New Zealand" quantity="2" owner="ANZAC"/>
+						<unitPlacement unitType="airfield" territory="New Zealand" quantity="1" owner="ANZAC"/>
+						<unitPlacement unitType="harbour" territory="New Zealand" quantity="1" owner="ANZAC"/>
+						
 						<unitPlacement unitType="infantry" territory="Queensland" quantity="2" owner="ANZAC"/>
 						<unitPlacement unitType="artillery" territory="Queensland" quantity="1" owner="ANZAC"/>
 						<unitPlacement unitType="fighter" territory="Queensland" quantity="1" owner="ANZAC"/>
 						<unitPlacement unitType="airfield" territory="Queensland" quantity="1" owner="ANZAC"/>
 						<unitPlacement unitType="harbour" territory="Queensland" quantity="1" owner="ANZAC"/>
-						<unitPlacement unitType="infantry" territory="New Zealand" quantity="1" owner="ANZAC"/>
-						<unitPlacement unitType="fighter" territory="New Zealand" quantity="3" owner="ANZAC"/>
-						<unitPlacement unitType="airfield" territory="New Zealand" quantity="1" owner="ANZAC"/>
-						<unitPlacement unitType="harbour" territory="New Zealand" quantity="1" owner="ANZAC"/>
-						<unitPlacement unitType="submarine" territory="47 Sea Zone" quantity="1" owner="ANZAC"/>
+						
+						<unitPlacement unitType="infantry" territory="Malaya" quantity="1" owner="ANZAC"/>
+						
 						<unitPlacement unitType="destroyer" territory="62 Sea Zone" quantity="1" owner="ANZAC"/>
 						<unitPlacement unitType="transport" territory="62 Sea Zone" quantity="1" owner="ANZAC"/>
 						
-						<unitPlacement unitType="infantry" territory="Ulaanbaatar" quantity="1"/>
-						<unitPlacement unitType="infantry" territory="Buyant-Uhaa" quantity="2"/>
-						<unitPlacement unitType="infantry" territory="Olgiy" quantity="2"/>
-						<unitPlacement unitType="infantry" territory="Dzavhan" quantity="1"/>
+						<unitPlacement unitType="cruiser" territory="63 Sea Zone" quantity="1" owner="ANZAC"/>
+					
+					
+						<!-- Americans -->
+						<unitPlacement unitType="infantry" territory="Western United States" quantity="2" owner="Americans"/>
+						<unitPlacement unitType="mech_infantry" territory="Western United States" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="artillery" territory="Western United States" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="fighter" territory="Western United States" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="aaGun" territory="Western United States" quantity="2" owner="Americans"/>
+						<unitPlacement unitType="airfield" territory="Western United States" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="harbour" territory="Western United States" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="factory_major" territory="Western United States" quantity="1" owner="Americans"/>
+						
+						<unitPlacement unitType="infantry" territory="Hawaiian Islands" quantity="2" owner="Americans"/>
+						<unitPlacement unitType="fighter" territory="Hawaiian Islands" quantity="2" owner="Americans"/>
+						<unitPlacement unitType="airfield" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="harbour" territory="Hawaiian Islands" quantity="1" owner="Americans"/>
+						
+						<unitPlacement unitType="infantry" territory="Philippines" quantity="2" owner="Americans"/>
+						<unitPlacement unitType="fighter" territory="Philippines" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="airfield" territory="Philippines" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="harbour" territory="Philippines" quantity="1" owner="Americans"/>
+
+						<unitPlacement unitType="airfield" territory="Midway" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="airfield" territory="Wake Island" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="airfield" territory="Guam" quantity="1" owner="Americans"/>
+						
+						<unitPlacement unitType="submarine" territory="26 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="destroyer" territory="26 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="cruiser" territory="26 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="transport" territory="26 Sea Zone" quantity="1" owner="Americans"/>
+						
+						<unitPlacement unitType="battleship" territory="10 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="cruiser" territory="10 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="destroyer" territory="10 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="transport" territory="10 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="carrier" territory="10 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="fighter" territory="10 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="tactical_bomber" territory="10 Sea Zone" quantity="1" owner="Americans"/>
+
+						<unitPlacement unitType="destroyer" territory="35 Sea Zone" quantity="1" owner="Americans"/>
+						<unitPlacement unitType="submarine" territory="35 Sea Zone" quantity="1" owner="Americans"/>
+						
+						
+						<!-- Chinese -->
+						<unitPlacement unitType="infantry" territory="Szechwan" quantity="6" owner="Chinese"/>
+						<unitPlacement unitType="fighter" territory="Szechwan" quantity="1" owner="Chinese"/>
+						
+						<unitPlacement unitType="infantry" territory="Hunan" quantity="2" owner="Chinese"/>
+						
+						<unitPlacement unitType="infantry" territory="Yunnan" quantity="4" owner="Chinese"/>
+						
+						<unitPlacement unitType="infantry" territory="Kweichow" quantity="2" owner="Chinese"/>
+						
+						<unitPlacement unitType="infantry" territory="Shensi" quantity="1" owner="Chinese"/>
+						
+						<unitPlacement unitType="infantry" territory="Suiyuan" quantity="2" owner="Chinese"/>
+						
+					
+						<!-- British -->
+						<unitPlacement unitType="infantry" territory="Kwangtung" quantity="2" owner="British"/>
+						<unitPlacement unitType="harbour" territory="Kwangtung" quantity="1" owner="British"/>
+						
+						<unitPlacement unitType="infantry" territory="Malaya" quantity="3" owner="British"/>
+						<unitPlacement unitType="harbour" territory="Malaya" quantity="1" owner="British"/>
+						
+						<unitPlacement unitType="infantry" territory="Burma" quantity="2" owner="British"/>
+						<unitPlacement unitType="fighter" territory="Burma" quantity="1" owner="British"/>
+						
+						<unitPlacement unitType="infantry" territory="India" quantity="6" owner="British"/>
+						<unitPlacement unitType="artillery" territory="India" quantity="1" owner="British"/>
+						<unitPlacement unitType="aaGun" territory="India" quantity="3" owner="British"/>
+						<unitPlacement unitType="fighter" territory="India" quantity="1" owner="British"/>
+						<unitPlacement unitType="tactical_bomber" territory="India" quantity="1" owner="British"/>
+						<unitPlacement unitType="airfield" territory="India" quantity="1" owner="British"/>
+						<unitPlacement unitType="harbour" territory="India" quantity="1" owner="British"/>
+						<unitPlacement unitType="factory_major" territory="India" quantity="1" owner="British"/>
+						
+						<unitPlacement unitType="battleship" territory="37 Sea Zone" quantity="1" owner="British"/>
+						
+						<unitPlacement unitType="destroyer" territory="39 Sea Zone" quantity="1" owner="British"/>
+						<unitPlacement unitType="cruiser" territory="39 Sea Zone" quantity="1" owner="British"/>
+						<unitPlacement unitType="transport" territory="39 Sea Zone" quantity="1" owner="British"/>
 						
 						
                 </unitInitialize>
@@ -2397,63 +3009,62 @@
 				<relationshipInitialize>
 						<!-- the order of player1 and player2 does not matter. 
 						having them listed twice in different orders will just have the later one overwrite the earlier one -->
-						<relationship type="Allied" player1="British" player2="ANZAC" roundValue="1"/>
-						<relationship type="War" player1="Japanese" player2="Chinese" roundValue="1"/>
-						<relationship type="War" player1="Japanese" player2="French" roundValue="1"/>
-						<relationship type="Neutrality" player1="Chinese" player2="French" roundValue="1"/>
-						<relationship type="Friendly" player1="British" player2="French" roundValue="1"/>
-						<relationship type="Custodianship" player1="British" player2="Dutch" roundValue="1"/>
-						<relationship type="Friendly" player1="ANZAC" player2="French" roundValue="1"/>
-						<relationship type="Custodianship" player1="ANZAC" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutrality" player1="Japanese" player2="British" roundValue="1"/>
-						<relationship type="Neutrality" player1="Japanese" player2="ANZAC" roundValue="1"/>
-						<relationship type="Neutrality" player1="Japanese" player2="Americans" roundValue="1"/>
-						<relationship type="Neutrality" player1="Japanese" player2="Russians" roundValue="1"/>
-						<relationship type="Neutrality" player1="Japanese" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutrality" player1="Chinese" player2="British" roundValue="1"/>
-						<relationship type="Neutrality" player1="Chinese" player2="ANZAC" roundValue="1"/>
-						<relationship type="Neutrality" player1="Chinese" player2="Americans" roundValue="1"/>
-						<relationship type="Neutrality" player1="Chinese" player2="Russians" roundValue="1"/>
-						<relationship type="Neutrality" player1="Chinese" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutrality" player1="British" player2="Americans" roundValue="1"/>
-						<relationship type="Neutrality" player1="British" player2="Russians" roundValue="1"/>
-						<relationship type="Neutrality" player1="ANZAC" player2="Americans" roundValue="1"/>
-						<relationship type="Neutrality" player1="ANZAC" player2="Russians" roundValue="1"/>
-						<relationship type="Neutrality" player1="Americans" player2="Russians" roundValue="1"/>
-						<relationship type="Neutrality" player1="Americans" player2="French" roundValue="1"/>
-						<relationship type="Neutrality" player1="Americans" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutrality" player1="Russians" player2="French" roundValue="1"/>
-						<relationship type="Neutrality" player1="Russians" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutrality" player1="French" player2="Dutch" roundValue="1"/>
+						<relationship player1="Russians" player2="Japanese" type="Neutrality" roundValue="1"/>
+						<relationship player1="Russians" player2="Americans" type="Neutrality" roundValue="1"/>
+						<relationship player1="Russians" player2="Chinese" type="Neutrality" roundValue="1"/>
+						<relationship player1="Russians" player2="British" type="Neutrality" roundValue="1"/>
+						<relationship player1="Russians" player2="ANZAC" type="Neutrality" roundValue="1"/>
+						<relationship player1="Russians" player2="French" type="Neutrality" roundValue="1"/>
+						<relationship player1="Russians" player2="Dutch" type="Neutrality" roundValue="1"/>
+						
+						<relationship player1="Japanese" player2="Americans" type="Neutrality" roundValue="1"/>
+						<relationship player1="Japanese" player2="Chinese" type="War" roundValue="1"/>
+						<relationship player1="Japanese" player2="British" type="Neutrality" roundValue="1"/>
+						<relationship player1="Japanese" player2="ANZAC" type="Neutrality" roundValue="1"/>
+						<relationship player1="Japanese" player2="French" type="Neutrality" roundValue="1"/>
+						<relationship player1="Japanese" player2="Dutch" type="Neutrality" roundValue="1"/>
+
+						<relationship player1="Americans" player2="Chinese" type="Neutrality" roundValue="1"/>
+						<relationship player1="Americans" player2="British" type="Neutrality" roundValue="1"/>
+						<relationship player1="Americans" player2="ANZAC" type="Neutrality" roundValue="1"/>
+						<relationship player1="Americans" player2="French" type="Neutrality" roundValue="1"/>
+						<relationship player1="Americans" player2="Dutch" type="Neutrality" roundValue="1"/>
+
+						<relationship player1="Chinese" player2="British" type="Neutrality" roundValue="1"/>
+						<relationship player1="Chinese" player2="ANZAC" type="Neutrality" roundValue="1"/>
+						<relationship player1="Chinese" player2="French" type="Neutrality" roundValue="1"/>
+						<relationship player1="Chinese" player2="Dutch" type="Neutrality" roundValue="1"/>
+						
+						<relationship player1="British" player2="ANZAC" type="Allied" roundValue="1"/>
+						<relationship player1="British" player2="French" type="Allied" roundValue="1"/>
+						<relationship player1="British" player2="Dutch" type="Custodianship" roundValue="1"/>
+						
+						<relationship player1="ANZAC" player2="French" type="Allied" roundValue="1"/>
+						<relationship player1="ANZAC" player2="Dutch" type="Custodianship" roundValue="1"/>
+
+						<relationship player1="French" player2="Dutch" type="Friendly" roundValue="1"/>
+						
 				</relationshipInitialize>
 				
         </initialize>
+
         <propertyList>
 				<!-- PLEASE KEEP YOUR PROPERTIES IN THIS ORDER!!! -->
 				<!-- TYPICAL OPTIONAL PROPERTIES -->
 				<!-- Bidding -->
-				<!--<property name="Dutch bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-				<property name="Russians bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-                <property name="French bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>-->
-				<property name="British bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
                 <property name="Japanese bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
                 <property name="Americans bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
-				<property name="ANZAC bid" value="0" editable="true">
+				<property name="Chinese bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
-				<property name="Chinese bid" value="0" editable="true">
+                <property name="British bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+				<property name="ANZAC bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 				
@@ -2462,19 +3073,19 @@
 						<boolean/>
 				</property>
 				
-				<property name="Honorable Surrender" value="false" editable="true">
+				<property name="Honorable Surrender" value="false" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="Axis Honorable Victory VCs" value="6" editable="true">
-						<number min="5" max="8"/>
+				<property name="Axis Honorable Victory VCs" value="6" editable="false">
+						<number min="6" max="8"/>
 				</property>
 
-				<property name="Allies Honorable Victory VCs" value="7" editable="true">
+				<property name="Allies Honorable Victory VCs" value="7" editable="false">
 						<number min="6" max="8"/>
 				</property>
 				<!-- End of Victory Conditions, rest of typical changed properties below -->
-
+				
 				<property name="Low Luck" value="false" editable="true">
 						<boolean/>
 				</property>
@@ -2491,11 +3102,11 @@
 						<boolean/>
 				</property>
 
-				<property name="Use Politics" value="true" editable="true">
+				<property name="Use Politics" value="true" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="National Objectives" value="true" editable="true">
+				<property name="National Objectives" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -2504,6 +3115,10 @@
 				</property>
 
 				<property name="Tech Development" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Remove All Tech Tokens At End Of Turn" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -2519,11 +3134,11 @@
 						<number min="2" max="3"/>
 				</property>
 
-				<property name="Paratroopers Can Move During Non Combat" value="false" editable="true">
+				<property name="Paratroopers Can Move During Non Combat" value="false" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="Paratroopers Can Attack Deep Into Enemy Territory" value="false" editable="true">
+				<property name="Paratroopers Can Attack Deep Into Enemy Territory" value="false" editable="false">
 						<boolean/>
 				</property>
 
@@ -2542,6 +3157,10 @@
 				<property name="Kamikaze Suicide Attacks Done By Current Territory Owner" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+				<property name="Kamikaze Suicide Attacks Only Where Battles Are" value="true" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Battleships repair at end of round" value="false" editable="false">
 						<boolean/>
@@ -2554,7 +3173,7 @@
 				<property name="Two HitPoint Units Require Repair Facilities" value="true" editable="true">
 						<boolean/>
 				</property>
-
+				
 				<!-- Display Options -->
 				<property name="Multiply PUs" value="1" editable="false">
 						<number min="1" max="10"/>
@@ -2572,8 +3191,8 @@
 						<boolean/>
 				</property>
 				<!-- END OF TYPICAL OPTIONAL PROPERTIES -->
-
-				<!-- rules and tech -->
+				
+                <!-- rules and tech -->
 				<property name="WW2V3" value="true" editable="false">
 						<boolean/>
 				</property>
@@ -2602,11 +3221,19 @@
 						<boolean/>
 				</property>
 
-				<property name="Scramble From Island Only" value="true" editable="true">
+				<property name="Scramble From Island Only" value="false" editable="true">
 						<boolean/>
 				</property>
 
-				<property name="Scramble To Any Amphibious Assault" value="false" editable="true">
+				<property name="Scramble To Any Amphibious Assault" value="true" editable="true">
+						<boolean/>
+				</property>
+				
+				<property name="Airborne Attacks Only In Existing Battles" value="true" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Airborne Attacks Only In Enemy Territories" value="false" editable="false">
 						<boolean/>
 				</property>
 
@@ -2614,7 +3241,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Rocket Attack Per Factory Restricted" value="true" editable="false">
+				<property name="Rocket Attacks Per Factory Infinite" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -2655,21 +3282,21 @@
 						<boolean/>
 				</property>
 
-				<property name="Capture Units On Entering Territory" value ="true" editable="false">
-						<boolean/>
-				</property>
-
-				<property name="On Entering Units Destroyed Instead Of Captured" value ="false" editable="false">
-						<boolean/>
-				</property>
-
-				<!-- specific rules -->
-				<!-- land related -->
-				<property name="Units Can Be Destroyed Instead Of Captured" value ="true" editable="false">
+				<property name="Capture Units On Entering Territory" value="true" editable="false">
 						<boolean/>
 				</property>
 				
-				<property name="Units Can Be Changed On Capture" value ="false" editable="true">
+				<property name="On Entering Units Destroyed Instead Of Captured" value="false" editable="false">
+						<boolean/>
+				</property>
+				
+				<!-- specific rules -->
+				<!-- land related -->
+				<property name="Units Can Be Destroyed Instead Of Captured" value="true" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Units Can Be Changed On Capture" value ="true" editable="true">
 						<boolean/>
 				</property>
 				
@@ -2693,7 +3320,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Choose AA Casualties" value="false" editable="false">
+				<property name="Choose AA Casualties" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -2774,6 +3401,10 @@
 						<boolean/>
 				</property>
 
+				<property name="Submarines Prevent Unescorted Amphibious Assaults" value="true" editable="false">
+						<boolean/>
+				</property>
+
 				<property name="Ignore Sub In Movement" value="true" editable="false">
 						<boolean/>
 				</property>
@@ -2794,6 +3425,10 @@
 						<boolean/>
 				</property>
 				
+				<property name="Subs Can End NonCombat Move With Enemies" value="true" editable="false">
+						<boolean/>
+				</property>
+				
 				<property name="Naval Units May Not NonCombat Move Into Controlled Sea Zones" value="false" editable="false">
 						<boolean/>
 				</property>
@@ -2803,6 +3438,10 @@
 				</property>
 
 				<property name="Two hit battleship" value="true" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Convoy Blockades Roll Dice For Cost" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -2866,6 +3505,10 @@
 				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
 						<boolean/>
 				</property>
+				
+				<property name="Use Bombing Max Dice Sides And Bonus" value="true" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Limit SBR Damage To Factory Production" value="false" editable="false">
 						<boolean/>
@@ -2889,13 +3532,13 @@
 				</property>
 
 				
-                <property name="mapName" value="World War II Pacific Test" editable="false"/>
+                <property name="mapName" value="World War II Pacific Test 2nd Edition" editable="false"/>
 				
                 <property name="notes">
 						<value>
 					<![CDATA[  
 <div style="padding:10px;font-size:14px;background-color:white;text-align:justify;">
-<b>Pacific 1940 Original</b><br>
+<b>Pacific 1940 Second Edition</b><br>
 <br>
 <b>Credits:</b><br>
 Map XML, Files, and Zip: Veqryn<br>
@@ -2905,14 +3548,20 @@ Engine Code: Veqryn, Edwin, Squid Daddy<br>
 
 <br>
 <b>Note</b><br>
-This game uses vanilla rules, also knowns as OOB (out of the box). <br><br>
+This game uses the latest Pacific 1940 2nd Edition (successor to Alpha +3) rules, as posted on Larry's website.<br>
+To blitz move mech_infantry with armour, you must click on them both at the same time (use CTRL to create waypoints).<br>
+Paratroopers tech enables a second combat movement phase which happens right after the first combat movement phase, and the second one only allowes movement of paratrooping infantry.<br>
+<br>
 
 <b>Disclaimer</b><br>
-The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
+The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. 
+It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. 
+Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br>
+You must always validate your own movement, especially air movement at sea.  The engine is not perfect.<br>
+<br>
 
-<b>Stuff Left TODO</b><br>
-* Kamikaze attacks will prevent bombardment.  So will Scrambling attacks.<br>
-* Captured naval and air bases can not be used until next turn.  In other words, you can't somehow use the naval base for bonus movement during noncombat.<br>
+<b>Rules the engine does not do, but you must follow:</b><br>
+* Do not allow USA movement to end in Sea Zones 17, 22, 32, 33, 34, and 37.<br>
 <br><br>
 <br><hr><br>
 
@@ -2932,8 +3581,8 @@ At the start of the game Japan is at war with China and France only. Any countri
 
 <b>Japan</b>
 <ul>
-<li>Japan can declare war on the Allies at any time. Declaring war on one of them means declaring war on all of them.</li>
-<li>Japan can not enter Dutch territories without first being at war with the Allies.</li>
+<li>Japan can declare war on the Allies at any time. Declaring war on any of them will allow all other Allies to declare war on Japan.</li>
+<li>Japan can not enter Dutch territories without first being at war with UK and ANZAC. A Declaration of War against UK or ANZAC will result in war with both.</li>
 </ul>
 <br><b>British/ANZAC</b>
 <ul>
@@ -2961,28 +3610,29 @@ At the start of the game Japan is at war with China and France only. Any countri
 
 <b>Japan</b>
 <ul>
-<li>5 PUs if Japan controls all of Sumatra, Java, Borneo, and Celebes.</li>
-<li>5 PUs for each Japanese controlled territory: Hawaii, India, New South Wales.</li>
-<li>5 PUs if Japan controls all of Solomon Islands, Dutch New Guinea, New Britain, and New Guinea.</li>
+<li>10 PUs if not yet at war with USA, has not yet attacked French Indo-China, and has not declared war on UK or ANZAC.</li>
+<li>5 PUs if Axis controls all of Guam, Midway, Wake Island, Gilbert Islands, and Solomon Islands.</li>
+<li>5 PUs for each Axis controlled territory: Hawaii, India, New South Wales, and Western United States.</li>
+<li>5 PUs if Axis controls all of Sumatra, Java, Borneo, and Celebes.</li>
 </ul>
 
 <b>UK</b>
 <ul>
-<li>5 PUs if the Allies control all of Sumatra, Java, Borneo, and Celebes.</li>
-<li>5 PUs if UK controls all of Kwangtung and Malaya.</li>
+<li>5 PUs for UK Pacific if UK Pacific controls both Kwangtung and Malaya, and is at war with Japan.</li>
 </ul>
 
 <b>ANZAC</b>
 <ul>
-<li>5 PUs if the Allies controls all of Solomon Islands, Dutch New Guinea, New Britain, and New Guinea.</li>
-<li>5 PUs only once, the first time ANZAC occupies an originally Japanese territory or island [has a unit on it at end of turn].</li>
+<li>5 PUs if the Allies control Malaya, and ANZAC controls all of their original territories, and is at war with Japan.</li>
+<li>5 PUs if the Allies (not including Dutch) control all of Dutch New Guinea, New Guinea, New Britain, and the Solomon Islands, and is at war with Japan.</li>
 </ul>
 
 <b>USA</b>
 <ul>
-<li>40 PUs if USA is at war with Japan.</li>
-<li>5 PUs if USA controls the Philippines.</li>
-<li>5 PUs if USA controls all of Okinawa and Iwo Jima.</li>
+<li>30 PUs if USA is at war and Western United States is American-controlled.</li>
+<li>5 PUs if USA is at war and Aleutian Islands, Hawaiian Islands, and Johnston Island, and Line Islands are American-controlled.</li>
+<li>5 PUs if USA is at war and Alaska, and Mexico are American-controlled.</li>
+<li>5 PUs if USA is at war and the Philippines is American-controlled.</li>
 </ul>
 
 <b>China</b>
@@ -2993,37 +3643,39 @@ At the start of the game Japan is at war with China and France only. Any countri
 
 <br><br><hr><br>
 <b>Kamikaze Attacks</b><br>
-Japan starts the game with 6 attack tokens, and if one of the strategic islands [Philippines, Marianas, Okinawa, or Iwo Jima] is captured or recaptured by the Allies, Japan may begin doing Kamikaze Attacks.<br>
+Japan starts the game with 6 attack tokens, and may begin doing Kamikaze Attacks at the start of the game.<br>
 These attacks can only be done in sea zones that contain the Kamikaze symbol [the sea zones surrounding: Japan, Okinawa, Iwo Jima, Formosa, and the Marianas].<br>
-At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks.<br>
+At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks, ONLY if the enemy is attacking Japanese units there or is conducting an Amphibious Assault from that sea zone.<br>
 For each attack, a die is rolled, and a 2 or less is considered a hit. Casualties are removed immediately, and do not participate in any battles. Kamikaze attacks prevent bombardment as well.<br>
 <br><br><hr><br>
 
-<b>Submarine Attacks on Unescorted Transports</b><br>
-Any Transport ships that are moving without a surface warship escort, and moving past or into a sea zone containing enemy submarines, is subject to an attack.<br>
-Each enemy submarine will fire at 2.  Each submarine only fires once, no matter how many transports there are.<br>
+<b>Submarines Prevent Unescorted Transports From Making Amphibious Assaults</b><br>
+In any Sea Zone containing an enemy submarine, but not containing an owned warship, the submarine will prevent the offloading of troops for an amphibious assault. 
 <br><br><hr><br>
 
 
 <b>Scrambling</b><br>
-Fighters and/or Tactical bombers can be scrambled from any island with an operating airfield (less than 3 damage) to help defend the surrounding sea zone using their standard defense values. They cannot retreat from scrambling (defenders can never retreat) and if the territory they were scrambled from is captured, they're given one extra movement point to land on a friendly territory or open carrier. Scrambled air cannot participate in any other battles that round.
+Fighters and/or Tactical bombers can be scrambled from any territory bordering a sea zone, with an operating airfield (less than 3 damage) to help defend the surrounding sea zone using their standard defense values. They cannot retreat from scrambling (defenders can never retreat) and if the territory they were scrambled from is captured, they're given one extra movement point to land on a friendly territory or open carrier. Scrambled air cannot participate in any other battles that round.
 <br><br><hr><br>
+
 <b>Strategic Bombing Runs (SBR)</b><br>
-Bombing can now happen against both types of ICs, harbours, and airfields (attackers choice). Fighters can participate in the bombing run as escorts. Fighters in the territory being bombed can be launched as interceptors (no airfield necessary).<br><br>
-<b>If interceptors are launched:</b> a one-round air battle takes place right away where bombers dont roll, escorts roll at one and interceptors roll at two. Either attacking bombers or fighters can be taken as casualties.<br><br>
+Bombing can now happen against both types of ICs, harbours, and airfields (attackers choice)[tactical bombers can not target factories though]. Fighters can participate in the bombing run as escorts. Fighters in the territory being bombed can be launched as interceptors (no airfield necessary).<br><br>
+<b>If interceptors are launched:</b> a one-round air battle takes place right away all air involved roll at 1 (jets rolls at 2). Either attacking bombers or fighters can be taken as casualties.<br><br>
 After the air battle, or if there were no interceptors, the escorts are retreated and any bombers/tacs remaining can now be divied up to attack specific targets. Each target rolls its built-in AA gun against the bombers/tacs targetting it. If there is an AA gun in the territory being bombed it does <b>not</b> roll because its there to defend combat units and not complexes/bases.
 <br><br>
 
 <br><br><hr><br>
 
 <b>Blockade Zones</b><br>
-If any enemy ships are in a power's blockade zones at the end of that power's turn, and the power controls the adjacent ground territory, then the power loses 1 PU for each surface warship and 2 PUs for each submarine present. The power in question cannot lose more PUs from a blockade zones then the worth of the adjacent ground territory to those zones.
+If any enemy ships are in a power's blockade zones at the end of that power's turn, and the power controls the adjacent ground territory, then the power may lose some of the PUs it would have otherwise collected.<br>
+Surface warships roll 1 dice, Submarines and Air units roll 2 dice, and carriers and transports roll zero dice.  For any roll of 3 or less, that amount of PUs will not be collected by the surrounding land territories.
+The power in question cannot lose more PUs from a blockade zones then the worth of the adjacent ground territory to those zones.
 
 <br><br><hr><br>
 
 <b>Placement Restrictions</b>
 <ul>
-<li>Major Industrial Complexes can only go in territories worth 3 or more.</li>
+<li>Major Industrial Complexes can only go in territories worth 3 or more, and must be originally owned territories.</li>
 <li>Minor Industrial Complexes can only go in territories worth 2 or more.</li>
 <li>Industrial Complexes can't be built on islands.</li>
 <li>Over-purchase is returned and money is reimbursed.</li>
@@ -3034,23 +3686,29 @@ If any enemy ships are in a power's blockade zones at the end of that power's tu
 <b>Units</b><br>
 These changes to units are things other than price/movement which you can see in the buy menu.
 <ul>
+<li>Bombers now do 2 additional damage in strategic bombing raids, in addition to their dice roll.</li>
 <li>Carriers are two hit.</li>
-<li>Minor Industrial Complexes have 3 production capacity. A Minor IC can be upgraded to a Major IC for 20 PUs.</li>
+<li>Minor Industrial Complexes have 3 production capacity. A Minor IC can be upgraded to a Major IC for 20 PUs, but only on originally owned territories.</li>
 <li>Major Industrial Complexes have 10 production capacity. When a Major IC is captured it automatically becomes a minor IC.</li>
+<li>AA Guns may be taken casualty in combat, and may only fire at up to 3 aircraft each.</li>
 </ul>
 
 <b>New Units</b><br>
-<b>Tactical Bombers:</b> can land on carriers, can bomb, and if paired with <b>a tank or fighter</b> the Tac attacks at 4.<br>
+<b>Tactical Bombers:</b> can land on carriers, can bomb, and if paired with <b>a tank or fighter</b> the Tac attacks at 4. Tactical Bombers can also strategic bomb Airfields and Harbours (but not factories).<br>
 <b>Mechanized Infantry:</b> can blitz when paired with a tank, and are supportable by artillery.<br>
 <b>Carriers:</b> now have 2 hitpoints, and when damaged they do not allow fighters to land, or to leave if cargo.<br>
 <br>
 <b>New Buildings</b><br>
 <b>Harbour:</b> Any ships that start their turn in a sea zone adjacent to a harbour get +1 movement points. Any damaged ships are repaired by a harbour at the start of the player's purchase and repair turn phase. Lastly, harbours can be bombed, and if they have 3 or more damage then they do not provide the above bonuses.<br>
-<b>Airfield:</b> Any air that start their turn on the ground territory with an airfield get +1 movement points. Airfields <b>on islands (not incl. UK)</b> allow planes on that island to scramble (see Scramble section above). Airfields can be bombed, and if they have 3 or more damage then they do not provide the movement bonus.
+<b>Airfield:</b> Any air that start their turn on the ground territory with an airfield get +1 movement points. Airfields allow up to 3 planes on that island to scramble (see Scramble section above). Airfields can be bombed, and if they have 3 or more damage then they do not provide the movement bonus.
 <br><br><hr><br>
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>3.0
+<br>Created Pacific 1940 Second Edition based on existing Global 1940 Second Edition.
+<br>Created decorations and image placements for territory names, PUs, and other misc things.
 <br>
 <br>2.7
 <br>Added connection between 30 and 31 Sea Zones, and changed map tiles to show a connection.
