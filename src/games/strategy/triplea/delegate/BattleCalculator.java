@@ -82,7 +82,7 @@ public class BattleCalculator
 			public int compare(final Unit u1, final Unit u2)
 			{
 				if (u1.getUnitType().equals(u2.getUnitType()))
-					return UnitComparator.getDecreasingMovementComparator().compare(u1, u2);
+					return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
 				return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
 			}
 		};

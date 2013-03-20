@@ -291,9 +291,13 @@ public class TripleAFrame extends MainGameFrame
 		m_gameSouthPanel.setLayout(new BorderLayout());
 		// m_gameSouthPanel.add(m_message, BorderLayout.WEST);
 		m_message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-		// m_message.setText("some text to set a reasonable preferred size for such things as territory production and effects");
-		// m_message.setPreferredSize(m_message.getPreferredSize());
+		m_message.setPreferredSize(m_message.getPreferredSize());
+		m_message.setText("some text to set a reasonable preferred size");
+		m_status.setText("some text to set a reasonable preferred size for movement error messages");
+		m_message.setPreferredSize(m_message.getPreferredSize());
+		m_status.setPreferredSize(m_message.getPreferredSize());
 		m_message.setText("");
+		m_status.setText("");
 		// m_gameSouthPanel.add(m_status, BorderLayout.CENTER);
 		final JPanel bottomMessagePanel = new JPanel();
 		bottomMessagePanel.setLayout(new GridBagLayout());

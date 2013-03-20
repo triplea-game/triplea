@@ -1,4 +1,6 @@
 Changes for 1.7
+* Fixing bug in air movement validation for complex movement cases. (veqryn)
+
 * Fixing several memory leaks related to game notes staying in memory multiple times. (veqryn)
 
 * Creating Edit Mode for Grid Based games like chess, checkers, and go. (veqryn)

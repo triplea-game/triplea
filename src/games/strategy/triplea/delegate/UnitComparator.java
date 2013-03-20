@@ -28,7 +28,7 @@ import java.util.List;
 
 public class UnitComparator
 {
-	public static Comparator<Unit> getDecreasingMovementComparator()
+	public static Comparator<Unit> getLowestToHighestMovementComparator()
 	{
 		return new Comparator<Unit>()
 		{
@@ -45,7 +45,7 @@ public class UnitComparator
 		};
 	}
 	
-	public static Comparator<Unit> getIncreasingMovementComparator()
+	public static Comparator<Unit> getHighestToLowestMovementComparator()
 	{
 		return new Comparator<Unit>()
 		{

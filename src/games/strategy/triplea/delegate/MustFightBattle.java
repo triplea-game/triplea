@@ -2918,7 +2918,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	// This will allow the marines with higher scores to get killed last
 	public void sortAmphib(final List<Unit> units, final GameData data)
 	{
-		final Comparator<Unit> decreasingMovement = UnitComparator.getDecreasingMovementComparator();
+		final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
 		final Comparator<Unit> comparator = new Comparator<Unit>()
 		{
 			public int compare(final Unit u1, final Unit u2)

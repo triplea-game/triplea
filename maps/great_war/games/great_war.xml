@@ -3888,8 +3888,9 @@
                         <unitPlacement unitType="infantry" territory="Tanga" quantity="2" owner="Germans"/>
 
 			<unitPlacement unitType="factory" territory="Tsingtao" quantity="1" owner="Germans"/>
+			<unitPlacement unitType="infantry" territory="Tsingtao" quantity="1" owner="Germans"/>
 
-			<unitPlacement unitType="infantry" territory="German S. Pacific" quantity="1" owner="Germans"/>
+			<unitPlacement unitType="infantry" territory="German S. Pacific" quantity="2" owner="Germans"/>
 			<unitPlacement unitType="factory" territory="German S. Pacific" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Dar es Salaam" quantity="1" owner="Germans"/>

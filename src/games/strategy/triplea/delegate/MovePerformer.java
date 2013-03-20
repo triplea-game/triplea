@@ -472,7 +472,7 @@ public class MovePerformer implements Serializable
 			m_aaInMoveUtil = new AAInMoveUtil();
 		}
 		m_aaInMoveUtil.initialize(m_bridge);
-		final Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getDecreasingMovementComparator(), m_currentMove);
+		final Collection<Unit> rVal = m_aaInMoveUtil.fireAA(route, units, UnitComparator.getLowestToHighestMovementComparator(), m_currentMove);
 		m_aaInMoveUtil = null;
 		return rVal;
 	}
