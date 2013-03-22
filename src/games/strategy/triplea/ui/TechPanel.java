@@ -36,8 +36,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -210,7 +213,20 @@ public class TechPanel extends ActionPanel
 				return;
 			}
 			TechnologyFrontier category = null;
-			final JList list = new JList(new Vector<TechnologyFrontier>(techCategories));
+			final JList list = new JList(new Vector<TechnologyFrontier>(techCategories))
+			{
+				private static final long serialVersionUID = 35094445315520702L;
+				
+				@Override
+				public String getToolTipText(final MouseEvent e)
+				{
+					final int index = locationToIndex(e.getPoint());
+					if (-1 < index)
+						return getTechListToolTipText((TechnologyFrontier) this.getModel().getElementAt(index));
+					else
+						return null;
+				}
+			};
 			final JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
 			panel.add(list, BorderLayout.CENTER);
@@ -255,7 +271,20 @@ public class TechPanel extends ActionPanel
 					return;
 				}
 				TechnologyFrontier category = null;
-				final JList list = new JList(new Vector<TechnologyFrontier>(techCategories));
+				final JList list = new JList(new Vector<TechnologyFrontier>(techCategories))
+				{
+					private static final long serialVersionUID = -8415987764855418565L;
+					
+					@Override
+					public String getToolTipText(final MouseEvent e)
+					{
+						final int index = locationToIndex(e.getPoint());
+						if (-1 < index)
+							return getTechListToolTipText((TechnologyFrontier) this.getModel().getElementAt(index));
+						else
+							return null;
+					}
+				};
 				final JPanel panel = new JPanel();
 				panel.setLayout(new BorderLayout());
 				panel.add(list, BorderLayout.CENTER);
@@ -270,6 +299,29 @@ public class TechPanel extends ActionPanel
 			release();
 		}
 	};
+	
+	private String getTechListToolTipText(final TechnologyFrontier techCategory)
+	{
+		final List<TechAdvance> techList = techCategory.getTechs();
+		if (techList.size() <= 1)
+			return null;
+		final Collection<TechAdvance> listedAlready = new HashSet<TechAdvance>();
+		final StringBuilder strTechCategory = new StringBuilder("Available Techs:  ");
+		final Iterator<TechAdvance> iterTechList = techList.iterator();
+		while (iterTechList.hasNext())
+		{
+			final TechAdvance advance = iterTechList.next();
+			if (listedAlready.contains(advance))
+				continue;
+			else
+				listedAlready.add(advance);
+			final int freq = Collections.frequency(techList, advance);
+			strTechCategory.append(advance.getName() + (freq > 1 ? " (" + freq + "/" + techList.size() + ")" : ""));
+			if (iterTechList.hasNext())
+				strTechCategory.append(", ");
+		}
+		return strTechCategory.toString();
+	}
 }
 
 
