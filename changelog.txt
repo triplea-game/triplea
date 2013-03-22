@@ -1,4 +1,8 @@
 Changes for 1.7
+* Allowed Edit Add Units to check if artwork exists for units not in a production frontier, and if so allow them to be created. (veqryn) 
+
+* Added more info to Battle Calc including total TUV swing, and allowing retreat after losing all air units or having only x units left. (veqryn)
+
 * Fixed bug where having sea units begin the turn on top of an enemy sub, and then not moving them but also not attacking, caused them to lose their movement anyway. (veqryn)
 
 * Fixed bug where you could move a destroyer after it had killed a sub, during noncombat move. (veqryn)

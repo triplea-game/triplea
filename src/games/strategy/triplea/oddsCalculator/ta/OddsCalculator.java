@@ -61,7 +61,9 @@ public class OddsCalculator
 	private boolean m_keepOneAttackingLandUnit = false;
 	private boolean m_amphibious = false;
 	private volatile boolean m_cancelled = false;
-	private int m_retreatAfterRound = Integer.MAX_VALUE;
+	private int m_retreatAfterRound = -1;
+	private int m_retreatAfterXUnitsLeft = -1;
+	private boolean m_retreatWhenOnlyAirLeft = false;
 	
 	public OddsCalculator()
 	{
@@ -101,6 +103,16 @@ public class OddsCalculator
 		m_retreatAfterRound = value;
 	}
 	
+	public void setRetreatAfterXUnitsLeft(final int value)
+	{
+		m_retreatAfterXUnitsLeft = value;
+	}
+	
+	public void setRetreatWhenOnlyAirLeft(final boolean value)
+	{
+		m_retreatWhenOnlyAirLeft = value;
+	}
+	
 	private AggregateResults calculate(final int count)
 	{
 		final long start = System.currentTimeMillis();
@@ -117,7 +129,8 @@ public class OddsCalculator
 		for (int i = 0; i < count && !m_cancelled; i++)
 		{
 			final CompositeChange allChanges = new CompositeChange();
-			final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit, m_retreatAfterRound);
+			final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft,
+						m_retreatWhenOnlyAirLeft);
 			final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
 			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
 			bridge1.setBattle(battle);
@@ -157,10 +170,11 @@ class DummyDelegateBridge implements IDelegateBridge
 	private final ChangePerformer m_changePerformer;
 	private MustFightBattle m_battle = null;
 	
-	public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges, final boolean attackerKeepOneLandUnit, final int retreatAfterRound)
+	public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges, final boolean attackerKeepOneLandUnit, final int retreatAfterRound,
+				final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft)
 	{
-		m_attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerKeepOneLandUnit, retreatAfterRound);
-		m_defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", false, retreatAfterRound);
+		m_attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerKeepOneLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
+		m_defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", false, retreatAfterRound, -1, false);
 		m_data = data;
 		m_attacker = attacker;
 		m_allChanges = allChanges;
@@ -288,15 +302,20 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 class DummyPlayer extends AbstractAI
 {
 	private final boolean m_keepAtLeastOneLand;
-	private final int m_retreatAfterRound;
+	private final int m_retreatAfterRound; // negative = do not retreat
+	private final int m_retreatAfterXUnitsLeft; // negative = do not retreat
+	private final boolean m_retreatWhenOnlyAirLeft;
 	private final DummyDelegateBridge m_bridge;
 	private final boolean m_isAttacker;
 	
-	public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name, final String type, final boolean keepAtLeastOneLand, final int retreatAfterRound)
+	public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name, final String type, final boolean keepAtLeastOneLand, final int retreatAfterRound,
+				final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft)
 	{
 		super(name, type);
 		m_keepAtLeastOneLand = keepAtLeastOneLand;
 		m_retreatAfterRound = retreatAfterRound;
+		m_retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
+		m_retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
 		m_bridge = dummyDelegateBridge;
 		m_isAttacker = attacker;
 	}
@@ -380,8 +399,26 @@ class DummyPlayer extends AbstractAI
 			final MustFightBattle battle = getBattle();
 			if (battle == null)
 				return null;
-			if (battle.getBattleRound() >= m_retreatAfterRound)
+			if (m_retreatAfterRound > -1 && battle.getBattleRound() >= m_retreatAfterRound)
 				return possibleTerritories.iterator().next();
+			if (!m_retreatWhenOnlyAirLeft && m_retreatAfterXUnitsLeft <= -1)
+				return null;
+			final Collection<Unit> unitsLeft = m_isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
+			final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.UnitIsAir);
+			if (m_retreatWhenOnlyAirLeft)
+			{
+				// lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
+				// and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken casualty last)
+				// then we add the number of air, to the retreat after X left number (which we would set to '1')
+				int retreatNum = airLeft.size();
+				if (m_retreatAfterXUnitsLeft > 0)
+					retreatNum += m_retreatAfterXUnitsLeft;
+				if (retreatNum >= unitsLeft.size())
+					return possibleTerritories.iterator().next();
+			}
+			if (m_retreatAfterXUnitsLeft > -1 && m_retreatAfterXUnitsLeft >= unitsLeft.size())
+				return possibleTerritories.iterator().next();
+			
 			return null;
 		}
 	}

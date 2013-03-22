@@ -1,10 +1,17 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
+import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.Tuple;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class AggregateResults implements Serializable
@@ -58,6 +65,34 @@ public class AggregateResults implements Serializable
 			count += result.getAttackingCombatUnitsLeft();
 		}
 		return count / m_results.size();
+	}
+	
+	/**
+	 * First is Attacker, Second is Defender
+	 */
+	public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTUV, final IntegerMap<UnitType> defenderCostsForTUV)
+	{
+		double attackerTUV = 0;
+		double defenderTUV = 0;
+		for (final BattleResults result : m_results)
+		{
+			attackerTUV += BattleCalculator.getTUV(result.getRemainingAttackingUnits(), attackerCostsForTUV);
+			defenderTUV += BattleCalculator.getTUV(result.getRemainingDefendingUnits(), defenderCostsForTUV);
+		}
+		return new Tuple<Double, Double>(attackerTUV / m_results.size(), defenderTUV / m_results.size());
+	}
+	
+	public double getAverageTUVswing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender, final Collection<Unit> defenders, final GameData data)
+	{
+		final IntegerMap<UnitType> attackerCostsForTUV = BattleCalculator.getCostsForTUV(attacker, data);
+		final IntegerMap<UnitType> defenderCostsForTUV = BattleCalculator.getCostsForTUV(defender, data);
+		final int attackerTotalTUV = BattleCalculator.getTUV(attackers, attackerCostsForTUV);
+		final int defenderTotalTUV = BattleCalculator.getTUV(defenders, defenderCostsForTUV);
+		// could we possibly cause a bug by comparing UnitType's from one game data, to a different game data's UnitTypes?
+		final Tuple<Double, Double> average = getAverageTUVofUnitsLeftOver(attackerCostsForTUV, defenderCostsForTUV);
+		final double attackerLost = attackerTotalTUV - average.getFirst();
+		final double defenderLost = defenderTotalTUV - average.getSecond();
+		return defenderLost - attackerLost;
 	}
 	
 	public double getAverageAttackingUnitsLeftWhenAttackerWon()

@@ -27,6 +27,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
+import java.awt.Image;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -112,6 +113,31 @@ public class EditProductionPanel extends ProductionPanel
 							rule.setQuantity(0);
 							m_rules.add(rule);
 						}
+					}
+				}
+			}
+			// now check if we have the art for anything that is left
+			for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes())
+			{
+				if (!unitsAllowed.contains(ut))
+				{
+					try
+					{
+						final Image unitImage = m_uiContext.getUnitImageFactory().getImage(ut, player, data, false, false);
+						if (unitImage != null)
+						{
+							unitsAllowed.add(ut);
+							final IntegerMap<NamedAttachable> result = new IntegerMap<NamedAttachable>();
+							result.add(ut, 1);
+							final IntegerMap<Resource> cost = new IntegerMap<Resource>();
+							cost.add(data.getResourceList().getResource(Constants.PUS), 1);
+							final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
+							final Rule rule = new Rule(newRule, player);
+							rule.setQuantity(0);
+							m_rules.add(rule);
+						}
+					} catch (final Exception e)
+					{ // ignore
 					}
 				}
 			}
