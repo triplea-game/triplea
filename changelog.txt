@@ -1,4 +1,6 @@
 Changes for 1.7
+* Changed territory attachment "victoryCity" to allow integers instead of boolean, thereby allowing victory cities with greater value, and also added a tooltip to tech purchase phase to show what techs are in each category. (eurofabio)
+
 * Allowed Edit Add Units to check if artwork exists for units not in a production frontier, and if so allow them to be created. (veqryn) 
 
 * Added more info to Battle Calc including total TUV swing, and allowing retreat after losing all air units or having only x units left. (veqryn)

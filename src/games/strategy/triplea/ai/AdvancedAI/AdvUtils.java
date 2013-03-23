@@ -5222,10 +5222,11 @@ public class AdvUtils
 				continue;
 			final float alliedPotential = getStrengthOfPotentialAttackers(eTerr, data, ePlayer, tFirst, true, null, primaryAttacker);
 			final float rankStrength = getStrengthOfPotentialAttackers(eTerr, data, player, tFirst, true, ignoreTerr, primaryAttacker);
-			final float productionValue = TerritoryAttachment.get(eTerr).getProduction();
+			final TerritoryAttachment ta = TerritoryAttachment.get(eTerr);
+			final float productionValue = ta.getProduction();
 			float eTerrValue = 0.0F;
 			final boolean island = !AdvUtils.doesLandExistAt(eTerr, data, false);
-			eTerrValue += Matches.TerritoryIsVictoryCity.match(eTerr) ? 2.0F : 0.0F;
+			eTerrValue += ta.getVictoryCity() > 0 ? 2.0F : 0.0F;
 			final boolean lRCap = hasLandRouteToEnemyOwnedCapitol(eTerr, player, data);
 			eTerrValue += lRCap ? 16.0F : 0.0F; // 16 might be too much, consider changing to 8
 			if (lRCap && (!Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr)
@@ -5443,9 +5444,10 @@ public class AdvUtils
 			final float alliedPotential = getStrengthOfPotentialAttackers(aTerr, data, ePlayer, tFirst, true, null, primaryAttacker);
 			final float localStrength = AdvUtils.strength(aTerr.getUnits().getUnits(), false, false, tFirst);
 			final float rankStrength = getStrengthOfPotentialAttackers(aTerr, data, player, tFirst, true, ignoreTerr, primaryAttacker);
-			final float productionValue = TerritoryAttachment.get(aTerr).getProduction();
+			final TerritoryAttachment ta = TerritoryAttachment.get(aTerr);
+			final float productionValue = ta.getProduction();
 			float aTerrValue = 0.0F;
-			aTerrValue += Matches.TerritoryIsVictoryCity.match(aTerr) ? 2.0F : 0.0F;
+			aTerrValue += ta.getVictoryCity() > 0 ? 2.0F : 0.0F;
 			aTerrValue += Matches.territoryHasEnemyNonNeutralNeighborWithEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(aTerr) ? 2.0F : 0.0F;
 			aTerrValue -= data.getMap().getDistance(aTerr, targetCap, Matches.TerritoryIsNotImpassable) - 1;
 			final Territory capTerr = aTerr;

@@ -251,12 +251,24 @@ public class EndRoundDelegate extends BaseTripleADelegate
 		final GameData data = aBridge.getData();
 		final Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
 		String allianceName = null;
+		final Collection<Territory> territories = data.getMap().getTerritories();
 		while (allianceIter.hasNext())
 		{
 			allianceName = allianceIter.next();
 			final int vcAmount = getVCAmount(data, allianceName, victoryType);
 			final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
-			final int teamVCs = Match.countMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity, Matches.isTerritoryOwnedBy(teamMembers)));
+			int teamVCs = 0;
+			for (final Territory t : territories)
+			{
+				if (Matches.isTerritoryOwnedBy(teamMembers).match(t))
+				{
+					final TerritoryAttachment ta = TerritoryAttachment.get(t);
+					if (ta != null)
+					{
+						teamVCs += ta.getVictoryCity();
+					}
+				}
+			}
 			if (teamVCs >= vcAmount)
 			{
 				aBridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");

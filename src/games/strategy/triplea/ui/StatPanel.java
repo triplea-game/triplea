@@ -678,8 +678,10 @@ public class StatPanel extends AbstractStatPanel
 				final TerritoryAttachment ta = TerritoryAttachment.get(place);
 				if (ta == null)
 					continue;
-				if (ta.getVictoryCity())
-					rVal++;
+				if (ta.getVictoryCity() != 0)
+				{
+					rVal = rVal + ta.getVictoryCity();				
+				}
 			}
 			return rVal;
 		}

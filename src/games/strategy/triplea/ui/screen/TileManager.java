@@ -374,7 +374,7 @@ public class TileManager
 			final PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
 			drawing.add(new CapitolMarkerDrawable(capitalOf, territory, m_uiContext));
 		}
-		if (ta != null && ta.getVictoryCity())
+		if (ta != null && (ta.getVictoryCity() != 0))
 		{
 			drawing.add(new VCDrawable(territory));
 		}

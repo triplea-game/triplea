@@ -1364,7 +1364,9 @@ public class Matches
 			final TerritoryAttachment ta = TerritoryAttachment.get(t);
 			if (ta == null)
 				return false;
-			return ta.getVictoryCity();
+			if (ta.getVictoryCity() != 0)
+				return true;
+			return false;
 		}
 	};
 	public static final Match<Territory> TerritoryHasSomeDamage = new Match<Territory>()

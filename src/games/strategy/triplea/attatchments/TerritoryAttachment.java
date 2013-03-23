@@ -174,7 +174,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	private String m_capital = null;
 	private boolean m_originalFactory = false;
 	private int m_production = 0; // "setProduction" will set both m_production and m_unitProduction. While "setProductionOnly" sets only m_production.
-	private boolean m_victoryCity = false;
+	private int m_victoryCity = 0;
 	private boolean m_isImpassible = false;
 	private PlayerID m_originalOwner = null;
 	private boolean m_convoyRoute = false;
@@ -296,23 +296,34 @@ public class TerritoryAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setVictoryCity(final String value)
 	{
-		m_victoryCity = getBool(value);
+		if (value.equalsIgnoreCase("false"))
+		{
+			m_victoryCity = 0;
+		}
+		else if (value.equalsIgnoreCase("true"))
+		{
+			m_victoryCity = 1;
+		}
+		else
+		{
+			m_victoryCity = getInt(value);
+		}
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setVictoryCity(final Boolean value)
+	public void setVictoryCity(final Integer value)
 	{
 		m_victoryCity = value;
 	}
 	
-	public boolean getVictoryCity()
+	public int getVictoryCity()
 	{
 		return m_victoryCity;
 	}
 	
 	public void resetVictoryCity()
 	{
-		m_victoryCity = false;
+		m_victoryCity = 0;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -836,7 +847,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			sb.append(br);
 		}
 		
-		if (m_victoryCity)
+		if (m_victoryCity != 0)
 		{
 			sb.append("Is a Victory location");
 			sb.append(br);

@@ -2302,7 +2302,7 @@
 			isImpassible							values: true or false, is this territory not passible?
 			capital									values: the capital of a player, and player's can have multiple capitals.  all players except for optional players require a capital. 
 																capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory
-			victoryCity								values: a victory city is typically used for victory conditions
+			victoryCity								values: a victory city is typically used for victory conditions. Is actually an integer, so you can set it to 0, or 1, or 2, or greater numbers.
 																victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory
 			originalFactory							values: means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units
 			originalOwner							values: allows a territory to revert to this player's control if liberated by an ally
@@ -2357,7 +2357,7 @@
 						<!-- capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory -->
 						<option name="capital" value="Germans"/>
 						<!-- victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory -->
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--- originalFactory means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units 
 						<option name="originalFactory" value="true"/> -->
 						<!-- navalBase territory attachment works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
@@ -2391,7 +2391,7 @@
 
 				<attatchment name="territoryAttatchment" attatchTo="Australia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Kenya" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2427,7 +2427,7 @@
 
 				<attatchment name="territoryAttatchment" attatchTo="India" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Soviet Far East" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2438,7 +2438,7 @@
 				<attatchment name="territoryAttatchment" attatchTo="Italy" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="8"/>
 						<option name="capital" value="Italians"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--<option name="unitProduction" value="8"/>-->
 				</attatchment>
 
@@ -2458,7 +2458,7 @@
 
 				<attatchment name="territoryAttatchment" attatchTo="Philipine Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Archangel" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2492,18 +2492,18 @@
 
 				<attatchment name="territoryAttatchment" attatchTo="Western United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="10"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--<option name="unitProduction" value="10"/>-->
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Karelia S.S.R." javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Kwangtung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="3"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<option name="originalOwner" value="Chinese"/>
 				</attatchment>
 
@@ -2525,7 +2525,7 @@
 
 				<attatchment name="territoryAttatchment" attatchTo="Hawaiian Islands" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="2"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="East Indies" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2573,13 +2573,13 @@
 				<attatchment name="territoryAttatchment" attatchTo="United Kingdom" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="8"/>
 						<option name="capital" value="British"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--<option name="unitProduction" value="8"/>-->
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Western Europe" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="6"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Rio De Oro" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2615,7 +2615,7 @@
 
 				<attatchment name="territoryAttatchment" attatchTo="Caucus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="4"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--<option name="unitProduction" value="4"/>-->
 						<!-- you can have multiple capitals per country, and can modify if they capture or destroy their PUs, and how many capitals are needed for that to happen -->
 						<!--<option name="capital" value="Russians"/>-->
@@ -2683,7 +2683,7 @@
 				<attatchment name="territoryAttatchment" attatchTo="Eastern United States" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="12"/>
 						<option name="capital" value="Americans"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--<option name="unitProduction" value="12"/>-->
 				</attatchment>
 
@@ -2699,7 +2699,7 @@
 				<attatchment name="territoryAttatchment" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="8"/>
 						<option name="capital" value="Russians"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--<option name="unitProduction" value="8"/>-->
 				</attatchment>
 
@@ -2745,7 +2745,7 @@
 				<attatchment name="territoryAttatchment" attatchTo="Japan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="8"/>
 						<option name="capital" value="Japanese"/>
-						<option name="victoryCity" value="true"/>
+						<option name="victoryCity" value="1"/>
 						<!--<option name="unitProduction" value="8"/>-->
 				</attatchment>
 
