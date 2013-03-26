@@ -458,12 +458,17 @@ public class BattleCalculator
 		if (!isEditMode && !(numhits + damaged.size() == (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining)))
 		{
 			tripleaPlayer.reportError("Wrong number of casualties selected");
+			if (headLess)
+				System.out.println("Possible Infinite Loop: Wrong number of casualties selected: number of hits on units " + (numhits + damaged.size()) + " != number of hits to take "
+							+ (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for " + casualtySelection.toString());
 			return selectCasualties(player, targets, bridge, text, dice, defending, battleID);
 		}
 		// check we have enough of each type
 		if (!targets.containsAll(killed) || !targets.containsAll(damaged))
 		{
 			tripleaPlayer.reportError("Cannot remove enough units of those types");
+			if (headLess)
+				System.out.println("Possible Infinite Loop: Cannot remove enough units of those types: targets " + targets + ", for " + casualtySelection.toString());
 			return selectCasualties(player, targets, bridge, text, dice, defending, battleID);
 		}
 		return casualtySelection;

@@ -633,7 +633,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		if (isload)
 			return mapTransportsToLoad(units, transportsToLoad);
-		if (route.isUnload())
+		if (route != null && route.isUnload())
 			return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
 		return mapTransportsAlreadyLoaded(units, units);
 	}
@@ -714,7 +714,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
 		int transportIndex = 0;
 		final TransportTracker transportTracker = new TransportTracker();
-		final Comparator<Unit> c = new Comparator<Unit>()
+		final Comparator<Unit> transportCostComparator = new Comparator<Unit>()
 		{
 			public int compare(final Unit o1, final Unit o2)
 			{
@@ -726,8 +726,24 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		// fill the units with the highest cost first.
 		// allows easy loading of 2 infantry and 2 tanks on 2 transports
 		// in WW2V2 rules.
-		Collections.sort(canBeTransported, c);
+		Collections.sort(canBeTransported, transportCostComparator);
 		final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+		final Comparator<Unit> transportCapacityComparator = new Comparator<Unit>()
+		{
+			public int compare(final Unit o1, final Unit o2)
+			{
+				final int capacityLeft1 = transportTracker.getAvailableCapacity(o1);
+				final int capacityLeft2 = transportTracker.getAvailableCapacity(o1);
+				if (capacityLeft1 != capacityLeft2)
+					return capacityLeft1 - capacityLeft2;
+				final int capacity1 = UnitAttachment.get((o1).getUnitType()).getTransportCapacity();
+				final int capacity2 = UnitAttachment.get((o2).getUnitType()).getTransportCapacity();
+				return capacity1 - capacity2;
+			}
+		};
+		// fill transports with the lowest capacity first
+		Collections.sort(canTransport, transportCapacityComparator);
+		
 		final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
 		final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
 		final Comparator<Unit> previouslyLoadedToLast = transportsThatPreviouslyUnloadedComeLast();

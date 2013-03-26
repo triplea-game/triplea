@@ -5001,8 +5001,8 @@
 							6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone
 				-->
 				<attatchment name="rulesAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="movementRestrictionTerritories" value="65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone:6 Sea Zone:19 Sea Zone:20 Sea Zone:36 Sea Zone"/>
-					<!-- :17 Sea Zone:22 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:37 Sea Zone -->
+                	<option name="movementRestrictionTerritories" value="65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone:19 Sea Zone:20 Sea Zone:36 Sea Zone"/>
+					<!-- :6 Sea Zone:17 Sea Zone:22 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:37 Sea Zone -->
                 	<option name="movementRestrictionType" value="disallowed"/>
                 </attatchment>
 				
@@ -6849,8 +6849,11 @@ The Warbonds technology will give the PUs to the British, please use edit mode i
 * Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
 * Air units may not move through Unfriendly Neutrals unless they are attacking them.<br>
+* Air units may not move through a Neutral territory IF that neutral territory had been attacked on some previous turn by some power (because technically that neutral stops being neutral at that point, and joins the other side).<br>
 * If UK Pacific captures Japan, the money goes to UK Pacific, even if UK Pacific's capital is occupied.<br>
-* Do not allow USA movement to end in Sea Zones 17, 22, 32, 33, 34, and 37.<br>
+* Do not allow USA movement to end in any Sea Zone that touches a Japanese owned territory (Sea Zones 6, 17, 19, 20, 22, 32, 33, 34, 36, and 37).<br>
+* You must place all units you purchased if you are able to, or as many as you can. Any units not placed get refunded to you (triplea instead carries them over to the next turn).<br>
+* The victory conditions must be held for a full continuous round after they are achieved (so for example if Italy takes Egypt as the 8th European VC, then the Axis must hold 8 VCs continuously until Italy's next turn).<br>
 <br><br>
 <br><hr><br>
 

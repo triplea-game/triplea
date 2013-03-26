@@ -294,6 +294,7 @@ public class MoveValidator
 							Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
 				for (final Unit unit : nonBlitzingUnits)
 				{
+					// TODO: we need to actually test if the units is being air transported, or mech-land-transported.
 					if (Matches.UnitIsAirTransportable.match(unit))
 						continue;
 					if (Matches.UnitIsInfantry.match(unit))
@@ -917,11 +918,13 @@ public class MoveValidator
 		return cost;
 	}
 	
+	/*
 	public static boolean validLoad(final Collection<Unit> units, final Collection<Unit> transports)
 	{
 		return true;
 	}
-	
+	*/
+
 	public static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units)
 	{
 		final Collection<Unit> retUnits = new ArrayList<Unit>();

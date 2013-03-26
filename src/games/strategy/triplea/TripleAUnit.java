@@ -119,6 +119,11 @@ public class TripleAUnit extends Unit
 		m_transportedBy = transportedBy;
 	}
 	
+	/**
+	 * This is a very slow method because it checks all territories on the map. Try not to use this method if possible.
+	 * 
+	 * @return
+	 */
 	public List<Unit> getTransporting()
 	{
 		// we don't store the units we are transporting

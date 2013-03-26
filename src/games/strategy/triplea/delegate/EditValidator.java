@@ -32,6 +32,7 @@ import games.strategy.util.Triple;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -91,24 +92,20 @@ public class EditValidator
 			{
 				if (Match.someMatch(units, Matches.UnitIsLand))
 				{
-					// TODO: we can not add them unless we set them as being transported, which is not coded yet.
-					return "Can not add land units to water";
+					if (!Match.allMatch(units, Matches.alliedUnit(player, data)))
+						return "Can't add mixed nationality units to water";
+					final Match<Unit> friendlySeaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+					final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
+					final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
+					if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported))
+						return "Can't add land units that can't be transported, to water";
+					seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
+					if (seaTransports.isEmpty())
+						return "Can't add land units to water without enough transports";
+					final Map<Unit, Unit> mapLoading = MoveDelegate.mapTransports(null, landUnitsToAdd, seaTransports, true, player);
+					if (!mapLoading.keySet().containsAll(landUnitsToAdd))
+						return "Can't add land units to water without enough transports";
 				}
-				/*
-				if (Match.someMatch(units, Matches.UnitIsLand))
-				{
-					// Set up matches
-					final TransportTracker transportTracker = new TransportTracker();
-					final Match<Unit> friendlyTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(player, data));
-					final Match<Unit> friendlyLandUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.alliedUnit(player, data));
-					// Determine transport capacity
-					final int transportCapacityTotal = MoveValidator.getTransportCapacityFree(territory, player, data, transportTracker);
-					final int transportCost = MoveValidator.getTransportCost(territory.getUnits().getMatches(friendlyLandUnits)) + MoveValidator.getTransportCost(units);
-					// Get any transports in the sea zone
-					final Collection<Unit> transports = territory.getUnits().getMatches(friendlyTransports);
-					if (transports.size() == 0 || transportCapacityTotal - transportCost < 0)
-						return "Can't add land units to water";
-				}*/
 				if (Match.someMatch(units, Matches.UnitIsAir))
 				{
 					if (Match.someMatch(units, new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert())))
@@ -144,9 +141,10 @@ public class EditValidator
 		if (units.isEmpty())
 			return "No units selected";
 		final PlayerID player = units.iterator().next().getOwner();
-		// all units should be same owner
+		/* all units should be same owner
 		if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
 			return "Not all units have the same owner";
+		*/
 		if ((result = validateTerritoryBasic(data, territory, player)) != null)
 			return result;
 		final TransportTracker transportTracker = new TransportTracker();

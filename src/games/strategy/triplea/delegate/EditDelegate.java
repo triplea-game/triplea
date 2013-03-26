@@ -29,10 +29,14 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -66,8 +70,17 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			return result;
 		if (units == null || units.isEmpty())
 			return null;
-		logEvent("Removing units owned by " + units.iterator().next().getOwner().getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
-		m_bridge.addChange(ChangeFactory.removeUnits(territory, units));
+		final Collection<PlayerID> owners = new HashSet<PlayerID>();
+		for (final Unit u : units)
+		{
+			owners.add(u.getOwner());
+		}
+		for (final PlayerID p : owners)
+		{
+			final List<Unit> unitsOwned = Match.getMatches(units, Matches.unitIsOwnedBy(p));
+			logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
+			m_bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
+		}
 		return null;
 	}
 	
@@ -80,8 +93,44 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			return result;
 		if (units == null || units.isEmpty())
 			return null;
+		// now make sure land units are put on transports properly
+		final PlayerID player = units.iterator().next().getOwner();
+		final GameData data = getData();
+		Map<Unit, Unit> mapLoading = null;
+		if (territory.isWater())
+		{
+			if (!Match.allMatch(units, Matches.UnitIsSea))
+			{
+				if (Match.someMatch(units, Matches.UnitIsLand))
+				{
+					// this should be exact same as the one in the EditValidator
+					if (!Match.allMatch(units, Matches.alliedUnit(player, data)))
+						return "Can't add mixed nationality units to water";
+					final Match<Unit> friendlySeaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+					final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
+					final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
+					if (!Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported))
+						return "Can't add land units that can't be transported, to water";
+					seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
+					if (seaTransports.isEmpty())
+						return "Can't add land units to water without enough transports";
+					mapLoading = MoveDelegate.mapTransports(null, landUnitsToAdd, seaTransports, true, player);
+					if (!mapLoading.keySet().containsAll(landUnitsToAdd))
+						return "Can't add land units to water without enough transports";
+				}
+			}
+		}
+		// now perform the changes
 		logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
 		m_bridge.addChange(ChangeFactory.addUnits(territory, units));
+		if (mapLoading != null && !mapLoading.isEmpty())
+		{
+			final TransportTracker transportTracker = new TransportTracker();
+			for (final Entry<Unit, Unit> entry : mapLoading.entrySet())
+			{
+				m_bridge.addChange(transportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey(), m_player));
+			}
+		}
 		return null;
 	}
 	

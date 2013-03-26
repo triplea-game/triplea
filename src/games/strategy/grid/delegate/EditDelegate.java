@@ -14,6 +14,8 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * 
@@ -31,8 +33,17 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 			return result;
 		if (units == null || units.isEmpty())
 			return null;
-		logEvent("Removing units owned by " + units.iterator().next().getOwner().getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
-		m_bridge.addChange(ChangeFactory.removeUnits(territory, units));
+		final Collection<PlayerID> owners = new HashSet<PlayerID>();
+		for (final Unit u : units)
+		{
+			owners.add(u.getOwner());
+		}
+		for (final PlayerID p : owners)
+		{
+			final List<Unit> unitsOwned = Match.getMatches(units, Matches.unitIsOwnedBy(p));
+			logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
+			m_bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
+		}
 		return null;
 	}
 	
@@ -41,10 +52,11 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		final String result = null;
 		if (units.isEmpty())
 			return "No units selected";
+		/* all units should be same owner
 		final PlayerID player = units.iterator().next().getOwner();
-		// all units should be same owner
 		if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
 			return "Not all units have the same owner";
+		*/
 		return result;
 	}
 	

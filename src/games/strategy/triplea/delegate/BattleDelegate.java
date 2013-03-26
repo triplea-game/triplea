@@ -472,6 +472,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	{
 		final PlayerID player = aBridge.getPlayerID();
 		final GameData data = aBridge.getData();
+		final TransportTracker transportTracker = new TransportTracker();
 		final boolean ignoreTransports = isIgnoreTransportInMovement(data);
 		final boolean ignoreSubs = isIgnoreSubInMovement(data);
 		final CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
@@ -486,6 +487,20 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		{
 			final Territory territory = battleTerritories.next();
 			final List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+			// now make sure to add any units that must move with these attacking units, so that they get included as dependencies
+			final Map<Unit, Collection<Unit>> transportMap = transportTracker.transporting(territory.getUnits().getUnits());
+			final HashSet<Unit> dependants = new HashSet<Unit>();
+			for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet())
+			{
+				// only consider those transports that we are attacking with. allied and enemy transports are not added.
+				if (attackingUnits.contains(entry.getKey()))
+				{
+					dependants.addAll(entry.getValue());
+				}
+			}
+			dependants.removeAll(attackingUnits); // no duplicates
+			attackingUnits.addAll(dependants); // add the dependants to the attacking list
+			
 			final List<Unit> enemyUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
 			final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true);
 			if (bombingBattle != null)

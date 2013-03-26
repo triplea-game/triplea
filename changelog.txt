@@ -1,4 +1,8 @@
 Changes for 1.7
+* Allowed Edit Mode to add land units to a sea zone if there are either transports already there or transports also being added at the same time. (veqryn)
+
+* Allowed Edit Mode to remove units owned by different players. (veqryn)
+
 * Changed territory attachment "victoryCity" to allow integers instead of boolean, thereby allowing victory cities with greater value, and also added a tooltip to tech purchase phase to show what techs are in each category. (eurofabio)
 
 * Allowed Edit Add Units to check if artwork exists for units not in a production frontier, and if so allow them to be created. (veqryn) 
