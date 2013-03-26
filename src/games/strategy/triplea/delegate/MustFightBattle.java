@@ -341,8 +341,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (m_stack.isExecuting())
 		{
 			final ITripleaDisplay display = getDisplay(bridge);
-			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false),
-						removeNonCombatants(m_defendingUnits, false, m_defender, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
+			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false, false),
+						removeNonCombatants(m_defendingUnits, false, m_defender, false, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
 						isAmphibious(), getBattleType());
 			display.listBattleSteps(m_battleID, m_stepStrings);
 			m_stack.execute(bridge);
@@ -376,8 +376,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
-		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false), removeNonCombatants(m_defendingUnits, false, m_defender, false),
-					m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(), getBattleType());
+		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false, false),
+					removeNonCombatants(m_defendingUnits, false, m_defender, false, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
+					isAmphibious(), getBattleType());
 		display.listBattleSteps(m_battleID, m_stepStrings);
 		if (!m_headless)
 		{
@@ -744,7 +745,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				// we can remove any AA guns at this point
-				removeNonCombatants(bridge, true);
+				removeNonCombatants(bridge, true, false);
 			}
 		};
 		final IExecutable landParatroops = new IExecutable()
@@ -2426,7 +2427,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 *         combatants include such things as factories, aaguns, land units
 	 *         in a water battle.
 	 */
-	private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking, final PlayerID player, final boolean doNotIncludeAA)
+	private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking, final PlayerID player, final boolean doNotIncludeAA, final boolean doNotIncludeSeaBombardmentUnits)
 	{
 		final List<Unit> unitList = new ArrayList<Unit>(units);
 		if (m_battleSite.isWater())
@@ -2434,7 +2435,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		
 		// still allow infrastructure type units that can provide support have combat abilities
 		// remove infrastructure units that can't take part in combat (air/naval bases, etc...)
-		unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeInBattle(attacking, m_data, true, doNotIncludeAA).invert()));
+		unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data, true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits).invert()));
 		// remove any disabled units from combat
 		unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled()));
 		// remove capturableOnEntering units (veqryn)
@@ -2446,10 +2447,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return unitList;
 	}
 	
-	private void removeNonCombatants(final IDelegateBridge bridge, final boolean doNotIncludeAA)
+	private void removeNonCombatants(final IDelegateBridge bridge, final boolean doNotIncludeAA, final boolean doNotIncludeSeaBombardmentUnits)
 	{
-		final List<Unit> notRemovedDefending = removeNonCombatants(m_defendingUnits, false, m_defender, doNotIncludeAA);
-		final List<Unit> notRemovedAttacking = removeNonCombatants(m_attackingUnits, true, m_attacker, doNotIncludeAA);
+		final List<Unit> notRemovedDefending = removeNonCombatants(m_defendingUnits, false, m_defender, doNotIncludeAA, doNotIncludeSeaBombardmentUnits);
+		final List<Unit> notRemovedAttacking = removeNonCombatants(m_attackingUnits, true, m_attacker, doNotIncludeAA, doNotIncludeSeaBombardmentUnits);
 		final Collection<Unit> toRemoveDefending = Util.difference(m_defendingUnits, notRemovedDefending);
 		final Collection<Unit> toRemoveAttacking = Util.difference(m_attackingUnits, notRemovedAttacking);
 		m_defendingUnits = notRemovedDefending;

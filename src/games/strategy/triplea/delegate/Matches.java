@@ -2728,6 +2728,7 @@ public class Matches
 	}
 	
 	public final static Match<Unit> UnitIsLand = new CompositeMatchAnd<Unit>(UnitIsNotSea, UnitIsNotAir);
+	public final static Match<UnitType> UnitTypeIsLand = new CompositeMatchAnd<UnitType>(UnitTypeIsNotSea, UnitTypeIsNotAir);
 	public final static Match<Unit> UnitIsNotLand = new InverseMatch<Unit>(UnitIsLand);
 	
 	public static Match<Unit> unitIsOfType(final UnitType type)
@@ -3888,21 +3889,21 @@ public class Matches
 		};
 	}
 	
-	public static final Match<Unit> UnitCanBeInBattle(final boolean attack, final GameData data, final boolean includeAttackersThatCanNotMove, final boolean doNotIncludeAA)
+	public static final Match<Unit> UnitCanBeInBattle(final boolean attack, final boolean isLandBattle, final GameData data, final boolean includeAttackersThatCanNotMove,
+				final boolean doNotIncludeAA, final boolean doNotIncludeBombardingSeaUnits)
 	{
 		return new Match<Unit>()
 		{
 			@Override
 			public boolean match(final Unit u)
 			{
-				final PlayerID owner = u.getOwner();
-				return Matches.UnitTypeCanBeInBattle(attack, owner, data, includeAttackersThatCanNotMove, doNotIncludeAA).match(u.getType());
+				return Matches.UnitTypeCanBeInBattle(attack, isLandBattle, u.getOwner(), data, includeAttackersThatCanNotMove, doNotIncludeAA, doNotIncludeBombardingSeaUnits).match(u.getType());
 			}
 		};
 	}
 	
-	public static final Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final PlayerID player, final GameData data, final boolean includeAttackersThatCanNotMove,
-				final boolean doNotIncludeAA)
+	public static final Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final boolean isLandBattle, final PlayerID player, final GameData data,
+				final boolean includeAttackersThatCanNotMove, final boolean doNotIncludeAA, final boolean doNotIncludeBombardingSeaUnits)
 	{
 		return new Match<UnitType>()
 		{
@@ -3916,24 +3917,45 @@ public class Matches
 				final Match<UnitType> combat;
 				if (attack)
 				{
-					// AND match
-					final CompositeMatch<UnitType> attackMatch = new CompositeMatchAnd<UnitType>();
-					attackMatch.add(supporterOrNotInfrastructure);
+					final CompositeMatch<UnitType> attackMatchAND = new CompositeMatchAnd<UnitType>();// AND match
+					attackMatchAND.add(supporterOrNotInfrastructure);
 					if (!includeAttackersThatCanNotMove)
 					{
-						attackMatch.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
-						attackMatch.add(Matches.UnitTypeCanMove(player));
+						attackMatchAND.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
+						attackMatchAND.add(Matches.UnitTypeCanMove(player));
 					}
-					combat = attackMatch;
+					if (isLandBattle)
+					{
+						if (doNotIncludeBombardingSeaUnits)
+						{
+							attackMatchAND.add(Matches.UnitTypeIsSea.invert());
+						}
+					}
+					else
+					{ // is sea battle
+						attackMatchAND.add(Matches.UnitTypeIsLand.invert());
+					}
+					combat = attackMatchAND; // assign it
 				}
 				else
-				{
-					// OR match
-					final CompositeMatch<UnitType> defenseMatch = new CompositeMatchOr<UnitType>();
-					if (!doNotIncludeAA)
-						defenseMatch.add(Matches.UnitTypeIsAAforCombatOnly);
-					defenseMatch.add(supporterOrNotInfrastructure);
-					combat = defenseMatch;
+				{ // defense
+					final CompositeMatch<UnitType> defenseMatchAND = new CompositeMatchAnd<UnitType>();// AND match
+					{
+						final CompositeMatch<UnitType> defenseMatchOR = new CompositeMatchOr<UnitType>();// OR match
+						if (!doNotIncludeAA)
+							defenseMatchOR.add(Matches.UnitTypeIsAAforCombatOnly);
+						defenseMatchOR.add(supporterOrNotInfrastructure);
+						defenseMatchAND.add(defenseMatchOR);
+					}
+					if (isLandBattle)
+					{
+						defenseMatchAND.add(Matches.UnitTypeIsSea.invert());
+					}
+					else
+					{ // is sea battle
+						defenseMatchAND.add(Matches.UnitTypeIsLand.invert());
+					}
+					combat = defenseMatchAND; // assign it
 				}
 				return combat.match(ut);
 			}

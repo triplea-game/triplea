@@ -13,6 +13,7 @@ import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UIContext;
@@ -49,7 +50,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.AbstractAction;
@@ -92,10 +92,14 @@ public class OddsCalculatorPanel extends JPanel
 	private PlayerUnitsPanel m_defendingUnitsPanel;
 	private JComboBox m_attackerCombo;
 	private JComboBox m_defenderCombo;
-	private final JLabel m_attackerUnitsTotal = new JLabel();
-	private final JLabel m_defenderUnitsTotal = new JLabel();
+	private final JLabel m_attackerUnitsTotalNumber = new JLabel();
+	private final JLabel m_defenderUnitsTotalNumber = new JLabel();
 	private final JLabel m_attackerUnitsTotalTUV = new JLabel();
 	private final JLabel m_defenderUnitsTotalTUV = new JLabel();
+	private final JLabel m_attackerUnitsTotalHitpoints = new JLabel();
+	private final JLabel m_defenderUnitsTotalHitpoints = new JLabel();
+	private final JLabel m_attackerUnitsTotalPower = new JLabel();
+	private final JLabel m_defenderUnitsTotalPower = new JLabel();
 	private JComboBox m_SwapSidesCombo;
 	private JCheckBox m_keepOneAttackingLandUnitCheckBox;
 	private JCheckBox m_amphibiousCheckBox;
@@ -224,6 +228,13 @@ public class OddsCalculatorPanel extends JPanel
 				updateAttacker(null);
 			}
 		});
+		m_amphibiousCheckBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				setWidgetActivation();
+			}
+		});
 		m_landBattleCheckBox.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -276,6 +287,43 @@ public class OddsCalculatorPanel extends JPanel
 		m_defendingUnitsPanel.addChangeListener(m_listenerPlayerUnitsPanel);
 	}
 	
+	private boolean isAmphibiousBattle()
+	{
+		return (m_landBattleCheckBox.isSelected() && m_amphibiousCheckBox.isSelected());
+	}
+	
+	private Collection<TerritoryEffect> getTerritoryEffects()
+	{
+		final Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
+		if (m_territoryEffectsJList != null)
+		{
+			final List<Object> selectedObjects = Arrays.asList(m_territoryEffectsJList.getSelectedValues());
+			final List<String> selected = new ArrayList<String>();
+			for (final Object obj : selectedObjects)
+			{
+				selected.add((String) obj);
+			}
+			m_data.acquireReadLock();
+			try
+			{
+				final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();
+				for (final String selection : selected)
+				{
+					if (selection.equals(NO_EFFECTS))
+					{
+						territoryEffects.clear();
+						break;
+					}
+					territoryEffects.add(allTerritoryEffects.get(selection));
+				}
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
+		}
+		return territoryEffects;
+	}
+	
 	private void updateStats()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -293,8 +341,6 @@ public class OddsCalculatorPanel extends JPanel
 				calculator.cancel();
 			}
 		});
-		final AtomicInteger numberDefenders = new AtomicInteger();
-		final AtomicInteger numberAttackers = new AtomicInteger();
 		final AtomicReference<Collection<Unit>> defenders = new AtomicReference<Collection<Unit>>();
 		final AtomicReference<Collection<Unit>> attackers = new AtomicReference<Collection<Unit>>();
 		dialog.pack();
@@ -340,39 +386,11 @@ public class OddsCalculatorPanel extends JPanel
 						calculator.setKeepOneAttackingLandUnit(true);
 					else
 						calculator.setKeepOneAttackingLandUnit(false);
-					if (m_landBattleCheckBox.isSelected() && m_amphibiousCheckBox.isSelected())
+					if (isAmphibiousBattle())
 						calculator.setAmphibious(true);
 					else
 						calculator.setAmphibious(false);
-					final Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
-					if (m_territoryEffectsJList != null)
-					{
-						final List<Object> selectedObjects = Arrays.asList(m_territoryEffectsJList.getSelectedValues());
-						final List<String> selected = new ArrayList<String>();
-						for (final Object obj : selectedObjects)
-						{
-							selected.add((String) obj);
-						}
-						m_data.acquireReadLock();
-						try
-						{
-							final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();
-							for (final String selection : selected)
-							{
-								if (selection.equals(NO_EFFECTS))
-								{
-									territoryEffects.clear();
-									break;
-								}
-								territoryEffects.add(allTerritoryEffects.get(selection));
-							}
-						} finally
-						{
-							m_data.releaseReadLock();
-						}
-					}
-					numberDefenders.set(defending.size());
-					numberAttackers.set(attacking.size());
+					final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
 					defenders.set(defending);
 					attackers.set(attacking);
 					results.set(calculator.calculate(m_data, getAttacker(), getDefender(), location, attacking, defending, bombarding, territoryEffects, m_numRuns.getValue()));
@@ -399,14 +417,17 @@ public class OddsCalculatorPanel extends JPanel
 		m_attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
 		m_defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
 		m_draw.setText(formatPercentage(results.get().getDrawPercent()));
-		final int defendersTotal = numberDefenders.get();
-		final int attackersTotal = numberAttackers.get();
+		final boolean isLand = isLand();
+		final List<Unit> mainCombatAttackers = Match.getMatches(attackers.get(), Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
+		final List<Unit> mainCombatDefenders = Match.getMatches(defenders.get(), Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
+		final int attackersTotal = mainCombatAttackers.size();
+		final int defendersTotal = mainCombatDefenders.size();
 		m_defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
 		m_attackerLeft.setText(formatValue(results.get().getAverageAttackingUnitsLeft()) + " /" + attackersTotal);
 		m_defenderLeftWhenDefenderWon.setText(formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon()) + " /" + defendersTotal);
 		m_attackerLeftWhenAttackerWon.setText(formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon()) + " /" + attackersTotal);
 		m_roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
-		m_averageChangeInTUV.setText("" + formatValue(results.get().getAverageTUVswing(getAttacker(), attackers.get(), getDefender(), defenders.get(), m_data)));
+		m_averageChangeInTUV.setText("" + formatValue(results.get().getAverageTUVswing(getAttacker(), mainCombatAttackers, getDefender(), mainCombatDefenders, m_data)));
 		m_count.setText(results.get().getRollCount() + "");
 		m_time.setText(formatValue(results.get().getTime() / 1000.0) + "s");
 	}
@@ -427,20 +448,35 @@ public class OddsCalculatorPanel extends JPanel
 	{
 		if (units == null)
 			units = Collections.emptyList();
-		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, m_data, false, false));
-		m_defendingUnitsPanel.init(getDefender(), units, isLand());
-		m_defenderUnitsTotal.setText("Total Units: " + units.size());
-		m_defenderUnitsTotalTUV.setText("Total TUV: " + BattleCalculator.getTUV(units, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
+		final boolean isLand = isLand();
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, false, false));
+		m_defendingUnitsPanel.init(getDefender(), units, isLand);
+		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
+		m_defenderUnitsTotalNumber.setText("Total Units: " + mainCombatUnits.size());
+		m_defenderUnitsTotalTUV.setText("Total TUV: " + BattleCalculator.getTUV(mainCombatUnits, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
+		m_defenderUnitsTotalHitpoints.setText("Total HP: " + BattleCalculator.getTotalHitpoints(mainCombatUnits));
+		final boolean isAmphibiousBattle = isAmphibiousBattle();
+		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
+		m_defenderUnitsTotalPower.setText("Total Power: "
+					+ DiceRoll.getTotalPower(mainCombatUnits, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>())); // defender is never amphibious
 	}
 	
 	private void updateAttacker(List<Unit> units)
 	{
 		if (units == null)
 			units = Collections.emptyList();
-		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, m_data, false, false));
-		m_attackingUnitsPanel.init(getAttacker(), units, isLand());
-		m_attackerUnitsTotal.setText("Total Units: " + units.size());
-		m_attackerUnitsTotalTUV.setText("Total TUV: " + BattleCalculator.getTUV(units, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
+		final boolean isLand = isLand();
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, false, false));
+		m_attackingUnitsPanel.init(getAttacker(), units, isLand);
+		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
+		m_attackerUnitsTotalNumber.setText("Total Units: " + mainCombatUnits.size());
+		m_attackerUnitsTotalTUV.setText("Total TUV: " + BattleCalculator.getTUV(mainCombatUnits, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
+		m_attackerUnitsTotalHitpoints.setText("Total HP: " + BattleCalculator.getTotalHitpoints(mainCombatUnits));
+		final boolean isAmphibiousBattle = isAmphibiousBattle();
+		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
+		m_attackerUnitsTotalPower.setText("Total Power: "
+					+ DiceRoll.getTotalPower(mainCombatUnits, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle,
+								(isAmphibiousBattle ? mainCombatUnits : new ArrayList<Unit>())));
 	}
 	
 	private boolean isLand()
@@ -480,10 +516,15 @@ public class OddsCalculatorPanel extends JPanel
 		attackAndDefend.add(new JLabel("Defender: "), new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap, 0), 0, 0));
 		attackAndDefend.add(m_defenderCombo, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
 		row0++;
-		attackAndDefend.add(m_attackerUnitsTotal, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
-		attackAndDefend.add(m_attackerUnitsTotalTUV, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap), 0, 0));
-		attackAndDefend.add(m_defenderUnitsTotal, new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
-		attackAndDefend.add(m_defenderUnitsTotalTUV, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap), 0, 0));
+		attackAndDefend.add(m_attackerUnitsTotalNumber, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
+		attackAndDefend.add(m_attackerUnitsTotalTUV, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
+		attackAndDefend.add(m_defenderUnitsTotalNumber, new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
+		attackAndDefend.add(m_defenderUnitsTotalTUV, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
+		row0++;
+		attackAndDefend.add(m_attackerUnitsTotalHitpoints, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
+		attackAndDefend.add(m_attackerUnitsTotalPower, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
+		attackAndDefend.add(m_defenderUnitsTotalHitpoints, new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
+		attackAndDefend.add(m_defenderUnitsTotalPower, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
 		row0++;
 		final JScrollPane attackerScroll = new JScrollPane(m_attackingUnitsPanel);
 		attackerScroll.setBorder(null);
@@ -630,10 +671,15 @@ public class OddsCalculatorPanel extends JPanel
 		m_defenderWin = new JLabel(blank);
 		m_draw = new JLabel(blank);
 		m_defenderLeft = new JLabel(blank);
+		m_defenderLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 		m_attackerLeft = new JLabel(blank);
+		m_attackerLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 		m_defenderLeftWhenDefenderWon = new JLabel(blank);
+		m_defenderLeftWhenDefenderWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 		m_attackerLeftWhenAttackerWon = new JLabel(blank);
+		m_attackerLeftWhenAttackerWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 		m_averageChangeInTUV = new JLabel(blank);
+		m_averageChangeInTUV.setToolTipText("TUV Swing does not include captured AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 		m_roundsAverage = new JLabel(blank);
 		m_count = new JLabel(blank);
 		m_time = new JLabel(blank);
@@ -644,18 +690,30 @@ public class OddsCalculatorPanel extends JPanel
 		m_amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
 		m_retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
 		m_retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units left' is positive we will retreat when x of non-air is left too.");
+		m_attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
+		m_defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 	}
 	
 	public void setWidgetActivation()
 	{
 		m_keepOneAttackingLandUnitCheckBox.setEnabled(m_landBattleCheckBox.isSelected());
 		m_amphibiousCheckBox.setEnabled(m_landBattleCheckBox.isSelected());
-		final List<Unit> attackers = m_attackingUnitsPanel.getUnits();
-		final List<Unit> defenders = m_defendingUnitsPanel.getUnits();
-		m_attackerUnitsTotal.setText("Total Units: " + attackers.size());
-		m_defenderUnitsTotal.setText("Total Units: " + defenders.size());
+		final boolean isLand = isLand();
+		// do not include bombardment and aa guns in our "total" labels
+		final List<Unit> attackers = Match.getMatches(m_attackingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
+		final List<Unit> defenders = Match.getMatches(m_defendingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
+		
+		m_attackerUnitsTotalNumber.setText("Total Units: " + attackers.size());
+		m_defenderUnitsTotalNumber.setText("Total Units: " + defenders.size());
 		m_attackerUnitsTotalTUV.setText("Total TUV: " + BattleCalculator.getTUV(attackers, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
 		m_defenderUnitsTotalTUV.setText("Total TUV: " + BattleCalculator.getTUV(defenders, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
+		m_attackerUnitsTotalHitpoints.setText("Total HP: " + BattleCalculator.getTotalHitpoints(attackers));
+		m_defenderUnitsTotalHitpoints.setText("Total HP: " + BattleCalculator.getTotalHitpoints(defenders));
+		final boolean isAmphibiousBattle = isAmphibiousBattle();
+		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
+		m_attackerUnitsTotalPower.setText("Total Power: "
+					+ DiceRoll.getTotalPower(attackers, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle, (isAmphibiousBattle ? attackers : new ArrayList<Unit>())));
+		m_defenderUnitsTotalPower.setText("Total Power: " + DiceRoll.getTotalPower(defenders, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>())); // defender is never amphibious
 	}
 	
 	
@@ -700,6 +758,7 @@ class PlayerUnitsPanel extends JPanel
 	private final GameData m_data;
 	private final UIContext m_context;
 	private final boolean m_defender;
+	private boolean m_isLand = true;
 	private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<WidgetChangedListener>();
 	private final WidgetChangedListener m_listenerUnitPanel = new WidgetChangedListener()
 	{
@@ -739,6 +798,7 @@ class PlayerUnitsPanel extends JPanel
 	
 	public void init(final PlayerID id, final List<Unit> units, final boolean land)
 	{
+		m_isLand = land;
 		final List<UnitCategory> categories = new ArrayList<UnitCategory>(categorize(id, units));
 		Collections.sort(categories, new Comparator<UnitCategory>()
 		{
@@ -843,7 +903,7 @@ class PlayerUnitsPanel extends JPanel
 		}
 		// we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
 		// in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other combat abilities.
-		rVal = Match.getMatches(rVal, Matches.UnitTypeCanBeInBattle(!m_defender, player, m_data, false, false));
+		rVal = Match.getMatches(rVal, Matches.UnitTypeCanBeInBattle(!m_defender, m_isLand, player, m_data, false, false, false));
 		return rVal;
 	}
 	

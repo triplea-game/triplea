@@ -396,34 +396,23 @@ public class DiceRoll implements Externalizable
 		return rVal;
 	}
 	
-	/**
-	 * Roll dice for units using low luck rules. Low luck rules based on rules in DAAK.
-	 */
-	private static DiceRoll rollDiceLowLuck(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
-				final Collection<TerritoryEffect> territoryEffects)
+	public static int getTotalPower(final List<Unit> units, final boolean defending, final PlayerID player, final Territory location, final Collection<TerritoryEffect> territoryEffects,
+				final GameData data, final boolean isAmphibiousBattle, final Collection<Unit> amphibiousLandAttackers)
 	{
-		final GameData data = bridge.getData();
 		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 		final int extraRollBonus = Math.max(1, data.getDiceSides() / 6); // bonus is normally 1 for most games
 		// int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
 		final Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
 		final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
 		getSupport(units, supportRules, supportLeft, data, defending);
-		final Territory location = battle.getTerritory();
-		// make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
 		final int rollCount = BattleCalculator.getRolls(units, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft),
 					territoryEffects);
-		if (rollCount == 0)
-		{
-			return new DiceRoll(new ArrayList<Die>(0), 0);
-		}
-		final Iterator<Unit> iter = units.iterator();
+		if (rollCount <= 0)
+			return 0;
 		int power = 0;
-		int hitCount = 0;
 		// We iterate through the units to find the total strength of the units
-		while (iter.hasNext())
+		for (final Unit current : units)
 		{
-			final Unit current = iter.next();
 			final UnitAttachment ua = UnitAttachment.get(current.getType());
 			// make a copy for getRolls
 			final int rolls = BattleCalculator.getRolls(current, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules),
@@ -442,36 +431,62 @@ public class DiceRoll implements Externalizable
 					}
 					continue;
 				}
-				int strength;
-				if (defending)
-				{
-					strength = ua.getDefense(current.getOwner());
-					// If it's a sneak attack, defenders roll at a 1
-					if (isFirstTurnLimitedRoll(player, data))
-					{
-						strength = Math.min(1, strength);
-					}
-					else
-						strength += getSupport(current.getType(), supportRules, supportLeft);
-				}
 				else
 				{
-					strength = ua.getAttack(current.getOwner());
-					if (ua.getIsMarine() && battle.isAmphibious())
+					int strength;
+					if (defending)
 					{
-						final Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
-						if (landUnits.contains(current))
-							++strength;
+						strength = ua.getDefense(current.getOwner());
+						// If it's a sneak attack, defenders roll at a 1
+						if (isFirstTurnLimitedRoll(player, data))
+						{
+							strength = Math.min(1, strength);
+						}
+						else
+						{
+							strength += getSupport(current.getType(), supportRules, supportLeft);
+						}
 					}
-					if (ua.getIsSea() && battle.isAmphibious())
-						strength = ua.getBombard(current.getOwner());
-					strength += getSupport(current.getType(), supportRules, supportLeft);
+					else
+					{
+						strength = ua.getAttack(current.getOwner());
+						if (ua.getIsMarine() && isAmphibiousBattle)
+						{
+							if (amphibiousLandAttackers.contains(current))
+								++strength;
+						}
+						if (ua.getIsSea() && isAmphibiousBattle)
+						{
+							strength = ua.getBombard(current.getOwner());
+						}
+						strength += getSupport(current.getType(), supportRules, supportLeft);
+					}
+					strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
+					totalStr += strength;
+					power += Math.min(Math.max(strength, 0), data.getDiceSides());
 				}
-				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
-				totalStr += strength;
-				power += Math.min(Math.max(strength, 0), data.getDiceSides());
 			}
 		}
+		return power;
+	}
+	
+	/**
+	 * Roll dice for units using low luck rules. Low luck rules based on rules in DAAK.
+	 */
+	private static DiceRoll rollDiceLowLuck(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
+				final Collection<TerritoryEffect> territoryEffects)
+	{
+		final GameData data = bridge.getData();
+		final Territory location = battle.getTerritory();
+		final boolean isAmphibiousBattle = battle.isAmphibious();
+		final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
+		// make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
+		int power = getTotalPower(units, defending, player, location, territoryEffects, data, isAmphibiousBattle, amphibiousLandAttackers);
+		if (power == 0)
+		{
+			return new DiceRoll(new ArrayList<Die>(0), 0);
+		}
+		int hitCount = 0;
 		// Get number of hits
 		hitCount = power / data.getDiceSides();
 		int[] random = new int[0];
@@ -873,7 +888,9 @@ public class DiceRoll implements Externalizable
 							strength = Math.min(1, strength);
 						}
 						else
+						{
 							strength += getSupport(current.getType(), supportRules, supportLeft);
+						}
 					}
 					else
 					{
@@ -886,7 +903,9 @@ public class DiceRoll implements Externalizable
 						}
 						// get bombarding unit's strength
 						if (ua.getIsSea() && battle.isAmphibious())
+						{
 							strength = ua.getBombard(current.getOwner());
+						}
 						strength += getSupport(current.getType(), supportRules, supportLeft);
 					}
 					strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
