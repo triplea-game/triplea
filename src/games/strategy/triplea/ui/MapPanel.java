@@ -72,6 +72,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -111,7 +113,7 @@ public class MapPanel extends ImageScrollerLargeView
 	private String m_movementLeftForCurrentUnits = "";
 	private final UIContext m_uiContext;
 	private final LinkedBlockingQueue<Tile> m_undrawnTiles = new LinkedBlockingQueue<Tile>();
-	private List<Unit> m_highlightUnits;
+	private Map<Territory, List<Unit>> m_highlightUnits;
 	private Cursor m_hiddenCursor = null;
 	
 	/** Creates new MapPanel */
@@ -205,7 +207,7 @@ public class MapPanel extends ImageScrollerLargeView
 	 * the units must all be in the same stack on the map, and exist in the given territory.
 	 * call with an null args
 	 */
-	public void setUnitHighlight(final List<Unit> units, final Territory territory)
+	public void setUnitHighlight(final Map<Territory, List<Unit>> units)
 	{
 		m_highlightUnits = units;
 		SwingUtilities.invokeLater(new Runnable()
@@ -695,14 +697,23 @@ public class MapPanel extends ImageScrollerLargeView
 		m_images.addAll(images);
 		if (m_highlightUnits != null)
 		{
-			final Rectangle r = m_tileManager.getUnitRect(m_highlightUnits, m_data);
-			final Unit first = m_highlightUnits.get(0);
-			// TODO Kev determine if we need to identify if the unit is hit/disabled
-			final BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(first.getType(), first.getOwner(), m_data, first.getHits() != 0, false);
-			final AffineTransform t = new AffineTransform();
-			t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
-			t.scale(m_scale, m_scale);
-			g2d.drawImage(highlight, t, this);
+			for (final Entry<Territory, List<Unit>> entry : m_highlightUnits.entrySet())
+			{
+				final Set<UnitCategory> categories = UnitSeperator.categorize(entry.getValue());
+				for (final UnitCategory category : categories)
+				{
+					final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
+					if (territoryUnitsOfSameCategory.isEmpty())
+						continue;
+					final Rectangle r = m_tileManager.getUnitRect(territoryUnitsOfSameCategory, m_data);
+					final BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(category.getType(), category.getOwner(), m_data, category.getDamaged(),
+								category.getDisabled());
+					final AffineTransform t = new AffineTransform();
+					t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
+					t.scale(m_scale, m_scale);
+					g2d.drawImage(highlight, t, this);
+				}
+			}
 		}
 		// draw the tiles nearest us first
 		// then draw farther away

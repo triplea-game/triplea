@@ -1414,9 +1414,15 @@ public class MovePanel extends AbstractMovePanel
 			final boolean someOwned = Match.someMatch(units, match);
 			final boolean isCorrectTerritory = m_firstSelectedTerritory == null || m_firstSelectedTerritory == territory;
 			if (someOwned && isCorrectTerritory)
-				getMap().setUnitHighlight(units, territory);
+			{
+				final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+				highlight.put(territory, units);
+				getMap().setUnitHighlight(highlight);
+			}
 			else
-				getMap().setUnitHighlight(null, null);
+			{
+				getMap().setUnitHighlight(null);
+			}
 		}
 	};
 	private final MapSelectionListener m_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
@@ -1538,7 +1544,7 @@ public class MovePanel extends AbstractMovePanel
 		getMap().removeMapSelectionListener(m_MAP_SELECTION_LISTENER);
 		getMap().removeUnitSelectionListener(m_UNIT_SELECTION_LISTENER);
 		getMap().removeMouseOverUnitListener(m_MOUSE_OVER_UNIT_LISTENER);
-		getMap().setUnitHighlight(null, null);
+		getMap().setUnitHighlight(null);
 		m_selectedUnits.clear();
 		updateRouteAndMouseShadowUnits(null);
 		m_forced = null;
@@ -1645,27 +1651,62 @@ public class MovePanel extends AbstractMovePanel
 			if (!m_nonCombat)
 				moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units
 			final int size = allTerritories.size();
-			final int lastFocusedIndex = (m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory));
-			int newFocusedIndex = lastFocusedIndex + 1;
+			int newFocusedIndex = m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory) + 1; // new focused index is 1 greater
 			if (newFocusedIndex >= size)
-				newFocusedIndex = 0;
+				newFocusedIndex = 0; // if we are larger than the number of territories, we must start back at zero
 			Territory newFocusedTerritory = null;
-			for (int i = newFocusedIndex; i != lastFocusedIndex; i++)
+			int i = 0; // make sure we go through every single territory on the board
+			while (i < size)
 			{
-				final Territory t = allTerritories.get(i);
-				if (t.getUnits().someMatch(moveableUnitOwnedByMe))
+				final Territory t = allTerritories.get(newFocusedIndex);
+				final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
+				if (matchedUnits.size() > 0)
 				{
 					newFocusedTerritory = t;
+					final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+					highlight.put(t, matchedUnits);
+					getMap().setUnitHighlight(highlight);
 					break;
 				}
-				// now cycle through the front
-				if ((i + 1) >= size)
-					i = 0;
+				// make sure to cycle through the front half of territories
+				if ((newFocusedIndex + 1) >= size)
+					newFocusedIndex = 0;
+				else
+					newFocusedIndex++;
+				i++;
 			}
-			if (newFocusedTerritory != null && !newFocusedTerritory.equals(m_lastFocusedTerritory))
+			if (newFocusedTerritory != null)
 			{
 				m_lastFocusedTerritory = newFocusedTerritory;
 				getMap().centerOn(newFocusedTerritory);
+			}
+		}
+		if (keyCode == KeyEvent.VK_F)
+		{
+			final List<Territory> allTerritories;
+			getData().acquireReadLock();
+			try
+			{
+				allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
+			} finally
+			{
+				getData().releaseReadLock();
+			}
+			final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
+			if (!m_nonCombat)
+				moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units
+			final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+			for (final Territory t : allTerritories)
+			{
+				final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
+				if (!moveableUnits.isEmpty())
+				{
+					highlight.put(t, moveableUnits);
+				}
+			}
+			if (!highlight.isEmpty())
+			{
+				getMap().setUnitHighlight(highlight);
 			}
 		}
 	}

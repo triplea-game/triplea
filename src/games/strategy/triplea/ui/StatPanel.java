@@ -680,7 +680,7 @@ public class StatPanel extends AbstractStatPanel
 					continue;
 				if (ta.getVictoryCity() != 0)
 				{
-					rVal = rVal + ta.getVictoryCity();				
+					rVal = rVal + ta.getVictoryCity();
 				}
 			}
 			return rVal;

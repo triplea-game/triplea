@@ -55,6 +55,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -817,9 +818,15 @@ public class EditPanel extends ActionPanel
 			if (m_currentAction != null)
 				return;
 			if (!units.isEmpty())
-				getMap().setUnitHighlight(units, territory);
+			{
+				final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
+				highlight.put(territory, units);
+				getMap().setUnitHighlight(highlight);
+			}
 			else
-				getMap().setUnitHighlight(null, null);
+			{
+				getMap().setUnitHighlight(null);
+			}
 		}
 	};
 	private final MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()

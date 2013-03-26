@@ -1,4 +1,6 @@
 Changes for 1.7
+* Adding a new Hot Key "F" for 'Find Units', which will highlight all units you own that have movement left, but only during a movement phase. (frigoref)
+
 * Allowed Edit Mode to add land units to a sea zone if there are either transports already there or transports also being added at the same time. (veqryn)
 
 * Allowed Edit Mode to remove units owned by different players. (veqryn)

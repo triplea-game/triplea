@@ -95,7 +95,7 @@ public class UnitSeperator
 			{
 				currentDependents = dependent.get(current);
 			}
-			final boolean damaged = current.getHits() == 1;
+			final boolean damaged = current.getHits() >= 1;
 			if (damaged)
 			{
 				// TODO: implement me
