@@ -66,6 +66,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class OddsCalculatorPanel extends JPanel
 {
@@ -280,6 +282,13 @@ public class OddsCalculatorPanel extends JPanel
 				m_defenderCombo.setSelectedItem(getSwapSides());
 				m_attackingUnitsPanel.init(getAttacker(), getdefenders, isLand());
 				m_defendingUnitsPanel.init(getDefender(), getattackers, isLand());
+				setWidgetActivation();
+			}
+		});
+		m_territoryEffectsJList.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(final ListSelectionEvent e)
+			{
 				setWidgetActivation();
 			}
 		});
