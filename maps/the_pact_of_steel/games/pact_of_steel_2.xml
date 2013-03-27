@@ -1861,6 +1861,7 @@
 															(If you have multiple aa of the same type-group in a territory, and they have different attack values or dicesides, and different maxAAattacks, then what happens is that the engine will roll for the best attack/diceSides and for the best maxAAattacks, even if that is two different units
 															For example, if you have an aa gun that has infinite attacks and rolls a 4/20, and you have another gun with only one attack and rolls 3/6, then you will end up rolling infinite times at 3/6.  This might be fixed in the future.)
 			mayOverStackAA						values: sets if this unit may fire aa more times than there are aircraft (default = false).
+			damageableAA						values: sets if this unit can damage a two-hitpoint unit, instead of killing it instantly with aa fire (default = false = kill instantly).
 			isAAforCombatOnly					values: allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids.
 			isAAforBombingThisUnitOnly			values: allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack.
 			isAAforFlyOverOnly					values: allows this unit to be an AA gun only when being flown over. if the air unit moves into this territory and stays, then this will not fire.
@@ -5047,11 +5048,6 @@
 				</property>
 
 				<property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
-						<boolean/>
-				</property>
-
-						<!-- AA shots instantly kill whatever they hit.  Instead if true they will damage 2 hitpoint units instead of killing them. -->
-				<property name="AA May Damage Instead of Destroying Units" value="false" editable="false">
 						<boolean/>
 				</property>
 

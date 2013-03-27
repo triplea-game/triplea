@@ -868,10 +868,10 @@ public class TerritoryAttachment extends DefaultAttachment
 		if (m_convoyRoute)
 		{
 			if (!m_convoyAttached.isEmpty())
-				sb.append("Needs: " + MyFormatter.asList(m_convoyAttached) + br);
+				sb.append("Needs: " + MyFormatter.defaultNamedToTextList(m_convoyAttached) + br);
 			final Set<Territory> requiredBy = getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
 			if (!requiredBy.isEmpty())
-				sb.append("Required By: " + MyFormatter.asList(requiredBy) + br);
+				sb.append("Required By: " + MyFormatter.defaultNamedToTextList(requiredBy) + br);
 		}
 		if (m_changeUnitOwners != null && !m_changeUnitOwners.isEmpty())
 		{

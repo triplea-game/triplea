@@ -1489,7 +1489,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, (submerge || canDefendingSubsSubmergeOrRetreat), m_battleSite, availableTerritories, text);
 		if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs)
 		{
-			System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.territoriesToText(availableTerritories));
+			System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.defaultNamedToTextList(availableTerritories));
 			Thread.dumpStack();
 			return;
 		}
@@ -2347,9 +2347,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 							else
 							{
 								if (m_dice.getHits() > 0)
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
 								else
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
 							}
 						}
 					}

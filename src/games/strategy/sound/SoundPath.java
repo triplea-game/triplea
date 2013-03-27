@@ -49,7 +49,7 @@ public class SoundPath
 	// TripleA sounds:
 	
 	// custom AA Guns:
-	public static final String CLIP_BATTLE_X_PREFACE = "battle_";
+	public static final String CLIP_BATTLE_X_PREFIX = "battle_";
 	public static final String CLIP_BATTLE_X_HIT = "_hit";
 	public static final String CLIP_BATTLE_X_MISS = "_miss";
 	// normal sounds:

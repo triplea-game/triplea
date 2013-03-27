@@ -48,6 +48,6 @@ public class GridEndTurnData implements IGridEndTurnData
 		return (m_player == null ? "" : m_player.getName() + " ")
 					+ (m_wantToContinuePlaying ? "continuing play" :
 								(m_territoryUnitsRemovalAdjustment == null || m_territoryUnitsRemovalAdjustment.isEmpty() ? "making no territory adjustments" :
-											"changing the following territories: " + MyFormatter.asList(m_territoryUnitsRemovalAdjustment)));
+											"changing the following territories: " + MyFormatter.defaultNamedToTextList(m_territoryUnitsRemovalAdjustment)));
 	}
 }

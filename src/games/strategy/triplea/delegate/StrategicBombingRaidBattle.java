@@ -357,9 +357,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 							else
 							{
 								if (m_dice.getHits() > 0)
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
 								else
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
 							}
 						}
 					}
@@ -458,7 +458,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 	{
 		getDisplay(bridge).notifyDice(m_battleID, dice, SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
 		final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
-		final boolean allowMultipleHitsPerUnit = Properties.getAAMayDamageInsteadOfDestroyingUnits(m_data);
+		final boolean allowMultipleHitsPerUnit = Match.allMatch(defendingAA, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
 		if (isEditMode)
 		{
 			final String text = currentTypeAA + AA_GUNS_FIRE_SUFFIX;

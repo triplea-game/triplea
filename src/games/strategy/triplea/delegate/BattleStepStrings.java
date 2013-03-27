@@ -30,7 +30,7 @@ public interface BattleStepStrings
 	final static String SELECT_AA_CASUALTIES = "Select AA casualties";
 	final static String REMOVE_AA_CASUALTIES = "Remove AA casualties";
 	*/
-	final static String AA_GUNS_FIRE_SUFFIX = " fires";
+	final static String AA_GUNS_FIRE_SUFFIX = " fire";
 	final static String SELECT_PREFIX = "Select ";
 	final static String REMOVE_PREFIX = "Remove ";
 	final static String CASUALTIES_SUFFIX = " casualties";

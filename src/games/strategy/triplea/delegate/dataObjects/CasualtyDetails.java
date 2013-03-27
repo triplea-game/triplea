@@ -65,7 +65,7 @@ public class CasualtyDetails extends CasualtyList implements Serializable
 	}
 	
 	/**
-	 * Empty details
+	 * Empty details, with autoCalculated as true.
 	 */
 	public CasualtyDetails()
 	{

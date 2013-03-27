@@ -1672,6 +1672,6 @@ public class GameParser
 				errors.add(ut);
 		}
 		if (!errors.isEmpty())
-			throw new GameParseException(data.getGameName() + " does not have unit attachments for: " + MyFormatter.asList(errors));
+			throw new GameParseException(data.getGameName() + " does not have unit attachments for: " + MyFormatter.defaultNamedToTextList(errors));
 	}
 }

@@ -261,7 +261,7 @@ public class GridPlayData implements IGridPlayData
 		return (m_player == null ? "" : m_player.getName() + " moving ")
 					+ (m_start == null ? "" : (m_start.getUnits().getUnitCount() > 0 ? MyFormatter.unitsToTextNoOwner(m_start.getUnits().getUnits()) + " " : ""))
 					+ (m_end == null ? "to " : "from ") + (m_start == null ? "null" : m_start.getName())
-					+ (m_end == null ? "" : " to " + m_end.getName()) + (m_middleSteps == null || m_middleSteps.isEmpty() ? "" : " by way of: " + MyFormatter.asList(m_middleSteps));
+					+ (m_end == null ? "" : " to " + m_end.getName()) + (m_middleSteps == null || m_middleSteps.isEmpty() ? "" : " by way of: " + MyFormatter.defaultNamedToTextList(m_middleSteps));
 	}
 	
 }

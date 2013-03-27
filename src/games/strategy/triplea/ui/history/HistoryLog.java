@@ -553,7 +553,7 @@ public class HistoryLog extends JFrame
 			return;
 		final PrintWriter logWriter = m_printWriter;
 		// print all units in all territories, including "flags"
-		logWriter.println("Territory Summary for " + MyFormatter.asList(players) + " : \n");
+		logWriter.println("Territory Summary for " + MyFormatter.defaultNamedToTextList(players) + " : \n");
 		for (final Territory t : territories)
 		{
 			final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));

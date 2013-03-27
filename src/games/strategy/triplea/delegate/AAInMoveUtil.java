@@ -210,7 +210,10 @@ class AAInMoveUtil implements Serializable
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					validAttackingUnitsForThisRoll.removeAll(m_casualties); // get rid of units already killed, so we don't target them twice
-					dice[0] = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, m_bridge, territory);
+					if (!validAttackingUnitsForThisRoll.isEmpty())
+					{
+						dice[0] = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, m_bridge, territory);
+					}
 				}
 			};
 			final IExecutable selectCasualties = new IExecutable()
@@ -219,24 +222,25 @@ class AAInMoveUtil implements Serializable
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					if (validAttackingUnitsForThisRoll.isEmpty())
-						return;
-					final int hitCount = dice[0].getHits();
-					if (hitCount == 0)
+					if (!validAttackingUnitsForThisRoll.isEmpty())
 					{
-						if (currentTypeAA.equals("AA"))
-							ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA).getName());
+						final int hitCount = dice[0].getHits();
+						if (hitCount == 0)
+						{
+							if (currentTypeAA.equals("AA"))
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA).getName());
+							else
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, findDefender(currentPossibleAA).getName());
+							getRemotePlayer().reportMessage("No " + currentTypeAA + " hits in " + territory.getName(), "No " + currentTypeAA + " hits in " + territory.getName());
+						}
 						else
-							ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, findDefender(currentPossibleAA).getName());
-						getRemotePlayer().reportMessage("No " + currentTypeAA + " hits in " + territory.getName(), "No " + currentTypeAA + " hits in " + territory.getName());
-					}
-					else
-					{
-						if (currentTypeAA.equals("AA"))
-							ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA).getName());
-						else
-							ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, findDefender(currentPossibleAA).getName());
-						selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null, currentTypeAA);
+						{
+							if (currentTypeAA.equals("AA"))
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA).getName());
+							else
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, findDefender(currentPossibleAA).getName());
+							selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null, currentTypeAA);
+						}
 					}
 				}
 			};

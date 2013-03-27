@@ -265,7 +265,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 				else
 				{
 					actionText = m_player.getName() + " wants to take the following action: " + MyFormatter.attachmentNameToText(paa.getName()) + ".  Do you approve? \r\n\r\n " + m_player.getName()
-								+ " will ask " + MyFormatter.asList(paa.getActionAccept()) + ", the following question: \r\n " + actionText;
+								+ " will ask " + MyFormatter.defaultNamedToTextList(paa.getActionAccept()) + ", the following question: \r\n " + actionText;
 				}
 				if (!(getRemotePlayer(player)).acceptPoliticalAction(actionText))
 					return false;

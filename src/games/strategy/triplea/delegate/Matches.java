@@ -1125,6 +1125,15 @@ public class Matches
 		};
 	}
 	
+	public static final Match<Unit> UnitAAShotDamageableInsteadOfKillingInstantly = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			return UnitAttachment.get(obj.getType()).getDamageableAA();
+		}
+	};
+	
 	public static final Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent)
 	{
 		return new Match<Unit>()

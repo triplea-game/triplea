@@ -1,9 +1,9 @@
 Changes for 1.7
-* Created a new game option, "AA May Damage Instead of Destroying Units", which allows an AA gun to cause damage to a two hitpoint unit instead of outright killing it. (veqryn)
+* Created a new Unit Attachment option, "damageableAA", which allows this AA gun type unit to cause damage to a two hitpoint unit instead of outright killing it. (veqryn)
 
 * Fixed bug where AA shots on 2 hitpoint units with Choose AA Casualties on was resulting in no damage or killed unit. Also changed battle display to show "typeAA" for each AA Fire phase, instead of a generic identifier. (veqryn)
 
-* Allowing custom AA hit and miss sounds for irregular AA types, with the folder being located at "battle_<typeAA>_hit" and "battle_<typeAA>_miss", where <typeAA> is the unit attachment typeAA of that unit. (veqryn)
+* Allowing custom AA hit and miss sounds for irregular AA types, with the folder being located at "battle_<typeaa>_hit" and "battle_<typeaa>_miss" (folder must be lowercase though), where <typeaa> is the unit attachment "typeAA" of that unit. (veqryn)
 
 * Adding text labels to the Battle Calculator for the number of hitpoints and the total attack or defense power of each side. (veqryn) 
 

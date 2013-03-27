@@ -22,6 +22,7 @@ import games.strategy.engine.data.Unit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -73,9 +74,21 @@ public class CasualtyList implements Serializable
 		return m_damaged;
 	}
 	
+	public List<Unit> getKilledAndDamaged()
+	{
+		final List<Unit> all = new ArrayList<Unit>(m_killed);
+		all.addAll(m_damaged);
+		return all;
+	}
+	
 	public void addToKilled(final Unit deadUnit)
 	{
 		m_killed.add(deadUnit);
+	}
+	
+	public void addToKilled(final Collection<Unit> deadUnits)
+	{
+		m_killed.addAll(deadUnits);
 	}
 	
 	public void addToDamaged(final Unit damagedUnit)
@@ -83,14 +96,35 @@ public class CasualtyList implements Serializable
 		m_damaged.add(damagedUnit);
 	}
 	
+	public void addToDamaged(final Collection<Unit> damagedUnits)
+	{
+		m_damaged.addAll(damagedUnits);
+	}
+	
 	public void removeFromKilled(final Unit deadUnit)
 	{
 		m_killed.remove(deadUnit);
 	}
 	
+	public void removeFromKilled(final Collection<Unit> deadUnits)
+	{
+		m_killed.removeAll(deadUnits);
+	}
+	
 	public void removeFromDamaged(final Unit damagedUnit)
 	{
 		m_damaged.remove(damagedUnit);
+	}
+	
+	public void removeFromDamaged(final Collection<Unit> damagedUnits)
+	{
+		m_damaged.removeAll(damagedUnits);
+	}
+	
+	public void addAll(final CasualtyList casualtyList)
+	{
+		m_damaged.addAll(casualtyList.getDamaged());
+		m_killed.addAll(casualtyList.getKilled());
 	}
 	
 	public void clear()
@@ -107,6 +141,6 @@ public class CasualtyList implements Serializable
 	@Override
 	public String toString()
 	{
-		return "Selected Casualties: damaged:" + m_damaged + " killed:" + m_killed;
+		return "Selected Casualties: Damaged: [" + m_damaged + "],  Killed: [" + m_killed + "]";
 	}
 }

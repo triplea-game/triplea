@@ -150,6 +150,7 @@ public class UnitAttachment extends DefaultAttachment
 	private String m_typeAA = "AA"; // default value for when it is not set
 	private HashSet<UnitType> m_targetsAA = null; // null means targeting air units only
 	private boolean m_mayOverStackAA = false; // if false, we can not shoot more times than there are number of planes
+	private boolean m_damageableAA = false; // if false, we instantly kill anything our AA shot hits
 	private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<UnitType>(); // if these enemy units are present, the gun does not fire at all
 	
 	// strategic bombing related
@@ -2390,6 +2391,28 @@ public class UnitAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDamageableAA(final String s)
+	{
+		m_damageableAA = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDamageableAA(final Boolean s)
+	{
+		m_damageableAA = s;
+	}
+	
+	public boolean getDamageableAA()
+	{
+		return m_damageableAA;
+	}
+	
+	public void resetDamageableAA()
+	{
+		m_damageableAA = false;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAAforCombatOnly(final String s)
 	{
 		m_isAAforCombatOnly = getBool(s);
@@ -3032,6 +3055,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
 					+ "  maxAAattacks:" + m_maxAAattacks
 					+ "  mayOverStackAA:" + m_mayOverStackAA
+					+ "  damageableAA:" + m_damageableAA
 					+ "  typeAA:" + m_typeAA
 					+ "  targetsAA:" + (m_targetsAA != null ? (m_targetsAA.size() == 0 ? "empty" : m_targetsAA.toString()) : "all air units")
 					+ "  willNotFireIfPresent:" + (m_willNotFireIfPresent != null ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString()) : "null")

@@ -20,7 +20,6 @@ package games.strategy.triplea.formatter;
 
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -141,32 +140,23 @@ public class MyFormatter
 		return buf.toString();
 	}
 	
-	/**
-	 * Equivalent to territoriesToText(territories, ",");
-	 */
-	public static String territoriesToText(final Collection<Territory> territories)
-	{
-		return territoriesToText(territories, ",");
-	}
-	
-	public static String territoriesToText(final Collection<Territory> territories, final String seperator)
-	{
-		final Iterator<Territory> iter = territories.iterator();
-		final StringBuilder buffer = new StringBuilder();
-		while (iter.hasNext())
-		{
-			buffer.append((iter.next()).getName());
-			if (iter.hasNext())
-				buffer.append(" ").append(seperator).append(" ");
-		}
-		return buffer.toString();
-	}
-	
 	public static String pluralize(final String in, final int quantity)
 	{
 		if (quantity == -1 || quantity == 1)
 			return in;
 		return pluralize(in);
+	}
+	
+	/**
+	 * Is pluralize even a word?
+	 */
+	public static String pluralize(final String in)
+	{
+		if (s_plural.containsKey(in))
+			return s_plural.get(in);
+		if (in.endsWith("man"))
+			return in.substring(0, in.lastIndexOf("man")) + "men";
+		return in + "s";
 	}
 	
 	public static String attachmentNameToText(final String attachmentGetName)
@@ -220,29 +210,6 @@ public class MyFormatter
 		return toText;
 	}
 	
-	public static String defaultNamedToString(final Collection<? extends DefaultNamed> list)
-	{
-		String toText = ", ";
-		for (final DefaultNamed named : list)
-		{
-			toText += named.getName();
-			toText += ", ";
-		}
-		return toText.replaceFirst(", ", "");
-	}
-	
-	/**
-	 * Is pluralize even a word?
-	 */
-	public static String pluralize(final String in)
-	{
-		if (s_plural.containsKey(in))
-			return s_plural.get(in);
-		if (in.endsWith("man"))
-			return in.substring(0, in.lastIndexOf("man")) + "men";
-		return in + "s";
-	}
-	
 	public static String asDice(final DiceRoll roll)
 	{
 		if (roll == null || roll.size() == 0)
@@ -285,26 +252,41 @@ public class MyFormatter
 		return buf.toString();
 	}
 	
-	/**
-	 * For use with any DefaultNamed (this includes any NamedAttachable, like PlayerID, UnitType, etc.)
-	 * 
-	 * @param collection
-	 * @return
-	 */
-	public static String asList(final Collection<? extends DefaultNamed> collection)
+	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list)
 	{
-		final StringBuilder buf = new StringBuilder();
-		for (final DefaultNamed o : collection)
+		final Iterator<? extends DefaultNamed> iter = list.iterator();
+		final StringBuilder buffer = new StringBuilder();
+		while (iter.hasNext())
 		{
-			if (o == null)
-				continue;
-			buf.append(", ");
-			buf.append(o.getName());
+			final DefaultNamed named = iter.next();
+			if (named != null)
+			{
+				buffer.append(named.getName());
+				if (iter.hasNext())
+					buffer.append(", ");
+			}
 		}
-		return buf.toString().replaceFirst(", ", "");
+		return buffer.toString();
 	}
 	
-	public static String integerMapToString(final IntegerMap<? extends DefaultNamed> map)
+	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator)
+	{
+		final Iterator<? extends DefaultNamed> iter = list.iterator();
+		final StringBuilder buffer = new StringBuilder();
+		while (iter.hasNext())
+		{
+			final DefaultNamed named = iter.next();
+			if (named != null)
+			{
+				buffer.append(named.getName());
+				if (iter.hasNext())
+					buffer.append(" ").append(seperator).append(" ");
+			}
+		}
+		return buffer.toString();
+	}
+	
+	public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map)
 	{
 		final StringBuilder buf = new StringBuilder("");
 		for (final Entry<? extends DefaultNamed, Integer> entry : map.entrySet())
