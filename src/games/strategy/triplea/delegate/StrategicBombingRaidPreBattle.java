@@ -95,8 +95,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		m_steps = new ArrayList<String>();
 		m_steps.add(AIR_BATTLE);
 		m_steps.add(INTERCEPTORS_LAUNCH);
-		m_steps.add(DEFENDERS_FIRE);
 		m_steps.add(ATTACKERS_FIRE);
+		m_steps.add(DEFENDERS_FIRE);
 		m_steps.add(WITHDRAW);
 		m_steps.add(BOMBERS_TO_TARGETS);
 		showBattle(bridge);
@@ -104,8 +104,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && Match.someMatch(m_battleSite.getUnits().getUnits(), defendingInterceptors(m_attacker, m_data)))
 		{
 			steps.add(new InterceptorsLaunch());
-			steps.add(new DefendersFire());
 			steps.add(new AttackersFire());
+			steps.add(new DefendersFire());
 			steps.add(new IExecutable()
 			{
 				private static final long serialVersionUID = -5575569705493214941L;
@@ -348,7 +348,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_details = BattleCalculator.selectCasualties(m_defender, m_defendingUnits, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID);
+					m_details = BattleCalculator.selectCasualties(m_defender, m_defendingUnits, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID, true);
 					m_defendingWaitingToDie.addAll(m_details.getKilled());
 					markDamaged(m_details.getDamaged(), bridge);
 				}
@@ -395,7 +395,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_details = BattleCalculator.selectCasualties(m_attacker, m_attackingUnits, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID);
+					m_details = BattleCalculator.selectCasualties(m_attacker, m_attackingUnits, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID, true);
 					m_attackingWaitingToDie.addAll(m_details.getKilled());
 					markDamaged(m_details.getDamaged(), bridge);
 				}
@@ -478,18 +478,6 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		}
 		// math max 1, because we already know these units have air attack > 0
 		return Math.max(1, (defending ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner()) : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
-	}
-	
-	private void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
-	{
-		if (damaged.size() == 0)
-			return;
-		Change damagedChange = null;
-		final IntegerMap<Unit> damagedMap = new IntegerMap<Unit>();
-		damagedMap.putAll(damaged, 1);
-		damagedChange = ChangeFactory.unitsHit(damagedMap);
-		bridge.getHistoryWriter().addChildToEvent("Units damaged: " + MyFormatter.unitsToText(damaged), damaged);
-		bridge.addChange(damagedChange);
 	}
 	
 	private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite)

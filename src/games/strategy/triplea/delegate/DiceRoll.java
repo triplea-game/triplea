@@ -121,6 +121,8 @@ public class DiceRoll implements Externalizable
 	
 	public static int getTotalAAattacks(final Collection<Unit> defendingEnemyAA, final Collection<Unit> validAttackingUnitsForThisRoll, final GameData data)
 	{
+		if (defendingEnemyAA.isEmpty() || validAttackingUnitsForThisRoll.isEmpty())
+			return 0;
 		int totalAAattacksNormal = 0;
 		int totalAAattacksSurplus = 0;
 		for (final Unit aa : defendingEnemyAA)
@@ -147,6 +149,8 @@ public class DiceRoll implements Externalizable
 			return new DiceRoll(new ArrayList<Die>(0), 0);
 		final GameData data = bridge.getData();
 		final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll, data);
+		if (totalAAattacksTotal <= 0)
+			return new DiceRoll(new ArrayList<Die>(0), 0);
 		// determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the same typeAA)
 		final Tuple<Integer, Integer> attackThenDiceSidesForAll = getAAattackAndMaxDiceSides(defendingAA, data);
 		// final int highestAttackPower = attackThenDiceSidesForAll.getFirst();

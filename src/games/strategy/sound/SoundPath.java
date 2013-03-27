@@ -46,7 +46,13 @@ public class SoundPath
 	public static final String CLIP_REQUIRED_ACTION = "required_action"; // TODO
 	public static final String CLIP_REQUIRED_YOUR_TURN_SERIES = "required_your_turn_series";
 	
-	// TripleA sounds
+	// TripleA sounds:
+	
+	// custom AA Guns:
+	public static final String CLIP_BATTLE_X_PREFACE = "battle_";
+	public static final String CLIP_BATTLE_X_HIT = "_hit";
+	public static final String CLIP_BATTLE_X_MISS = "_miss";
+	// normal sounds:
 	public static final String CLIP_BATTLE_AA_HIT = "battle_aa_hit";
 	public static final String CLIP_BATTLE_AA_MISS = "battle_aa_miss";
 	public static final String CLIP_BATTLE_AIR = "battle_air";

@@ -844,7 +844,7 @@ public class BattleDisplay extends JPanel
 	}*/
 
 	public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-				final PlayerID hit, final CasualtyList defaultCasualties)
+				final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("This method should not be run in the event dispatch thread");
@@ -874,7 +874,7 @@ public class BattleDisplay extends JPanel
 						final String messageText = message + " " + btnText + ".";
 						if (chooser == null || chooserScrollPane == null)
 						{
-							chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
+							chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, allowMultipleHitsPerUnit, m_mapPanel.getUIContext());
 							chooser.setTitle(messageText);
 							if (isEditMode)
 								chooser.setMax(selectFrom.size());

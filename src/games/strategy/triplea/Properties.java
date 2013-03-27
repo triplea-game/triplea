@@ -832,6 +832,11 @@ public class Properties implements Constants
 		return data.getProperties().get(SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT, false);
 	}
 	
+	public static boolean getAAMayDamageInsteadOfDestroyingUnits(final GameData data)
+	{
+		return data.getProperties().get(AA_MAY_DAMAGE_INSTEAD_OF_DESTROYING_UNITS, false);
+	}
+	
 	private Properties()
 	{
 	}

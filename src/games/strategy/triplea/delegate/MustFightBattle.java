@@ -39,6 +39,7 @@ import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
@@ -108,7 +109,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private final ExecutionStack m_stack = new ExecutionStack();
 	private List<String> m_stepStrings;
 	protected List<Unit> m_defendingAA;
-	protected Set<String> m_AAtypes;
+	protected List<String> m_AAtypes;
 	private final List<Unit> m_attackingUnitsRetreated = new ArrayList<Unit>();
 	private final List<Unit> m_defendingUnitsRetreated = new ArrayList<Unit>();
 	
@@ -372,7 +373,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// determine any AA
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
 		m_defendingAA = Match.getMatches(m_defendingUnits, Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_data));
-		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
+		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);// comes ordered alphabetically
+		Collections.reverse(m_AAtypes); // stacks are backwards
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
@@ -504,11 +506,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			if (canFireAA())
 			{
-				for (int i = 0; i < UnitAttachment.getAllOfTypeAAs(m_defendingAA).size(); ++i)
+				for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_defendingAA))
 				{
-					steps.add(AA_GUNS_FIRE);
-					steps.add(SELECT_AA_CASUALTIES);
-					steps.add(REMOVE_AA_CASUALTIES);
+					steps.add(typeAA + AA_GUNS_FIRE_SUFFIX);
+					steps.add(SELECT_PREFIX + typeAA + CASUALTIES_SUFFIX);
+					steps.add(REMOVE_PREFIX + typeAA + CASUALTIES_SUFFIX);
 				}
 			}
 			if (!m_battleSite.isWater() && !getBombardingUnits().isEmpty())
@@ -2307,7 +2309,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		private static final long serialVersionUID = -6406659798754841382L;
 		private DiceRoll m_dice;
-		private Collection<Unit> m_casualties;
+		private CasualtyDetails m_casualties;
+		Collection<Unit> m_casualtiesSoFar = new ArrayList<Unit>();
 		
 		// private List<Unit> m_hitUnits = new ArrayList<Unit>();
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
@@ -2328,15 +2331,29 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
-						if (!m_headless && currentTypeAA.equals("AA"))
+						validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
+						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
-							if (m_dice.getHits() > 0)
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+							m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
+							if (!m_headless)
+						{
+							if (currentTypeAA.equals("AA"))
+							{
+								if (m_dice.getHits() > 0)
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+								else
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
+							}
 							else
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
+							{
+								if (m_dice.getHits() > 0)
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
+								else
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
+							}
 						}
 					}
+				}
 				};
 				final IExecutable selectCasualties = new IExecutable()
 				{
@@ -2344,7 +2361,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge);
+						if (!validAttackingUnitsForThisRoll.isEmpty())
+						{
+							final CasualtyDetails details = selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, currentTypeAA);
+							markDamaged(details.getDamaged(), bridge);
+							m_casualties = details;
+							m_casualtiesSoFar.addAll(details.getKilled());
+						}
 					}
 				};
 				final IExecutable notifyCasualties = new IExecutable()
@@ -2353,8 +2376,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						notifyCasualtiesAA(bridge);
-						removeCasualties(m_casualties, ReturnFire.NONE, false, bridge, true);
+						if (!validAttackingUnitsForThisRoll.isEmpty())
+						{
+							notifyCasualtiesAA(bridge, currentTypeAA);
+							removeCasualties(m_casualties.getKilled(), ReturnFire.NONE, false, bridge, true);
+						}
 					}
 				};
 				// push in reverse order of execution
@@ -2364,19 +2390,19 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 		}
 		
-		private void selectCasualties(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA, final IDelegateBridge bridge)
+		private CasualtyDetails selectCasualties(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA, final IDelegateBridge bridge, final String currentTypeAA)
 		{
-			// send defender the dice roll so he can see what the dice are while he
-			// waits for attacker to select casualties
-			getDisplay(bridge).notifyDice(m_battleID, m_dice, SELECT_AA_CASUALTIES);
-			m_casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
+			// send defender the dice roll so he can see what the dice are while he waits for attacker to select casualties
+			getDisplay(bridge).notifyDice(m_battleID, m_dice, SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
+			return BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
 		}
 		
-		private void notifyCasualtiesAA(final IDelegateBridge bridge)
+		private void notifyCasualtiesAA(final IDelegateBridge bridge, final String currentTypeAA)
 		{
 			if (m_headless)
 				return;
-			getDisplay(bridge).casualtyNotification(m_battleID, SELECT_AA_CASUALTIES, m_dice, m_attacker, new ArrayList<Unit>(m_casualties), Collections.<Unit> emptyList(), m_dependentUnits);
+			getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, m_dice, m_attacker, new ArrayList<Unit>(m_casualties.getKilled()),
+						new ArrayList<Unit>(m_casualties.getDamaged()), m_dependentUnits);
 			getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
 			final Runnable r = new Runnable()
 			{
@@ -2528,18 +2554,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 		}
 		return dependents;
-	}
-	
-	void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
-	{
-		if (damaged.size() == 0)
-			return;
-		Change damagedChange = null;
-		final IntegerMap<Unit> damagedMap = new IntegerMap<Unit>();
-		damagedMap.putAll(damaged, 1);
-		damagedChange = ChangeFactory.unitsHit(damagedMap);
-		bridge.getHistoryWriter().addChildToEvent("Units damaged: " + MyFormatter.unitsToText(damaged), damaged);
-		bridge.addChange(damagedChange);
 	}
 	
 	private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite, final boolean isAA)

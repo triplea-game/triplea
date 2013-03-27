@@ -1268,7 +1268,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 *      Added new collection autoKilled to handle killing units prior to casualty selection
 	 */
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)
 	{
 		final List<Unit> rDamaged = new ArrayList<Unit>();
 		final List<Unit> rKilled = new ArrayList<Unit>();

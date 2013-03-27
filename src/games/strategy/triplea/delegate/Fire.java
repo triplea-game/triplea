@@ -120,7 +120,7 @@ public class Fire implements IExecutable
 				// m_confirmOwnCasualties = true;
 				if (extraHits > transportsOnly.size())
 					extraHits = transportsOnly.size();
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, extraHits);
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, extraHits, true);
 				m_killed.addAll(message.getKilled());
 				m_confirmOwnCasualties = true;
 			}
@@ -134,7 +134,7 @@ public class Fire implements IExecutable
 			// less than possible number
 			else
 			{
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits());
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits(), true);
 				m_killed = message.getKilled();
 				m_damaged = message.getDamaged();
 				m_confirmOwnCasualties = message.getAutoCalculated();
@@ -155,7 +155,7 @@ public class Fire implements IExecutable
 			else
 			{
 				CasualtyDetails message;
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits());
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits(), true);
 				m_killed = message.getKilled();
 				m_damaged = message.getDamaged();
 				m_confirmOwnCasualties = message.getAutoCalculated();

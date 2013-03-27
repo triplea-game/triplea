@@ -50,7 +50,7 @@ public class BattleCalculatorTest extends TestCase
 		final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 0, ScriptedRandomSource.ERROR });
 		m_bridge.setRandomSource(randomSource);
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 1);
 		assertEquals(1, randomSource.getTotalRolled());
 	}
@@ -66,7 +66,7 @@ public class BattleCalculatorTest extends TestCase
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 0, ScriptedRandomSource.ERROR });
 		m_bridge.setRandomSource(randomSource);
 		TripleAUnit.get(planes.get(0)).setAlreadyMoved(1);
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 1);
 	}
 	
@@ -83,7 +83,7 @@ public class BattleCalculatorTest extends TestCase
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
 		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 2);
 		// should be 1 fighter and 1 bomber
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
@@ -105,7 +105,7 @@ public class BattleCalculatorTest extends TestCase
 		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		assertEquals(1, randomSource.getTotalRolled());
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 2);
 		// two extra rolls to pick which units are hit
 		assertEquals(3, randomSource.getTotalRolled());
@@ -127,7 +127,7 @@ public class BattleCalculatorTest extends TestCase
 		{
 			@Override
 			public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-						final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
+						final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)
 			{
 				final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
 				return new CasualtyDetails(selected, new ArrayList<Unit>(), false);
@@ -137,7 +137,7 @@ public class BattleCalculatorTest extends TestCase
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
 		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, germans(data), british(data), null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, germans(data), british(data), null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 2);
 		// we selected all bombers
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 2);
@@ -157,7 +157,7 @@ public class BattleCalculatorTest extends TestCase
 		{
 			@Override
 			public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-						final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
+						final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)
 			{
 				final List<Unit> selected = Match.getNMatches(selectFrom, count, Matches.UnitIsStrategicBomber);
 				return new CasualtyDetails(selected, new ArrayList<Unit>(), false);
@@ -167,7 +167,7 @@ public class BattleCalculatorTest extends TestCase
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, ScriptedRandomSource.ERROR }));
 		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, germans(data), british(data), null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, germans(data), british(data), null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 3);
 		// we selected all bombers
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 3);
@@ -191,7 +191,7 @@ public class BattleCalculatorTest extends TestCase
 					territory("Germany", data));
 		// make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 3);
 		// a second roll for choosing which unit
 		assertEquals(2, randomSource.getTotalRolled());
@@ -217,7 +217,7 @@ public class BattleCalculatorTest extends TestCase
 					territory("Germany", data));
 		// make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 2);
 		assertEquals(1, randomSource.getTotalRolled());
 		// should be 1 fighter and 1 bomber
@@ -241,7 +241,7 @@ public class BattleCalculatorTest extends TestCase
 					territory("Germany", data));
 		// make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data)).getKilled();
 		assertEquals(casualties.size(), 3);
 		// should be 2 fighters and 1 bombers
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);

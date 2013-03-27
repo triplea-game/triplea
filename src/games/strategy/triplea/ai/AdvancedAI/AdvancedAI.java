@@ -10017,7 +10017,7 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	 *      games.strategy.engine.data.PlayerID, java.util.List)
 	 */
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)
 	{
 		if (defaultCasualties.size() != count)
 			throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");

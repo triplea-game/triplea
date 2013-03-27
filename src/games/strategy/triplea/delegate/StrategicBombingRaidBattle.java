@@ -62,17 +62,16 @@ import java.util.Set;
  * @author Sean Bridges
  * @version 1.0
  */
-public class StrategicBombingRaidBattle extends AbstractBattle
+public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings
 {
 	private static final long serialVersionUID = 8490171037606078890L;
 	private final static String RAID = "Strategic bombing raid";
-	private final static String FIRE_AA = "Fire AA";
 	
 	protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other targets. does not include aa.
 	protected final ExecutionStack m_stack = new ExecutionStack();
 	protected List<String> m_steps;
 	protected List<Unit> m_defendingAA;
-	protected Set<String> m_AAtypes;
+	protected List<String> m_AAtypes;
 	
 	private int m_bombingRaidTotal;
 	private final IntegerMap<Unit> m_bombingRaidDamage = new IntegerMap<Unit>();
@@ -187,14 +186,17 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		// TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
 		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
-		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
+		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
+		Collections.reverse(m_AAtypes); // reverse since stacks are in reverse order
 		final boolean hasAA = m_defendingAA.size() > 0;
 		m_steps = new ArrayList<String>();
 		if (hasAA)
 		{
-			for (int i = 0; i < UnitAttachment.getAllOfTypeAAs(m_defendingAA).size(); ++i)
+			for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_defendingAA))
 			{
-				m_steps.add(FIRE_AA);
+				m_steps.add(typeAA + AA_GUNS_FIRE_SUFFIX);
+				m_steps.add(SELECT_PREFIX + typeAA + CASUALTIES_SUFFIX);
+				m_steps.add(REMOVE_PREFIX + typeAA + CASUALTIES_SUFFIX);
 			}
 		}
 		m_steps.add(RAID);
@@ -321,11 +323,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	{
 		private static final long serialVersionUID = -4667856856747597406L;
 		DiceRoll m_dice;
-		Collection<Unit> m_casualties;
+		CasualtyDetails m_casualties;
+		Collection<Unit> m_casualtiesSoFar = new ArrayList<Unit>();
 		
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
-			// TODO: is this even allowed? I think we shouldn't have nested executables, cus it doesn't make sense...
 			final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
 			for (final String currentTypeAA : m_AAtypes)
 			{
@@ -341,13 +343,24 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
-						if (currentTypeAA.equals("AA"))
+						validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
+						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
-							if (m_dice.getHits() > 0)
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+							m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
+							if (currentTypeAA.equals("AA"))
+							{
+								if (m_dice.getHits() > 0)
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+								else
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
+							}
 							else
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
+							{
+								if (m_dice.getHits() > 0)
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
+								else
+									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
+							}
 						}
 					}
 				};
@@ -357,7 +370,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						m_casualties = calculateCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_dice);
+						if (!validAttackingUnitsForThisRoll.isEmpty())
+						{
+							final CasualtyDetails details = calculateCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_dice, currentTypeAA);
+							markDamaged(details.getDamaged(), bridge);
+							m_casualties = details;
+							m_casualtiesSoFar.addAll(details.getKilled());
+						}
 					}
 				};
 				final IExecutable notifyCasualties = new IExecutable()
@@ -366,7 +385,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						notifyAAHits(bridge, m_dice, m_casualties);
+						if (!validAttackingUnitsForThisRoll.isEmpty())
+						{
+							notifyAAHits(bridge, m_dice, m_casualties, currentTypeAA);
+						}
 					}
 				};
 				final IExecutable removeHits = new IExecutable()
@@ -375,7 +397,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						removeAAHits(bridge, m_dice, m_casualties);
+						if (!validAttackingUnitsForThisRoll.isEmpty())
+						{
+							removeAAHits(bridge, m_dice, m_casualties, currentTypeAA);
+						}
 					}
 				};
 				// push in reverse order of execution
@@ -428,28 +453,32 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		return games.strategy.triplea.Properties.getPacificTheater(m_data);
 	}
 	
-	private Collection<Unit> calculateCasualties(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA, final IDelegateBridge bridge, final DiceRoll dice)
+	private CasualtyDetails calculateCasualties(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA, final IDelegateBridge bridge, final DiceRoll dice,
+				final String currentTypeAA)
 	{
+		getDisplay(bridge).notifyDice(m_battleID, dice, SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
 		final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
+		final boolean allowMultipleHitsPerUnit = Properties.getAAMayDamageInsteadOfDestroyingUnits(m_data);
 		if (isEditMode)
 		{
-			final String text = "AA guns fire";
+			final String text = currentTypeAA + AA_GUNS_FIRE_SUFFIX;
 			final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, validAttackingUnitsForThisRoll, bridge, text, /* dice */null,/* defending */false,
-						m_battleID, /* head-less */false, 0);
-			return casualtySelection.getKilled();
+						m_battleID, /* head-less */false, 0, allowMultipleHitsPerUnit);
+			return casualtySelection;
 		}
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
-		// AA guns, at this point, kill units outright. so hits should equal casualties unless we have extra hits.
+		final CasualtyDetails casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
+		
 		final int totalExpectingHits = dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits();
-		// TODO: we should allow aa guns to cause hits instead of kills, that way 2-hit air units could survive aa guns if they map maker wants them to.
 		if (casualties.size() != totalExpectingHits)
 			throw new IllegalStateException("Wrong number of casualties, expecting:" + totalExpectingHits + " but got:" + casualties.size());
 		return casualties;
 	}
 	
-	private void notifyAAHits(final IDelegateBridge bridge, final DiceRoll dice, final Collection<Unit> casualties)
+	private void notifyAAHits(final IDelegateBridge bridge, final DiceRoll dice, final CasualtyDetails casualties, final String currentTypeAA)
 	{
-		getDisplay(bridge).casualtyNotification(m_battleID, FIRE_AA, dice, m_attacker, casualties, Collections.<Unit> emptyList(), Collections.<Unit, Collection<Unit>> emptyMap());
+		getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, dice, m_attacker, new ArrayList<Unit>(casualties.getKilled()),
+					new ArrayList<Unit>(casualties.getDamaged()),
+					Collections.<Unit, Collection<Unit>> emptyMap());
 		final Runnable r = new Runnable()
 		{
 			public void run()
@@ -475,18 +504,20 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		}
 	}
 	
-	private void removeAAHits(final IDelegateBridge bridge, final DiceRoll dice, final Collection<Unit> casualties)
+	private void removeAAHits(final IDelegateBridge bridge, final DiceRoll dice, final CasualtyDetails casualties, final String currentTypeAA)
 	{
-		if (!casualties.isEmpty())
-			bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by AA guns", casualties);
-		
-		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-		final int tuvLostAttacker = BattleCalculator.getTUV(casualties, m_attacker, costs, m_data);
-		m_attackerLostTUV += tuvLostAttacker;
-		// m_attackingUnits.removeAll(casualties);
-		removeAttackers(casualties, false);
-		final Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
-		bridge.addChange(remove);
+		final List<Unit> killed = casualties.getKilled();
+		if (!killed.isEmpty())
+		{
+			bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAA, killed);
+			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
+			final int tuvLostAttacker = BattleCalculator.getTUV(killed, m_attacker, costs, m_data);
+			m_attackerLostTUV += tuvLostAttacker;
+			// m_attackingUnits.removeAll(casualties);
+			removeAttackers(killed, false);
+			final Change remove = ChangeFactory.removeUnits(m_battleSite, killed);
+			bridge.addChange(remove);
+		}
 	}
 	
 	

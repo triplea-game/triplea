@@ -50,7 +50,7 @@ public class SelectCasualties
 	
 	@SuppressWarnings("unchecked")
 	public static CasualtyDetails selectCasualties(final Dynamix_AI ai, final GameData data, final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-				final String message, final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
+				final String message, final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)
 	{
 		ai.pause();
 		final HashSet<Unit> damaged = new HashSet<Unit>();
@@ -78,7 +78,7 @@ public class SelectCasualties
 				for (final Unit unit : selectFrom)
 				{
 					final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-					if (ua.getIsTwoHit() && unit.getHits() == 0 && !damaged.contains(unit)) // If this is an undamaged, un-selected as casualty, two hit unit
+					if (allowMultipleHitsPerUnit && ua.getIsTwoHit() && unit.getHits() == 0 && !damaged.contains(unit)) // If this is an undamaged, un-selected as casualty, two hit unit
 					{
 						untouchedTwoHitUnit = unit;
 						break;

@@ -5050,6 +5050,11 @@
 						<boolean/>
 				</property>
 
+						<!-- AA shots instantly kill whatever they hit.  Instead if true they will damage 2 hitpoint units instead of killing them. -->
+				<property name="AA May Damage Instead of Destroying Units" value="false" editable="false">
+						<boolean/>
+				</property>
+
 						<!-- will roll dice for each type of aircraft separately -->
 				<property name="Roll AA Individually" value="true" editable="false">
 						<boolean/>

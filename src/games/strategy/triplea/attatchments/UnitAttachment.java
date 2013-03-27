@@ -41,6 +41,7 @@ import games.strategy.util.Tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -2503,13 +2504,15 @@ public class UnitAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
-	public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified)
+	public static List<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified)
 	{
-		final Set<String> rVal = new HashSet<String>();
+		final Set<String> aaSet = new HashSet<String>();
 		for (final Unit u : aaUnitsAlreadyVerified)
 		{
-			rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
+			aaSet.add(UnitAttachment.get(u.getType()).getTypeAA());
 		}
+		final List<String> rVal = new ArrayList<String>(aaSet);
+		Collections.sort(rVal);
 		return rVal;
 	}
 	

@@ -23,6 +23,7 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
@@ -52,7 +53,7 @@ class AAInMoveUtil implements Serializable
 	private transient boolean m_nonCombat;
 	private transient IDelegateBridge m_bridge;
 	private transient PlayerID m_player;
-	private Collection<Unit> m_casualties;
+	private Collection<Unit> m_casualties = new ArrayList<Unit>();
 	private final ExecutionStack m_executionStack = new ExecutionStack();
 	
 	AAInMoveUtil()
@@ -187,7 +188,8 @@ class AAInMoveUtil implements Serializable
 		final PlayerID movingPlayer = movingPlayer(units);
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
 		final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData()));
-		final Set<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // TODO: order this list in some way
+		final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // comes ordered alphabetically already
+		Collections.reverse(AAtypes); // stacks are backwards
 		for (final String currentTypeAA : AAtypes)
 		{
 			final Collection<Unit> currentPossibleAA = Match.getMatches(defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
@@ -199,7 +201,7 @@ class AAInMoveUtil implements Serializable
 			// once we fire the AA guns, we can't undo
 			// otherwise you could keep undoing and redoing
 			// until you got the roll you wanted
-			currentMove.setCantUndo("Move cannot be undone after AA has fired.");
+			currentMove.setCantUndo("Move cannot be undone after " + currentTypeAA + " has fired.");
 			final DiceRoll[] dice = new DiceRoll[1];
 			final IExecutable rollDice = new IExecutable()
 			{
@@ -207,6 +209,7 @@ class AAInMoveUtil implements Serializable
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
+					validAttackingUnitsForThisRoll.removeAll(m_casualties); // get rid of units already killed, so we don't target them twice
 					dice[0] = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, m_bridge, territory);
 				}
 			};
@@ -216,18 +219,24 @@ class AAInMoveUtil implements Serializable
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
+					if (validAttackingUnitsForThisRoll.isEmpty())
+						return;
 					final int hitCount = dice[0].getHits();
 					if (hitCount == 0)
 					{
 						if (currentTypeAA.equals("AA"))
 							ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA).getName());
-						getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
+						else
+							ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, findDefender(currentPossibleAA).getName());
+						getRemotePlayer().reportMessage("No " + currentTypeAA + " hits in " + territory.getName(), "No " + currentTypeAA + " hits in " + territory.getName());
 					}
 					else
 					{
 						if (currentTypeAA.equals("AA"))
 							ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA).getName());
-						selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null);
+						else
+							ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFACE + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, findDefender(currentPossibleAA).getName());
+						selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null, currentTypeAA);
 					}
 				}
 			};
@@ -250,16 +259,16 @@ class AAInMoveUtil implements Serializable
 	 * that the iterator will move through them.
 	 */
 	private void selectCasualties(final DiceRoll dice, final Collection<Unit> allAttackingUnits, final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA,
-				final Territory territory, final GUID battleID)
+				final Territory territory, final GUID battleID, final String currentTypeAA)
 	{
-		Collection<Unit> casualties = null;
-		casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory);
-		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName(), casualties.size() + " AA hits in " + territory.getName());
-		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
-		allAttackingUnits.removeAll(casualties);
+		final CasualtyDetails casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory);
+		getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAA + " hits in " + territory.getName(), casualties.size() + " " + currentTypeAA + " hits in " + territory.getName());
+		BattleDelegate.markDamaged(new ArrayList<Unit>(casualties.getDamaged()), m_bridge);
+		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(), new ArrayList<Unit>(casualties.getKilled()));
+		allAttackingUnits.removeAll(casualties.getKilled());
 		if (m_casualties == null)
-			m_casualties = casualties;
+			m_casualties = new ArrayList<Unit>(casualties.getKilled());
 		else
-			m_casualties.addAll(casualties);
+			m_casualties.addAll(casualties.getKilled());
 	}
 }

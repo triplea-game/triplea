@@ -60,7 +60,7 @@ public interface ITripleaPlayer extends IRemotePlayer
 	 *         Added new collection autoKilled to handle killing units prior to casualty selection
 	 */
 	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
-				CasualtyList defaultCasualties, GUID battleID);
+				CasualtyList defaultCasualties, GUID battleID, boolean allowMultipleHitsPerUnit);
 	
 	/**
 	 * Select a fixed dice roll
