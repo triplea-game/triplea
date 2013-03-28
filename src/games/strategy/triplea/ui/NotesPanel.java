@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.util.SoftJEditorPane;
 
 import java.awt.Component;
 import java.awt.Rectangle;
@@ -18,27 +19,25 @@ import javax.swing.SwingUtilities;
 public class NotesPanel extends JPanel
 {
 	private static final long serialVersionUID = 2746643868463714526L;
-	protected final JEditorPane m_textArea;
+	protected final SoftJEditorPane m_gameNotesPane;
 	protected final GameData m_data;
+	final JButton m_refresh = new JButton("Refresh Notes");
 	
 	// we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of it in memory for all the different ways the user can access the game notes
 	// so instead we keep the main copy in the BasicGameMenuBar, and then give it to the notes tab. this prevents out of memory errors for maps with large images in their games notes.
-	public NotesPanel(final GameData data, final JEditorPane gameNotesPane)
+	public NotesPanel(final GameData data, final SoftJEditorPane gameNotesPane)
 	{
 		m_data = data;
-		m_textArea = gameNotesPane;
+		m_gameNotesPane = gameNotesPane;
 		initLayout();
 	}
 	
 	protected void initLayout()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		// m_textArea.setEditable(false);
-		// m_textArea.setContentType("text/html");
 		
-		final JButton refresh = new JButton("Refresh Notes");
-		refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
-		refresh.addActionListener(new AbstractAction("Refresh Notes")
+		m_refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
+		m_refresh.addActionListener(new AbstractAction("Refresh Notes")
 		{
 			private static final long serialVersionUID = 8439704398303765832L;
 			
@@ -48,48 +47,39 @@ public class NotesPanel extends JPanel
 				{
 					public void run()
 					{
-						NotesPanel.this.removeAll();
-						NotesPanel.this.add(new JLabel(" "));
-						NotesPanel.this.add(refresh);
-						NotesPanel.this.add(new JLabel(" "));
-						m_textArea.setCaretPosition(0);
-						final JScrollPane scroll = new JScrollPane(m_textArea);
-						scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-						NotesPanel.this.add(scroll);
-						NotesPanel.this.invalidate();
+						layoutNotes();
 					}
 				});
 			}
 		});
-		add(new JLabel(" "));
-		add(refresh);
-		add(new JLabel(" "));
-		
-		// fillNotesPane();
-		m_textArea.setCaretPosition(0);
-		final JScrollPane scroll = new JScrollPane(m_textArea);
-		scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-		add(scroll);
+		// layoutNotes();
+		removeNotes();
 	}
 	
-	/*
-	private void fillNotesPane()
+	void removeNotes()
 	{
-		final String notes = m_data.getProperties().get("notes", "");
-		if (notes == null || notes.trim().length() <= 0)
-		{
-			m_textArea.setText("");
-		}
-		else
-		{
-			m_textArea.setText(LocalizeHTML.localizeImgLinksInHTML(notes.trim()));
-		}
-		m_textArea.setCaretPosition(0);
+		NotesPanel.this.removeAll();
+		NotesPanel.this.add(new JLabel(" "));
+		NotesPanel.this.add(m_refresh);
+		NotesPanel.this.add(new JLabel(" "));
+		// NotesPanel.this.invalidate();
 	}
-	*/
-
+	
+	void layoutNotes()
+	{
+		NotesPanel.this.removeAll();
+		NotesPanel.this.add(new JLabel(" "));
+		NotesPanel.this.add(m_refresh);
+		NotesPanel.this.add(new JLabel(" "));
+		final JEditorPane pane = m_gameNotesPane.getComponent();
+		final JScrollPane scroll = new JScrollPane(pane);
+		scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+		NotesPanel.this.add(scroll);
+		// NotesPanel.this.invalidate();
+	}
+	
 	public boolean isEmpty()
 	{
-		return m_textArea == null || m_textArea.getText() == null || m_textArea.getText().length() <= 0;
+		return m_gameNotesPane == null || m_gameNotesPane.getText() == null || m_gameNotesPane.getText().length() <= 0;
 	}
 }

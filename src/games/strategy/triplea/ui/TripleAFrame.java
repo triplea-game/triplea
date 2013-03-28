@@ -366,6 +366,15 @@ public class TripleAFrame extends MainGameFrame
 				final int sel = pane.getSelectedIndex();
 				if (sel == -1)
 					return;
+				if (pane.getComponentAt(sel).equals(m_notesPanel))
+				{
+					m_notesPanel.layoutNotes();
+				}
+				else
+				{ // for memory management reasons the notes are in a SoftReference, so we must remove our hard reference link to them so it can be reclaimed if needed
+					m_notesPanel.removeNotes();
+				}
+				
 				if (pane.getComponentAt(sel).equals(m_editPanel))
 				{
 					PlayerID player = null;

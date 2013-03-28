@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created caching mechanism for the game notes, so that it is only in memory when the notes tab is open and otherwise can be cleared from memory if needed. (veqryn)
+
 * Created a new Unit Attachment option, "damageableAA", which allows this AA gun type unit to cause damage to a two hitpoint unit instead of outright killing it. (veqryn)
 
 * Fixed bug where AA shots on 2 hitpoint units with Choose AA Casualties on was resulting in no damage or killed unit. Also changed battle display to show "typeAA" for each AA Fire phase, instead of a generic identifier. (veqryn)

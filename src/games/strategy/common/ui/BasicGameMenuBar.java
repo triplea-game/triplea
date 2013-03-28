@@ -27,6 +27,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
+import games.strategy.util.SoftJEditorPane;
 import games.strategy.util.Triple;
 
 import java.awt.BorderLayout;
@@ -35,6 +36,7 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -84,7 +86,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 {
 	private static final long serialVersionUID = -1447295944297939539L;
 	protected final CustomGameFrame m_frame;
-	protected JEditorPane m_gameNotesPane = new JEditorPane();
+	protected SoftJEditorPane m_gameNotesPane;
 	
 	public BasicGameMenuBar(final CustomGameFrame frame)
 	{
@@ -99,6 +101,100 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	
 	protected void createGameSpecificMenus(final JMenuBar menuBar)
 	{
+	}
+	
+	public void dispose()
+	{
+		m_gameNotesPane.dispose();
+	}
+	
+	public SoftJEditorPane getGameNotesJEditorPane()
+	{
+		return m_gameNotesPane;
+	}
+	
+	/**
+	 * @param parentMenu
+	 */
+	protected void addGameNotesMenu(final JMenu parentMenu)
+	{
+		// allow the game developer to write notes that appear in the game
+		// displays whatever is in the notes field in html
+		final String notesProperty = getData().getProperties().get("notes", "");
+		if (notesProperty != null && notesProperty.trim().length() != 0)
+		{
+			final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
+			m_gameNotesPane = new SoftJEditorPane(notes);
+			
+			parentMenu.add(new AbstractAction("Game Notes...")
+			{
+				private static final long serialVersionUID = -1817640666359299617L;
+				
+				public void actionPerformed(final ActionEvent e)
+				{
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							final JEditorPane pane = m_gameNotesPane.getComponent();
+							final JScrollPane scroll = new JScrollPane(pane);
+							scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+							final JDialog dialog = new JDialog(m_frame);
+							dialog.setModal(false);
+							// dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
+							dialog.setAlwaysOnTop(true);
+							dialog.add(scroll, BorderLayout.CENTER);
+							final JPanel buttons = new JPanel();
+							final JButton button = new JButton(new AbstractAction("OK")
+							{
+								private static final long serialVersionUID = -6628015175043647980L;
+								
+								public void actionPerformed(final ActionEvent e)
+								{
+									dialog.setVisible(false);
+									dialog.removeAll();
+									dialog.dispose();
+								}
+							});
+							buttons.add(button);
+							dialog.getRootPane().setDefaultButton(button);
+							dialog.add(buttons, BorderLayout.SOUTH);
+							dialog.pack();
+							if (dialog.getWidth() < 400)
+							{
+								dialog.setSize(400, dialog.getHeight());
+							}
+							if (dialog.getHeight() < 300)
+							{
+								dialog.setSize(dialog.getWidth(), 300);
+							}
+							if (dialog.getWidth() > 800)
+							{
+								dialog.setSize(800, dialog.getHeight());
+							}
+							if (dialog.getHeight() > 600)
+							{
+								dialog.setSize(dialog.getWidth(), 600);
+							}
+							dialog.setLocationRelativeTo(m_frame);
+							dialog.addWindowListener(new WindowAdapter()
+							{
+								@Override
+								public void windowOpened(final WindowEvent e)
+								{
+									scroll.getVerticalScrollBar().getModel().setValue(0);
+									scroll.getHorizontalScrollBar().getModel().setValue(0);
+									button.requestFocus();
+								}
+							});
+							dialog.setVisible(true);
+							// dialog.dispose();
+						}
+					});
+					// JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
+				}
+			}).setMnemonic(KeyEvent.VK_N);
+		}
 	}
 	
 	protected InGameLobbyWatcher createLobbyMenu(final JMenuBar menuBar)
@@ -458,101 +554,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 					JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
 				}
 			});
-		}
-	}
-	
-	public void dispose()
-	{
-		m_gameNotesPane.setText("");
-		m_gameNotesPane.removeAll();
-	}
-	
-	public JEditorPane getGameNotesJEditorPane()
-	{
-		return m_gameNotesPane;
-	}
-	
-	/**
-	 * @param parentMenu
-	 */
-	protected void addGameNotesMenu(final JMenu parentMenu)
-	{
-		// allow the game developer to write notes that appear in the game
-		// displays whatever is in the notes field in html
-		final String notesProperty = getData().getProperties().get("notes", "");
-		if (notesProperty != null && notesProperty.trim().length() != 0)
-		{
-			final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
-			m_gameNotesPane.setEditable(false);
-			m_gameNotesPane.setContentType("text/html");
-			m_gameNotesPane.setText(notes);
-			
-			parentMenu.add(new AbstractAction("Game Notes...")
-			{
-				private static final long serialVersionUID = -1817640666359299617L;
-				
-				public void actionPerformed(final ActionEvent e)
-				{
-					SwingUtilities.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							final JScrollPane scroll = new JScrollPane(m_gameNotesPane);
-							final JDialog dialog = new JDialog(m_frame);
-							dialog.setModal(false);
-							// dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
-							dialog.setAlwaysOnTop(true);
-							dialog.add(scroll, BorderLayout.CENTER);
-							final JPanel buttons = new JPanel();
-							final JButton button = new JButton(new AbstractAction("OK")
-							{
-								private static final long serialVersionUID = -6628015175043647980L;
-								
-								public void actionPerformed(final ActionEvent e)
-								{
-									dialog.setVisible(false);
-									dialog.removeAll();
-									dialog.dispose();
-								}
-							});
-							buttons.add(button);
-							dialog.getRootPane().setDefaultButton(button);
-							dialog.add(buttons, BorderLayout.SOUTH);
-							dialog.pack();
-							if (dialog.getWidth() < 400)
-							{
-								dialog.setSize(400, dialog.getHeight());
-							}
-							if (dialog.getHeight() < 300)
-							{
-								dialog.setSize(dialog.getWidth(), 300);
-							}
-							if (dialog.getWidth() > 800)
-							{
-								dialog.setSize(800, dialog.getHeight());
-							}
-							if (dialog.getHeight() > 600)
-							{
-								dialog.setSize(dialog.getWidth(), 600);
-							}
-							dialog.setLocationRelativeTo(m_frame);
-							dialog.addWindowListener(new WindowAdapter()
-							{
-								@Override
-								public void windowOpened(final WindowEvent e)
-								{
-									scroll.getVerticalScrollBar().getModel().setValue(0);
-									scroll.getHorizontalScrollBar().getModel().setValue(0);
-									button.requestFocus();
-								}
-							});
-							dialog.setVisible(true);
-							// dialog.dispose();
-						}
-					});
-					// JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
-				}
-			}).setMnemonic(KeyEvent.VK_N);
 		}
 	}
 	
