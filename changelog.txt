@@ -1,4 +1,6 @@
 Changes for 1.7
+* Allowed "men" in International Draughts to capture backwards, which appears as a game option in Checkers. (veqryn)
+
 * Created caching mechanism for the game notes, so that it is only in memory when the notes tab is open and otherwise can be cleared from memory if needed. (veqryn)
 
 * Created a new Unit Attachment option, "damageableAA", which allows this AA gun type unit to cause damage to a two hitpoint unit instead of outright killing it. (veqryn)

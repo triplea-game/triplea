@@ -134,8 +134,8 @@ public class GoMapPanel extends GridMapPanel
 	{
 		g2d.setColor(Color.lightGray);
 		g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
-		final Color tileOdd = new Color(226, 163, 103);
-		final Color tileEven = new Color(225, 161, 101);
+		final Color tileOdd = new Color(225, 161, 101);
+		final Color tileEven = new Color(226, 163, 103);
 		final int maxX = m_gameData.getMap().getXDimension() - 1;
 		final int maxY = m_gameData.getMap().getYDimension() - 1;
 		// we want to draw the squares offset, so that it looks like we are placing pieces on the intersections of lines, not in a square

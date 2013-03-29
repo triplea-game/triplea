@@ -94,6 +94,10 @@
 			<boolean/>
 		</property>
 		
+		<property name="Allow Uncrowned Pieces To Capture Backwards" value="false" editable="true">
+			<boolean/>
+		</property>
+		
 		<property name="notes">
 			<value>
 			<![CDATA[

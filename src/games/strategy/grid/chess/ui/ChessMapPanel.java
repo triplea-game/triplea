@@ -52,8 +52,8 @@ public class ChessMapPanel extends GridMapPanel
 		g2d.setColor(Color.lightGray);
 		// g2d.fillRect(0, 0, getWidth(), getHeight());
 		g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
-		final Color tileOdd = new Color(255, 206, 158);
-		final Color tileEven = new Color(209, 139, 71);
+		final Color tileOdd = new Color(209, 139, 71);
+		final Color tileEven = new Color(255, 206, 158);
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet())
 		{
 			final Polygon p = entry.getValue();
