@@ -38,7 +38,7 @@ public class DownloadMapDialog extends JDialog
 	private JButton m_cancelButton;
 	private JButton m_findMapsButton;
 	private JLabel m_descriptionLabel;
-	private final String DOWNLOAD_SITES_PREF = "downloadSites";
+	private static final String DOWNLOAD_SITES_PREF = "downloadSites";
 	private final String FIRST_TIME_DOWNLOADING_PREF = "firstTimeDownloading." + EngineVersion.VERSION.toString();
 	private final Frame owner;
 	
@@ -112,7 +112,7 @@ public class DownloadMapDialog extends JDialog
 					Util.notifyError(m_cancelButton, "nothing selected");
 					return;
 				}
-				final DownloadRunnable download = new DownloadRunnable(selectedUrl);
+				final DownloadRunnable download = new DownloadRunnable(selectedUrl, true);
 				BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading....", download);
 				if (download.getError() != null)
 				{
@@ -131,17 +131,10 @@ public class DownloadMapDialog extends JDialog
 						ex.printStackTrace();
 					}
 				}
-				List<DownloadFileDescription> downloads;
-				try
+				final List<DownloadFileDescription> downloads = download.getDownloads();
+				if (downloads == null || downloads.isEmpty() || download.getError() != null)
 				{
-					downloads = new DownloadFileParser().parse(new ByteArrayInputStream(download.getContents()), selectedUrl);
-					if (downloads.isEmpty())
-					{
-						throw new IllegalStateException("No games listed.");
-					}
-				} catch (final Exception e)
-				{
-					Util.notifyError(m_cancelButton, e.getMessage());
+					Util.notifyError(m_cancelButton, download.getError());
 					return;
 				}
 				addDownloadSites(selectedUrl.trim());
@@ -168,7 +161,7 @@ public class DownloadMapDialog extends JDialog
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Vector<String> getStoredDownloadSites()
+	public static Vector<String> getStoredDownloadSites()
 	{
 		final Preferences pref = getPrefNode();
 		final byte[] stored = pref.getByteArray(DOWNLOAD_SITES_PREF, null);
@@ -191,12 +184,12 @@ public class DownloadMapDialog extends JDialog
 		return mapVector;
 	}
 	
-	private Preferences getPrefNode()
+	private static Preferences getPrefNode()
 	{
 		return Preferences.userNodeForPackage(DownloadMapDialog.class);
 	}
 	
-	private void addDownloadSites(final String url)
+	private static void addDownloadSites(final String url)
 	{
 		Vector<String> old = getStoredDownloadSites();
 		old.remove(url);

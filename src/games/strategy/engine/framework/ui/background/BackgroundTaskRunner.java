@@ -1,6 +1,9 @@
 package games.strategy.engine.framework.ui.background;
 
+import games.strategy.util.CountDownLatchHandler;
+
 import java.awt.Component;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.SwingUtilities;
@@ -41,5 +44,41 @@ public class BackgroundTaskRunner
 			window.setLocationRelativeTo(parent);
 			window.setVisible(true);
 		}
+	}
+	
+	public static void runInBackground(final Component parent, final String waitMessage, final Runnable r, final CountDownLatchHandler latchHandler)
+	{
+		if (SwingUtilities.isEventDispatchThread())
+		{
+			runInBackground(parent, waitMessage, r);
+			return;
+		}
+		final CountDownLatch latch = new CountDownLatch(1);
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				runInBackground(parent, waitMessage, r);
+				latch.countDown();
+			}
+		});
+		if (latchHandler != null)
+			latchHandler.addShutdownLatch(latch);
+		boolean done = false;
+		while (!done)
+		{
+			try
+			{
+				latch.await();
+				done = true;
+			} catch (final InterruptedException e)
+			{
+				if (latchHandler != null)
+					latchHandler.interruptLatch(latch);
+			}
+		}
+		if (latchHandler != null)
+			latchHandler.removeShutdownLatch(latch);
+		return;
 	}
 }

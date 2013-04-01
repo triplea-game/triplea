@@ -2,7 +2,12 @@ package games.strategy.engine.framework;
 
 import games.strategy.debug.Console;
 import games.strategy.engine.EngineVersion;
+import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
+import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
+import games.strategy.engine.framework.mapDownload.DownloadRunnable;
+import games.strategy.engine.framework.mapDownload.InstallMapDialog;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.triplea.ui.TripleaMenu;
@@ -22,7 +27,10 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -70,6 +78,8 @@ public class GameRunner2
 	
 	// first time we've run this version of triplea?
 	private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY = "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
+	private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
+	private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
 	
 	private static WaitWindow waitWindow;
 	
@@ -140,7 +150,7 @@ public class GameRunner2
 		setupProxies();
 		showMainFrame();
 		// lastly, check and see if there are new versions of TripleA out
-		checkForLatestEngineVersionOut();
+		checkForUpdates();
 	}
 	
 	private static void showMainFrame()
@@ -519,80 +529,184 @@ public class GameRunner2
 		}
 	}
 	
-	public static void checkForLatestEngineVersionOut()
+	public static void checkForUpdates()
 	{
 		final Thread t = new Thread(new Runnable()
 		{
 			public void run()
 			{
+				// do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
+				if (areWeOldExtraJar())
+					return;
+				// if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+				final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+				if (fileName.trim().length() > 0)
+					return;
+				if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true"))
+					return;
+				if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true"))
+					return;
+				if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true"))
+					return;
+				// the main screen hasn't even shown yet, so sleep for two seconds.
 				try
 				{
-					// do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-					if (areWeOldExtraJar())
-						return;
-					// if we are joining a game online, or hosting, or loading straight into a savegame, do not check
-					final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
-					if (fileName.trim().length() > 0)
-						return;
-					if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true"))
-						return;
-					if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true"))
-						return;
-					if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true"))
-						return;
-					
-					// System.out.println("Checking for latest version");
-					final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
-					// System.out.println("Check complete: " + (latestEngineOut == null ? "null" : latestEngineOut.getLatestVersionOut().toString()));
-					if (latestEngineOut == null)
-						return;
-					try
-					{
-						Thread.sleep(2500);
-					} catch (final InterruptedException e)
-					{
-					}
-					if (EngineVersion.VERSION.isLessThan(latestEngineOut.getLatestVersionOut(), false))
-					{
-						SwingUtilities.invokeLater(new Runnable()
-						{
-							public void run()
-							{
-								EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false,
-											new CountDownLatchHandler(true));
-							}
-						});
-					}
-					else
-					{
-						// if this is the first time we are running THIS version of TripleA, then show what is new.
-						final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-						if ((pref.getBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true)) && latestEngineOut.getReleaseNotes().containsKey(EngineVersion.VERSION))
-						{
-							SwingUtilities.invokeLater(new Runnable()
-							{
-								public void run()
-								{
-									EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(), "What is New?", JOptionPane.INFORMATION_MESSAGE, false,
-												new CountDownLatchHandler(true));
-								}
-							});
-							pref.putBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, false);
-							try
-							{
-								pref.flush();
-							} catch (final BackingStoreException ex)
-							{
-							}
-						}
-					}
-				} catch (final Exception e)
+					Thread.sleep(2500);
+				} catch (final InterruptedException e)
 				{
-					System.out.println("Error while checking for updates: " + e.getMessage());
+				}
+				boolean busy = false;
+				busy = checkForLatestEngineVersionOut();
+				if (!busy)
+				{
+					busy = checkForUpdatedMaps();
 				}
 			}
 		}, "Checking Latest TripleA Engine Version");
 		t.start();
+	}
+	
+	/**
+	 * @return true if we are out of date or this is the first time this triplea has ever been run
+	 */
+	private static boolean checkForLatestEngineVersionOut()
+	{
+		try
+		{
+			final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+			final boolean firstTimeThisVersion = pref.getBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
+			// check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
+			final Calendar calendar = Calendar.getInstance();
+			final int year = calendar.get(Calendar.YEAR);
+			final int day = calendar.get(Calendar.DAY_OF_YEAR);
+			final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, ""); // format year:day
+			if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0)
+			{
+				final String[] yearDay = lastCheckTime.split(":");
+				if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day)
+					return false;
+			}
+			pref.put(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, year + ":" + day);
+			try
+			{
+				pref.sync();
+			} catch (final BackingStoreException e)
+			{
+			}
+			
+			// System.out.println("Checking for latest version");
+			final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
+			// System.out.println("Check complete: " + (latestEngineOut == null ? "null" : latestEngineOut.getLatestVersionOut().toString()));
+			if (latestEngineOut == null)
+				return false;
+			if (EngineVersion.VERSION.isLessThan(latestEngineOut.getLatestVersionOut(), false))
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false,
+									new CountDownLatchHandler(true));
+					}
+				});
+				return true;
+			}
+			else
+			{
+				// if this is the first time we are running THIS version of TripleA, then show what is new.
+				if (firstTimeThisVersion && latestEngineOut.getReleaseNotes().containsKey(EngineVersion.VERSION))
+				{
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(), "What is New?", JOptionPane.INFORMATION_MESSAGE, false,
+										new CountDownLatchHandler(true));
+						}
+					});
+					pref.putBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, false);
+					try
+					{
+						pref.flush();
+					} catch (final BackingStoreException ex)
+					{
+					}
+					return true;
+				}
+			}
+		} catch (final Exception e)
+		{
+			System.out.println("Error while checking for engine updates: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/**
+	 * @return true if we have any out of date maps
+	 */
+	private static boolean checkForUpdatedMaps()
+	{
+		try
+		{
+			final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+			// check at most once per month
+			final Calendar calendar = Calendar.getInstance();
+			final int year = calendar.get(Calendar.YEAR);
+			final int month = calendar.get(Calendar.MONTH);
+			final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, ""); // format year:month
+			if (lastCheckTime != null && lastCheckTime.trim().length() > 0)
+			{
+				final String[] yearMonth = lastCheckTime.split(":");
+				if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month)
+					return false;
+			}
+			pref.put(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
+			try
+			{
+				pref.sync();
+			} catch (final BackingStoreException e)
+			{
+			}
+			
+			// System.out.println("Checking for latest maps");
+			final Vector<String> sites = DownloadMapDialog.getStoredDownloadSites();
+			if (sites == null || sites.isEmpty())
+				return false;
+			final String selectedUrl = sites.get(0);
+			if (selectedUrl == null || selectedUrl.trim().length() == 0)
+				return false;
+			final DownloadRunnable download = new DownloadRunnable(selectedUrl, true);
+			BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", download, new CountDownLatchHandler(true));
+			if (download.getError() != null)
+				return false;
+			final List<DownloadFileDescription> downloads = download.getDownloads();
+			if (downloads == null || downloads.isEmpty())
+				return false;
+			final List<String> outOfDateMaps = new ArrayList<String>();
+			InstallMapDialog.populateOutOfDateMapsListing(outOfDateMaps, downloads);
+			if (!outOfDateMaps.isEmpty())
+			{
+				final StringBuilder text = new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
+							+ "<br>You should update (re-download) the following maps:<br><ul>");
+				for (final String map : outOfDateMaps)
+				{
+					text.append("<li> " + map + "</li>");
+				}
+				text.append("</ul><br><br>You can update them by clicking on the 'Download Maps' button on the start screen of TripleA.</html>");
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						EventThreadJOptionPane.showMessageDialog(null, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));
+					}
+				});
+				return true;
+			}
+		} catch (final Exception e)
+		{
+			System.out.println("Error while checking for map updates: " + e.getMessage());
+		}
+		return false;
 	}
 	
 	/**
