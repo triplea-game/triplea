@@ -14,7 +14,6 @@
 package games.strategy.engine.random;
 
 import games.strategy.engine.EngineVersion;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
@@ -62,7 +61,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 	public static Collection<PropertiesDiceRoller> loadFromFile()
 	{
 		final List<PropertiesDiceRoller> rollers = new ArrayList<PropertiesDiceRoller>();
-		final File f = new File(GameRunner.getRootFolder(), "dice_servers");
+		final File f = new File(GameRunner2.getRootFolder(), "dice_servers");
 		if (!f.exists())
 		{
 			throw new IllegalStateException("No dice server folder:" + f);

@@ -14,7 +14,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -486,8 +486,8 @@ public class UIContext
 		final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
 		final Map<String, String> rVal = new LinkedHashMap<String, String>();
 		rVal.put("Original", mapName);
-		getSkins(mapName, rVal, new File(GameRunner.getRootFolder(), "maps"));
-		getSkins(mapName, rVal, GameRunner.getUserMapsFolder());
+		getSkins(mapName, rVal, new File(GameRunner2.getRootFolder(), "maps"));
+		getSkins(mapName, rVal, GameRunner2.getUserMapsFolder());
 		return rVal;
 	}
 	

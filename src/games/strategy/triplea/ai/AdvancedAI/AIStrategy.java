@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -164,12 +164,12 @@ public class AIStrategy
 		final String fileName2 = thisGame2 + getFileEnding();
 		dirName += File.separator + "AI" + File.separator + fileName;
 		dirName2 += File.separator + "AI" + File.separator + fileName2;
-		final File userMapsFolder = GameRunner.getUserMapsFolder();
+		final File userMapsFolder = GameRunner2.getUserMapsFolder();
 		final File[] userFiles = userMapsFolder.listFiles(new SpecialFileFilter(".zip")); // all of the zipfiles in user Folders
-		stratFileName.add(new File(GameRunner.getUserMapsFolder(), dirName));
-		stratFileName.add(new File(new File(GameRunner.getRootFolder(), "maps"), dirName));
-		stratFileName.add(new File(GameRunner.getUserMapsFolder(), dirName2));
-		stratFileName.add(new File(new File(GameRunner.getRootFolder(), "maps"), dirName2));
+		stratFileName.add(new File(GameRunner2.getUserMapsFolder(), dirName));
+		stratFileName.add(new File(new File(GameRunner2.getRootFolder(), "maps"), dirName));
+		stratFileName.add(new File(GameRunner2.getUserMapsFolder(), dirName2));
+		stratFileName.add(new File(new File(GameRunner2.getRootFolder(), "maps"), dirName2));
 		final boolean addMore = moveFilesFromZip(userFiles);
 		if (addMore)
 		{

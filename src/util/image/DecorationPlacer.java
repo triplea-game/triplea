@@ -1,6 +1,6 @@
 package util.image;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
@@ -687,7 +687,7 @@ public class DecorationPlacer extends JFrame
 		s_staticImageForPlacing = null;
 		File image = new File(s_mapFolderLocation + File.separator + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
 		if (image == null || !image.exists())
-			image = new File(GameRunner.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
+			image = new File(GameRunner2.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER + File.separator + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
 		if (image == null || !image.exists())
 			image = null;
 		while (s_staticImageForPlacing == null)

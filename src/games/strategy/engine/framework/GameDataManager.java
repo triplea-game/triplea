@@ -108,7 +108,7 @@ public class GameDataManager
 					LobbyGamePanel.startGame(savegamePath, newClassPath);
 				} catch (final IOException e)
 				{
-					if (GameRunner.areWeOldExtraJar())
+					if (GameRunner2.areWeOldExtraJar())
 					{
 						throw new IOException("<html>Please run the default TripleA and try to open this game again. " +
 									"<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: " +

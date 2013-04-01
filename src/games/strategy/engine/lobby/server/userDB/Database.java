@@ -13,7 +13,7 @@
  */
 package games.strategy.engine.lobby.server.userDB;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 
 import java.io.File;
@@ -80,7 +80,7 @@ public class Database
 		}
 		else
 		{
-			root = GameRunner.getRootFolder();
+			root = GameRunner2.getRootFolder();
 		}
 		if (!root.exists())
 		{

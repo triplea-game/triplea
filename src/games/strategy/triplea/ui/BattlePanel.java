@@ -23,7 +23,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
@@ -94,7 +94,7 @@ public class BattlePanel extends ActionPanel
 	{
 		super(data, map);
 		m_battleFrame = new JFrame();
-		m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame));
+		m_battleFrame.setIconImage(GameRunner2.getGameIcon(m_battleFrame));
 		getMap().getUIContext().addShutdownWindow(m_battleFrame);
 		m_battleFrame.addWindowListener(new WindowListener()
 		{

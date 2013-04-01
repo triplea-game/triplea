@@ -1,6 +1,6 @@
 package util.image;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -240,7 +240,7 @@ public class MapCreator extends JFrame
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openFile(new File(GameRunner.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
+					DesktopUtilityBrowserLauncher.openFile(new File(GameRunner2.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
 					// DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc" + File.separator + "map_and_map_skin_making_overview.html");
 				} catch (final Exception e1)
 				{

@@ -2,7 +2,7 @@ package games.strategy.triplea.xml;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ public class LoadGameUtil
 		InputStream is = LoadGameUtil.class.getResourceAsStream(game);
 		if (is == null)
 		{
-			final File f = new File(new File(GameRunner.getRootFolder(), "maps"), game);
+			final File f = new File(new File(GameRunner2.getRootFolder(), "maps"), game);
 			if (f.exists())
 			{
 				try

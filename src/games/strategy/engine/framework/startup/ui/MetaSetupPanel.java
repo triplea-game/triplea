@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.EngineVersion;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
@@ -269,7 +269,7 @@ public class MetaSetupPanel extends SetupPanel
 	private LobbyServerProperties getLobbyServerProperties()
 	{
 		// try to look up an override
-		final File f = new File(GameRunner.getRootFolder(), "lobby.properties");
+		final File f = new File(GameRunner2.getRootFolder(), "lobby.properties");
 		if (f.exists())
 		{
 			final Properties props = new Properties();

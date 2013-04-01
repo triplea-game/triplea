@@ -10,10 +10,18 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
 
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Window;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
@@ -28,6 +36,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 public class GameRunner2
 {
 	// not arguments:
+	public final static int PORT = 3300;
 	public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
 	public static final String DELAYED_PARSING = "DelayedParsing";
 	public static final String PROXY_CHOICE = "proxy.choice";
@@ -35,6 +44,7 @@ public class GameRunner2
 	public static final String HTTP_PROXYPORT = "http.proxyPort";
 	// do not include this in the getProperties list. they are only for loading an old savegame.
 	public static final String OLD_EXTENSION = ".old";
+	
 	// argument options below:
 	public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
 	public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
@@ -54,6 +64,7 @@ public class GameRunner2
 	// proxy stuff
 	public static final String PROXY_HOST = "proxy.host";
 	public static final String PROXY_PORT = "proxy.port";
+	
 	// other stuff
 	public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
 	
@@ -517,7 +528,7 @@ public class GameRunner2
 				try
 				{
 					// do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-					if (GameRunner.areWeOldExtraJar())
+					if (areWeOldExtraJar())
 						return;
 					// if we are joining a game online, or hosting, or loading straight into a savegame, do not check
 					final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
@@ -582,5 +593,152 @@ public class GameRunner2
 			}
 		}, "Checking Latest TripleA Engine Version");
 		t.start();
+	}
+	
+	/**
+	 * Our jar is named with engine number and we are in "old" folder.
+	 * 
+	 * @return
+	 */
+	public static boolean areWeOldExtraJar()
+	{
+		final URL url = GameRunner2.class.getResource("GameRunner2.class");
+		String fileName = url.getFile();
+		try
+		{
+			fileName = URLDecoder.decode(fileName, "UTF-8");
+		} catch (final UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
+		if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1)
+		{
+			final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
+			final File f = new File(subString);
+			if (!f.exists())
+			{
+				throw new IllegalStateException("File not found:" + f);
+			}
+			String path;
+			try
+			{
+				path = f.getCanonicalPath();
+			} catch (final IOException e)
+			{
+				path = f.getPath();
+			}
+			return path.indexOf("old") != -1;
+		}
+		return false;
+	}
+	
+	private static String getTripleaJarWithEngineVersionStringPath()
+	{
+		return "triplea_" + EngineVersion.VERSION.toStringFull("_") + ".jar!";
+	}
+	
+	public static Image getGameIcon(final Window frame)
+	{
+		Image img = null;
+		try
+		{
+			img = frame.getToolkit().getImage(GameRunner2.class.getResource("ta_icon.png"));
+		} catch (final Exception ex)
+		{
+			System.out.println("icon not loaded");
+		}
+		final MediaTracker tracker = new MediaTracker(frame);
+		tracker.addImage(img, 0);
+		try
+		{
+			tracker.waitForAll();
+		} catch (final InterruptedException ex)
+		{
+			ex.printStackTrace();
+		}
+		return img;
+	}
+	
+	public static File getUserRootFolder()
+	{
+		final File userHome = new File(System.getProperties().getProperty("user.home"));
+		// the default
+		File rootDir;
+		if (GameRunner.isMac())
+			rootDir = new File(new File(userHome, "Documents"), "triplea");
+		else
+			rootDir = new File(userHome, "triplea");
+		return rootDir;
+	}
+	
+	public static File getUserMapsFolder()
+	{
+		final File f = new File(getUserRootFolder(), "maps");
+		if (!f.exists())
+		{
+			f.mkdirs();
+		}
+		return f;
+	}
+	
+	/**
+	 * Get the root folder for the application
+	 */
+	public static File getRootFolder()
+	{
+		// we know that the class file is in a directory one above the games root folder
+		// so navigate up from the class file, and we have root.
+		// find the url of our class
+		final URL url = GameRunner2.class.getResource("GameRunner2.class");
+		// we want to move up 1 directory for each
+		// package
+		final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
+		String fileName = url.getFile();
+		try
+		{
+			// deal with spaces in the file name which would be url encoded
+			fileName = URLDecoder.decode(fileName, "UTF-8");
+		} catch (final UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		final String tripleaJarName = "triplea.jar!";
+		final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
+		// we are in a jar file
+		if (fileName.indexOf(tripleaJarName) != -1)
+		{
+			final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
+			final File f = new File(subString).getParentFile();
+			if (!f.exists())
+			{
+				throw new IllegalStateException("File not found:" + f);
+			}
+			return f;
+		}
+		else if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1)
+		{
+			final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
+			final File f = new File(subString).getParentFile();
+			if (!f.exists())
+			{
+				throw new IllegalStateException("File not found:" + f);
+			}
+			return f;
+		}
+		else
+		{
+			File f = new File(fileName);
+			for (int i = 0; i < moveUpCount; i++)
+			{
+				f = f.getParentFile();
+			}
+			if (!f.exists())
+			{
+				System.err.println("Could not find root folder, does  not exist:" + f);
+				return new File(System.getProperties().getProperty("user.dir"));
+			}
+			return f;
+		}
 	}
 }

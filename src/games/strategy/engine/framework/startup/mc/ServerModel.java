@@ -18,7 +18,6 @@ import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -170,7 +169,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		final String playername = prefs.get(PLAYERNAME, System.getProperty("user.name"));
-		final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
+		final ServerOptions options = new ServerOptions(ui, playername, GameRunner2.PORT, false);
 		options.setLocationRelativeTo(ui);
 		options.setVisible(true);
 		options.dispose();

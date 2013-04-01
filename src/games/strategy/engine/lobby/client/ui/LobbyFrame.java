@@ -17,7 +17,7 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.chat.IPlayerActionFactory;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -61,7 +61,7 @@ public class LobbyFrame extends JFrame
 	public LobbyFrame(final LobbyClient client, final LobbyServerProperties props)
 	{
 		super("TripleA Lobby");
-		setIconImage(GameRunner.getGameIcon(this));
+		setIconImage(GameRunner2.getGameIcon(this));
 		m_client = client;
 		setJMenuBar(new LobbyMenu(this));
 		final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(), m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);

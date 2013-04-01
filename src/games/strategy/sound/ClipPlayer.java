@@ -16,7 +16,7 @@ package games.strategy.sound;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.ResourceLoader;
 
 import java.io.File;
@@ -484,7 +484,7 @@ public class ClipPlayer
 	public static void main(final String[] args)
 	{
 		getInstance();
-		final File root = new File(GameRunner.getRootFolder(), "assets" + File.separator + "sounds");
+		final File root = new File(GameRunner2.getRootFolder(), "assets" + File.separator + "sounds");
 		for (final File folder : root.listFiles())
 		{
 			if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial") || folder.getName().equals("classical")))

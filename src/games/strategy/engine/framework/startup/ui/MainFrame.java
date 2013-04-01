@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -52,7 +51,7 @@ public class MainFrame extends JFrame
 			throw new IllegalStateException("Instance already exists");
 		s_instance = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setIconImage(GameRunner.getGameIcon(this));
+		setIconImage(GameRunner2.getGameIcon(this));
 		m_gameSelectorModel = new GameSelectorModel();
 		m_gameSelectorModel.loadDefaultGame(this);
 		m_setupPanelModel = new SetupPanelModel(m_gameSelectorModel);

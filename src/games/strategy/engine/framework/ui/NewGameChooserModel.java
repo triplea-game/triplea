@@ -2,7 +2,7 @@ package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.util.ClassLoaderUtil;
 
 import java.io.File;
@@ -62,14 +62,14 @@ public class NewGameChooserModel extends DefaultListModel
 	{
 		final List<File> rVal = new ArrayList<File>();
 		// prioritize user maps folder over root folder
-		rVal.addAll(safeListFiles(GameRunner.getUserMapsFolder()));
+		rVal.addAll(safeListFiles(GameRunner2.getUserMapsFolder()));
 		rVal.addAll(safeListFiles(getDefaultMapsDir()));
 		return rVal;
 	}
 	
 	public static File getDefaultMapsDir()
 	{
-		return new File(GameRunner.getRootFolder(), "maps");
+		return new File(GameRunner2.getRootFolder(), "maps");
 	}
 	
 	private List<File> safeListFiles(final File f)

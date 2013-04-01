@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.mapDownload;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
@@ -100,7 +100,7 @@ public class InstallMapDialog extends JDialog
 			gameNames.add(d.getMapName());
 			if (d != null && !d.isDummyUrl())
 			{
-				File installed = new File(GameRunner.getUserMapsFolder(), d.getMapName() + ".zip");
+				File installed = new File(GameRunner2.getUserMapsFolder(), d.getMapName() + ".zip");
 				if (installed == null || !installed.exists())
 					installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
 				if (installed != null && installed.exists())
@@ -131,7 +131,7 @@ public class InstallMapDialog extends JDialog
 					final DownloadFileDescription description = gameMap.get(mapName);
 					if (!description.isDummyUrl())
 					{
-						File installed = new File(GameRunner.getUserMapsFolder(), mapName + ".zip");
+						File installed = new File(GameRunner2.getUserMapsFolder(), mapName + ".zip");
 						if (installed == null || !installed.exists())
 							installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, mapName + ".zip");
 						if (installed != null && installed.exists())
@@ -211,7 +211,7 @@ public class InstallMapDialog extends JDialog
 				{
 					if (map.isDummyUrl())
 						continue;
-					final File destination = new File(GameRunner.getUserMapsFolder(), map.getMapName() + ".zip");
+					final File destination = new File(GameRunner2.getUserMapsFolder(), map.getMapName() + ".zip");
 					if (destination.exists())
 					{
 						final String msg = "<html>Replace map: " + map.getMapName() + " ?" +
@@ -272,7 +272,7 @@ public class InstallMapDialog extends JDialog
 			return;
 		}*/
 		// get the destination file
-		final File destination = new File(GameRunner.getUserMapsFolder(), selected.getMapName() + ".zip");
+		final File destination = new File(GameRunner2.getUserMapsFolder(), selected.getMapName() + ".zip");
 		if (destination.exists())
 		{
 			if (!destination.delete())
@@ -420,7 +420,7 @@ public class InstallMapDialog extends JDialog
 				{
 					m_urlLabel.setText(DOWNLOAD_URL_PREFIX + map.getUrl());
 					String currentVersion = "";
-					final File destination = new File(GameRunner.getUserMapsFolder(), map.getMapName() + ".zip");
+					final File destination = new File(GameRunner2.getUserMapsFolder(), map.getMapName() + ".zip");
 					if (destination.exists())
 					{
 						currentVersion = "   (installed version: " + getVersionString(getVersion(destination)) + ")";

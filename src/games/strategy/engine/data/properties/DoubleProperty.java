@@ -1,6 +1,6 @@
 package games.strategy.engine.data.properties;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.DoubleTextFieldChangeListener;
 
@@ -54,7 +54,7 @@ public class DoubleProperty extends AEditableProperty
 			// warn developer which have run with the option cache when Number properties were stored as strings
 			// todo (kg) remove at a later point
 			throw new RuntimeException("Double and Number properties are no longer stored as Strings. You should delete your option cache, located at "
-						+ new File(GameRunner.getUserRootFolder(), "optionCache").toString());
+						+ new File(GameRunner2.getUserRootFolder(), "optionCache").toString());
 		}
 		else
 		{

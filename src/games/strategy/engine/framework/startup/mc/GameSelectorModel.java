@@ -18,7 +18,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
@@ -42,7 +42,7 @@ public class GameSelectorModel extends Observable
 	 */
 	public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
 	/** Returns the folder where maps are held, example: "/maps" */
-	public static final File DEFAULT_MAP_DIRECTORY = new File(GameRunner.getRootFolder(), "maps");
+	public static final File DEFAULT_MAP_DIRECTORY = new File(GameRunner2.getRootFolder(), "maps");
 	private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
 	private static final String DEFAULT_GAME_NAME = "Big World : 1942";
 	private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
@@ -63,7 +63,7 @@ public class GameSelectorModel extends Observable
 	{
 		// we don't want to load anything if we are an older jar, because otherwise the user may get confused on which version of triplea they are using right now,
 		// and then start a game with an older jar when they should be using the newest jar (we want user to be using the normal default [newest] triplea.jar for new games)
-		if (GameRunner.areWeOldExtraJar())
+		if (GameRunner2.areWeOldExtraJar())
 			return;
 		m_fileName = entry.getLocation();
 		setGameData(entry.getGameData());
@@ -255,8 +255,8 @@ public class GameSelectorModel extends Observable
 		// just in case flush doesn't work, we still force it again here
 		final String userPreferredDefaultGameURI = (forceFactoryDefault ? DEFAULT_GAME_URI : prefs.get(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI));
 		// we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous version of triplea was using running a game within its root folder, we shouldn't open it)
-		final String user = GameRunner.getUserRootFolder().toURI().toString();
-		final String root = GameRunner.getRootFolder().toURI().toString();
+		final String user = GameRunner2.getUserRootFolder().toURI().toString();
+		final String root = GameRunner2.getRootFolder().toURI().toString();
 		if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0
 					&& (userPreferredDefaultGameURI.indexOf(root) != -1 || userPreferredDefaultGameURI.indexOf(user) != -1))
 		{

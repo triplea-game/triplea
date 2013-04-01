@@ -13,7 +13,7 @@
  */
 package games.strategy.engine.framework.ui;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 
 import java.io.File;
 
@@ -30,7 +30,7 @@ public class SaveGameFileChooser extends JFileChooser
 	public static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
 	public static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
 	public static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
-	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getUserRootFolder(), "savedGames");
+	public static final File DEFAULT_DIRECTORY = new File(GameRunner2.getUserRootFolder(), "savedGames");
 	private static SaveGameFileChooser s_instance;
 	
 	public static SaveGameFileChooser getInstance()

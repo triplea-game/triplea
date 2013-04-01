@@ -2,7 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -111,7 +111,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 	 */
 	private File getCacheFile(final GameData gameData)
 	{
-		final File cacheDir = new File(GameRunner.getUserRootFolder(), "optionCache");
+		final File cacheDir = new File(GameRunner2.getUserRootFolder(), "optionCache");
 		return new File(cacheDir, getFileName(gameData.getGameName()));
 	}
 	

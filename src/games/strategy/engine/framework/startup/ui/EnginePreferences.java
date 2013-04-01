@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.GameRunner2.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
@@ -252,7 +251,7 @@ public class EnginePreferences extends JDialog
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openFile(GameRunner.getUserRootFolder());
+					DesktopUtilityBrowserLauncher.openFile(GameRunner2.getUserRootFolder());
 				} catch (final Exception e1)
 				{
 					e1.printStackTrace();
@@ -265,7 +264,7 @@ public class EnginePreferences extends JDialog
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openFile(GameRunner.getRootFolder());
+					DesktopUtilityBrowserLauncher.openFile(GameRunner2.getRootFolder());
 				} catch (final Exception e1)
 				{
 					e1.printStackTrace();
@@ -278,7 +277,7 @@ public class EnginePreferences extends JDialog
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openFile(new File(GameRunner.getRootFolder(), "readme.html"));
+					DesktopUtilityBrowserLauncher.openFile(new File(GameRunner2.getRootFolder(), "readme.html"));
 				} catch (final Exception e1)
 				{
 					e1.printStackTrace();

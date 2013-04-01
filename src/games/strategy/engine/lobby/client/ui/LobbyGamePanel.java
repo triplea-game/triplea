@@ -14,7 +14,6 @@
 package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.engine.EngineVersion;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -215,7 +214,7 @@ public class LobbyGamePanel extends JPanel
 				newClassPath = findOldJar(engineVersionOfGameToJoin, false);
 			} catch (final Exception e)
 			{
-				if (GameRunner.areWeOldExtraJar())
+				if (GameRunner2.areWeOldExtraJar())
 				{
 					JOptionPane.showMessageDialog(getParent(), "<html>Please run the default TripleA and try joining the online lobby for it instead. " +
 								"<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. " +
@@ -258,7 +257,7 @@ public class LobbyGamePanel extends JPanel
 		if (EngineVersion.VERSION.equals(oldVersionNeeded, ignoreMicro))
 			return System.getProperty("java.class.path");
 		// first, see if the default/main triplea can run it
-		if (GameRunner.areWeOldExtraJar())
+		if (GameRunner2.areWeOldExtraJar())
 		{
 			final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
 			if (version != null && version.length() > 0)
@@ -277,9 +276,9 @@ public class LobbyGamePanel extends JPanel
 					{
 						final String jarName = "triplea.jar";
 						// windows is in 'bin' folder, mac is in 'Java' folder.
-						File binFolder = new File(GameRunner.getRootFolder(), "bin/");
+						File binFolder = new File(GameRunner2.getRootFolder(), "bin/");
 						if (!binFolder.exists())
-							binFolder = new File(GameRunner.getRootFolder(), "Java/");
+							binFolder = new File(GameRunner2.getRootFolder(), "Java/");
 						if (binFolder.exists())
 						{
 							final File[] files = binFolder.listFiles();
@@ -314,7 +313,7 @@ public class LobbyGamePanel extends JPanel
 		// System.out.println("System classpath: " + System.getProperty("java.class.path"));
 		// we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0 savegames.
 		final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
-		final File oldJarsFolder = new File(GameRunner.getRootFolder(), "old/");
+		final File oldJarsFolder = new File(GameRunner2.getRootFolder(), "old/");
 		if (!oldJarsFolder.exists())
 			throw new IOException("Can not find 'old' engine jars folder");
 		final File[] files = oldJarsFolder.listFiles();

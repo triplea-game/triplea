@@ -60,7 +60,7 @@ public class ProcessRunnerUtil
 		{
 			commands.add("-Dapple.laf.useScreenMenuBar=true");
 			commands.add("-Xdock:name=\"TripleA\"");
-			final File icons = new File(GameRunner.getRootFolder(), "icons/triplea_icon.png");
+			final File icons = new File(GameRunner2.getRootFolder(), "icons/triplea_icon.png");
 			if (!icons.exists())
 				throw new IllegalStateException("Icon file not found");
 			commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");

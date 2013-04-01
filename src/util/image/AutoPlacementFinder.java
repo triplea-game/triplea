@@ -13,7 +13,7 @@
  */
 package util.image;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.util.PointFileReaderWriter;
@@ -96,9 +96,9 @@ public class AutoPlacementFinder
 			System.out.println("Shutting down");
 			System.exit(0);
 		}
-		File file = new File(GameRunner.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
+		File file = new File(GameRunner2.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
 		if (!file.exists())
-			file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
+			file = new File(GameRunner2.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
 		if (file.exists() && s_mapFolderLocation == null)
 			s_mapFolderLocation = file.getParentFile();
 		if (!placeDimensionsSet)

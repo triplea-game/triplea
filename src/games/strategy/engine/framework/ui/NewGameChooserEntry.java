@@ -4,7 +4,6 @@ import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.Constants;
 
@@ -181,7 +180,7 @@ public class NewGameChooserEntry
 	public String getLocation()
 	{
 		final String raw = m_url.toString();
-		final String base = GameRunner.getRootFolder().toURI().toString() + "maps";
+		final String base = GameRunner2.getRootFolder().toURI().toString() + "maps";
 		if (raw.startsWith(base))
 		{
 			return raw.substring(base.length());

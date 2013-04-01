@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
@@ -271,7 +272,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		else
 			m_gameOptions.setEnabled(false);
 		// we don't want them starting new games if we are an old jar
-		if (GameRunner.areWeOldExtraJar())
+		if (GameRunner2.areWeOldExtraJar())
 		{
 			m_loadNewGame.setEnabled(false);
 			// m_loadSavedGame.setEnabled(false);

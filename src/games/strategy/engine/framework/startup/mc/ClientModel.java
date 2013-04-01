@@ -19,7 +19,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -113,7 +112,7 @@ public class ClientModel implements IMessengerErrorListener
 		// load in the saved name!
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		final String playername = prefs.get(ServerModel.PLAYERNAME, System.getProperty("user.name"));
-		final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
+		final ClientOptions options = new ClientOptions(ui, playername, GameRunner2.PORT, "127.0.0.1");
 		options.setLocationRelativeTo(ui);
 		options.setVisible(true);
 		options.dispose();

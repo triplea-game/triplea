@@ -1,9 +1,15 @@
 package games.strategy.engine.framework.startup;
 
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +48,7 @@ public class LocalBeanCache
 	
 	private LocalBeanCache()
 	{
-		m_file = new File(GameRunner.getUserRootFolder(), "local.cache");
+		m_file = new File(GameRunner2.getUserRootFolder(), "local.cache");
 		m_map = loadMap();
 		
 		// add a shutdown, just in case someone forgets to call writeToDisk
