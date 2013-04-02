@@ -476,8 +476,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			if (!unitHasAirAttackGreaterThanZero().match(unit))
 				return 0;
 		}
-		// math max 1, because we already know these units have air attack > 0
-		return Math.max(1, (defending ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner()) : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
+		return Math.max(0, (defending ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner()) : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
 	}
 	
 	private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite)

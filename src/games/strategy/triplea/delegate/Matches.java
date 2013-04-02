@@ -706,6 +706,20 @@ public class Matches
 		};
 	}
 	
+	public static final Match<UnitSupportAttachment> UnitSupportAttachmentCanBeUsedByPlayer(final PlayerID player)
+	{
+		return new Match<UnitSupportAttachment>()
+		{
+			@Override
+			public boolean match(final UnitSupportAttachment usa)
+			{
+				if (usa.getPlayers().contains(player))
+					return true;
+				return false;
+			}
+		};
+	}
+	
 	public static final Match<Unit> UnitCanScramble = new Match<Unit>()
 	{
 		@Override

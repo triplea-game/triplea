@@ -50,20 +50,16 @@ public class UnitSupportAttachment extends DefaultAttachment
 	@InternalDoNotExport
 	private boolean m_defence = false; // Do Not Export
 	
-	@SuppressWarnings("unused")
 	@InternalDoNotExport
 	private boolean m_roll = false; // TODO: finish support attachments
 	@InternalDoNotExport
-	@SuppressWarnings("unused")
 	private boolean m_strength = false; // TODO: finish support attachments
 	
 	private int m_bonus = 0;
 	private int m_number = 0;
 	
-	@SuppressWarnings("unused")
 	@InternalDoNotExport
 	private boolean m_allied = false; // TODO: finish support attachments
-	@SuppressWarnings("unused")
 	@InternalDoNotExport
 	private boolean m_enemy = false; // TODO: finish support attachments
 	
@@ -379,6 +375,26 @@ public class UnitSupportAttachment extends DefaultAttachment
 	public int getBonus()
 	{
 		return m_bonus;
+	}
+	
+	public boolean getAllied()
+	{
+		return m_allied;
+	}
+	
+	public boolean getEnemy()
+	{
+		return m_enemy;
+	}
+	
+	public boolean getRoll()
+	{
+		return m_roll;
+	}
+	
+	public boolean getStrength()
+	{
+		return m_strength;
 	}
 	
 	public boolean getDefence()

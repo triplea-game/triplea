@@ -280,36 +280,42 @@ public class MyFormatter
 			{
 				buffer.append(named.getName());
 				if (iter.hasNext())
-					buffer.append(" ").append(seperator).append(" ");
+					buffer.append(seperator);
 			}
 		}
 		return buffer.toString();
 	}
 	
-	public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map)
+	public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map, final String separator, final String assignment, final boolean valueBeforeKey)
 	{
 		final StringBuilder buf = new StringBuilder("");
 		for (final Entry<? extends DefaultNamed, Integer> entry : map.entrySet())
 		{
-			buf.append(", ");
+			buf.append(separator);
 			final DefaultNamed current = entry.getKey();
 			final int val = entry.getValue();
-			buf.append(current.getName()).append(" = ").append(val);
+			if (valueBeforeKey)
+				buf.append(val).append(assignment).append(current.getName());
+			else
+				buf.append(current.getName()).append(assignment).append(val);
 		}
-		return buf.toString().replaceFirst(", ", "");
+		return buf.toString().replaceFirst(separator, "");
 	}
 	
-	public static String integerUnitMapToString(final IntegerMap<? extends Unit> map)
+	public static String integerUnitMapToString(final IntegerMap<? extends Unit> map, final String separator, final String assignment, final boolean valueBeforeKey)
 	{
 		final StringBuilder buf = new StringBuilder("");
 		for (final Entry<? extends Unit, Integer> entry : map.entrySet())
 		{
-			buf.append(", ");
+			buf.append(separator);
 			final Unit current = entry.getKey();
 			final int val = entry.getValue();
-			buf.append(current.getType().getName()).append(" = ").append(val);
+			if (valueBeforeKey)
+				buf.append(val).append(assignment).append(current.getType().getName());
+			else
+				buf.append(current.getType().getName()).append(assignment).append(val);
 		}
-		return buf.toString().replaceFirst(", ", "");
+		return buf.toString().replaceFirst(separator, "");
 	}
 	
 	/** Creates a new instance of MyFormatter */

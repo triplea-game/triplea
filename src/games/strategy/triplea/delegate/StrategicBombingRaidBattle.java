@@ -218,7 +218,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 					bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + m_bombingRaidTotal + " " + " production in " + m_battleSite.getName());
 				else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
 					bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidTotal + " damage total. " +
-								(m_bombingRaidDamage.size() > 1 ? (" Damaged units is as follows: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage)) : ""));
+								(m_bombingRaidDamage.size() > 1 ? (" Damaged units is as follows: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false)) : ""));
 				else
 					bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
 				// TODO remove the reference to the constant.japanese- replace with a rule
@@ -291,7 +291,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 			getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " production.");
 		else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
 			getDisplay(bridge).battleEnd(m_battleID, "Raid causes " + m_bombingRaidTotal + " damage total." +
-						(m_bombingRaidDamage.size() > 1 ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage)) : ""));
+						(m_bombingRaidDamage.size() > 1 ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false)) : ""));
 		else
 			getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
 		if (m_bombingRaidTotal > 0)

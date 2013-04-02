@@ -215,27 +215,33 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
-	public String addTechAdvance(final PlayerID player, final TechAdvance advance)
+	public String addTechAdvance(final PlayerID player, final Collection<TechAdvance> advances)
 	{
 		String result = null;
 		if (null != (result = checkEditMode()))
 			return result;
-		if (null != (result = EditValidator.validateAddTech(getData(), advance, player)))
+		if (null != (result = EditValidator.validateAddTech(getData(), advances, player)))
 			return result;
-		logEvent("Adding Technology " + advance.getName() + " for " + player.getName(), null);
-		TechTracker.addAdvance(player, m_bridge, advance);
+		for (final TechAdvance advance : advances)
+		{
+			logEvent("Adding Technology " + advance.getName() + " for " + player.getName(), null);
+			TechTracker.addAdvance(player, m_bridge, advance);
+		}
 		return null;
 	}
 	
-	public String removeTechAdvance(final PlayerID player, final TechAdvance advance)
+	public String removeTechAdvance(final PlayerID player, final Collection<TechAdvance> advances)
 	{
 		String result = null;
 		if (null != (result = checkEditMode()))
 			return result;
-		if (null != (result = EditValidator.validateRemoveTech(getData(), advance, player)))
+		if (null != (result = EditValidator.validateRemoveTech(getData(), advances, player)))
 			return result;
-		logEvent("Removing Technology " + advance.getName() + " for " + player.getName(), null);
-		TechTracker.removeAdvance(player, m_bridge, advance);
+		for (final TechAdvance advance : advances)
+		{
+			logEvent("Removing Technology " + advance.getName() + " for " + player.getName(), null);
+			TechTracker.removeAdvance(player, m_bridge, advance);
+		}
 		return null;
 	}
 	
@@ -257,7 +263,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		if (unitDamageMap.isEmpty())
 			return null;
 		final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
-		logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap), unitsFinal);
+		logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: "
+					+ MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
 		m_bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
 		territory.notifyChanged();
 		return null;
@@ -333,7 +340,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			}
 		}
 		final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
-		logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap), unitsFinal);
+		logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: "
+					+ MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
 		m_bridge.addChange(changes);
 		territory.notifyChanged();
 		return null;

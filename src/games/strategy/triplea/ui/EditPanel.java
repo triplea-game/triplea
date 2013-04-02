@@ -262,7 +262,6 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -5536151512828077755L;
 			
-			@SuppressWarnings("null")
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -292,7 +291,7 @@ public class EditPanel extends ActionPanel
 					return;
 				}
 				final JList techList = new JList(techs);
-				techList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 				techList.setLayoutOrientation(JList.VERTICAL);
 				techList.setVisibleRowCount(10);
 				final JScrollPane scroll = new JScrollPane(techList);
@@ -302,10 +301,13 @@ public class EditPanel extends ActionPanel
 					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
 				}
-				TechAdvance advance = null;
+				final Set<TechAdvance> advance = new HashSet<TechAdvance>();
 				try
 				{
-					advance = (TechAdvance) techList.getSelectedValue();
+					for (final Object selection : techList.getSelectedValues())
+					{
+						advance.add((TechAdvance) selection);
+					}
 				} catch (final Exception e)
 				{
 				}
@@ -319,7 +321,6 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -2456111915025687825L;
 			
-			@SuppressWarnings("null")
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -357,7 +358,7 @@ public class EditPanel extends ActionPanel
 					return;
 				}
 				final JList techList = new JList(techs);
-				techList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 				techList.setLayoutOrientation(JList.VERTICAL);
 				techList.setVisibleRowCount(10);
 				final JScrollPane scroll = new JScrollPane(techList);
@@ -367,10 +368,13 @@ public class EditPanel extends ActionPanel
 					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
 				}
-				TechAdvance advance = null;
+				final Set<TechAdvance> advance = new HashSet<TechAdvance>();
 				try
 				{
-					advance = (TechAdvance) techList.getSelectedValue();
+					for (final Object selection : techList.getSelectedValues())
+					{
+						advance.add((TechAdvance) selection);
+					}
 				} catch (final Exception e)
 				{
 				}

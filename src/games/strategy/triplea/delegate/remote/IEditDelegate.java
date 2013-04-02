@@ -46,9 +46,9 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate
 	
 	public String changeTechTokens(PlayerID player, int tokens);
 	
-	public String addTechAdvance(PlayerID player, TechAdvance advance);
+	public String addTechAdvance(PlayerID player, Collection<TechAdvance> advance);
 	
-	public String removeTechAdvance(PlayerID player, TechAdvance advance);
+	public String removeTechAdvance(PlayerID player, Collection<TechAdvance> advance);
 	
 	public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
 	

@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -3117,68 +3118,100 @@ public class UnitAttachment extends DefaultAttachment
 		// displays everything in a very short form, in English rather than as xml stuff
 		// shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr, m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
 		final StringBuilder stats = new StringBuilder();
-		// if (this != null && this.getName() != null)
-		// stats.append(this.getName() + ": ");
-		if (includeAttachedToName && this != null && this.getAttachedTo() != null)
-			stats.append(this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + ", ");
-		if (m_isAir)
+		final UnitType unitType = (UnitType) this.getAttachedTo();
+		if (includeAttachedToName && unitType != null)
+			stats.append(unitType.getName() + ":  ");
+		
+		if (getIsAir())
 			stats.append("Air unit, ");
-		else if (m_isSea)
+		else if (getIsSea())
 			stats.append("Sea unit, ");
 		else
 			stats.append("Land unit, ");
+		
+		final int attackRolls = getAttackRolls(player);
+		final int defenseRolls = getDefenseRolls(player);
 		if (getAttack(player) > 0)
-			stats.append((getAttackRolls(player) > 1 ? (getAttackRolls(player) + "x ") : "") + getAttack(player) + " Attack, ");
+			stats.append((attackRolls > 1 ? (attackRolls + "x ") : "") + getAttack(player) + " Attack, ");
 		if (getDefense(player) > 0)
-			stats.append((getDefenseRolls(player) > 1 ? (getDefenseRolls(player) + "x ") : "") + getDefense(player) + " Defense, ");
+			stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + getDefense(player) + " Defense, ");
 		if (getMovement(player) > 0)
 			stats.append(getMovement(player) + " Movement, ");
-		if (m_isTwoHit)
+		if (getIsTwoHit())
 			stats.append("Two Hitpoints, ");
-		if ((m_canProduceUnits /*|| m_isFactory*/) && m_canProduceXUnits < 0)
+		if (getCanProduceUnits() && getCanProduceXUnits() < 0)
 			stats.append("can Produce Units Up To Territory Value, ");
-		else if ((m_canProduceUnits /*|| m_isFactory*/) && m_canProduceXUnits > 0)
-			stats.append("can Produce " + m_canProduceXUnits + " Units, ");
-		if (m_createsUnitsList != null && m_createsUnitsList.size() == 1)
-			stats.append("Produces " + m_createsUnitsList.totalValues() + " " + m_createsUnitsList.keySet().iterator().next().getName() + " Each Turn, ");
-		else if (m_createsUnitsList != null && m_createsUnitsList.size() > 1)
-			stats.append("Produces " + m_createsUnitsList.totalValues() + " Units Each Turn, ");
-		if (m_createsResourcesList != null && m_createsResourcesList.size() == 1)
-			stats.append("Produces " + m_createsResourcesList.totalValues() + " " + m_createsResourcesList.keySet().iterator().next().getName() + " Each Turn, ");
-		else if (m_createsResourcesList != null && m_createsResourcesList.size() > 1)
-			stats.append("Produces " + m_createsResourcesList.totalValues() + " Resources Each Turn, ");
+		else if (getCanProduceUnits() && getCanProduceXUnits() > 0)
+			stats.append("can Produce " + getCanProduceXUnits() + " Units, ");
 		
-		if (m_fuelCost != null && m_fuelCost.size() == 1)
-			stats.append("Uses " + m_fuelCost.totalValues() + " " + m_fuelCost.keySet().iterator().next().getName() + " Each movement point, ");
-		else if (m_fuelCost != null && m_fuelCost.size() > 1)
-			stats.append("Uses " + m_fuelCost.totalValues() + " Resources Each movement point, ");
-		
-		if (m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAAforFlyOverOnly)
+		if (getCreatesUnitsList() != null && getCreatesUnitsList().size() > 0)
 		{
-			stats.append(this.getAttackAA(player) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
-			if (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly && m_isAAforFlyOverOnly)
-				stats.append("Anti-Air, ");
-			else if (m_isAAforCombatOnly && m_isAAforFlyOverOnly && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
-				stats.append("Anti-Air for Combat & FlyOver, ");
-			else if (m_isAAforBombingThisUnitOnly && m_isAAforFlyOverOnly && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
-				stats.append("Anti-Air for Raids & FlyOver, ");
-			else if (m_isAAforCombatOnly)
-				stats.append("Anti-Air for Combat, ");
-			else if (m_isAAforBombingThisUnitOnly)
-				stats.append("Anti-Air for Raids, ");
-			else if (m_isAAforFlyOverOnly)
-				stats.append("Anti-Air for FlyOver, ");
-			if (m_maxAAattacks > -1)
-				stats.append(m_maxAAattacks + " AA Attacks, ");
+			if (getCreatesUnitsList().size() > 4)
+				stats.append("Produces " + getCreatesUnitsList().totalValues() + " Units Each Turn, ");
+			else
+			{
+				stats.append("Produces ");
+				for (final Entry<UnitType, Integer> entry : getCreatesUnitsList().entrySet())
+				{
+					stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+				}
+				stats.append("Each Turn, ");
+			}
 		}
-		if (m_isRocket && playerHasRockets(player))
+		if (getCreatesResourcesList() != null && getCreatesResourcesList().size() > 0)
+		{
+			if (getCreatesResourcesList().size() > 4)
+				stats.append("Produces " + getCreatesResourcesList().totalValues() + " Resources Each Turn, ");
+			else
+			{
+				stats.append("Produces ");
+				for (final Entry<Resource, Integer> entry : getCreatesResourcesList().entrySet())
+				{
+					stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+				}
+				stats.append("Each Turn, ");
+			}
+		}
+		if (getFuelCost() != null && getFuelCost().size() > 0)
+		{
+			if (getFuelCost().size() > 4)
+				stats.append("Uses " + m_fuelCost.totalValues() + " Resources Each movement point, ");
+			else
+			{
+				stats.append("Uses ");
+				for (final Entry<Resource, Integer> entry : getFuelCost().entrySet())
+				{
+					stats.append(entry.getValue() + "x" + entry.getKey().getName() + " ");
+				}
+				stats.append("Each movement point, ");
+			}
+		}
+		
+		if (getIsAAforCombatOnly() || getIsAAforBombingThisUnitOnly() || getIsAAforFlyOverOnly())
+		{
+			stats.append(this.getAttackAA(player) + "/" + (getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides()) + " ");
+			if (getIsAAforCombatOnly() && getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly())
+				stats.append("Anti-Air, ");
+			else if (getIsAAforCombatOnly() && getIsAAforFlyOverOnly() && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
+				stats.append("Anti-Air for Combat & FlyOver, ");
+			else if (getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly() && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
+				stats.append("Anti-Air for Raids & FlyOver, ");
+			else if (getIsAAforCombatOnly())
+				stats.append("Anti-Air for Combat, ");
+			else if (getIsAAforBombingThisUnitOnly())
+				stats.append("Anti-Air for Raids, ");
+			else if (getIsAAforFlyOverOnly())
+				stats.append("Anti-Air for FlyOver, ");
+			if (getMaxAAattacks() > -1)
+				stats.append(getMaxAAattacks() + " AA Attacks, ");
+		}
+		if (getIsRocket() && playerHasRockets(player))
 		{
 			stats.append("can Rocket Attack, ");
 			final int bombingBonus = getBombingBonus();
-			if ((m_bombingMaxDieSides != -1 || bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
-				stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1)
-							+ "-"
-							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (bombingBonus != -1 ? bombingBonus : 0) : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
+			if ((getBombingMaxDieSides() != -1 || bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
+				stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1) + "-"
+							+ (getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0) : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
 							+ " Rocket Damage, ");
 			else
 				stats.append("1-" + getData().getDiceSides() + " Rocket Damage, ");
@@ -3186,158 +3219,225 @@ public class UnitAttachment extends DefaultAttachment
 		// line break
 		if (useHTML)
 			stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
-		if (m_isInfrastructure /*|| m_isFactory*/)
+		
+		if (getIsInfrastructure())
 			stats.append("can be Captured, ");
-		if (m_isConstruction /*|| m_isFactory*/)
+		if (getIsConstruction())
 			stats.append("can be Placed Without Factory, ");
-		if ((m_canBeDamaged /*|| m_isFactory*/) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
+		if ((getCanBeDamaged()) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 		{
 			stats.append("can be Damaged By Raids, ");
-			if (m_canDieFromReachingMaxDamage)
+			if (getCanDieFromReachingMaxDamage())
 				stats.append("will Die If Max Damage Reached, ");
 		}
-		else if ((m_canBeDamaged /*|| m_isFactory*/) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		else if ((getCanBeDamaged()) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 		{
 			stats.append("can be Damaged By Raids, ");
-			if (m_maxOperationalDamage > -1)
-				stats.append(m_maxOperationalDamage + " Max Operational Damage, ");
-			if ((m_canProduceUnits /*|| m_isFactory*/) && m_canProduceXUnits < 0)
-				stats.append("Total Damage up to " + (m_maxDamage > -1 ? m_maxDamage : 2) + "x Territory Value, ");
-			else if (m_maxDamage > -1)
-				stats.append(m_maxDamage + " Max Total Damage, ");
-			if (m_canDieFromReachingMaxDamage)
+			if (getMaxOperationalDamage() > -1)
+				stats.append(getMaxOperationalDamage() + " Max Operational Damage, ");
+			if ((getCanProduceUnits()) && getCanProduceXUnits() < 0)
+				stats.append("Total Damage up to " + (getMaxDamage() > -1 ? getMaxDamage() : 2) + "x Territory Value, ");
+			else if (getMaxDamage() > -1)
+				stats.append(getMaxDamage() + " Max Total Damage, ");
+			if (getCanDieFromReachingMaxDamage())
 				stats.append("will Die If Max Damage Reached, ");
 		}
-		else if (m_canBeDamaged /*|| m_isFactory*/)
+		else if (getCanBeDamaged())
 			stats.append("can be Attacked By Raids, ");
-		if (m_isAirBase && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
+		if (getIsAirBase() && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 			stats.append("can Allow Scrambling, ");
-		if (m_canScramble && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
-			stats.append("can Scramble " + (m_maxScrambleDistance > 0 ? m_maxScrambleDistance : 1) + " Distance, ");
-		if (m_artillery)
-			stats.append("can Give Attack Bonus, ");
-		// TODO: Need to account for support attachments here somehow.
-		if (m_artillerySupportable)
-			stats.append("can Receive Attack Bonus, ");
-		if (m_isMarine)
+		if (getCanScramble() && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
+			stats.append("can Scramble " + (getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1) + " Distance, ");
+		if (getArtillery())
+		{
+			stats.append("can Give Attack Bonus To Other Units, ");
+		}
+		else
+		{
+			final List<UnitSupportAttachment> supports = Match.getMatches(UnitSupportAttachment.get(unitType), Matches.UnitSupportAttachmentCanBeUsedByPlayer(player));
+			if (supports.size() > 0)
+			{
+				if (supports.size() > 2)
+					stats.append("can Modify Power Of Other Units, ");
+				else
+				{
+					for (final UnitSupportAttachment support : supports)
+					{
+						stats.append("gives " + support.getBonus() + (support.getOffence() && support.getDefence() ? " Att/Def " : (support.getOffence() ? " Attack " : " Defense "))
+									+ (support.getStrength() && support.getRoll() ? "Power&Rolls " : (support.getStrength() ? "Power " : "Rolls "))
+									+ " to " + support.getNumber() + (support.getAllied() && support.getEnemy() ? " Allied&Enemy " : (support.getAllied() ? " Allied " : " Enemy "))
+									+ (support.getUnitType().size() > 4 ? "Units" : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/")) + ", ");
+					}
+				}
+			}
+		}
+		if (getArtillerySupportable())
+			stats.append("can Receive Attack Bonus From Other Units, ");
+		if (getIsMarine())
 			stats.append("1" + " Amphibious Attack Bonus, ");
 		if (getCanBlitz(player))
 			stats.append("can Blitz, ");
-		if (!m_receivesAbilityWhenWith.isEmpty())
+		if (!getReceivesAbilityWhenWith().isEmpty())
 		{
-			if (m_receivesAbilityWhenWith.size() == 1)
-				stats.append("receives " + m_receivesAbilityWhenWith.get(0).split(":")[0] + " when paired with " + m_receivesAbilityWhenWith.get(0).split(":")[1] + ", ");
+			if (getReceivesAbilityWhenWith().size() <= 2)
+			{
+				for (final String ability : getReceivesAbilityWhenWith())
+				{
+					stats.append("receives " + ability.split(":")[0] + " when paired with " + ability.split(":")[1] + ", ");
+				}
+			}
 			else
-				stats.append("receives abilities when paired with other units, ");
+				stats.append("receives Abilities When Paired with Other Units, ");
 		}
-		// TODO: Need to account for dice rolls, once we can customize dice rolls allowed per unit
-		if (m_isStrategicBomber)
+		if (getIsStrategicBomber())
 		{
 			stats.append("can Perform Raids, ");
 			final int bombingBonus = getBombingBonus();
-			if ((m_bombingMaxDieSides != -1 || bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
-				stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1)
-							+ "-"
-							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (bombingBonus != -1 ? bombingBonus : 0) : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
+			if ((getBombingMaxDieSides() != -1 || bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
+				stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1) + "-"
+							+ (getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0) : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
 							+ " Raid Damage, ");
 			else
 				stats.append("1-" + getData().getDiceSides() + " Raid Damage, ");
 		}
-		if (m_isSub)
+		final int airAttack = getAirAttack(player);
+		final int airDefense = getAirDefense(player);
+		if (airAttack > 0 && (getIsStrategicBomber() || getCanEscort()))
+			stats.append((attackRolls > 1 ? (attackRolls + "x ") : "") + airAttack + " Air Attack, ");
+		if (airDefense > 0 && getCanIntercept())
+			stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + airAttack + " Air Defense, ");
+		if (getIsSub())
 			stats.append("is Stealth, ");
-		if (m_isDestroyer)
+		if (getIsDestroyer())
 			stats.append("is Anti-Stealth, ");
 		if (getCanBombard(player) && getBombard(player) > 0)
 			stats.append(getBombard(player) + " Bombard, ");
-		if (m_blockade > 0)
-			stats.append(m_blockade + " Blockade Loss, ");
-		if (m_isSuicide)
+		if (getBlockade() > 0)
+			stats.append(getBlockade() + " Blockade Loss, ");
+		if (getIsSuicide())
 			stats.append("Suicide/Munition Unit, ");
-		if (m_isAir && (m_isKamikaze || games.strategy.triplea.Properties.getKamikaze_Airplanes(getData())))
+		if (getIsAir() && (getIsKamikaze() || games.strategy.triplea.Properties.getKamikaze_Airplanes(getData())))
 			stats.append("can use All Movement To Attack Target, ");
-		if (m_isInfantry && playerHasMechInf(player))
+		if (getIsInfantry() && playerHasMechInf(player))
 			stats.append("can be Transported By Land, ");
-		if (m_isLandTransport && playerHasMechInf(player))
+		if (getIsLandTransport() && playerHasMechInf(player))
 			stats.append("is a Land Transport, ");
-		if (m_isAirTransportable && playerHasParatroopers(player))
+		if (getIsAirTransportable() && playerHasParatroopers(player))
 			stats.append("can be Transported By Air, ");
-		if (m_isAirTransport && playerHasParatroopers(player))
+		if (getIsAirTransport() && playerHasParatroopers(player))
 			stats.append("is an Air Transport, ");
-		if (m_isCombatTransport && m_transportCapacity > 0)
+		if (getIsCombatTransport() && getTransportCapacity() > 0)
 			stats.append("is a Combat Transport, ");
-		else if (m_transportCapacity > 0 && m_isSea)
+		else if (getTransportCapacity() > 0 && getIsSea())
 			stats.append("is a Sea Transport, ");
-		if (m_transportCost > -1)
-			stats.append(m_transportCost + " Transporting Cost, ");
-		if (m_transportCapacity > 0 && m_isSea)
-			stats.append(m_transportCapacity + " Transporting Capacity, ");
-		else if (m_transportCapacity > 0 && m_isAir && playerHasParatroopers(player))
-			stats.append(m_transportCapacity + " Transporting Capacity, ");
-		else if (m_transportCapacity > 0 && playerHasMechInf(player) && !m_isSea && !m_isAir)
-			stats.append(m_transportCapacity + " Transporting Capacity, ");
-		if (m_carrierCost > -1)
-			stats.append(m_carrierCost + " Carrier Cost, ");
-		if (m_carrierCapacity > 0)
-			stats.append(m_carrierCapacity + " Carrier Capacity, ");
-		if (!m_whenCombatDamaged.isEmpty())
+		if (getTransportCost() > -1)
+			stats.append(getTransportCost() + " Transporting Cost, ");
+		if (getTransportCapacity() > 0 && getIsSea())
+			stats.append(getTransportCapacity() + " Transporting Capacity, ");
+		else if (getTransportCapacity() > 0 && getIsAir() && playerHasParatroopers(player))
+			stats.append(getTransportCapacity() + " Transporting Capacity, ");
+		else if (getTransportCapacity() > 0 && playerHasMechInf(player) && !getIsSea() && !getIsAir())
+			stats.append(getTransportCapacity() + " Transporting Capacity, ");
+		if (getCarrierCost() > -1)
+			stats.append(getCarrierCost() + " Carrier Cost, ");
+		if (getCarrierCapacity() > 0)
+			stats.append(getCarrierCapacity() + " Carrier Capacity, ");
+		if (!getWhenCombatDamaged().isEmpty())
 		{
 			stats.append("when hit this unit loses certain abilities, ");
 		}
 		// line break
 		if (useHTML)
 			stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
-		if (m_maxBuiltPerPlayer > -1)
-			stats.append(m_maxBuiltPerPlayer + " Max Built Allowed, ");
-		if (m_repairsUnits != null && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
+		
+		if (getMaxBuiltPerPlayer() > -1)
+			stats.append(getMaxBuiltPerPlayer() + " Max Built Allowed, ");
+		if (getRepairsUnits() != null && getRepairsUnits().length > 0 && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
 					&& (games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(getData()) || games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData())))
-			stats.append("can Repair Some Units, ");
-		if (m_givesMovement != null && m_givesMovement.totalValues() > 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
-			stats.append("can Give Bonus Movement, ");
-		else if (m_givesMovement != null && m_givesMovement.totalValues() < 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
-			stats.append("can Take Away Movement, ");
-		if (m_consumesUnits != null && m_consumesUnits.totalValues() == 1)
-			stats.append("unit is an Upgrade Of " + m_consumesUnits.keySet().iterator().next().getName() + ", ");
-		else if (m_consumesUnits != null && m_consumesUnits.totalValues() > 1)
-			stats.append("unit Consumes Other Units On Placement, ");
-		if (m_requiresUnits != null && m_requiresUnits.size() == 1 && m_requiresUnits.iterator().next().length == 1 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-			stats.append("unit can only be Placed Where There Is A " + m_requiresUnits.iterator().next()[0] + ", ");
-		else if (m_requiresUnits != null && m_requiresUnits.size() > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-			stats.append("unit Requires Other Units Present To Be Placed, ");
-		if (m_unitPlacementRestrictions != null && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
+		{
+			if (getRepairsUnits().length <= 4)
+				stats.append("can Repair " + Arrays.toString(getRepairsUnits()) + ", ");
+			else
+				stats.append("can Repair Some Units, ");
+		}
+		if (getGivesMovement() != null && getGivesMovement().totalValues() > 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
+		{
+			if (getGivesMovement().size() <= 4)
+				stats.append("can Modify Unit Movement " + MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false) + ", ");
+			else
+				stats.append("can Modify Unit Movement, ");
+		}
+		if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1)
+			stats.append("unit is an Upgrade Of " + getConsumesUnits().keySet().iterator().next().getName() + ", ");
+		else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0)
+		{
+			if (getConsumesUnits().size() <= 4)
+				stats.append("unit Consumes On Placement: " + MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true) + ", ");
+			else
+				stats.append("unit Consumes Other Units On Placement, ");
+		}
+		if (getRequiresUnits() != null && getRequiresUnits().size() > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
+		{
+			final List<String> totalUnitsListed = new ArrayList<String>();
+			for (final String[] list : getRequiresUnits())
+			{
+				totalUnitsListed.addAll(Arrays.asList(list));
+			}
+			if (totalUnitsListed.size() > 4)
+				stats.append("unit Requires Other Units Present To Be Placed, ");
+			else
+			{
+				stats.append("unit can only be Placed Where There Is ");
+				final Iterator<String[]> requiredIter = getRequiresUnits().iterator();
+				while (requiredIter.hasNext())
+				{
+					final String[] required = requiredIter.next();
+					if (required.length == 1)
+						stats.append(required[0]);
+					else
+						stats.append(Arrays.toString(required));
+					if (requiredIter.hasNext())
+						stats.append(" Or ");
+				}
+				stats.append(", ");
+			}
+		}
+		
+		if (getUnitPlacementRestrictions() != null && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
 			stats.append("has Placement Restrictions, ");
-		if (m_canOnlyBePlacedInTerritoryValuedAtX > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
-			stats.append("must be Placed In Territory Valued >=" + m_canOnlyBePlacedInTerritoryValuedAtX + ", ");
-		if (m_canNotMoveDuringCombatMove)
+		if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
+			stats.append("must be Placed In Territory Valued >=" + getCanOnlyBePlacedInTerritoryValuedAtX() + ", ");
+		if (getCanNotMoveDuringCombatMove())
 			stats.append("cannot Combat Move, ");
-		if (m_movementLimit != null)
+		if (getMovementLimit() != null)
 		{
-			if (m_movementLimit.getFirst() == Integer.MAX_VALUE
-						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly)
+			if (getMovementLimit().getFirst() == Integer.MAX_VALUE
+						&& (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
 						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
 									.getMultipleAAPerTerritory(getData())))
-				stats.append("max of 1 " + m_movementLimit.getSecond() + " moving per territory, ");
-			else if (m_movementLimit.getFirst() < 10000)
-				stats.append("max of " + m_movementLimit.getFirst() + " " + m_movementLimit.getSecond() + " moving per territory, ");
+				stats.append("max of 1 " + getMovementLimit().getSecond() + " moving per territory, ");
+			else if (getMovementLimit().getFirst() < 10000)
+				stats.append("max of " + getMovementLimit().getFirst() + " " + getMovementLimit().getSecond() + " moving per territory, ");
 		}
-		if (m_attackingLimit != null)
+		if (getAttackingLimit() != null)
 		{
-			if (m_attackingLimit.getFirst() == Integer.MAX_VALUE
-						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly)
+			if (getAttackingLimit().getFirst() == Integer.MAX_VALUE
+						&& (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
 						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
 									.getMultipleAAPerTerritory(getData())))
-				stats.append("max of 1 " + m_attackingLimit.getSecond() + " attacking per territory, ");
-			else if (m_attackingLimit.getFirst() < 10000)
-				stats.append("max of " + m_attackingLimit.getFirst() + " " + m_attackingLimit.getSecond() + " attacking per territory, ");
+				stats.append("max of 1 " + getAttackingLimit().getSecond() + " attacking per territory, ");
+			else if (getAttackingLimit().getFirst() < 10000)
+				stats.append("max of " + getAttackingLimit().getFirst() + " " + getAttackingLimit().getSecond() + " attacking per territory, ");
 		}
-		if (m_placementLimit != null)
+		if (getPlacementLimit() != null)
 		{
-			if (m_placementLimit.getFirst() == Integer.MAX_VALUE
-						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly)
+			if (getPlacementLimit().getFirst() == Integer.MAX_VALUE
+						&& (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
 						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
 									.getMultipleAAPerTerritory(getData())))
-				stats.append("max of 1 " + m_placementLimit.getSecond() + " placed per territory, ");
-			else if (m_placementLimit.getFirst() < 10000)
-				stats.append("max of " + m_placementLimit.getFirst() + " " + m_placementLimit.getSecond() + " placed per territory, ");
+				stats.append("max of 1 " + getPlacementLimit().getSecond() + " placed per territory, ");
+			else if (getPlacementLimit().getFirst() < 10000)
+				stats.append("max of " + getPlacementLimit().getFirst() + " " + getPlacementLimit().getSecond() + " placed per territory, ");
 		}
 		
 		if (stats.indexOf(", ") > -1)

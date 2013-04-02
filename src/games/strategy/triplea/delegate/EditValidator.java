@@ -166,10 +166,10 @@ public class EditValidator
 		return result;
 	}
 	
-	public static String validateAddTech(final GameData data, final TechAdvance tech, final PlayerID player)
+	public static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player)
 	{
 		final String result = null;
-		if (tech == null)
+		if (techs == null)
 			return "No tech selected";
 		if (player == null)
 			return "No player selected";
@@ -177,26 +177,36 @@ public class EditValidator
 			return "Technology not enabled";
 		if (player.getAttachment(Constants.TECH_ATTACHMENT_NAME) == null)
 			return "Player has no Tech Attachment";
-		if (!TechnologyDelegate.getAvailableTechs(player, data).contains(tech))
-			return "Technology not available for this player";
+		for (final TechAdvance tech : techs)
+		{
+			if (tech == null)
+				return "No tech selected";
+			if (!TechnologyDelegate.getAvailableTechs(player, data).contains(tech))
+				return "Technology not available for this player";
+		}
 		return result;
 	}
 	
-	public static String validateRemoveTech(final GameData data, final TechAdvance tech, final PlayerID player)
+	public static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player)
 	{
 		final String result = null;
-		if (tech == null)
+		if (techs == null)
 			return "No tech selected";
 		if (player == null)
 			return "No player selected";
 		if (!games.strategy.triplea.Properties.getTechDevelopment(data))
 			return "Technology not enabled";
-		if (!TechTracker.getCurrentTechAdvances(player, data).contains(tech))
-			return "Player does not have this tech";
-		if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY))
-			return "Can not remove " + TechAdvance.TECH_NAME_INDUSTRIAL_TECHNOLOGY;
-		if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS))
-			return "Can not remove " + TechAdvance.TECH_NAME_IMPROVED_SHIPYARDS;
+		for (final TechAdvance tech : techs)
+		{
+			if (tech == null)
+				return "No tech selected";
+			if (!TechTracker.getCurrentTechAdvances(player, data).contains(tech))
+				return "Player does not have this tech";
+			if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY))
+				return "Can not remove " + TechAdvance.TECH_NAME_INDUSTRIAL_TECHNOLOGY;
+			if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS))
+				return "Can not remove " + TechAdvance.TECH_NAME_IMPROVED_SHIPYARDS;
+		}
 		return result;
 	}
 	

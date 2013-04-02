@@ -1093,12 +1093,12 @@ public class BattleCalculator
 		else
 			rolls = unitAttachment.getAttackRolls(id);
 		// Don't forget that units can have zero attack, and then be given attack power by support, and therefore be able to roll
-		if (rolls == 0 && unitAttachment.getAttack(id) == 0)
+		if (rolls == 0 && (defend ? unitAttachment.getDefense(id) : unitAttachment.getAttack(id)) == 0)
 		{
 			if (DiceRoll.getSupport(unit.getType(), supportRulesCopy, supportLeftCopy) > 0)
 				rolls += 1;
 		}
-		if (rolls == 0 && unitAttachment.getAttack(id) == 0)
+		if (rolls == 0 && (defend ? unitAttachment.getDefense(id) : unitAttachment.getAttack(id)) == 0)
 		{
 			if (TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defend) > 0)
 				rolls += 1;
