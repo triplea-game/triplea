@@ -1,4 +1,6 @@
 Changes for 1.7
+* Increasing maximum memory to 1gb (1024mb), up from 768mb. (veqryn)
+
 * Creating a new monthly check to see if all maps are up to date, and if not then asking the user to update their maps. (veqryn)
 
 * Allowed "men" in International Draughts to capture backwards, which appears as a game option in Checkers. (veqryn)

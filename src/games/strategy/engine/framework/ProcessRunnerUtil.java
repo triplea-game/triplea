@@ -42,7 +42,7 @@ public class ProcessRunnerUtil
 		else
 			commands.add(System.getProperty("java.class.path"));
 		commands.add("-Xmx" + maxMemory);
-		// commands.add("-Xmx768m"); //TODO: This may need updating to something higher, like 896m or 1024m ((started out at 128m, then 256m, then 384m, then 512m, then 640m, now 768m).
+		// commands.add("-Xmx1024m"); //TODO: This may need updating to something higher, like 1152m or 1280m (gone through 128m, 256m, 384m, 512m, 640m, 768m, 896m, 1024m).
 		// preserve noddraw to fix 1742775
 		final String[] preservedSystemProperties = { "sun.java2d.noddraw" };
 		for (final String key : preservedSystemProperties)

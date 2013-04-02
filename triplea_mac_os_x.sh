@@ -12,4 +12,4 @@ cd $relativePathToGame
 
 export PATH=/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Home/bin/:$PATH
 export PATH=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home/bin/:$PATH
-java -Xmx768m -cp bin/patch.jar:bin/triplea.jar -Dapple.laf.useScreenMenuBar=true -Xdock:name="TripleA" -Xdock:icon="./icons/triplea_icon.png" games.strategy.engine.framework.GameRunner
+java -Xmx1024m -cp bin/patch.jar:bin/triplea.jar -Dapple.laf.useScreenMenuBar=true -Xdock:name="TripleA" -Xdock:icon="./icons/triplea_icon.png" games.strategy.engine.framework.GameRunner

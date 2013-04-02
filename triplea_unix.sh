@@ -11,4 +11,4 @@ relativePathToGame=`dirname $0`
 cd "$relativePathToGame"
 
 
-java -Xmx768m -cp bin/patch.jar:bin/triplea.jar games.strategy.engine.framework.GameRunner
+java -Xmx1024m -cp bin/patch.jar:bin/triplea.jar games.strategy.engine.framework.GameRunner
