@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -44,7 +45,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 public class GameRunner2
 {
 	// not arguments:
-	public final static int PORT = 3300;
+	public static final int PORT = 3300;
 	public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
 	public static final String DELAYED_PARSING = "DelayedParsing";
 	public static final String PROXY_CHOICE = "proxy.choice";
@@ -81,7 +82,8 @@ public class GameRunner2
 	private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
 	private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
 	
-	private static WaitWindow waitWindow;
+	private static WaitWindow s_waitWindow;
+	private static CountDownLatch s_countDownLatch;
 	
 	
 	public static enum ProxyChoice
@@ -130,15 +132,16 @@ public class GameRunner2
 		System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
 		System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
 		setupLookAndFeel();
+		s_countDownLatch = new CountDownLatch(1);
 		try
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
 				public void run()
 				{
-					waitWindow = new WaitWindow("TripleA is starting...");
-					waitWindow.setVisible(true);
-					waitWindow.showWait();
+					s_waitWindow = new WaitWindow("TripleA is starting...");
+					s_waitWindow.setVisible(true);
+					s_waitWindow.showWait();
 				}
 			});
 		} catch (final Exception e)
@@ -163,8 +166,10 @@ public class GameRunner2
 				frame.start();
 				frame.requestFocus();
 				frame.toFront();
-				if (waitWindow != null)
-					waitWindow.doneWait();
+				if (s_waitWindow != null)
+					s_waitWindow.doneWait();
+				if (s_countDownLatch != null)
+					s_countDownLatch.countDown();
 			}
 		});
 	}
@@ -549,11 +554,20 @@ public class GameRunner2
 				if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true"))
 					return;
 				// the main screen hasn't even shown yet, so sleep for two seconds.
-				try
+				/* try
 				{
 					Thread.sleep(2500);
 				} catch (final InterruptedException e)
 				{
+				} */
+				if (s_countDownLatch != null)
+				{
+					try
+					{
+						s_countDownLatch.await();
+					} catch (final InterruptedException e)
+					{
+					}
 				}
 				boolean busy = false;
 				busy = checkForLatestEngineVersionOut();

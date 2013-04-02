@@ -14,6 +14,7 @@ public class WaitWindow extends JWindow
 	private static final long serialVersionUID = -8134956690669346954L;
 	private final Object m_mutex = new Object();
 	private Timer m_timer = new Timer();
+	private boolean m_finished = false;
 	
 	public WaitWindow(final String waitMessage)
 	{
@@ -70,6 +71,12 @@ public class WaitWindow extends JWindow
 				dispose();
 			}
 		});
+		m_finished = true;
+	}
+	
+	public boolean isFinished()
+	{
+		return m_finished;
 	}
 	
 	public static void main(final String[] args)
