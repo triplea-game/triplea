@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -42,6 +43,8 @@ public class MainPanel extends JPanel implements Observer
 	private JPanel m_gameSetupPanelHolder;
 	private JPanel m_chatPanelHolder;
 	private final SetupPanelModel m_gameTypePanelModel;
+	private final JPanel m_mainPanel = new JPanel();
+	private JSplitPane m_chatSplit;
 	private static final Dimension m_initialSize;
 	static
 	{
@@ -92,6 +95,11 @@ public class MainPanel extends JPanel implements Observer
 		m_gameSetupPanelScroll.setBorder(BorderFactory.createEmptyBorder());
 		m_chatPanelHolder = new JPanel();
 		m_chatPanelHolder.setLayout(new BorderLayout());
+		m_chatSplit = new JSplitPane();
+		m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		m_chatSplit.setResizeWeight(0.8);
+		m_chatSplit.setOneTouchExpandable(false);
+		m_chatSplit.setDividerSize(5);
 	}
 	
 	private void layoutComponents()
@@ -101,26 +109,36 @@ public class MainPanel extends JPanel implements Observer
 		buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		buttonsPanel.add(m_playButton);
 		buttonsPanel.add(m_quitButton);
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
+		m_mainPanel.setLayout(new GridBagLayout());
+		m_mainPanel.setBorder(BorderFactory.createEmptyBorder());
 		m_gameSetupPanelHolder.setLayout(new BorderLayout());
-		add(m_gameSelectorPanel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(00, 0, 0, 0), 0, 0));
-		add(m_gameSetupPanelScroll, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
+		m_mainPanel.add(m_gameSelectorPanel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(00, 0, 0, 0), 0, 0));
+		m_mainPanel.add(m_gameSetupPanelScroll, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
 		addChat();
-		add(buttonsPanel, new GridBagConstraints(0, 2, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
+		add(buttonsPanel, BorderLayout.SOUTH);
 		setPreferredSize(m_initialSize);
 	}
 	
 	private void addChat()
 	{
+		remove(m_mainPanel);
+		remove(m_chatSplit);
 		m_chatPanelHolder.removeAll();
-		remove(m_chatPanelHolder);
 		final ChatPanel chat = m_gameTypePanelModel.getPanel().getChatPanel();
 		if (chat != null)
 		{
 			m_chatPanelHolder = new JPanel();
 			m_chatPanelHolder.setLayout(new BorderLayout());
 			m_chatPanelHolder.add(chat, BorderLayout.CENTER);
-			add(m_chatPanelHolder, new GridBagConstraints(0, 1, 2, 1, 1, 0.2, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
+			m_chatSplit.setTopComponent(m_mainPanel);
+			m_chatSplit.setBottomComponent(m_chatPanelHolder);
+			add(m_chatSplit, BorderLayout.CENTER);
+			m_chatPanelHolder.setPreferredSize(new Dimension(m_chatPanelHolder.getPreferredSize().width, 62));
+		}
+		else
+		{
+			add(m_mainPanel, BorderLayout.CENTER);
 		}
 		m_isChatShowing = chat != null;
 	}

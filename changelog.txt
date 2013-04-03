@@ -1,4 +1,6 @@
 Changes for 1.7
+* Adding scroll bar to chat panel for online game waiting host room before game launched. (veqryn)
+
 * Expanded Unit tool tips to include unit support attachments, and also to detail more info for other abilities. (veqryn)
 
 * Increasing maximum memory to 1gb (1024mb), up from 768mb. (veqryn)
