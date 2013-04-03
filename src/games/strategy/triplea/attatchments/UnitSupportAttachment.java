@@ -425,7 +425,8 @@ public class UnitSupportAttachment extends DefaultAttachment
 	@InternalDoNotExport
 	public static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException
 	{
-		final UnitSupportAttachment rule = new UnitSupportAttachment(Constants.SUPPORT_RULE_NAME_OLD + type.getName(), type, data);
+		final String attachmentName = (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD) + type.getName();
+		final UnitSupportAttachment rule = new UnitSupportAttachment(attachmentName, type, data);
 		rule.setBonus("1");
 		rule.setBonusType(Constants.OLD_ART_RULE_NAME);
 		rule.setDice("strength");
@@ -440,19 +441,30 @@ public class UnitSupportAttachment extends DefaultAttachment
 			rule.addUnitTypes(Collections.singleton(type));
 		else
 			rule.addUnitTypes(getTargets(data));
-		rule.setPlayers(new ArrayList<PlayerID>(data.getPlayerList().getPlayers()));
-		type.addAttachment(Constants.SUPPORT_RULE_NAME_OLD + type.getName(), rule);
+		if (!first)
+			rule.setPlayers(new ArrayList<PlayerID>(data.getPlayerList().getPlayers()));
+		type.addAttachment(attachmentName, rule);
 	}
 	
 	@InternalDoNotExport
 	private static Set<UnitType> getTargets(final GameData data)
 	{
+		Set<UnitType> types = null;
 		for (final UnitSupportAttachment rule : get(data))
 		{
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME))
-				return rule.getUnitType();
+			{
+				types = rule.getUnitType();
+				if (rule.getName().startsWith(Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST))
+				{
+					// remove it because it is a "first", which is just a temporary one made to hold target info. what a hack.
+					final UnitType attachedTo = (UnitType) rule.getAttachedTo();
+					attachedTo.removeAttachment(rule.getName());
+					rule.setAttachedTo(null);
+				}
+			}
 		}
-		return null;
+		return types;
 	}
 	
 	@InternalDoNotExport
@@ -489,6 +501,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 				first = false;
 			}
 		}
+		// if first, it means we do not have any support attachments created yet. so create a temporary one on this unit just to hold the target info.
 		if (first)
 			addRule(type, data, first);
 	}

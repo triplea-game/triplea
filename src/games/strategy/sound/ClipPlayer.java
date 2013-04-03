@@ -461,9 +461,12 @@ public class ClipPlayer
 		} catch (final UnsupportedAudioFileException e)
 		{
 			e.printStackTrace(System.out);
-		} catch (final RuntimeException re)
+		} catch (final RuntimeException e)
 		{
-			re.printStackTrace(System.out);
+			e.printStackTrace(System.out);
+		} catch (final Exception e)
+		{
+			e.printStackTrace(System.out);
 		} finally
 		{
 			if (clip != null)

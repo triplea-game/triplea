@@ -174,6 +174,7 @@ public interface Constants
 	// squid
 	public static final String OLD_ART_RULE_NAME = "ArtyOld";
 	public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
+	public static final String SUPPORT_RULE_NAME_OLD_TEMP_FIRST = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
 	public static final String TRIGGERS = "Use Triggers";
 	public static final String PU_MULTIPLIER = "Multiply PUs";
 	

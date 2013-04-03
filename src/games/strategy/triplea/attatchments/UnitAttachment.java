@@ -3356,14 +3356,14 @@ public class UnitAttachment extends DefaultAttachment
 					&& (games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(getData()) || games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData())))
 		{
 			if (getRepairsUnits().length <= 4)
-				stats.append("can Repair " + Arrays.toString(getRepairsUnits()) + ", ");
+				stats.append("can Repair: " + Arrays.toString(getRepairsUnits()) + ", ");
 			else
 				stats.append("can Repair Some Units, ");
 		}
 		if (getGivesMovement() != null && getGivesMovement().totalValues() > 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
 		{
 			if (getGivesMovement().size() <= 4)
-				stats.append("can Modify Unit Movement " + MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false) + ", ");
+				stats.append("can Modify Unit Movement: " + MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false) + ", ");
 			else
 				stats.append("can Modify Unit Movement, ");
 		}
@@ -3387,7 +3387,7 @@ public class UnitAttachment extends DefaultAttachment
 				stats.append("unit Requires Other Units Present To Be Placed, ");
 			else
 			{
-				stats.append("unit can only be Placed Where There Is ");
+				stats.append("unit can only be Placed Where There Is: ");
 				final Iterator<String[]> requiredIter = getRequiresUnits().iterator();
 				while (requiredIter.hasNext())
 				{
