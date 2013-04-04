@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+	<h2>Posts to a custom TripleA game website</h2>
+	This poster will send your savegame to a website, where it can be accessed by you and your friends.
+	The website will send out email notifications to whoever is the next player, that their turn is ready to start.
+	The website may also show various statistics about the game in progress.
+	<p>
+		<h3>How to Use</h3>
+			Starting new games:
+		<ol>
+			<li>The player which comes first (e.g. Russians) should set up a new game by setting the web site URL (e.g. 'http://triplea.myserver.com/') and
+				must choose a game name. NOTE: Unicode characters (Umlauts, etc.) are not being handled correctly, yet!</li>
+			<li>Click 'Initialize' and assign the players.</li>
+			<li>After successful initialization click 'Play'.</li>
+			<li>Make your move and post the game state at the end of your turn.</li>
+		</ol>
+		<br/>
+			Making your turn:
+		<ol>
+			<li>The web site may send you an email, whenever it's your turn (if 'Send Mails' is checked)</li>
+			<li>When it's your turn, download the latest save game from the TripleA game web site, load into TripleA, play and finally post at the end of your turn.</li>
+		</ol>
+		<br/>
+			Managing your games:
+		<ol>
+			<li>There is currently not yet any way to set a game as won or lost, or to surrender a game.</li>
+			<li>There is currently not yet any way for users to delete finished games.</li>
+		</ol>
+	</p>
+	<br/>
+	<p>
+		<h3>How to Create custom TripleA game website</h3>
+			This poster is built for managing TripleA games with a private or public website.
+		<br/>
+			Requirements:
+		<ol>
+			<li>A public internet domain or dynamic DNS.</li>
+			<li>A small webserver which supports PHP scripts and optionally is able to send mails via PHP's mail() function.</li>
+		</ol>
+		<br/>
+			Installation:
+		<ol>
+			<li>The public (sub-)domain or the dynamic DNS should point to your webserver.</li>
+			<li>Get and extract the PHP scripts for your private TripleA game web site from X?X!?.</li>
+			<li>Modify the settings.php file in order to adjust the list of human players.</li>
+			<li>Upload the scripts to your webserver.</li>
+		</ol>
+		<br/>
+			Managing your players and games:
+		<ol>
+			<li>The set of available players is managed by the web site admin through the 'settings.php'.</li>
+			<li>The web site administrator needs to delete the according files in the 'games' folder at the server.</li>
+		</ol>
+	</p>
+</body>
+</html>

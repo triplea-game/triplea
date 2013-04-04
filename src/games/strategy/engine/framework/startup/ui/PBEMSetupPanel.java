@@ -12,10 +12,13 @@ import games.strategy.engine.pbem.GmailEmailSender;
 import games.strategy.engine.pbem.HotmailEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
+import games.strategy.engine.pbem.IWebPoster;
 import games.strategy.engine.pbem.NullEmailSender;
 import games.strategy.engine.pbem.NullForumPoster;
+import games.strategy.engine.pbem.NullWebPoster;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.pbem.TripleAWarClubForumPoster;
+import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.InternalDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
@@ -61,6 +64,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	private final SelectAndViewEditor m_diceServerEditor;
 	private final SelectAndViewEditor m_forumPosterEditor;
 	private final SelectAndViewEditor m_emailSenderEditor;
+	private final SelectAndViewEditor m_webPosterEditor;
 	
 	// -----------------------------------------------------------------------
 	// constructors
@@ -85,23 +89,24 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		m_diceServerEditor = new SelectAndViewEditor("Dice Server", "");
 		m_forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
 		m_emailSenderEditor = new SelectAndViewEditor("Provider", "emailSenders.html");
+		m_webPosterEditor = new SelectAndViewEditor("Send to Website", "websiteSenders.html");
 		
 		int row = 0;
-		add(m_diceServerEditor, new GridBagConstraints(0, row, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 1, 0), 0, 0));
-		row++;
+		add(m_diceServerEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(10, 0, 20, 0), 0, 0));
 		
 		// the play by Forum settings
 		m_forumPosterEditor.setBorder(new TitledBorder("Play By Forum"));
+		add(m_forumPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
 		
-		add(m_forumPosterEditor, new GridBagConstraints(0, row, 2, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 1, 0), 0, 0));
-		
-		row++;
-		int panelRow = 0;
 		final JPanel emailPanel = new JPanel(new GridBagLayout());
 		emailPanel.setBorder(new TitledBorder("Play By Email"));
-		add(emailPanel, new GridBagConstraints(0, row, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
-		panelRow++;
-		emailPanel.add(m_emailSenderEditor, new GridBagConstraints(0, panelRow, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
+		add(emailPanel, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
+		int panelRow = 0;
+		emailPanel.add(m_emailSenderEditor, new GridBagConstraints(0, panelRow++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
+		
+		// the play by micro web site settings
+		m_webPosterEditor.setBorder(new TitledBorder("Play By Web Site"));
+		add(m_webPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 10, 0), 0, 0));
 		
 		setupListeners();
 		if (m_gameSelectorModel.getGameData() != null)
@@ -126,6 +131,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		m_diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
 		m_forumPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
 		m_emailSenderEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+		m_webPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
 	}
 	
 	private void loadAll()
@@ -133,6 +139,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		loadDiceServer(m_gameSelectorModel.getGameData());
 		loadForumPosters(m_gameSelectorModel.getGameData());
 		loadEmailSender(m_gameSelectorModel.getGameData());
+		loadWebPosters(m_gameSelectorModel.getGameData());
 	}
 	
 	/**
@@ -200,6 +207,23 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 				forumPoster.setPassword(cached.getPassword());
 			}
 			m_forumPosterEditor.setSelectedBean(forumPoster);
+		}
+	}
+	
+	private void loadWebPosters(final GameData data)
+	{
+		final List<IWebPoster> webPosters = new ArrayList<IWebPoster>();
+		webPosters.add((IWebPoster) findCachedOrCreateNew(NullWebPoster.class));
+		final TripleAWebPoster poster = (TripleAWebPoster) findCachedOrCreateNew(TripleAWebPoster.class);
+		poster.setParties(data.getPlayerList().getNames());
+		webPosters.add(poster);
+		m_webPosterEditor.setBeans(webPosters);
+		
+		// now get the poster stored in the save game
+		final IWebPoster webPoster = (IWebPoster) data.getProperties().get(PBEMMessagePoster.WEB_POSTER_PROP_NAME);
+		if (webPoster != null)
+		{
+			m_webPosterEditor.setSelectedBean(webPoster);
 		}
 	}
 	
@@ -276,12 +300,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	{
 		final boolean diceServerValid = m_diceServerEditor.isBeanValid();
 		final boolean summaryValid = m_forumPosterEditor.isBeanValid();
+		final boolean webSiteValid = m_webPosterEditor.isBeanValid();
 		final boolean emailValid = m_emailSenderEditor.isBeanValid();
 		
-		return diceServerValid &&
-					summaryValid &&
-					emailValid &&
-					m_gameSelectorModel.getGameData() != null;
+		return diceServerValid && summaryValid && emailValid && webSiteValid && m_gameSelectorModel.getGameData() != null;
 		
 	}
 	
@@ -313,6 +335,15 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 			sender = sender.doClone();
 			sender.clearSensitiveInfo();
 			data.getProperties().set(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
+		}
+		
+		// store the web site poster
+		IWebPoster webPoster = (IWebPoster) m_webPosterEditor.getBean();
+		if (webPoster != null)
+		{
+			webPoster = webPoster.doClone();
+			webPoster.clearSensitiveInfo();
+			data.getProperties().set(PBEMMessagePoster.WEB_POSTER_PROP_NAME, webPoster);
 		}
 	}
 	

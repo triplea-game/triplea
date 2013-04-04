@@ -1,4 +1,6 @@
 Changes for 1.7
+* Adding new PBEM feature, the ability to post to a custom triplea website. (weigo)
+
 * Adding scroll bar to chat panel for online game waiting host room before game launched. (veqryn)
 
 * Expanded Unit tool tips to include unit support attachments, and also to detail more info for other abilities. (veqryn)

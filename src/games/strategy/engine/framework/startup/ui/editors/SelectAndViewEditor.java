@@ -125,6 +125,7 @@ public class SelectAndViewEditor extends EditorPanel
 					helpText = getBean().getHelpText();
 				}
 				m_helpPanel.setText(helpText);
+				m_helpPanel.setCaretPosition(0);
 				JButtonDialog.showDialog(SelectAndViewEditor.this, "Help", notesScroll, "Close");
 			}
 		});
