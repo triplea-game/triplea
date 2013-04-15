@@ -530,7 +530,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				battle.addAttackChange(new RouteScripted(territory), attackingUnits, null);
 			if (!battle.getAttackingUnits().containsAll(attackingUnits))
 			{
-				List<Unit> attackingUnitsNeedToBeAdded = attackingUnits;
+				List<Unit> attackingUnitsNeedToBeAdded = new ArrayList<Unit>(attackingUnits);
 				attackingUnitsNeedToBeAdded.removeAll(battle.getAttackingUnits());
 				if (territory.isWater())
 					attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
