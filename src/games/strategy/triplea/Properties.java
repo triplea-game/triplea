@@ -502,7 +502,7 @@ public class Properties implements Constants
 	/*
 	 * 
 	 */
-	public static Integer getHeavyBomberDiceRolls(final GameData data)
+	public static int getHeavyBomberDiceRolls(final GameData data)
 	{
 		return data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS, 2);
 	}
@@ -605,7 +605,7 @@ public class Properties implements Constants
 	/*
 	 * 
 	 */
-	public static Integer getSuper_Sub_Defense_Bonus(final GameData data)
+	public static int getSuper_Sub_Defense_Bonus(final GameData data)
 	{
 		return data.getProperties().get(SUPER_SUB_DEFENSE_BONUS, 0);
 	}
@@ -647,7 +647,7 @@ public class Properties implements Constants
 		return data.getProperties().get(SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT, false);
 	}
 	
-	public static Integer getPU_Multiplier(final GameData data)
+	public static int getPU_Multiplier(final GameData data)
 	{
 		return data.getProperties().get(PU_MULTIPLIER, 1);
 	}
@@ -830,6 +830,11 @@ public class Properties implements Constants
 	public static boolean getSubmarinesDefendingMaySubmergeOrRetreat(final GameData data)
 	{
 		return data.getProperties().get(SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT, false);
+	}
+	
+	public static int getAirBattleRounds(final GameData data)
+	{
+		return data.getProperties().get(AIR_BATTLE_ROUNDS, 1);
 	}
 	
 	private Properties()

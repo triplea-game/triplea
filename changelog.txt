@@ -1,4 +1,8 @@
 Changes for 1.7
+* Created new game option property, "Air Battle Rounds", which will allow setting the number of rounds of combat for air battles. (veqryn)
+
+* Abstracted StrategicBombingRaidPreBattle to become AirBattle, no longer extending StrategicBombingRaid. (veqryn)
+
 * Fixed bug that caused a rare skipping of a battle involving transports and air vs undefended transports. (veqryn)
 
 * Adding new PBEM feature, the ability to post to a custom triplea website. (weigo)

@@ -222,6 +222,7 @@ public interface Constants
 	public static final String KAMIKAZE_SUICIDE_ATTACKS_ONLY_WHERE_BATTLES_ARE = "Kamikaze Suicide Attacks Only Where Battles Are";
 	public static final String SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS = "Submarines Prevent Unescorted Amphibious Assaults";
 	public static final String SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT = "Submarines Defending May Submerge Or Retreat";
+	public static final String AIR_BATTLE_ROUNDS = "Air Battle Rounds";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

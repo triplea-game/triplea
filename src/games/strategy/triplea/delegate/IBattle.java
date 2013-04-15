@@ -49,7 +49,7 @@ public interface IBattle extends java.io.Serializable
 
 	public static enum BattleType
 	{
-		NORMAL("Battle"), AIR_BATTLE("Air Battle"), MOCK_BATTLE("Mock Battle"), BOMBING_RAID("Bombing Raid");
+		NORMAL("Battle"), AIR_BATTLE("Air Battle"), MOCK_BATTLE("Empty Battle"), BOMBING_RAID("Bombing Raid");
 		
 		private final String m_type;
 		
@@ -78,18 +78,6 @@ public interface IBattle extends java.io.Serializable
 	 */
 	public Change addAttackChange(Route route, Collection<Unit> units, HashMap<Unit, HashSet<Unit>> targets);
 	
-	/*
-	 * Add a bunch of DEFENDING or ATTACKING units to the battle.
-	 * 
-	 * @param route
-	 *            - unit route
-	 * @param units
-	 *            - defending units
-	 * @param scramblingPlayer
-	 *            - playerID
-	 * @return combat change object
-	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID scramblingPlayer);*/
-
 	/**
 	 * There are two distinct super-types of battles: Bombing battles, and Fighting battles.
 	 * There may be sub-types of each of these.

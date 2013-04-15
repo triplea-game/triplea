@@ -254,7 +254,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	
 	private String getFightingWord(final IBattle battle)
 	{
-		return battle.isBombingRun() ? "Bombing Run" : "Battle";
+		return battle.getBattleType().toString();
 	}
 	
 	public BattleListing getBattles()

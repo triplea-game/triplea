@@ -5256,6 +5256,11 @@
 						<boolean/>
 				</property>
 				
+						<!-- Air Battle Rounds means the number of rounds that an Air Battle goes on for. If negative, the battle continues forever until 1 side is eliminated. Default is 1, meaning the battle ends after the first round of combat. -->
+				<property name="Air Battle Rounds" value="1" editable="false">
+						<number min="-1" max="100"/>
+				</property>
+				
 						<!-- Allows Strategic Bombing Raids to have Escort aircraft and also be Intercepted by the defender -->
 				<property name="Raids May Be Preceeded By Air Battles" value="true" editable="true">
 						<boolean/>
