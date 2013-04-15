@@ -291,7 +291,7 @@ public class BattleTracker implements java.io.Serializable
 		if (bombing)
 		{
 			if (!airBattleCompleted && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
-						&& Match.someMatch(route.getEnd().getUnits().getUnits(), StrategicBombingRaidPreBattle.defendingInterceptors(id, data)))
+						&& Match.someMatch(route.getEnd().getUnits().getUnits(), AirBattle.defendingInterceptors(id, data)))
 				addAirBattle(route, units, id, data);
 			else
 				addBombingBattle(route, units, id, data, targets);
@@ -359,7 +359,7 @@ public class BattleTracker implements java.io.Serializable
 		IBattle battle = getPendingBattle(route.getEnd(), true);
 		if (battle == null)
 		{
-			battle = new StrategicBombingRaidPreBattle(route.getEnd(), data, attacker, this);
+			battle = new AirBattle(route.getEnd(), data, attacker, this);
 			m_pendingBattles.add(battle);
 			getBattleRecords(data).addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType(), data);
 		}

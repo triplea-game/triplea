@@ -35,7 +35,7 @@ import java.util.List;
  * @author Mark Christopher Duncan (veqryn)
  * 
  */
-public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
+public class AirBattle extends StrategicBombingRaidBattle
 {
 	private static final long serialVersionUID = 4686241714027216395L;
 	private final static String AIR_BATTLE = "Air Battle";
@@ -52,7 +52,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
 	protected boolean m_intercept = false;
 	
-	public StrategicBombingRaidPreBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final BattleTracker battleTracker)
+	public AirBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final BattleTracker battleTracker)
 	{
 		super(battleSite, data, attacker, battleTracker);
 		m_battleType = BattleType.AIR_BATTLE;
@@ -248,7 +248,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					new BattleResults(this, m_data), 0);
 		getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
 		m_isOver = true;
-		m_battleTracker.removeBattle(StrategicBombingRaidPreBattle.this);
+		m_battleTracker.removeBattle(AirBattle.this);
 	}
 	
 	private void showBattle(final IDelegateBridge bridge)
@@ -339,7 +339,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, StrategicBombingRaidPreBattle.this, "Attackers Fire, ");
+					m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ");
 				}
 			};
 			final IExecutable calculateCasualties = new IExecutable()
@@ -386,7 +386,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, StrategicBombingRaidPreBattle.this, "Defenders Fire, ");
+					m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ");
 				}
 			};
 			final IExecutable calculateCasualties = new IExecutable()

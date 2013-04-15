@@ -710,7 +710,7 @@ public class DiceRoll implements Externalizable
 		final GameData data = bridge.getData();
 		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 		final List<Unit> units = new ArrayList<Unit>(unitsList);
-		final int rollCount = StrategicBombingRaidPreBattle.getAirBattleRolls(unitsList, defending);
+		final int rollCount = AirBattle.getAirBattleRolls(unitsList, defending);
 		if (rollCount == 0)
 		{
 			return new DiceRoll(new ArrayList<Die>(), 0);
@@ -728,7 +728,7 @@ public class DiceRoll implements Externalizable
 			{
 				final Unit current = iter.next();
 				final UnitAttachment ua = UnitAttachment.get(current.getType());
-				final int rolls = StrategicBombingRaidPreBattle.getAirBattleRolls(current, defending);
+				final int rolls = AirBattle.getAirBattleRolls(current, defending);
 				int totalStrength = 0;
 				final int strength = Math.min(data.getDiceSides(), Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));
 				for (int i = 0; i < rolls; i++)
@@ -769,7 +769,7 @@ public class DiceRoll implements Externalizable
 				final Unit current = iter.next();
 				final UnitAttachment ua = UnitAttachment.get(current.getType());
 				final int strength = Math.min(data.getDiceSides(), Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));
-				final int rolls = StrategicBombingRaidPreBattle.getAirBattleRolls(current, defending);
+				final int rolls = AirBattle.getAirBattleRolls(current, defending);
 				// lhtr heavy bombers take best of n dice for both attack and defense
 				if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 				{
