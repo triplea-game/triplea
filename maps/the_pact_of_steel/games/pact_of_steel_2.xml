@@ -4951,6 +4951,10 @@
 				<property name="Scramble To Any Amphibious Assault" value="true" editable="true">
 						<boolean/>
 				</property>
+
+				<property name="Can Scramble Into Air Battles" value="false" editable="false">
+						<boolean/>
+				</property>
 				
 				<property name="Airborne Attacks Only In Existing Battles" value="true" editable="false">
 						<boolean/>

@@ -76,6 +76,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	private boolean m_needToInitialize = true;
 	private boolean m_needToScramble = true;
 	private boolean m_needToKamikazeSuicideAttacks = true;
+	private boolean m_needToClearEmptyAirBattleAttacks = true;
 	private boolean m_needToAddBombardmentSources = true;
 	private boolean m_needToRecordBattleStatistics = true;
 	private boolean m_needToCheckDefendingPlanesCanLand = true;
@@ -117,7 +118,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			doKamikazeSuicideAttacks();
 			m_needToKamikazeSuicideAttacks = false;
 		}
-		// TODO: clear out air battles with no opponents here
+		if (m_needToClearEmptyAirBattleAttacks)
+		{
+			clearEmptyAirBattleAttacks(m_battleTracker, m_bridge);
+			m_needToClearEmptyAirBattleAttacks = false;
+		}
 		if (m_needToAddBombardmentSources)
 		{
 			addBombardmentSources();
@@ -152,6 +157,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		m_needToInitialize = true;
 		m_needToScramble = true;
 		m_needToKamikazeSuicideAttacks = true;
+		m_needToClearEmptyAirBattleAttacks = true;
 		m_needToAddBombardmentSources = true;
 		m_needToRecordBattleStatistics = true;
 		m_needToCleanup = true;
@@ -169,6 +175,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		state.m_needToInitialize = m_needToInitialize;
 		state.m_needToScramble = m_needToScramble;
 		state.m_needToKamikazeSuicideAttacks = m_needToKamikazeSuicideAttacks;
+		state.m_needToClearEmptyAirBattleAttacks = m_needToClearEmptyAirBattleAttacks;
 		state.m_needToAddBombardmentSources = m_needToAddBombardmentSources;
 		state.m_needToRecordBattleStatistics = m_needToRecordBattleStatistics;
 		state.m_needToCheckDefendingPlanesCanLand = m_needToCheckDefendingPlanesCanLand;
@@ -188,6 +195,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		m_needToInitialize = s.m_needToInitialize;
 		m_needToScramble = s.m_needToScramble;
 		m_needToKamikazeSuicideAttacks = s.m_needToKamikazeSuicideAttacks;
+		m_needToClearEmptyAirBattleAttacks = s.m_needToClearEmptyAirBattleAttacks;
 		m_needToAddBombardmentSources = s.m_needToAddBombardmentSources;
 		m_needToRecordBattleStatistics = s.m_needToRecordBattleStatistics;
 		m_needToCheckDefendingPlanesCanLand = s.m_needToCheckDefendingPlanesCanLand;
@@ -215,6 +223,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		setupUnitsInSameTerritoryBattles(battleTracker, aBridge);
 		battleTracker.clearFinishedBattles(aBridge); // these are "blitzed" and "conquered" territories without a fight, without a pending battle
 		resetMaxScrambleCount(aBridge);
+	}
+	
+	public static void clearEmptyAirBattleAttacks(final BattleTracker battleTracker, final IDelegateBridge aBridge)
+	{
+		battleTracker.clearEmptyAirBattleAttacks(aBridge); // these are air battle and air raids where there is no defender, probably because no air is in range to defend
 	}
 	
 	public String fightCurrentBattle()
@@ -626,7 +639,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		if (fromIslandOnly)
 			canScramble.add(Matches.TerritoryIsIsland);
 		final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<Territory, HashSet<Territory>>();
-		final Collection<Territory> territoriesWithBattles = m_battleTracker.getPendingBattleSites(false);
+		final Collection<Territory> territoriesWithBattles = m_battleTracker.getPendingBattleSites().getAllBattleTerritories();
 		final Collection<Territory> territoriesWithBattlesWater = Match.getMatches(territoriesWithBattles, Matches.TerritoryIsWater);
 		final Collection<Territory> territoriesWithBattlesLand = Match.getMatches(territoriesWithBattles, Matches.TerritoryIsLand);
 		for (final Territory battleTerr : territoriesWithBattlesWater)
@@ -637,15 +650,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		}
 		for (final Territory battleTerr : territoriesWithBattlesLand)
 		{
-			final IBattle battle = m_battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
 			if (!toSeaOnly)
 			{
 				final HashSet<Territory> canScrambleFrom = new HashSet<Territory>(Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
 				if (!canScrambleFrom.isEmpty())
 					scrambleTerrs.put(battleTerr, canScrambleFrom);
 			}
+			final IBattle battle = m_battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
 			// do not forget we may already have the territory in the list, so we need to add to the collection, not overwrite it.
-			if (battle.isAmphibious())
+			if (battle != null && battle.isAmphibious())
 			{
 				if (battle instanceof MustFightBattle)
 				{
@@ -810,10 +823,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				continue;
 			
 			// make sure the units join the battle, or create a new battle.
+			final IBattle bombing = m_battleTracker.getPendingBattle(to, true, null);
 			IBattle battle = m_battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
 			if (battle == null)
 			{
 				final List<Unit> attackingUnits = to.getUnits().getMatches(Matches.unitIsOwnedBy(m_player));
+				if (bombing != null)
+					attackingUnits.removeAll(bombing.getAttackingUnits());
+				// no need to create a "bombing" battle or air battle, because those are set up automatically whenever the map allows scrambling into an air battle / air raid
+				if (attackingUnits.isEmpty())
+					continue;
 				m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
 				// TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to fix.
 				m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null, null);
@@ -1559,6 +1578,7 @@ class BattleExtendedDelegateState implements Serializable
 	public boolean m_needToInitialize;
 	public boolean m_needToScramble;
 	public boolean m_needToKamikazeSuicideAttacks;
+	public boolean m_needToClearEmptyAirBattleAttacks;
 	public boolean m_needToAddBombardmentSources;
 	public boolean m_needToRecordBattleStatistics;
 	public boolean m_needToCheckDefendingPlanesCanLand;

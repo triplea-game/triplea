@@ -57,6 +57,16 @@ public class BattleListing implements Serializable
 		return m_battles;
 	}
 	
+	public Collection<Territory> getAllBattleTerritories()
+	{
+		final Collection<Territory> territories = new HashSet<Territory>();
+		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
+		{
+			territories.addAll(entry.getValue());
+		}
+		return territories;
+	}
+	
 	public Collection<Territory> getNormalBattlesIncludingAirBattles()
 	{
 		final Collection<Territory> territories = new HashSet<Territory>();

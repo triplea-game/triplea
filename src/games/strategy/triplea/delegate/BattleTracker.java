@@ -231,6 +231,20 @@ public class BattleTracker implements java.io.Serializable
 		}
 	}
 	
+	public void clearEmptyAirBattleAttacks(final IDelegateBridge bridge)
+	{
+		for (final IBattle battle : new ArrayList<IBattle>(m_pendingBattles))
+		{
+			if (AirBattle.class.isAssignableFrom(battle.getClass()))
+			{
+				final AirBattle airBattle = (AirBattle) battle;
+				airBattle.updateDefendingUnits();
+				if (airBattle.getDefendingUnits().isEmpty())
+					airBattle.finishBattleAndRemoveFromTrackerHeadless(bridge);
+			}
+		}
+	}
+	
 	public void undoBattle(final Route route, final Collection<Unit> units, final PlayerID player, final IDelegateBridge bridge)
 	{
 		for (final IBattle battle : new ArrayList<IBattle>(m_pendingBattles))
@@ -292,7 +306,7 @@ public class BattleTracker implements java.io.Serializable
 		if (bombing)
 		{
 			if (!airBattleCompleted && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
-						&& Match.someMatch(route.getEnd().getUnits().getUnits(), AirBattle.defendingBombingRaidInterceptors(id, data, true, true)))
+						&& AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing))
 				addAirBattle(route, units, id, data, true);
 			else
 				addBombingBattle(route, units, id, data, targets);
@@ -302,7 +316,7 @@ public class BattleTracker implements java.io.Serializable
 		else
 		{
 			if (!airBattleCompleted && games.strategy.triplea.Properties.getBattlesMayBePreceededByAirBattles(data)
-			/* && Match.someMatch(route.getEnd().getUnits().getUnits(), AirBattle.defendingGroundSeaBattleInterceptors(id, data, true, true)) */)
+						&& AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing))
 			{
 				addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts(id, data)), id, data, false);
 			}
@@ -366,6 +380,8 @@ public class BattleTracker implements java.io.Serializable
 	
 	private void addAirBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final boolean bombingRun)
 	{
+		if (units.isEmpty())
+			return;
 		IBattle battle = getPendingBattle(route.getEnd(), bombingRun, (bombingRun ? BattleType.AIR_RAID : BattleType.AIR_BATTLE));
 		if (battle == null)
 		{
@@ -385,6 +401,15 @@ public class BattleTracker implements java.io.Serializable
 			final IBattle dependentAirBattle = getPendingBattle(route.getEnd(), false, BattleType.AIR_BATTLE);
 			if (dependentAirBattle != null)
 				addDependency(dependentAirBattle, battle);
+		}
+		else
+		{
+			final IBattle airRaid = getPendingBattle(route.getEnd(), true, BattleType.AIR_RAID);
+			if (airRaid != null)
+				addDependency(battle, airRaid);
+			final IBattle raid = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
+			if (raid != null)
+				addDependency(battle, raid);
 		}
 		final IBattle dependent = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
 		if (dependent != null)

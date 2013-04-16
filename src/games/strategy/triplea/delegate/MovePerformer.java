@@ -193,8 +193,8 @@ public class MovePerformer implements Serializable
 					final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
 								new CompositeMatchAnd<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(), Matches.unitIsBeingTransported().invert()));
 					final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<Unit>(Matches.UnitIsStrategicBomber);
-					final boolean canCreateAirBattle = (Match.someMatch(enemyUnits, AirBattle.defendingBombingRaidInterceptors(id, data, true, true)) && !enemyTargetsTotal.isEmpty()
-								&& games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data));
+					final boolean canCreateAirBattle = !enemyTargetsTotal.isEmpty() && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
+								&& AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
 					if (canCreateAirBattle)
 						allBombingRaid.add(Matches.unitCanEscort);
 					final boolean allCanBomb = Match.allMatch(arrived, allBombingRaid);

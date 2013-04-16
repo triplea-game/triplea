@@ -769,7 +769,7 @@ public class Properties implements Constants
 	
 	public static boolean getBattlesMayBePreceededByAirBattles(final GameData data)
 	{
-		return data.getProperties().get(BATTLES_MAY_BE_PRECEEDED_BY_AIR_BATTLES, true);
+		return data.getProperties().get(BATTLES_MAY_BE_PRECEEDED_BY_AIR_BATTLES, false);
 	}
 	
 	public static boolean getUseKamikazeSuicideAttacks(final GameData data)
@@ -839,17 +839,22 @@ public class Properties implements Constants
 	
 	public static int getAirBattleRounds(final GameData data)
 	{
-		return data.getProperties().get(AIR_BATTLE_ROUNDS, 4);
+		return data.getProperties().get(AIR_BATTLE_ROUNDS, 1);
 	}
 	
 	public static boolean getAirBattleAttackersCanRetreat(final GameData data)
 	{
-		return data.getProperties().get(AIR_BATTLE_ATTACKERS_CAN_RETREAT, true);
+		return data.getProperties().get(AIR_BATTLE_ATTACKERS_CAN_RETREAT, false);
 	}
 	
 	public static boolean getAirBattleDefendersCanRetreat(final GameData data)
 	{
-		return data.getProperties().get(AIR_BATTLE_DEFENDERS_CAN_RETREAT, true);
+		return data.getProperties().get(AIR_BATTLE_DEFENDERS_CAN_RETREAT, false);
+	}
+	
+	public static boolean getCanScrambleIntoAirBattles(final GameData data)
+	{
+		return data.getProperties().get(CAN_SCRAMBLE_INTO_AIR_BATTLES, false);
 	}
 	
 	private Properties()
