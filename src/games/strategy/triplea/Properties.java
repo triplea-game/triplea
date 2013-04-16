@@ -834,7 +834,17 @@ public class Properties implements Constants
 	
 	public static int getAirBattleRounds(final GameData data)
 	{
-		return data.getProperties().get(AIR_BATTLE_ROUNDS, 1);
+		return data.getProperties().get(AIR_BATTLE_ROUNDS, 4);
+	}
+	
+	public static boolean getAirBattleAttackersCanRetreat(final GameData data)
+	{
+		return data.getProperties().get(AIR_BATTLE_ATTACKERS_CAN_RETREAT, true);
+	}
+	
+	public static boolean getAirBattleDefendersCanRetreat(final GameData data)
+	{
+		return data.getProperties().get(AIR_BATTLE_DEFENDERS_CAN_RETREAT, true);
 	}
 	
 	private Properties()

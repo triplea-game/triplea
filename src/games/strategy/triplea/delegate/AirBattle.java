@@ -42,9 +42,10 @@ public class AirBattle extends AbstractBattle
 	private static final long serialVersionUID = 4686241714027216395L;
 	protected final static String AIR_BATTLE = "Air Battle";
 	protected final static String INTERCEPTORS_LAUNCH = "Defender Launches Interceptors";
-	protected final static String ATTACKERS_FIRE = "Attacking Escorts and Bombers Fire";
-	protected final static String DEFENDERS_FIRE = "Defending Interceptors Fire";
-	// protected final static String WITHDRAW = "Attackers Withdraw?";
+	protected final static String ATTACKERS_FIRE = "Attackers Fire";
+	protected final static String DEFENDERS_FIRE = "Defenders Fire";
+	protected final static String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
+	protected final static String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
 	// protected final static String BOMBERS_TO_TARGETS = "Bombers Fly to Their Targets";
 	
 	protected final ExecutionStack m_stack = new ExecutionStack();
@@ -117,12 +118,22 @@ public class AirBattle extends AbstractBattle
 	
 	public boolean shouldFightAirBattle()
 	{
-		return Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && Match.someMatch(m_battleSite.getUnits().getUnits(), defendingInterceptors(m_attacker, m_data, true, true));
+		return Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && Match.someMatch(m_defendingUnits, defendingInterceptors(m_attacker, m_data, true, true));
 	}
 	
 	public boolean shouldEndAirBattle()
 	{
 		return m_maxRounds > 0 && m_maxRounds <= m_round;
+	}
+	
+	protected boolean canAttackerRetreat()
+	{
+		return !shouldEndAirBattle() && shouldFightAirBattle() && games.strategy.triplea.Properties.getAirBattleAttackersCanRetreat(m_data);
+	}
+	
+	protected boolean canDefenderRetreat()
+	{
+		return !shouldEndAirBattle() && shouldFightAirBattle() && games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data);
 	}
 	
 	List<IExecutable> getBattleExecutables(final boolean firstRun)
@@ -143,7 +154,6 @@ public class AirBattle extends AbstractBattle
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					// getDisplay(bridge).gotoBattleStep(m_battleID, BOMBERS_TO_TARGETS);
-					
 					if (!m_intercept)
 						return;
 					
@@ -199,6 +209,30 @@ public class AirBattle extends AbstractBattle
 				end(bridge);
 			}
 		});
+		steps.add(new IExecutable()
+		{
+			private static final long serialVersionUID = -5408702756335356985L;
+			
+			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+			{
+				if (!m_isOver && canAttackerRetreat())
+				{
+					attackerRetreat(bridge);
+				}
+			}
+		});
+		steps.add(new IExecutable()
+		{
+			private static final long serialVersionUID = -7819137222487595113L;
+			
+			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+			{
+				if (!m_isOver && canDefenderRetreat())
+				{
+					defenderRetreat(bridge);
+				}
+			}
+		});
 		final IExecutable loop = new IExecutable()
 		{
 			private static final long serialVersionUID = -5408702756335356985L;
@@ -243,22 +277,22 @@ public class AirBattle extends AbstractBattle
 		}
 		steps.add(ATTACKERS_FIRE);
 		steps.add(DEFENDERS_FIRE);
-		// steps.add(WITHDRAW);
+		if (canAttackerRetreat())
+		{
+			steps.add(ATTACKERS_WITHDRAW);
+		}
+		if (canDefenderRetreat())
+		{
+			steps.add(DEFENDERS_WITHDRAW);
+		}
 		// steps.add(BOMBERS_TO_TARGETS);
 		return steps;
 	}
 	
-	private void makeBattle(final IDelegateBridge bridge)
+	private void recordUnitsWereInAirBattle(final Collection<Unit> units, final IDelegateBridge bridge)
 	{
-		if (shouldFightAirBattle() && !shouldEndAirBattle())
-			return;
-		// record who was in this battle first
 		final CompositeChange wasInAirBattleChange = new CompositeChange();
-		for (final Unit u : m_attackingUnits)
-		{
-			wasInAirBattleChange.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
-		}
-		for (final Unit u : m_defendingUnits)
+		for (final Unit u : units)
 		{
 			wasInAirBattleChange.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
 		}
@@ -266,6 +300,16 @@ public class AirBattle extends AbstractBattle
 		{
 			bridge.addChange(wasInAirBattleChange);
 		}
+	}
+	
+	private void makeBattle(final IDelegateBridge bridge)
+	{
+		if (shouldFightAirBattle() && !shouldEndAirBattle())
+			return;
+		
+		// record who was in this battle first
+		recordUnitsWereInAirBattle(m_attackingUnits, bridge);
+		recordUnitsWereInAirBattle(m_defendingUnits, bridge);
 		// setup new battle here
 		final Collection<Unit> bombers = Match.getMatches(m_attackingUnits, Matches.UnitIsStrategicBomber);
 		if (!bombers.isEmpty())
@@ -314,7 +358,7 @@ public class AirBattle extends AbstractBattle
 				m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
 			else
 				m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT;
-			text = "Air Battle is over, the remaining Bombers go on to their targets";
+			text = "Air Battle is over, the remaining bombers go on to their targets";
 			ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
 		}
 		else if (!m_attackingUnits.isEmpty())
@@ -338,6 +382,66 @@ public class AirBattle extends AbstractBattle
 		getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
 		m_isOver = true;
 		m_battleTracker.removeBattle(AirBattle.this);
+	}
+	
+	private void attackerRetreat(final IDelegateBridge bridge)
+	{
+		// planes retreat to the same square the battle is in, and then should
+		// move during non combat to their landing site, or be scrapped if they can't find one.
+		final Collection<Territory> possible = new ArrayList<Territory>(2);
+		possible.add(m_battleSite);
+		// retreat planes
+		if (!m_attackingUnits.isEmpty())
+			queryRetreat(false, bridge, possible);
+	}
+	
+	private void defenderRetreat(final IDelegateBridge bridge)
+	{
+		// planes retreat to the same square the battle is in, and then should
+		// move during non combat to their landing site, or be scrapped if they can't find one.
+		final Collection<Territory> possible = new ArrayList<Territory>(2);
+		possible.add(m_battleSite);
+		// retreat planes
+		if (!m_defendingUnits.isEmpty())
+			queryRetreat(true, bridge, possible);
+	}
+	
+	private void queryRetreat(final boolean defender, final IDelegateBridge bridge, final Collection<Territory> availableTerritories)
+	{
+		if (availableTerritories.isEmpty())
+			return;
+		final Collection<Unit> units = defender ? new ArrayList<Unit>(m_defendingUnits) : new ArrayList<Unit>(m_attackingUnits);
+		if (units.isEmpty())
+			return;
+		final PlayerID retreatingPlayer = defender ? m_defender : m_attacker;
+		final String text = retreatingPlayer.getName() + " retreat?";
+		final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
+		getDisplay(bridge).gotoBattleStep(m_battleID, step);
+		final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, false, m_battleSite, availableTerritories, text);
+		if (retreatTo != null && !availableTerritories.contains(retreatTo))
+		{
+			System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.defaultNamedToTextList(availableTerritories));
+			Thread.dumpStack();
+			return;
+		}
+		if (retreatTo != null)
+		{
+			if (!m_headless)
+				ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+			retreat(units, defender, bridge);
+			final String messageShort = retreatingPlayer.getName() + " retreats";
+			final String messageLong = retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
+			getDisplay(bridge).notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
+		}
+	}
+	
+	private void retreat(final Collection<Unit> retreating, final boolean defender, final IDelegateBridge bridge)
+	{
+		final String transcriptText = MyFormatter.unitsToText(retreating) + " retreated";
+		final Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
+		units.removeAll(retreating);
+		bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
+		recordUnitsWereInAirBattle(retreating, bridge);
 	}
 	
 	private void showBattle(final IDelegateBridge bridge)

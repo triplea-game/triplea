@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created new game option properties, "Air Battle Attackers Can Retreat" and "Air Battle Defenders Can Retreat", which allow retreating from air battles. (veqryn)
+
 * Created new game option property, "Air Battle Rounds", which will allow setting the number of rounds of combat for air battles. (veqryn)
 
 * Abstracted StrategicBombingRaidPreBattle to become AirBattle, no longer extending StrategicBombingRaid. (veqryn)

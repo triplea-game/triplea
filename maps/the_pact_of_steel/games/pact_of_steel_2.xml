@@ -5261,6 +5261,14 @@
 						<number min="-1" max="100"/>
 				</property>
 				
+				<property name="Air Battle Attackers Can Retreat" value="false" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Air Battle Defenders Can Retreat" value="false" editable="false">
+						<boolean/>
+				</property>
+				
 						<!-- Allows Strategic Bombing Raids to have Escort aircraft and also be Intercepted by the defender -->
 				<property name="Raids May Be Preceeded By Air Battles" value="true" editable="true">
 						<boolean/>
