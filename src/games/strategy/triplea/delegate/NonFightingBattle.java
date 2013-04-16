@@ -32,6 +32,7 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+import games.strategy.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -203,9 +204,12 @@ public class NonFightingBattle extends AbstractBattle
 	}
 	
 	@Override
-	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge)
+	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn)
 	{
+		if (withdrawn)
+			return;
 		Collection<Unit> lost = getDependentUnits(units);
+		lost.addAll(Util.intersection(units, m_attackingUnits));
 		lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
 		if (lost.size() != 0)
 		{

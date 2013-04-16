@@ -42,6 +42,7 @@ import games.strategy.triplea.ai.Dynamix_AI.Others.PhaseType;
 import games.strategy.triplea.ai.Dynamix_AI.UI.UI;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -63,9 +64,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -340,24 +341,18 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		while (true)
 		{
 			final BattleListing listing = battleDelegate.getBattles();
-			if (listing.getBattles().isEmpty() && listing.getStrategicRaids().isEmpty()) // All fought
+			if (listing.getBattles().isEmpty())
 				break;
-			final Iterator<Territory> raidBattles = listing.getStrategicRaids().iterator();
-			// Fight strategic bombing raids
-			while (raidBattles.hasNext())
+			for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet())
 			{
-				final Territory current = raidBattles.next();
-				@SuppressWarnings("unused")
-				final String error = battleDelegate.fightBattle(current, true);
-			}
-			final Iterator<Territory> nonRaidBattles = listing.getBattles().iterator();
-			// Fight normal battles
-			while (nonRaidBattles.hasNext())
-			{
-				final Territory current = nonRaidBattles.next();
-				setBattleInfo(current);
-				@SuppressWarnings("unused")
-				final String error = battleDelegate.fightBattle(current, false);
+				for (final Territory current : entry.getValue())
+				{
+					setBattleInfo(current);
+					@SuppressWarnings("unused")
+					final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
+					// if (error != null)
+					// s_logger.fine(error);
+				}
 			}
 			setBattleInfo(null);
 		}

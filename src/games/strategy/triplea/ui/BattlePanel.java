@@ -46,9 +46,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -86,8 +86,7 @@ public class BattlePanel extends ActionPanel
 	// being garbage collected
 	// reuse one frame
 	private final JFrame m_battleFrame;
-	Collection<Territory> m_battles;
-	Collection<Territory> m_bombing;
+	Map<BattleType, Collection<Territory>> m_battles;
 	
 	/** Creates new BattlePanel */
 	public BattlePanel(final GameData data, final MapPanel map)
@@ -136,10 +135,9 @@ public class BattlePanel extends ActionPanel
 		});
 	}
 	
-	public void setBattlesAndBombing(final Collection<Territory> battles, final Collection<Territory> bombing)
+	public void setBattlesAndBombing(final Map<BattleType, Collection<Territory>> battles)
 	{
 		m_battles = battles;
-		m_bombing = bombing;
 	}
 	
 	@Override
@@ -156,27 +154,23 @@ public class BattlePanel extends ActionPanel
 				final JPanel panel = new JPanel();
 				panel.setLayout(new GridLayout(0, 1));
 				panel.add(m_actionLabel);
-				Iterator<Territory> iter = m_battles.iterator();
-				while (iter.hasNext())
+				for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
 				{
-					addBattleActions(panel, iter, false, BattleType.NORMAL);
-				}
-				iter = m_bombing.iterator();
-				while (iter.hasNext())
-				{
-					addBattleActions(panel, iter, true, BattleType.BOMBING_RAID); // TODO: need to fix
+					for (final Territory t : entry.getValue())
+					{
+						addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());
+					}
 				}
 				add(panel, BorderLayout.NORTH);
 				SwingUtilities.invokeLater(REFRESH);
 			}
 			
-			private void addBattleActions(final JPanel panel, final Iterator<Territory> iter, final boolean bomb, final BattleType battleType)
+			private void addBattleActions(final JPanel panel, final Territory territory, final boolean bomb, final BattleType battleType)
 			{
-				final Territory next = iter.next();
 				final JPanel innerPanel = new JPanel();
 				innerPanel.setLayout(new BorderLayout());
-				innerPanel.add(new JButton(new FightBattleAction(next, bomb, battleType)), BorderLayout.CENTER);
-				innerPanel.add(new JButton(new CenterBattleAction(next)), BorderLayout.EAST);
+				innerPanel.add(new JButton(new FightBattleAction(territory, bomb, battleType)), BorderLayout.CENTER);
+				innerPanel.add(new JButton(new CenterBattleAction(territory)), BorderLayout.EAST);
 				panel.add(innerPanel);
 			}
 		});
@@ -655,19 +649,21 @@ public class BattlePanel extends ActionPanel
 		private static final long serialVersionUID = 5510976406003707776L;
 		Territory m_territory;
 		boolean m_bomb;
+		BattleType m_type;
 		
 		FightBattleAction(final Territory battleSite, final boolean bomb, final BattleType battleType)
 		{
-			super((bomb ? (battleType.equals(BattleType.AIR_BATTLE) ? "Air Battle in " : "Bombing raid in ") : "Battle in ") + battleSite.getName() + "...");
+			super(battleType.toString() + " in " + battleSite.getName() + "...");
 			m_territory = battleSite;
 			m_bomb = bomb;
+			m_type = battleType;
 		}
 		
 		public void actionPerformed(final ActionEvent actionEvent)
 		{
 			if (m_oldCenteredTerritory != null)
 				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
-			m_fightBattleMessage = new FightBattleDetails(m_bomb, m_territory);
+			m_fightBattleMessage = new FightBattleDetails(m_territory, m_bomb, m_type);
 			release();
 		}
 	}

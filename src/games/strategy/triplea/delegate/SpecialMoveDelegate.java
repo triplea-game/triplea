@@ -15,6 +15,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -273,7 +274,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		}
 		if (onlyWhereUnderAttackAlready)
 		{
-			final IBattle battle = battleTracker.getPendingBattle(end, false);
+			final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
 			if (battle == null)
 				return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
 			else if (land && someLand && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsLand))

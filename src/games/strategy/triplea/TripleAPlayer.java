@@ -460,10 +460,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, id.getName());
 				m_soundPlayedAlreadyBattle = true;
 			}
-			final FightBattleDetails details = m_ui.getBattle(id, battles.getBattles(), battles.getStrategicRaids());
+			final FightBattleDetails details = m_ui.getBattle(id, battles.getBattles());
 			if (getPlayerBridge().isGameOver())
 				return;
-			final String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid());
+			final String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid(), details.getBattleType());
 			if (error != null)
 				m_ui.notifyError(error);
 		}

@@ -25,7 +25,7 @@ public class MockBattle extends AbstractBattle
 	
 	public MockBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final GameData data)
 	{
-		super(battleSite, attacker, battleTracker, false, BattleType.MOCK_BATTLE, data);
+		super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
 	}
 	
 	@Override
@@ -37,25 +37,21 @@ public class MockBattle extends AbstractBattle
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{
-		// TODO Auto-generated method stub
 	}
 	
 	@Override
-	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge)
+	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn)
 	{
-		// TODO Auto-generated method stub
 	}
 	
 	@Override
 	public void removeAttack(final Route route, final Collection<Unit> units)
 	{
-		// TODO Auto-generated method stub
 	}
 	
 	@Override
 	public boolean isEmpty()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

@@ -1,4 +1,8 @@
 Changes for 1.7
+* Set up battle delegate and tracker to allow air battles to be created for normal battles. (veqryn)
+
+* Created new game option property, "Battles May Be Preceeded By Air Battles", which will allow normal battles to have air battles first. (veqryn)
+
 * Created new game option properties, "Air Battle Attackers Can Retreat" and "Air Battle Defenders Can Retreat", which allow retreating from air battles. (veqryn)
 
 * Created new game option property, "Air Battle Rounds", which will allow setting the number of rounds of combat for air battles. (veqryn)

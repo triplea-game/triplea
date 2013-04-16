@@ -17,6 +17,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.IBattle;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 
 /**
@@ -39,7 +40,7 @@ public interface IBattleDelegate extends IRemote, IDelegate
 	 *            - fight a bombing raid
 	 * @return an error string if the battle could not be fought or an error occurred, null otherwise
 	 */
-	public String fightBattle(Territory where, boolean bombing);
+	public String fightBattle(Territory where, boolean bombing, BattleType type);
 	
 	/**
 	 * Finish the current battle

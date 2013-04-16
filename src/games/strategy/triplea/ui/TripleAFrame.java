@@ -63,6 +63,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
@@ -760,10 +761,10 @@ public class TripleAFrame extends MainGameFrame
 		m_actionButtons.waitForEndTurn(this, bridge);
 	}
 	
-	public FightBattleDetails getBattle(final PlayerID player, final Collection<Territory> battles, final Collection<Territory> bombingRaids)
+	public FightBattleDetails getBattle(final PlayerID player, final Map<BattleType, Collection<Territory>> battles)
 	{
 		m_messageAndDialogThreadPool.waitForAll();
-		m_actionButtons.changeToBattle(player, battles, bombingRaids);
+		m_actionButtons.changeToBattle(player, battles);
 		return m_actionButtons.waitForBattleSelection();
 	}
 	

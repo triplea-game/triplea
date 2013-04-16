@@ -38,6 +38,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -70,6 +71,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -887,32 +889,23 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			final BattleListing listing = battleDelegate.getBattles();
 			// all fought
-			if (listing.getBattles().isEmpty() && listing.getStrategicRaids().isEmpty())
+			if (listing.getBattles().isEmpty())
 			{
 				now = System.currentTimeMillis();
 				s_logger.finest("Time Taken " + (now - start));
 				return;
 			}
-			final Iterator<Territory> raidBattles = listing.getStrategicRaids().iterator();
-			// fight strategic bombing raids
-			while (raidBattles.hasNext())
+			set_onOffense(true);
+			for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet())
 			{
-				final Territory current = raidBattles.next();
-				final String error = battleDelegate.fightBattle(current, true);
-				if (error != null)
-					s_logger.fine(error);
+				for (final Territory current : entry.getValue())
+				{
+					final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
+					if (error != null)
+						s_logger.fine(error);
+				}
 			}
-			final Iterator<Territory> nonRaidBattles = listing.getBattles().iterator();
-			// fight normal battles
-			while (nonRaidBattles.hasNext())
-			{
-				final Territory current = nonRaidBattles.next();
-				set_onOffense(true);
-				final String error = battleDelegate.fightBattle(current, false);
-				set_onOffense(false);
-				if (error != null)
-					s_logger.fine(error);
-			}
+			set_onOffense(false);
 		}
 	}
 	

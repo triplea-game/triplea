@@ -19,9 +19,13 @@
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Sent by the battle delegate to the game player to indicate
@@ -33,8 +37,7 @@ import java.util.Collection;
 public class BattleListing implements Serializable
 {
 	private static final long serialVersionUID = 2700129486225793827L;
-	private final Collection<Territory> m_battles;
-	private final Collection<Territory> m_strategicRaids;
+	private final Map<BattleType, Collection<Territory>> m_battles;
 	
 	/**
 	 * Creates new BattleListingMessage
@@ -44,24 +47,51 @@ public class BattleListing implements Serializable
 	 * @param strategicRaids
 	 *            strategic raids
 	 */
-	public BattleListing(final Collection<Territory> battles, final Collection<Territory> strategicRaids)
+	public BattleListing(final Map<BattleType, Collection<Territory>> battles)
 	{
 		m_battles = battles;
-		m_strategicRaids = strategicRaids;
 	}
 	
-	public Collection<Territory> getBattles()
+	public Map<BattleType, Collection<Territory>> getBattles()
 	{
 		return m_battles;
 	}
 	
-	public Collection<Territory> getStrategicRaids()
+	public Collection<Territory> getNormalBattlesIncludingAirBattles()
 	{
-		return m_strategicRaids;
+		final Collection<Territory> territories = new HashSet<Territory>();
+		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
+		{
+			if (!entry.getKey().isBombingRun())
+				territories.addAll(entry.getValue());
+		}
+		return territories;
+	}
+	
+	public Collection<Territory> getStrategicBombingRaidsIncludingAirBattles()
+	{
+		final Collection<Territory> territories = new HashSet<Territory>();
+		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
+		{
+			if (entry.getKey().isBombingRun())
+				territories.addAll(entry.getValue());
+		}
+		return territories;
+	}
+	
+	public Collection<Territory> getAirBattles()
+	{
+		final Collection<Territory> territories = new HashSet<Territory>();
+		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
+		{
+			if (entry.getKey().isAirPreBattleOrPreRaid())
+				territories.addAll(entry.getValue());
+		}
+		return territories;
 	}
 	
 	public boolean isEmpty()
 	{
-		return m_battles.size() == 0 && m_strategicRaids.size() == 0;
+		return m_battles.isEmpty();
 	}
 }

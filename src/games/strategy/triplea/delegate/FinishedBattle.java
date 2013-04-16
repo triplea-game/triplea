@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDesc
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,9 +143,10 @@ public class FinishedBattle extends AbstractBattle
 	}
 	
 	@Override
-	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge)
+	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn)
 	{
 		final Collection<Unit> lost = getDependentUnits(units);
+		lost.addAll(Util.intersection(units, m_attackingUnits));
 		if (lost.size() != 0)
 		{
 			m_attackingUnits.removeAll(lost);
@@ -156,7 +158,7 @@ public class FinishedBattle extends AbstractBattle
 			if (m_attackingUnits.isEmpty())
 			{
 				final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-				final int tuvLostAttacker = BattleCalculator.getTUV(lost, m_attacker, costs, m_data);
+				final int tuvLostAttacker = (withdrawn ? 0 : BattleCalculator.getTUV(lost, m_attacker, costs, m_data));
 				m_attackerLostTUV += tuvLostAttacker;
 				m_whoWon = WhoWon.DEFENDER; // scripted?
 				if (!m_headless)

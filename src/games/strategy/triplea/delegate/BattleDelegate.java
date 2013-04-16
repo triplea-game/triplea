@@ -37,6 +37,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
@@ -116,6 +117,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			doKamikazeSuicideAttacks();
 			m_needToKamikazeSuicideAttacks = false;
 		}
+		// TODO: clear out air battles with no opponents here
 		if (m_needToAddBombardmentSources)
 		{
 			addBombardmentSources();
@@ -226,9 +228,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		return null;
 	}
 	
-	public String fightBattle(final Territory territory, final boolean bombing)
+	public String fightBattle(final Territory territory, final boolean bombing, final BattleType type)
 	{
-		final IBattle battle = m_battleTracker.getPendingBattle(territory, bombing);
+		final IBattle battle = m_battleTracker.getPendingBattle(territory, bombing, type);
 		if (m_currentBattle != null && m_currentBattle != battle)
 		{
 			return "Must finish " + getFightingWord(m_currentBattle) + " in " + m_currentBattle.getTerritory() + " first";
@@ -242,7 +244,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		{
 			final IBattle firstPrecede = allMustPrecede.iterator().next();
 			final String name = firstPrecede.getTerritory().getName();
-			return "Must complete " + getFightingWord(battle) + " in " + name + " first";
+			return "Must complete " + getFightingWord(firstPrecede) + " in " + name + " first";
 		}
 		m_currentBattle = battle;
 		// fight the battle
@@ -259,9 +261,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	
 	public BattleListing getBattles()
 	{
-		final Collection<Territory> battles = m_battleTracker.getPendingBattleSites(false);
-		final Collection<Territory> bombing = m_battleTracker.getPendingBattleSites(true);
-		return new BattleListing(battles, bombing);
+		return m_battleTracker.getPendingBattleSites();
 	}
 	
 	/**
@@ -363,7 +363,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		while (battleTerritories.hasNext())
 		{
 			final Territory t = battleTerritories.next();
-			final IBattle battle = m_battleTracker.getPendingBattle(t, false);
+			final IBattle battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
 			// we only care about battles where we must fight
 			// this check is really to avoid implementing getAttackingFrom() in other battle subclasses
 			if (!(battle instanceof MustFightBattle))
@@ -502,7 +502,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			attackingUnits.addAll(dependants); // add the dependants to the attacking list
 			
 			final List<Unit> enemyUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
-			final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true);
+			final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true, null);
 			if (bombingBattle != null)
 			{
 				// we need to remove any units which are participating in bombing raids
@@ -510,7 +510,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			}
 			if (attackingUnits.isEmpty() || Match.allMatch(attackingUnits, Matches.UnitIsInfrastructure))
 				continue;
-			IBattle battle = battleTracker.getPendingBattle(territory, false);
+			IBattle battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
 			if (battle == null)
 			{
 				// we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them separately, after aa fires)
@@ -518,7 +518,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 					landParatroopers(player, territory, data, aBridge);
 				aBridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
 				battleTracker.addBattle(new RouteScripted(territory), attackingUnits, false, player, aBridge, null, null);
-				battle = battleTracker.getPendingBattle(territory, false);
+				battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
 			}
 			if (battle == null)
 				continue;
@@ -637,7 +637,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		}
 		for (final Territory battleTerr : territoriesWithBattlesLand)
 		{
-			final IBattle battle = m_battleTracker.getPendingBattle(battleTerr, false);
+			final IBattle battle = m_battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
 			if (!toSeaOnly)
 			{
 				final HashSet<Territory> canScrambleFrom = new HashSet<Territory>(Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
@@ -810,14 +810,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				continue;
 			
 			// make sure the units join the battle, or create a new battle.
-			IBattle battle = m_battleTracker.getPendingBattle(to, false);
+			IBattle battle = m_battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
 			if (battle == null)
 			{
 				final List<Unit> attackingUnits = to.getUnits().getMatches(Matches.unitIsOwnedBy(m_player));
 				m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
 				// TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to fix.
 				m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null, null);
-				battle = m_battleTracker.getPendingBattle(to, false);
+				battle = m_battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
 				if (battle instanceof MustFightBattle)
 				{
 					// this is an ugly mess of hacks, but will have to stay here till all transport related code is gutted and refactored.
@@ -854,7 +854,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 						mfb.addDependentUnits(dependencies.get(to));
 						for (final Territory territoryNeighborToNewBattle : neighborsLand)
 						{
-							final IBattle battleInTerritoryNeighborToNewBattle = m_battleTracker.getPendingBattle(territoryNeighborToNewBattle, false);
+							final IBattle battleInTerritoryNeighborToNewBattle = m_battleTracker.getPendingBattle(territoryNeighborToNewBattle, false, BattleType.NORMAL);
 							if (battleInTerritoryNeighborToNewBattle != null && battleInTerritoryNeighborToNewBattle instanceof MustFightBattle)
 							{
 								final MustFightBattle mfbattleInTerritoryNeighborToNewBattle = (MustFightBattle) battleInTerritoryNeighborToNewBattle;
@@ -891,7 +891,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			{
 				for (final Territory t : data.getMap().getNeighbors(to, Matches.TerritoryIsLand))
 				{
-					final IBattle battleAmphib = m_battleTracker.getPendingBattle(t, false);
+					final IBattle battleAmphib = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
 					if (battleAmphib != null)
 					{
 						if (!m_battleTracker.getDependentOn(battle).contains(battleAmphib))
@@ -1215,7 +1215,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 						final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
 						for (final Territory neighbor : landNeighbors)
 						{
-							final IBattle battle = m_battleTracker.getPendingBattle(neighbor, false);
+							final IBattle battle = m_battleTracker.getPendingBattle(neighbor, false, BattleType.NORMAL);
 							if (battle == null)
 							{
 								final Map<Territory, Collection<Unit>> whereFrom = m_battleTracker.getFinishedBattlesUnitAttackFromMap().get(neighbor);

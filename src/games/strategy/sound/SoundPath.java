@@ -67,6 +67,7 @@ public class SoundPath
 	public static final String CLIP_BATTLE_SEA_NORMAL = "battle_sea_normal";
 	public static final String CLIP_BATTLE_SEA_SUBS = "battle_sea_subs";
 	public static final String CLIP_BATTLE_SEA_SUCCESSFUL = "battle_sea_successful";
+	public static final String CLIP_BATTLE_STALEMATE = "battle_stalemate";
 	public static final String CLIP_BOMBING_ROCKET = "bombing_rocket";
 	public static final String CLIP_BOMBING_STRATEGIC = "bombing_strategic";
 	public static final String CLIP_PHASE_BATTLE = "phase_battle";
@@ -121,6 +122,7 @@ public class SoundPath
 				clipPlayer.preLoadClip(CLIP_BATTLE_SEA_NORMAL);
 				clipPlayer.preLoadClip(CLIP_BATTLE_SEA_SUBS);
 				clipPlayer.preLoadClip(CLIP_BATTLE_SEA_SUCCESSFUL);
+				clipPlayer.preLoadClip(CLIP_BATTLE_STALEMATE);
 				clipPlayer.preLoadClip(CLIP_BOMBING_ROCKET);
 				clipPlayer.preLoadClip(CLIP_BOMBING_STRATEGIC);
 				clipPlayer.preLoadClip(CLIP_PHASE_BATTLE);
@@ -174,6 +176,7 @@ public class SoundPath
 		rVal.add(CLIP_BATTLE_SEA_NORMAL);
 		rVal.add(CLIP_BATTLE_SEA_SUBS);
 		rVal.add(CLIP_BATTLE_SEA_SUCCESSFUL);
+		rVal.add(CLIP_BATTLE_STALEMATE);
 		rVal.add(CLIP_BOMBING_ROCKET);
 		rVal.add(CLIP_BOMBING_STRATEGIC);
 		rVal.add(CLIP_PHASE_BATTLE);
@@ -228,6 +231,7 @@ public class SoundPath
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BATTLE_SEA_NORMAL, "Naval Battle"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BATTLE_SEA_SUBS, "Submarine Battle"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, "Sea Battle Won"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BATTLE_STALEMATE, "Battle Stalemate"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BOMBING_ROCKET, "Rocket Attack"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BOMBING_STRATEGIC, "Strategic Bombing"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_BATTLE, "Phase: Battle"));

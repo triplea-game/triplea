@@ -1184,7 +1184,7 @@ class BattleModel extends DefaultTableModel
 			final int[] shift = new int[m_data.getDiceSides() + 1];
 			for (int i = category.getUnits().size(); i > 0; i--)
 			{
-				if (m_battleType.equals(BattleType.AIR_BATTLE))
+				if (m_battleType.isAirPreBattleOrPreRaid())
 				{
 					if (m_attack)
 						strength = attachment.getAirAttack(category.getOwner());

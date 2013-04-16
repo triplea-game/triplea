@@ -24,6 +24,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.MovePanel;
@@ -110,20 +111,14 @@ public class MovePerformer implements Serializable
 			{
 				// if we are moving out of a battle zone, mark it
 				// this can happen for air units moving out of a battle zone
-				final IBattle nonBombingBattle = MoveDelegate.getBattleTracker(bridge.getData()).getPendingBattle(route.getStart(), false);
-				final IBattle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
-				if (nonBombingBattle != null || bombingBattle != null)
+				for (final IBattle battle : getBattleTracker().getPendingBattles(route.getStart(), null, null))
 				{
 					for (final Unit unit : units)
 					{
 						final Route routeUnitUsedToMove = m_moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
-						if (nonBombingBattle != null)
+						if (battle != null)
 						{
-							nonBombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
-						}
-						if (bombingBattle != null)
-						{
-							bombingBattle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
+							battle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
 						}
 					}
 				}
@@ -198,7 +193,7 @@ public class MovePerformer implements Serializable
 					final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
 								new CompositeMatchAnd<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(), Matches.unitIsBeingTransported().invert()));
 					final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<Unit>(Matches.UnitIsStrategicBomber);
-					final boolean canCreateAirBattle = (Match.someMatch(enemyUnits, AirBattle.defendingInterceptors(id, data, true, true)) && !enemyTargetsTotal.isEmpty()
+					final boolean canCreateAirBattle = (Match.someMatch(enemyUnits, AirBattle.defendingBombingRaidInterceptors(id, data, true, true)) && !enemyTargetsTotal.isEmpty()
 								&& games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data));
 					if (canCreateAirBattle)
 						allBombingRaid.add(Matches.unitCanEscort);
@@ -426,7 +421,7 @@ public class MovePerformer implements Serializable
 			}
 			// any pending battles in the unloading zone?
 			final BattleTracker tracker = getBattleTracker();
-			final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false) != null;
+			final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false, BattleType.NORMAL) != null;
 			final Iterator<Unit> iter = units.iterator();
 			while (iter.hasNext())
 			{

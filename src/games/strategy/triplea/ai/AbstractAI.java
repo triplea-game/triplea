@@ -14,6 +14,7 @@ import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
@@ -156,23 +157,14 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			// all fought
 			if (listing.isEmpty())
 				return;
-			final Iterator<Territory> raidBattles = listing.getStrategicRaids().iterator();
-			// fight strategic bombing raids
-			while (raidBattles.hasNext())
+			for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet())
 			{
-				final Territory current = raidBattles.next();
-				final String error = battleDelegate.fightBattle(current, true);
-				if (error != null)
-					s_logger.fine(error);
-			}
-			final Iterator<Territory> nonRaidBattles = listing.getBattles().iterator();
-			// fight normal battles
-			while (nonRaidBattles.hasNext())
-			{
-				final Territory current = nonRaidBattles.next();
-				final String error = battleDelegate.fightBattle(current, false);
-				if (error != null)
-					s_logger.fine(error);
+				for (final Territory current : entry.getValue())
+				{
+					final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
+					if (error != null)
+						s_logger.fine(error);
+				}
 			}
 		}
 	}

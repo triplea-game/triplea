@@ -131,16 +131,14 @@ public class UndoableMove extends AbstractUndoableMove
 		}
 		// if we are moving out of a battle zone, mark it
 		// this can happen for air units moving out of a battle zone
-		final IBattle battleNormal = battleTracker.getPendingBattle(m_route.getStart(), false);
-		final IBattle battleBombing = battleTracker.getPendingBattle(m_route.getStart(), true);
-		if (battleNormal != null || battleBombing != null)
+		for (final IBattle battle : battleTracker.getPendingBattles(m_route.getStart(), null, null))
 		{
-			final Iterator<Unit> iter2 = m_units.iterator();
-			while (iter2.hasNext())
+			if (battle == null || battle.isOver())
+				continue;
+			for (final Unit unit : m_units)
 			{
-				final Unit unit = iter2.next();
 				final Route routeUnitUsedToMove = DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
-				if (battleNormal != null && !battleNormal.isOver())
+				if (!battle.getBattleType().isBombingRun())
 				{
 					// route units used to move will be null in the case
 					// where an enemy sub is submerged in the territory, and another unit
@@ -149,11 +147,11 @@ public class UndoableMove extends AbstractUndoableMove
 					// into the battle zone will be null
 					if (routeUnitUsedToMove != null)
 					{
-						final Change change = battleNormal.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null);
+						final Change change = battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null);
 						bridge.addChange(change);
 					}
 				}
-				if (battleBombing != null && !battleBombing.isOver())
+				else
 				{
 					HashMap<Unit, HashSet<Unit>> targets = null;
 					Unit target = null;
@@ -182,7 +180,7 @@ public class UndoableMove extends AbstractUndoableMove
 							targets.put(target, new HashSet<Unit>(Collections.singleton(unit)));
 						}
 					}
-					final Change change = battleBombing.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);
+					final Change change = battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);
 					bridge.addChange(change);
 				}
 			}

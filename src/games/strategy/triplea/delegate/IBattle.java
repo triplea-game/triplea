@@ -49,7 +49,7 @@ public interface IBattle extends java.io.Serializable
 
 	public static enum BattleType
 	{
-		NORMAL("Battle"), AIR_BATTLE("Air Battle"), MOCK_BATTLE("Empty Battle"), BOMBING_RAID("Bombing Raid");
+		NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
 		
 		private final String m_type;
 		
@@ -62,6 +62,18 @@ public interface IBattle extends java.io.Serializable
 		public String toString()
 		{
 			return m_type;
+		}
+		
+		// if it has the word "Raid" in it, then it is a bombing battle
+		public boolean isBombingRun()
+		{
+			return m_type.indexOf("Raid") != -1;
+		}
+		
+		// if it has the word "Air" in it, then it is an air battle
+		public boolean isAirPreBattleOrPreRaid()
+		{
+			return m_type.indexOf("Air") != -1;
 		}
 	}
 	
@@ -123,7 +135,7 @@ public interface IBattle extends java.io.Serializable
 	 * @param bridge
 	 *            - IDelegateBridge
 	 */
-	public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge);
+	public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 	
 	/**
 	 * Add a bombardment unit.

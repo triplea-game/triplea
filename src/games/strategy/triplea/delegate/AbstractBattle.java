@@ -213,7 +213,7 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#unitsLostInPrecedingBattle(games.strategy.triplea.delegate.IBattle,java.util.Collection<Unit>,games.strategy.engine.delegate.IDelegateBridge)
 	 */
-	abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge);
+	abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 	
 	@Override
 	public int hashCode()

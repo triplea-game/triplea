@@ -5269,6 +5269,11 @@
 						<boolean/>
 				</property>
 				
+						<!-- Allows normal battles to have Escort aircraft and also be Intercepted by the defender -->
+				<property name="Battles May Be Preceeded By Air Battles" value="false" editable="false">
+						<boolean/>
+				</property>
+				
 						<!-- Allows Strategic Bombing Raids to have Escort aircraft and also be Intercepted by the defender -->
 				<property name="Raids May Be Preceeded By Air Battles" value="true" editable="true">
 						<boolean/>

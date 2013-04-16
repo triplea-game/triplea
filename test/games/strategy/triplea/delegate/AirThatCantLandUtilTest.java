@@ -9,6 +9,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 
@@ -16,6 +17,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import junit.framework.TestCase;
 
@@ -36,6 +38,19 @@ public class AirThatCantLandUtilTest extends TestCase
 	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
 		return GameDataTestUtil.getDelegateBridge(player, m_data);
+	}
+	
+	public static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing)
+	{
+		for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet())
+		{
+			if (entry.getKey().isBombingRun() == bombing)
+			{
+				if (entry.getValue().contains(territory))
+					return battle.fightBattle(territory, bombing, entry.getKey());
+			}
+		}
+		throw new IllegalStateException("Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
 	}
 	
 	public void testSimple()
@@ -144,7 +159,7 @@ public class AirThatCantLandUtilTest extends TestCase
 		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 0, 0 }));
 		bridge.setRemote(getDummyPlayer());
-		battle.fightBattle(sz_44, false);
+		fight(battle, sz_44, false);
 		battle.end();
 		// Get the total number of units that should be left after the planes retreat
 		final Integer expectedCountSz_52 = sz_52.getUnits().size();
@@ -192,7 +207,7 @@ public class AirThatCantLandUtilTest extends TestCase
 		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 0, 0 }));
 		bridge.setRemote(getDummyPlayer());
-		battle.fightBattle(sz_44, false);
+		fight(battle, sz_44, false);
 		battle.end();
 		// Get the total number of units that should be left after the planes retreat
 		final Integer expectedCountSz_52 = sz_52.getUnits().size();
@@ -241,7 +256,7 @@ public class AirThatCantLandUtilTest extends TestCase
 		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, }));
 		bridge.setRemote(getDummyPlayer());
-		battle.fightBattle(sz_9, false);
+		fight(battle, sz_9, false);
 		battle.end();
 		// Get the total number of units that should be left after the planes retreat
 		final Integer expectedCountCanada = eastCanada.getUnits().size();
@@ -292,7 +307,7 @@ public class AirThatCantLandUtilTest extends TestCase
 		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 0, 0 }));
 		bridge.setRemote(getDummyPlayer());
-		battle.fightBattle(sz_9, false);
+		fight(battle, sz_9, false);
 		battle.end();
 		// Get the total number of units that should be left after the planes retreat
 		final Integer expectedCountCanada = eastCanada.getUnits().size();

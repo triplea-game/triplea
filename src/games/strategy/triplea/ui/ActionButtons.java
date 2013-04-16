@@ -27,6 +27,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
@@ -37,6 +38,7 @@ import java.awt.CardLayout;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -154,9 +156,9 @@ public class ActionButtons extends JPanel
 		changeTo(id, m_placePanel);
 	}
 	
-	public void changeToBattle(final PlayerID id, final Collection<Territory> battles, final Collection<Territory> bombing)
+	public void changeToBattle(final PlayerID id, final Map<BattleType, Collection<Territory>> battles)
 	{
-		m_battlePanel.setBattlesAndBombing(battles, bombing);
+		m_battlePanel.setBattlesAndBombing(battles);
 		changeTo(id, m_battlePanel);
 	}
 	

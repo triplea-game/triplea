@@ -2580,7 +2580,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		for (final IBattle dependent : dependents)
 		{
-			dependent.unitsLostInPrecedingBattle(this, units, bridge);
+			dependent.unitsLostInPrecedingBattle(this, units, bridge, false);
 		}
 	}
 	
@@ -3002,9 +3002,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	@Override
-	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge)
+	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn)
 	{
-		final Collection<Unit> lost = getDependentUnits(units);
+		Collection<Unit> lost = getDependentUnits(units);
+		lost.addAll(Util.intersection(units, m_attackingUnits));
 		// if all the amphibious attacking land units are lost, then we are
 		// no longer a naval invasion
 		m_amphibiousLandAttackers.removeAll(lost);
@@ -3014,11 +3015,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			m_bombardingUnits.clear();
 		}
 		m_attackingUnits.removeAll(lost);
-		remove(lost, bridge, m_battleSite, false);
+		// now that they are definitely removed from our attacking list, make sure that they were not already removed from the territory by the previous battle's remove method
+		lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
+		if (!withdrawn)
+			remove(lost, bridge, m_battleSite, false);
 		if (m_attackingUnits.isEmpty())
 		{
 			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-			final int tuvLostAttacker = BattleCalculator.getTUV(lost, m_attacker, costs, m_data);
+			final int tuvLostAttacker = (withdrawn ? 0 : BattleCalculator.getTUV(lost, m_attacker, costs, m_data));
 			m_attackerLostTUV += tuvLostAttacker;
 			m_whoWon = WhoWon.DEFENDER;
 			if (!m_headless)

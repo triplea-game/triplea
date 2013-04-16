@@ -40,6 +40,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
+import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -106,7 +107,7 @@ public class BattleTracker implements java.io.Serializable
 	 */
 	public boolean hasPendingBattle(final Territory t, final boolean bombing)
 	{
-		return getPendingBattle(t, bombing) != null;
+		return getPendingBattle(t, bombing, null) != null;
 	}
 	
 	/**
@@ -291,8 +292,8 @@ public class BattleTracker implements java.io.Serializable
 		if (bombing)
 		{
 			if (!airBattleCompleted && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
-						&& Match.someMatch(route.getEnd().getUnits().getUnits(), AirBattle.defendingInterceptors(id, data, true, true)))
-				addAirBattle(route, units, id, data);
+						&& Match.someMatch(route.getEnd().getUnits().getUnits(), AirBattle.defendingBombingRaidInterceptors(id, data, true, true)))
+				addAirBattle(route, units, id, data, true);
 			else
 				addBombingBattle(route, units, id, data, targets);
 			// say they were in combat
@@ -300,6 +301,12 @@ public class BattleTracker implements java.io.Serializable
 		}
 		else
 		{
+			if (!airBattleCompleted && games.strategy.triplea.Properties.getBattlesMayBePreceededByAirBattles(data)
+			/* && Match.someMatch(route.getEnd().getUnits().getUnits(), AirBattle.defendingGroundSeaBattleInterceptors(id, data, true, true)) */)
+			{
+				addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts(id, data)), id, data, false);
+			}
+			
 			final Change change = addMustFightBattleChange(route, units, id, data);
 			bridge.addChange(change);
 			if (changeTracker != null)
@@ -349,17 +356,20 @@ public class BattleTracker implements java.io.Serializable
 			throw new IllegalStateException("Non empty change");
 		}
 		// dont let land battles in the same territory occur before bombing battles
-		final IBattle dependent = getPendingBattle(route.getEnd(), false);
+		final IBattle dependent = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
 		if (dependent != null)
 			addDependency(dependent, battle);
+		final IBattle dependentAirBattle = getPendingBattle(route.getEnd(), false, BattleType.AIR_BATTLE);
+		if (dependentAirBattle != null)
+			addDependency(dependentAirBattle, battle);
 	}
 	
-	private void addAirBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data)
+	private void addAirBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final boolean bombingRun)
 	{
-		IBattle battle = getPendingBattle(route.getEnd(), true);
+		IBattle battle = getPendingBattle(route.getEnd(), bombingRun, (bombingRun ? BattleType.AIR_RAID : BattleType.AIR_BATTLE));
 		if (battle == null)
 		{
-			battle = new AirBattle(route.getEnd(), data, attacker, this);
+			battle = new AirBattle(route.getEnd(), bombingRun, data, attacker, this);
 			m_pendingBattles.add(battle);
 			getBattleRecords(data).addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType(), data);
 		}
@@ -370,7 +380,13 @@ public class BattleTracker implements java.io.Serializable
 			throw new IllegalStateException("Non empty change");
 		}
 		// dont let land battles in the same territory occur before bombing battles
-		final IBattle dependent = getPendingBattle(route.getEnd(), false);
+		if (bombingRun)
+		{
+			final IBattle dependentAirBattle = getPendingBattle(route.getEnd(), false, BattleType.AIR_BATTLE);
+			if (dependentAirBattle != null)
+				addDependency(dependentAirBattle, battle);
+		}
+		final IBattle dependent = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
 		if (dependent != null)
 			addDependency(dependent, battle);
 	}
@@ -409,7 +425,7 @@ public class BattleTracker implements java.io.Serializable
 		m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
 		for (final Territory current : conquered)
 		{
-			IBattle nonFight = getPendingBattle(current, false);
+			IBattle nonFight = getPendingBattle(current, false, BattleType.NORMAL);
 			// TODO: if we ever want to scramble to a blitzed territory, then we need to fix this stuff (currently doesn't work because then the territory is never conquered because the units have left the territory by the time we fight)
 			/*if (scramblingEnabled)
 			{
@@ -449,13 +465,13 @@ public class BattleTracker implements java.io.Serializable
 			IBattle precede = getDependentAmphibiousAssault(route);
 			if (precede == null)
 			{
-				precede = getPendingBattle(route.getEnd(), true);
+				precede = getPendingBattle(route.getEnd(), true, null);
 			}
 			// if we have a preceding battle, then we must use a non-fighting-battle
 			// if we have scrambling on, and this is an amphibious attack, we may wish to scramble to kill the transports, so must use non-fighting-battle also
 			if (precede != null || (scramblingEnabled && route.isUnload() && route.hasExactlyOneStep()))
 			{
-				IBattle nonFight = getPendingBattle(route.getEnd(), false);
+				IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
 				if (nonFight == null)
 				{
 					nonFight = new NonFightingBattle(route.getEnd(), id, this, data);
@@ -481,7 +497,7 @@ public class BattleTracker implements java.io.Serializable
 					}
 					m_conquered.add(route.getEnd());
 				}
-				IBattle nonFight = getPendingBattle(route.getEnd(), false);
+				IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
 				if (nonFight == null)
 				{
 					nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
@@ -704,7 +720,7 @@ public class BattleTracker implements java.io.Serializable
 		// TODO: see if necessary
 		if (Match.someMatch(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged)))
 		{
-			final IBattle bombingBattle = getPendingBattle(territory, true);
+			final IBattle bombingBattle = getPendingBattle(territory, true, null);
 			if (bombingBattle != null)
 			{
 				final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -873,7 +889,7 @@ public class BattleTracker implements java.io.Serializable
 		final Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
 		if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure))
 			return ChangeFactory.EMPTY_CHANGE;
-		IBattle battle = getPendingBattle(site, false);
+		IBattle battle = getPendingBattle(site, false, BattleType.NORMAL);
 		// If there are no pending battles- add one for units already in the combat zone
 		if (battle == null)
 		{
@@ -892,9 +908,12 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// dont let land battles in the same territory occur before bombing
 		// battles
-		final IBattle bombing = getPendingBattle(route.getEnd(), true);
+		final IBattle bombing = getPendingBattle(route.getEnd(), true, null);
 		if (bombing != null)
 			addDependency(battle, bombing);
+		final IBattle airBattle = getPendingBattle(route.getEnd(), false, BattleType.AIR_BATTLE);
+		if (airBattle != null)
+			addDependency(battle, airBattle);
 		return change;
 	}
 	
@@ -902,12 +921,7 @@ public class BattleTracker implements java.io.Serializable
 	{
 		if (!route.isUnload())
 			return null;
-		return getPendingBattle(route.getStart(), false);
-	}
-	
-	public IBattle getPendingBattle(final Territory t, final boolean bombing)
-	{
-		return getPendingBattle(t, bombing, null);
+		return getPendingBattle(route.getStart(), false, BattleType.NORMAL);
 	}
 	
 	public IBattle getPendingBattle(final Territory t, final boolean bombing, final BattleType type)
@@ -925,6 +939,17 @@ public class BattleTracker implements java.io.Serializable
 		return null;
 	}
 	
+	public Collection<IBattle> getPendingBattles(final Territory t, final Boolean bombing, final BattleType type)
+	{
+		final Collection<IBattle> battles = new HashSet<IBattle>();
+		for (final IBattle battle : m_pendingBattles)
+		{
+			if (battle.getTerritory().equals(t) && (bombing == null || battle.isBombingRun() == bombing) && (type == null || type.equals(battle.getBattleType())))
+				battles.add(battle);
+		}
+		return battles;
+	}
+	
 	/**
 	 * @param bombing
 	 *            whether only battles where there is bombing
@@ -940,6 +965,24 @@ public class BattleTracker implements java.io.Serializable
 				battles.add(battle.getTerritory());
 		}
 		return battles;
+	}
+	
+	public BattleListing getPendingBattleSites()
+	{
+		final Map<BattleType, Collection<Territory>> battles = new HashMap<BattleType, Collection<Territory>>();
+		final Collection<IBattle> pending = new HashSet<IBattle>(m_pendingBattles);
+		for (final IBattle battle : pending)
+		{
+			if (battle != null && !battle.isEmpty())
+			{
+				Collection<Territory> territories = battles.get(battle.getBattleType());
+				if (territories == null)
+					territories = new HashSet<Territory>();
+				territories.add(battle.getTerritory());
+				battles.put(battle.getBattleType(), territories);
+			}
+		}
+		return new BattleListing(battles);
 	}
 	
 	/**

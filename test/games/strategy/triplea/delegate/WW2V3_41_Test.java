@@ -71,6 +71,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
@@ -94,6 +95,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import junit.framework.TestCase;
 
@@ -116,6 +118,19 @@ public class WW2V3_41_Test extends TestCase
 	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
 		return GameDataTestUtil.getDelegateBridge(player, m_data);
+	}
+	
+	public static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing)
+	{
+		for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet())
+		{
+			if (entry.getKey().isBombingRun() == bombing)
+			{
+				if (entry.getValue().contains(territory))
+					return battle.fightBattle(territory, bombing, entry.getKey());
+			}
+		}
+		throw new IllegalStateException("Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
 	}
 	
 	public void testAACasualtiesLowLuckMixedRadar()
@@ -333,7 +348,7 @@ public class WW2V3_41_Test extends TestCase
 		battleDelegate.start();
 		assertEquals(2, new TransportTracker().transporting(transports.get(0)).size());
 		// fight the battle
-		assertValid(battleDelegate.fightBattle(sz7, false));
+		assertValid(fight(battleDelegate, sz7, false));
 		// make sure the infantry die with the transport
 		assertTrue(sz7.getUnits().toString(), sz7.getUnits().getMatches(Matches.unitOwnedBy(british)).isEmpty());
 	}
@@ -357,7 +372,7 @@ public class WW2V3_41_Test extends TestCase
 		move(poland.getUnits().getMatches(Matches.UnitIsAir), new Route(poland, eastPoland, ukraine));
 		// we should not be able to retreat to east poland!
 		// that territory is still owned by the enemy
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(ukraine, false);
+		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(ukraine, false, null);
 		assertFalse(battle.getAttackerRetreatTerritories().contains(eastPoland));
 	}
 	
@@ -380,7 +395,7 @@ public class WW2V3_41_Test extends TestCase
 		move(poland.getUnits().getMatches(Matches.UnitCanBlitz), new Route(poland, eastPoland, ukraine));
 		// we should not be able to retreat to east poland!
 		// that territory was just conquered
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(ukraine, false);
+		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(ukraine, false, null);
 		assertTrue(battle.getAttackerRetreatTerritories().contains(eastPoland));
 	}
 	
@@ -752,7 +767,7 @@ public class WW2V3_41_Test extends TestCase
 		move.undoMove(1);
 		// move again
 		move(sz14.getUnits().getMatches(Matches.UnitIsNotTransport), r);
-		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz12, false);
+		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz12, false, null);
 		// only 3 attacking units
 		// the battleship and the two cruisers
 		assertEquals(3, mfb.getAttackingUnits().size());
@@ -773,7 +788,7 @@ public class WW2V3_41_Test extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
@@ -805,7 +820,7 @@ public class WW2V3_41_Test extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(defender + SUBS_SUBMERGE, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + SUBS_FIRE,
@@ -838,7 +853,7 @@ public class WW2V3_41_Test extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, defender + SUBS_FIRE,
@@ -872,7 +887,7 @@ public class WW2V3_41_Test extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
+		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
@@ -932,7 +947,7 @@ public class WW2V3_41_Test extends TestCase
 		// start the battle phase, this will ask the user to bombard
 		battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		battleDelegate(m_data).start();
-		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false);
+		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
 		// only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD bombard, but only 2 ships may bombard total)
 		assertEquals(2, mfb.getBombardingUnits().size());
 		// Show that bombard casualties can return fire
@@ -941,7 +956,7 @@ public class WW2V3_41_Test extends TestCase
 		bridge.setRandomSource(new ScriptedRandomSource(3, 2, 5, 5, 5, 5, 0, 0));
 		battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		battleDelegate(m_data).start();
-		battleDelegate(m_data).fightBattle(eg, false);
+		fight(battleDelegate(m_data), eg, false);
 		// end result should be 2 italian infantry.
 		assertEquals(2, eg.getUnits().size());
 	}
@@ -997,7 +1012,7 @@ public class WW2V3_41_Test extends TestCase
 		// start the battle phase, this will ask the user to bombard
 		battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		battleDelegate(m_data).start();
-		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false);
+		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
 		assertNotNull(mfb);
 		// Show that bombard casualties can return fire
 		// destroyer bombard hit/miss on rolls of 4 & 3
@@ -1006,7 +1021,7 @@ public class WW2V3_41_Test extends TestCase
 		bridge.setRandomSource(new ScriptedRandomSource(3, 2, 6, 6, 1, 1));
 		battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		battleDelegate(m_data).start();
-		battleDelegate(m_data).fightBattle(eg, false);
+		fight(battleDelegate(m_data), eg, false);
 		// 1 defending inf remaining
 		assertEquals(1, eg.getUnits().size());
 	}
@@ -1047,7 +1062,7 @@ public class WW2V3_41_Test extends TestCase
 		// start the battle phase, this will ask the user to bombard
 		battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		battleDelegate(m_data).start();
-		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false);
+		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false, null);
 		// only 2 battleships are allowed to bombard
 		assertEquals(2, mfb.getBombardingUnits().size());
 	}
@@ -1085,7 +1100,7 @@ public class WW2V3_41_Test extends TestCase
 		battleDelegate(m_data).start();
 		// aa guns rolls 1, hits
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, ScriptedRandomSource.ERROR }));
-		final StrategicBombingRaidBattle battle = (StrategicBombingRaidBattle) battleDelegate(m_data).getBattleTracker().getPendingBattle(russia, true);
+		final StrategicBombingRaidBattle battle = (StrategicBombingRaidBattle) battleDelegate(m_data).getBattleTracker().getPendingBattle(russia, true, null);
 		// aa guns rolls 1, hits
 		// bridge.setRandomSource(new ScriptedRandomSource( new int[] {0, 6} ));
 		final int PUsBeforeRaid = russians.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
@@ -1439,7 +1454,7 @@ public class WW2V3_41_Test extends TestCase
 		bridge.setRandomSource(new ScriptedRandomSource(5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1));
 		battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		battleDelegate(m_data).start();
-		battleDelegate(m_data).fightBattle(egypt, false);
+		fight(battleDelegate(m_data), egypt, false);
 	}
 	
 	public void testDefencelessTransportsDie()
@@ -1471,7 +1486,7 @@ public class WW2V3_41_Test extends TestCase
 		bridge.setRandomSource(new ScriptedRandomSource(1, 5, 5, 5, 5, 5, 5, 5, 5));
 		battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		battleDelegate(m_data).start();
-		battleDelegate(m_data).fightBattle(sz5, false);
+		fight(battleDelegate(m_data), sz5, false);
 		// make sure the transports died
 		assertTrue(sz5.getUnits().getMatches(Matches.unitIsOwnedBy(germans(m_data))).isEmpty());
 	}
