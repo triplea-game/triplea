@@ -1065,7 +1065,7 @@ public class RevisedTest extends TestCase
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES,
 								attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
-		final List<IExecutable> execs = battle.getBattleExecutables();
+		final List<IExecutable> execs = battle.getBattleExecutables(false);
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
 		assertTrue(attackSubs < defendSubs);
@@ -1109,7 +1109,7 @@ public class RevisedTest extends TestCase
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, defender + FIRE,
 								attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
-		final List<IExecutable> execs = battle.getBattleExecutables();
+		final List<IExecutable> execs = battle.getBattleExecutables(false);
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
 		assertTrue(attackSubs < defendSubs);
@@ -1157,7 +1157,7 @@ public class RevisedTest extends TestCase
 								defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE,
 								attacker + ATTACKER_WITHDRAW).toString(),
 					steps.toString());
-		final List<IExecutable> execs = battle.getBattleExecutables();
+		final List<IExecutable> execs = battle.getBattleExecutables(false);
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
 		assertTrue(attackSubs < defendSubs);
@@ -1195,7 +1195,7 @@ public class RevisedTest extends TestCase
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE,
 								defender + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
-		final List<IExecutable> execs = battle.getBattleExecutables();
+		final List<IExecutable> execs = battle.getBattleExecutables(false);
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
 		assertTrue(attackSubs < defendSubs);
@@ -1242,7 +1242,7 @@ public class RevisedTest extends TestCase
 								defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE,
 								attacker + ATTACKER_WITHDRAW).toString(),
 					steps.toString());
-		final List<IExecutable> execs = battle.getBattleExecutables();
+		final List<IExecutable> execs = battle.getBattleExecutables(false);
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
 		assertTrue(attackSubs < defendSubs);
@@ -1282,7 +1282,7 @@ public class RevisedTest extends TestCase
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
 								defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(),
 					steps.toString());
-		final List<IExecutable> execs = battle.getBattleExecutables();
+		final List<IExecutable> execs = battle.getBattleExecutables(false);
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
 		assertTrue(attackSubs < defendSubs);

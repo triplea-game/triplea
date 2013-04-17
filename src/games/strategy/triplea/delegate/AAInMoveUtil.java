@@ -144,7 +144,7 @@ class AAInMoveUtil implements Serializable
 		// don't iterate over the end
 		// that will be a battle
 		// and handled else where in this tangled mess
-		final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData());
+		final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, getData());
 		// AA guns in transports shouldn't be able to fire
 		final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 		for (final Territory current : route.getMiddleSteps())
@@ -187,7 +187,7 @@ class AAInMoveUtil implements Serializable
 			return;
 		final PlayerID movingPlayer = movingPlayer(units);
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
-		final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData()));
+		final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, getData()));
 		final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // comes ordered alphabetically already
 		Collections.reverse(AAtypes); // stacks are backwards
 		for (final String currentTypeAA : AAtypes)

@@ -112,11 +112,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	protected List<String> m_AAtypes;
 	private final List<Unit> m_attackingUnitsRetreated = new ArrayList<Unit>();
 	private final List<Unit> m_defendingUnitsRetreated = new ArrayList<Unit>();
+	private final int m_maxRounds; // -1 would mean forever until one side is eliminated (the default is infinite)
 	
 	public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data, final BattleTracker battleTracker)
 	{
 		super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
 		m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
+		m_maxRounds = games.strategy.triplea.Properties.getBattleRounds(data);
 	}
 	
 	public void resetDefendingUnits(final Territory battleSite, final PlayerID attacker, final GameData data)
@@ -147,6 +149,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_isAmphibious = m_amphibiousLandAttackers.size() > 0;
 		m_defender = defender;
 		m_territoryEffects = territoryEffects;
+	}
+	
+	public boolean shouldEndBattleDueToMaxRounds()
+	{
+		return m_maxRounds > 0 && m_maxRounds <= m_round;
 	}
 	
 	private boolean canSubsSubmerge()
@@ -333,6 +340,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
 	}
 	
+	public void updateAAUnits()
+	{
+		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+		m_defendingAA = Match.getMatches(m_defendingUnits, Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_round, m_data));
+		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);// comes ordered alphabetically
+		Collections.reverse(m_AAtypes); // stacks are backwards
+	}
+	
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{
@@ -371,10 +386,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		addDependentUnits(transporting(m_defendingUnits));
 		addDependentUnits(transporting(m_attackingUnits));
 		// determine any AA
-		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-		m_defendingAA = Match.getMatches(m_defendingUnits, Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_data));
-		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);// comes ordered alphabetically
-		Collections.reverse(m_AAtypes); // stacks are backwards
+		updateAAUnits();
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
@@ -408,8 +420,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 		}
 		// push on stack in opposite order of execution
-		pushFightLoopOnStack(bridge);
-		pushFightStartOnStack();
+		pushFightLoopOnStack(true, bridge);
 		m_stack.execute(bridge);
 	}
 	
@@ -502,17 +513,17 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	public List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge)
 	{
 		final List<String> steps = new ArrayList<String>();
+		if (canFireAA())
+		{
+			for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_defendingAA))
+			{
+				steps.add(typeAA + AA_GUNS_FIRE_SUFFIX);
+				steps.add(SELECT_PREFIX + typeAA + CASUALTIES_SUFFIX);
+				steps.add(REMOVE_PREFIX + typeAA + CASUALTIES_SUFFIX);
+			}
+		}
 		if (showFirstRun)
 		{
-			if (canFireAA())
-			{
-				for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_defendingAA))
-				{
-					steps.add(typeAA + AA_GUNS_FIRE_SUFFIX);
-					steps.add(SELECT_PREFIX + typeAA + CASUALTIES_SUFFIX);
-					steps.add(REMOVE_PREFIX + typeAA + CASUALTIES_SUFFIX);
-				}
-			}
 			if (!m_battleSite.isWater() && !getBombardingUnits().isEmpty())
 			{
 				steps.add(NAVAL_BOMBARDMENT);
@@ -702,87 +713,85 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return returnFireAgainstAttackingSubs() == ReturnFire.ALL && returnFireAgainstDefendingSubs() == ReturnFire.NONE;
 	}
 	
-	private void pushFightStartOnStack()
+	private void addFightStartToStack(final boolean firstRun, final List<IExecutable> steps)
 	{
-		final IExecutable fireAAGuns = new IExecutable()
+		if (canFireAA())
 		{
-			private static final long serialVersionUID = -1370090785530214199L;
-			
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+			steps.add(new IExecutable()
 			{
-				fireAAGuns(bridge);
-			}
-		};
-		final IExecutable fireNavalBombardment = new IExecutable()
+				private static final long serialVersionUID = -1370090785530214199L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					fireAAGuns(bridge);
+				}
+			});
+		}
+		if (firstRun)
 		{
-			private static final long serialVersionUID = -2255283529092427441L;
-			
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+			steps.add(new IExecutable()
 			{
-				fireNavalBombardment(bridge);
-			}
-		};
-		final IExecutable fireSuicideUnitsAttack = new IExecutable()
-		{
-			private static final long serialVersionUID = 6578247830066963474L;
-			
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				private static final long serialVersionUID = -2255283529092427441L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					fireNavalBombardment(bridge);
+				}
+			});
+			steps.add(new IExecutable()
 			{
-				fireSuicideUnitsAttack(bridge);
-			}
-		};
-		final IExecutable fireSuicideUnitsDefend = new IExecutable()
-		{
-			private static final long serialVersionUID = 2731651892447063082L;
-			
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				private static final long serialVersionUID = 6578247830066963474L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					fireSuicideUnitsAttack(bridge);
+				}
+			});
+			steps.add(new IExecutable()
 			{
-				fireSuicideUnitsDefend(bridge);
-			}
-		};
-		final IExecutable removeNonCombatants = new IExecutable()
-		{
-			private static final long serialVersionUID = 3389635458184415797L;
-			
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				private static final long serialVersionUID = 2731651892447063082L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					fireSuicideUnitsDefend(bridge);
+				}
+			});
+			steps.add(new IExecutable()
 			{
-				// we can remove any AA guns at this point
-				removeNonCombatants(bridge, true, false);
-			}
-		};
-		final IExecutable landParatroops = new IExecutable()
-		{
-			private static final long serialVersionUID = 7193352768857658286L;
-			
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				private static final long serialVersionUID = 3389635458184415797L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					// we can remove any AA guns at this point
+					removeNonCombatants(bridge, true, false);
+				}
+			});
+			steps.add(new IExecutable()
 			{
-				landParatroops(bridge);
-			}
-		};
-		final IExecutable markNoMovementLeft = new IExecutable()
-		{
-			private static final long serialVersionUID = -6676306363537467594L;
-			
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				private static final long serialVersionUID = 7193352768857658286L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					landParatroops(bridge);
+				}
+			});
+			steps.add(new IExecutable()
 			{
-				markNoMovementLeft(bridge);
-			}
-		};
-		// push in opposite order of execution
-		m_stack.push(markNoMovementLeft);
-		m_stack.push(landParatroops);
-		m_stack.push(removeNonCombatants);
-		m_stack.push(fireSuicideUnitsDefend);
-		m_stack.push(fireSuicideUnitsAttack);
-		m_stack.push(fireNavalBombardment);
-		m_stack.push(fireAAGuns);
+				private static final long serialVersionUID = -6676306363537467594L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					markNoMovementLeft(bridge);
+				}
+			});
+		}
 	}
 	
-	private void pushFightLoopOnStack(final IDelegateBridge bridge)
+	private void pushFightLoopOnStack(final boolean firstRun, final IDelegateBridge bridge)
 	{
 		if (m_isOver)
 			return;
-		final List<IExecutable> steps = getBattleExecutables();
+		final List<IExecutable> steps = getBattleExecutables(firstRun);
 		// add in the reverse order we create them
 		Collections.reverse(steps);
 		for (final IExecutable step : steps)
@@ -792,7 +801,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return;
 	}
 	
-	List<IExecutable> getBattleExecutables()
+	List<IExecutable> getBattleExecutables(final boolean firstRun)
 	{
 		// the code here is a bit odd to read
 		// basically, we need to break the code into seperate atomic pieces.
@@ -815,6 +824,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// to a list while creating. then reverse the list and add
 		// to the stack at the end
 		final List<IExecutable> steps = new ArrayList<IExecutable>();
+		addFightStartToStack(firstRun, steps);
 		addFightStepsNonEditMode(steps);
 		/* FYI: according to the rules that I know, you can submerge subs the same turn you kill the last destroyer
 		// we must grab these here, when we clear waiting to die, we might remove
@@ -895,7 +905,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					endBattle(bridge);
 					attackerWins(bridge);
 				}
-				else if ((Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))
+				else if (shouldEndBattleDueToMaxRounds()
+							|| (Match.allMatch(m_attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert()) && Match.allMatch(m_defendingUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
 				{
 					endBattle(bridge);
 					nobodyWins(bridge);
@@ -976,7 +987,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				pushFightLoopOnStack(bridge);
+				pushFightLoopOnStack(false, bridge);
 			}
 		};
 		steps.add(new IExecutable()
@@ -988,10 +999,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				if (!m_isOver)
 				{
+					m_round++;
+					updateAAUnits(); // determine any AA
 					m_stepStrings = determineStepStrings(false, bridge);
 					final ITripleaDisplay display = getDisplay(bridge);
 					display.listBattleSteps(m_battleID, m_stepStrings);
-					m_round++;
 					// continue fighting
 					// the recursive step
 					// this should always be the base of the stack
@@ -2440,12 +2452,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private boolean canFireAA()
 	{
 		if (m_defendingAA == null)
-		{
-			final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-			return m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_data)).size() > 0;
-		}
-		else
-			return m_defendingAA.size() > 0;
+			updateAAUnits();
+		return m_defendingAA.size() > 0;
 	}
 	
 	/**
@@ -2638,10 +2646,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
 		showCasualties(bridge);
 		if (!m_headless)
+		{
 			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
 						new BattleResults(this, m_data), 0);
-		if (!m_headless)
-			ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
+			ClipPlayer.play(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
+		}
 	}
 	
 	/*

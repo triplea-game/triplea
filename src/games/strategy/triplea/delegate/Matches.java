@@ -1155,9 +1155,10 @@ public class Matches
 			@Override
 			public boolean match(final Unit obj)
 			{
+				final UnitAttachment ua = UnitAttachment.get(obj.getType());
 				for (final Unit u : enemyUnitsPresent)
 				{
-					if (UnitAttachment.get(obj.getType()).getWillNotFireIfPresent().contains(u.getType()))
+					if (ua.getWillNotFireIfPresent().contains(u.getType()))
 						return true;
 				}
 				return false;
@@ -1165,14 +1166,28 @@ public class Matches
 		};
 	}
 	
+	public static final Match<Unit> UnitIsAAthatCanFireOnRound(final int battleRoundNumber)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit obj)
+			{
+				final int maxRoundsAA = UnitAttachment.get(obj.getType()).getMaxRoundsAA();
+				return maxRoundsAA < 0 || maxRoundsAA >= battleRoundNumber;
+			}
+		};
+	}
+	
 	public static final Match<Unit> UnitIsAAthatCanFire(final Collection<Unit> unitsMovingOrAttacking, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed,
-				final PlayerID playerMovingOrAttacking, final Match<Unit> typeOfAA, final GameData data)
+				final PlayerID playerMovingOrAttacking, final Match<Unit> typeOfAA, final int battleRoundNumber, final GameData data)
 	{
 		return new CompositeMatchAnd<Unit>(
 					Matches.enemyUnit(playerMovingOrAttacking, data),
 					Matches.unitIsBeingTransported().invert(),
 					Matches.UnitIsAAthatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAA, airborneTechTargetsAllowed),
-					Matches.UnitIsAAthatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert());
+					Matches.UnitIsAAthatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert(),
+					Matches.UnitIsAAthatCanFireOnRound(battleRoundNumber));
 	}
 	
 	public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()

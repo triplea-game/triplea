@@ -1,4 +1,8 @@
 Changes for 1.7
+* Created new unit attachment property, "maxRoundsAA", which sets the number of rounds an AA gun may fire in, with 1 being default. Only normal battles are affected, while flyover and strategic bombing are not affected. (veqryn)
+
+* Created new game option property, "Battle Rounds", which sets the maximum number of rounds of combat for normal battles, with -1 being infinite which is default. (veqryn)
+
 * Created new game option property, "Can Scramble Into Air Battles", which will allow a player to scramble air to neighboring territories in order to defend against air raids and air battles. (veqryn)
 
 * Set up battle delegate and tracker to allow air battles to be created for normal battles. (veqryn)

@@ -224,6 +224,7 @@ public interface Constants
 	public static final String SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS = "Submarines Prevent Unescorted Amphibious Assaults";
 	public static final String SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT = "Submarines Defending May Submerge Or Retreat";
 	public static final String AIR_BATTLE_ROUNDS = "Air Battle Rounds";
+	public static final String BATTLE_ROUNDS = "Battle Rounds";
 	public static final String AIR_BATTLE_ATTACKERS_CAN_RETREAT = "Air Battle Attackers Can Retreat";
 	public static final String AIR_BATTLE_DEFENDERS_CAN_RETREAT = "Air Battle Defenders Can Retreat";
 	public static final String CAN_SCRAMBLE_INTO_AIR_BATTLES = "Can Scramble Into Air Battles";

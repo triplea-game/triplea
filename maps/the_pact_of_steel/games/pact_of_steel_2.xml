@@ -1861,6 +1861,7 @@
 															(If you have multiple aa of the same type-group in a territory, and they have different attack values or dicesides, and different maxAAattacks, then what happens is that the engine will roll for the best attack/diceSides and for the best maxAAattacks, even if that is two different units
 															For example, if you have an aa gun that has infinite attacks and rolls a 4/20, and you have another gun with only one attack and rolls 3/6, then you will end up rolling infinite times at 3/6.  This might be fixed in the future.)
 			mayOverStackAA						values: sets if this unit may fire aa more times than there are aircraft (default = false).
+			maxRoundsAA 						values: sets how many rounds the AA may fire in. negative (-1) means infinite. (default = 1).
 			damageableAA						values: sets if this unit can damage a two-hitpoint unit, instead of killing it instantly with aa fire (default = false = kill instantly).
 			isAAforCombatOnly					values: allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids.
 			isAAforBombingThisUnitOnly			values: allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack.
@@ -5258,6 +5259,11 @@
 						<!-- Unit Placement Restrictions are restrictions on the placement of units: unitPlacementRestrictions, unitPlacementOnlyAllowedIn, canOnlyBePlacedInTerritoryValuedAtX, requiresUnits, -->
 				<property name="Unit Placement Restrictions" value="true" editable="false">
 						<boolean/>
+				</property>
+				
+						<!-- Battle Rounds means the number of rounds that a normal Battle goes on for (sea and land). Default is -1, and if negative, the battle continues forever until 1 side is eliminated. -->
+				<property name="Battle Rounds" value="-1" editable="false">
+						<number min="-1" max="100"/>
 				</property>
 				
 						<!-- Air Battle Rounds means the number of rounds that an Air Battle goes on for. If negative, the battle continues forever until 1 side is eliminated. Default is 1, meaning the battle ends after the first round of combat. -->

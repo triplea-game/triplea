@@ -102,7 +102,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		// fill in defenders
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
 		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits,
-					airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+					airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, m_data));
 		if (m_targets.isEmpty())
 		{
 			m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
@@ -110,7 +110,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		else
 		{
 			final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(),
-						Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+						Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, m_data));
 			targets.addAll(m_targets.keySet());
 			m_defendingUnits = targets;
 		}
@@ -185,7 +185,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
 		// TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+		m_defendingAA = m_battleSite.getUnits().getMatches(
+					Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, m_data));
 		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
 		Collections.reverse(m_AAtypes); // reverse since stacks are in reverse order
 		final boolean hasAA = m_defendingAA.size() > 0;

@@ -148,6 +148,7 @@ public class UnitAttachment extends DefaultAttachment
 	private int m_attackAA = 1;
 	private int m_attackAAmaxDieSides = -1;
 	private int m_maxAAattacks = -1; // -1 means infinite
+	private int m_maxRoundsAA = 1; // -1 means infinite
 	private String m_typeAA = "AA"; // default value for when it is not set
 	private HashSet<UnitType> m_targetsAA = null; // null means targeting air units only
 	private boolean m_mayOverStackAA = false; // if false, we can not shoot more times than there are number of planes
@@ -2370,6 +2371,31 @@ public class UnitAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setMaxRoundsAA(final String s) throws GameParseException
+	{
+		final int attacks = getInt(s);
+		if (attacks < -1)
+			throw new GameParseException("maxRoundsAA must be positive (or -1 for infinite) " + thisErrorMsg());
+		m_maxRoundsAA = getInt(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setMaxRoundsAA(final Integer s)
+	{
+		m_maxRoundsAA = s;
+	}
+	
+	public int getMaxRoundsAA()
+	{
+		return m_maxRoundsAA;
+	}
+	
+	public void resetMaxRoundsAA()
+	{
+		m_maxRoundsAA = 1;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMayOverStackAA(final String s)
 	{
 		m_mayOverStackAA = getBool(s);
@@ -3055,6 +3081,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  attackAA:" + m_attackAA
 					+ "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
 					+ "  maxAAattacks:" + m_maxAAattacks
+					+ "  maxRoundsAA:" + m_maxRoundsAA
 					+ "  mayOverStackAA:" + m_mayOverStackAA
 					+ "  damageableAA:" + m_damageableAA
 					+ "  typeAA:" + m_typeAA

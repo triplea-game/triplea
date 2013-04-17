@@ -55,7 +55,7 @@ public class AirBattle extends AbstractBattle
 	protected final Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
 	protected final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
 	protected boolean m_intercept = false;
-	protected final int m_maxRounds; // -1 would mean forever until one side is eliminated
+	protected final int m_maxRounds; // -1 would mean forever until one side is eliminated. (default is 1 round)
 	
 	public AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker, final BattleTracker battleTracker)
 	{
@@ -140,19 +140,19 @@ public class AirBattle extends AbstractBattle
 			return !m_attackingUnits.isEmpty() && !m_defendingUnits.isEmpty();
 	}
 	
-	public boolean shouldEndAirBattle()
+	public boolean shouldEndBattleDueToMaxRounds()
 	{
 		return m_maxRounds > 0 && m_maxRounds <= m_round;
 	}
 	
 	protected boolean canAttackerRetreat()
 	{
-		return !shouldEndAirBattle() && shouldFightAirBattle() && games.strategy.triplea.Properties.getAirBattleAttackersCanRetreat(m_data);
+		return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle() && games.strategy.triplea.Properties.getAirBattleAttackersCanRetreat(m_data);
 	}
 	
 	protected boolean canDefenderRetreat()
 	{
-		return !shouldEndAirBattle() && shouldFightAirBattle() && games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data);
+		return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle() && games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data);
 	}
 	
 	List<IExecutable> getBattleExecutables(final boolean firstRun)
@@ -218,7 +218,7 @@ public class AirBattle extends AbstractBattle
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (shouldFightAirBattle() && !shouldEndAirBattle())
+				if (shouldFightAirBattle() && !shouldEndBattleDueToMaxRounds())
 					return;
 				makeBattle(bridge);
 			}
@@ -230,7 +230,7 @@ public class AirBattle extends AbstractBattle
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (shouldFightAirBattle() && !shouldEndAirBattle())
+				if (shouldFightAirBattle() && !shouldEndBattleDueToMaxRounds())
 					return;
 				end(bridge);
 			}
