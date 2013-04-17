@@ -1302,6 +1302,15 @@ public class Matches
 			return ua.getAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
 		}
 	};
+	public static final Match<Unit> UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj.getType());
+			return ua.getOffensiveAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+		}
+	};
 	
 	public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
 	{

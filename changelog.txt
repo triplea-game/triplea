@@ -1,4 +1,8 @@
 Changes for 1.7
+* Added new steps to must fight battle so that offensive aa guns will work correctly. (veqryn)
+
+* Created new unit attachment properties, "offensiveAttackAA" and "offensiveAttackAAmaxDieSides", which will be used by offensive aa guns. (veqryn)
+
 * Created new unit attachment property, "maxRoundsAA", which sets the number of rounds an AA gun may fire in, with 1 being default. Only normal battles are affected, while flyover and strategic bombing are not affected. (veqryn)
 
 * Created new game option property, "Battle Rounds", which sets the maximum number of rounds of combat for normal battles, with -1 being infinite which is default. (veqryn)

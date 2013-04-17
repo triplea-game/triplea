@@ -1857,6 +1857,8 @@
 			attackAA							values: the value that an isAA unit will attack at, for shooting at air units before battle
 			attackAAmaxDieSides					values: sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  All units with the same typeAA must have the same dice sides.
 															Be Warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck!
+			offensiveAttackAA 					values: same as attackAA but for offensive side
+			offensiveAttackAAmaxDieSides 		values: same as attackAAmaxDieSides but for offensive side
 			maxAAattacks						values: sets how many times this unit may fire its AA guns. Defaults to -1, which means infinite. If not infinite, then aa guns can stack.
 															(If you have multiple aa of the same type-group in a territory, and they have different attack values or dicesides, and different maxAAattacks, then what happens is that the engine will roll for the best attack/diceSides and for the best maxAAattacks, even if that is two different units
 															For example, if you have an aa gun that has infinite attacks and rolls a 4/20, and you have another gun with only one attack and rolls 3/6, then you will end up rolling infinite times at 3/6.  This might be fixed in the future.)

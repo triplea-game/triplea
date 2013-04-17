@@ -347,7 +347,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 						validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
 						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
-							m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
+							m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite, true);
 							if (currentTypeAA.equals("AA"))
 							{
 								if (m_dice.getHits() > 0)
@@ -467,7 +467,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 						m_battleID, /* head-less */false, 0, allowMultipleHitsPerUnit);
 			return casualtySelection;
 		}
-		final CasualtyDetails casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
+		final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
 		
 		final int totalExpectingHits = dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits();
 		if (casualties.size() != totalExpectingHits)

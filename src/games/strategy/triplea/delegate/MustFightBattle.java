@@ -109,7 +109,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private final ExecutionStack m_stack = new ExecutionStack();
 	private List<String> m_stepStrings;
 	protected List<Unit> m_defendingAA;
-	protected List<String> m_AAtypes;
+	protected List<Unit> m_offensiveAA;
+	protected List<String> m_defendingAAtypes;
+	protected List<String> m_offensiveAAtypes;
 	private final List<Unit> m_attackingUnitsRetreated = new ArrayList<Unit>();
 	private final List<Unit> m_defendingUnitsRetreated = new ArrayList<Unit>();
 	private final int m_maxRounds; // -1 would mean forever until one side is eliminated (the default is infinite)
@@ -340,12 +342,21 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
 	}
 	
-	public void updateAAUnits()
+	public void updateDefendingAAUnits()
 	{
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
 		m_defendingAA = Match.getMatches(m_defendingUnits, Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_round, m_data));
-		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);// comes ordered alphabetically
-		Collections.reverse(m_AAtypes); // stacks are backwards
+		m_defendingAAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);// comes ordered alphabetically
+		Collections.reverse(m_defendingAAtypes); // stacks are backwards
+	}
+	
+	public void updateOffensiveAAUnits()
+	{
+		// no airborne targets for offensive aa
+		m_offensiveAA = Match.getMatches(m_attackingUnits,
+					Matches.UnitIsAAthatCanFire(m_defendingUnits, new HashMap<String, HashSet<UnitType>>(), m_defender, Matches.UnitIsAAforCombatOnly, m_round, m_data));
+		m_offensiveAAtypes = UnitAttachment.getAllOfTypeAAs(m_offensiveAA);// comes ordered alphabetically
+		Collections.reverse(m_offensiveAAtypes); // stacks are backwards
 	}
 	
 	@Override
@@ -386,7 +397,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		addDependentUnits(transporting(m_defendingUnits));
 		addDependentUnits(transporting(m_attackingUnits));
 		// determine any AA
-		updateAAUnits();
+		updateOffensiveAAUnits();
+		updateDefendingAAUnits();
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
@@ -513,13 +525,22 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	public List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge)
 	{
 		final List<String> steps = new ArrayList<String>();
-		if (canFireAA())
+		if (canFireOffensiveAA())
+		{
+			for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_offensiveAA))
+			{
+				steps.add(m_attacker.getName() + " " + typeAA + AA_GUNS_FIRE_SUFFIX);
+				steps.add(m_defender.getName() + SELECT_PREFIX + typeAA + CASUALTIES_SUFFIX);
+				steps.add(m_defender.getName() + REMOVE_PREFIX + typeAA + CASUALTIES_SUFFIX);
+			}
+		}
+		if (canFireDefendingAA())
 		{
 			for (final String typeAA : UnitAttachment.getAllOfTypeAAs(m_defendingAA))
 			{
-				steps.add(typeAA + AA_GUNS_FIRE_SUFFIX);
-				steps.add(SELECT_PREFIX + typeAA + CASUALTIES_SUFFIX);
-				steps.add(REMOVE_PREFIX + typeAA + CASUALTIES_SUFFIX);
+				steps.add(m_defender.getName() + " " + typeAA + AA_GUNS_FIRE_SUFFIX);
+				steps.add(m_attacker.getName() + SELECT_PREFIX + typeAA + CASUALTIES_SUFFIX);
+				steps.add(m_attacker.getName() + REMOVE_PREFIX + typeAA + CASUALTIES_SUFFIX);
 			}
 		}
 		if (showFirstRun)
@@ -715,7 +736,19 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void addFightStartToStack(final boolean firstRun, final List<IExecutable> steps)
 	{
-		if (canFireAA())
+		if (canFireOffensiveAA())
+		{
+			steps.add(new IExecutable()
+			{
+				private static final long serialVersionUID = 3802352488499530533L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					fireOffensiveAAGuns(bridge);
+				}
+			});
+		}
+		if (canFireDefendingAA())
 		{
 			steps.add(new IExecutable()
 			{
@@ -723,7 +756,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					fireAAGuns(bridge);
+					fireDefensiveAAGuns(bridge);
 				}
 			});
 		}
@@ -1000,7 +1033,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				if (!m_isOver)
 				{
 					m_round++;
-					updateAAUnits(); // determine any AA
+					updateOffensiveAAUnits();// determine any AA
+					updateDefendingAAUnits();
 					m_stepStrings = determineStepStrings(false, bridge);
 					final ITripleaDisplay display = getDisplay(bridge);
 					display.listBattleSteps(m_battleID, m_stepStrings);
@@ -2311,31 +2345,42 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return m_amphibiousAttackFrom;
 	}
 	
-	private void fireAAGuns(final IDelegateBridge bridge)
+	private void fireOffensiveAAGuns(final IDelegateBridge bridge)
 	{
-		m_stack.push(new FireAA());
+		m_stack.push(new FireAA(false));
+	}
+	
+	private void fireDefensiveAAGuns(final IDelegateBridge bridge)
+	{
+		m_stack.push(new FireAA(true));
 	}
 	
 	
 	class FireAA implements IExecutable
 	{
 		private static final long serialVersionUID = -6406659798754841382L;
+		private final boolean m_defending;
 		private DiceRoll m_dice;
 		private CasualtyDetails m_casualties;
 		Collection<Unit> m_casualtiesSoFar = new ArrayList<Unit>();
 		
-		// private List<Unit> m_hitUnits = new ArrayList<Unit>();
+		private FireAA(final boolean defending)
+		{
+			m_defending = defending;
+		}
+		
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
-			if (!canFireAA())
+			if ((m_defending && !canFireDefendingAA()) || (!m_defending && !canFireOffensiveAA()))
 				return;
-			for (final String currentTypeAA : m_AAtypes)
+			for (final String currentTypeAA : (m_defending ? m_defendingAAtypes : m_offensiveAAtypes))
 			{
-				final Collection<Unit> currentPossibleAA = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
+				final Collection<Unit> currentPossibleAA = Match.getMatches((m_defending ? m_defendingAA : m_offensiveAA), Matches.UnitIsAAofTypeAA(currentTypeAA));
 				final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
-				final Set<UnitType> airborneTypesTargettedToo = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
-				final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
-							new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+				final Set<UnitType> airborneTypesTargettedToo = m_defending ? TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA) : new HashSet<UnitType>();
+				final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches((m_defending ? m_attackingUnits : m_defendingUnits),
+							new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+										new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
 				
 				final IExecutable rollDice = new IExecutable()
 				{
@@ -2346,26 +2391,28 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
 						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
-							m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
+							m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite, m_defending);
 							if (!m_headless)
-						{
-							if (currentTypeAA.equals("AA"))
 							{
-								if (m_dice.getHits() > 0)
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+								if (currentTypeAA.equals("AA"))
+								{
+									if (m_dice.getHits() > 0)
+										ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, (m_defending ? m_defender.getName() : m_attacker.getName()));
+									else
+										ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, (m_defending ? m_defender.getName() : m_attacker.getName()));
+								}
 								else
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
-							}
-							else
-							{
-								if (m_dice.getHits() > 0)
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
-								else
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
+								{
+									if (m_dice.getHits() > 0)
+										ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+													(m_defending ? m_defender.getName() : m_attacker.getName()));
+									else
+										ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+													(m_defending ? m_defender.getName() : m_attacker.getName()));
+								}
 							}
 						}
 					}
-				}
 				};
 				final IExecutable selectCasualties = new IExecutable()
 				{
@@ -2391,7 +2438,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
 							notifyCasualtiesAA(bridge, currentTypeAA);
-							removeCasualties(m_casualties.getKilled(), ReturnFire.NONE, false, bridge, true);
+							removeCasualties(m_casualties.getKilled(), ReturnFire.NONE, !m_defending, bridge, m_defending);
 						}
 					}
 				};
@@ -2405,24 +2452,25 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		private CasualtyDetails selectCasualties(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA, final IDelegateBridge bridge, final String currentTypeAA)
 		{
 			// send defender the dice roll so he can see what the dice are while he waits for attacker to select casualties
-			getDisplay(bridge).notifyDice(m_battleID, m_dice, SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
-			return BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
+			getDisplay(bridge).notifyDice(m_battleID, m_dice, (m_defending ? m_attacker.getName() : m_defender.getName()) + SELECT_PREFIX + currentTypeAA + CASUALTIES_SUFFIX);
+			return BattleCalculator.getAACasualties(!m_defending, validAttackingUnitsForThisRoll, defendingAA, m_dice, bridge, (m_defending ? m_defender : m_attacker),
+						(m_defending ? m_attacker : m_defender), m_battleID, m_battleSite);
 		}
 		
 		private void notifyCasualtiesAA(final IDelegateBridge bridge, final String currentTypeAA)
 		{
 			if (m_headless)
 				return;
-			getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, m_dice, m_attacker, new ArrayList<Unit>(m_casualties.getKilled()),
-						new ArrayList<Unit>(m_casualties.getDamaged()), m_dependentUnits);
-			getRemote(m_attacker, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
+			getDisplay(bridge).casualtyNotification(m_battleID, (m_defending ? m_attacker.getName() : m_defender.getName()) + REMOVE_PREFIX + currentTypeAA + CASUALTIES_SUFFIX, m_dice,
+						(m_defending ? m_attacker : m_defender), new ArrayList<Unit>(m_casualties.getKilled()), new ArrayList<Unit>(m_casualties.getDamaged()), m_dependentUnits);
+			getRemote((m_defending ? m_attacker : m_defender), bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
 			final Runnable r = new Runnable()
 			{
 				public void run()
 				{
 					try
 					{
-						getRemote(m_defender, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
+						getRemote((m_defending ? m_defender : m_attacker), bridge).confirmEnemyCasualties(m_battleID, "Press space to continue", (m_defending ? m_attacker : m_defender));
 					} catch (final ConnectionLostException cle)
 					{
 						// somone else will deal with this
@@ -2449,11 +2497,18 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 	}
 	
-	private boolean canFireAA()
+	private boolean canFireDefendingAA()
 	{
 		if (m_defendingAA == null)
-			updateAAUnits();
+			updateDefendingAAUnits();
 		return m_defendingAA.size() > 0;
+	}
+	
+	private boolean canFireOffensiveAA()
+	{
+		if (m_offensiveAA == null)
+			updateOffensiveAAUnits();
+		return m_offensiveAA.size() > 0;
 	}
 	
 	/**

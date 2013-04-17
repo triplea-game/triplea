@@ -146,7 +146,9 @@ public class UnitAttachment extends DefaultAttachment
 	private boolean m_isAAforFlyOverOnly = false;
 	private boolean m_isRocket = false;
 	private int m_attackAA = 1;
+	private int m_offensiveAttackAA = 0;
 	private int m_attackAAmaxDieSides = -1;
+	private int m_offensiveAttackAAmaxDieSides = -1;
 	private int m_maxAAattacks = -1; // -1 means infinite
 	private int m_maxRoundsAA = 1; // -1 means infinite
 	private String m_typeAA = "AA"; // default value for when it is not set
@@ -2322,6 +2324,29 @@ public class UnitAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setOffensiveAttackAA(final String s)
+	{
+		m_offensiveAttackAA = getInt(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setOffensiveAttackAA(final Integer s)
+	{
+		m_offensiveAttackAA = s;
+	}
+	
+	public int getOffensiveAttackAA(final PlayerID player)
+	{
+		// TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it does not divide perfectly into attackAAmaxDieSides
+		return Math.max(0, Math.min(getOffensiveAttackAAmaxDieSides(), m_offensiveAttackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
+	}
+	
+	public void resetOffensiveAttackAA()
+	{
+		m_offensiveAttackAA = 1;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAttackAAmaxDieSides(final String s)
 	{
 		m_attackAAmaxDieSides = getInt(s);
@@ -2343,6 +2368,30 @@ public class UnitAttachment extends DefaultAttachment
 	public void resetAttackAAmaxDieSides()
 	{
 		m_attackAAmaxDieSides = -1;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setOffensiveAttackAAmaxDieSides(final String s)
+	{
+		m_offensiveAttackAAmaxDieSides = getInt(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setOffensiveAttackAAmaxDieSides(final Integer s)
+	{
+		m_offensiveAttackAAmaxDieSides = s;
+	}
+	
+	public int getOffensiveAttackAAmaxDieSides()
+	{
+		if (m_offensiveAttackAAmaxDieSides < 0)
+			return getData().getDiceSides();
+		return m_offensiveAttackAAmaxDieSides;
+	}
+	
+	public void resetOffensiveAttackAAmaxDieSides()
+	{
+		m_offensiveAttackAAmaxDieSides = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2879,9 +2928,9 @@ public class UnitAttachment extends DefaultAttachment
 						|| m_isCombatTransport || m_isKamikaze)
 				throw new GameParseException("land units can not have certain properties, " + thisErrorMsg());
 		}
-		if (m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200)
+		if (m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200 || m_offensiveAttackAA < 0 || m_offensiveAttackAAmaxDieSides < -1 || m_offensiveAttackAAmaxDieSides > 200)
 		{
-			throw new GameParseException("attackAA or attackAAmaxDieSides is wrong, " + thisErrorMsg());
+			throw new GameParseException("attackAA or attackAAmaxDieSides or offensiveAttackAA or offensiveAttackAAmaxDieSides is wrong, " + thisErrorMsg());
 		}
 		if (m_carrierCapacity != -1 && m_carrierCost != -1)
 		{
@@ -3079,7 +3128,9 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
 					+ "  attackAA:" + m_attackAA
+					+ "  offensiveAttackAA:" + m_offensiveAttackAA
 					+ "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
+					+ "  offensiveAttackAAmaxDieSides:" + m_offensiveAttackAAmaxDieSides
 					+ "  maxAAattacks:" + m_maxAAattacks
 					+ "  maxRoundsAA:" + m_maxRoundsAA
 					+ "  mayOverStackAA:" + m_mayOverStackAA
@@ -3214,23 +3265,26 @@ public class UnitAttachment extends DefaultAttachment
 			}
 		}
 		
-		if (getIsAAforCombatOnly() || getIsAAforBombingThisUnitOnly() || getIsAAforFlyOverOnly())
+		if ((getIsAAforCombatOnly() || getIsAAforBombingThisUnitOnly() || getIsAAforFlyOverOnly()) && (getAttackAA(player) > 0 || getOffensiveAttackAA(player) > 0))
 		{
-			stats.append(this.getAttackAA(player) + "/" + (getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides()) + " ");
+			if (getOffensiveAttackAA(player) > 0)
+				stats.append(getOffensiveAttackAA(player) + "/" + (getOffensiveAttackAAmaxDieSides() != -1 ? getOffensiveAttackAAmaxDieSides() : getData().getDiceSides()) + " att ");
+			if (getAttackAA(player) > 0)
+				stats.append(getAttackAA(player) + "/" + (getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides()) + " def ");
 			if (getIsAAforCombatOnly() && getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly())
-				stats.append("Anti-Air, ");
+				stats.append(getTypeAA() + ", ");
 			else if (getIsAAforCombatOnly() && getIsAAforFlyOverOnly() && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
-				stats.append("Anti-Air for Combat & FlyOver, ");
+				stats.append(getTypeAA() + " for Combat & Move Through, ");
 			else if (getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly() && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
-				stats.append("Anti-Air for Raids & FlyOver, ");
+				stats.append(getTypeAA() + " for Raids & Move Through, ");
 			else if (getIsAAforCombatOnly())
-				stats.append("Anti-Air for Combat, ");
+				stats.append(getTypeAA() + " for Combat, ");
 			else if (getIsAAforBombingThisUnitOnly())
-				stats.append("Anti-Air for Raids, ");
+				stats.append(getTypeAA() + " for Raids, ");
 			else if (getIsAAforFlyOverOnly())
-				stats.append("Anti-Air for FlyOver, ");
+				stats.append(getTypeAA() + " for Move Through, ");
 			if (getMaxAAattacks() > -1)
-				stats.append(getMaxAAattacks() + " AA Attacks, ");
+				stats.append(getMaxAAattacks() + " " + getTypeAA() + " Attacks, ");
 		}
 		if (getIsRocket() && playerHasRockets(player))
 		{
