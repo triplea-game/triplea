@@ -1180,14 +1180,15 @@ public class Matches
 	}
 	
 	public static final Match<Unit> UnitIsAAthatCanFire(final Collection<Unit> unitsMovingOrAttacking, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed,
-				final PlayerID playerMovingOrAttacking, final Match<Unit> typeOfAA, final int battleRoundNumber, final GameData data)
+				final PlayerID playerMovingOrAttacking, final Match<Unit> typeOfAA, final int battleRoundNumber, final boolean defending, final GameData data)
 	{
 		return new CompositeMatchAnd<Unit>(
 					Matches.enemyUnit(playerMovingOrAttacking, data),
 					Matches.unitIsBeingTransported().invert(),
 					Matches.UnitIsAAthatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAA, airborneTechTargetsAllowed),
 					Matches.UnitIsAAthatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert(),
-					Matches.UnitIsAAthatCanFireOnRound(battleRoundNumber));
+					Matches.UnitIsAAthatCanFireOnRound(battleRoundNumber),
+					(defending ? UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero : UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
 	}
 	
 	public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()

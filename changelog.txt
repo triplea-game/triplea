@@ -1,4 +1,6 @@
 Changes for 1.7
+* Allowed AA Gun type units to fire back in same round if killed by other AA Gun type units. (veqryn)
+
 * Added new steps to must fight battle so that offensive aa guns will work correctly. (veqryn)
 
 * Created new unit attachment properties, "offensiveAttackAA" and "offensiveAttackAAmaxDieSides", which will be used by offensive aa guns. (veqryn)

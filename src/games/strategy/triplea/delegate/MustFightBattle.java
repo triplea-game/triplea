@@ -344,17 +344,23 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	public void updateDefendingAAUnits()
 	{
+		final Collection<Unit> canFire = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
+		canFire.addAll(m_defendingUnits);
+		canFire.addAll(m_defendingWaitingToDie);
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-		m_defendingAA = Match.getMatches(m_defendingUnits, Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_round, m_data));
+		m_defendingAA = Match.getMatches(canFire, Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_round, true, m_data));
 		m_defendingAAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);// comes ordered alphabetically
 		Collections.reverse(m_defendingAAtypes); // stacks are backwards
 	}
 	
 	public void updateOffensiveAAUnits()
 	{
+		final Collection<Unit> canFire = new ArrayList<Unit>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
+		canFire.addAll(m_attackingUnits);
+		canFire.addAll(m_attackingWaitingToDie);
 		// no airborne targets for offensive aa
-		m_offensiveAA = Match.getMatches(m_attackingUnits,
-					Matches.UnitIsAAthatCanFire(m_defendingUnits, new HashMap<String, HashSet<UnitType>>(), m_defender, Matches.UnitIsAAforCombatOnly, m_round, m_data));
+		m_offensiveAA = Match.getMatches(canFire,
+					Matches.UnitIsAAthatCanFire(m_defendingUnits, new HashMap<String, HashSet<UnitType>>(), m_defender, Matches.UnitIsAAforCombatOnly, m_round, false, m_data));
 		m_offensiveAAtypes = UnitAttachment.getAllOfTypeAAs(m_offensiveAA);// comes ordered alphabetically
 		Collections.reverse(m_offensiveAAtypes); // stacks are backwards
 	}
@@ -736,7 +742,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void addFightStartToStack(final boolean firstRun, final List<IExecutable> steps)
 	{
-		if (canFireOffensiveAA())
+		final boolean offensiveAA = canFireOffensiveAA();
+		final boolean defendingAA = canFireDefendingAA();
+		if (offensiveAA)
 		{
 			steps.add(new IExecutable()
 			{
@@ -748,7 +756,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				}
 			});
 		}
-		if (canFireDefendingAA())
+		if (defendingAA)
 		{
 			steps.add(new IExecutable()
 			{
@@ -757,6 +765,18 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireDefensiveAAGuns(bridge);
+				}
+			});
+		}
+		if (offensiveAA || defendingAA)
+		{
+			steps.add(new IExecutable()
+			{
+				private static final long serialVersionUID = 8762796162264296436L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					clearWaitingToDie(bridge);
 				}
 			});
 		}
@@ -2438,7 +2458,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
 							notifyCasualtiesAA(bridge, currentTypeAA);
-							removeCasualties(m_casualties.getKilled(), ReturnFire.NONE, !m_defending, bridge, m_defending);
+							removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge, m_defending);
 						}
 					}
 				};

@@ -161,7 +161,7 @@ public class InstallMapDialog extends JDialog
 						if (installed != null && installed.exists())
 						{
 							if (description.getVersion() != null && description.getVersion().isGreaterThan(getVersion(installed), true))
-								mapName = "<html><b>" + mapName + "</b></html>";
+								mapName = "<html><b><font color=\"red\">" + mapName + "</font></b></html>";
 							else
 								mapName = "<html><i>" + mapName + "</i></html>";
 						}
