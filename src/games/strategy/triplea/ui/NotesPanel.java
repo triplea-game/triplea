@@ -67,6 +67,8 @@ public class NotesPanel extends JPanel
 	
 	void layoutNotes()
 	{
+		if (m_gameNotesPane == null)
+			return;
 		NotesPanel.this.removeAll();
 		NotesPanel.this.add(new JLabel(" "));
 		NotesPanel.this.add(m_refresh);

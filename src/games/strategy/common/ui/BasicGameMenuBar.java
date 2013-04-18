@@ -105,7 +105,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	
 	public void dispose()
 	{
-		m_gameNotesPane.dispose();
+		if (m_gameNotesPane != null)
+			m_gameNotesPane.dispose();
 	}
 	
 	public SoftJEditorPane getGameNotesJEditorPane()

@@ -633,7 +633,8 @@ public class DiceRoll implements Externalizable
 			while (iter2.hasNext())
 			{
 				final UnitSupportAttachment rule = iter2.next();
-				if (rule.getUnitType().contains(type) && supportLeft.getInt(rule) > 0)
+				final HashSet<UnitType> types = rule.getUnitType();
+				if (types != null && types.contains(type) && supportLeft.getInt(rule) > 0)
 				{
 					strength += rule.getBonus();
 					supportLeft.add(rule, -1);
@@ -686,8 +687,10 @@ public class DiceRoll implements Externalizable
 				// then when the Support2 comes up, all the mech infantry are used up, and it does nothing.
 				// instead, we want Support2 to come first, support all mech infantry that it can, then have Support1 come in and support whatever is left, that way no support is wasted
 				// TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will come first. It should come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
-				final Integer s1 = u1.getUnitType().size();
-				final Integer s2 = u2.getUnitType().size();
+				final HashSet<UnitType> types1 = u1.getUnitType();
+				final HashSet<UnitType> types2 = u2.getUnitType();
+				final Integer s1 = types1 == null ? 0 : types1.size();
+				final Integer s2 = types2 == null ? 0 : types2.size();
 				return s1.compareTo(s2);
 			}
 		};

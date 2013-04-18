@@ -3344,6 +3344,8 @@ public class UnitAttachment extends DefaultAttachment
 				{
 					for (final UnitSupportAttachment support : supports)
 					{
+						if (support.getUnitType() == null || support.getUnitType().isEmpty())
+							continue;
 						stats.append("gives " + support.getBonus() + (support.getOffence() && support.getDefence() ? " Att/Def " : (support.getOffence() ? " Attack " : " Defense "))
 									+ (support.getStrength() && support.getRoll() ? "Power&Rolls " : (support.getStrength() ? "Power " : "Rolls "))
 									+ " to " + support.getNumber() + (support.getAllied() && support.getEnemy() ? " Allied&Enemy " : (support.getAllied() ? " Allied " : " Enemy "))
