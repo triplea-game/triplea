@@ -795,7 +795,7 @@ public class AirBattle extends AbstractBattle
 		else
 			return territory.getUnits().someMatch(defendingAirMatch);
 		// should we check if the territory also has an air base?
-		return Match.someMatch(data.getMap().getNeighbors(territory, maxScrambleDistance), Matches.territoryHasUnitsThatMatch(defendingAirMatch));
+		return territory.getUnits().someMatch(defendingAirMatch) || Match.someMatch(data.getMap().getNeighbors(territory, maxScrambleDistance), Matches.territoryHasUnitsThatMatch(defendingAirMatch));
 	}
 	
 	public static int getAirBattleRolls(final Collection<Unit> units, final boolean defending)
