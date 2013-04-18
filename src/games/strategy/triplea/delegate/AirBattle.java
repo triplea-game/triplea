@@ -523,7 +523,7 @@ public class AirBattle extends AbstractBattle
 			final Collection<IBattle> dependentBattles = m_battleTracker.getBlocked(AirBattle.this);
 			removeFromDependents(retreating, bridge, dependentBattles, true);
 		}
-		final String transcriptText = MyFormatter.unitsToText(retreating) + " retreated";
+		final String transcriptText = MyFormatter.unitsToText(retreating) + (defender ? " grounded" : " retreated");
 		final Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
 		units.removeAll(retreating);
 		bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
@@ -556,14 +556,28 @@ public class AirBattle extends AbstractBattle
 		
 		private void getInterceptors(final IDelegateBridge bridge)
 		{
+			boolean groundedPlanesRetreated;
 			final Collection<Unit> interceptors;
 			if (m_isBombingRun)
 			{
+				// if bombing run, ask who will intercept
 				interceptors = getRemote(m_defender, bridge).selectUnitsQuery(m_battleSite, new ArrayList<Unit>(m_defendingUnits), "Select Air to Intercept");
+				groundedPlanesRetreated = false;
 			}
 			else
 			{
-				interceptors = new ArrayList<Unit>(m_defendingUnits);
+				// if normal battle, we may choose to withdraw some air units (keep them grounded for both Air battle and the subsequent normal battle) instead of launching
+				if (games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data))
+				{
+					interceptors = getRemote(m_defender, bridge).selectUnitsQuery(m_battleSite, new ArrayList<Unit>(m_defendingUnits), "Select Air to Intercept");
+					groundedPlanesRetreated = true;
+				}
+				else
+				{
+					// if not allowed to withdraw, we must commit all air
+					interceptors = new ArrayList<Unit>(m_defendingUnits);
+					groundedPlanesRetreated = false;
+				}
 			}
 			if (interceptors != null && !m_defendingUnits.containsAll(interceptors))
 				throw new IllegalStateException("Interceptors choose from outside of available units");
@@ -575,6 +589,11 @@ public class AirBattle extends AbstractBattle
 				m_defendingUnits.addAll(interceptors);
 			}
 			getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, beingRemoved, null, null);
+			if (groundedPlanesRetreated)
+			{
+				// this removes them from the subsequent normal battle. (do not use this for bombing battles)
+				retreat(beingRemoved, true, bridge);
+			}
 			
 			if (!m_attackingUnits.isEmpty())
 				bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " attacks with " + m_attackingUnits.size() + " units heading to " + m_battleSite.getName(), m_attackingUnits);
