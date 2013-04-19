@@ -305,6 +305,7 @@ public class BattleTracker implements java.io.Serializable
 		final GameData data = bridge.getData();
 		if (bombing)
 		{
+			// create only either an air battle OR a bombing battle. (the air battle will create a bombing battle when done, if needed)
 			if (!airBattleCompleted && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
 						&& AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing))
 				addAirBattle(route, units, id, data, true);
@@ -315,6 +316,7 @@ public class BattleTracker implements java.io.Serializable
 		}
 		else
 		{
+			// create both an air battle and a normal battle
 			if (!airBattleCompleted && games.strategy.triplea.Properties.getBattlesMayBePreceededByAirBattles(data)
 						&& AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing))
 			{
