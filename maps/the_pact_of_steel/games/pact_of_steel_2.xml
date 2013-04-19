@@ -1810,8 +1810,9 @@
 			whenCombatDamaged					values: this property lets you set certain behaviors for when this unit is damaged. the value is the effect, while the count is the damage from where to where. (example: <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>)
 															units start at zero combat damage, and usually die at 1 damage. some units have 2 hp, so you can use this with 1:1 to say that when a unit has 1 damage they have this effect.
 															currently only allows: unitsMayNotLandOnCarrier, unitsMayNotLeaveAlliedCarrier
-			canIntercept						values: allows this unit to participate in air battles, as a defending unit
-			canEscort							values: allows this unit to participate in air battles, as an attacking unit
+			canIntercept						values: allows this unit to participate in air raids (air battles for strat bombing), as a defending unit
+			canEscort							values: allows this unit to participate in air raids (air battles for strat bombing), as an attacking unit
+			canAirBattle						values: allows this unit to participate in air battles (for normal battles), as an attacking or defending unit
 			airDefense							values: defense value of interceptor
 			airAttack							values: attack value of escort
 			fuelCost							values: fuelCost is a list of at least one resource that get used up for each point of movementCost a unit does.  (can have multiple). example: <option name="fuelCost" value="Fuel" count="5"/> and <option name="fuelCost" value="PUs" count="1"/>

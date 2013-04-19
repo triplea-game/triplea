@@ -23,7 +23,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -733,10 +732,7 @@ public class AirBattle extends AbstractBattle
 			@Override
 			public boolean match(final Unit u)
 			{
-				final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<Unit>();
-				// canIntercept.add(Matches.UnitIsDisabled().invert());
-				// if (shouldAirBattleUseAirCombatAttDefValues(false))
-				canIntercept.add(new CompositeMatchOr<Unit>(Matches.UnitIsAir, unitHasAirAttackGreaterThanZero(), Matches.unitCanEscort));
+				final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<Unit>(Matches.unitCanAirBattle);
 				return canIntercept.match(u);
 			}
 		};
@@ -750,11 +746,7 @@ public class AirBattle extends AbstractBattle
 			@Override
 			public boolean match(final Unit u)
 			{
-				final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, attacker));
-				// canIntercept.add(Matches.UnitIsDisabled().invert());
-				canIntercept.add(Matches.UnitWasInAirBattle.invert());
-				// if (shouldAirBattleUseAirCombatAttDefValues(false))
-				canIntercept.add(new CompositeMatchOr<Unit>(Matches.UnitIsAir, unitHasAirDefenseGreaterThanZero(), Matches.unitCanIntercept));
+				final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<Unit>(Matches.unitCanAirBattle, Matches.unitIsEnemyOf(data, attacker), Matches.UnitWasInAirBattle.invert());
 				if (!canScrambleIntoAirBattles)
 					canIntercept.add(Matches.UnitWasScrambled.invert());
 				return canIntercept.match(u);
@@ -770,9 +762,7 @@ public class AirBattle extends AbstractBattle
 			@Override
 			public boolean match(final Unit u)
 			{
-				final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<Unit>(Matches.unitCanIntercept, Matches.unitIsEnemyOf(data, attacker));
-				// canIntercept.add(Matches.UnitIsDisabled().invert());
-				canIntercept.add(Matches.UnitWasInAirBattle.invert());
+				final CompositeMatch<Unit> canIntercept = new CompositeMatchAnd<Unit>(Matches.unitCanIntercept, Matches.unitIsEnemyOf(data, attacker), Matches.UnitWasInAirBattle.invert());
 				if (!canScrambleIntoAirBattles)
 					canIntercept.add(Matches.UnitWasScrambled.invert());
 				return canIntercept.match(u);

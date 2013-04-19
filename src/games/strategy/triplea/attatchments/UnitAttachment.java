@@ -163,6 +163,7 @@ public class UnitAttachment extends DefaultAttachment
 	private int m_bombingBonus = -1;
 	private boolean m_canIntercept = false;
 	private boolean m_canEscort = false;
+	private boolean m_canAirBattle = false;
 	private int m_airDefense = 0;
 	private int m_airAttack = 0;
 	private HashSet<UnitType> m_bombingTargets = null; // null means they can target any unit that can be damaged
@@ -261,6 +262,28 @@ public class UnitAttachment extends DefaultAttachment
 	public void resetCanEscort()
 	{
 		m_canEscort = false;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCanAirBattle(final String value)
+	{
+		m_canAirBattle = getBool(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCanAirBattle(final Boolean value)
+	{
+		m_canAirBattle = value;
+	}
+	
+	public boolean getCanAirBattle()
+	{
+		return m_canAirBattle;
+	}
+	
+	public void resetCanAirBattle()
+	{
+		m_canAirBattle = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2917,14 +2940,14 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		else if (m_isSea)
 		{
-			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAir /*|| m_isFactory*/|| m_isStrategicBomber || m_carrierCost != -1
+			if (m_canBlitz || m_isAir /*|| m_isFactory*/|| m_isStrategicBomber || m_carrierCost != -1
 						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
 				throw new GameParseException("sea units can not have certain properties, " + thisErrorMsg());
 		}
 		else
 		// if land
 		{
-			if (m_canIntercept || m_canEscort || m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1 || m_transportCapacity != -1 || m_isAirTransport
+			if (m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1 || m_transportCapacity != -1 || m_isAirTransport
 						|| m_isCombatTransport || m_isKamikaze)
 				throw new GameParseException("land units can not have certain properties, " + thisErrorMsg());
 		}
@@ -3183,6 +3206,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  whenCapturedChangesInto:" + (m_whenCapturedChangesInto != null ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString()) : "null")
 					+ "  canIntercept:" + m_canIntercept
 					+ "  canEscort:" + m_canEscort
+					+ "  canAirBattle:" + m_canAirBattle
 					+ "  airDefense:" + m_airDefense
 					+ "  airAttack:" + m_airAttack
 					+ "  canNotMoveDuringCombatMove:" + m_canNotMoveDuringCombatMove
@@ -3385,9 +3409,9 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		final int airAttack = getAirAttack(player);
 		final int airDefense = getAirDefense(player);
-		if (airAttack > 0 && (getIsStrategicBomber() || getCanEscort()))
+		if (airAttack > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle()))
 			stats.append((attackRolls > 1 ? (attackRolls + "x ") : "") + airAttack + " Air Attack, ");
-		if (airDefense > 0 && getCanIntercept())
+		if (airDefense > 0 && (getCanIntercept() || getCanAirBattle()))
 			stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + airAttack + " Air Defense, ");
 		if (getIsSub())
 			stats.append("is Stealth, ");

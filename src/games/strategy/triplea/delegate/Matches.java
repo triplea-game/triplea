@@ -3903,6 +3903,15 @@ public class Matches
 		}
 	};
 	
+	public static final Match<Unit> unitCanAirBattle = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit u)
+		{
+			return UnitAttachment.get(u.getType()).getCanAirBattle();
+		}
+	};
+	
 	public static final Match<Territory> territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(final PlayerID attacker)
 	{
 		return new Match<Territory>()
