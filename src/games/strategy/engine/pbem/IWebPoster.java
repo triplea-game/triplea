@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 import java.io.File;
+import java.util.Vector;
 
 /**
  * An interface for classes that can post a turn summary, the summary may also include a save game if the
@@ -76,6 +77,8 @@ public interface IWebPoster extends IBean
 	 */
 	public String getHost();
 	
+	public Vector<String> getAllHosts();
+	
 	public String getGameName();
 	
 	public void setSiteId(String siteId);
@@ -86,6 +89,10 @@ public interface IWebPoster extends IBean
 	 * Set the host name
 	 */
 	public void setHost(String host);
+	
+	public void setAllHosts(Vector<String> hosts);
+	
+	public void addToAllHosts(String host);
 	
 	/**
 	 * Opens a browser and go to the web site, identified by the site id

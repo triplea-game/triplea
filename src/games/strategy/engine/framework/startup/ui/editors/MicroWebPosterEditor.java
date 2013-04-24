@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui.editors;
 
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
 import games.strategy.engine.pbem.IWebPoster;
 import games.strategy.engine.pbem.TripleAWebPoster;
 import games.strategy.ui.ProgressWindow;
@@ -40,6 +41,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 public class MicroWebPosterEditor extends EditorPanel
 {
 	private static final long serialVersionUID = -6069315084412575053L;
+	public static final String HTTP_BLANK = "http://";
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
@@ -47,12 +49,12 @@ public class MicroWebPosterEditor extends EditorPanel
 	private final JButton m_testSite = new JButton("Test Web Site");
 	private final JButton m_initGame = new JButton("Initialize Game");
 	
-	private final JLabel m_idLabel = new JLabel("Site ID:");
+	// private final JLabel m_idLabel = new JLabel("Site ID:");
 	private final JTextField m_id = new JTextField();
 	private final JLabel m_hostLabel = new JLabel("Host:");
-	private final JTextField m_host = new JTextField();
+	private final JComboBox m_hosts;
 	
-	private final JCheckBox m_includeSaveGame = new JCheckBox("Send eMails");
+	private final JCheckBox m_includeSaveGame = new JCheckBox("Send emails");
 	private final IWebPoster m_bean;
 	private final String[] m_parties;
 	private final JLabel m_gameNameLabel = new JLabel("Game Name:");
@@ -71,8 +73,11 @@ public class MicroWebPosterEditor extends EditorPanel
 		final int labelSpace = 2;
 		int row = 0;
 		add(m_hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-		add(m_host, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
-		m_host.setText(m_bean.getHost());
+		m_bean.addToAllHosts(m_bean.getHost());
+		m_hosts = new JComboBox(m_bean.getAllHosts());
+		m_hosts.setEditable(true);
+		m_hosts.setMaximumRowCount(6);
+		add(m_hosts, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
 		add(m_viewSite, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 2, bottomSpace, 0), 0, 0));
 		row++;
 		
@@ -129,9 +134,17 @@ public class MicroWebPosterEditor extends EditorPanel
 			}
 		});
 		
+		m_hosts.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				fireEditorChanged();
+			}
+		});
+		
 		// add a document listener which will validate input when the content of any input field is changed
 		final DocumentListener docListener = new EditorChangedFiringDocumentListener();
-		m_host.getDocument().addDocumentListener(docListener);
+		// m_hosts.getDocument().addDocumentListener(docListener);
 		m_id.getDocument().addDocumentListener(docListener);
 		m_gameName.getDocument().addDocumentListener(docListener);
 	}
@@ -141,11 +154,11 @@ public class MicroWebPosterEditor extends EditorPanel
 		if (m_parties == null)
 			return;
 		
-		String hostUrl;
-		if (m_host.getText().endsWith("/"))
-			hostUrl = m_host.getText();
+		final String hostUrl;
+		if (!((String) m_hosts.getSelectedItem()).endsWith("/"))
+			hostUrl = (String) m_hosts.getSelectedItem();
 		else
-			hostUrl = m_host.getText() + "/";
+			hostUrl = (String) m_hosts.getSelectedItem() + "/";
 		
 		final ArrayList<String> players = new ArrayList<String>();
 		try
@@ -163,12 +176,14 @@ public class MicroWebPosterEditor extends EditorPanel
 				players.set(i, players.get(i).substring(0, players.get(i).indexOf("\t")));
 		} catch (final Exception ex)
 		{
-			JOptionPane.showMessageDialog(MainFrame.getInstance(), "Retrieving players from " + m_host.getText() + " failed:\n" + ex.toString(), "Error", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(MainFrame.getInstance(), "Retrieving players from " + hostUrl + " failed:\n" + ex.toString(), "Error", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		
-		final JFrame window = new JFrame("Select players");
+		final JFrame window = new JFrame("Select Players");
 		window.setLayout(new GridBagLayout());
+		window.getContentPane().add(new JLabel("Select Players For Each Nation:"),
+					new GridBagConstraints(0, 0, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
 		final JComboBox[] comboBoxes = new JComboBox[m_parties.length];
 		
 		for (int i = 0; i < m_parties.length; i++)
@@ -182,8 +197,8 @@ public class MicroWebPosterEditor extends EditorPanel
 			
 			comboBoxes[i].setSelectedIndex(i % players.size());
 			
-			window.getContentPane().add(label, new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-			window.getContentPane().add(comboBoxes[i], new GridBagConstraints(1, i, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+			window.getContentPane().add(label, new GridBagConstraints(0, i + 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 5, 5), 0, 0));
+			window.getContentPane().add(comboBoxes[i], new GridBagConstraints(1, i + 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 20), 0, 0));
 		}
 		
 		final JButton btnClose = new JButton("Cancel");
@@ -219,7 +234,7 @@ public class MicroWebPosterEditor extends EditorPanel
 				parts.add(TripleAWebPoster.createStringPart("gamename", m_gameName.getText()));
 				try
 				{
-					final String response = TripleAWebPoster.executePost(m_host.getText(), "create.php", parts);
+					final String response = TripleAWebPoster.executePost(hostUrl, "create.php", parts);
 					if (response.toLowerCase().contains("success"))
 						JOptionPane.showMessageDialog(MainFrame.getInstance(), response, "Game initialized", JOptionPane.INFORMATION_MESSAGE);
 					else
@@ -231,8 +246,8 @@ public class MicroWebPosterEditor extends EditorPanel
 			}
 		});
 		
-		window.getContentPane().add(btnOK, new GridBagConstraints(0, m_parties.length, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		window.getContentPane().add(btnClose, new GridBagConstraints(1, m_parties.length, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		window.getContentPane().add(btnOK, new GridBagConstraints(0, m_parties.length + 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(30, 20, 20, 10), 0, 0));
+		window.getContentPane().add(btnClose, new GridBagConstraints(1, m_parties.length + 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(30, 10, 20, 20), 0, 0));
 		
 		window.pack();
 		window.setLocationRelativeTo(null);
@@ -303,7 +318,14 @@ public class MicroWebPosterEditor extends EditorPanel
 	@Override
 	public boolean isBeanValid()
 	{
-		final boolean hostValid = validateTextFieldNotEmpty(m_host, m_hostLabel);
+		final boolean hostValid = validateText((String) m_hosts.getSelectedItem(), m_hostLabel, new IValidator()
+		{
+			public boolean isValid(final String text)
+			{
+				return text != null && text.length() > 0 && !text.equalsIgnoreCase(HTTP_BLANK);
+			}
+		});
+		
 		final boolean idValid = validateTextFieldNotEmpty(m_gameName, m_gameNameLabel);
 		
 		final boolean allValid = hostValid && idValid;
@@ -316,9 +338,11 @@ public class MicroWebPosterEditor extends EditorPanel
 	@Override
 	public IBean getBean()
 	{
+		m_bean.setHost((String) m_hosts.getSelectedItem());
+		m_bean.addToAllHosts((String) m_hosts.getSelectedItem());
+		m_bean.getAllHosts().remove(HTTP_BLANK);
 		m_bean.setSiteId(m_id.getText());
 		m_bean.setMailSaveGame(m_includeSaveGame.isSelected());
-		m_bean.setHost(m_host.getText());
 		m_bean.setGameName(m_gameName.getText());
 		return m_bean;
 	}

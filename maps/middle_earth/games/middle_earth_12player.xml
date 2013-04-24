@@ -1144,6 +1144,16 @@
                         <result resourceOrUnit="warWagon" quantity="1"/>
                 </productionRule>
 
+                <productionRule name="buyEnts">
+                        <cost resource="PUs" quantity="5" />
+                        <result resourceOrUnit="ents" quantity="1"/>
+                </productionRule>
+				
+                <productionRule name="buyUndead">
+                        <cost resource="PUs" quantity="2" />
+                        <result resourceOrUnit="undead" quantity="1"/>
+                </productionRule>
+				
                 <productionFrontier name="gondorProduction">
                         <frontierRules name="buySpearInfantry"/>
                         <frontierRules name="buyTowerGuard"/>

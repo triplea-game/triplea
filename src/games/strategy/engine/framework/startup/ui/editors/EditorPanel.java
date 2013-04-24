@@ -1,13 +1,19 @@
 package games.strategy.engine.framework.startup.ui.editors;
 
-import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyValidator;
 import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
+import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyValidator;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.beans.PropertyChangeListener;
 
 /**
  * Base class for editors.
@@ -80,9 +86,25 @@ public abstract class EditorPanel extends JPanel
 	 */
 	protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator IValidator)
 	{
+		return validateText(field.getText(), label, IValidator);
+	}
+	
+	/**
+	 * Validates a the contents of textusing a specified validator. if the content is not valid the associated label is marked in red
+	 * 
+	 * @param text
+	 *            the text to validate
+	 * @param label
+	 *            the associated label (or null)
+	 * @param IValidator
+	 *            the validator
+	 * @return true if text field content is valid
+	 */
+	protected boolean validateText(final String text, final JLabel label, final IValidator IValidator)
+	{
 		boolean valid = true;
 		Color color = m_labelColor;
-		if (!IValidator.isValid(field.getText()))
+		if (!IValidator.isValid(text))
 		{
 			valid = false;
 			color = Color.RED;

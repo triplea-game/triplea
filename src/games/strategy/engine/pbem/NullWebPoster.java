@@ -5,6 +5,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 import java.io.File;
+import java.util.Vector;
 
 public class NullWebPoster implements IWebPoster
 {
@@ -60,6 +61,11 @@ public class NullWebPoster implements IWebPoster
 		return null;
 	}
 	
+	public Vector<String> getAllHosts()
+	{
+		return new Vector<String>();
+	}
+	
 	public String getGameName()
 	{
 		return null;
@@ -74,6 +80,14 @@ public class NullWebPoster implements IWebPoster
 	}
 	
 	public void setHost(final String host)
+	{
+	}
+	
+	public void setAllHosts(final Vector<String> hosts)
+	{
+	}
+	
+	public void addToAllHosts(final String host)
 	{
 	}
 	

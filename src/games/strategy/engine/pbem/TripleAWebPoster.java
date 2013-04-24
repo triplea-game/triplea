@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -44,7 +45,8 @@ public class TripleAWebPoster implements IWebPoster
 	// instance fields
 	// -----------------------------------------------------------------------
 	
-	private String m_host = "http://";
+	private String m_host = MicroWebPosterEditor.HTTP_BLANK;
+	private Vector<String> m_allHosts = new Vector<String>();
 	private String m_siteId = "";
 	private boolean m_mailSaveGame = true;
 	private String m_gameName = "";
@@ -225,6 +227,7 @@ public class TripleAWebPoster implements IWebPoster
 		final TripleAWebPoster clone = new TripleAWebPoster();
 		clone.setMailSaveGame(getMailSaveGame());
 		clone.setHost(getHost());
+		clone.setAllHosts(new Vector<String>(getAllHosts()));
 		clone.setSiteId(getSiteId());
 		clone.setGameName(getGameName());
 		return clone;
@@ -245,9 +248,9 @@ public class TripleAWebPoster implements IWebPoster
 		return m_host;
 	}
 	
-	private String getHostUrlPrefix()
+	public Vector<String> getAllHosts()
 	{
-		return getHostUrlPrefix(m_host);
+		return m_allHosts;
 	}
 	
 	private static String getHostUrlPrefix(final String host)
@@ -275,12 +278,26 @@ public class TripleAWebPoster implements IWebPoster
 	
 	public void setHost(final String host)
 	{
-		m_host = host;
+		m_host = getHostUrlPrefix(host);
+	}
+	
+	public void setAllHosts(final Vector<String> hosts)
+	{
+		m_allHosts = hosts;
+	}
+	
+	public void addToAllHosts(final String host)
+	{
+		final String hostToAdd = getHostUrlPrefix(host);
+		m_allHosts.remove(hostToAdd);
+		if (m_allHosts.size() > 10)
+			m_allHosts.subList(10, m_allHosts.size()).clear();
+		m_allHosts.add(0, hostToAdd);
 	}
 	
 	public void viewSite()
 	{
-		DesktopUtilityBrowserLauncher.openURL(getHostUrlPrefix());
+		DesktopUtilityBrowserLauncher.openURL(getHost());
 	}
 	
 	public void setParties(final String[] parties)
@@ -290,6 +307,7 @@ public class TripleAWebPoster implements IWebPoster
 	
 	public void clearSensitiveInfo()
 	{
+		m_allHosts.clear();
 	}
 }
 
@@ -308,7 +326,7 @@ class ProductionStat extends AbstractStat
 		{
 			final TerritoryAttachment ta = TerritoryAttachment.get(place);
 			/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
-			if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
+			if (ta != null && player != null && player.equals(place.getOwner()) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
 			{
 				rVal += ta.getProduction();
 			}

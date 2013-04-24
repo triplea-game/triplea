@@ -223,6 +223,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		final IWebPoster webPoster = (IWebPoster) data.getProperties().get(PBEMMessagePoster.WEB_POSTER_PROP_NAME);
 		if (webPoster != null)
 		{
+			poster.addToAllHosts(webPoster.getHost());
+			webPoster.setAllHosts(poster.getAllHosts());
 			m_webPosterEditor.setSelectedBean(webPoster);
 		}
 	}
@@ -392,6 +394,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		if (sender != null)
 		{
 			LocalBeanCache.getInstance().storeSerializable(sender.getClass().getCanonicalName(), sender);
+		}
+		
+		final IWebPoster web = (IWebPoster) m_webPosterEditor.getBean();
+		if (web != null)
+		{
+			LocalBeanCache.getInstance().storeSerializable(web.getClass().getCanonicalName(), web);
 		}
 		
 		final IRemoteDiceServer server = (IRemoteDiceServer) m_diceServerEditor.getBean();
