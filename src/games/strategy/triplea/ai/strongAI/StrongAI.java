@@ -42,6 +42,7 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -9759,7 +9760,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 *      games.strategy.engine.data.PlayerID, java.util.List)
 	 */
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
 	{
 		if (defaultCasualties.size() != count)
 			throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
@@ -9804,7 +9805,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(hit, data);
 		final float canWinPercentage = 1.0F; // we need to run a battle calc or something to determine what the chance of us winning is
 		final boolean bonus = (canWinPercentage > .8);
-		final List<Unit> workUnits1 = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, defending, hit, costs, data, bonus));
+		final List<Unit> workUnits1 = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, defending, hit, costs, TerritoryEffectHelper.getEffects(battlesite), data,
+					bonus));
 		final List<Unit> workUnits2 = new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(workUnits1, 0));
 		for (int j = 0; j < xCount; j++)
 		{

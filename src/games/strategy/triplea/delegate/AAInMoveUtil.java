@@ -266,7 +266,8 @@ class AAInMoveUtil implements Serializable
 	private void selectCasualties(final DiceRoll dice, final Collection<Unit> allAttackingUnits, final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA,
 				final Territory territory, final GUID battleID, final String currentTypeAA)
 	{
-		final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory);
+		final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory,
+					TerritoryEffectHelper.getEffects(territory));
 		getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAA + " hits in " + territory.getName(), casualties.size() + " " + currentTypeAA + " hits in " + territory.getName());
 		BattleDelegate.markDamaged(new ArrayList<Unit>(casualties.getDamaged()), m_bridge);
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(), new ArrayList<Unit>(casualties.getKilled()));

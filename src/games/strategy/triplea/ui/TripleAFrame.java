@@ -65,6 +65,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
@@ -1026,7 +1027,8 @@ public class TripleAFrame extends MainGameFrame
 				for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet())
 				{
 					final List<Unit> units = new ArrayList<Unit>(entry.getValue());
-					Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(m_data), m_data, false));
+					Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(m_data), TerritoryEffectHelper.getEffects(entry.getKey()),
+								m_data, false));
 					Collections.reverse(units);
 					possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
 				}

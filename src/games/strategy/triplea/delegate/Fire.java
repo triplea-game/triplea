@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -40,11 +41,12 @@ public class Fire implements IExecutable
 	private Collection<Unit> m_damaged;
 	private boolean m_confirmOwnCasualties = true;
 	private final boolean m_isHeadless;
-	Collection<TerritoryEffect> m_territoryEffects;
+	private final Territory m_battleSite;
+	private final Collection<TerritoryEffect> m_territoryEffects;
 	
 	public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire, final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits,
 				final String stepName, final String text, final MustFightBattle battle, final boolean defending, final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack,
-				final boolean headless, final Collection<TerritoryEffect> territoryEffects)
+				final boolean headless, final Territory battleSite, final Collection<TerritoryEffect> territoryEffects)
 	{
 		/* This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
 		 * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to:
@@ -62,6 +64,7 @@ public class Fire implements IExecutable
 		m_dependentUnits = dependentUnits;
 		m_isHeadless = headless;
 		m_battleID = battle.getBattleID();
+		m_battleSite = battleSite;
 		m_territoryEffects = territoryEffects;
 	}
 	
@@ -120,7 +123,8 @@ public class Fire implements IExecutable
 				// m_confirmOwnCasualties = true;
 				if (extraHits > transportsOnly.size())
 					extraHits = transportsOnly.size();
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, extraHits, true);
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless,
+							extraHits, true);
 				m_killed.addAll(message.getKilled());
 				m_confirmOwnCasualties = true;
 			}
@@ -134,7 +138,8 @@ public class Fire implements IExecutable
 			// less than possible number
 			else
 			{
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits(), true);
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless,
+							m_dice.getHits(), true);
 				m_killed = message.getKilled();
 				m_damaged = message.getDamaged();
 				m_confirmOwnCasualties = message.getAutoCalculated();
@@ -155,7 +160,8 @@ public class Fire implements IExecutable
 			else
 			{
 				CasualtyDetails message;
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless, m_dice.getHits(), true);
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID,
+							m_isHeadless, m_dice.getHits(), true);
 				m_killed = message.getKilled();
 				m_damaged = message.getDamaged();
 				m_confirmOwnCasualties = message.getAutoCalculated();

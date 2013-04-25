@@ -463,11 +463,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		if (isEditMode)
 		{
 			final String text = currentTypeAA + AA_GUNS_FIRE_SUFFIX;
-			final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, validAttackingUnitsForThisRoll, bridge, text, /* dice */null,/* defending */false,
+			final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, validAttackingUnitsForThisRoll, m_battleSite, m_territoryEffects, bridge, text, /* dice */
+						null,/* defending */
+						false,
 						m_battleID, /* head-less */false, 0, allowMultipleHitsPerUnit);
 			return casualtySelection;
 		}
-		final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
+		final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite,
+					m_territoryEffects);
 		
 		final int totalExpectingHits = dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits();
 		if (casualties.size() != totalExpectingHits)

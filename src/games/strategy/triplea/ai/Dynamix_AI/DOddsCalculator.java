@@ -380,7 +380,7 @@ class DummyPlayer extends AbstractAI
 	// Added new collection autoKilled to handle killing units prior to casualty selection
 	@SuppressWarnings("unchecked")
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
 	{
 		final HashSet<Unit> damaged = new HashSet<Unit>();
 		final HashSet<Unit> destroyed = new HashSet<Unit>();
