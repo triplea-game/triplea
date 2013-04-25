@@ -16,6 +16,7 @@ package util.image;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
+import games.strategy.util.JTextAreaOptionPane;
 import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.Point;
@@ -55,6 +56,7 @@ public class AutoPlacementFinder
 	private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
 	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
 	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
+	private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null, "AutoPlacementFinder Log\r\n\r\n", "", "AutoPlacementFinder Log", null, 500, 300, true, 1, null);
 	
 	public static String[] getProperties()
 	{
@@ -228,9 +230,10 @@ public class AutoPlacementFinder
 			ex.printStackTrace();
 			System.exit(0);
 		}
-		System.out.println("Place Dimensions in pixels, being used: " + PLACEWIDTH + "x" + PLACEHEIGHT);
+		textOptionPane.show();
+		textOptionPane.appendNewLine("Place Dimensions in pixels, being used: " + PLACEWIDTH + "x" + PLACEHEIGHT + "\r\n");
+		textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
 		final Iterator<String> terrIter = s_mapData.getTerritories().iterator();
-		System.out.println("Calculating, this may take a while...");
 		while (terrIter.hasNext())
 		{
 			final String name = terrIter.next();
@@ -250,23 +253,28 @@ public class AutoPlacementFinder
 				points = getPlacementsStartingAtMiddle(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name), s_mapData.getCenter(name));
 				m_placements.put(name, points);
 			}
-			System.out.println(name + ": " + points.size());
+			textOptionPane.appendNewLine(name + ": " + points.size());
 		}// while
+		textOptionPane.appendNewLine("\r\nAll Finished!");
+		textOptionPane.countDown();
 		try
 		{
 			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
 			if (fileName == null)
 			{
-				System.out.println("You chose not to save, Shutting down");
+				textOptionPane.appendNewLine("You chose not to save, Shutting down");
+				textOptionPane.dispose();
 				System.exit(0);
 			}
 			PointFileReaderWriter.writeOneToMany(new FileOutputStream(fileName), m_placements);
-			System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
+			textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
 		} catch (final Exception ex)
 		{
 			ex.printStackTrace();
+			textOptionPane.dispose();
 			System.exit(0);
 		}
+		textOptionPane.dispose();
 		System.exit(0); // shut down program when done.
 	}
 	
@@ -355,7 +363,9 @@ public class AutoPlacementFinder
 			{
 				step--;
 			}
-			// System.out.println("x:" + x + " y:" + y); // For Debugging
+			// textOptionPane.appendNewLine("x:" + x + " y:" + y); // For Debugging
+			if (placementPoints.size() > 50)
+				break;
 		}
 		if (placementPoints.isEmpty())
 		{
@@ -390,6 +400,8 @@ public class AutoPlacementFinder
 			{
 				isPlacement(countryPolygons, containedCountryPolygons, placementRects, placementPoints, place, x, y);
 			}
+			if (placementPoints.size() > 50)
+				break;
 		}
 		if (placementPoints.isEmpty())
 		{

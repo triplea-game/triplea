@@ -14,6 +14,7 @@
 package util.image;
 
 import games.strategy.triplea.ui.screen.TileManager;
+import games.strategy.util.JTextAreaOptionPane;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -50,6 +51,7 @@ public class TileImageBreaker
 	private boolean m_baseMap;
 	private static File s_mapFolderLocation = null;
 	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
+	private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null, "TileImageBreaker Log\r\n\r\n", "", "TileImageBreaker Log", null, 500, 300, true, 1, null);
 	
 	/**
 	 * main(java.lang.String[] args)
@@ -128,6 +130,7 @@ public class TileImageBreaker
 		// System.out.println("Bad data given or missing text files, shutting down");
 		// System.exit(0);
 		// }
+		textOptionPane.show();
 		for (int x = 0; (x) * TileManager.TILE_SIZE < map.getWidth(null); x++)
 		{
 			for (int y = 0; (y) * TileManager.TILE_SIZE < map.getHeight(null); y++)
@@ -161,10 +164,12 @@ public class TileImageBreaker
 				// continue;
 				// }
 				ImageIO.write(relief, "png", new File(outFileName));
-				System.out.println("wrote " + outFileName);
+				textOptionPane.appendNewLine("wrote " + outFileName);
 			}
 		}
-		System.out.println("All Finished!");
+		textOptionPane.appendNewLine("\r\nAll Finished!");
+		textOptionPane.countDown();
+		textOptionPane.dispose();
 		JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
 		System.exit(0);
 	}

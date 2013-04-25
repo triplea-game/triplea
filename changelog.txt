@@ -1,4 +1,6 @@
 Changes for 1.7
+* Adding a visual log to AutoPlacementFinder and TileImageBreaker, and getting the AutoPlacementFinder to cut out at a max of about 50 placements per territory. (veqryn)
+
 * Changed unit attachment "isMarine" to allow for integers instead of boolean. (veqryn)
 
 * Updated default casualty selection to take territory effects into consideration. (veqryn)
