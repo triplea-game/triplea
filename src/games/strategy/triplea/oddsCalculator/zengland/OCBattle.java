@@ -226,7 +226,7 @@ public class OCBattle
 					maxHp = 1;
 				blocksNoRetHit = ua.getIsDestroyer() && isWW2V2(m_data);
 				boostsInfAtt = ua.getArtillery();
-				boostAmphib = ua.getIsMarine();
+				boostAmphib = ua.getIsMarine() > 0;
 			}
 			if (ua != null && ua.getIsAAforCombatOnly())
 			{

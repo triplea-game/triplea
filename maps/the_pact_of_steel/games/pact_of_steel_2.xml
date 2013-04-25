@@ -1750,7 +1750,7 @@
 			attackRolls							values: number of rolls this unit gets on attack (default = 1)
 			defenseRolls						values: number of rolls this unit gets on defense (default = 1)
 			chooseBestRoll						values: true/false, whether we pick the best dice or use all dice rolls, when there is more than one roll (default false). When in Low Luck, we instead add +1 onto the power for each extra roll.
-			isMarine							values: gives the unit +1 attack if it is attacking amphibiously
+			isMarine							values: gives the unit bonus attack if it is attacking amphibiously. Is an integer, so you can set it to give 1, or -1, or 3, etc.
 			canBlitz							values: allows the unit to move through multiple empty enemy territories in one turn
 			receivesAbilityWhenWith				values: gives a unit an ability when they are with, or on the same route as, another unit. currently only works with 'canBlitz'. example: value="canBlitz:armour"
 			canBeGivenByTerritoryTo				values: will allow a unit to be given from one player to another player, if it is in a territory with changeUnitOwners 
@@ -1889,8 +1889,8 @@
 						<option name="transportCost" value="2"/>
 						<!-- isInfantry allows the unit to be transported by 'isLandTransport' IF you have mechanizedInfantry technology -->
 						<option name="isInfantry" value="true"/>
-						<!-- isMarine gives the unit +1 attack if it is attacking amphibiously -->
-						<!-- <option name="isMarine" value="true"/> -->
+						<!-- isMarine gives the unit +x attack if it is attacking amphibiously -->
+						<!-- <option name="isMarine" value="1"/> -->
 						<option name="attack" value="1"/>
 						<option name="defense" value="2"/>
 						<!-- artillerySupportable allows the unit to receive support from an "artillery" unit (land, sea, or air are allowed) -->

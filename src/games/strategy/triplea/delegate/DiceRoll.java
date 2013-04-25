@@ -458,10 +458,10 @@ public class DiceRoll implements Externalizable
 					else
 					{
 						strength = ua.getAttack(current.getOwner());
-						if (ua.getIsMarine() && isAmphibiousBattle)
+						if (ua.getIsMarine() != 0 && isAmphibiousBattle)
 						{
 							if (amphibiousLandAttackers.contains(current))
-								++strength;
+								strength += ua.getIsMarine();
 						}
 						if (ua.getIsSea() && isAmphibiousBattle)
 						{
@@ -906,11 +906,11 @@ public class DiceRoll implements Externalizable
 					else
 					{
 						strength = ua.getAttack(current.getOwner());
-						if (ua.getIsMarine() && battle.isAmphibious())
+						if (ua.getIsMarine() != 0 && battle.isAmphibious())
 						{
 							final Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
 							if (landUnits.contains(current))
-								++strength;
+								strength += ua.getIsMarine();
 						}
 						// get bombarding unit's strength
 						if (ua.getIsSea() && battle.isAmphibious())

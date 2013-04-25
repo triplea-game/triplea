@@ -84,7 +84,7 @@ class UnitInformation
 				unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + "," + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
 							+ currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + "," + (currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) == false ? "-" : "true") + ","
 							+ (currentAttachment.getArtillery() == false ? "-" : "true") + "," + (currentAttachment.getArtillerySupportable() == false ? "-" : "true") + ","
-							+ (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
+							+ (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
 							+ (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
 							+ (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
 							+ (currentAttachment.getIsAir() == false ? "-" : "true") + "," + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","

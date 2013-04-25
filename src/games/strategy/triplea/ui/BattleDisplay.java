@@ -1199,8 +1199,8 @@ class BattleModel extends DefaultTableModel
 						strength = attachment.getAttack(category.getOwner());
 						// Increase attack value if it's an assaulting marine
 						// TODO actually this only happens when the marine is amphibious, not when the battle is. we could have an amphibious battle but a non-amphibious marine.
-						if (m_isAmphibious && attachment.getIsMarine())
-							++strength;
+						if (m_isAmphibious && attachment.getIsMarine() != 0)
+							strength += attachment.getIsMarine();
 						strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
 					}
 					else
@@ -1224,7 +1224,7 @@ class BattleModel extends DefaultTableModel
 				strength = Math.min(Math.max(strength, 0), m_data.getDiceSides());
 				shift[strength]++;
 			}
-			for (int i = 0; i < m_data.getDiceSides(); i++)
+			for (int i = 0; i <= m_data.getDiceSides(); i++)
 			{
 				if (shift[i] > 0)
 					columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.getDamaged(), category.getDisabled(), m_uiContext));

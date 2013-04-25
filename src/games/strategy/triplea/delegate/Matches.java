@@ -1324,17 +1324,36 @@ public class Matches
 		}
 	};
 	public static final Match<Unit> UnitIsNotInfantry = new InverseMatch<Unit>(UnitIsInfantry);
-	public static final Match<Unit> UnitIsMarine = new Match<Unit>()
+	public static final Match<Unit> UnitHasMarinePositiveBonus = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit obj)
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getIsMarine();
+			return ua.getIsMarine() > 0;
 		}
 	};
-	public static final Match<Unit> UnitIsNotMarine = new InverseMatch<Unit>(UnitIsMarine);
+	public static final Match<Unit> UnitHasMarineNegativeBonus = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
+			return ua.getIsMarine() < 0;
+		}
+	};
+	public static final Match<Unit> UnitIsNotMarine = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
+			return ua.getIsMarine() == 0;
+		}
+	};
 	public static final Match<Unit> UnitIsAirTransportable = new Match<Unit>()
 	{
 		@Override

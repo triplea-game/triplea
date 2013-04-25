@@ -121,7 +121,7 @@ public class UnitAttachment extends DefaultAttachment
 	private boolean m_artillery = false;
 	private boolean m_artillerySupportable = false;
 	private int m_unitSupportCount = -1;
-	private boolean m_isMarine = false;
+	private int m_isMarine = 0;
 	private boolean m_isSuicide = false;
 	private Tuple<Integer, String> m_attackingLimit = null;
 	private int m_attackRolls = 1;
@@ -1251,23 +1251,28 @@ public class UnitAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsMarine(final String s)
 	{
-		m_isMarine = getBool(s);
+		if (s.equalsIgnoreCase(Constants.PROPERTY_TRUE))
+			m_isMarine = 1;
+		else if (s.equalsIgnoreCase(Constants.PROPERTY_FALSE))
+			m_isMarine = 0;
+		else
+			m_isMarine = getInt(s);
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setIsMarine(final Boolean s)
+	public void setIsMarine(final Integer s)
 	{
 		m_isMarine = s;
 	}
 	
-	public boolean getIsMarine()
+	public int getIsMarine()
 	{
 		return m_isMarine;
 	}
 	
 	public void resetIsMarine()
 	{
-		m_isMarine = false;
+		m_isMarine = 0;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2935,13 +2940,13 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_isAir)
 		{
 			if (m_isSea /*|| m_isFactory*/|| m_isSub || m_transportCost != -1 ||
-						m_carrierCapacity != -1 || m_canBlitz || m_canBombard || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isCombatTransport)
+						m_carrierCapacity != -1 || m_canBlitz || m_canBombard || m_isMarine != 0 || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isCombatTransport)
 				throw new GameParseException("air units can not have certain properties, " + thisErrorMsg());
 		}
 		else if (m_isSea)
 		{
 			if (m_canBlitz || m_isAir /*|| m_isFactory*/|| m_isStrategicBomber || m_carrierCost != -1
-						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
+						|| m_transportCost != -1 || m_isMarine != 0 || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
 				throw new GameParseException("sea units can not have certain properties, " + thisErrorMsg());
 		}
 		else
@@ -3380,8 +3385,8 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		if (getArtillerySupportable())
 			stats.append("can Receive Attack Bonus From Other Units, ");
-		if (getIsMarine())
-			stats.append("1" + " Amphibious Attack Bonus, ");
+		if (getIsMarine() != 0)
+			stats.append(getIsMarine() + " Amphibious Attack Modifier, ");
 		if (getCanBlitz(player))
 			stats.append("can Blitz, ");
 		if (!getReceivesAbilityWhenWith().isEmpty())

@@ -1,4 +1,6 @@
 Changes for 1.7
+* Changed unit attachment "isMarine" to allow for integers instead of boolean. (veqryn)
+
 * Updated default casualty selection to take territory effects into consideration. (veqryn)
 
 * Updating web poster to keep track of many entered websites, and save them all to the local cache but not to the savegame. (veqryn)

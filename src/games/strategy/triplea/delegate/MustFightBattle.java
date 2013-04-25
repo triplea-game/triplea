@@ -3047,7 +3047,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				{
 					final UnitAttachment ua = UnitAttachment.get(u1.getType());
 					final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-					if (ua.getIsMarine() && ua2.getIsMarine())
+					if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0)
 						amphibComp = compareAccordingToAmphibious(u1, u2);
 					if (amphibComp == 0)
 						return decreasingMovement.compare(u1, u2);
@@ -3065,7 +3065,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			return -1;
 		else if (m_amphibiousLandAttackers.contains(u2) && !m_amphibiousLandAttackers.contains(u1))
 			return 1;
-		return 0;
+		final int m1 = UnitAttachment.get(u1.getType()).getIsMarine();
+		final int m2 = UnitAttachment.get(u2.getType()).getIsMarine();
+		return m2 - m1;
 	}
 	
 	public Collection<Territory> getAttackingFrom()
