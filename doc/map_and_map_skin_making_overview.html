@@ -58,6 +58,7 @@
 					<li><b>4.1.7</b> <a href="#sec_4.1.7">Decoration Placer</a></li>
 					<li><b>4.1.8</b> <a href="#sec_4.1.8">Relief Image Breaker</a></li>
 					<li><b>4.1.9</b> <a href="#sec_4.1.9">Image Shrinker</a></li>
+					<li><b>4.1.10</b> <a href="#sec_4.1.10">Tile Image Reconstructor</a></li>
 				</ul>
 			
 			<li><b>5.0</b> <a href="#sec_5">Filling in the Other Folders and Files</a></li>
@@ -371,6 +372,7 @@
 					<li><b>Decoration Placer</b> : Creates the text files for placing custom images on the map</li>
 					<li><b>Relief Image Breaker</b> : No longer used (used to make relief territory images)</li>
 					<li><b>Image Shrinker</b> : Creates a mini-sized map image</li>
+					<li><b>Tile Image Reconstructor</b> : Recreates an image from basetiles or relief tiles</li>
 				</ol>
 			</p>
 			
@@ -1444,6 +1446,40 @@
 					</table>
 				</p>
 				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			<h4><a name="sec_4.1.10">4.1.10</a> Tile Image Reconstructor</h4>
+			<blockquote>
+				<p>
+					This utility will recreate an image from the basetiles or relief tiles.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>Tile Image Reconstructor</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx512m -classpath triplea.jar util/image/TileImageReconstructor
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
 				<p>
 					<a href="#top">- Top -</a>
 				</p>

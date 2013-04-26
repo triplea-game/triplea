@@ -762,6 +762,36 @@ public class MapCreator extends JFrame
 		});
 		m_panel4.add(imageShrinkerButton);
 		m_panel4.add(Box.createVerticalStrut(30));
+		final JButton tileImageReconstructorButton = new JButton("Run the Tile Image Reconstructor");
+		tileImageReconstructorButton.addActionListener(new AbstractAction("Run the Tile Image Reconstructor")
+		{
+			private static final long serialVersionUID = -1743544461266802405L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.TileImageReconstructor");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								TileImageReconstructor.main(new String[0]);
+							} catch (final Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}).start();
+				}
+			}
+		});
+		m_panel4.add(tileImageReconstructorButton);
+		m_panel4.add(Box.createVerticalStrut(30));
 		m_panel4.validate();
 	}
 	

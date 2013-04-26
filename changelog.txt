@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created new image utility, TileImageReconstructor, which will recreate an image based on base tiles or relief tiles and/or draw a polygons file onto an image. (veqryn)
+
 * Adding a visual log to AutoPlacementFinder and TileImageBreaker, and getting the AutoPlacementFinder to cut out at a max of about 50 placements per territory. (veqryn)
 
 * Changed unit attachment "isMarine" to allow for integers instead of boolean. (veqryn)
