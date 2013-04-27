@@ -29,6 +29,7 @@ import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -55,6 +56,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -63,10 +65,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -103,13 +109,17 @@ public class OddsCalculatorPanel extends JPanel
 	private final JLabel m_defenderUnitsTotalHitpoints = new JLabel();
 	private final JLabel m_attackerUnitsTotalPower = new JLabel();
 	private final JLabel m_defenderUnitsTotalPower = new JLabel();
+	private JButton m_orderOfLossesButton;
 	private JComboBox m_SwapSidesCombo;
 	private JCheckBox m_keepOneAttackingLandUnitCheckBox;
 	private JCheckBox m_amphibiousCheckBox;
 	private JCheckBox m_landBattleCheckBox;
 	private JCheckBox m_retreatWhenOnlyAirLeftCheckBox;
+	private JCheckBox m_retreatWhenMetaPowerIsLower;
 	private IntTextField m_retreatAfterXRounds;
 	private IntTextField m_retreatAfterXUnitsLeft;
+	private String m_attackerOrderOfLosses = null;
+	private String m_defenderOrderOfLosses = null;
 	private JButton m_clearButton;
 	private JLabel m_time;
 	private Territory m_location = null;
@@ -242,6 +252,8 @@ public class OddsCalculatorPanel extends JPanel
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
+				m_attackerOrderOfLosses = null;
+				m_defenderOrderOfLosses = null;
 				updateDefender(null);
 				updateAttacker(null);
 				setWidgetActivation();
@@ -258,6 +270,8 @@ public class OddsCalculatorPanel extends JPanel
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
+				m_attackerOrderOfLosses = null;
+				m_defenderOrderOfLosses = null;
 				m_parent.setVisible(false);
 			}
 		});
@@ -274,6 +288,8 @@ public class OddsCalculatorPanel extends JPanel
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
+				m_attackerOrderOfLosses = null;
+				m_defenderOrderOfLosses = null;
 				List<Unit> getdefenders = new ArrayList<Unit>();
 				List<Unit> getattackers = new ArrayList<Unit>();
 				getdefenders = m_defendingUnitsPanel.getUnits();
@@ -284,6 +300,23 @@ public class OddsCalculatorPanel extends JPanel
 				m_attackingUnitsPanel.init(getAttacker(), getdefenders, isLand());
 				m_defendingUnitsPanel.init(getDefender(), getattackers, isLand());
 				setWidgetActivation();
+			}
+		});
+		m_orderOfLossesButton.addActionListener(new ActionListener()
+		{
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final OrderOfLossesInputPanel oolPanel = new OrderOfLossesInputPanel(m_attackerOrderOfLosses, m_defenderOrderOfLosses, m_attackingUnitsPanel.getCategories(),
+							m_defendingUnitsPanel.getCategories(), m_landBattleCheckBox.isSelected(), m_context, m_data);
+				if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(OddsCalculatorPanel.this, oolPanel, "Create Order Of Losses for each side", JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.PLAIN_MESSAGE))
+				{
+					if (OddsCalculator.isValidOOL(oolPanel.getAttackerOrder(), m_data))
+						m_attackerOrderOfLosses = oolPanel.getAttackerOrder();
+					if (OddsCalculator.isValidOOL(oolPanel.getDefenderOrder(), m_data))
+						m_defenderOrderOfLosses = oolPanel.getDefenderOrder();
+				}
 			}
 		});
 		if (m_territoryEffectsJList != null)
@@ -403,6 +436,12 @@ public class OddsCalculatorPanel extends JPanel
 						calculator.setAmphibious(true);
 					else
 						calculator.setAmphibious(false);
+					if (m_retreatWhenMetaPowerIsLower.isSelected())
+						calculator.setRetreatWhenMetaPowerIsLower(true);
+					else
+						calculator.setRetreatWhenMetaPowerIsLower(false);
+					calculator.setAttackerOrderOfLosses(m_attackerOrderOfLosses);
+					calculator.setDefenderOrderOfLosses(m_defenderOrderOfLosses);
 					final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
 					defenders.set(defending);
 					attackers.set(attacking);
@@ -467,11 +506,14 @@ public class OddsCalculatorPanel extends JPanel
 		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
 		m_defenderUnitsTotalNumber.setText("Units: " + mainCombatUnits.size());
 		m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(mainCombatUnits, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
-		m_defenderUnitsTotalHitpoints.setText("HP: " + BattleCalculator.getTotalHitpoints(mainCombatUnits));
+		final int defenseHP = BattleCalculator.getTotalHitpoints(mainCombatUnits);
+		m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
 		final boolean isAmphibiousBattle = isAmphibiousBattle();
 		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-		m_defenderUnitsTotalPower.setText("Power: "
-					+ DiceRoll.getTotalPower(mainCombatUnits, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>())); // defender is never amphibious
+		final int defensePower = DiceRoll.getTotalPower(mainCombatUnits, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>()); // defender is never amphibious
+		m_defenderUnitsTotalPower.setText("Power: " + defensePower);
+		m_defenderUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP, m_data.getDiceSides())
+					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
 	}
 	
 	private void updateAttacker(List<Unit> units)
@@ -484,12 +526,15 @@ public class OddsCalculatorPanel extends JPanel
 		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
 		m_attackerUnitsTotalNumber.setText("Units: " + mainCombatUnits.size());
 		m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(mainCombatUnits, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
-		m_attackerUnitsTotalHitpoints.setText("HP: " + BattleCalculator.getTotalHitpoints(mainCombatUnits));
+		final int attackHP = BattleCalculator.getTotalHitpoints(mainCombatUnits);
+		m_attackerUnitsTotalHitpoints.setText("HP: " + attackHP);
 		final boolean isAmphibiousBattle = isAmphibiousBattle();
 		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-		m_attackerUnitsTotalPower.setText("Power: "
-					+ DiceRoll.getTotalPower(mainCombatUnits, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle,
-								(isAmphibiousBattle ? mainCombatUnits : new ArrayList<Unit>())));
+		final int attackPower = DiceRoll.getTotalPower(mainCombatUnits, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle,
+					(isAmphibiousBattle ? mainCombatUnits : new ArrayList<Unit>()));
+		m_attackerUnitsTotalPower.setText("Power: " + attackPower);
+		m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())
+					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
 	}
 	
 	private boolean isLand()
@@ -589,14 +634,16 @@ public class OddsCalculatorPanel extends JPanel
 		resultsText.add(m_retreatAfterXUnitsLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
 		
 		row1 = row2;
+		resultsText.add(m_orderOfLossesButton, new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
 		if (m_territoryEffectsJList != null)
 		{
 			resultsText.add(new JScrollPane(m_territoryEffectsJList), new GridBagConstraints(0, row1, 1, m_territoryEffectsJList.getVisibleRowCount(), 0, 0, GridBagConstraints.EAST,
-						GridBagConstraints.BOTH, new Insets(10, 15, 0, 5), 0, 0));
+						GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
 			row1 += m_territoryEffectsJList.getVisibleRowCount();
 		}
 		
 		resultsText.add(m_retreatWhenOnlyAirLeftCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 5), 0, 0));
+		resultsText.add(m_retreatWhenMetaPowerIsLower, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
 		resultsText.add(m_keepOneAttackingLandUnitCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
 		resultsText.add(m_amphibiousCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
 		resultsText.add(m_landBattleCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
@@ -639,7 +686,7 @@ public class OddsCalculatorPanel extends JPanel
 				m_territoryEffectsJList = new JList(effectNames);
 				m_territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 				m_territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
-				m_territoryEffectsJList.setVisibleRowCount(4);
+				m_territoryEffectsJList.setVisibleRowCount(4); // equal to the amount of space left (number of remaining items on the right)
 				if (m_location != null)
 				{
 					final Collection<TerritoryEffect> currentEffects = TerritoryEffectHelper.getEffects(m_location);
@@ -705,10 +752,13 @@ public class OddsCalculatorPanel extends JPanel
 		m_closeButton = new JButton("Close");
 		m_clearButton = new JButton("Clear");
 		m_SwapSidesButton = new JButton("Swap Sides");
+		m_orderOfLossesButton = new JButton("Order Of Losses");
 		m_keepOneAttackingLandUnitCheckBox = new JCheckBox("One attacking land must live");
 		m_amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
 		m_retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
 		m_retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units left' is positive we will retreat when x of non-air is left too.");
+		m_retreatWhenMetaPowerIsLower = new JCheckBox("Retreat when meta-power is lower");
+		m_retreatWhenMetaPowerIsLower.setToolTipText("We retreat if our 'meta power' is lower than the opponent. Meta Power is equal to:  Power  +  (2 * HitPoints * DiceSides / 6)");
 		m_attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 		m_defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 	}
@@ -726,13 +776,21 @@ public class OddsCalculatorPanel extends JPanel
 		m_defenderUnitsTotalNumber.setText("Units: " + defenders.size());
 		m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(attackers, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
 		m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(defenders, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
-		m_attackerUnitsTotalHitpoints.setText("HP: " + BattleCalculator.getTotalHitpoints(attackers));
-		m_defenderUnitsTotalHitpoints.setText("HP: " + BattleCalculator.getTotalHitpoints(defenders));
+		final int attackHP = BattleCalculator.getTotalHitpoints(attackers);
+		final int defenseHP = BattleCalculator.getTotalHitpoints(defenders);
+		m_attackerUnitsTotalHitpoints.setText("HP: " + attackHP);
+		m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
 		final boolean isAmphibiousBattle = isAmphibiousBattle();
 		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-		m_attackerUnitsTotalPower.setText("Power: "
-					+ DiceRoll.getTotalPower(attackers, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle, (isAmphibiousBattle ? attackers : new ArrayList<Unit>())));
-		m_defenderUnitsTotalPower.setText("Power: " + DiceRoll.getTotalPower(defenders, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>())); // defender is never amphibious
+		final int attackPower = DiceRoll.getTotalPower(attackers, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle,
+					(isAmphibiousBattle ? attackers : new ArrayList<Unit>()));
+		final int defensePower = DiceRoll.getTotalPower(defenders, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>()); // defender is never amphibious
+		m_attackerUnitsTotalPower.setText("Power: " + attackPower);
+		m_defenderUnitsTotalPower.setText("Power: " + defensePower);
+		m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())
+					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+		m_defenderUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP, m_data.getDiceSides())
+					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
 	}
 	
 	
@@ -778,6 +836,7 @@ class PlayerUnitsPanel extends JPanel
 	private final UIContext m_context;
 	private final boolean m_defender;
 	private boolean m_isLand = true;
+	private List<UnitCategory> m_categories = null;
 	private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<WidgetChangedListener>();
 	private final WidgetChangedListener m_listenerUnitPanel = new WidgetChangedListener()
 	{
@@ -815,11 +874,16 @@ class PlayerUnitsPanel extends JPanel
 		return allUnits;
 	}
 	
+	public List<UnitCategory> getCategories()
+	{
+		return m_categories;
+	}
+	
 	public void init(final PlayerID id, final List<Unit> units, final boolean land)
 	{
 		m_isLand = land;
-		final List<UnitCategory> categories = new ArrayList<UnitCategory>(categorize(id, units));
-		Collections.sort(categories, new Comparator<UnitCategory>()
+		m_categories = new ArrayList<UnitCategory>(categorize(id, units));
+		Collections.sort(m_categories, new Comparator<UnitCategory>()
 		{
 			public int compare(final UnitCategory o1, final UnitCategory o2)
 			{
@@ -865,7 +929,7 @@ class PlayerUnitsPanel extends JPanel
 		else
 			predicate = Matches.UnitTypeIsSeaOrAir;
 		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(id, m_data);
-		for (final UnitCategory category : categories)
+		for (final UnitCategory category : m_categories)
 		{
 			if (predicate.match(category.getType()))
 			{
@@ -1038,5 +1102,180 @@ class UnitPanel extends JPanel
 		{
 			listener.widgetChanged();
 		}
+	}
+}
+
+
+class OrderOfLossesInputPanel extends JPanel
+{
+	private static final long serialVersionUID = 8815617685388156219L;
+	private final GameData m_data;
+	private final UIContext m_context;
+	private final List<UnitCategory> m_attackerCategories;
+	private final List<UnitCategory> m_defenderCategories;
+	private final JTextField m_attackerTextField;
+	private final JTextField m_defenderTextField;
+	private final JLabel m_attackerLabel = new JLabel("Attacker Units:");
+	private final JLabel m_defenderLabel = new JLabel("Defender Units:");
+	private final JButton m_clear;
+	private final boolean m_land;
+	
+	public OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder, final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories,
+				final boolean land, final UIContext context, final GameData data)
+	{
+		m_data = data;
+		m_context = context;
+		m_land = land;
+		m_attackerCategories = attackerCategories;
+		m_defenderCategories = defenderCategories;
+		m_attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
+		m_attackerTextField.getDocument().addDocumentListener(new DocumentListener()
+		{
+			public void insertUpdate(final DocumentEvent e)
+			{
+				if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data))
+					m_attackerLabel.setForeground(Color.red);
+				else
+					m_attackerLabel.setForeground(null);
+			}
+			
+			public void removeUpdate(final DocumentEvent e)
+			{
+				if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data))
+					m_attackerLabel.setForeground(Color.red);
+				else
+					m_attackerLabel.setForeground(null);
+			}
+			
+			public void changedUpdate(final DocumentEvent e)
+			{
+				if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data))
+					m_attackerLabel.setForeground(Color.red);
+				else
+					m_attackerLabel.setForeground(null);
+			}
+		});
+		m_defenderTextField = new JTextField(defenderOrder == null ? "" : defenderOrder);
+		m_defenderTextField.getDocument().addDocumentListener(new DocumentListener()
+		{
+			public void insertUpdate(final DocumentEvent e)
+			{
+				if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data))
+					m_defenderLabel.setForeground(Color.red);
+				else
+					m_defenderLabel.setForeground(null);
+			}
+			
+			public void removeUpdate(final DocumentEvent e)
+			{
+				if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data))
+					m_defenderLabel.setForeground(Color.red);
+				else
+					m_defenderLabel.setForeground(null);
+			}
+			
+			public void changedUpdate(final DocumentEvent e)
+			{
+				if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data))
+					m_defenderLabel.setForeground(Color.red);
+				else
+					m_defenderLabel.setForeground(null);
+			}
+		});
+		m_clear = new JButton("Clear");
+		m_clear.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				m_attackerTextField.setText("");
+				m_defenderTextField.setText("");
+			}
+		});
+		layoutComponents();
+	}
+	
+	private void layoutComponents()
+	{
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		final JLabel instructions = new JLabel("<html>Here you can specify the 'Order of Losses' (OOL) for each side."
+					+ "<br />Damageable units will be damanged first always. If the player label is red, your OOL is invalid."
+					+ "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text line."
+					+ "<br />Then, during combat, casualties will be chosen starting on the LEFT side of your OOL."
+					+ "<br />" + OddsCalculator.OOL_SEPARATOR + " separates unit types."
+					+ "<br />" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + " is in front of the unit type and describes the number of units."
+					+ "<br />" + OddsCalculator.OOL_ALL + " means all units of that type."
+					+ "<br />Examples:"
+					+ "<br />" + OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry" + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL
+					+ OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "artillery" + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
+					+ "<br />The above will take all infantry, then all artillery, then all fighters, then all other units as casualty."
+					+ "<br /><br />1" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry" + OddsCalculator.OOL_SEPARATOR + "2" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "artillery"
+					+ OddsCalculator.OOL_SEPARATOR + "6" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
+					+ "<br />The above will take 1 infantry, then 2 artillery, then 6 fighters, then all other units as casualty."
+					+ "<br /><br />" + OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry" + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL
+					+ OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter" + OddsCalculator.OOL_SEPARATOR + "1" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry"
+					+ "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then all other units casualty.</html>");
+		instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(instructions);
+		this.add(Box.createVerticalStrut(30));
+		m_attackerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(m_attackerLabel);
+		final JPanel attackerUnits = getUnitButtonPanel(m_attackerCategories, m_attackerTextField);
+		attackerUnits.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(attackerUnits);
+		m_attackerTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(m_attackerTextField);
+		this.add(Box.createVerticalStrut(30));
+		m_defenderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(m_defenderLabel);
+		final JPanel defenderUnits = getUnitButtonPanel(m_defenderCategories, m_defenderTextField);
+		defenderUnits.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(defenderUnits);
+		m_defenderTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(m_defenderTextField);
+		this.add(Box.createVerticalStrut(10));
+		m_clear.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(m_clear);
+	}
+	
+	private JPanel getUnitButtonPanel(final List<UnitCategory> categories, final JTextField textField)
+	{
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		if (categories != null)
+		{
+			final Set<UnitType> typesUsed = new HashSet<UnitType>();
+			for (final UnitCategory category : categories)
+			{
+				// no duplicates or infrastructure allowed. no sea if land, no land if sea.
+				if (typesUsed.contains(category.getType()) || Matches.UnitTypeIsInfrastructure.match(category.getType()) || (m_land && Matches.UnitTypeIsSea.match(category.getType()))
+							|| (!m_land && Matches.UnitTypeIsLand.match(category.getType())))
+					continue;
+				final Image img = m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data, category.getDamaged(), category.getDisabled());
+				final String unitName = OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
+				final String toolTipText = "<html>" + category.getType().getName() + ":  " + category.getType().getTooltip(category.getOwner(), true) + "</html>";
+				final JButton button = new JButton(new ImageIcon(img));
+				button.setToolTipText(toolTipText);
+				button.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(final ActionEvent e)
+					{
+						textField.setText((textField.getText().length() > 0 ? (textField.getText() + OddsCalculator.OOL_SEPARATOR) : "") + unitName);
+					}
+				});
+				panel.add(button);
+				typesUsed.add(category.getType());
+			}
+		}
+		return panel;
+	}
+	
+	public String getAttackerOrder()
+	{
+		return m_attackerTextField.getText();
+	}
+	
+	public String getDefenderOrder()
+	{
+		return m_defenderTextField.getText();
 	}
 }

@@ -176,6 +176,11 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		return m_battleSite;
 	}
 	
+	public final Collection<TerritoryEffect> getTerritoryEffects()
+	{
+		return m_territoryEffects;
+	}
+	
 	public PlayerID getAttacker()
 	{
 		return m_attacker;

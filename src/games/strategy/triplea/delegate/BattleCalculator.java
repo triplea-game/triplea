@@ -108,6 +108,15 @@ public class BattleCalculator
 		return rVal;
 	}
 	
+	/**
+	 * Useful for fast approximations of strength.
+	 * Returns a number equal to: Power + (2 * HitPoints * DiceSides / 6)
+	 */
+	public static int getNormalizedMetaPower(final int power, final int hitpoints, final int diceSides)
+	{
+		return power + (2 * hitpoints * diceSides / 6);
+	}
+	
 	public static int getAAHits(final Collection<Unit> units, final IDelegateBridge bridge, final int[] dice)
 	{
 		final int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);

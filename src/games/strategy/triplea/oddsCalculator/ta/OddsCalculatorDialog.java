@@ -28,7 +28,7 @@ public class OddsCalculatorDialog extends JDialog
 	{
 		final OddsCalculatorDialog dialog = new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUIContext(), taFrame, t);
 		dialog.pack();
-		final int maxHeight = 600;
+		final int maxHeight = 630;
 		if (dialog.getHeight() > maxHeight)
 			dialog.setSize(new Dimension(dialog.getWidth(), maxHeight));
 		dialog.addWindowListener(new WindowAdapter()

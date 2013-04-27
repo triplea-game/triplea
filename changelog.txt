@@ -1,4 +1,8 @@
 Changes for 1.7
+* Created new button, "Order of Losses", in the battle calculator, which will all you to put in a text script of which casualties to select in what order. (veqryn)
+
+* Added option to retreat in battle calculator when we are losing, which is approximated by seeing if our 'meta-power' is lower than the opponent's. (veqryn)
+
 * Created new image utility, TileImageReconstructor, which will recreate an image based on base tiles or relief tiles and/or draw a polygons file onto an image. (veqryn)
 
 * Adding a visual log to AutoPlacementFinder and TileImageBreaker, and getting the AutoPlacementFinder to cut out at a max of about 50 placements per territory. (veqryn)
