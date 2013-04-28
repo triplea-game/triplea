@@ -43,6 +43,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	protected int m_uses = -1; // only matters for objectiveValue, does not affect the condition
 	protected HashMap<Integer, Integer> m_turns = null; // condition for what turn it is
 	protected boolean m_switch = true; // for on/off conditions
+	protected String m_gameProperty = null; // allows custom GameProperties
 	
 	public AbstractRulesAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -210,6 +211,29 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	public void resetSwitch()
 	{
 		m_switch = true;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setGameProperty(final String value)
+	{
+		m_gameProperty = value;
+	}
+	
+	public String getGameProperty()
+	{
+		return m_gameProperty;
+	}
+	
+	public boolean getGamePropertyState(final GameData data)
+	{
+		if (m_gameProperty == null)
+			return false;
+		return data.getProperties().get(m_gameProperty, false);
+	}
+	
+	public void resetGameProperty()
+	{
+		m_gameProperty = null;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)

@@ -2950,7 +2950,7 @@
 						<option name="impArtTech" value="false"/>
 				</attatchment>-->
 
-<!--  National Objectives -->
+<!--  National Objectives  and  Condition Attachments -->
 	<!-- all Objective Attachments, Conditions, Triggers, Rules, etc, must have a unique name (if you don't use unique names, you may get funny results with your trigger attachments, or even java errors) -->
 	<!-- the following options are allowed for "objectiveAttachmentXXX" (and also for "conditionAttachmentXXX").  all options below have an "AND" relationship with each other.
 			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
@@ -2965,6 +2965,7 @@
 			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity. Only applies to objectiveValue, and does NOT determine if the conditions is true or false.
 			switch								values: "true" or "false" (default is true).  This is just a simple on/off switch, which gives map makers some memory function for their conditions.
 			turns								values: which turns this will be checked on (example: value="1:4:6-8:11-+" means turns 1,4,6,7,8,11,and all turns after 11)
+			gameProperty 						values: can be set equal to the exact string of any boolean game property option, including custom made up ones.
 			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
 														for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
 			battle								values: checks if there has been a battle in the territory. Format is "attacker:defender:battleType:rounds:territory1", where attacker, defender, and battleType can all be "any", and rounds can be "currentRound". 

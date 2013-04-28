@@ -755,6 +755,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && m_turns != null)
 			objectiveMet = checkTurns(data);
 		//
+		// check custom game property options
+		//
+		if (objectiveMet && m_gameProperty != null)
+			objectiveMet = this.getGamePropertyState(data);
+		//
 		// Check for unit presence (Veqryn)
 		//
 		if (objectiveMet && getDirectPresenceTerritories() != null)
