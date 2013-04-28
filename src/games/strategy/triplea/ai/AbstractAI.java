@@ -18,6 +18,9 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -27,6 +30,7 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
@@ -70,6 +75,11 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		super(name, type);
 	}
 	
+	public final Class<ITripleaPlayer> getRemotePlayerType()
+	{
+		return ITripleaPlayer.class;
+	}
+	
 	/************************
 	 * The following methods are called when the AI starts a phase.
 	 *************************/
@@ -87,7 +97,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	 * @param player
 	 *            - the player to buy for
 	 */
-	protected abstract void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player);
+	protected abstract void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player);
 	
 	/**
 	 * It is the AI's turn to roll for technology.
@@ -129,46 +139,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	 */
 	protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player);
 	
-	/**
-	 * It is the AI's turn to fight. Subclasses may override this if they want, but
-	 * generally the AI does not need to worry about the order of fighting battles.
-	 * 
-	 * @param battleDelegate
-	 *            the battle delegate to query for battles not fought and the
-	 * @param data
-	 *            - the current GameData
-	 * @param player
-	 *            - the player to fight for
-	 */
-	protected void battle(final IBattleDelegate battleDelegate, final GameData data, final PlayerID player)
-	{
-		// generally all AI's will follow the same logic.
-		// loop until all battles are fought.
-		// rather than try to analyze battles to figure out which must be fought before others
-		// as in the case of a naval battle preceding an amphibious attack,
-		// keep trying to fight every battle
-		/*
-		if (!battleDelegate.stuffToDoInThisDelegate())
-			return;
-		*/
-		while (true)
-		{
-			final BattleListing listing = battleDelegate.getBattles();
-			// all fought
-			if (listing.isEmpty())
-				return;
-			for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet())
-			{
-				for (final Territory current : entry.getValue())
-				{
-					final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
-					if (error != null)
-						s_logger.fine(error);
-				}
-			}
-		}
-	}
-	
 	/******************************************
 	 * The following methods the AI may choose to implemenmt,
 	 * but in general won't
@@ -200,12 +170,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		return true;
 	}
 	
-	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
-	{
-		// just use the first one
-		return candidates.iterator().next();
-	}
-	
 	public boolean confirmMoveKamikaze()
 	{
 		return false;
@@ -216,15 +180,143 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		return false;
 	}
 	
+	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
+	{
+		// just use the first one
+		return candidates.iterator().next();
+	}
+	
+	/*
+	 * 
+	 * 
+	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String,
+	 *      java.util.Collection, java.util.Map, int, java.lang.String,
+	 *      games.strategy.triplea.delegate.DiceRoll,
+	 *      games.strategy.engine.data.PlayerID, java.util.List)
+	 *
+	 *      Added new collection autoKilled to handle killing units prior to casualty selection
+	 */
+	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
+	{
+		return new CasualtyDetails(defaultCasualties, true);
+	}
+	
+	/*
+	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
+	 */
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
+	{
+		if (potentialTargets == null || potentialTargets.isEmpty())
+			return null;
+		final Collection<Unit> factories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
+		if (factories.isEmpty())
+			return potentialTargets.iterator().next();
+		return factories.iterator().next();
+	}
+	
+	/*
+	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
+	 */
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
+	{
+		final List<Unit> rVal = new ArrayList<Unit>();
+		for (final Unit fighter : fightersThatCanBeMoved)
+		{
+			if (Math.random() < 0.8)
+				rVal.add(fighter);
+		}
+		return rVal;
+	}
+	
+	/*
+	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
+	 */
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
+	{
+		return candidates.iterator().next();
+	}
+	
+	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
+	{
+		return true;
+	}
+	
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
+	{
+		return null;
+	}
+	
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
+	{
+		return null;
+	}
+	
+	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		return null;
+	}
+	
+	public abstract boolean shouldBomberBomb(final Territory territory);
+	
 	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
 		// we are dead, just accept
 		if (!getPlayerID().amNotDeadYet(getGameData()))
 			return true;
-		// should we use bridge's random source here?
 		if (Math.random() < .5)
 			return true;
 		return false;
+	}
+	
+	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
+	{
+		final PlayerID id = getPlayerID();
+		// we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
+		final PlayerAttachment pa = PlayerAttachment.get(id);
+		if (pa == null)
+			return null;
+		final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
+		if (resourcesAndAttackValues.size() <= 0)
+			return null;
+		final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
+		final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
+		for (final Resource possible : resourcesAndAttackValues.keySet())
+		{
+			final int amount = playerResourceCollection.getInt(possible);
+			if (amount > 0)
+				attackTokens.put(possible, amount);
+		}
+		if (attackTokens.size() <= 0)
+			return null;
+		final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
+		for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet())
+		{
+			if (attackTokens.size() <= 0)
+				continue;
+			final Territory t = entry.getKey();
+			final List<Unit> targets = new ArrayList<Unit>(entry.getValue());
+			Collections.shuffle(targets);
+			for (final Unit u : targets)
+			{
+				if (attackTokens.size() <= 0)
+					continue;
+				final IntegerMap<Resource> rMap = new IntegerMap<Resource>();
+				final Resource r = attackTokens.keySet().iterator().next();
+				final int num = Math.min(attackTokens.getInt(r), ((UnitAttachment.get(u.getType()).getIsTwoHit() ? 2 : 1)
+							* (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
+				rMap.put(r, num);
+				HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
+				if (attMap == null)
+					attMap = new HashMap<Unit, IntegerMap<Resource>>();
+				attMap.put(u, rMap);
+				rVal.put(t, attMap);
+				attackTokens.add(r, -num);
+				if (attackTokens.getInt(r) <= 0)
+					attackTokens.removeKey(r);
+			}
+		}
+		return rVal;
 	}
 	
 	/*****************************************
@@ -255,6 +347,19 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	public void confirmOwnCasualties(final GUID battleId, final String message)
 	{
 		pause();
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
+	 */
+	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
+	{
+		final int[] dice = new int[numRolls];
+		for (int i = 0; i < numRolls; i++)
+		{
+			dice[i] = (int) Math.ceil(Math.random() * diceSides);
+		}
+		return dice;
 	}
 	
 	/*****************************************
@@ -314,7 +419,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		else if (name.endsWith("Battle"))
 			battle((IBattleDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		else if (name.endsWith("Politics"))
-			getPoliticalActions();
+			politicalActions();
 		else if (name.endsWith("Place"))
 		{
 			final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
@@ -324,10 +429,55 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		else if (name.endsWith("EndTurn"))
 		{
+			endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		}
 	}
 	
-	public void getPoliticalActions()
+	/**
+	 * No need to override this.
+	 */
+	protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data, final PlayerID player)
+	{
+		// we should not override this...
+	}
+	
+	/**
+	 * It is the AI's turn to fight. Subclasses may override this if they want, but
+	 * generally the AI does not need to worry about the order of fighting battles.
+	 * 
+	 * @param battleDelegate
+	 *            the battle delegate to query for battles not fought and the
+	 * @param data
+	 *            - the current GameData
+	 * @param player
+	 *            - the player to fight for
+	 */
+	protected void battle(final IBattleDelegate battleDelegate, final GameData data, final PlayerID player)
+	{
+		// generally all AI's will follow the same logic.
+		// loop until all battles are fought.
+		// rather than try to analyze battles to figure out which must be fought before others
+		// as in the case of a naval battle preceding an amphibious attack,
+		// keep trying to fight every battle
+		while (true)
+		{
+			final BattleListing listing = battleDelegate.getBattles();
+			// all fought
+			if (listing.isEmpty())
+				return;
+			for (final Entry<BattleType, Collection<Territory>> entry : listing.getBattles().entrySet())
+			{
+				for (final Territory current : entry.getValue())
+				{
+					final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
+					if (error != null)
+						s_logger.fine(error);
+				}
+			}
+		}
+	}
+	
+	public void politicalActions()
 	{
 		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
 		/*
@@ -392,60 +542,5 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 				}
 			}
 		}
-	}
-	
-	public final Class<ITripleaPlayer> getRemotePlayerType()
-	{
-		return ITripleaPlayer.class;
-	}
-	
-	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
-	{
-		final PlayerID id = getPlayerID();
-		// we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
-		final PlayerAttachment pa = PlayerAttachment.get(id);
-		if (pa == null)
-			return null;
-		final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
-		if (resourcesAndAttackValues.size() <= 0)
-			return null;
-		final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
-		final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
-		for (final Resource possible : resourcesAndAttackValues.keySet())
-		{
-			final int amount = playerResourceCollection.getInt(possible);
-			if (amount > 0)
-				attackTokens.put(possible, amount);
-		}
-		if (attackTokens.size() <= 0)
-			return null;
-		final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
-		for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet())
-		{
-			if (attackTokens.size() <= 0)
-				continue;
-			final Territory t = entry.getKey();
-			final List<Unit> targets = new ArrayList<Unit>(entry.getValue());
-			Collections.shuffle(targets);
-			for (final Unit u : targets)
-			{
-				if (attackTokens.size() <= 0)
-					continue;
-				final IntegerMap<Resource> rMap = new IntegerMap<Resource>();
-				final Resource r = attackTokens.keySet().iterator().next();
-				final int num = Math.min(attackTokens.getInt(r), ((UnitAttachment.get(u.getType()).getIsTwoHit() ? 2 : 1)
-							* (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
-				rMap.put(r, num);
-				HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
-				if (attMap == null)
-					attMap = new HashMap<Unit, IntegerMap<Resource>>();
-				attMap.put(u, rMap);
-				rVal.put(t, attMap);
-				attackTokens.add(r, -num);
-				if (attackTokens.getInt(r) <= 0)
-					attackTokens.removeKey(r);
-			}
-		}
-		return rVal;
 	}
 }

@@ -133,7 +133,7 @@ public class InitializationDelegate extends AbstractDelegate
 		// load other variables from state here:
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;
 	}

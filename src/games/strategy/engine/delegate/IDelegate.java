@@ -93,7 +93,7 @@ public interface IDelegate
 	public Class<? extends IRemote> getRemoteType();
 	
 	/**
-	 * Do we have things to do in this delegate or not?
+	 * Do we have any user-interface things to do in this delegate or not?
 	 * Example: In the "place delegate" if we have units to place or have already placed some units then this should return true,
 	 * and if we have nothing to place then this should return false;
 	 * Example2: In a "move delegate" if we have either moved units already or have units with movement left, then this should return true,
@@ -101,7 +101,7 @@ public interface IDelegate
 	 * 
 	 * Because communication over the network can take a while, this should only be called from the server game.
 	 * 
-	 * @return should we run the delegate or not?
+	 * @return should we run the delegate in order to receive user input, or not?
 	 */
-	public boolean stuffToDoInThisDelegate();
+	public boolean delegateCurrentlyRequiresUserInput();
 }

@@ -114,7 +114,7 @@ public final class TestDelegate extends AbstractDelegate
 	{
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;
 	}

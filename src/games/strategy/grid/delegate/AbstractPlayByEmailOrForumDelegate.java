@@ -51,7 +51,7 @@ public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegat
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// we could have a pbem/forum post to do
 		return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData());

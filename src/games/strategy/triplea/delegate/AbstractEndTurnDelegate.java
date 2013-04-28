@@ -251,10 +251,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// we could have a pbem/forum post to do
-		return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData());
+		return true;// PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData());
 	}
 	
 	private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data)

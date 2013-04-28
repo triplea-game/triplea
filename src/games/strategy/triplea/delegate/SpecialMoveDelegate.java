@@ -107,7 +107,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		// m_allowAirborne = s.m_allowAirborne;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!allowAirborne(m_player, getData()))
 			return false;

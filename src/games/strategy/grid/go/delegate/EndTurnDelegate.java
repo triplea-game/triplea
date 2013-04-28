@@ -121,10 +121,10 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
 	}
 	
 	@Override
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// we are either end game, or we have forum poster
-		return haveTwoPassedInARow() || super.stuffToDoInThisDelegate();
+		return haveTwoPassedInARow() || super.delegateCurrentlyRequiresUserInput();
 	}
 	
 	public static Map<Territory, PlayerID> getCurrentAreaScoreState(final Collection<Territory> deadGroups, final GameData data)

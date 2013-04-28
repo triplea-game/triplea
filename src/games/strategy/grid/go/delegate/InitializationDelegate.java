@@ -54,7 +54,7 @@ public class InitializationDelegate extends AbstractDelegate
 	{
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;
 	}

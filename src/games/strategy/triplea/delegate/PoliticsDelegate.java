@@ -136,7 +136,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		// load other variables from state here:
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!m_player.amNotDeadYet(getData()))
 			return false;

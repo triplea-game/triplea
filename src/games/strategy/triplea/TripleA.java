@@ -34,6 +34,7 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
+import games.strategy.triplea.ai.weakAI.DoesNothingAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -63,6 +64,7 @@ public class TripleA implements IGameLoader
 	public static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
 	// public static final String ADVANCED_COMPUTER_PLAYER_TYPE = "Moore N. Able 2 (AI)";
 	public static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix Land-Only (AI)";
+	public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
 	// public static final String NONE = "None (AI)";
 	private transient TripleaDisplay m_display;
 	private transient IGame m_game;
@@ -90,6 +92,10 @@ public class TripleA implements IGameLoader
 			else if (type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE))
 			{
 				players.add(new Dynamix_AI(name, type));
+			}
+			else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE))
+			{
+				players.add(new DoesNothingAI(name, type));
 			}
 			else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
@@ -201,7 +207,8 @@ public class TripleA implements IGameLoader
 					WEAK_COMPUTER_PLAYER_TYPE,
 					STRONG_COMPUTER_PLAYER_TYPE,
 					/* ADVANCED_COMPUTER_PLAYER_TYPE, */
-					DYNAMIX_COMPUTER_PLAYER_TYPE };
+					DYNAMIX_COMPUTER_PLAYER_TYPE,
+					DOESNOTHINGAI_COMPUTER_PLAYER_TYPE };
 	}
 	
 	/*

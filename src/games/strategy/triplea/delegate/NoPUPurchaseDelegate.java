@@ -44,7 +44,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 	private boolean isPacific;
 	
 	@Override
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;
 	}

@@ -281,7 +281,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		m_PUsLost = s.m_PUsLost;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
 		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));

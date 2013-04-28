@@ -43,7 +43,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 	{
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;
 	}

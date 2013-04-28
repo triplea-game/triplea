@@ -146,7 +146,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		m_needToInitialize = s.m_needToInitialize;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty())
 			return false;

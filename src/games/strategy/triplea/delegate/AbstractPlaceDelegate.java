@@ -125,7 +125,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		removeAirThatCantLand();
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// nothing to place
 		// nothing placed

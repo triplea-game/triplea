@@ -55,7 +55,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		{
 			m_blackHandicap = getData().getProperties().get("Black Player Handicap", 0);
 		}
-		if (stuffToDoInThisDelegate())
+		if (delegateCurrentlyRequiresUserInput())
 		{
 			final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 			display.setStatus(m_player.getName() + "'s turn. (Click to place stone, or 'P' to pass.)");
@@ -97,7 +97,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		this.m_capturedUnits = s.m_capturedUnits;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return !haveTwoPassedInARow() && (m_firstPlayerToPass == null || m_passesInARow == 1 || m_firstPlayerToPass.equals(m_player))
 					&& (m_player.getName().equalsIgnoreCase("Black") || m_blackHandicap <= 0);
@@ -111,7 +111,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 	
 	public String play(final IGridPlayData play)
 	{
-		if (!stuffToDoInThisDelegate())
+		if (!delegateCurrentlyRequiresUserInput())
 			return null;
 		for (final Territory t : play.getAllSteps())
 		{

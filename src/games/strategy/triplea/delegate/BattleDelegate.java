@@ -203,7 +203,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		m_currentBattle = s.m_currentBattle;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		final BattleListing battles = getBattles();
 		if (battles.isEmpty())

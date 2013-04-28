@@ -50,7 +50,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	}
 	
 	@Override
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!doesPlayerHaveBid(getData(), m_player))
 			return false;

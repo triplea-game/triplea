@@ -583,7 +583,7 @@ public class ServerGame extends AbstractGame
 		// no player specified for the given step
 		if (playerID == null)
 			return;
-		if (!getCurrentStep().getDelegate().stuffToDoInThisDelegate())
+		if (!getCurrentStep().getDelegate().delegateCurrentlyRequiresUserInput())
 			return;
 		final IGamePlayer player = m_gamePlayers.get(playerID);
 		if (player != null)

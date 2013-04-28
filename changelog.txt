@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created new AI specially for multiplayer free-for-all games, "Does Nothing AI", which will buy units the first round then destroy all money all subsequent rounds, along with doing nothing else. (veqryn)
+
 * Abstracted methods to find the power and rolls of units into a single method. (veqryn)
 
 * Fixed issue with Marine amphibious attackers showing a bonus on the battle screen even when attacking via land. (veqryn)

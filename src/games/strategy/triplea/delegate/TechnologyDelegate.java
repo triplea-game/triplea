@@ -156,7 +156,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		m_techs = s.m_techs;
 	}
 	
-	public boolean stuffToDoInThisDelegate()
+	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!games.strategy.triplea.Properties.getTechDevelopment(getData()))
 			return false;
