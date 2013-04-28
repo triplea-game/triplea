@@ -617,9 +617,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		// defender subs sneak attack
 		// Defending subs have no sneak attack in Pacific/Europe Theaters or if Destroyers are present
+		final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack3();
 		if (m_battleSite.isWater())
 		{
-			if (!defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+			if (!defendingSubsFireWithAllDefendersAlways && !defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
 			{
 				steps.add(m_defender.getName() + SUBS_FIRE);
 				steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
@@ -651,6 +652,18 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			steps.add(m_attacker.getName() + FIRE);
 			steps.add(m_defender.getName() + SELECT_CASUALTIES);
+		}
+		// classic rules, subs fire with all defenders
+		if (m_battleSite.isWater())
+		{
+			final Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
+			units.addAll(m_defendingUnits);
+			units.addAll(m_defendingWaitingToDie);
+			if (defendingSubsFireWithAllDefendersAlways && !defenderSubsFireFirst && Match.someMatch(units, Matches.UnitIsSub))
+			{
+				steps.add(m_defender.getName() + SUBS_FIRE);
+				steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
+			}
 		}
 		// Air Units can't attack subs without Destroyers present
 		if (m_battleSite.isWater() && isAirAttackSubRestricted())
@@ -1158,7 +1171,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				attackSubs(bridge, returnFireAgainstAttackingSubs);
 			}
 		});
-		if (!defenderSubsFireFirst())
+		if (defendingSubsSneakAttack3() && !defenderSubsFireFirst())
 		{
 			steps.add(new DefendSubs()
 			{
@@ -1194,6 +1207,18 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				attackNonSubs(bridge);
 			}
 		});
+		if (!defendingSubsSneakAttack3() && !defenderSubsFireFirst())
+		{
+			steps.add(new DefendSubs()
+			{
+				private static final long serialVersionUID = 999921L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					defendSubs(bridge, returnFireAgainstDefendingSubs);
+				}
+			});
+		}
 		/** Defender air fire on NON subs */
 		if (isAirAttackSubRestricted())
 			steps.add(new IExecutable()
@@ -1263,7 +1288,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private boolean defendingSubsSneakAttack2()
 	{
-		return (isWW2V2() || isDefendingSubsSneakAttack()) && !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer);
+		return !Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && defendingSubsSneakAttack3();
+	}
+	
+	private boolean defendingSubsSneakAttack3()
+	{
+		return isWW2V2() || isDefendingSubsSneakAttack();
 	}
 	
 	/**
