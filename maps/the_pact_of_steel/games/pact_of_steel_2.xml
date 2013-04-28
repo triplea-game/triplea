@@ -2870,11 +2870,11 @@
 				
 <!-- Support Attachments -->
 		<!-- the following options are allowed for "supportAttachmentXXX" (must be unique names!)
-				unitType							values: the name of the unit (or units in a : delimited list) TO BE SUPPORTED BY THE ATTACHED UNIT (attached unit is "attatchTO"). 
-															If you are changing the properties of a unit, then unitType should be the same as attatchTo
-				faction								values: "allied" or "enemy" (enemy not yet coded, does nothing right now)
-				side								values: "offence" or "defence", support when attacking or defending, can be both (example: value="offence:defence")
-				dice								values: "strength" or "rolls", may be a list of both (rolls not yet coded, does nothing right now)
+				unitType							values: the name of the unit (or units in a : delimited list) TO BE SUPPORTED BY THE ATTACHED UNIT (attached unit is "attatchTo"). 
+															If you are changing the properties of the same unit, then unitType should be the same as attatchTo
+				faction								values: "allied" or "enemy"
+				side								values: "offence" or "defence", support when attacking or defending, can be both (example: value="offence:defence"). The side the attached-to unit is on when giving this support.
+				dice								values: "strength" or "roll", may be a list of both
 				bonus								values: how much to add to strength or roll
 				number								values: how many units to be supported
 				bonusType							values: the name of the bonus, any string. any bonus with the same name will not stack, any bonus with a different name will stack

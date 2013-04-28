@@ -1857,8 +1857,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 	}
 	
-	private void fire(final String stepName, final Collection<Unit> firingUnits, final Collection<Unit> attackableUnits, final boolean defender, final ReturnFire returnFire,
-				final IDelegateBridge bridge, final String text)
+	private void fire(final String stepName, final Collection<Unit> firingUnits, final Collection<Unit> attackableUnits, final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defender,
+				final ReturnFire returnFire, final IDelegateBridge bridge, final String text)
 	{
 		final PlayerID firing = defender ? m_defender : m_attacker;
 		final PlayerID defending = !defender ? m_defender : m_attacker;
@@ -1866,7 +1866,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			return;
 		}
-		m_stack.push(new Fire(attackableUnits, returnFire, firing, defending, firingUnits, stepName, text, this, defender, m_dependentUnits, m_stack, m_headless, m_battleSite, m_territoryEffects));
+		m_stack.push(new Fire(attackableUnits, returnFire, firing, defending, firingUnits, stepName, text, this, defender, m_dependentUnits, m_stack, m_headless, m_battleSite, m_territoryEffects,
+					allEnemyUnitsAliveOrWaitingToDie));
 	}
 	
 	/**
@@ -2042,7 +2043,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		if (units.isEmpty())
 			return;
-		fire(m_attacker.getName() + SELECT_CASUALTIES, units, m_attackingUnits, true, ReturnFire.ALL, bridge, "Defenders fire, ");
+		final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
+		fire(m_attacker.getName() + SELECT_CASUALTIES, units, m_attackingUnits, allEnemyUnitsAliveOrWaitingToDie, true, ReturnFire.ALL, bridge, "Defenders fire, ");
 	}
 	
 	// If there are no attacking DDs but defending SUBs, fire AIR at non-SUB forces ONLY
@@ -2060,7 +2064,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			units = Match.getMatches(units, Matches.UnitIsAir);
 			final Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsNotSub);
-			fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, false, ReturnFire.ALL, bridge, "Attacker's aircraft fire,");
+			final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+			allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
+			allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
+			fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, allEnemyUnitsAliveOrWaitingToDie, false, ReturnFire.ALL, bridge, "Attacker's aircraft fire,");
 		}
 	}
 	
@@ -2087,7 +2094,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			final Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
 			if (enemyUnitsNotSubs.isEmpty())
 				return;
-			fire(m_defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, true, ReturnFire.ALL, bridge, "Defender's aircraft fire,");
+			final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+			allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
+			allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
+			fire(m_attacker.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, allEnemyUnitsAliveOrWaitingToDie, true, ReturnFire.ALL, bridge, "Defender's aircraft fire,");
 		}
 	}
 	
@@ -2108,7 +2118,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		if (units.isEmpty())
 			return;
-		fire(m_defender.getName() + SELECT_CASUALTIES, units, m_defendingUnits, false, ReturnFire.ALL, bridge, "Attackers fire,");
+		final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
+		fire(m_defender.getName() + SELECT_CASUALTIES, units, m_defendingUnits, allEnemyUnitsAliveOrWaitingToDie, false, ReturnFire.ALL, bridge, "Attackers fire,");
 	}
 	
 	private void attackSubs(final IDelegateBridge bridge, final ReturnFire returnFire)
@@ -2118,7 +2131,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			return;
 		final Collection<Unit> attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsNotAir);
 		// if there are destroyers in the attacked units, we can return fire.
-		fire(m_defender.getName() + SELECT_SUB_CASUALTIES, firing, attacked, false, returnFire, bridge, "Subs fire,");
+		final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
+		fire(m_defender.getName() + SELECT_SUB_CASUALTIES, firing, attacked, allEnemyUnitsAliveOrWaitingToDie, false, returnFire, bridge, "Subs fire,");
 	}
 	
 	private void defendSubs(final IDelegateBridge bridge, final ReturnFire returnFire)
@@ -2134,7 +2150,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Collection<Unit> attacked = Match.getMatches(m_attackingUnits, Matches.UnitIsNotAir);
 		if (attacked.isEmpty())
 			return;
-		fire(m_attacker.getName() + SELECT_SUB_CASUALTIES, firing, attacked, true, returnFire, bridge, "Subs defend, ");
+		final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
+		fire(m_attacker.getName() + SELECT_SUB_CASUALTIES, firing, attacked, allEnemyUnitsAliveOrWaitingToDie, true, returnFire, bridge, "Subs defend, ");
 	}
 	
 	/*
@@ -2240,7 +2259,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			if (!m_headless)
 				ClipPlayer.play(SoundPath.CLIP_BATTLE_BOMBARD, m_attacker.getName());
-			fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, "Bombard");
+			final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+			allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
+			allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
+			fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, allEnemyUnitsAliveOrWaitingToDie, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, "Bombard");
 		}
 	}
 	
@@ -2259,7 +2281,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (suicideAttackers.size() == 0 || attackedDefenders.size() == 0)
 			return;
 		final boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
-		fire(m_defender.getName() + SELECT_CASUALTIES_SUICIDE, suicideAttackers, attackedDefenders, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_ATTACK);
+		final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
+		fire(m_defender.getName() + SELECT_CASUALTIES_SUICIDE, suicideAttackers, attackedDefenders, allEnemyUnitsAliveOrWaitingToDie, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge,
+					SUICIDE_ATTACK);
 	}
 	
 	private void fireSuicideUnitsDefend(final IDelegateBridge bridge)
@@ -2279,7 +2305,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (suicideDefenders.size() == 0 || attackedAttackers.size() == 0)
 			return;
 		final boolean canReturnFire = (!isSuicideAndMunitionCasualtiesRestricted());
-		fire(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE, suicideDefenders, attackedAttackers, true, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, SUICIDE_DEFEND);
+		final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
+		allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
+		fire(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE, suicideDefenders, attackedAttackers, allEnemyUnitsAliveOrWaitingToDie, true, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge,
+					SUICIDE_DEFEND);
 	}
 	
 	/**

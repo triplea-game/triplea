@@ -1077,13 +1077,14 @@ public class BattleCalculator
 		return false;
 	}
 	
-	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesCopy,
-				final IntegerMap<UnitSupportAttachment> supportLeftCopy, final Collection<TerritoryEffect> territoryEffects)
+	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
+				final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy, final Set<List<UnitSupportAttachment>> supportRulesEnemy,
+				final IntegerMap<UnitSupportAttachment> supportLeftEnemyCopy, final Collection<TerritoryEffect> territoryEffects)
 	{
 		int count = 0;
 		for (final Unit unit : units)
 		{
-			final int unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy, territoryEffects);
+			final int unitRoll = getRolls(unit, location, id, defend, supportRulesFriendly, supportLeftFriendlyCopy, supportRulesEnemy, supportLeftEnemyCopy, territoryEffects);
 			count += unitRoll;
 		}
 		return count;
@@ -1091,35 +1092,56 @@ public class BattleCalculator
 	
 	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final Collection<TerritoryEffect> territoryEffects)
 	{
-		return getRolls(units, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), territoryEffects);
+		return getRolls(units, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
+					new IntegerMap<UnitSupportAttachment>(), territoryEffects);
 	}
 	
-	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesCopy,
-				final IntegerMap<UnitSupportAttachment> supportLeftCopy, final Collection<TerritoryEffect> territoryEffects)
+	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
+				final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy, final Set<List<UnitSupportAttachment>> supportRulesEnemy,
+				final IntegerMap<UnitSupportAttachment> supportLeftEnemyCopy, final Collection<TerritoryEffect> territoryEffects)
 	{
 		final UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
-		int rolls = 0;
+		int rolls;
 		if (defend)
 			rolls = unitAttachment.getDefenseRolls(id);
 		else
 			rolls = unitAttachment.getAttackRolls(id);
+		
+		rolls += DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, false, true);
+		rolls += DiceRoll.getSupport(unit.getType(), supportRulesEnemy, supportLeftEnemyCopy, false, true);
+		
+		int strength;
+		if (defend)
+			strength = unitAttachment.getDefense(unit.getOwner());
+		else
+			strength = unitAttachment.getAttack(unit.getOwner());
+		// TODO: we should add in isMarine bonus too...
+		strength += DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, true, false);
+		strength += DiceRoll.getSupport(unit.getType(), supportRulesEnemy, supportLeftEnemyCopy, true, false);
+		strength += TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defend);
+		
+		if (strength <= 0)
+			rolls = 0;
+		
+		/* (getAttackRolls no longer returns zero when unit has zero attack power, so this is no longer needed) 
 		// Don't forget that units can have zero attack, and then be given attack power by support, and therefore be able to roll
 		if (rolls == 0 && (defend ? unitAttachment.getDefense(id) : unitAttachment.getAttack(id)) == 0)
 		{
-			if (DiceRoll.getSupport(unit.getType(), supportRulesCopy, supportLeftCopy) > 0)
+			if (DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, true, false) > 0)
 				rolls += 1;
 		}
 		if (rolls == 0 && (defend ? unitAttachment.getDefense(id) : unitAttachment.getAttack(id)) == 0)
 		{
 			if (TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defend) > 0)
 				rolls += 1;
-		}
+		}*/
 		return rolls;
 	}
 	
 	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final Collection<TerritoryEffect> territoryEffects)
 	{
-		return getRolls(unit, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), territoryEffects);
+		return getRolls(unit, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
+					new IntegerMap<UnitSupportAttachment>(), territoryEffects);
 	}
 	
 	/**

@@ -618,10 +618,13 @@ public class AirBattle extends AbstractBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
+					final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+					allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
+					allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
 					if (shouldAirBattleUseAirCombatAttDefValues(m_isBombingRun))
 						m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ");
 					else
-						m_dice = DiceRoll.rollDice(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ", m_territoryEffects);
+						m_dice = DiceRoll.rollDice(m_attackingUnits, false, m_attacker, bridge, AirBattle.this, "Attackers Fire, ", m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie);
 				}
 			};
 			final IExecutable calculateCasualties = new IExecutable()
@@ -668,10 +671,13 @@ public class AirBattle extends AbstractBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
+					final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
+					allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
+					allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
 					if (shouldAirBattleUseAirCombatAttDefValues(m_isBombingRun))
 						m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ");
 					else
-						m_dice = DiceRoll.rollDice(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ", m_territoryEffects);
+						m_dice = DiceRoll.rollDice(m_defendingUnits, true, m_defender, bridge, AirBattle.this, "Defenders Fire, ", m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie);
 				}
 			};
 			final IExecutable calculateCasualties = new IExecutable()

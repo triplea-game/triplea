@@ -67,9 +67,9 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
 	private boolean m_impArtTech = false;
 	// strings
-	private String m_dice = null;
-	private String m_faction = null;
-	private String m_side = null;
+	private String m_dice = null; // roll or strength
+	private String m_faction = null; // allied or enemy
+	private String m_side = null; // offence or defence
 	
 	public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -154,7 +154,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	{
 		if (faction == null)
 		{
-			m_faction = null;
+			resetFaction();
 			return;
 		}
 		m_allied = false;
@@ -189,7 +189,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	{
 		if (side == null)
 		{
-			m_side = null;
+			resetSide();
 			return;
 		}
 		m_defence = false;
@@ -224,7 +224,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	{
 		if (dice == null)
 		{
-			m_dice = null;
+			resetDice();
 			return;
 		}
 		m_roll = false;

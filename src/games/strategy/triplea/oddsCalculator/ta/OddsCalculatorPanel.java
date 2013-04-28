@@ -221,6 +221,7 @@ public class OddsCalculatorPanel extends JPanel
 					m_data.releaseReadLock();
 				}
 				updateDefender(null);
+				setWidgetActivation();
 			}
 		});
 		m_attackerCombo.addActionListener(new ActionListener()
@@ -239,6 +240,7 @@ public class OddsCalculatorPanel extends JPanel
 					m_data.releaseReadLock();
 				}
 				updateAttacker(null);
+				setWidgetActivation();
 			}
 		});
 		m_amphibiousCheckBox.addActionListener(new ActionListener()
@@ -503,6 +505,7 @@ public class OddsCalculatorPanel extends JPanel
 		final boolean isLand = isLand();
 		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, false, false));
 		m_defendingUnitsPanel.init(getDefender(), units, isLand);
+		/* setWidgetActivation now does all this
 		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
 		m_defenderUnitsTotalNumber.setText("Units: " + mainCombatUnits.size());
 		m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(mainCombatUnits, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
@@ -514,6 +517,7 @@ public class OddsCalculatorPanel extends JPanel
 		m_defenderUnitsTotalPower.setText("Power: " + defensePower);
 		m_defenderUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP, m_data.getDiceSides())
 					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+		*/
 	}
 	
 	private void updateAttacker(List<Unit> units)
@@ -523,6 +527,7 @@ public class OddsCalculatorPanel extends JPanel
 		final boolean isLand = isLand();
 		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, false, false));
 		m_attackingUnitsPanel.init(getAttacker(), units, isLand);
+		/* setWidgetActivation now does all this
 		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
 		m_attackerUnitsTotalNumber.setText("Units: " + mainCombatUnits.size());
 		m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(mainCombatUnits, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
@@ -535,6 +540,7 @@ public class OddsCalculatorPanel extends JPanel
 		m_attackerUnitsTotalPower.setText("Power: " + attackPower);
 		m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())
 					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+		*/
 	}
 	
 	private boolean isLand()
@@ -783,8 +789,8 @@ public class OddsCalculatorPanel extends JPanel
 		final boolean isAmphibiousBattle = isAmphibiousBattle();
 		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
 		final int attackPower = DiceRoll.getTotalPower(attackers, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle,
-					(isAmphibiousBattle ? attackers : new ArrayList<Unit>()));
-		final int defensePower = DiceRoll.getTotalPower(defenders, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>()); // defender is never amphibious
+					(isAmphibiousBattle ? attackers : new ArrayList<Unit>()), defenders);
+		final int defensePower = DiceRoll.getTotalPower(defenders, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>(), attackers); // defender is never amphibious
 		m_attackerUnitsTotalPower.setText("Power: " + attackPower);
 		m_defenderUnitsTotalPower.setText("Power: " + defensePower);
 		m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())

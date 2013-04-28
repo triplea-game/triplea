@@ -1622,8 +1622,6 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getAttackRolls(final PlayerID player)
 	{
-		if (getAttack(player) <= 0)
-			return 0;
 		return Math.max(0, m_attackRolls + TechAbilityAttachment.getAttackRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
 	}
 	
@@ -1683,8 +1681,6 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getDefenseRolls(final PlayerID player)
 	{
-		if (getDefense(player) <= 0)
-			return 0;
 		return Math.max(0, m_defenseRolls + TechAbilityAttachment.getDefenseRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
 	}
 	

@@ -146,8 +146,10 @@ public class BattleDisplay extends JPanel
 		m_data = data;
 		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
 		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType, territoryEffects, isAmphibious);
-		m_defenderModel.refresh();
 		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType, territoryEffects, isAmphibious);
+		m_defenderModel.setEnemyBattleModel(m_attackerModel);
+		m_attackerModel.setEnemyBattleModel(m_defenderModel);
+		m_defenderModel.refresh();
 		m_attackerModel.refresh();
 		m_uiContext = mapPanel.getUIContext();
 		m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
@@ -1105,6 +1107,7 @@ class BattleModel extends DefaultTableModel
 	private final BattleType m_battleType;
 	private final Collection<TerritoryEffect> m_territoryEffects;
 	private final boolean m_isAmphibious;
+	private BattleModel m_enemyBattleModel = null;
 	
 	private static String[] varDiceArray(final GameData data)
 	{
@@ -1137,6 +1140,11 @@ class BattleModel extends DefaultTableModel
 		m_isAmphibious = isAmphibious;
 	}
 	
+	public void setEnemyBattleModel(final BattleModel enemyBattleModel)
+	{
+		m_enemyBattleModel = enemyBattleModel;
+	}
+	
 	public void notifyRetreat(final Collection<Unit> retreating)
 	{
 		m_units.removeAll(retreating);
@@ -1155,6 +1163,11 @@ class BattleModel extends DefaultTableModel
 		refresh();
 	}
 	
+	Collection<Unit> getUnits()
+	{
+		return m_units;
+	}
+	
 	/**
 	 * refresh the model from m_units
 	 */
@@ -1168,13 +1181,15 @@ class BattleModel extends DefaultTableModel
 		{
 			columns[i] = new ArrayList<TableData>();
 		}
-		// Determine if artillery support is available and how much
-		// int artillerySupportAvailable = getArtillerySupportAvailable(m_units, m_attack);
 		final List<Unit> units = new ArrayList<Unit>(m_units);
 		DiceRoll.sortByStrength(units, !m_attack);
-		final Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
-		final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
-		DiceRoll.getSupport(units, supportRules, supportLeft, m_data, !m_attack);
+		// TODO: we actually need to include units that are still alive but waiting to die...
+		final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
+		final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
+		DiceRoll.getSupport(units, supportRulesFriendly, supportLeftFriendly, m_data, !m_attack, true);
+		final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
+		final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
+		DiceRoll.getSupport(new ArrayList<Unit>(m_enemyBattleModel.getUnits()), supportRulesEnemy, supportLeftEnemy, m_data, m_attack, false);
 		// Collection unitCategories = UnitSeperator.categorize(m_units);
 		final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
 		for (final UnitCategory category : unitCategories)
@@ -1201,7 +1216,8 @@ class BattleModel extends DefaultTableModel
 						// TODO actually this only happens when the marine is amphibious, not when the battle is. we could have an amphibious battle but a non-amphibious marine.
 						if (m_isAmphibious && attachment.getIsMarine() != 0)
 							strength += attachment.getIsMarine();
-						strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
+						strength += DiceRoll.getSupport(category.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
+						strength += DiceRoll.getSupport(category.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
 					}
 					else
 					{
@@ -1213,7 +1229,8 @@ class BattleModel extends DefaultTableModel
 							if (DiceRoll.isFirstTurnLimitedRoll(category.getOwner(), m_data))
 								strength = Math.min(1, strength);
 							else
-								strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
+								strength += DiceRoll.getSupport(category.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
+							strength += DiceRoll.getSupport(category.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
 						} finally
 						{
 							m_data.releaseReadLock();
@@ -1261,49 +1278,6 @@ class BattleModel extends DefaultTableModel
 	{
 		return false;
 	}
-	/**
-	 * Determine if artillery support is available and how much
-	 * 
-	 * @param units
-	 * @param defending
-	 * @param player
-	 * @return
-	 */
-	/*private static int getArtillerySupportAvailable(Collection<Unit> units, boolean attack)
-	{
-		//TODO refactor with DiceRoll.getArtillerySupportAvailable
-		int artillerySupportAvailable = 0;
-	    if (attack)
-	    {
-	        Collection<Unit> arty = Match.getMatches(units, Matches.UnitIsArtillery);
-	        Iterator<Unit> iter = arty.iterator();
-	        PlayerID player = null;
-
-	        while (iter.hasNext())
-	        {
-	        	Unit current = (Unit) iter.next();
-	        	player = current.getOwner();
-	        	UnitAttachment ua = UnitAttachment.get(current.getType());
-	        	artillerySupportAvailable += ua.getUnitSupportCount(current.getOwner());
-	        }
-
-	        //If ImprovedArtillery, double number of units to support
-	        if(player != null && isImprovedArtillerySupport(player))
-	        	artillerySupportAvailable *= 2;
-	        
-	    }
-	    
-	    return artillerySupportAvailable;
-	}
-
-
-	private static boolean isImprovedArtillerySupport(PlayerID player)
-	{
-	    TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-	    if(ta == null)
-	    	return false;
-	    return ta.hasImprovedArtillerySupport();
-	}*/
 }
 
 

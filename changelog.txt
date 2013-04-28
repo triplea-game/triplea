@@ -1,4 +1,8 @@
 Changes for 1.7
+* Getting the UnitSupportAttachment faction option to handle both allied and enemy, thereby allowing giving positive or negative support to enemy units. (veqryn)
+
+* Getting the UnitSupportAttachment dice option to handle both strength and roll, thereby allowing giving extra rolls to units. (veqryn)
+
 * Changing defending submarines to fire after all attacking units under classic rules, where property Defending Subs Sneak Attack is false. (veqryn) 
 
 * Created new button, "Order of Losses", in the battle calculator, which will all you to put in a text script of which casualties to select in what order. (veqryn)

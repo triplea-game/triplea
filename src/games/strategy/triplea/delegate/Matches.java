@@ -696,11 +696,8 @@ public class Matches
 				if (!attack && ua.getDefense(player) > 0)
 					return true;
 				// if unit can support other units, return true
-				for (final UnitSupportAttachment rule : UnitSupportAttachment.get(data))
-				{
-					if (ut.equals(rule.getAttachedTo()))
-						return true;
-				}
+				if (!UnitSupportAttachment.get(ut).isEmpty())
+					return true;
 				return false;
 			}
 		};

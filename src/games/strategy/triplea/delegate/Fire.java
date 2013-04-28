@@ -43,10 +43,11 @@ public class Fire implements IExecutable
 	private final boolean m_isHeadless;
 	private final Territory m_battleSite;
 	private final Collection<TerritoryEffect> m_territoryEffects;
+	private final List<Unit> m_allEnemyUnitsAliveOrWaitingToDie;
 	
 	public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire, final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits,
 				final String stepName, final String text, final MustFightBattle battle, final boolean defending, final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack,
-				final boolean headless, final Territory battleSite, final Collection<TerritoryEffect> territoryEffects)
+				final boolean headless, final Territory battleSite, final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie)
 	{
 		/* This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
 		 * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to:
@@ -66,6 +67,7 @@ public class Fire implements IExecutable
 		m_battleID = battle.getBattleID();
 		m_battleSite = battleSite;
 		m_territoryEffects = territoryEffects;
+		m_allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
 	}
 	
 	private void rollDice(final IDelegateBridge bridge)
@@ -78,7 +80,7 @@ public class Fire implements IExecutable
 			annotation = "";
 		else
 			annotation = DiceRoll.getAnnotation(units, m_firingPlayer, m_battle);
-		m_dice = DiceRoll.rollDice(units, m_defending, m_firingPlayer, bridge, m_battle, annotation, m_territoryEffects);
+		m_dice = DiceRoll.rollDice(units, m_defending, m_firingPlayer, bridge, m_battle, annotation, m_territoryEffects, m_allEnemyUnitsAliveOrWaitingToDie);
 	}
 	
 	private void selectCasualties(final IDelegateBridge bridge)
