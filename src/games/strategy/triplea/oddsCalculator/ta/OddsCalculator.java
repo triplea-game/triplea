@@ -538,10 +538,14 @@ class DummyPlayer extends AbstractAI
 					// assume we are attacker
 					final int ourHP = BattleCalculator.getTotalHitpoints(ourUnits);
 					final int enemyHP = BattleCalculator.getTotalHitpoints(enemyUnits);
-					final int ourPower = DiceRoll.getTotalPower(ourUnits, !m_isAttacker, (m_isAttacker ? battle.getAttacker() : battle.getDefender()), battle.getTerritory(),
-								battle.getTerritoryEffects(), m_bridge.getData(), battle.isAmphibious(), (battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<Unit>()), enemyUnits);
-					final int enemyPower = DiceRoll.getTotalPower(enemyUnits, m_isAttacker, (m_isAttacker ? battle.getDefender() : battle.getAttacker()), battle.getTerritory(),
-								battle.getTerritoryEffects(), m_bridge.getData(), battle.isAmphibious(), (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>()), ourUnits);
+					final int ourPower = DiceRoll.getTotalPowerAndRolls(
+								DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits, ourUnits, enemyUnits, !m_isAttacker, (m_isAttacker ? battle.getAttacker() : battle.getDefender()),
+											m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
+											(battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<Unit>())), m_bridge.getData()).getFirst();
+					final int enemyPower = DiceRoll.getTotalPowerAndRolls(
+								DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, enemyUnits, ourUnits, m_isAttacker, (m_isAttacker ? battle.getDefender() : battle.getAttacker()),
+											m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
+											(battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())), m_bridge.getData()).getFirst();
 					final int diceSides = m_bridge.getData().getDiceSides();
 					final int ourMetaPower = BattleCalculator.getNormalizedMetaPower(ourPower, ourHP, diceSides);
 					final int enemyMetaPower = BattleCalculator.getNormalizedMetaPower(enemyPower, enemyHP, diceSides);

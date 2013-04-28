@@ -7833,38 +7833,44 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{ // figure out how much protection we need
 			// Territory safeTerr = null;
 			final Territory closestEnemyCapitol = SUtils.closestEnemyCapital(myCapital, data, player); // find the closest factory to our cap
-			final int capEDist = data.getMap().getDistance(myCapital, closestEnemyCapitol);
-			Territory myClosestFactory = SUtils.closestToEnemyCapital(waterFactories, data, player, false); // this is probably our attack base
-			final int cFactEDist = data.getMap().getDistance(myClosestFactory, closestEnemyCapitol);
-			if (cFactEDist >= capEDist) // make sure that we use the capitol if it is equidistance
-				myClosestFactory = myCapital;
-			s_logger.fine("Capital: " + myCapital + "; Closest Enemy Capitol: " + closestEnemyCapitol + "; Closest Factory: " + myClosestFactory);
-			int distFromFactoryToECap = data.getMap().getDistance(closestEnemyCapitol, myClosestFactory);
-			distFromFactoryToECap = Math.max(distFromFactoryToECap, 3);
-			final List<Territory> cap3Neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(myClosestFactory, distFromFactoryToECap));
-			final Iterator<Territory> nIter = cap3Neighbors.iterator();
-			while (nIter.hasNext())
+			if (closestEnemyCapitol != null)
 			{
-				final Territory thisTerr = nIter.next();
-				if (Matches.TerritoryIsLand.match(thisTerr))
+				final int capEDist = data.getMap().getDistance(myCapital, closestEnemyCapitol);
+				Territory myClosestFactory = SUtils.closestToEnemyCapital(waterFactories, data, player, false); // this is probably our attack base
+				if (myClosestFactory != null)
 				{
-					nIter.remove();
-					continue;
+					final int cFactEDist = data.getMap().getDistance(myClosestFactory, closestEnemyCapitol);
+					if (cFactEDist >= capEDist) // make sure that we use the capitol if it is equidistance
+						myClosestFactory = myCapital;
+					s_logger.fine("Capital: " + myCapital + "; Closest Enemy Capitol: " + closestEnemyCapitol + "; Closest Factory: " + myClosestFactory);
+					int distFromFactoryToECap = data.getMap().getDistance(closestEnemyCapitol, myClosestFactory);
+					distFromFactoryToECap = Math.max(distFromFactoryToECap, 3);
+					final List<Territory> cap3Neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(myClosestFactory, distFromFactoryToECap));
+					final Iterator<Territory> nIter = cap3Neighbors.iterator();
+					while (nIter.hasNext())
+					{
+						final Territory thisTerr = nIter.next();
+						if (Matches.TerritoryIsLand.match(thisTerr))
+						{
+							nIter.remove();
+							continue;
+						}
+						final int distToFactory = data.getMap().getDistance(myClosestFactory, thisTerr);
+						final int distToECap = data.getMap().getDistance(closestEnemyCapitol, thisTerr);
+						if ((distToECap + distToFactory) > (distFromFactoryToECap + 2) && distToFactory > 1) // always include all factory neighbors
+						{
+							nIter.remove();
+						}
+					}
+					final List<Unit> ourUnits = new ArrayList<Unit>();
+					// int seaCapCount = cap3Neighbors.size();
+					float totSeaThreat = 0.0F;
+					for (final Territory seaCapTerr : cap3Neighbors)
+					{
+						ourUnits.addAll(seaCapTerr.getUnits().getMatches(alliedAttackShip));
+						totSeaThreat += SUtils.getStrengthOfPotentialAttackers(seaCapTerr, data, player, tFirst, false, null);
+					}
 				}
-				final int distToFactory = data.getMap().getDistance(myClosestFactory, thisTerr);
-				final int distToECap = data.getMap().getDistance(closestEnemyCapitol, thisTerr);
-				if ((distToECap + distToFactory) > (distFromFactoryToECap + 2) && distToFactory > 1) // always include all factory neighbors
-				{
-					nIter.remove();
-				}
-			}
-			final List<Unit> ourUnits = new ArrayList<Unit>();
-			// int seaCapCount = cap3Neighbors.size();
-			float totSeaThreat = 0.0F;
-			for (final Territory seaCapTerr : cap3Neighbors)
-			{
-				ourUnits.addAll(seaCapTerr.getUnits().getMatches(alliedAttackShip));
-				totSeaThreat += SUtils.getStrengthOfPotentialAttackers(seaCapTerr, data, player, tFirst, false, null);
 			}
 			// avgSeaThreat = totSeaThreat / seaCapCount;
 			// ourLocalSeaProtection = SUtils.strength(ourUnits, false, true, tFirst);

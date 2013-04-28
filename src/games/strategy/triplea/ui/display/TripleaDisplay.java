@@ -63,10 +63,10 @@ public class TripleaDisplay implements ITripleaDisplay
 	 */
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> unit_dependents,
-				final PlayerID attacker, final PlayerID defender, final boolean isAmphibious, final BattleType battleType)
+				final PlayerID attacker, final PlayerID defender, final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers)
 	{
 		m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie, unit_dependents, attacker,
-					defender, isAmphibious, battleType);
+					defender, isAmphibious, battleType, amphibiousLandAttackers);
 	}
 	
 	/* (non-Javadoc)

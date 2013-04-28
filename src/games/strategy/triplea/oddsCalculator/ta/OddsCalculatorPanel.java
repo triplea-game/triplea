@@ -788,9 +788,12 @@ public class OddsCalculatorPanel extends JPanel
 		m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
 		final boolean isAmphibiousBattle = isAmphibiousBattle();
 		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-		final int attackPower = DiceRoll.getTotalPower(attackers, false, getAttacker(), m_location, territoryEffects, m_data, isAmphibiousBattle,
-					(isAmphibiousBattle ? attackers : new ArrayList<Unit>()), defenders);
-		final int defensePower = DiceRoll.getTotalPower(defenders, true, getDefender(), m_location, territoryEffects, m_data, isAmphibiousBattle, new ArrayList<Unit>(), attackers); // defender is never amphibious
+		final int attackPower = DiceRoll.getTotalPowerAndRolls(
+					DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, attackers, defenders, false, getAttacker(), m_data, m_location, territoryEffects, isAmphibiousBattle,
+								(isAmphibiousBattle ? attackers : new ArrayList<Unit>())), m_data).getFirst();
+		final int defensePower = DiceRoll.getTotalPowerAndRolls(
+					DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, defenders, attackers, true, getDefender(), m_data, m_location, territoryEffects,
+								isAmphibiousBattle, new ArrayList<Unit>()), m_data).getFirst(); // defender is never amphibious
 		m_attackerUnitsTotalPower.setText("Power: " + attackPower);
 		m_defenderUnitsTotalPower.setText("Power: " + defensePower);
 		m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())

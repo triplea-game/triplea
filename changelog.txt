@@ -1,4 +1,10 @@
 Changes for 1.7
+* Abstracted methods to find the power and rolls of units into a single method. (veqryn)
+
+* Fixed issue with Marine amphibious attackers showing a bonus on the battle screen even when attacking via land. (veqryn)
+
+* Fixed null pointer error in Strong AI (Moore AI). (veqryn)
+
 * Getting the UnitSupportAttachment faction option to handle both allied and enemy, thereby allowing giving positive or negative support to enemy units. (veqryn)
 
 * Getting the UnitSupportAttachment dice option to handle both strength and roll, thereby allowing giving extra rolls to units. (veqryn)

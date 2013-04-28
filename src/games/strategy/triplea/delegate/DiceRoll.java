@@ -43,9 +43,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -404,86 +407,130 @@ public class DiceRoll implements Externalizable
 		return rVal;
 	}
 	
-	public static int getTotalPower(final List<Unit> units, final boolean defending, final PlayerID player, final Territory location, final Collection<TerritoryEffect> territoryEffects,
-				final GameData data, final boolean isAmphibiousBattle, final Collection<Unit> amphibiousLandAttackers, final List<Unit> allEnemyUnitsAliveOrWaitingToDie)
+	public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
+				final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final PlayerID player, final GameData data, final Territory location,
+				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle, final Collection<Unit> amphibiousLandAttackers)
 	{
-		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-		final int extraRollBonus = Math.max(1, data.getDiceSides() / 6); // bonus is normally 1 for most games
-		// int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
+		final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<Unit, Tuple<Integer, Integer>>();
+		if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty())
+			return rVal;
+		// get all supports, friendly and enemy
 		final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
 		final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
-		getSupport(units, supportRulesFriendly, supportLeftFriendly, data, defending, true);
+		getSupport(allFriendlyUnitsAliveOrWaitingToDie, supportRulesFriendly, supportLeftFriendly, data, defending, true);
 		final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
 		final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
 		getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, data, !defending, false);
-		final int rollCount = BattleCalculator.getRolls(units, location, player, defending, supportRulesFriendly, new IntegerMap<UnitSupportAttachment>(supportLeftFriendly), supportRulesEnemy,
-					new IntegerMap<UnitSupportAttachment>(supportLeftEnemy), territoryEffects);
-		if (rollCount <= 0)
-			return 0;
-		int power = 0;
-		// we need 2 copies of each, one for rolls, one for strength
-		final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftFriendly);
+		final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftFriendly); // copy for rolls
 		final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
-		// We iterate through the units to find the total strength of the units
-		for (final Unit current : units)
+		final int diceSides = data.getDiceSides();
+		
+		for (final Unit current : unitsGettingPowerFor)
 		{
+			// find our initial strength
+			int strength;
 			final UnitAttachment ua = UnitAttachment.get(current.getType());
-			// make a copy for getRolls
-			final int rolls = BattleCalculator.getRolls(current, location, player, defending, supportRulesFriendly, supportLeftFriendlyRolls, supportRulesEnemy, supportLeftEnemyRolls,
-						territoryEffects);
-			int totalStr = 0;
-			for (int i = 0; i < rolls; i++)
+			if (defending)
 			{
-				if (i > 1 && (lhtrBombers || ua.getChooseBestRoll()))
-				{
-					// LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to simulate the gains of having the best die picked.
-					if (totalStr < data.getDiceSides())
-					{
-						final int maxToAdd = Math.min(extraRollBonus, (data.getDiceSides() - totalStr));
-						power += maxToAdd;
-						totalStr += maxToAdd;
-					}
-					continue;
-				}
+				strength = ua.getDefense(current.getOwner());
+				if (isFirstTurnLimitedRoll(current.getOwner(), data))
+					strength = Math.min(1, strength);
 				else
+					strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
+				strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
+			}
+			else
+			{
+				strength = ua.getAttack(current.getOwner());
+				if (ua.getIsMarine() != 0 && isAmphibiousBattle)
 				{
-					int strength;
-					if (defending)
+					if (amphibiousLandAttackers.contains(current))
+						strength += ua.getIsMarine();
+				}
+				if (ua.getIsSea() && isAmphibiousBattle && Matches.TerritoryIsLand.match(location))
+				{
+					strength = ua.getBombard(current.getOwner()); // change the strength to be bombard, not attack/defense, because this is a bombarding naval unit
+				}
+				strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
+				strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
+			}
+			strength = Math.min(Math.max(strength, 0), diceSides);
+			// now determine our rolls
+			int rolls;
+			if (strength == 0)
+				rolls = 0;
+			else
+			{
+				if (defending)
+					rolls = ua.getDefenseRolls(current.getOwner());
+				else
+					rolls = ua.getAttackRolls(current.getOwner());
+				rolls += DiceRoll.getSupport(current.getType(), supportRulesFriendly, supportLeftFriendlyRolls, false, true);
+				rolls += DiceRoll.getSupport(current.getType(), supportRulesEnemy, supportLeftEnemyRolls, false, true);
+				rolls = Math.max(0, rolls);
+				if (rolls == 0)
+					strength = 0;
+			}
+			rVal.put(current, new Tuple<Integer, Integer>(strength, rolls));
+		}
+		return rVal;
+	}
+	
+	public static Tuple<Integer, Integer> getTotalPowerAndRolls(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data)
+	{
+		final int diceSides = data.getDiceSides();
+		final boolean lowLuck = games.strategy.triplea.Properties.getLow_Luck(data);
+		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+		final int extraRollBonus = Math.max(1, data.getDiceSides() / 6); // bonus is normally 1 for most games
+		int totalPower = 0;
+		int totalRolls = 0;
+		for (final Entry<Unit, Tuple<Integer, Integer>> entry : unitPowerAndRollsMap.entrySet())
+		{
+			int unitStrength = Math.min(Math.max(0, entry.getValue().getFirst()), diceSides);
+			final int unitRolls = entry.getValue().getSecond();
+			if (unitStrength <= 0 || unitRolls <= 0)
+				continue;
+			if (unitRolls == 1)
+			{
+				totalPower += unitStrength;
+				totalRolls += unitRolls;
+			}
+			else
+			{
+				final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
+				if (lowLuck)
+				{
+					if (lhtrBombers || ua.getChooseBestRoll())
 					{
-						strength = ua.getDefense(current.getOwner());
-						// If it's a sneak attack, defenders roll at a 1
-						if (isFirstTurnLimitedRoll(player, data))
-						{
-							strength = Math.min(1, strength);
-						}
-						else
-						{
-							strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-						}
-						strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
+						// LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to simulate the gains of having the best die picked.
+						unitStrength += extraRollBonus * (unitRolls - 1);
+						totalPower += unitRolls * Math.min(unitStrength, diceSides);
+						totalRolls += unitRolls;
 					}
 					else
 					{
-						strength = ua.getAttack(current.getOwner());
-						if (ua.getIsMarine() != 0 && isAmphibiousBattle)
-						{
-							if (amphibiousLandAttackers.contains(current))
-								strength += ua.getIsMarine();
-						}
-						if (ua.getIsSea() && isAmphibiousBattle)
-						{
-							strength = ua.getBombard(current.getOwner());
-						}
-						strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-						strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
+						totalPower += unitRolls * unitStrength;
+						totalRolls += unitRolls;
 					}
-					strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
-					totalStr += strength;
-					power += Math.min(Math.max(strength, 0), data.getDiceSides());
+				}
+				else
+				{
+					if (lhtrBombers || ua.getChooseBestRoll())
+					{
+						// Even though we are DICE, we still have to wait for actual dice to be thrown before we can pick the best die. So actually for dice this totalPower method is basically useless, so lets just use the approximation of adding on +1 to power for now.
+						unitStrength += extraRollBonus * (unitRolls - 1);
+						totalPower += unitRolls * Math.min(unitStrength, diceSides);
+						totalRolls += unitRolls;
+					}
+					else
+					{
+						totalPower += unitRolls * unitStrength;
+						totalRolls += unitRolls;
+					}
 				}
 			}
 		}
-		return power;
+		return new Tuple<Integer, Integer>(totalPower, totalRolls);
 	}
 	
 	/**
@@ -496,28 +543,30 @@ public class DiceRoll implements Externalizable
 		final Territory location = battle.getTerritory();
 		final boolean isAmphibiousBattle = battle.isAmphibious();
 		final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
-		// make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
-		int power = getTotalPower(units, defending, player, location, territoryEffects, data, isAmphibiousBattle, amphibiousLandAttackers, allEnemyUnitsAliveOrWaitingToDie);
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, player, data,
+					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+		final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
+		final int power = totalPowerAndRolls.getFirst();
 		if (power == 0)
 		{
 			return new DiceRoll(new ArrayList<Die>(0), 0);
 		}
-		int hitCount = 0;
-		// Get number of hits
-		hitCount = power / data.getDiceSides();
-		int[] random = new int[0];
+		int hitCount = power / data.getDiceSides();
 		final List<Die> dice = new ArrayList<Die>();
 		// We need to roll dice for the fractional part of the dice.
-		power = power % data.getDiceSides();
-		if (power != 0)
+		final int rollFor = power % data.getDiceSides();
+		final int[] random;
+		if (rollFor == 0)
+			random = new int[0];
+		else
 		{
 			random = bridge.getRandom(data.getDiceSides(), 1, player, DiceType.COMBAT, annotation);
-			final boolean hit = power > random[0];
+			final boolean hit = rollFor > random[0]; // zero based
 			if (hit)
 			{
 				hitCount++;
 			}
-			dice.add(new Die(random[0], power, hit ? DieType.HIT : DieType.MISS));
+			dice.add(new Die(random[0], rollFor, hit ? DieType.HIT : DieType.MISS));
 		}
 		// Create DiceRoll object
 		final DiceRoll rVal = new DiceRoll(dice, hitCount);
@@ -852,64 +901,48 @@ public class DiceRoll implements Externalizable
 		final GameData data = bridge.getData();
 		final List<Unit> units = new ArrayList<Unit>(unitsList);
 		sortByStrength(units, defending);
-		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 		final Territory location = battle.getTerritory();
-		final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
-		final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
-		getSupport(units, supportRulesFriendly, supportLeftFriendly, data, defending, true);
-		final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
-		final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
-		getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, data, !defending, false);
-		// make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
-		final int rollCount = BattleCalculator.getRolls(units, location, player, defending, supportRulesFriendly, new IntegerMap<UnitSupportAttachment>(supportLeftFriendly), supportRulesEnemy,
-					new IntegerMap<UnitSupportAttachment>(supportLeftEnemy), territoryEffects);
+		final boolean isAmphibiousBattle = battle.isAmphibious();
+		final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, player, data,
+					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+		final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
+		final int rollCount = totalPowerAndRolls.getSecond();
 		if (rollCount == 0)
 		{
 			return new DiceRoll(new ArrayList<Die>(), 0);
 		}
-		int[] random;
-		random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
+		final int[] random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
+		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 		final List<Die> dice = new ArrayList<Die>();
-		final Iterator<Unit> iter = units.iterator();
 		int hitCount = 0;
 		int diceIndex = 0;
-		// we need 2 copies of each, one for rolls, one for strength
-		final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftFriendly);
-		final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
-		while (iter.hasNext())
+		for (final Unit current : units)
 		{
-			final Unit current = iter.next();
 			final UnitAttachment ua = UnitAttachment.get(current.getType());
-			// make a copy for getRolls
-			final int rolls = BattleCalculator.getRolls(current, location, player, defending, supportRulesFriendly, supportLeftFriendlyRolls, supportRulesEnemy, supportLeftEnemyRolls,
-						territoryEffects);
+			final Tuple<Integer, Integer> powerAndRolls = unitPowerAndRollsMap.get(current);
+			final int strength = powerAndRolls.getFirst();
+			final int rolls = powerAndRolls.getSecond();
 			// lhtr heavy bombers take best of n dice for both attack and defense
+			if (rolls <= 0 || strength <= 0)
+				continue;
 			if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 			{
-				int strength;
-				if (defending)
-					strength = ua.getDefense(current.getOwner());
-				else
-					strength = ua.getAttack(current.getOwner());
-				strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-				strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
-				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
-				strength = Math.min(Math.max(strength, 0), data.getDiceSides());
-				int minIndex = 0;
-				int min = data.getDiceSides();
+				int smallestDieIndex = 0;
+				int smallestDie = data.getDiceSides();
 				for (int i = 0; i < rolls; i++)
 				{
-					if (random[diceIndex + i] < min)
+					if (random[diceIndex + i] < smallestDie)
 					{
-						min = random[diceIndex + i];
-						minIndex = i;
+						smallestDie = random[diceIndex + i];
+						smallestDieIndex = i;
 					}
 				}
-				final boolean hit = strength > random[diceIndex + minIndex];
-				dice.add(new Die(random[diceIndex + minIndex], strength, hit ? DieType.HIT : DieType.MISS));
+				final boolean hit = strength > random[diceIndex + smallestDieIndex]; // zero based
+				dice.add(new Die(random[diceIndex + smallestDieIndex], strength, hit ? DieType.HIT : DieType.MISS));
 				for (int i = 0; i < rolls; i++)
 				{
-					if (i != minIndex)
+					if (i != smallestDieIndex)
 						dice.add(new Die(random[diceIndex + i], strength, DieType.IGNORED));
 				}
 				if (hit)
@@ -920,40 +953,7 @@ public class DiceRoll implements Externalizable
 			{
 				for (int i = 0; i < rolls; i++)
 				{
-					int strength;
-					if (defending)
-					{
-						strength = ua.getDefense(current.getOwner());
-						if (isFirstTurnLimitedRoll(player, data))
-						{
-							strength = Math.min(1, strength);
-						}
-						else
-						{
-							strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-						}
-						strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
-					}
-					else
-					{
-						strength = ua.getAttack(current.getOwner());
-						if (ua.getIsMarine() != 0 && battle.isAmphibious())
-						{
-							final Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
-							if (landUnits.contains(current))
-								strength += ua.getIsMarine();
-						}
-						// get bombarding unit's strength
-						if (ua.getIsSea() && battle.isAmphibious())
-						{
-							strength = ua.getBombard(current.getOwner());
-						}
-						strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-						strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
-					}
-					strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
-					strength = Math.min(Math.max(strength, 0), data.getDiceSides());
-					final boolean hit = strength > random[diceIndex];
+					final boolean hit = strength > random[diceIndex]; // zero based
 					dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
 					if (hit)
 						hitCount++;
@@ -966,130 +966,6 @@ public class DiceRoll implements Externalizable
 		return rVal;
 	}
 	
-	/**
-	 * Roll dice for units per normal rules.
-	 */
-	/*
-	private static DiceRoll rollDiceNormalold(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, GameData data, Battle battle, String annotation)
-	{
-	    
-		boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-
-	    int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
-	    //int rollCount = BattleCalculator.getRolls(units, player, defending);
-	    int rollCount = BattleCalculator.getRolls(units, player, defending, artillerySupportAvailable);
-	    
-	    if (rollCount == 0)
-	    {
-	        return new DiceRoll(new ArrayList<Die>(), 0);
-	    }
-
-	    int[] random;
-	   
-	    random = bridge.getRandom(Constants.MAX_DICE, rollCount, annotation);
-
-	    List<Die> dice = new ArrayList<Die>();
-	    
-	    Iterator<Unit> iter = units.iterator();
-
-	    int hitCount = 0;
-	    int diceIndex = 0;
-	    while (iter.hasNext())
-	    {
-	        Unit current = (Unit) iter.next();
-	        UnitAttachment ua = UnitAttachment.get(current.getType());
-	        
-	        int rolls = BattleCalculator.getRolls(current, player, defending, artillerySupportAvailable);
-
-	        //lhtr heavy bombers take best of n dice for both attack and defense
-	        if(rolls > 1 && lhtrBombers && ua.isStrategicBomber())
-	        {
-	            int strength;
-	            if(defending)
-	                strength = ua.getDefense(current.getOwner());
-	            else
-	                strength = ua.getAttack(current.getOwner());
-	            
-	            //it is easier to assume two for now
-	            //if it is something else, the code below gets a
-	            //bit more general
-	            if(rolls != 2)
-	                throw new IllegalStateException("Only expecting 2 dice for lhtr heavy bombers");
-	            
-
-	            
-	            if(random[diceIndex] <= random[diceIndex+1])
-	            {
-	                boolean hit = strength > random[diceIndex];
-	                dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
-	                dice.add(new Die(random[diceIndex+1], strength, DieType.IGNORED));
-	                if(hit)
-	                    hitCount++;
-	            }
-	            else
-	            {
-	                boolean hit = strength >= random[diceIndex + 1];
-	                dice.add(new Die(random[diceIndex],  strength, DieType.IGNORED));
-	                dice.add(new Die(random[diceIndex+1], strength, hit ? DieType.HIT : DieType.MISS));
-	                if(hit)
-	                    hitCount++;
-
-	            }
-	                
-	            //2 dice
-	            diceIndex++;
-	            diceIndex++;
-	            
-	        }
-	        else
-	        {
-	            for (int i = 0; i < rolls; i++)
-	            {
-	                int strength;
-	                if (defending)
-	                    //If it's a sneak attack, defenders roll at a 1
-	                {
-	                    strength = ua.getDefense(current.getOwner());
-	                    if (isFirstTurnLimitedRoll(player))
-	                    {
-	                        strength = Math.min(1, strength);
-	                    }
-	                }
-	                else
-	                {
-	                    strength = ua.getAttack(current.getOwner());
-	                    if (ua.isArtillerySupportable() && artillerySupportAvailable > 0 && strength < Constants.MAX_DICE)
-	                    {
-	                    	//TODO probably need a map here to properly add artilleryBonus
-	                        strength++;
-	                        artillerySupportAvailable--;
-	                    }
-	                    if (ua.getIsMarine() && battle.isAmphibious())
-	                    {
-	                        Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
-	                        if(landUnits.contains(current))
-	                            ++strength;
-	                    }
-	                    //get bombarding unit's strength
-	                    if (ua.isSea() && battle.isAmphibious())
-	                    	strength = ua.getBombard(current.getOwner());
-	                }
-	
-	                boolean hit = strength > random[diceIndex];
-	                dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
-	
-	                if (hit)
-	                    hitCount++;
-	                diceIndex++;
-	            }
-	        }
-	    }
-
-	    DiceRoll rVal = new DiceRoll(dice, hitCount);
-	    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-	    return rVal;
-	}
-	*/
 	public static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data)
 	{
 		// If player is null, Round > 1, or player has negate rule set: return false

@@ -23,7 +23,6 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -37,8 +36,8 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -58,11 +57,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -136,7 +134,7 @@ public class BattleDisplay extends JPanel
 	
 	public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender, final Collection<Unit> attackingUnits,
 				final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-				final GUID battleID, final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType)
+				final GUID battleID, final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -145,8 +143,8 @@ public class BattleDisplay extends JPanel
 		m_mapPanel = mapPanel;
 		m_data = data;
 		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
-		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType, territoryEffects, isAmphibious);
-		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType, territoryEffects, isAmphibious);
+		m_defenderModel = new BattleModel(defendingUnits, false, battleType, defender, m_data, m_location, territoryEffects, isAmphibious, Collections.<Unit> emptySet(), m_mapPanel.getUIContext());
+		m_attackerModel = new BattleModel(attackingUnits, true, battleType, attacker, m_data, m_location, territoryEffects, isAmphibious, amphibiousLandAttackers, m_mapPanel.getUIContext());
 		m_defenderModel.setEnemyBattleModel(m_attackerModel);
 		m_attackerModel.setEnemyBattleModel(m_defenderModel);
 		m_defenderModel.refresh();
@@ -1100,13 +1098,15 @@ class BattleModel extends DefaultTableModel
 	private static final long serialVersionUID = 6913324191512043963L;
 	private final UIContext m_uiContext;
 	private final GameData m_data;
-	// is the player the agressor?
+	// is the player the aggressor?
 	private final boolean m_attack;
 	private final Collection<Unit> m_units;
 	private final Territory m_location;
 	private final BattleType m_battleType;
 	private final Collection<TerritoryEffect> m_territoryEffects;
 	private final boolean m_isAmphibious;
+	private final Collection<Unit> m_amphibiousLandAttackers;
+	private final PlayerID m_player;
 	private BattleModel m_enemyBattleModel = null;
 	
 	private static String[] varDiceArray(final GameData data)
@@ -1125,12 +1125,13 @@ class BattleModel extends DefaultTableModel
 		return diceColumns;
 	}
 	
-	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final BattleType battleType,
-				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibious)
+	BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType, final PlayerID player, final GameData data, final Territory battleLocation,
+				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final UIContext uiContext)
 	{
 		super(new Object[0][0], varDiceArray(data));
 		m_uiContext = uiContext;
 		m_data = data;
+		m_player = player;
 		m_attack = attack;
 		// were going to modify the units
 		m_units = new ArrayList<Unit>(units);
@@ -1138,6 +1139,7 @@ class BattleModel extends DefaultTableModel
 		m_battleType = battleType;
 		m_territoryEffects = territoryEffects;
 		m_isAmphibious = isAmphibious;
+		m_amphibiousLandAttackers = amphibiousLandAttackers;
 	}
 	
 	public void setEnemyBattleModel(final BattleModel enemyBattleModel)
@@ -1183,21 +1185,27 @@ class BattleModel extends DefaultTableModel
 		}
 		final List<Unit> units = new ArrayList<Unit>(m_units);
 		DiceRoll.sortByStrength(units, !m_attack);
-		// TODO: we actually need to include units that are still alive but waiting to die...
-		final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
-		final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
-		DiceRoll.getSupport(units, supportRulesFriendly, supportLeftFriendly, m_data, !m_attack, true);
-		final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
-		final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
-		DiceRoll.getSupport(new ArrayList<Unit>(m_enemyBattleModel.getUnits()), supportRulesEnemy, supportLeftEnemy, m_data, m_attack, false);
-		// Collection unitCategories = UnitSeperator.categorize(m_units);
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
+		m_data.acquireReadLock();
+		try
+		{
+			if (m_battleType.isAirPreBattleOrPreRaid())
+				unitPowerAndRollsMap = null;
+			else
+				unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, new ArrayList<Unit>(m_enemyBattleModel.getUnits()), !m_attack, m_player, m_data, m_location,
+							m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
+		final int diceSides = m_data.getDiceSides();
 		final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
 		for (final UnitCategory category : unitCategories)
 		{
 			int strength;
 			final UnitAttachment attachment = UnitAttachment.get(category.getType());
 			final int[] shift = new int[m_data.getDiceSides() + 1];
-			for (int i = category.getUnits().size(); i > 0; i--)
+			for (final Unit current : category.getUnits())
 			{
 				if (m_battleType.isAirPreBattleOrPreRaid())
 				{
@@ -1209,36 +1217,9 @@ class BattleModel extends DefaultTableModel
 				else
 				{
 					// normal battle
-					if (m_attack)
-					{
-						strength = attachment.getAttack(category.getOwner());
-						// Increase attack value if it's an assaulting marine
-						// TODO actually this only happens when the marine is amphibious, not when the battle is. we could have an amphibious battle but a non-amphibious marine.
-						if (m_isAmphibious && attachment.getIsMarine() != 0)
-							strength += attachment.getIsMarine();
-						strength += DiceRoll.getSupport(category.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-						strength += DiceRoll.getSupport(category.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
-					}
-					else
-					{
-						strength = attachment.getDefense(category.getOwner());
-						m_data.acquireReadLock();
-						try
-						{
-							// decrease strength of sneak attack defenders
-							if (DiceRoll.isFirstTurnLimitedRoll(category.getOwner(), m_data))
-								strength = Math.min(1, strength);
-							else
-								strength += DiceRoll.getSupport(category.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-							strength += DiceRoll.getSupport(category.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
-						} finally
-						{
-							m_data.releaseReadLock();
-						}
-					}
-					strength += TerritoryEffectHelper.getTerritoryCombatBonus(category.getType(), m_territoryEffects, !m_attack);
+					strength = unitPowerAndRollsMap.get(current).getFirst();
 				}
-				strength = Math.min(Math.max(strength, 0), m_data.getDiceSides());
+				strength = Math.min(Math.max(strength, 0), diceSides);
 				shift[strength]++;
 			}
 			for (int i = 0; i <= m_data.getDiceSides(); i++)
