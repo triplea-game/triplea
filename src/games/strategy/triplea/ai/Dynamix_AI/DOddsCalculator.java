@@ -333,16 +333,19 @@ class DummyPlayer extends AbstractAI
 	{
 	}
 	
+	@Override
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		// no retreat, no surrender
@@ -355,11 +358,13 @@ class DummyPlayer extends AbstractAI
 		return null;
 	}*/
 
+	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return null;
 	}
 	
+	@Override
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{
 		return null;
@@ -378,6 +383,7 @@ class DummyPlayer extends AbstractAI
 	}
 	
 	// Added new collection autoKilled to handle killing units prior to casualty selection
+	@Override
 	@SuppressWarnings("unchecked")
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
@@ -440,16 +446,19 @@ class DummyPlayer extends AbstractAI
 		return m2;
 	}
 	
+	@Override
 	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public boolean shouldBomberBomb(final Territory territory)
 	{
 		throw new UnsupportedOperationException();
@@ -458,6 +467,7 @@ class DummyPlayer extends AbstractAI
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
+	@Override
 	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
 	{
 		final int[] dice = new int[numRolls];

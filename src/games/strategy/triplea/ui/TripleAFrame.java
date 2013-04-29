@@ -60,6 +60,7 @@ import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attatchments.UserActionAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
@@ -73,6 +74,7 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
+import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
@@ -861,10 +863,11 @@ public class TripleAFrame extends MainGameFrame
 		return choice == 1;
 	}
 	
-	public boolean acceptPoliticalAction(final String acceptanceQuestion)
+	public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics)
 	{
 		m_messageAndDialogThreadPool.waitForAll();
-		final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept Political Proposal?", JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
+		final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept " + (politics ? "Political " : "") + "Proposal from " + playerSendingProposal.getName() + "?",
+					JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
 		return choice == JOptionPane.YES_OPTION;
 	}
 	
@@ -1373,6 +1376,35 @@ public class TripleAFrame extends MainGameFrame
 			transferFocus();
 		}
 		return m_actionButtons.waitForPoliticalAction(firstRun, iPoliticsDelegate);
+	}
+	
+	public UserActionAttachment getUserActionChoice(final PlayerID player, final boolean firstRun, final IUserActionDelegate iUserActionDelegate)
+	{
+		m_messageAndDialogThreadPool.waitForAll();
+		m_actionButtons.changeToUserActions(player);
+		if (!SwingUtilities.isEventDispatchThread())
+		{
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable()
+				{
+					public void run()
+					{
+						requestFocusInWindow();
+						transferFocus();
+					}
+				});
+			} catch (final Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			requestFocusInWindow();
+			transferFocus();
+		}
+		return m_actionButtons.waitForUserActionAction(firstRun, iUserActionDelegate);
 	}
 	
 	public TechRoll getTechRolls(final PlayerID id)

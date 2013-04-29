@@ -1,4 +1,16 @@
 Changes for 1.7
+* Created user interface element for the User Action Delegate, based on the existing politics interface. (veqryn)
+
+* Created new delegate, "UserActionDelegate", which will allow nations to take any kind of condition/trigger based action. (veqryn)
+
+* Created new text file, "actionstext.properties", which contains action text for the user interface for taking user actions, similar to politicstext.properties. (veqryn)
+
+* Added new property, "activateTrigger", to UserActionAttachment, which will fire a trigger when the nation takes this action. (veqryn)
+
+* Added properties for conditions, conditionType, invert, chance, costPU, text, actionAccept, and attemptsPerTurn to the User Action Attachment. (veqryn)
+
+* Created new attachment, "UserActionAttachment", which holds actions that can be taken by a player, based on an abstraction of the political action attachment. (veqryn)
+
 * New Condition Attachment property option, "gameProperty", which can be set equal to the exact string of any boolean game property option, including custom made up ones. (veqryn)
 
 * Created new AI specially for multiplayer free-for-all games, "Does Nothing AI", which will buy units the first round then destroy all money all subsequent rounds, along with doing nothing else. (veqryn)

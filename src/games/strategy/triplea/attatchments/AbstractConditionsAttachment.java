@@ -350,6 +350,16 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		m_chance = DEFAULT_CHANCE;
 	}
 	
+	public int getChanceToHit()
+	{
+		return getInt(getChance().split(":")[0]);
+	}
+	
+	public int getChanceDiceSides()
+	{
+		return getInt(getChance().split(":")[1]);
+	}
+	
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

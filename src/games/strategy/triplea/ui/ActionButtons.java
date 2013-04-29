@@ -26,12 +26,14 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attatchments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
+import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.util.IntegerMap;
 
 import java.awt.CardLayout;
@@ -64,6 +66,7 @@ public class ActionButtons extends JPanel
 	private MoveForumPosterPanel m_moveForumPosterPanel;
 	private ActionPanel m_current;
 	private PoliticsPanel m_politicsPanel;
+	private UserActionPanel m_userActionPanel;
 	
 	/** Creates new ActionPanel */
 	public ActionButtons(final GameData data, final MapPanel map, final TripleAFrame parent)
@@ -77,6 +80,7 @@ public class ActionButtons extends JPanel
 		m_endTurnPanel = new EndTurnPanel(data, map);
 		m_moveForumPosterPanel = new MoveForumPosterPanel(data, map);
 		m_politicsPanel = new PoliticsPanel(data, map, parent);
+		m_userActionPanel = new UserActionPanel(data, map, parent);
 		m_current = m_techPanel;
 		setLayout(m_layout);
 		add(new JLabel(""), "");
@@ -89,6 +93,7 @@ public class ActionButtons extends JPanel
 		add(m_endTurnPanel, m_endTurnPanel.toString());
 		add(m_moveForumPosterPanel, m_moveForumPosterPanel.toString());
 		add(m_politicsPanel, m_politicsPanel.toString());
+		add(m_userActionPanel, m_userActionPanel.toString());
 		// this should not be necceessary
 		// but it makes tracking down garbage leaks easier
 		// in the profiler
@@ -112,6 +117,7 @@ public class ActionButtons extends JPanel
 				m_endTurnPanel.removeAll();
 				m_moveForumPosterPanel.removeAll();
 				m_politicsPanel.removeAll();
+				m_userActionPanel.removeAll();
 				m_battlePanel = null;
 				m_movePanel = null;
 				m_repairPanel = null;
@@ -121,6 +127,7 @@ public class ActionButtons extends JPanel
 				m_endTurnPanel = null;
 				m_moveForumPosterPanel = null;
 				m_politicsPanel = null;
+				m_userActionPanel = null;
 			}
 		});
 	}
@@ -164,19 +171,21 @@ public class ActionButtons extends JPanel
 	
 	public void changeToPolitics(final PlayerID id)
 	{
-		
 		changeTo(id, m_politicsPanel);
+	}
+	
+	public void changeToUserActions(final PlayerID id)
+	{
+		changeTo(id, m_userActionPanel);
 	}
 	
 	public void changeToTech(final PlayerID id)
 	{
-		
 		changeTo(id, m_techPanel);
 	}
 	
 	public void changeToEndTurn(final PlayerID id)
 	{
-		
 		changeTo(id, m_endTurnPanel);
 	}
 	
@@ -249,6 +258,18 @@ public class ActionButtons extends JPanel
 	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate)
 	{
 		return m_politicsPanel.waitForPoliticalAction(firstRun, iPoliticsDelegate);
+	}
+	
+	/**
+	 * Blocks until the user selects a user action to attempt
+	 * 
+	 * @param firstRun
+	 * 
+	 * @return null if no action was picked.
+	 */
+	public UserActionAttachment waitForUserActionAction(final boolean firstRun, final IUserActionDelegate iUserActionDelegate)
+	{
+		return m_userActionPanel.waitForUserActionAction(firstRun, iUserActionDelegate);
 	}
 	
 	/**

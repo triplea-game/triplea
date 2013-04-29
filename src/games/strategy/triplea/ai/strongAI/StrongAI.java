@@ -9765,6 +9765,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 *      games.strategy.triplea.delegate.DiceRoll,
 	 *      games.strategy.engine.data.PlayerID, java.util.List)
 	 */
+	@Override
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
 	{
@@ -9923,6 +9924,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
+	@Override
 	public boolean shouldBomberBomb(final Territory territory)
 	{
 		// only if not needed in a battle
@@ -9940,6 +9942,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return !thisIsAnAttack;
 	}
 	
+	@Override
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
 		if (potentialTargets == null || potentialTargets.isEmpty())
@@ -9975,6 +9978,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
 	 */
+	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		final List<Unit> rVal = new ArrayList<Unit>();
@@ -9986,12 +9990,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
+	@Override
 	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		// need to land in territory with infantry, especially if bomber
 		return candidates.iterator().next();
 	}
 	
+	@Override
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		return false;
@@ -10023,6 +10029,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	}
 	
 	// private static int counter = 0;
+	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		if (battleTerritory == null)
@@ -10159,11 +10166,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return null;
 	}*/
 
+	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return null;
 	}
 	
+	@Override
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{
 		return null;
@@ -10172,6 +10181,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
+	@Override
 	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
 	{
 		final int[] dice = new int[numRolls];

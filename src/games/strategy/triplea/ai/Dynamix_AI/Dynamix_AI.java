@@ -375,11 +375,13 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return null;
 	}*/
 
+	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return null;
 	}
 	
+	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}", getBattleTerritory(), possibleTerritories);
@@ -439,17 +441,20 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return null;
 	}
 	
+	@Override
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		// Hmmm... Atm, true and false are both bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter thinking it has air support, which never comes.
 		return true;
 	}
 	
+	@Override
 	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		return candidates.iterator().next();
 	}
 	
+	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		final List<Unit> result = new ArrayList<Unit>();
@@ -460,6 +465,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return result;
 	}
 	
+	@Override
 	public boolean shouldBomberBomb(final Territory territory)
 	{
 		final List<Unit> nonBomberAttackingUnits = Match.getMatches(territory.getUnits().getUnits(),
@@ -470,6 +476,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			return false;
 	}
 	
+	@Override
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
 		if (potentialTargets == null || potentialTargets.isEmpty())
@@ -480,6 +487,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return factories.iterator().next();
 	}
 	
+	@Override
 	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
 	{
 		final int[] dice = new int[numRolls];
@@ -490,6 +498,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return dice;
 	}
 	
+	@Override
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
 	{
@@ -507,6 +516,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		}
 	}
 	
+	@Override
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{
 		return null;

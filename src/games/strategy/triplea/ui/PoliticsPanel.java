@@ -64,7 +64,6 @@ public class PoliticsPanel extends ActionPanel
 	private PoliticalActionAttachment m_choice = null;
 	private final TripleAFrame m_parent;
 	private boolean m_firstRun = true;
-	
 	protected List<PoliticalActionAttachment> m_validPoliticalActions = null;
 	
 	public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent)
@@ -227,7 +226,7 @@ public class PoliticsPanel extends ActionPanel
 		final Insets insets = new Insets(1, 1, 1, 1);
 		for (final PoliticalActionAttachment paa : m_validPoliticalActions)
 		{
-			politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets, 0, 0));
+			politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 			final JButton button = new JButton(getActionButtonText(paa));
 			button.addActionListener(new ActionListener()
 			{
@@ -242,7 +241,7 @@ public class PoliticsPanel extends ActionPanel
 				}
 			});
 			politicalActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-			politicalActionButtonPanel.add(getActionDescriptionLabel(paa), new GridBagConstraints(2, row, 1, 1, 5.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets, 0, 0));
+			politicalActionButtonPanel.add(getActionDescriptionLabel(paa), new GridBagConstraints(2, row, 1, 1, 5.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 			row++;
 		}
 		return politicalActionButtonPanel;
@@ -299,7 +298,7 @@ public class PoliticsPanel extends ActionPanel
 	
 	private JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa)
 	{
-		final String chanceString = paa.toHit() == paa.diceSides() ? "" : "[" + paa.toHit() + "/" + paa.diceSides() + "] ";
+		final String chanceString = paa.getChanceToHit() == paa.getChanceDiceSides() ? "" : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
 		return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
 	}
 }

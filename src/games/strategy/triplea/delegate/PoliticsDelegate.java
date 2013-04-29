@@ -239,7 +239,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		{
 			for (final PlayerID player : paa.getActionAccept())
 			{
-				if (!(getRemotePlayer(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
+				if (!(getRemotePlayer(player)).acceptAction(m_player, PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()), true))
 					return false;
 			}
 		}
@@ -267,12 +267,12 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 					actionText = m_player.getName() + " wants to take the following action: " + MyFormatter.attachmentNameToText(paa.getName()) + ".  Do you approve? \r\n\r\n " + m_player.getName()
 								+ " will ask " + MyFormatter.defaultNamedToTextList(paa.getActionAccept()) + ", the following question: \r\n " + actionText;
 				}
-				if (!(getRemotePlayer(player)).acceptPoliticalAction(actionText))
+				if (!(getRemotePlayer(player)).acceptAction(m_player, actionText, true))
 					return false;
 			}
 			for (final PlayerID player : paa.getActionAccept())
 			{
-				if (!(getRemotePlayer(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
+				if (!(getRemotePlayer(player)).acceptAction(m_player, PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()), true))
 					return false;
 			}
 		}
@@ -298,16 +298,16 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	
 	/**
 	 * Let the player know he is being charged for money or that he hasn't got
-	 * ennough money
+	 * enough money
 	 * 
 	 * @param paa
 	 *            the actionattachment the player is notified about
-	 * @param ennough
-	 *            is this a notificaiton about ennough or not ennough money.
+	 * @param enough
+	 *            is this a notification about enough or not enough money.
 	 */
-	private void notifyMoney(final PoliticalActionAttachment paa, final boolean ennough)
+	private void notifyMoney(final PoliticalActionAttachment paa, final boolean enough)
 	{
-		if (ennough)
+		if (enough)
 		{
 			sendNotification("Charging " + paa.getCostPU() + " PU's to perform this action");
 		}
@@ -376,7 +376,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	 * Let all players involved in this action know the action was successful
 	 * 
 	 * @param paa
-	 *            the political action attachment that just failed.
+	 *            the political action attachment that just succeeded.
 	 */
 	private void notifySuccess(final PoliticalActionAttachment paa)
 	{
@@ -459,18 +459,18 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	 */
 	private boolean actionRollSucceeds(final PoliticalActionAttachment paa)
 	{
-		if (paa.diceSides() == paa.toHit())
+		if (paa.getChanceDiceSides() == paa.getChanceToHit())
 			return true;
-		final int rollResult = m_bridge.getRandom(paa.diceSides(), m_player, DiceType.NONCOMBAT, "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
-		final boolean success = rollResult <= paa.toHit();
-		final String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
+		final int rollResult = m_bridge.getRandom(paa.getChanceDiceSides(), m_player, DiceType.NONCOMBAT, "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
+		final boolean success = rollResult <= paa.getChanceToHit();
+		final String notificationMessage = "rolling (" + paa.getChanceToHit() + " out of " + paa.getChanceDiceSides() + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
 		sendNotification(notificationMessage);
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : " + notificationMessage);
 		return success;
 	}
 	
 	/**
-	 * Reset the attemptscounter for this action, so next round the player can
+	 * Reset the attempts-counter for this action, so next round the player can
 	 * try again for a number of attempts.
 	 * 
 	 */

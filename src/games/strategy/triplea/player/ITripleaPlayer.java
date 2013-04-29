@@ -273,13 +273,15 @@ public interface ITripleaPlayer extends IRemotePlayer
 	public void confirmOwnCasualties(GUID battleId, String message);
 	
 	/**
-	 * Does the player accept the proposed political action?
+	 * Does the player accept the proposed action?
 	 * 
 	 * @param acceptanceQuestion
 	 *            the question that should be asked to this player
-	 * @return wether the player accepts the actionproposal
+	 * @param politics
+	 *            is this from politics delegate?
+	 * @return whether the player accepts the actionproposal
 	 */
-	public boolean acceptPoliticalAction(String acceptanceQuestion);
+	public boolean acceptAction(PlayerID playerSendingProposal, String acceptanceQuestion, boolean politics);
 	
 	/**
 	 * Asks the player if they wish to perform any kamikaze suicide attacks

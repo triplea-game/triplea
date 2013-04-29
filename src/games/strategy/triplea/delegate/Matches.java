@@ -33,6 +33,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.AbstractUserActionAttachment;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -3620,12 +3621,12 @@ public class Matches
 		};
 	}
 	
-	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted(final HashMap<ICondition, Boolean> testedConditions)
+	public static final Match<AbstractUserActionAttachment> AbstractUserActionAttachmentCanBeAttempted(final HashMap<ICondition, Boolean> testedConditions)
 	{
-		return new Match<PoliticalActionAttachment>()
+		return new Match<AbstractUserActionAttachment>()
 		{
 			@Override
-			public boolean match(final PoliticalActionAttachment paa)
+			public boolean match(final AbstractUserActionAttachment paa)
 			{
 				return paa.hasAttemptsLeft() && paa.canPerform(testedConditions);
 			}

@@ -73,7 +73,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
 	private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
 	private String m_victory = null;
-	private ArrayList<Tuple<TriggerAttachment, String>> m_activateTrigger = new ArrayList<Tuple<TriggerAttachment, String>>();
+	private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<Tuple<String, String>>();
 	private ArrayList<String> m_changeOwnership = new ArrayList<String>();
 	
 	// raw property changes below:
@@ -328,16 +328,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		getBool(s[3]);
 		getBool(s[4]);
 		getBool(s[5]);
-		m_activateTrigger.add(new Tuple<TriggerAttachment, String>(trigger, options));
+		m_activateTrigger.add(new Tuple<String, String>(s[0], options));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setActivateTrigger(final ArrayList<Tuple<TriggerAttachment, String>> value)
+	public void setActivateTrigger(final ArrayList<Tuple<String, String>> value)
 	{
 		m_activateTrigger = value;
 	}
 	
-	public ArrayList<Tuple<TriggerAttachment, String>> getActivateTrigger()
+	public ArrayList<Tuple<String, String>> getActivateTrigger()
 	{
 		return m_activateTrigger;
 	}
@@ -349,7 +349,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	
 	public void resetActivateTrigger()
 	{
-		m_activateTrigger = new ArrayList<Tuple<TriggerAttachment, String>>();
+		m_activateTrigger = new ArrayList<Tuple<String, String>>();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2515,6 +2515,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public static void triggerActivateTriggerOther(final HashMap<ICondition, Boolean> testedConditionsSoFar, final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
 				final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
+		final GameData data = aBridge.getData();
 		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, activateTriggerMatch());
 		if (testWhen)
 			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2527,10 +2528,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			if (useUses)
 				t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
-			for (final Tuple<TriggerAttachment, String> tuple : t.getActivateTrigger())
+			for (final Tuple<String, String> tuple : t.getActivateTrigger())
 			{
 				// numberOfTimes:useUses:testUses:testConditions:testChance
-				final TriggerAttachment toFire = tuple.getFirst();
+				TriggerAttachment toFire = null;
+				for (final PlayerID player : data.getPlayerList().getPlayers())
+				{
+					for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, data, null))
+					{
+						if (ta.getName().equals(tuple.getFirst()))
+						{
+							toFire = ta;
+							break;
+						}
+					}
+					if (toFire != null)
+						break;
+				}
 				final HashSet<TriggerAttachment> toFireSet = new HashSet<TriggerAttachment>();
 				toFireSet.add(toFire);
 				final String[] options = tuple.getSecond().split(":");

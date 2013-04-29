@@ -188,6 +188,8 @@ public class MyFormatter
 			toText = attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
 		else if (attachmentGetName.startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
 			toText = attachmentGetName.replaceFirst(Constants.POLITICALACTION_ATTACHMENT_PREFIX, "Political Action ");
+		else if (attachmentGetName.startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
+			toText = attachmentGetName.replaceFirst(Constants.USERACTION_ATTACHMENT_PREFIX, "Action ");
 		else if (attachmentGetName.startsWith(Constants.TECH_ABILITY_ATTACHMENT_NAME))
 			toText = attachmentGetName.replaceFirst(Constants.TECH_ABILITY_ATTACHMENT_NAME, "Tech Properties ");
 		toText = toText.replaceAll("_", " ");

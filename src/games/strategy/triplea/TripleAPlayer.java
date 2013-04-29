@@ -33,6 +33,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UserActionAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
@@ -51,6 +52,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
@@ -144,6 +146,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			place(name.endsWith("BidPlace"));
 		else if (name.endsWith("Politics"))
 			politics(true);
+		else if (name.endsWith("UserActions"))
+			userActions(true);
 		else if (name.endsWith("EndTurn"))
 		{
 			endTurn();
@@ -231,12 +235,27 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	}
 	
-	public boolean acceptPoliticalAction(final String acceptanceQuestion)
+	private void userActions(final boolean firstRun)
+	{
+		final IUserActionDelegate iUserActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemote();
+		/*
+		if (!iUserActionDelegate.stuffToDoInThisDelegate())
+			return;
+		*/
+		final UserActionAttachment actionChoice = m_ui.getUserActionChoice(getPlayerID(), firstRun, iUserActionDelegate);
+		if (actionChoice != null)
+		{
+			iUserActionDelegate.attemptAction(actionChoice);
+			userActions(false);
+		}
+	}
+	
+	public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics)
 	{
 		final GameData data = getGameData();
 		if (!getPlayerID().amNotDeadYet(data))
 			return true;
-		return m_ui.acceptPoliticalAction("To " + getPlayerID().getName() + ": " + acceptanceQuestion);
+		return m_ui.acceptAction(playerSendingProposal, "To " + getPlayerID().getName() + ": " + acceptanceQuestion, politics);
 	}
 	
 	private void tech()

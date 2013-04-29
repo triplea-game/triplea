@@ -78,7 +78,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	{
 	}
 	
-	public boolean acceptPoliticalAction(final String message)
+	public boolean acceptAction(final PlayerID playerSendingProposal, final String message, final boolean politics)
 	{
 		return true;
 	}

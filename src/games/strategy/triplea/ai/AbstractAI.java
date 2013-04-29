@@ -33,9 +33,11 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -259,10 +261,28 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	
 	public abstract boolean shouldBomberBomb(final Territory territory);
 	
-	public boolean acceptPoliticalAction(final String acceptanceQuestion)
+	public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics)
 	{
 		// we are dead, just accept
 		if (!getPlayerID().amNotDeadYet(getGameData()))
+			return true;
+		// not related to politics? just accept i guess
+		if (!politics)
+			return true;
+		// politics
+		// from ally? accept
+		if (Matches.isAllied(getPlayerID(), getGameData()).match(playerSendingProposal))
+			return true;
+		// would we normally be allies?
+		final List<String> allies = Arrays.asList(new String[] { "Americans", "Australians", "British", "Canadians", "Chinese", "French", "Russians" });
+		if (allies.contains(getPlayerID().getName()) && allies.contains(playerSendingProposal.getName()))
+			return true;
+		final List<String> axis = Arrays.asList(new String[] { "Germans", "Italians", "Japanese", "Puppet_States" });
+		if (axis.contains(getPlayerID().getName()) && axis.contains(playerSendingProposal.getName()))
+			return true;
+		final Collection<String> myAlliances = new HashSet<String>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerID()));
+		myAlliances.retainAll(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
+		if (!myAlliances.isEmpty())
 			return true;
 		if (Math.random() < .5)
 			return true;
@@ -509,7 +529,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 				while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0)
 				{
 					final PoliticalActionAttachment action = actionWarIter.next();
-					if (!Matches.PoliticalActionCanBeAttempted(politicsDelegate.getTestedConditions()).match(action))
+					if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()).match(action))
 						continue;
 					i++;
 					if (i > MAX_WAR_ACTIONS_PER_TURN)
@@ -531,7 +551,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 				while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0)
 				{
 					final PoliticalActionAttachment action = actionOtherIter.next();
-					if (!Matches.PoliticalActionCanBeAttempted(politicsDelegate.getTestedConditions()).match(action))
+					if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()).match(action))
 						continue;
 					if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS))
 						continue;

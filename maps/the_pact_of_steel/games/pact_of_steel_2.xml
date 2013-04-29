@@ -659,6 +659,7 @@
 				<delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
 				<delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
 				<delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
+				<delegate name="userActions" javaClass="games.strategy.triplea.delegate.UserActionDelegate" display="Actions And Operations"/>
 				
 				<!-- SpecialMoveDelegate delegate is for the new Airborne forces tech (similar to paratroopers). The delegate name has to end with "AirborneCombatMove" for it to work properly.
 				GamePlay Delegate:
@@ -668,7 +669,7 @@
 
 				<sequence>
 						<!-- It is very important that the "name" ends with the correct phrase, or else the game will not work properly.
-						Please end with ("xx" = faction name): xxBid, xxBidPlace, xxTech, xxPurchase, xxCombatMove, xxBattle, xxNonCombatMove, xxPlace, xxTechActivation, xxEndTurn  -->
+						Please end with ("xx" = faction name): xxBid, xxBidPlace, xxTech, xxPurchase, xxCombatMove, xxBattle, xxNonCombatMove, xxPlace, xxTechActivation, xxEndTurn, xxPolitics, xxUserActions  -->
 						
 						<!-- a "step" may also include an option called "stepProperty", which has "name" and "value" attributes.
 								These stepProperty options are not validated at all, so if you have a typo it will not be caught.
@@ -759,6 +760,7 @@
 						<step name="americanTech" delegate="tech" player="Americans"/>
 						<step name="americanPurchase" delegate="purchase" player="Americans"/>
 						<step name="americanPolitics" delegate="politics" player="Americans"/>
+						<step name="americanUserActions" delegate="userActions" player="Americans"/>
 						<step name="americanCombatMove" delegate="move" player="Americans"/>
 						<step name="americanBattle" delegate="battle" player="Americans"/>
 						<step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
@@ -4186,13 +4188,13 @@
 															AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 				invert 								value: 	true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 															This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
-				relationshipChange					value: 	the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
-															You can add multiple relationshipchanges per attachment
 				chance								value: 	diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
 				costPU								value: 	ammount of PU you will be charged to attempt this action
 				text								value: 	a KEY referring to politicstext.properties to indicate the texts used for regarding this action
 				actionAccept						value: 	a list of players that must accept this action before it takes effect (handy for peacetreaties)
 				attemptsPerTurn						value: 	the number of times this action can be attempted per round (default: 1)
+				relationshipChange					value: 	the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
+															You can add multiple relationshipchanges per attachment
 		-->
 				<attatchment name="politicalActionAttachmentItaliansDeclareWarOnRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 						<option name="conditions" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>
@@ -4273,6 +4275,43 @@
 						<option name="costPU" value="3"/>
 						<option name="attemptsPerTurn" value="1"/>
 						<option name="actionAccept" value="Russians"/>
+				</attatchment>
+				
+				
+				
+<!-- User Action Attachments -->
+		<!-- the following options are allowed for "userActionAttachmentXXX"
+				conditions							value: 	this is a colon delimited list of conditions, and this userActionAttachment is only active (thus can be performed) if this returns true
+				conditionType 						value: 	AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
+															AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
+				invert 								value: 	true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
+															This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
+				chance								value: 	diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
+				costPU								value: 	ammount of PU you will be charged to attempt this action
+				text								value: 	a KEY referring to actionstext.properties to indicate the texts used for regarding this action
+				actionAccept						value: 	a list of players that must accept this action before it takes effect
+				attemptsPerTurn						value: 	the number of times this action can be attempted per round (default: 1)
+				activateTrigger						value:  This will fire another named trigger. Format: "triggerName:numberOfTimes:useUses:testUses:testConditions:testChance". "activateTrigger" will be affected by "each" in a condition statement.
+															triggerName is the name of the trigger to fire, numberOfTimes is the number of times to fire that trigger, useUses makes sure the firing uses up a "use" at the end of this round, and the tests test the trigger before firing.
+															example: value="triggerAttachmentRussians5_FarEastReserves:1:false:false:false:false"
+															(FYI: it is probably not a good idea to test the trigger before firing, as it will confuse the user. Instead, put all the conditions you want into the condition for the userActionAttachment.)
+		-->
+				<attatchment name="conditionAttachment_Americans_Aid_UK" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="switch" value="true"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Americans_Aid_UK" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="resource" value="PUs"/>
+						<option name="resourceCount" value="6"/>
+						<option name="players" value="British"/>
+				</attatchment>
+				<attatchment name="userActionAttachment_Americans_Aid_UK" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.UserActionAttachment" type="player">
+						<option name="conditions" value="conditionAttachment_Americans_Aid_UK"/>
+						<option name="activateTrigger" value="triggerAttachment_Americans_Aid_UK:1:false:false:false:false"/>
+						<option name="text" value="AMERICANS_AID_UK"/>
+						<option name="chance" value="6:6"/>
+						<option name="costPU" value="10"/>
+						<option name="attemptsPerTurn" value="1"/>
+						<!--<option name="actionAccept" value="British"/>-->
 				</attatchment>
 				
 				

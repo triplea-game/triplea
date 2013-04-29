@@ -459,18 +459,21 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		// this list is empty, or contains "", so return a blank list of territories
 		if (list.length == 0 || (list.length == 1 && list[0].length() < 1))
 			return rVal;
-		for (final String name : list)
+		for (int i = 0; i < list.length; i++)
 		{
-			// See if the first entry contains the number of territories needed to meet the criteria
-			try
+			final String name = list[i];
+			if (i == 0)
 			{
-				// Leave the temp field- it checks if the list just starts with a territory by failing the TRY
-				@SuppressWarnings("unused")
-				final int temp = getInt(name);
-				setTerritoryCount(name);
-				continue;
-			} catch (final Exception e)
-			{
+				// See if the first entry contains the number of territories needed to meet the criteria
+				try
+				{
+					// Leave the temp field- it checks if the list just starts with a territory by failing the TRY
+					getInt(name);
+					setTerritoryCount(name);
+					continue;
+				} catch (final Exception e)
+				{
+				}
 			}
 			if (name.equals("each"))
 			{
