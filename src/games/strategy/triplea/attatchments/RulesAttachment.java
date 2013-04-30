@@ -765,12 +765,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getDirectPresenceTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getDirectPresenceTerritories();
-			String value = new String();
-			value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkUnitPresence(objectiveMet, getListedTerritories(terrs), "direct", getTerritoryCount(), players, data);
+			final String[] terrs = getDirectPresenceTerritories();
+			objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "direct", getTerritoryCount(), players, data);
 		}
 		//
 		// Check for unit presence (Veqryn)
@@ -778,12 +774,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getAlliedPresenceTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getAlliedPresenceTerritories();
-			String value = new String();
-			value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkUnitPresence(objectiveMet, getListedTerritories(terrs), "allied", getTerritoryCount(), players, data);
+			final String[] terrs = getAlliedPresenceTerritories();
+			objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "allied", getTerritoryCount(), players, data);
 		}
 		//
 		// Check for unit presence (Veqryn)
@@ -791,12 +783,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getEnemyPresenceTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getEnemyPresenceTerritories();
-			String value = new String();
-			value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkUnitPresence(objectiveMet, getListedTerritories(terrs), "enemy", getTerritoryCount(), players, data);
+			final String[] terrs = getEnemyPresenceTerritories();
+			objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy", getTerritoryCount(), players, data);
 		}
 		//
 		// Check for direct unit exclusions (veqryn)
@@ -804,12 +792,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getDirectExclusionTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getDirectExclusionTerritories();
-			String value = new String();
-			value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkUnitExclusions(objectiveMet, getListedTerritories(terrs), "direct", getTerritoryCount(), players, data);
+			final String[] terrs = getDirectExclusionTerritories();
+			objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "direct", getTerritoryCount(), players, data);
 		}
 		//
 		// Check for allied unit exclusions
@@ -817,12 +801,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getAlliedExclusionTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getAlliedExclusionTerritories();
-			String value = new String();
-			value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkUnitExclusions(objectiveMet, getListedTerritories(terrs), "allied", getTerritoryCount(), players, data);
+			final String[] terrs = getAlliedExclusionTerritories();
+			objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "allied", getTerritoryCount(), players, data);
 		}
 		//
 		// Check for enemy unit exclusions (ANY UNITS)
@@ -830,23 +810,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getEnemyExclusionTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getEnemyExclusionTerritories();
-			String value = new String();
-			value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkUnitExclusions(objectiveMet, getListedTerritories(terrs), "enemy", getTerritoryCount(), players, data);
+			final String[] terrs = getEnemyExclusionTerritories();
+			objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy", getTerritoryCount(), players, data);
 		}
 		// Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
 		if (objectiveMet && getEnemySurfaceExclusionTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getEnemySurfaceExclusionTerritories();
-			String value = new String();
-			value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkUnitExclusions(objectiveMet, getListedTerritories(terrs), "enemy_surface", getTerritoryCount(), players, data);
+			final String[] terrs = getEnemySurfaceExclusionTerritories();
+			objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy_surface", getTerritoryCount(), players, data);
 		}
 		//
 		// Check for Territory Ownership rules
@@ -854,51 +826,41 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getAlliedOwnershipTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getAlliedOwnershipTerritories();
-			String value = new String();
+			final String[] terrs = getAlliedOwnershipTerritories();
+			Set<Territory> listedTerritories;
 			if (terrs.length == 1)
 			{
 				if (terrs[0].equals("original"))
 				{
 					final Collection<PlayerID> allies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
-					value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, allies, data);
-					// Remove the leading colon
-					value = value.replaceFirst(":", "");
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, allies, data);
 				}
 				else if (terrs[0].equals("enemy"))
 				{
 					final Collection<PlayerID> enemies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
-					value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, enemies, data);
-					// Remove the leading colon
-					value = value.replaceFirst(":", "");
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
 				}
 				else
-					value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
 			}
 			else if (terrs.length == 2)
 			{
 				if (terrs[1].equals("original"))
 				{
 					final Collection<PlayerID> allies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
-					value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, allies, data);
-					// Remove the leading colon
-					value = value.replaceFirst(":", "");
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, allies, data);
 				}
 				else if (terrs[1].equals("enemy"))
 				{
 					final Collection<PlayerID> enemies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
-					value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, enemies, data);
-					// Remove the leading colon
-					value = value.replaceFirst(":", "");
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
 				}
 				else
-					value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
 			}
 			else
-				value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkAlliedOwnership(objectiveMet, getListedTerritories(terrs), getTerritoryCount(), players, data);
+				listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+			objectiveMet = checkAlliedOwnership(objectiveMet, listedTerritories, getTerritoryCount(), players, data);
 		}
 		//
 		// Check for Direct Territory Ownership rules
@@ -906,45 +868,39 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && getDirectOwnershipTerritories() != null)
 		{
 			// Get the listed territories
-			String[] terrs = getDirectOwnershipTerritories();
-			String value = new String();
+			final String[] terrs = getDirectOwnershipTerritories();
+			Set<Territory> listedTerritories;
 			if (terrs.length == 1)
 			{
 				if (terrs[0].equals("original"))
 				{
-					value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
 				}
 				else if (terrs[0].equals("enemy"))
 				{
 					final Collection<PlayerID> enemies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
-					value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, enemies, data);
-					// Remove the leading colon
-					value = value.replaceFirst(":", "");
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
 				}
 				else
-					value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
 			}
 			else if (terrs.length == 2)
 			{
 				if (terrs[1].equals("original"))
 				{
-					value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
 				}
 				else if (terrs[1].equals("enemy"))
 				{
 					final Collection<PlayerID> enemies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
-					value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, enemies, data);
-					// Remove the leading colon
-					value = value.replaceFirst(":", "");
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
 				}
 				else
-					value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
+					listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
 			}
 			else
-				value = getTerritoryListAsStringBasedOnInputFromXML(terrs, players, data);
-			// create the String list from the XML/gathered territories
-			terrs = value.split(":");
-			objectiveMet = checkDirectOwnership(objectiveMet, getListedTerritories(terrs), getTerritoryCount(), players);
+				listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+			objectiveMet = checkDirectOwnership(objectiveMet, listedTerritories, getTerritoryCount(), players);
 		}
 		// get attached to player
 		final PlayerID playerAttachedTo = (PlayerID) getAttachedTo();

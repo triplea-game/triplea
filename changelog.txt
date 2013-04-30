@@ -1,4 +1,10 @@
 Changes for 1.7
+* Fixed problem where territory names that were parseable integers could not allow any territory based conditions. I still recommend territories have a non integer character in them though. (veqryn) 
+
+* Fixed null pointer error in signalGameOver when called by a trigger for a game that has never reached the end round step. (veqryn)
+
+* Minor adjustment to retain capital produce number methods to allow a value of zero. (flaaargle)
+
 * Created user interface element for the User Action Delegate, based on the existing politics interface. (veqryn)
 
 * Created new delegate, "UserActionDelegate", which will allow nations to take any kind of condition/trigger based action. (veqryn)

@@ -553,21 +553,21 @@ public class GameRunner2
 					return;
 				if (System.getProperty(GameRunner2.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true"))
 					return;
-				// the main screen hasn't even shown yet, so sleep for two seconds.
-				/* try
-				{
-					Thread.sleep(2500);
-				} catch (final InterruptedException e)
-				{
-				} */
 				if (s_countDownLatch != null)
 				{
 					try
 					{
-						s_countDownLatch.await();
+						s_countDownLatch.await(); // wait til the main screen has shown.
 					} catch (final InterruptedException e)
 					{
 					}
+				}
+				// the main screen may take just a little itty bit longer after releasing the latch, so sleep for just a little bit.
+				try
+				{
+					Thread.sleep(500);
+				} catch (final InterruptedException e)
+				{
 				}
 				boolean busy = false;
 				busy = checkForLatestEngineVersionOut();

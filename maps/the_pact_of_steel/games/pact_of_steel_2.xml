@@ -2980,7 +2980,7 @@
 														Be sure to check this condition only after the player's battle phase is completely over, since the data is only recorded after all battles are done. example: value="currentRound" count="20"
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players). if count is zero, then you must be at war with none.
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
-			directOwnershipTerritories			values: "original", "originalNoWater", "enemy", or a : delimited list of territories
+			directOwnershipTerritories			values: "original", "originalNoWater", "enemy", or a : delimited list of territories (for all xxxTerritories conditions, if count is missing it defaults to the number of territories)
 			alliedOwnershipTerritories			values: "original", "originalNoWater", "enemy", or a : delimited list of territories (alliedOwnershipTerritories DOES count both owned and allied)
 			directExclusionTerritories 			values: "original", "originalNoWater", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			alliedExclusionTerritories			values: "original", "originalNoWater", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories (alliedExclusionTerritories does NOT count owned units, it only counts allied units)

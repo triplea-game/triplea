@@ -381,7 +381,7 @@ public class DMatches
 				if (ra == null || ra.getMovementRestrictionTerritories() == null)
 					return true;
 				final String movementRestrictionType = ra.getMovementRestrictionType();
-				final Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories());
+				final Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
 				return (movementRestrictionType.equals("allowed") == listedTerritories.contains(ter));
 			}
 		};

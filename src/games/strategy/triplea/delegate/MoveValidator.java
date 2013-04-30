@@ -421,7 +421,7 @@ public class MoveValidator
 		if (ra == null || ra.getMovementRestrictionTerritories() == null)
 			return result;
 		final String movementRestrictionType = ra.getMovementRestrictionType();
-		final Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories());
+		final Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
 		if (movementRestrictionType.equals("allowed"))
 		{
 			for (final Territory current : route.getAllTerritories())

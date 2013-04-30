@@ -51,8 +51,17 @@ public class TerritoryAttachment extends DefaultAttachment
 		final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
 		final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
 		final PlayerAttachment pa = PlayerAttachment.get(player);
-		if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
-			return false;
+		// if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size())) return false;
+		if (pa == null)
+		{
+			if (!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty())
+				return false;
+		}
+		else
+		{
+			if (pa.getRetainCapitalProduceNumber() > capitalsListOwned.size())
+				return false;
+		}
 		return true;
 	}
 	

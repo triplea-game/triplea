@@ -302,25 +302,23 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	}
 	
 	/**
-	 * takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an actual list of territories in the form of strings
+	 * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an actual list of territories.
+	 * Also sets territoryCount.
 	 * 
 	 * @author veqryn
 	 */
-	protected String getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players, final GameData data)
+	protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players, final GameData data)
 	{
 		final GameMap gameMap = data.getMap();
-		String value = new String();
 		if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
 		{
 			final Set<Territory> originalTerrs = new HashSet<Territory>();
 			for (final PlayerID player : players)
 			{
-				originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player)); // TODO: does this account for occupiedTerrOf???
+				originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
 			}
 			setTerritoryCount(String.valueOf(originalTerrs.size()));
-			// Colon delimit the collection as it would exist in the XML
-			for (final Territory item : originalTerrs)
-				value = value + ":" + item;
+			return originalTerrs;
 		}
 		else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassibles
 		{
@@ -330,9 +328,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 				originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data))); // TODO: does this account for occupiedTerrOf???
 			}
 			setTerritoryCount(String.valueOf(originalTerrs.size()));
-			// Colon delimit the collection as it would exist in the XML
-			for (final Territory item : originalTerrs)
-				value = value + ":" + item;
+			return originalTerrs;
 		}
 		else if (name.equals("controlled"))
 		{
@@ -342,9 +338,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 				ownedTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
 			}
 			setTerritoryCount(String.valueOf(ownedTerrs.size()));
-			// Colon delimit the collection as it would exist in the XML
-			for (final Territory item : ownedTerrs)
-				value = value + ":" + item;
+			return ownedTerrs;
 		}
 		else if (name.equals("controlledNoWater"))
 		{
@@ -354,9 +348,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 				ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player), Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
 			}
 			setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
-			// Colon delimit the collection as it would exist in the XML
-			for (final Territory item : ownedTerrsNoWater)
-				value = value + ":" + item;
+			return ownedTerrsNoWater;
 		}
 		else if (name.equals("all"))
 		{
@@ -367,69 +359,58 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 				allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
 			}
 			setTerritoryCount(String.valueOf(allTerrs.size()));
-			// Colon delimit the collection as it would exist in the XML
-			for (final Territory item : allTerrs)
-				value = value + ":" + item;
+			return allTerrs;
 		}
 		else if (name.equals("map"))
 		{
-			final Collection<Territory> allTerrs = gameMap.getTerritories();
+			final Set<Territory> allTerrs = new HashSet<Territory>(gameMap.getTerritories());
 			setTerritoryCount(String.valueOf(allTerrs.size()));
-			// Colon delimit the collection as it would exist in the XML
-			for (final Territory item : allTerrs)
-				value = value + ":" + item;
+			return allTerrs;
 		}
 		else
 		{ // The list just contained 1 territory
+			final Set<Territory> terr = new HashSet<Territory>();
+			final Territory t = data.getMap().getTerritory(name);
+			if (t == null)
+				throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
+			terr.add(t);
 			setTerritoryCount(String.valueOf(1));
-			value = name;
+			return terr;
 		}
-		return value;
 	}
 	
 	/**
-	 * takes the raw data from the xml, and turns it into an actual territory list, in the form of strings
+	 * Takes the raw data from the xml, and turns it into an actual territory list.
+	 * Will also set territoryCount.
 	 * 
 	 * @author veqryn
 	 * @throws GameParseException
 	 */
-	protected String getTerritoryListAsStringBasedOnInputFromXML(final String[] terrs, final Collection<PlayerID> players, final GameData data)
+	protected Set<Territory> getTerritoryListBasedOnInputFromXML(final String[] terrs, final Collection<PlayerID> players, final GameData data)
 	{
-		String value = new String();
 		// If there's only 1, it might be a 'group' (original, controlled, controlledNoWater, all)
 		if (terrs.length == 1)
 		{
-			value = getTerritoriesBasedOnStringName(terrs[0], players, data);
+			return getTerritoriesBasedOnStringName(terrs[0], players, data);
 		}
 		else if (terrs.length == 2)
 		{
 			if (!terrs[1].equals("controlled") && !terrs[1].equals("controlledNoWater") && !terrs[1].equals("original") && !terrs[1].equals("originalNoWater") && !terrs[1].equals("all")
 						&& !terrs[1].equals("map") && !terrs[1].equals("enemy"))
 			{
-				// Get the list of territories
-				final Collection<Territory> listedTerrs = getListedTerritories(terrs);
-				// Colon delimit the collection as it exists in the XML
-				for (final Territory item : listedTerrs)
-					value = value + ":" + item;
+				return getListedTerritories(terrs, true, true); // Get the list of territories
 			}
 			else
 			{
-				value = getTerritoriesBasedOnStringName(terrs[1], players, data);
-				setTerritoryCount(String.valueOf(terrs[0]));
+				final Set<Territory> rVal = getTerritoriesBasedOnStringName(terrs[1], players, data);
+				setTerritoryCount(String.valueOf(terrs[0])); // set it a second time, since getTerritoriesBasedOnStringName also sets it (so do it after the method call).
+				return rVal;
 			}
 		}
 		else
 		{
-			// Get the list of territories
-			final Collection<Territory> listedTerrs = getListedTerritories(terrs);
-			// Colon delimit the collection as it exists in the XML
-			for (final Territory item : listedTerrs)
-				value = value + ":" + item;
+			return getListedTerritories(terrs, true, true); // Get the list of territories
 		}
-		// Remove the leading colon
-		if (value.length() > 0 && value.startsWith(":"))
-			value = value.replaceFirst(":", "");
-		return value;
 	}
 	
 	protected void validateNames(final String[] terrList) throws GameParseException
@@ -442,7 +423,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 				getListedTerritories(terrList);
 		}*/
 		if (terrList != null && terrList.length > 0)
-			getListedTerritories(terrList);
+			getListedTerritories(terrList, true, true);
 		// removed checks for length & group commands because it breaks the setTerritoryCount feature.
 	}
 	
@@ -453,23 +434,28 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * @return
 	 * @throws GameParseException
 	 */
-	public Set<Territory> getListedTerritories(final String[] list)
+	public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount, final boolean mustSetTerritoryCount)
 	{
 		final Set<Territory> rVal = new HashSet<Territory>();
-		// this list is empty, or contains "", so return a blank list of territories
-		if (list.length == 0 || (list.length == 1 && list[0].length() < 1))
+		// this list is null, empty, or contains "", so return a blank list of territories
+		if (list == null || list.length == 0 || (list.length == 1 && (list[0] == null || list[0].length() == 0)))
 			return rVal;
+		boolean haveSetCount = false;
 		for (int i = 0; i < list.length; i++)
 		{
 			final String name = list[i];
-			if (i == 0)
+			if (testFirstItemForCount && i == 0)
 			{
 				// See if the first entry contains the number of territories needed to meet the criteria
 				try
 				{
-					// Leave the temp field- it checks if the list just starts with a territory by failing the TRY
+					// check if this is an integer, and if so set territory count
 					getInt(name);
-					setTerritoryCount(name);
+					if (mustSetTerritoryCount)
+					{
+						haveSetCount = true;
+						setTerritoryCount(name);
+					}
 					continue;
 				} catch (final Exception e)
 				{
@@ -490,6 +476,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			if (territory == null)
 				throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
 			rVal.add(territory);
+		}
+		if (mustSetTerritoryCount && !haveSetCount)
+		{
+			setTerritoryCount(String.valueOf(rVal.size())); // if we have not set it, then set it to be the size of this list
 		}
 		return rVal;
 	}

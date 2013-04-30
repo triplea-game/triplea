@@ -308,7 +308,7 @@ public class EndRoundDelegate extends BaseTripleADelegate
 	 * @param status
 	 *            the "game over" text to be displayed to each user.
 	 */
-	public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge a_bridge)
+	public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge aBridge)
 	{
 		// If the game is over, we need to be able to alert all UIs to that fact.
 		// The display object can send a message to all UIs.
@@ -318,11 +318,11 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			m_winners = winners;
 			ClipPlayer.play(SoundPath.CLIP_GAME_WON, ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
 			// send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
-			this.getDisplay().reportMessageToAll(status, status, true, false, true);
+			getDisplay(aBridge).reportMessageToAll(status, status, true, false, true); // we send the bridge, because we can call this method from outside this delegate, which means our local copy of m_bridge could be null.
 			// now tell the HOST, and see if they want to continue the game.
 			final int rVal = EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true));
 			if (rVal != JOptionPane.OK_OPTION)
-				a_bridge.stopGameSequence();
+				aBridge.stopGameSequence();
 		}
 	}
 	
