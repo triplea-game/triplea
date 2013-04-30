@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created new delegate, "RandomStartDelegate", which will allow for randomly assigned territories or territories chosen in turn order. (veqryn)
+
 * Fixed problem where territory names that were parseable integers could not allow any territory based conditions. I still recommend territories have a non integer character in them though. (veqryn) 
 
 * Fixed null pointer error in signalGameOver when called by a trigger for a game that has never reached the end round step. (veqryn)

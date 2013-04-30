@@ -24,7 +24,6 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -47,7 +46,7 @@ import java.util.Set;
 public class GameMap extends GameDataComponent implements Iterable<Territory>
 {
 	private static final long serialVersionUID = -4606700588396439283L;
-	private final Collection<Territory> m_territories = new ArrayList<Territory>();
+	private final List<Territory> m_territories = new ArrayList<Territory>();
 	// note that all entries are unmodifiable
 	private final Map<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory>>();
 	// for fast lookup based on the string name of the territory
@@ -120,7 +119,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	
 	protected void reorderTerritoryList()
 	{
-		Collections.sort((List<Territory>) m_territories, TERRITORY_GRID_ORDERING);
+		Collections.sort(m_territories, TERRITORY_GRID_ORDERING);
 	}
 	
 	private static Comparator<Territory> TERRITORY_GRID_ORDERING = new Comparator<Territory>()
@@ -572,9 +571,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		return getDistance(distance + 1, searched, newFrontier, target, cond);
 	}
 	
-	public Collection<Territory> getTerritories()
+	public List<Territory> getTerritories()
 	{
-		return Collections.unmodifiableCollection(m_territories);
+		return Collections.unmodifiableList(m_territories);
 	}
 	
 	public Iterator<Territory> iterator()
@@ -582,10 +581,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		return m_territories.iterator();
 	}
 	
-	public Collection<Territory> getTerritoriesOwnedBy(final PlayerID player)
+	public List<Territory> getTerritoriesOwnedBy(final PlayerID player)
 	{
 		final Iterator<Territory> iter = m_territories.iterator();
-		final Collection<Territory> owner = new ArrayList<Territory>();
+		final List<Territory> owner = new ArrayList<Territory>();
 		while (iter.hasNext())
 		{
 			final Territory territory = iter.next();

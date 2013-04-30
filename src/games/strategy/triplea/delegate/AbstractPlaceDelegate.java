@@ -109,6 +109,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	public void end()
 	{
 		super.end();
+	}
+	
+	protected void doAfterEnd()
+	{
 		final PlayerID player = m_bridge.getPlayerID();
 		// clear all units not placed
 		final Collection<Unit> units = player.getUnits().getUnits();
@@ -175,7 +179,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	 *            territory of interest
 	 * @return a COPY of the collection of units that are produced at territory t
 	 */
-	private Collection<Unit> getAlreadyProduced(final Territory t)
+	protected Collection<Unit> getAlreadyProduced(final Territory t)
 	{
 		// this list might be modified later
 		final Collection<Unit> rVal = new ArrayList<Unit>();
@@ -221,7 +225,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return null;
 	}
 	
-	private void updateUndoablePlacementIndexes()
+	protected void updateUndoablePlacementIndexes()
 	{
 		for (int i = 0; i < m_placements.size(); i++)
 		{
@@ -252,7 +256,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return null;
 	}
 	
-	private void performPlace(final Collection<Unit> units, final Territory at, final PlayerID player)
+	protected void performPlace(final Collection<Unit> units, final Territory at, final PlayerID player)
 	{
 		// System.out.println("Placing " + MyFormatter.unitsToTextNoOwner(units) + " at " + at.getName() + " by " + player.getName());
 		final List<Territory> producers = getAllProducers(at, player, units);
@@ -327,7 +331,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	 * @param at
 	 *            territory where the new units get placed
 	 */
-	private void performPlaceFrom(final Territory producer, final Collection<Unit> placeableUnits, final Territory at, final PlayerID player)
+	protected void performPlaceFrom(final Territory producer, final Collection<Unit> placeableUnits, final Territory at, final PlayerID player)
 	{
 		final CompositeChange change = new CompositeChange();
 		// make sure we can place consuming units
@@ -335,7 +339,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		if (!didIt)
 			throw new IllegalStateException("Something wrong with consuming/upgrading units");
 		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsInfrastructure);
-		change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
+		if (!factoryAndInfrastructure.isEmpty())
+			change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
 		// can we move planes to land there
 		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, producer, placeableUnits, player, change);
 		
@@ -354,14 +359,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		updateProducedMap(producer, placeableUnits);
 	}
 	
-	private void updateProducedMap(final Territory producer, final Collection<Unit> additionallyProducedUnits)
+	protected void updateProducedMap(final Territory producer, final Collection<Unit> additionallyProducedUnits)
 	{
 		final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
 		newProducedUnits.addAll(additionallyProducedUnits);
 		m_produced.put(producer, newProducedUnits);
 	}
 	
-	private void removeFromProducedMap(final Territory producer, final Collection<Unit> unitsToRemove)
+	protected void removeFromProducedMap(final Territory producer, final Collection<Unit> unitsToRemove)
 	{
 		final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
 		newProducedUnits.removeAll(unitsToRemove);
@@ -381,7 +386,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	 * @param freeSize
 	 *            amount of capacity that is requested
 	 */
-	private void freePlacementCapacity(final Territory producer, final int freeSize, final Collection<Unit> unitsLeftToPlace, final Territory at, final PlayerID player)
+	protected void freePlacementCapacity(final Territory producer, final int freeSize, final Collection<Unit> unitsLeftToPlace, final Territory at, final PlayerID player)
 	{
 		// System.out.println("Freeing Placement Capacity of: " + freeSize + " at: " + producer);
 		int foundSpaceTotal = 0;
@@ -504,7 +509,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	}
 	
 	// TODO Here's the spot for special air placement rules
-	private String moveAirOntoNewCarriers(final Territory at, final Territory producer, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
+	protected String moveAirOntoNewCarriers(final Territory at, final Territory producer, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
 	{
 		// not water, dont bother
 		if (!at.isWater())
@@ -861,7 +866,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return null;
 	}
 	
-	private Collection<Unit> getUnitsToBePlaced(final Territory to, final Collection<Unit> units, final PlayerID player)
+	protected Collection<Unit> getUnitsToBePlaced(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		if (to.isWater())
 		{
@@ -1447,7 +1452,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return rVal;
 	}*/
 
-	private Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units, final PlayerID player)
+	protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		return new Comparator<Territory>()
 		{
@@ -1476,7 +1481,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		};
 	}
 	
-	private Comparator<Unit> getUnitConstructionComparator()
+	protected Comparator<Unit> getUnitConstructionComparator()
 	{
 		return new Comparator<Unit>()
 		{
@@ -1494,7 +1499,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		};
 	}
 	
-	private Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(final boolean sortConstructionsToFront)
+	protected Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(final boolean sortConstructionsToFront)
 	{
 		return new Comparator<Unit>()
 		{
@@ -1587,7 +1592,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	 * There must be a factory in the territory or an illegal state exception
 	 * will be thrown. return value may be null.
 	 */
-	private PlayerID getOriginalFactoryOwner(final Territory territory)
+	protected PlayerID getOriginalFactoryOwner(final Territory territory)
 	{
 		final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitCanProduceUnits);
 		if (factoryUnits.size() == 0)
@@ -1609,7 +1614,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	 * The rule is that new fighters can be produced on new carriers. This does
 	 * not allow for fighters to be produced on old carriers.
 	 */
-	private String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units)
+	protected String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units)
 	{
 		final int cost = AirMovementValidator.carrierCost(units);
 		int capacity = AirMovementValidator.carrierCapacity(units, to);
@@ -1629,17 +1634,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
 	}
 	
-	private boolean canProduceFightersOnCarriers()
+	protected boolean canProduceFightersOnCarriers()
 	{
 		return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
 	}
 	
-	private boolean canProduceNewFightersOnOldCarriers()
+	protected boolean canProduceNewFightersOnOldCarriers()
 	{
 		return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
 	}
 	
-	private boolean canMoveExistingFightersToNewCarriers()
+	protected boolean canMoveExistingFightersToNewCarriers()
 	{
 		return games.strategy.triplea.Properties.getMoveExistingFightersToNewCarriers(getData());
 	}
@@ -1654,23 +1659,23 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(getData());
 	}
 	
-	private boolean wasConquered(final Territory t)
+	protected boolean wasConquered(final Territory t)
 	{
 		final BattleTracker tracker = DelegateFinder.battleDelegate(getData()).getBattleTracker();
 		return tracker.wasConquered(t);
 	}
 	
-	private boolean isPlaceInAnyTerritory()
+	protected boolean isPlaceInAnyTerritory()
 	{
 		return games.strategy.triplea.Properties.getPlaceInAnyTerritory(getData());
 	}
 	
-	private boolean isUnitPlacementPerTerritoryRestricted()
+	protected boolean isUnitPlacementPerTerritoryRestricted()
 	{
 		return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(getData());
 	}
 	
-	private boolean isUnitPlacementRestrictions()
+	protected boolean isUnitPlacementRestrictions()
 	{
 		return games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData());
 	}
@@ -1680,7 +1685,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return getAllProducers(to, player, unitsToPlace, false);
 	}
 	
-	private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final PlayerID player)
+	protected boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final PlayerID player)
 	{
 		if (isPlaceInAnyTerritory())
 		{
@@ -1693,7 +1698,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return false;
 	}
 	
-	private boolean isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(final PlayerID player)
+	protected boolean isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(final PlayerID player)
 	{
 		if (isPlaceInAnyTerritory())
 		{
@@ -1706,7 +1711,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return false;
 	}
 	
-	private boolean isPlacementAllowedInCapturedTerritory(final PlayerID player)
+	protected boolean isPlacementAllowedInCapturedTerritory(final PlayerID player)
 	{
 		final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 		if (ra != null && ra.getPlacementCapturedTerritory())
@@ -1716,7 +1721,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return false;
 	}
 	
-	private boolean isPlacementInCapitalRestricted(final PlayerID player)
+	protected boolean isPlacementInCapitalRestricted(final PlayerID player)
 	{
 		final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 		if (ra != null && ra.getPlacementInCapitalRestricted())
@@ -1726,7 +1731,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return false;
 	}
 	
-	private Collection<Territory> getListedTerritories(final String[] list)
+	protected Collection<Territory> getListedTerritories(final String[] list)
 	{
 		final List<Territory> rVal = new ArrayList<Territory>();
 		if (list == null)
@@ -1752,38 +1757,38 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	}
 	
 	/*
-	private boolean isSBRAffectsUnitProduction()
+	protected boolean isSBRAffectsUnitProduction()
 	{
 	    return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
 	}
-	private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()
+	protected boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()
 	{
 	    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
 	}
-	private boolean isPlacementRestrictedByFactory()
+	protected boolean isPlacementRestrictedByFactory()
 	{
 	    return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
 	}
-	private boolean isIncreasedFactoryProduction(PlayerID player)
+	protected boolean isIncreasedFactoryProduction(PlayerID player)
 	{
 	    TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 	    if(ta == null)
 	        return false;
 	    return ta.hasIncreasedFactoryProduction();
 	}
-	private boolean hasConstruction(Territory to)
+	protected boolean hasConstruction(Territory to)
 	{
 	    return to.getUnits().someMatch(Matches.UnitIsConstruction);
 	}
-	private boolean isWW2V3()
+	protected boolean isWW2V3()
 	{
 		return games.strategy.triplea.Properties.getWW2V3(getData());
 	}
-	private boolean isMultipleAAPerTerritory()
+	protected boolean isMultipleAAPerTerritory()
 	{
 		return games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData());
 	}
-	private boolean isOriginalOwner(final Territory t, final PlayerID id)
+	protected boolean isOriginalOwner(final Territory t, final PlayerID id)
 	{
 		final OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
 		return tracker.getOriginalOwner(t).equals(id);

@@ -666,6 +666,15 @@
 				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
 				Sequence Step Example:
 				<step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians" display="Airborne Attack Move"/>-->
+				
+				<!-- RandomStartDelegate delegate is for randomly assigning territories, or letting users pick territories (like Risk) in turn order. 
+						Any "neutral" (non-owned), non-impassible, land territories are up for grabs.  Any players with "units held" are able to participate in the picking until their held units run out.
+						If any units remain after territories are assigned, they will be placed one by one in owned territories until empty.
+				GamePlay Delegate:
+				<delegate name="randomStartDelegate" javaClass="games.strategy.triplea.delegate.RandomStartDelegate" display="Assign Territories"/>
+				Sequence Step Example:
+				<step name="setupRandomStartDelegate" delegate="randomStartDelegate" maxRunCount="1"/>-->
+				
 
 				<sequence>
 						<!-- It is very important that the "name" ends with the correct phrase, or else the game will not work properly.
@@ -4455,6 +4464,9 @@
 				</ownerInitialize>
 
 				<unitInitialize>
+						<!-- example of how to have a unit start in player's inventory, allowing the player to place the unit during any placement phase (normal or bid placement)
+						<heldUnits unitType="infantry" player="Russians" quantity="1"/>-->
+						
 						<!-- Russian Unit Placements -->
 						<unitPlacement unitType="infantry" territory="Karelia S.S.R." quantity="3" owner="Russians"/>
 						<unitPlacement unitType="fighter" territory="Karelia S.S.R." quantity="1" owner="Russians"/>
