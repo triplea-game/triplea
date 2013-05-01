@@ -109,6 +109,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	public void end()
 	{
 		super.end();
+		doAfterEnd();
 	}
 	
 	protected void doAfterEnd()

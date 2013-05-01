@@ -892,8 +892,7 @@ public class UnitAttachment extends DefaultAttachment
 		if (valueAllowed != null)
 		{
 			getListedTerritories(valueAllowed);
-			final Collection<Territory> allTerrs = getData().getMap().getTerritories();
-			for (final Territory item : allTerrs)
+			for (final Territory item : getData().getMap().getTerritories())
 			{
 				boolean match = false;
 				for (final String allowed : valueAllowed)
