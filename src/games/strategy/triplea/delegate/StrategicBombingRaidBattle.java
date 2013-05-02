@@ -29,7 +29,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -351,16 +350,18 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 							if (currentTypeAA.equals("AA"))
 							{
 								if (m_dice.getHits() > 0)
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+									bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
 								else
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
+									bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
 							}
 							else
 							{
 								if (m_dice.getHits() > 0)
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, m_defender.getName());
+									bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+												m_defender.getName());
 								else
-									ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, m_defender.getName());
+									bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+												m_defender.getName());
 							}
 						}
 					}
@@ -788,6 +789,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 					final int totalDamage = taUnit.getUnitDamage() + currentUnitCost;
 					// display the results
 					getDisplay(bridge).bombingResults(m_battleID, dice, currentUnitCost);
+					if (currentUnitCost > 0)
+					{
+						// play a sound
+						bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
+					}
 					// Record production lost
 					DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, currentUnitCost);
 					// apply the hits to the targets
@@ -814,6 +820,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 				final int limit = 2 * damageLimit - alreadyLost;
 				cost = Math.min(cost, limit);
 				getDisplay(bridge).bombingResults(m_battleID, dice, cost);
+				if (cost > 0)
+				{
+					// play a sound
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
+				}
 				// Record production lost
 				DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
 				final Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitCanBeDamaged);
@@ -838,6 +849,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 				DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
 				cost *= Properties.getPU_Multiplier(m_data);
 				getDisplay(bridge).bombingResults(m_battleID, dice, cost);
+				if (cost > 0)
+				{
+					// play a sound
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
+				}
 				// get resources
 				final Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
 				final int have = m_defender.getResources().getQuantity(PUs);

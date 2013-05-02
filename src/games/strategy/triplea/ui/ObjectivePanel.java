@@ -16,6 +16,8 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
+import games.strategy.sound.DummySoundChannel;
+import games.strategy.sound.ISound;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ai.AbstractAI;
@@ -601,6 +603,7 @@ class ObjectiveProperties
 class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 {
 	private final DummyDisplay m_display = new DummyDisplay();
+	private final DummySoundChannel m_soundChannel = new DummySoundChannel();
 	private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
 	private final GameData m_data;
 	private final ObjectivePanelDummyPlayer m_dummyAI = new ObjectivePanelDummyPlayer("objective panel dummy", "None (AI)");
@@ -671,6 +674,11 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
+	}
+	
+	public ISound getSoundChannelBroadcaster()
+	{
+		return m_soundChannel;
 	}
 	
 	public void enterDelegateExecution()

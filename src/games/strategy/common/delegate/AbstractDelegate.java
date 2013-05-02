@@ -20,6 +20,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.message.IRemote;
+import games.strategy.sound.ISound;
 
 import java.io.Serializable;
 
@@ -127,6 +128,16 @@ public abstract class AbstractDelegate implements IDelegate
 	protected static IDisplay getDisplay(final IDelegateBridge bridge)
 	{
 		return bridge.getDisplayChannelBroadcaster();
+	}
+	
+	protected ISound getSoundChannel()
+	{
+		return getSoundChannel(m_bridge);
+	}
+	
+	protected static ISound getSoundChannel(final IDelegateBridge bridge)
+	{
+		return bridge.getSoundChannelBroadcaster();
 	}
 	
 	protected IRemotePlayer getRemotePlayer()

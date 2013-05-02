@@ -19,8 +19,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.GUID;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -193,7 +191,6 @@ public class BattleDisplay extends JPanel
 	
 	public void bombingResults(final List<Die> dice, final int cost)
 	{
-		ClipPlayer.play(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
 		m_dicePanel.setDiceRollForBombing(dice, cost);
 		m_actionLayout.show(m_actionPanel, DICE_KEY);
 	}

@@ -21,6 +21,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.sound.ISound;
 
 import java.util.Properties;
 
@@ -120,6 +121,14 @@ public class GameDelegateBridge implements IDelegateBridge
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_bridge.getDisplayChannelBroadcaster();
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getSoundChannelBroadcaster()
+	 */
+	public ISound getSoundChannelBroadcaster()
+	{
+		return m_bridge.getSoundChannelBroadcaster();
 	}
 	
 	public Properties getStepProperties()

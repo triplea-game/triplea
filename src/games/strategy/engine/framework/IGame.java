@@ -29,6 +29,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.IMessenger;
+import games.strategy.sound.ISound;
 
 import java.io.File;
 
@@ -77,6 +78,10 @@ public interface IGame
 	 * remove a display
 	 */
 	public void removeDisplay(IDisplay display);
+	
+	public void addSoundChannel(ISound display);
+	
+	public void removeSoundChannel(ISound display);
 	
 	/**
 	 * Is the game over. Game over does not relate to the state of the game (eg check-mate in chess)

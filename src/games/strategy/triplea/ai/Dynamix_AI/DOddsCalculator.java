@@ -34,6 +34,8 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
+import games.strategy.sound.DummySoundChannel;
+import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.AIUtils;
 import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -177,6 +179,7 @@ class DummyDelegateBridge implements IDelegateBridge
 {
 	private final PlainRandomSource m_randomSource = new PlainRandomSource();
 	private final DummyDisplay m_display = new DummyDisplay();
+	private final DummySoundChannel m_soundChannel = new DummySoundChannel();
 	private final DummyPlayer m_attackingPlayer;
 	private final DummyPlayer m_defendingPlayer;
 	private final PlayerID m_attacker;
@@ -251,6 +254,11 @@ class DummyDelegateBridge implements IDelegateBridge
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
+	}
+	
+	public ISound getSoundChannelBroadcaster()
+	{
+		return m_soundChannel;
 	}
 	
 	public void enterDelegateExecution()

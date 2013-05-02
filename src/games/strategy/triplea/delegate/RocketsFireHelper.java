@@ -23,7 +23,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -498,7 +497,7 @@ public class RocketsFireHelper
 		}
 		// play a sound
 		if (cost > 0)
-			ClipPlayer.play(SoundPath.CLIP_BOMBING_ROCKET, player.getName());
+			bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_ROCKET, player.getName());
 	}
 	
 	private ITripleaPlayer getRemote(final IDelegateBridge bridge)

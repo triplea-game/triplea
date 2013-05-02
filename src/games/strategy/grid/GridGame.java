@@ -19,6 +19,8 @@ import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.display.GridGameDisplay;
 import games.strategy.grid.ui.display.IGridGameDisplay;
+import games.strategy.sound.DefaultSoundChannel;
+import games.strategy.sound.ISound;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -40,6 +42,7 @@ abstract public class GridGame implements IGameLoader
 	private static final long serialVersionUID = -7194416906783331148L;
 	// When serializing, do not save transient member variables
 	protected transient GridGameDisplay m_display;
+	protected transient DefaultSoundChannel m_soundChannel;
 	protected transient IGame m_game;
 	
 	abstract public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames);
@@ -113,6 +116,8 @@ abstract public class GridGame implements IGameLoader
 								getBevelSize());
 					m_display = new GridGameDisplay(frame);
 					m_game.addDisplay(m_display);
+					m_soundChannel = new DefaultSoundChannel(frame);
+					m_game.addSoundChannel(m_soundChannel);
 					initializeGame();
 					connectPlayers(players, frame);
 					SwingUtilities.invokeLater(new Runnable()
@@ -169,6 +174,12 @@ abstract public class GridGame implements IGameLoader
 	
 	public void shutDown()
 	{
+		if (m_soundChannel != null)
+		{
+			m_game.removeSoundChannel(m_soundChannel);
+			m_soundChannel.shutDown();
+			m_soundChannel = null;
+		}
 		if (m_display != null)
 		{
 			m_game.removeDisplay(m_display);
@@ -183,6 +194,11 @@ abstract public class GridGame implements IGameLoader
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return IGridGameDisplay.class;
+	}
+	
+	public Class<? extends IChannelSubscribor> getSoundType()
+	{
+		return ISound.class;
 	}
 	
 	public Class<? extends IRemote> getRemotePlayerType()

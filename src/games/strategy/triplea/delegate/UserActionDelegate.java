@@ -7,7 +7,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
@@ -224,7 +223,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	private void notifySuccess(final UserActionAttachment uaa)
 	{
 		// play a sound
-		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player.getName()); // TODO: custom sounds?
+		getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, m_player.getName());
 		sendNotification(UserActionText.getInstance().getNotificationSucccess(uaa.getText()));
 		notifyOtherPlayers(uaa, UserActionText.getInstance().getNotificationSuccessOthers(uaa.getText()));
 	}
@@ -270,7 +269,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	private void notifyFailure(final UserActionAttachment uaa)
 	{
 		// play a sound
-		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player.getName()); // TODO
+		getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, m_player.getName());
 		final String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
 		sendNotification(UserActionText.getInstance().getNotificationFailure(uaa.getText()));

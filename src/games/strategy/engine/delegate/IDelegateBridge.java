@@ -25,6 +25,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.sound.ISound;
 
 import java.util.Properties;
 
@@ -112,6 +113,15 @@ public interface IDelegateBridge
 	 * <p>
 	 */
 	public IDisplay getDisplayChannelBroadcaster();
+	
+	/**
+	 * Return an object that implements the ISound interface for the game.
+	 * <p>
+	 * 
+	 * Methods called on this returned object will be invoked on all sound channels in the game, including those on remote machines
+	 * <p>
+	 */
+	public ISound getSoundChannelBroadcaster();
 	
 	/**
 	 * 

@@ -27,6 +27,7 @@ import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
+import games.strategy.sound.ISound;
 
 import java.util.Properties;
 
@@ -156,6 +157,15 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	{
 		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_data));
 		return (IDisplay) getOutbound(implementor);
+	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.engine.delegate.IDelegateBridge#getSoundChannelBroadcaster()
+	 */
+	public ISound getSoundChannelBroadcaster()
+	{
+		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getSoundChannel(m_data));
+		return (ISound) getOutbound(implementor);
 	}
 	
 	public Properties getStepProperties()

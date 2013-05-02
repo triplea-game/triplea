@@ -30,7 +30,8 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.DefaultSoundChannel;
+import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
@@ -67,6 +68,7 @@ public class TripleA implements IGameLoader
 	public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
 	// public static final String NONE = "None (AI)";
 	private transient TripleaDisplay m_display;
+	private transient DefaultSoundChannel m_soundChannel;
 	private transient IGame m_game;
 	
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
@@ -112,6 +114,12 @@ public class TripleA implements IGameLoader
 	
 	public void shutDown()
 	{
+		if (m_soundChannel != null)
+		{
+			m_game.removeSoundChannel(m_soundChannel);
+			m_soundChannel.shutDown();
+			m_soundChannel = null;
+		}
 		if (m_display != null)
 		{
 			m_game.removeDisplay(m_display);
@@ -160,9 +168,11 @@ public class TripleA implements IGameLoader
 					}
 					m_display = new TripleaDisplay(frame);
 					game.addDisplay(m_display);
+					m_soundChannel = new DefaultSoundChannel(frame);
+					game.addSoundChannel(m_soundChannel);
 					frame.setSize(700, 400);
 					frame.setVisible(true);
-					ClipPlayer.play(SoundPath.CLIP_GAME_START, null);
+					DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_GAME_START, null);
 					connectPlayers(players, frame);
 					SwingUtilities.invokeLater(new Runnable()
 					{
@@ -217,6 +227,11 @@ public class TripleA implements IGameLoader
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return ITripleaDisplay.class;
+	}
+	
+	public Class<? extends IChannelSubscribor> getSoundType()
+	{
+		return ISound.class;
 	}
 	
 	public Class<? extends IRemote> getRemotePlayerType()

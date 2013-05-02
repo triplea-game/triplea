@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
@@ -112,7 +112,7 @@ public class UserActionPanel extends ActionPanel
 			if (m_firstRun)
 			{
 				// play a sound for this phase
-				ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer().getName()); // TODO custom sound
+				DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer().getName());
 			}
 			SwingUtilities.invokeLater(new Runnable()
 			{

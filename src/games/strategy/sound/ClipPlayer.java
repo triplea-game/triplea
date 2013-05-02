@@ -251,7 +251,7 @@ public class ClipPlayer
 	 * @param subFolder
 	 *            String - the name of the player, or null
 	 */
-	static public void play(final String clipName, final String subFolder)
+	static void play(final String clipName, final String subFolder)
 	{
 		getInstance().playClip(clipName, subFolder);
 	}

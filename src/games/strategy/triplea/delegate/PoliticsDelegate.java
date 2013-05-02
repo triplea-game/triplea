@@ -27,7 +27,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
@@ -365,7 +364,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	private void notifyFailure(final PoliticalActionAttachment paa)
 	{
 		// play a sound
-		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player.getName());
+		getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player.getName());
 		final String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
 		sendNotification(PoliticsText.getInstance().getNotificationFailure(paa.getText()));
@@ -381,7 +380,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	private void notifySuccess(final PoliticalActionAttachment paa)
 	{
 		// play a sound
-		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player.getName());
+		getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player.getName());
 		sendNotification(PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
 	}

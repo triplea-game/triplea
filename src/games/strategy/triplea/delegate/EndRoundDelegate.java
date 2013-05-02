@@ -26,7 +26,6 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
@@ -316,7 +315,8 @@ public class EndRoundDelegate extends BaseTripleADelegate
 		{
 			m_gameOver = true;
 			m_winners = winners;
-			ClipPlayer.play(SoundPath.CLIP_GAME_WON, ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
+			m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
+						((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
 			// send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
 			getDisplay(aBridge).reportMessageToAll(status, status, true, false, true); // we send the bridge, because we can call this method from outside this delegate, which means our local copy of m_bridge could be null.
 			// now tell the HOST, and see if they want to continue the game.

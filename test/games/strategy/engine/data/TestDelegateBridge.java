@@ -29,6 +29,8 @@ import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.sound.DummySoundChannel;
+import games.strategy.sound.ISound;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 import java.util.Properties;
@@ -47,6 +49,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	private PlayerID m_id;
 	private String m_stepName = "no name specified";
 	private IDisplay m_dummyDisplay;
+	private final DummySoundChannel m_soundChannel = new DummySoundChannel();
 	private IRandomSource m_randomSource;
 	private final IDelegateHistoryWriter m_historyWriter;
 	private IRemotePlayer m_remote;
@@ -147,6 +150,11 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_dummyDisplay;
+	}
+	
+	public ISound getSoundChannelBroadcaster()
+	{
+		return m_soundChannel;
 	}
 	
 	public Properties getStepProperties()

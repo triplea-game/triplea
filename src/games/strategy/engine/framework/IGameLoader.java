@@ -64,6 +64,8 @@ public interface IGameLoader extends java.io.Serializable
 	 */
 	public Class<? extends IChannelSubscribor> getDisplayType();
 	
+	public Class<? extends IChannelSubscribor> getSoundType();
+	
 	/**
 	 * Get the type of the GamePlayer.
 	 * <p>

@@ -12,7 +12,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -409,14 +408,14 @@ public class AirBattle extends AbstractBattle
 					else
 						m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT;
 					text = "Air Battle is over, the remaining bombers go on to their targets";
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
 				}
 				else
 				{
 					m_whoWon = WhoWon.DRAW;
 					m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
 					text = "Air Battle is over, the bombers have all died";
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
 				}
 			}
 			else
@@ -426,14 +425,14 @@ public class AirBattle extends AbstractBattle
 					m_whoWon = WhoWon.ATTACKER;
 					m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
 					text = "Air Battle is over, the defenders have all died";
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
 				}
 				else
 				{
 					m_whoWon = WhoWon.DRAW;
 					m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
 					text = "Air Battle is over, neither side is eliminated";
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
 				}
 			}
 		}
@@ -442,7 +441,7 @@ public class AirBattle extends AbstractBattle
 			m_whoWon = WhoWon.DEFENDER;
 			m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 			text = "Air Battle is over, the attackers have all died";
-			ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
+			bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
 		}
 		bridge.getHistoryWriter().addChildToEvent(text);
 		
@@ -506,7 +505,7 @@ public class AirBattle extends AbstractBattle
 		if (retreatTo != null)
 		{
 			if (!m_headless)
-				ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
 			retreat(units, defender, bridge);
 			final String messageShort = retreatingPlayer.getName() + " retreats";
 			final String messageLong = retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
@@ -549,7 +548,7 @@ public class AirBattle extends AbstractBattle
 			{
 				m_intercept = true;
 				// play a sound
-				ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
 			}
 		}
 		

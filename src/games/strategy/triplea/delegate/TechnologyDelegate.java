@@ -30,7 +30,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
@@ -323,11 +322,11 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		{
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
 			// play a sound
-			ClipPlayer.play(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, m_player.getName());
+			getSoundChannel().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, m_player.getName());
 		}
 		else
 		{
-			ClipPlayer.play(SoundPath.CLIP_TECHNOLOGY_FAILURE, m_player.getName());
+			getSoundChannel().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_FAILURE, m_player.getName());
 		}
 		return new TechResults(random, remainder, techHits, advancesAsString, m_player);
 	}

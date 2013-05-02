@@ -157,6 +157,7 @@ public class GridGameFrame extends MainGameFrame
 	public GridGameFrame(final IGame game, final Set<IGamePlayer> players, final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends GridMapData> gridMapDataClass,
 				final Class<? extends GridGameMenu<GridGameFrame>> menuBarClass, final int squareWidth, final int squareHeight, final int bevelSize)
 	{
+		super("TripleA - " + game.getData().getGameName(), players);
 		m_gameOver = false;
 		m_waiting = null;
 		m_game = game;
@@ -977,6 +978,7 @@ public class GridGameFrame extends MainGameFrame
 		m_rightHandSidePanel = null;
 		for (final WindowListener l : this.getWindowListeners())
 			this.removeWindowListener(l);
+		m_localPlayers = null;
 	}
 	
 	/**

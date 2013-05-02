@@ -19,7 +19,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -229,17 +228,19 @@ class AAInMoveUtil implements Serializable
 						if (hitCount == 0)
 						{
 							if (currentTypeAA.equals("AA"))
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA).getName());
+								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA).getName());
 							else
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, findDefender(currentPossibleAA).getName());
+								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+											findDefender(currentPossibleAA).getName());
 							getRemotePlayer().reportMessage("No " + currentTypeAA + " hits in " + territory.getName(), "No " + currentTypeAA + " hits in " + territory.getName());
 						}
 						else
 						{
 							if (currentTypeAA.equals("AA"))
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA).getName());
+								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA).getName());
 							else
-								ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, findDefender(currentPossibleAA).getName());
+								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+											findDefender(currentPossibleAA).getName());
 							selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null, currentTypeAA);
 						}
 					}

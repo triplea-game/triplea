@@ -18,7 +18,7 @@ package games.strategy.engine.chat;
  */
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
-import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 
 import java.awt.BorderLayout;
@@ -295,7 +295,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 						scrollModel.setValue(scrollModel.getMaximum());
 					}
 				});
-				ClipPlayer.play(sound, null);
+				DefaultSoundChannel.playSoundOnLocalMachine(sound, null);
 			}
 		};
 		// invoke in the swing event thread

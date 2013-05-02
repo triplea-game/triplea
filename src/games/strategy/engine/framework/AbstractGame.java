@@ -21,6 +21,7 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.sound.ISound;
 import games.strategy.util.ListenerList;
 
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import java.util.Set;
 abstract public class AbstractGame implements IGame
 {
 	protected static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
+	protected static final String SOUND_CHANNEL = "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
 	protected final GameData m_data;
 	protected final IMessenger m_messenger;
 	protected final IRemoteMessenger m_remoteMessenger;
@@ -176,6 +178,22 @@ abstract public class AbstractGame implements IGame
 	public void removeDisplay(final IDisplay display)
 	{
 		m_channelMessenger.unregisterChannelSubscriber(display, getDisplayChannel(getData()));
+	}
+	
+	public static RemoteName getSoundChannel(final GameData data)
+	{
+		return new RemoteName(SOUND_CHANNEL, data.getGameLoader().getSoundType());
+	}
+	
+	public void addSoundChannel(final ISound soundChannel)
+	{
+		soundChannel.initialize();
+		m_channelMessenger.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
+	}
+	
+	public void removeSoundChannel(final ISound soundChannel)
+	{
+		m_channelMessenger.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
 	}
 	
 }

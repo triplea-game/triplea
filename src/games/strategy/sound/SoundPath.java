@@ -78,6 +78,7 @@ public class SoundPath
 	public static final String CLIP_PHASE_POLITICS = "phase_politics";
 	public static final String CLIP_PHASE_PURCHASE = "phase_purchase";
 	public static final String CLIP_PHASE_TECHNOLOGY = "phase_technology";
+	public static final String CLIP_PHASE_USER_ACTIONS = "phase_user_actions";
 	public static final String CLIP_PLACED_AIR = "placed_air";
 	public static final String CLIP_PLACED_INFRASTRUCTURE = "placed_infrastructure";
 	public static final String CLIP_PLACED_LAND = "placed_land";
@@ -90,6 +91,8 @@ public class SoundPath
 	public static final String CLIP_TERRITORY_CAPTURE_CAPITAL = "territory_capture_capital";
 	public static final String CLIP_TERRITORY_CAPTURE_LAND = "territory_capture_land";
 	public static final String CLIP_TERRITORY_CAPTURE_SEA = "territory_capture_sea";
+	public static final String CLIP_USER_ACTION_FAILURE = "user_action_failure";
+	public static final String CLIP_USER_ACTION_SUCCESSFUL = "user_action_successful";
 	
 	public static void preLoadSounds(final SoundType sounds)
 	{
@@ -133,6 +136,7 @@ public class SoundPath
 				clipPlayer.preLoadClip(CLIP_PHASE_POLITICS);
 				clipPlayer.preLoadClip(CLIP_PHASE_PURCHASE);
 				clipPlayer.preLoadClip(CLIP_PHASE_TECHNOLOGY);
+				clipPlayer.preLoadClip(CLIP_PHASE_USER_ACTIONS);
 				clipPlayer.preLoadClip(CLIP_PLACED_AIR);
 				clipPlayer.preLoadClip(CLIP_PLACED_INFRASTRUCTURE);
 				clipPlayer.preLoadClip(CLIP_PLACED_LAND);
@@ -145,6 +149,8 @@ public class SoundPath
 				clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_CAPITAL);
 				clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_LAND);
 				clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_SEA);
+				clipPlayer.preLoadClip(CLIP_USER_ACTION_FAILURE);
+				clipPlayer.preLoadClip(CLIP_USER_ACTION_SUCCESSFUL);
 				break;
 		}
 	}
@@ -187,6 +193,7 @@ public class SoundPath
 		rVal.add(CLIP_PHASE_POLITICS);
 		rVal.add(CLIP_PHASE_PURCHASE);
 		rVal.add(CLIP_PHASE_TECHNOLOGY);
+		rVal.add(CLIP_PHASE_USER_ACTIONS);
 		rVal.add(CLIP_PLACED_AIR);
 		rVal.add(CLIP_PLACED_INFRASTRUCTURE);
 		rVal.add(CLIP_PLACED_LAND);
@@ -199,6 +206,8 @@ public class SoundPath
 		rVal.add(CLIP_TERRITORY_CAPTURE_CAPITAL);
 		rVal.add(CLIP_TERRITORY_CAPTURE_LAND);
 		rVal.add(CLIP_TERRITORY_CAPTURE_SEA);
+		rVal.add(CLIP_USER_ACTION_FAILURE);
+		rVal.add(CLIP_USER_ACTION_SUCCESSFUL);
 		return rVal;
 	}
 	
@@ -242,6 +251,7 @@ public class SoundPath
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_POLITICS, "Phase: Politics"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_PURCHASE, "Phase: Purchase Phase"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_TECHNOLOGY, "Phase: Technology"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_USER_ACTIONS, "Phase: User Actions"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PLACED_AIR, "Place Air Units"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PLACED_INFRASTRUCTURE, "Place Infrastructure"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PLACED_LAND, "Place Land Units"));
@@ -254,6 +264,8 @@ public class SoundPath
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, "Captured Capital"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, "Captured Land Territory"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, "Captured Sea Zone"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_USER_ACTION_FAILURE, "Action Operation Failed"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, "Action Operation Successful"));
 				break;
 		}
 		return rVal;

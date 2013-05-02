@@ -28,7 +28,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
-import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -272,7 +272,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		// play a sound for this phase
 		if (!m_soundPlayedAlreadyTechnology)
 		{
-			ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id.getName());
+			DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_TECHNOLOGY, id.getName());
 			m_soundPlayedAlreadyTechnology = true;
 		}
 		final TechRoll techRoll = m_ui.getTechRolls(id);
@@ -301,12 +301,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		// play a sound for this phase
 		if (nonCombat && !m_soundPlayedAlreadyNonCombatMove)
 		{
-			ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id.getName());
+			DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id.getName());
 			m_soundPlayedAlreadyNonCombatMove = true;
 		}
 		else if (!nonCombat && !m_soundPlayedAlreadyCombatMove)
 		{
-			ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, id.getName());
+			DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_MOVE_COMBAT, id.getName());
 			m_soundPlayedAlreadyCombatMove = true;
 		}
 		
@@ -373,7 +373,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		// play a sound for this phase
 		if (!bid && !m_soundPlayedAlreadyPurchase)
 		{
-			ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id.getName());
+			DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_PURCHASE, id.getName());
 			m_soundPlayedAlreadyPurchase = true;
 		}
 		
@@ -479,7 +479,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			// play a sound for this phase
 			if (!m_soundPlayedAlreadyBattle)
 			{
-				ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, id.getName());
+				DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_BATTLE, id.getName());
 				m_soundPlayedAlreadyBattle = true;
 			}
 			final FightBattleDetails details = m_ui.getBattle(id, battles.getBattles());
@@ -504,7 +504,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			// play a sound for this phase
 			if (!m_soundPlayedAlreadyPlacement)
 			{
-				ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, id.getName());
+				DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_PLACEMENT, id.getName());
 				m_soundPlayedAlreadyPlacement = true;
 			}
 			final PlaceData placeData = m_ui.waitForPlace(id, bid, getPlayerBridge());
@@ -531,7 +531,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		{
 			// do not play if we are reloading a savegame from pbem (gets annoying)
 			if (!endTurnDelegate.getHasPostedTurnSummary())
-				ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
+				DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
 			m_soundPlayedAlreadyEndTurn = true;
 		}
 		m_ui.waitForEndTurn(getPlayerID(), getPlayerBridge());

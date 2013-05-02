@@ -12,6 +12,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.sound.ISound;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -323,6 +324,11 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge)
 	{
 		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
+	}
+	
+	protected static ISound getSoundChannel(final IDelegateBridge bridge)
+	{
+		return bridge.getSoundChannelBroadcaster();
 	}
 	
 	protected static ITripleaPlayer getRemote(final IDelegateBridge bridge)

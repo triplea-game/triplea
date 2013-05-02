@@ -66,6 +66,11 @@ public class TestGameLoader implements IGameLoader
 		return IChannelSubscribor.class;
 	}
 	
+	public Class<? extends IChannelSubscribor> getSoundType()
+	{
+		return IChannelSubscribor.class;
+	}
+	
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
 	 */

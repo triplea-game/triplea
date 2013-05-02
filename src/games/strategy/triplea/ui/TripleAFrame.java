@@ -53,7 +53,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
-import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.TripleAPlayer;
@@ -188,7 +188,6 @@ public class TripleAFrame extends MainGameFrame
 	private JLabel m_round = new JLabel("xxxxxx");
 	private JLabel m_player = new JLabel("xxxxxx");
 	private ActionButtons m_actionButtons;
-	private Set<IGamePlayer> m_localPlayers;
 	private JPanel m_gameMainPanel = new JPanel();
 	private JPanel m_rightHandSidePanel = new JPanel();
 	private JTabbedPane m_tabsPanel = new JTabbedPane();
@@ -224,10 +223,9 @@ public class TripleAFrame extends MainGameFrame
 	/** Creates new TripleAFrame */
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
 	{
-		super("TripleA - " + game.getData().getGameName());
+		super("TripleA - " + game.getData().getGameName(), players);
 		m_game = game;
 		m_data = game.getData();
-		m_localPlayers = players;
 		m_messageAndDialogThreadPool = new ThreadPool(1, "Message And Dialog Thread Pool");
 		addZoomKeyboardShortcuts();
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1530,25 +1528,6 @@ public class TripleAFrame extends MainGameFrame
 		return selected.get();
 	}
 	
-	public Set<IGamePlayer> GetLocalPlayers()
-	{
-		return m_localPlayers;
-	}
-	
-	public boolean playing(final PlayerID id)
-	{
-		if (id == null)
-			return false;
-		for (final IGamePlayer gamePlayer : m_localPlayers)
-		{
-			if (gamePlayer.getPlayerID().equals(id) && gamePlayer instanceof TripleAPlayer)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public static int save(final String filename, final GameData m_data)
 	{
 		FileOutputStream fos = null;
@@ -1674,7 +1653,7 @@ public class TripleAFrame extends MainGameFrame
 		final Boolean play = m_requiredTurnSeries.get(player);
 		if (play != null && play.booleanValue())
 		{
-			ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
+			DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
 			m_requiredTurnSeries.put(player, false);
 		}
 		// center on capital of player, if it is a new player

@@ -31,7 +31,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -424,17 +423,17 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			if (Match.someMatch(m_attackingUnits, Matches.UnitIsSea) || Match.someMatch(m_defendingUnits, Matches.UnitIsSea))
 			{
 				if (Match.allMatch(m_attackingUnits, Matches.UnitIsSub) || (Match.someMatch(m_attackingUnits, Matches.UnitIsSub) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub)))
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker.getName());
 				else
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_SEA_NORMAL, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, m_attacker.getName());
 			}
 			else if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir) && Match.allMatch(m_defendingUnits, Matches.UnitIsAir))
 			{
-				ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
 			}
 			else
 			{
-				ClipPlayer.play(SoundPath.CLIP_BATTLE_LAND, m_attacker.getName()); // must be land battle
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_LAND, m_attacker.getName()); // must be land battle
 			}
 		}
 		// push on stack in opposite order of execution
@@ -1601,7 +1600,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			if (subs && m_battleSite.equals(retreatTo) && (submerge || canDefendingSubsSubmergeOrRetreat))
 			{
 				if (!m_headless)
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE, m_attacker.getName());
 				submergeUnits(units, defender, bridge);
 				final String messageShort = retreatingPlayer.getName() + " submerges subs";
 				getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
@@ -1609,7 +1608,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			else if (planes)
 			{
 				if (!m_headless)
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
 				retreatPlanes(units, defender, bridge);
 				final String messageShort = retreatingPlayer.getName() + " retreats planes";
 				getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
@@ -1619,11 +1618,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				if (!m_headless)
 				{
 					if (Match.someMatch(units, Matches.UnitIsSea))
-						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker.getName());
+						bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker.getName());
 					else if (Match.someMatch(units, Matches.UnitIsLand))
-						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker.getName());
+						bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker.getName());
 					else
-						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+						bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
 				}
 				// remove amphib units from those retreating
 				units = Match.getMatches(units, Matches.UnitWasNotAmphibious);
@@ -1636,11 +1635,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				if (!m_headless)
 				{
 					if (Match.someMatch(units, Matches.UnitIsSea))
-						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker.getName());
+						bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker.getName());
 					else if (Match.someMatch(units, Matches.UnitIsLand))
-						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker.getName());
+						bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker.getName());
 					else
-						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+						bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
 				}
 				retreatUnits(units, retreatTo, defender, bridge);
 				final String messageShort = retreatingPlayer.getName() + " retreats";
@@ -2258,7 +2257,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (bombard.size() > 0 && attacked.size() > 0)
 		{
 			if (!m_headless)
-				ClipPlayer.play(SoundPath.CLIP_BATTLE_BOMBARD, m_attacker.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_BOMBARD, m_attacker.getName());
 			final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<Unit>();
 			allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
 			allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
@@ -2477,17 +2476,17 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 								if (currentTypeAA.equals("AA"))
 								{
 									if (m_dice.getHits() > 0)
-										ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, (m_defending ? m_defender.getName() : m_attacker.getName()));
+										bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, (m_defending ? m_defender.getName() : m_attacker.getName()));
 									else
-										ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, (m_defending ? m_defender.getName() : m_attacker.getName()));
+										bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, (m_defending ? m_defender.getName() : m_attacker.getName()));
 								}
 								else
 								{
 									if (m_dice.getHits() > 0)
-										ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+										bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
 													(m_defending ? m_defender.getName() : m_attacker.getName()));
 									else
-										ClipPlayer.play(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+										bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
 													(m_defending ? m_defender.getName() : m_attacker.getName()));
 								}
 							}
@@ -2770,7 +2769,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		checkDefendingPlanesCanLand(bridge, m_defender);
 		BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null, m_defendingUnits);
 		if (!m_headless)
-			ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
+			bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
 	}
 	
 	private void nobodyWins(final IDelegateBridge bridge)
@@ -2784,7 +2783,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
 						new BattleResults(this, m_data), 0);
-			ClipPlayer.play(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
+			bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
 		}
 	}
 	
@@ -3027,15 +3026,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			if (Matches.TerritoryIsWater.match(m_battleSite))
 			{
 				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
 				else
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, m_attacker.getName()); // assume some naval
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, m_attacker.getName()); // assume some naval
 			}
 			else
 			{
 				// no sounds for a successful land battle, because land battle means we are going to capture a territory, and we have capture sounds for that
 				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
-					ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
 			}
 		}
 	}

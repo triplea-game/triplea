@@ -31,7 +31,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -730,13 +729,13 @@ public class BattleTracker implements java.io.Serializable
 			bridge.addChange(takeOver);
 			// play a sound
 			if (territory.isWater())
-				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName());
 			else if (ta.getCapital() != null)
-				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
 			else if (m_blitzed.contains(territory) && Match.someMatch(arrivedUnits, Matches.UnitCanBlitz))
-				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id.getName());
 			else
-				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id.getName());
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id.getName());
 			if (changeTracker != null)
 			{
 				changeTracker.addChange(takeOver);
