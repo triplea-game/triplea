@@ -210,7 +210,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	
 	protected void showEndTurnReport(final String endTurnReport)
 	{
-		if (endTurnReport.trim().length() > 6)
+		if (endTurnReport != null && endTurnReport.trim().length() > 6 && !m_player.isAI())
 		{
 			final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
 			final String player = m_player.getName();
@@ -254,7 +254,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// we could have a pbem/forum post to do
-		return true;// PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData());
+		return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData()) || m_player.isAI();
 	}
 	
 	private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data)
