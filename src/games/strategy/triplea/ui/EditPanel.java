@@ -138,7 +138,15 @@ public class EditPanel extends ActionPanel
 				setWidgetActivation();
 				final List<Unit> allUnits = new ArrayList<Unit>(m_selectedTerritory.getUnits().getUnits());
 				sortUnitsToRemove(allUnits, m_selectedTerritory);
-				final MustMoveWithDetails mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits, new HashMap<Unit, Collection<Unit>>(), getData(), getCurrentPlayer());
+				final MustMoveWithDetails mustMoveWithDetails;
+				try
+				{
+					getData().acquireReadLock();
+					mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits, new HashMap<Unit, Collection<Unit>>(), getData(), getCurrentPlayer());
+				} finally
+				{
+					getData().releaseReadLock();
+				}
 				boolean mustChoose = false;
 				if (m_selectedUnits.containsAll(allUnits))
 				{
@@ -240,7 +248,7 @@ public class EditPanel extends ActionPanel
 				PUsField.setMaximumSize(PUsField.getPreferredSize());
 				final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField), "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 							null,
-								null, null);
+							null, null);
 				if (option != JOptionPane.OK_OPTION)
 				{
 					CANCEL_EDIT_ACTION.actionPerformed(null);
