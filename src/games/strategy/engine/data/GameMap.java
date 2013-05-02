@@ -21,9 +21,11 @@ package games.strategy.engine.data;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -559,7 +561,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 			while (connectionIterator.hasNext())
 			{
 				final Territory nextFrontier = connectionIterator.next();
-				if (cond.match(nextFrontier))
+				if (cond == null || cond.match(nextFrontier))
 					newFrontier.add(nextFrontier);
 			}
 		}
@@ -569,6 +571,18 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		if (newFrontier.isEmpty())
 			return -1;
 		return getDistance(distance + 1, searched, newFrontier, target, cond);
+	}
+	
+	public IntegerMap<Territory> getDistance(final Territory target, final Collection<Territory> territories, final Match<Territory> condition)
+	{
+		final IntegerMap<Territory> rVal = new IntegerMap<Territory>();
+		if (target == null || territories == null || territories.isEmpty())
+			return rVal;
+		for (final Territory t : territories)
+		{
+			rVal.put(t, getDistance(target, t, condition));
+		}
+		return rVal;
 	}
 	
 	public List<Territory> getTerritories()

@@ -862,6 +862,11 @@ public class Properties implements Constants
 		return data.getProperties().get(CAN_SCRAMBLE_INTO_AIR_BATTLES, false);
 	}
 	
+	public static boolean getTerritoriesAreAssignedRandomly(final GameData data)
+	{
+		return data.getProperties().get(TERRITORIES_ARE_ASSIGNED_RANDOMLY, false);
+	}
+	
 	private Properties()
 	{
 	}

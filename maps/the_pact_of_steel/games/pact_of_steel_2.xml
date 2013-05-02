@@ -4987,6 +4987,11 @@
 				<property name="Use Shipyards" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+						<!-- For use with RandomStartDelegate -->
+				<property name="Territories Are Assigned Randomly" value="false" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Scramble Rules In Effect" value="true" editable="true">
 						<boolean/>

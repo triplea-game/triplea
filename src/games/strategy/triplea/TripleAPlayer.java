@@ -67,8 +67,11 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
@@ -746,5 +749,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 		
 		return rVal;
+	}
+	
+	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
+	{
+		if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1)
+			return new Tuple<Territory, Set<Unit>>(null, new HashSet<Unit>());
+		return m_ui.pickTerritoryAndUnits(this.getPlayerID(), territoryChoices, unitChoices, unitsPerPick);
 	}
 }

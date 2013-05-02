@@ -1009,6 +1009,60 @@ public class TripleAFrame extends MainGameFrame
 		return selected;
 	}
 	
+	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player, final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
+	{
+		// total hacks
+		m_messageAndDialogThreadPool.waitForAll();
+		{
+			final CountDownLatch latch1 = new CountDownLatch(1);
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					if (!m_inGame)
+						showGame();
+					if (m_tabsPanel.indexOfTab("Actions") == -1)
+						m_tabsPanel.insertTab("Actions", null, m_actionButtons, null, 0); // add actions tab
+					m_tabsPanel.setSelectedIndex(0);
+					latch1.countDown();
+				}
+			});
+			try
+			{
+				latch1.await();
+			} catch (final InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		m_actionButtons.changeToPickTerritoryAndUnits(player);
+		final Tuple<Territory, Set<Unit>> rVal = m_actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
+		final int index = m_tabsPanel == null ? -1 : m_tabsPanel.indexOfTab("Actions");
+		if (index != -1 && m_inHistory)
+		{
+			final CountDownLatch latch2 = new CountDownLatch(1);
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					if (m_tabsPanel != null)
+						m_tabsPanel.remove(index); // remove actions tab
+					latch2.countDown();
+				}
+			});
+			try
+			{
+				latch2.await();
+			} catch (final InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		if (m_actionButtons != null && m_actionButtons.getCurrent() != null)
+			m_actionButtons.getCurrent().setActive(false);
+		return rVal;
+	}
+	
 	public HashMap<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack, final Resource attackResourceToken,
 				final int maxNumberOfAttacksAllowed)
 	{

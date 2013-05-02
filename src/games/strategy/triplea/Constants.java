@@ -229,6 +229,7 @@ public interface Constants
 	public static final String AIR_BATTLE_ATTACKERS_CAN_RETREAT = "Air Battle Attackers Can Retreat";
 	public static final String AIR_BATTLE_DEFENDERS_CAN_RETREAT = "Air Battle Defenders Can Retreat";
 	public static final String CAN_SCRAMBLE_INTO_AIR_BATTLES = "Can Scramble Into Air Battles";
+	public static final String TERRITORIES_ARE_ASSIGNED_RANDOMLY = "Territories Are Assigned Randomly";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

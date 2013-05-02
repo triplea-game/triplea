@@ -35,12 +35,15 @@ import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Tuple;
 
 import java.awt.CardLayout;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -67,6 +70,7 @@ public class ActionButtons extends JPanel
 	private ActionPanel m_current;
 	private PoliticsPanel m_politicsPanel;
 	private UserActionPanel m_userActionPanel;
+	private PickTerritoryAndUnitsPanel m_pickTerritoryAndUnitsPanel;
 	
 	/** Creates new ActionPanel */
 	public ActionButtons(final GameData data, final MapPanel map, final TripleAFrame parent)
@@ -81,6 +85,7 @@ public class ActionButtons extends JPanel
 		m_moveForumPosterPanel = new MoveForumPosterPanel(data, map);
 		m_politicsPanel = new PoliticsPanel(data, map, parent);
 		m_userActionPanel = new UserActionPanel(data, map, parent);
+		m_pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(data, map, parent);
 		m_current = m_techPanel;
 		setLayout(m_layout);
 		add(new JLabel(""), "");
@@ -94,6 +99,7 @@ public class ActionButtons extends JPanel
 		add(m_moveForumPosterPanel, m_moveForumPosterPanel.toString());
 		add(m_politicsPanel, m_politicsPanel.toString());
 		add(m_userActionPanel, m_userActionPanel.toString());
+		add(m_pickTerritoryAndUnitsPanel, m_pickTerritoryAndUnitsPanel.toString());
 		// this should not be necceessary
 		// but it makes tracking down garbage leaks easier
 		// in the profiler
@@ -118,6 +124,7 @@ public class ActionButtons extends JPanel
 				m_moveForumPosterPanel.removeAll();
 				m_politicsPanel.removeAll();
 				m_userActionPanel.removeAll();
+				m_pickTerritoryAndUnitsPanel.removeAll();
 				m_battlePanel = null;
 				m_movePanel = null;
 				m_repairPanel = null;
@@ -128,6 +135,7 @@ public class ActionButtons extends JPanel
 				m_moveForumPosterPanel = null;
 				m_politicsPanel = null;
 				m_userActionPanel = null;
+				m_pickTerritoryAndUnitsPanel = null;
 			}
 		});
 	}
@@ -206,6 +214,11 @@ public class ActionButtons extends JPanel
 				m_layout.show(ActionButtons.this, m_current.toString());
 			}
 		});
+	}
+	
+	public void changeToPickTerritoryAndUnits(final PlayerID id)
+	{
+		changeTo(id, m_pickTerritoryAndUnitsPanel);
 	}
 	
 	/**
@@ -303,6 +316,11 @@ public class ActionButtons extends JPanel
 	public FightBattleDetails waitForBattleSelection()
 	{
 		return m_battlePanel.waitForBattleSelection();
+	}
+	
+	public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
+	{
+		return m_pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
 	}
 	
 	public ActionPanel getCurrent()

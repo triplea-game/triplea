@@ -11,6 +11,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -28,6 +29,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -42,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -562,5 +565,138 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 				}
 			}
 		}
+	}
+	
+	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
+	{
+		pause();
+		final GameData data = getGameData();
+		final PlayerID me = getPlayerID();
+		final Territory picked;
+		if (territoryChoices == null || territoryChoices.isEmpty())
+			picked = null;
+		else if (territoryChoices.size() == 1)
+			picked = territoryChoices.get(0);
+		else
+		{
+			Collections.shuffle(territoryChoices);
+			final List<Territory> notOwned = Match.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).invert());
+			if (notOwned.isEmpty())
+			{
+				// only owned territories left
+				final boolean nonFactoryUnitsLeft = Match.someMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
+				final Match<Unit> ownedFactories = new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
+				final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
+				final List<Territory> test = new ArrayList<Territory>(capitals);
+				test.retainAll(territoryChoices);
+				final List<Territory> territoriesWithFactories = Match.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories));
+				if (!nonFactoryUnitsLeft)
+				{
+					test.retainAll(Match.getMatches(test, Matches.territoryHasUnitsThatMatch(ownedFactories).invert()));
+					if (!test.isEmpty())
+						picked = test.get(0);
+					else
+					{
+						if (capitals.isEmpty())
+							capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me),
+										Matches.TerritoryIsLand)));
+						final List<Territory> doesNotHaveFactoryYet = Match.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories).invert());
+						if (capitals.isEmpty() || doesNotHaveFactoryYet.isEmpty())
+							picked = territoryChoices.get(0);
+						else
+						{
+							final IntegerMap<Territory> distanceMap = data.getMap().getDistance(capitals.get(0), doesNotHaveFactoryYet, Match.<Territory> getAlwaysMatch());
+							picked = distanceMap.lowestKey();
+						}
+					}
+				}
+				else
+				{
+					final int maxTerritoriesToPopulate = Math.min(territoryChoices.size(), Math.max(4, Match.countMatches(unitChoices, Matches.UnitCanProduceUnits)));
+					test.addAll(territoriesWithFactories);
+					if (!test.isEmpty())
+					{
+						if (test.size() < maxTerritoriesToPopulate)
+						{
+							final IntegerMap<Territory> distanceMap = data.getMap().getDistance(test.get(0), territoryChoices, Match.<Territory> getAlwaysMatch());
+							for (int i = 0; i < maxTerritoriesToPopulate; i++)
+							{
+								final Territory choice = distanceMap.lowestKey();
+								distanceMap.removeKey(choice);
+								test.add(choice);
+							}
+						}
+						Collections.shuffle(test);
+						picked = test.get(0);
+					}
+					else
+					{
+						if (capitals.isEmpty())
+							capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me),
+										Matches.TerritoryIsLand)));
+						if (capitals.isEmpty())
+							picked = territoryChoices.get(0);
+						else
+						{
+							final IntegerMap<Territory> distanceMap = data.getMap().getDistance(capitals.get(0), territoryChoices, Match.<Territory> getAlwaysMatch());
+							if (territoryChoices.contains(capitals.get(0)))
+								distanceMap.put(capitals.get(0), 0);
+							final List<Territory> choices = new ArrayList<Territory>();
+							for (int i = 0; i < maxTerritoriesToPopulate; i++)
+							{
+								final Territory choice = distanceMap.lowestKey();
+								distanceMap.removeKey(choice);
+								choices.add(choice);
+							}
+							Collections.shuffle(choices);
+							picked = choices.get(0);
+						}
+					}
+				}
+			}
+			else
+			{
+				// pick a not owned territory if possible
+				final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
+				final List<Territory> test = new ArrayList<Territory>(capitals);
+				test.retainAll(notOwned);
+				if (!test.isEmpty())
+					picked = test.get(0);
+				else
+				{
+					if (capitals.isEmpty())
+						capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me),
+									Matches.TerritoryIsLand)));
+					if (capitals.isEmpty())
+						picked = territoryChoices.get(0);
+					else
+					{
+						final IntegerMap<Territory> distanceMap = data.getMap().getDistance(capitals.get(0), notOwned, Match.<Territory> getAlwaysMatch());
+						picked = distanceMap.lowestKey();
+					}
+				}
+			}
+		}
+		final Set<Unit> unitsToPlace = new HashSet<Unit>();
+		if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0)
+		{
+			Collections.shuffle(unitChoices);
+			final List<Unit> nonFactory = Match.getMatches(unitChoices, Matches.UnitCanProduceUnits.invert());
+			if (nonFactory.isEmpty())
+			{
+				for (int i = 0; i < unitsPerPick && !unitChoices.isEmpty(); i++)
+				{
+					unitsToPlace.add(unitChoices.get(0));
+				}
+			}
+			else
+			{
+				for (int i = 0; i < unitsPerPick && !nonFactory.isEmpty(); i++)
+				{
+					unitsToPlace.add(nonFactory.get(0));
+				}
+			}
+		}
+		return new Tuple<Territory, Set<Unit>>(picked, unitsToPlace);
 	}
 }

@@ -55,6 +55,16 @@ public abstract class Match<T>
 	@SuppressWarnings("rawtypes")
 	public static final Match NEVER_MATCH = new NeverMatch();
 	
+	public final static <T> Match<T> getAlwaysMatch()
+	{
+		return new AlwaysMatch<T>();
+	}
+	
+	public final static <T> Match<T> getNeverMatch()
+	{
+		return new NeverMatch<T>();
+	}
+	
 	/**
 	 * Returns the elements of the collection that match.
 	 */
@@ -175,22 +185,20 @@ public abstract class Match<T>
 }
 
 
-@SuppressWarnings("rawtypes")
-class NeverMatch extends Match
+class NeverMatch<T> extends Match<T>
 {
 	@Override
-	public boolean match(final Object o)
+	public boolean match(final T o)
 	{
 		return false;
 	}
 }
 
 
-@SuppressWarnings("rawtypes")
-class AlwaysMatch extends Match
+class AlwaysMatch<T> extends Match<T>
 {
 	@Override
-	public boolean match(final Object o)
+	public boolean match(final T o)
 	{
 		return true;
 	}

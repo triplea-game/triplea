@@ -246,6 +246,46 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	}
 	
 	/**
+	 * Will return null if empty.
+	 */
+	public T highestKey()
+	{
+		if (m_values.isEmpty())
+			return null;
+		int max = Integer.MIN_VALUE;
+		T rVal = null;
+		for (final Entry<T, Integer> entry : m_values.entrySet())
+		{
+			if (entry.getValue() > max)
+			{
+				max = entry.getValue();
+				rVal = entry.getKey();
+			}
+		}
+		return rVal;
+	}
+	
+	/**
+	 * Will return null if empty.
+	 */
+	public T lowestKey()
+	{
+		if (m_values.isEmpty())
+			return null;
+		int min = Integer.MAX_VALUE;
+		T rVal = null;
+		for (final Entry<T, Integer> entry : m_values.entrySet())
+		{
+			if (entry.getValue() < min)
+			{
+				min = entry.getValue();
+				rVal = entry.getKey();
+			}
+		}
+		return rVal;
+	}
+	
+	/**
 	 * @return the sum of all keys.
 	 */
 	public int totalValues()

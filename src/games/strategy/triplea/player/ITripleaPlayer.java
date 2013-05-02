@@ -27,7 +27,9 @@ import games.strategy.util.Tuple;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface the TriplePlayer presents to Delegates through IRemoteMessenger
@@ -290,4 +292,9 @@ public interface ITripleaPlayer extends IRemotePlayer
 	 * @return
 	 */
 	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(HashMap<Territory, Collection<Unit>> possibleUnitsToAttack);
+	
+	/**
+	 * Used during the RandomStartDelegate for assigning territories to players, and units to territories.
+	 */
+	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(List<Territory> territoryChoices, List<Unit> unitChoices, int unitsPerPick);
 }

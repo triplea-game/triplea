@@ -29,7 +29,9 @@ import games.strategy.util.Tuple;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DummyTripleAPlayer implements ITripleaPlayer
 {
@@ -165,6 +167,11 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	}
 	
 	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
+	{
+		return null;
+	}
+	
+	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
 	{
 		return null;
 	}

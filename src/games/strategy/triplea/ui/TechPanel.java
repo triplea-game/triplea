@@ -179,9 +179,16 @@ public class TechPanel extends ActionPanel
 				m_techRoll = new TechRoll(null, quantity);
 			else
 			{
-				final TechnologyFrontier front = new TechnologyFrontier("", getData());
-				front.addAdvance(advance);
-				m_techRoll = new TechRoll(front, quantity);
+				try
+				{
+					getData().acquireReadLock();
+					final TechnologyFrontier front = new TechnologyFrontier("", getData());
+					front.addAdvance(advance);
+					m_techRoll = new TechRoll(front, quantity);
+				} finally
+				{
+					getData().releaseReadLock();
+				}
 			}
 			release();
 		}

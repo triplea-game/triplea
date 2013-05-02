@@ -1,4 +1,10 @@
 Changes for 1.7
+* Created user interface element for RandomStartDelegate, so that players can pick which territory they want and what units they want in it. (veqryn)
+
+* Gave all AIs methods to pick territories, and they will attempt to focus on a single area of the board. (veqryn)
+
+* Created new game option property, "Territories Are Assigned Randomly", which determines if territories are randomly assigned or picked by players during RandomStartDelegate. (veqryn)
+
 * Created new delegate, "RandomStartDelegate", which will allow for randomly assigned territories or territories chosen in turn order. (veqryn)
 
 * Fixed problem where territory names that were parseable integers could not allow any territory based conditions. I still recommend territories have a non integer character in them though. (veqryn) 
