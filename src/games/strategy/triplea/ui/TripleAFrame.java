@@ -216,6 +216,7 @@ public class TripleAFrame extends MainGameFrame
 	private Territory m_territoryLastEntered;
 	private List<Unit> m_unitsBeingMousedOver;
 	private PlayerID m_lastStepPlayer;
+	private PlayerID m_currentStepPlayer;
 	private final Map<PlayerID, Boolean> m_requiredTurnSeries = new HashMap<PlayerID, Boolean>();
 	private ThreadPool m_messageAndDialogThreadPool;
 	private TripleaMenu m_menu;
@@ -1628,7 +1629,11 @@ public class TripleAFrame extends MainGameFrame
 		if (player != null)
 			m_player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
 		if (player != null && !player.isNull())
+		{
 			m_round.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
+			m_lastStepPlayer = m_currentStepPlayer;
+			m_currentStepPlayer = player;
+		}
 		// if the game control has passed to someone else and we are not just showing the map
 		// show the history
 		if (player != null && !player.isNull() && !isPlaying && !m_inHistory && !m_uiContext.getShowMapOnly())
@@ -1637,12 +1642,13 @@ public class TripleAFrame extends MainGameFrame
 				throw new IllegalStateException("We should be in dispatch thread");
 			showHistory();
 		}
-		// if the game control is with us
-		// show the current game
 		else if (player != null && !player.isNull() && isPlaying && m_inHistory)
 		{
+			// if the game control is with us
+			// show the current game
 			showGame();
 			m_requiredTurnSeries.put(player, true);
+			// System.out.println("Changing step to " + stepDisplayName + " for " + player.getName());
 		}
 	}
 	
@@ -1650,24 +1656,42 @@ public class TripleAFrame extends MainGameFrame
 	{
 		if (player == null)
 			return;
-		final Boolean play = m_requiredTurnSeries.get(player);
-		if (play != null && play.booleanValue())
+		try
 		{
-			DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
-			m_requiredTurnSeries.put(player, false);
-		}
-		// center on capital of player, if it is a new player
-		if (!player.equals(m_lastStepPlayer))
+			SwingUtilities.invokeAndWait(new Runnable()
+			{
+				public void run()
+				{
+					final Boolean play = m_requiredTurnSeries.get(player);
+					// System.out.println("Starting for " + player.getName() + ", with requiredTurnSeries equal to " + (play == null ? "null" : play) + ", with m_lastStepPlayer equal to " + (m_lastStepPlayer == null ? "null" : m_lastStepPlayer.getName()));
+					if (play != null && play.booleanValue())
+					{
+						DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
+						m_requiredTurnSeries.put(player, false);
+						// System.out.println("Playing Sound for " + player.getName());
+					}
+					// center on capital of player, if it is a new player
+					if (!player.equals(m_lastStepPlayer))
+					{
+						m_lastStepPlayer = player;
+						m_data.acquireReadLock();
+						try
+						{
+							m_mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, m_data));
+							// System.out.println("Centering on " + player.getName());
+						} finally
+						{
+							m_data.releaseReadLock();
+						}
+					}
+				}
+			});
+		} catch (final InterruptedException e)
 		{
-			m_lastStepPlayer = player;
-			m_data.acquireReadLock();
-			try
-			{
-				m_mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, m_data));
-			} finally
-			{
-				m_data.releaseReadLock();
-			}
+			e.printStackTrace();
+		} catch (final InvocationTargetException e)
+		{
+			e.printStackTrace();
 		}
 	}
 	

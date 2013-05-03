@@ -52,6 +52,7 @@ public class MetaSetupPanel extends SetupPanel
 	private JButton m_enginePreferences;
 	private JButton m_downloadMaps;
 	private JButton m_ruleBook;
+	private JButton m_donate;
 	private JButton m_about;
 	private final SetupPanelModel m_model;
 	
@@ -66,8 +67,8 @@ public class MetaSetupPanel extends SetupPanel
 	
 	private void createComponents()
 	{
-		m_connectToLobby = new JButton("Play Online...");
-		final Font bigButtonFont = new Font(m_connectToLobby.getFont().getName(), m_connectToLobby.getFont().getStyle(), m_connectToLobby.getFont().getSize() + 2);
+		m_connectToLobby = new JButton("Play Online");
+		final Font bigButtonFont = new Font(m_connectToLobby.getFont().getName(), m_connectToLobby.getFont().getStyle(), m_connectToLobby.getFont().getSize() + 3);
 		m_connectToLobby.setFont(bigButtonFont);
 		m_connectToLobby.setToolTipText("<html>Find Games Online on the Lobby Server. <br>TripleA is MEANT to be played Online against other humans. <br>Any other way is not as fun!</html>");
 		m_startLocal = new JButton("Start Local Game");
@@ -78,13 +79,15 @@ public class MetaSetupPanel extends SetupPanel
 		m_hostGame.setToolTipText("<html>Hosts a network game, which people can connect to. <br>Anyone on a LAN will be able to connect. <br>Anyone from the internet can connect as well, but only if the host has configured port forwarding correctly.</html>");
 		m_connectToHostedGame = new JButton("Connect to Networked Game");
 		m_connectToHostedGame.setToolTipText("<html>Connects to someone's hosted game, <br>so long as you know their IP address.</html>");
-		m_enginePreferences = new JButton("Engine Preferences...");
+		m_enginePreferences = new JButton("Engine Preferences");
 		m_enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
-		m_downloadMaps = new JButton("Download Maps...");
+		m_downloadMaps = new JButton("Download Maps");
 		m_downloadMaps.setToolTipText("<html>Download new maps. Everyone should use this, <br>the best maps are online and have to be downloaded!</html>");
-		m_ruleBook = new JButton("Rule Book...");
+		m_ruleBook = new JButton("Rule Book");
 		m_ruleBook.setToolTipText("<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
-		m_about = new JButton("About...");
+		m_donate = new JButton("Donate");
+		m_donate.setToolTipText("Help Support TripleA's development.");
+		m_about = new JButton("About");
 		m_about.setToolTipText("<html>See info about version number, developers, <br>official website, and a quick instruction on how to play.</html>");
 	}
 	
@@ -101,7 +104,8 @@ public class MetaSetupPanel extends SetupPanel
 		add(m_enginePreferences, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		add(m_downloadMaps, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_about, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_donate, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_about, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		// top space
 		add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
 	}
@@ -162,6 +166,19 @@ public class MetaSetupPanel extends SetupPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				ruleBook();
+			}
+		});
+		m_donate.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				try
+				{
+					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
+				} catch (final Exception e1)
+				{
+					e1.printStackTrace();
+				}
 			}
 		});
 		m_about.addActionListener(new ActionListener()
