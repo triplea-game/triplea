@@ -4,11 +4,11 @@
 
 <game>
 
-        <info name="Great War" version="3.3"/>
+        <info name="Great War" version="4.0"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
-		<triplea minimumVersion="1.5"/>
+		<triplea minimumVersion="1.6.1"/>
 
         <map>
                 <!-- Territory Definitions -->
@@ -345,9 +345,20 @@
 		<territory name="Denmark"/>
 		<territory name="Sweden"/>
 		<territory name="Northern Alps"/>
+		
+		<territory name="Perm"/>
+		<territory name="Volgograd"/>
+		<territory name="Moldovia"/>
+		<territory name="Kharkiv"/>
+		<territory name="Odesa"/>
+		<territory name="Estonia"/>
+		<territory name="Kiev"/>
+		<territory name="Belarus"/>
+		<territory name="Bryansk"/>
+		<territory name="Konigsberg"/>
+		<territory name="Lodz"/>
 
                 <!-- Territory Connections -->
-
                 <connection t1="SZ 1 Atlantic Ocean" t2="SZ 2 Atlantic Ocean"/>
                 <connection t1="SZ 1 Atlantic Ocean" t2="Canada"/>
                 <connection t1="SZ 1 Atlantic Ocean" t2="United States"/>
@@ -438,12 +449,14 @@
                 <connection t1="SZ 31 Gulf of Bothnia" t2="Finland"/>
                 <connection t1="SZ 31 Gulf of Bothnia" t2="Petrograd"/>
                 <connection t1="SZ 31 Gulf of Bothnia" t2="Livonia"/>
-                <connection t1="SZ 31 Gulf of Bothnia" t2="Lithuania"/>
+                <connection t1="SZ 31 Gulf of Bothnia" t2="Estonia"/>
 		<connection t1="SZ 31 Gulf of Bothnia" t2="Novgorod"/>
 
                 <connection t1="SZ 32 Baltic Sea" t2="SZ 33 Baltic Sea"/>
                 <connection t1="SZ 32 Baltic Sea" t2="Lithuania"/>
                 <connection t1="SZ 32 Baltic Sea" t2="East Prussia"/>
+                <connection t1="SZ 32 Baltic Sea" t2="Konigsberg"/>
+                <connection t1="SZ 32 Baltic Sea" t2="Livonia"/>
 
                 <connection t1="SZ 33 Baltic Sea" t2="SZ 34 Skagerrak"/>
                 <connection t1="SZ 33 Baltic Sea" t2="Sweden"/>
@@ -596,7 +609,9 @@
                 <connection t1="SZ 60 Black Sea" t2="SZ 61 Black Sea"/>
                 <connection t1="SZ 60 Black Sea" t2="SZ 62 Black Sea"/>
                 <connection t1="SZ 60 Black Sea" t2="Romania"/>
-                <connection t1="SZ 60 Black Sea" t2="Ukraine"/>
+                <connection t1="SZ 60 Black Sea" t2="Moldovia"/>
+                <connection t1="SZ 60 Black Sea" t2="Odesa"/>
+                <connection t1="SZ 60 Black Sea" t2="Kharkiv"/>
                 <connection t1="SZ 60 Black Sea" t2="Crimea"/>
                 <connection t1="SZ 60 Black Sea" t2="Astrakhan"/>
                 <connection t1="SZ 60 Black Sea" t2="Caucasus"/>
@@ -776,6 +791,7 @@
                 <connection t1="Caspian Sea" t2="Kyrgyz"/>
                 <connection t1="Caspian Sea" t2="Astrakhan"/>
                 <connection t1="Caspian Sea" t2="Caucasus"/>
+                <connection t1="Caspian Sea" t2="Volgograd"/>
 
                 <connection t1="Lake Victoria" t2="Nairobi"/>
                 <connection t1="Lake Victoria" t2="Kilamanjaro"/>
@@ -1164,10 +1180,14 @@
                 <connection t1="Pomerania" t2="Berlin"/>
                 <connection t1="Pomerania" t2="Saxony"/>
 
-                <connection t1="East Prussia" t2="Lithuania"/>
-                <connection t1="East Prussia" t2="Warsaw"/>
+                <connection t1="East Prussia" t2="Konigsberg"/>
+                <connection t1="East Prussia" t2="Lodz"/>
                 <connection t1="East Prussia" t2="Silesia"/>
                 <connection t1="East Prussia" t2="Berlin"/>
+				
+                <connection t1="Konigsberg" t2="Lithuania"/>
+                <connection t1="Konigsberg" t2="Warsaw"/>
+                <connection t1="Konigsberg" t2="Lodz"/>
 
                 <connection t1="Ruhr" t2="Saxony"/>
                 <connection t1="Ruhr" t2="Bavaria"/>
@@ -1180,7 +1200,7 @@
 
                 <connection t1="Berlin" t2="Silesia"/>
 
-                <connection t1="Silesia" t2="Warsaw"/>
+                <connection t1="Silesia" t2="Lodz"/>
                 <connection t1="Silesia" t2="Galicia"/>
                 <connection t1="Silesia" t2="Bohemia"/>
 
@@ -1247,8 +1267,9 @@
                 <connection t1="Bohemia" t2="Carpathia"/>
 
                 <connection t1="Galicia" t2="Warsaw"/>
-                <connection t1="Galicia" t2="Ukraine"/>
-                <connection t1="Galicia" t2="Romania"/>
+                <connection t1="Galicia" t2="Lodz"/>
+                <connection t1="Galicia" t2="Odesa"/>
+                <connection t1="Galicia" t2="Moldovia"/>
                 <connection t1="Galicia" t2="Transylvania"/>
                 <connection t1="Galicia" t2="Carpathia"/>
 
@@ -1277,6 +1298,7 @@
                 <connection t1="Bosnia-Herzegovina" t2="Montenegro"/>
 
                 <connection t1="Transylvania" t2="Romania"/>
+                <connection t1="Transylvania" t2="Moldovia"/>
                 <connection t1="Transylvania" t2="Belgrade"/>
 
                 <connection t1="Finland" t2="Sweden"/>
@@ -1294,13 +1316,18 @@
                 <connection t1="Lake Onega" t2="Novgorod"/>
 
                 <connection t1="Arkhangelsk" t2="Suzdal"/>
-                <connection t1="Arkhangelsk" t2="Kazan"/>
+                <connection t1="Arkhangelsk" t2="Perm"/>
+                <connection t1="Perm" t2="Kazan"/>
+                <connection t1="Perm" t2="Suzdal"/>
 
                 <connection t1="Petrograd" t2="Novgorod"/>
 
-                <connection t1="Livonia" t2="Novgorod"/>
+                <connection t1="Estonia" t2="Novgorod"/>
                 <connection t1="Livonia" t2="Pskov"/>
                 <connection t1="Livonia" t2="Lithuania"/>
+                <connection t1="Livonia" t2="Belarus"/>
+                <connection t1="Livonia" t2="Estonia"/>
+                <connection t1="Estonia" t2="Pskov"/>
 
                 <connection t1="Novgorod" t2="Suzdal"/>
                 <connection t1="Novgorod" t2="Tver"/>
@@ -1308,7 +1335,7 @@
 
                 <connection t1="Pskov" t2="Tver"/>
                 <connection t1="Pskov" t2="Smolensk"/>
-                <connection t1="Pskov" t2="Lithuania"/>
+                <connection t1="Pskov" t2="Estonia"/>
 
                 <connection t1="Tver" t2="Suzdal"/>
                 <connection t1="Tver" t2="Moscow"/>
@@ -1322,34 +1349,55 @@
                 <connection t1="Suzdal" t2="Ryazan"/>
 
                 <connection t1="Kazan" t2="Kyrgyz"/>
-                <connection t1="Kazan" t2="Astrakhan"/>
+                <connection t1="Kazan" t2="Volgograd"/>
+                <connection t1="Astrakhan" t2="Volgograd"/>
                 <connection t1="Kazan" t2="Ryazan"/>
 
                 <connection t1="Warsaw" t2="Lithuania"/>
-                <connection t1="Warsaw" t2="Ukraine"/>
+                <connection t1="Warsaw" t2="Odesa"/>
+				
+                <connection t1="Lithuania" t2="Belarus"/>
+                <connection t1="Lithuania" t2="Kiev"/>
+                <connection t1="Lodz" t2="Warsaw"/>
 
-                <connection t1="Lithuania" t2="Smolensk"/>
-                <connection t1="Lithuania" t2="Ryazan"/>
-                <connection t1="Lithuania" t2="Crimea"/>
-                <connection t1="Lithuania" t2="Ukraine"/>
+                <connection t1="Belarus" t2="Smolensk"/>
+                <connection t1="Belarus" t2="Pskov"/>
+                <connection t1="Belarus" t2="Bryansk"/>
+                <connection t1="Bryansk" t2="Ryazan"/>
+                <connection t1="Bryansk" t2="Moscow"/>
+                <connection t1="Kiev" t2="Crimea"/>
+                <connection t1="Kiev" t2="Ukraine"/>
+                <connection t1="Kiev" t2="Warsaw"/>
+                <connection t1="Kiev" t2="Belarus"/>
+                <connection t1="Kiev" t2="Bryansk"/>
 
-                <connection t1="Smolensk" t2="Ryazan"/>
+                <connection t1="Smolensk" t2="Bryansk"/>
 
-                <connection t1="Ryazan" t2="Astrakhan"/>
+                <connection t1="Kharkiv" t2="Astrakhan"/>
+                <connection t1="Ryazan" t2="Volgograd"/>
                 <connection t1="Ryazan" t2="Crimea"/>
 
                 <connection t1="Ukraine" t2="Crimea"/>
-                <connection t1="Ukraine" t2="Romania"/>
+                <connection t1="Ukraine" t2="Odesa"/>
+				
+                <connection t1="Crimea" t2="Kharkiv"/>
+                <connection t1="Crimea" t2="Bryansk"/>
 
 		<connection t1="Romania" t2= "Bulgaria"/>
 		<connection t1="Romania" t2= "Belgrade"/>
-		<connection t1="Romania" t2= "Galicia"/>
+		<connection t1="Moldovia" t2= "Galicia"/>
 		<connection t1="Romania" t2= "Transylvania"/>
+		<connection t1="Moldovia" t2= "Transylvania"/>
+		
+		<connection t1="Romania" t2= "Moldovia"/>
+		<connection t1="Odesa" t2= "Moldovia"/>
+		<connection t1="Odesa" t2= "Kiev"/>
 	
 
-                <connection t1="Crimea" t2="Astrakhan"/>
+                <connection t1="Kharkiv" t2="Volgograd"/>
+                <connection t1="Kharkiv" t2="Ryazan"/>
 
-                <connection t1="Astrakhan" t2="Kyrgyz"/>
+                <connection t1="Volgograd" t2="Kyrgyz"/>
                 <connection t1="Astrakhan" t2="Caucasus"/>
 
                 <connection t1="Caucasus" t2="Persia"/>
@@ -1407,7 +1455,6 @@
                 <connection t1="Norway" t2="Sweden"/>
 
                 <connection t1="Northern Alps" t2="Switzerland"/>
-
 
         </map>
 
@@ -1578,6 +1625,7 @@
                         <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
                         <step name="americanPlace" delegate="place" player="Americans"/>
                         <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
+						
                         <step name="endRoundStep" delegate="endRound"/>
                 </sequence>
         </gamePlay>
@@ -2040,7 +2088,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Cologne" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="4"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Amiens" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2518,7 +2566,7 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="East Prussia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="6"/>
+                        <option name="production" value="3"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Silesia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2682,11 +2730,11 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Caucasus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Astrakhan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Crimea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2694,23 +2742,23 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Ukraine" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Warsaw" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="3"/>
+                        <option name="production" value="2"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Lithuania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Livonia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Ryazan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Suzdal" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2719,10 +2767,12 @@
 
                     <attatchment name="territoryAttatchment" attatchTo="Moscow" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
+			<option name="capital" value="Russians"/>
+                        <option name="victoryCity" value="true"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Smolensk" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Tver" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2816,11 +2866,55 @@
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Romania" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Perm" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Volgograd" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Moldovia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="2"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Kharkiv" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Odesa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Estonia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Kiev" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Belarus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Bryansk" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Konigsberg" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                     </attatchment>
 
+                    <attatchment name="territoryAttatchment" attatchTo="Lodz" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
                     <attatchment name="territoryAttatchment" attatchTo="US Declares War" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="10"/>
+                        <option name="production" value="30"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="Persia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2973,6 +3067,10 @@
                         <option name="production" value="1"/>
                     </attatchment>
 
+		    <attatchment name="territoryAttatchment" attatchTo="SZ 38 Norwegian Sea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
 
 		    <attatchment name="territoryAttatchment" attatchTo="SZ 40 North Atlantic" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
@@ -3110,6 +3208,67 @@
 				<option name="canalName" value="Suez Canal"/>
 				<option name="landTerritories" value="Cairo"/>
 			</attatchment>
+			
+			
+				<attatchment name="conditionAttachment_Americans_Own_USA_Declares_War_Territory" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="directOwnershipTerritories" value="US Declares War" count="1"/>
+				</attatchment>
+				
+				<!--
+				<attatchment name="triggerAttachment_Americans_Declare_War_2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="conditions" value="conditionAttachment_Americans_Own_USA_Declares_War_Territory"/>
+						<option name="when" value="after:americanNonCombatMove"/>
+						<option name="territories" value="US Declares War"/>
+						<option name="territoryProperty" value="production" count="30"/>
+						<option name="uses" value="1"/>
+				</attatchment>-->
+				<attatchment name="triggerAttachment_Americans_Declare_War" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="conditions" value="conditionAttachment_Americans_Own_USA_Declares_War_Territory"/>
+						<option name="when" value="after:americanNonCombatMove"/>
+						<option name="uses" value="1"/>
+						<option name="players" value="Germans:French:Russians:Austrians:Ottomans:British:Italians"/>
+						<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
+						<option name="playerProperty" value="movementRestrictionTerritories" count="-reset-"/>
+				</attatchment>
+				
+				
+					<attatchment name="playerAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+							<!-- retainCapitalNumber means that we do not lose our money if we still control at least this many of our capitals (defaults to 1). 
+								If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured) -->
+							<option name="retainCapitalNumber" value="1"/>
+							<!-- retainCapitalProduceNumber is similar to above, but only affect gaining income and producing units (probably should be less than or equal to retainCapitalNumber) 
+								If a player has no playerAttachment, then it defaults to 1 (ie: you keep collecting and producing units so long as you control at least 1 capital) -->
+							<option name="retainCapitalProduceNumber" value="1"/>
+					</attatchment>
+					
+				<attatchment name="rulesAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="movementRestrictionTerritories" value="US Declares War"/>
+						<option name="movementRestrictionType" value="disallowed"/>
+				</attatchment>
+				<attatchment name="rulesAttatchment" attatchTo="French" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="movementRestrictionTerritories" value="US Declares War"/>
+						<option name="movementRestrictionType" value="disallowed"/>
+				</attatchment>
+				<attatchment name="rulesAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="movementRestrictionTerritories" value="US Declares War"/>
+						<option name="movementRestrictionType" value="disallowed"/>
+				</attatchment>
+				<attatchment name="rulesAttatchment" attatchTo="Austrians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="movementRestrictionTerritories" value="US Declares War"/>
+						<option name="movementRestrictionType" value="disallowed"/>
+				</attatchment>
+				<attatchment name="rulesAttatchment" attatchTo="Ottomans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="movementRestrictionTerritories" value="US Declares War"/>
+						<option name="movementRestrictionType" value="disallowed"/>
+				</attatchment>
+				<attatchment name="rulesAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="movementRestrictionTerritories" value="US Declares War"/>
+						<option name="movementRestrictionType" value="disallowed"/>
+				</attatchment>
+				<attatchment name="rulesAttatchment" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="movementRestrictionTerritories" value="US Declares War"/>
+						<option name="movementRestrictionType" value="disallowed"/>
+				</attatchment>
 
         </attatchmentList>
 
@@ -3254,11 +3413,21 @@
             		<territoryOwner territory="Belgrade" owner="Russians"/>
             		<territoryOwner territory="Serbia" owner="Russians"/>
             		<territoryOwner territory="Montenegro" owner="Russians"/>
+            		<territoryOwner territory="Perm" owner="Russians"/>
+            		<territoryOwner territory="Volgograd" owner="Russians"/>
+            		<territoryOwner territory="Kharkiv" owner="Russians"/>
+            		<territoryOwner territory="Odesa" owner="Russians"/>
+            		<territoryOwner territory="Estonia" owner="Russians"/>
+            		<territoryOwner territory="Kiev" owner="Russians"/>
+            		<territoryOwner territory="Belarus" owner="Russians"/>
+            		<territoryOwner territory="Bryansk" owner="Russians"/>
+            		<territoryOwner territory="Lodz" owner="Russians"/>
 
 			<!-- Russians Owned Convoy Zones -->
             		<territoryOwner territory="SZ 27 Norwegian Sea" owner="Russians"/>
             		<territoryOwner territory="SZ 28 Norwegian Sea" owner="Russians"/>
             		<territoryOwner territory="SZ 29 Norwegian Sea" owner="Russians"/>
+            		<territoryOwner territory="SZ 38 Norwegian Sea" owner="Russians"/>
 			<territoryOwner territory="SZ 31 Gulf of Bothnia" owner="Russians"/>
 			<territoryOwner territory="SZ 60 Black Sea" owner="Russians"/>
 
@@ -3344,6 +3513,7 @@
             		<territoryOwner territory="Lys River" owner="Germans"/>
             		<territoryOwner territory="Tsingtao" owner="Germans"/>
             		<territoryOwner territory="German S. Pacific" owner="Germans"/>
+            		<territoryOwner territory="Konigsberg" owner="Germans"/>
 
 			<!-- Germans Owned Convoy Zones -->
 			<territoryOwner territory="SZ 30 Baltic Sea" owner="Germans"/>
@@ -3679,19 +3849,37 @@
                         <!-- Russians  Unit Placements -->
                         <unitPlacement unitType="factory" territory="Warsaw" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Warsaw" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Lodz" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Lithuania" quantity="3" owner="Russians"/>
-                        <unitPlacement unitType="cavalry" territory="Lithuania" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Lithuania" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Lithuania" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Lithuania" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Ukraine" quantity="6" owner="Russians"/>
-                        <unitPlacement unitType="cavalry" territory="Ukraine" quantity="2" owner="Russians"/>
-                        <unitPlacement unitType="artillery" territory="Ukraine" quantity="4" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Ukraine" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Ukraine" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="Ukraine" quantity="1" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Kiev" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Kiev" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="Kiev" quantity="1" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Belarus" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Belarus" quantity="1" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Bryansk" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Bryansk" quantity="1" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Odesa" quantity="4" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Odesa" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="Odesa" quantity="2" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Crimea" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Crimea" quantity="4" owner="Russians"/>
-                        <unitPlacement unitType="cavalry" territory="Crimea" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Crimea" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Crimea" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Crimea" quantity="2" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Kharkiv" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Kharkiv" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Ryazan" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Ryazan" quantity="1" owner="Russians"/>
@@ -3712,8 +3900,10 @@
                         <unitPlacement unitType="infantry" territory="Pskov" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Livonia" quantity="1" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Estonia" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Novgorod" quantity="4" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Novgorod" quantity="3" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Petrograd" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Petrograd" quantity="7" owner="Russians"/>
@@ -3727,9 +3917,11 @@
 
                         <unitPlacement unitType="infantry" territory="Karelia" quantity="3" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="2" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Perm" quantity="2" owner="Russians"/>
                         
-                        <unitPlacement unitType="infantry" territory="Kazan" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Kazan" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="cavalry" territory="Kazan" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Astrakhan" quantity="2" owner="Russians"/>
@@ -3738,17 +3930,19 @@
                         <unitPlacement unitType="infantry" territory="Caucasus" quantity="3" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Kyrgyz" quantity="2" owner="Russians"/>
-				<unitPlacement unitType="cavalry" territory="Kyrgyz" quantity="1" owner="Russians"/>
+						
+                        <unitPlacement unitType="infantry" territory="Volgograd" quantity="2" owner="Russians"/>
+				<unitPlacement unitType="cavalry" territory="Volgograd" quantity="1" owner="Russians"/>
                        
-                        <unitPlacement unitType="infantry" territory="Transcaspia" quantity="2" owner="Russians"/>
-				<unitPlacement unitType="cavalry" territory="Transcaspia" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Transcaspia" quantity="1" owner="Russians"/>
+				<unitPlacement unitType="cavalry" territory="Transcaspia" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Montenegro" quantity="3" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Montenegro" quantity="1" owner="Russians"/>
 				
                         <unitPlacement unitType="factory" territory="Belgrade" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Belgrade" quantity="6" owner="Russians"/>
-                        <unitPlacement unitType="artillery" territory="Belgrade" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Belgrade" quantity="8" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="Belgrade" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Serbia" quantity="5" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Serbia" quantity="1" owner="Russians"/>
@@ -3850,9 +4044,12 @@
                         <unitPlacement unitType="aaGun" territory="Berlin" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="East Prussia" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="infantry" territory="East Prussia" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="East Prussia" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="East Prussia" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="artillery" territory="East Prussia" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="East Prussia" quantity="1" owner="Germans"/>
+						
+                        <unitPlacement unitType="infantry" territory="Konigsberg" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Konigsberg" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Silesia" quantity="1" owner="Germans"/>
 
@@ -3869,9 +4066,9 @@
                         <unitPlacement unitType="infantry" territory="Munich" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Bulgaria" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="infantry" territory="Bulgaria" quantity="6" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Bulgaria" quantity="8" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Bulgaria" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="artillery" territory="Bulgaria" quantity="3" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Bulgaria" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Nsanakang" quantity="1" owner="Germans"/>
 
@@ -3920,7 +4117,7 @@
                         <unitPlacement unitType="battleship" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="battlecruiser" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="cruiser" territory="SZ 33 Baltic Sea" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 32 Baltic Sea" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="submarine" territory="SZ 33 Baltic Sea" quantity="2" owner="Germans"/>
 			<unitPlacement unitType="transport" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
 
@@ -4136,13 +4333,13 @@
 
                         <!-- Neutral  Unit Placements -->
 
-                        <unitPlacement unitType="factory" territory="Romania" quantity="1"/>
-                        <unitPlacement unitType="infantry" territory="Romania" quantity="6"/>
+                        <unitPlacement unitType="factory" territory="Moldovia" quantity="1"/>
+                        <unitPlacement unitType="infantry" territory="Moldovia" quantity="3"/>
+                        <unitPlacement unitType="infantry" territory="Romania" quantity="2"/>
 
                         <unitPlacement unitType="infantry" territory="Albania" quantity="2"/>
 
                         <unitPlacement unitType="factory" territory="US Declares War" quantity="1"/>
-			<unitPlacement unitType="infantry" territory="US Declares War" quantity="10"/>
 
                 </unitInitialize>
 
@@ -4153,7 +4350,7 @@
                         <resourceGiven player="French" resource="PUs" quantity="60"/>
                         <resourceGiven player="Russians" resource="PUs" quantity="60"/>
                         <resourceGiven player="Italians" resource="PUs" quantity="34"/>
-                        <resourceGiven player="Germans" resource="PUs" quantity="102"/>
+                        <resourceGiven player="Germans" resource="PUs" quantity="103"/>
 				<resourceGiven player="Austrians" resource="PUs" quantity="51"/>
 				<resourceGiven player="Ottomans" resource="PUs" quantity="50"/>
                         <resourceGiven player="Americans" resource="PUs" quantity="50"/>
@@ -4203,12 +4400,12 @@
 					<boolean/>
 				</property>
 
-				<property name="Central Powers Honorable Victory VCs" value="6" editable="false">
-					<number min="4" max="8"/>
+				<property name="Central Powers Honorable Victory VCs" value="7" editable="false">
+					<number min="4" max="9"/>
 				</property>
 
-				<property name="Allies Honorable Victory VCs" value="7" editable="false">
-					<number min="6" max="8"/>
+				<property name="Allies Honorable Victory VCs" value="8" editable="false">
+					<number min="6" max="9"/>
 				</property>
 
 				<!-- Low Luck -->
@@ -4222,6 +4419,14 @@
 				</property>
 
 				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+						<boolean/>
+				</property>
+				
+				<property name="National Objectives" value="true" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Use Triggers" value="true" editable="false">
 						<boolean/>
 				</property>
                 
@@ -4258,6 +4463,14 @@
 				<property name="WW2V2" value="true" editable="false">
                         <boolean/>
                 </property>
+				
+				<property name="Battle Rounds" value="-1" editable="true">
+						<number min="-1" max="100"/>
+				</property>
+				
+				<property name="Movement By Territory Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
 
                 <property name="Submersible Subs" value="true" editable="false">
                         <boolean/>
@@ -4305,7 +4518,7 @@
 					<br><h2>Allied Powers</h2>
 						British Empire   (Capital: London)
 					<br>France   (Capital: Paris)
-					<br>Russian Empire   (Capital: Petrograd)
+					<br>Russian Empire   (Capital: Petrograd and Moscow)
 					<br>Italy   (Capital: Rome)
 					<br>United States   (Capital: United States)
 					<h2>Central Powers</h2>
@@ -4333,7 +4546,12 @@
 						required that we make some abstractions to the map.
 					<br>These include several game boxes/inserts which connect to the major areas of conflict 
 						around Europe, Africa and the Middle East. 
-					<br>Cairo and Istanbul are canals.
+					<br> * Cairo and Istanbul are canals.
+					<br> * If only 1 Russian Capital is taken, no income is captured and Russia may continue to collect income and produce. 
+						If both capitals are taken, all income is captured and Russia can no longer produce new units or collect income.
+					<br> * The territory "US Declares War" can be captured by a single American ground unit (only USA may capture it from Neutrals).
+					<br>
+					<br>
 					<br>
 					<br>
 					<br>
@@ -4364,7 +4582,6 @@
 						though Russia can do a lot of damage early if Germany ignores them too much.  
 						Russia must react to their neighbors and is mostly land based.  
 						Do not forget about the Belgrade factory; 
-						Russia can choose to help Belgrade by doing an attack then retreat on Romania to move extra units there.  
 					<br>
 					<br><b>Austrians: </b>
 					<br>The Austrians have 3-4 directions: Italy, Russia, Belgrade/Greece.  
@@ -4391,8 +4608,7 @@
 					<br>
 					<br><b>USA: </b>
 					<br>The USA will take a long time to get into the game.  
-						Build just enough to take the "US DECLARES WAR" territory and then spend the rest on whatever your strategy will be.  
-						You can save some money by letting the UK kill some of the neutral units on that territory, if you plan on not needing so many land units.  
+						Try to get just one transport to the "US DECLARES WAR" territory and then spend the rest on whatever your strategy will be. 
 						Besides the obvious (and slow) strategy of dropping of land units for the Western Front, 
 						the USA has some other strategies that could affect the game faster, 
 						such as building a lot of subs and navy and using it to swing the naval war, 
@@ -4413,6 +4629,17 @@
 						Other than that its pretty much the same as the old game, just with a slight upgrade. 
 						I fixed some centers and included new flags for a cleaner look. 
 						Thanks again for playing, and good gaming all! -Elk
+					<br>
+					<br>
+					<br>
+					<br><b>UPDATE!</b> This latest version (4.0) contains a ton of changes designed to make the Eastern Front more interesting
+						and to make the game less 'dicey' at the start.
+						11 new territories were added in and around Russia.  3 new convoy zones were added.  
+						Russia has received a boost in power, and UK has lost a few naval vessels to make round 1 naval battles less dicey.
+						The Italian destroyer blocking the Austrian fleet has been removed as well.
+						USA receives a boost in the form of the US Declares War territory being worth 30 production, and can be captured by just 1 American ground unit.
+						Russia now has 2 capitals, and must lose both before it is affected in any way.
+						Enjoy! -Veqryn
 					<br>
 					<br>
 					<br><h2>Rules Help:</h2>

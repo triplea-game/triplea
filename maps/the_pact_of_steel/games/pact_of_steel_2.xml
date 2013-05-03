@@ -4110,6 +4110,7 @@
 		<!-- Chinese Rules -->
 				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="movementRestrictionTerritories" value="Sinkiang:Central China:China:Manchuria:Kwangtung:French Indochina"/>
+						<!-- allowed or disallowed -->
 						<option name="movementRestrictionType" value="allowed"/>
 						<!-- productionPerXTerritories gives units to a player as part of NoPuPurchase delegate.  You can have multiple instances of productionPerXTerritories.
 								value = the name of the unit, and count = the number of territories you need to get 1 of that unit.  if the name of the unit is missing, it defaults to "infantry" -->

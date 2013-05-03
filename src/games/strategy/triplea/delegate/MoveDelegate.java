@@ -339,7 +339,14 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 					final int capacity = m_transportTracker.getAvailableCapacity(transport);
 					if (capacity >= cost)
 					{
-						m_bridge.addChange(m_transportTracker.loadTransportChange((TripleAUnit) transport, toLoad, m_player));
+						try
+						{
+							m_bridge.addChange(m_transportTracker.loadTransportChange((TripleAUnit) transport, toLoad, m_player));
+						} catch (final IllegalStateException e)
+						{
+							System.err.println("You can only edit add transports+units after the first combat move of the game is finished.  " +
+										"If this error came up and you have not used Edit Mode to add units + transports, then please report this as a bug:  \r\n" + e.getMessage());
+						}
 						found = true;
 						break;
 					}

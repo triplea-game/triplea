@@ -1,4 +1,6 @@
 Changes for 1.7
+* Major changes to both the map and the placements and the rules for "Great War" world war one game. (veqryn)
+
 * Implemented all sounds through IDelegateBridge.getSoundChannelBroadcaster().playSoundForAll() or through DefaultSoundChannel.playSoundOnLocalMachine() for a few local sounds like slapping in chat. (veqryn)
 
 * Created new channel broadcaster for use with playing sounds on both server machine and client machines. (veqryn)

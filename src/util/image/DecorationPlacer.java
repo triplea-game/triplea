@@ -960,10 +960,10 @@ public class DecorationPlacer extends JFrame
 
 enum ImagePointType
 {
-	decorations("decorations.txt", "misc", null, true, true, true, false, true, true, "decorations.txt will place any kind of image you want anywhere, using the 'misc' folder",
+	decorations("decorations.txt", "misc", "decorationExample.png", true, true, true, false, true, true, "decorations.txt will place any kind of image you want anywhere, using the 'misc' folder",
 				"<html>decorations.txt will allow for multiple points per image. <br>Left Click = select closest image  OR  place currently selected image " +
 							"<br>Right click = create a copy of currently selected image OR closest image <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
-	name_place("name_place.txt", "territoryNames", null, true, false, true, true, false, false,
+	name_place("name_place.txt", "territoryNames", "territoryName.png", true, false, true, true, false, false,
 				"name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' folder",
 				"<html>name_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image " +
 							"<br>Right click = nothing <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
