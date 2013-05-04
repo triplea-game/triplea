@@ -534,6 +534,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	public ResourceCollection getMovementCharge(final Unit unit)
 	{
 		final ResourceCollection col = new ResourceCollection(getStart().getData());
+		if (Matches.unitIsBeingTransported().match(unit))
+			return col;
 		final UnitAttachment ua = UnitAttachment.get(unit.getType());
 		col.add(ua.getFuelCost());
 		col.multiply(getMovementCost(unit));

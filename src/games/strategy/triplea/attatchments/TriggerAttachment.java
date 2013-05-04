@@ -84,7 +84,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
 	private ArrayList<Tuple<String, String>> m_territoryProperty = null;
 	private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
-	private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
+	private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, UserActionAttachment
 	private ArrayList<Tuple<String, String>> m_playerProperty = null;
 	private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
 	private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
@@ -1012,8 +1012,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (s.length != 2)
 			throw new GameParseException("playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
 		// covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
-		if (!(s[1].equals("PlayerAttachment") || s[1].equals("RulesAttachment") || s[1].equals("TriggerAttachment") || s[1].equals("TechAttachment") || s[1].equals("PoliticalActionAttachment")))
-			throw new GameParseException("playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment or PoliticalActionAttachment" + thisErrorMsg());
+		if (!(s[1].equals("PlayerAttachment") || s[1].equals("RulesAttachment") || s[1].equals("TriggerAttachment") || s[1].equals("TechAttachment") || s[1].equals("PoliticalActionAttachment") || s[1]
+					.equals("UserActionAttachment")))
+			throw new GameParseException(
+						"playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment or PoliticalActionAttachment or UserActionAttachment"
+									+ thisErrorMsg());
 		// TODO validate attachment exists?
 		if (s[0].length() < 1)
 			throw new GameParseException("playerAttachmentName count must be a valid attachment name" + thisErrorMsg());
@@ -1027,6 +1030,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (s[1].equals("TechAttachment") && !s[0].startsWith(Constants.TECH_ATTACHMENT_NAME))
 			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		if (s[1].equals("PoliticalActionAttachment") && !s[0].startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
+		if (s[1].equals("UserActionAttachment") && !s[0].startsWith(Constants.USERACTION_ATTACHMENT_PREFIX))
 			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_playerAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
@@ -1827,6 +1832,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					else if (t.getPlayerAttachmentName().getFirst().equals("PoliticalActionAttachment"))
 					{
 						final PoliticalActionAttachment attachment = PoliticalActionAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
+							continue;
+						if (clearFirst && newValue.length() < 1)
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
+						else
+							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+						aBridge.getHistoryWriter().startEvent(
+									MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst() + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+												+ t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+					}
+					else if (t.getPlayerAttachmentName().getFirst().equals("UserActionAttachment"))
+					{
+						final UserActionAttachment attachment = UserActionAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
 						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)

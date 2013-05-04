@@ -1,4 +1,6 @@
 Changes for 1.7
+* Fixing fuelCost to not be charged for units in transports. (veqryn)
+
 * Major changes to both the map and the placements and the rules for "Great War" world war one game. (veqryn)
 
 * Implemented all sounds through IDelegateBridge.getSoundChannelBroadcaster().playSoundForAll() or through DefaultSoundChannel.playSoundOnLocalMachine() for a few local sounds like slapping in chat. (veqryn)

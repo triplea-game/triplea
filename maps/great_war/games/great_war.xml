@@ -3649,8 +3649,8 @@
 				<unitPlacement unitType="infantry" territory="Cyprus" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="battlecruiser" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 64 Sea of Crete" quantity="5" owner="British"/>
-                        <unitPlacement unitType="transport" territory="SZ 64 Sea of Crete" quantity="1" owner="British"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 64 Sea of Crete" quantity="4" owner="British"/>
+                        <unitPlacement unitType="cruiser" territory="SZ 64 Sea of Crete" quantity="2" owner="British"/>
 
                         <unitPlacement unitType="transport" territory="SZ 66 East Mediterranean" quantity="1" owner="British"/>
 
@@ -3848,7 +3848,7 @@
 
                         <!-- Russians  Unit Placements -->
                         <unitPlacement unitType="factory" territory="Warsaw" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Warsaw" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Warsaw" quantity="4" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Lodz" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Lithuania" quantity="2" owner="Russians"/>
@@ -3863,7 +3863,8 @@
                         <unitPlacement unitType="cavalry" territory="Kiev" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Kiev" quantity="1" owner="Russians"/>
 						
-                        <unitPlacement unitType="infantry" territory="Belarus" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Belarus" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="Belarus" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Belarus" quantity="1" owner="Russians"/>
 						
                         <unitPlacement unitType="infantry" territory="Bryansk" quantity="1" owner="Russians"/>
@@ -3887,8 +3888,8 @@
                         <unitPlacement unitType="infantry" territory="Suzdal" quantity="3" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Moscow" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Moscow" quantity="7" owner="Russians"/>
-				<unitPlacement unitType="artillery" territory="Moscow" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Moscow" quantity="6" owner="Russians"/>
+				<unitPlacement unitType="artillery" territory="Moscow" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Moscow" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Moscow" quantity="1" owner="Russians"/>
 
@@ -3906,9 +3907,9 @@
                         <unitPlacement unitType="infantry" territory="Novgorod" quantity="3" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Petrograd" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="7" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="6" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Petrograd" quantity="1" owner="Russians"/>
-				<unitPlacement unitType="artillery" territory="Petrograd" quantity="1" owner="Russians"/>
+				<unitPlacement unitType="artillery" territory="Petrograd" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="aaGun" territory="Petrograd" quantity="1" owner="Russians"/>
 
@@ -4327,8 +4328,7 @@
 
 
                         <unitPlacement unitType="battleship" territory="SZ 62 Black Sea" quantity="1" owner="Ottomans"/>
-                        <unitPlacement unitType="cruiser" territory="SZ 62 Black Sea" quantity="1" owner="Ottomans"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 62 Black Sea" quantity="3" owner="Ottomans"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 62 Black Sea" quantity="4" owner="Ottomans"/>
                         <unitPlacement unitType="transport" territory="SZ 62 Black Sea" quantity="1" owner="Ottomans"/>
 
                         <!-- Neutral  Unit Placements -->

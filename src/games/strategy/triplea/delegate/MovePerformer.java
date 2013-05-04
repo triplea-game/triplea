@@ -275,7 +275,7 @@ public class MovePerformer implements Serializable
 					add = ChangeFactory.addUnits(route.getEnd(), arrived);
 					change.add(add, remove);
 				}
-				change.add(markResourceChange(units, route, id));
+				change.add(markFuelCostResourceChange(units, route, id));
 				m_bridge.addChange(change);
 				m_currentMove.addChange(change);
 				m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
@@ -289,7 +289,7 @@ public class MovePerformer implements Serializable
 		m_executionStack.execute(m_bridge);
 	}
 	
-	private Change markResourceChange(final Collection<Unit> units, final Route route, final PlayerID id)
+	private Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id)
 	{
 		return ChangeFactory.removeResourceCollection(id, Route.getMovementCharge(units, route));
 	}
