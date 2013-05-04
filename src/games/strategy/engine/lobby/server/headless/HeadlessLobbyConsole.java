@@ -241,6 +241,7 @@ public class HeadlessLobbyConsole
 				f.format("\n");
 				f.flush();
 			}
+			f.close();
 		} catch (final SQLException e)
 		{
 			e.printStackTrace(out);

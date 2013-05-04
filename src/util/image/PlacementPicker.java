@@ -225,6 +225,7 @@ public class PlacementPicker extends JFrame
 							}
 						}
 					}
+					reader2.close();
 					i++;
 					if (found)
 					{

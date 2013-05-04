@@ -121,25 +121,31 @@ public class NewGameChooserModel extends DefaultListModel
 			try
 			{
 				final ZipInputStream zis = new ZipInputStream(fis);
-				ZipEntry entry = zis.getNextEntry();
-				while (entry != null)
+				try
 				{
-					if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml"))
+					ZipEntry entry = zis.getNextEntry();
+					while (entry != null)
 					{
-						final URLClassLoader loader = new URLClassLoader(new URL[] { map.toURI().toURL() });
-						final URL url = loader.getResource(entry.getName());
-						// we have to close the loader to allow files to be deleted on windows
-						ClassLoaderUtil.closeLoader(loader);
-						try
+						if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml"))
 						{
-							addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
-						} catch (final URISyntaxException e)
-						{
-							// only happens when URI couldn't be build and therefore no entry was added. That's fine
+							final URLClassLoader loader = new URLClassLoader(new URL[] { map.toURI().toURL() });
+							final URL url = loader.getResource(entry.getName());
+							// we have to close the loader to allow files to be deleted on windows
+							ClassLoaderUtil.closeLoader(loader);
+							try
+							{
+								addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
+							} catch (final URISyntaxException e)
+							{
+								// only happens when URI couldn't be build and therefore no entry was added. That's fine
+							}
 						}
+						zis.closeEntry();
+						entry = zis.getNextEntry();
 					}
-					zis.closeEntry();
-					entry = zis.getNextEntry();
+				} finally
+				{
+					zis.close();
 				}
 			} finally
 			{

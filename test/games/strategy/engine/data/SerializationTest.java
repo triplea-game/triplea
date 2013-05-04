@@ -57,7 +57,10 @@ public class SerializationTest extends TestCase
 		output.flush();
 		final InputStream source = new ByteArrayInputStream(sink.toByteArray());
 		final ObjectInputStream input = new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_dataSource), source);
-		return input.readObject();
+		final Object obj = input.readObject();
+		input.close();
+		output.close();
+		return obj;
 	}
 	
 	/** Creates a new instance of SerializationTest */

@@ -721,6 +721,36 @@
 			</zipfileset>
 		</zip>
 	</target>
+	
+	<!--  description="create a zip file for developers including everything except for the .svn folders" -->
+	<target name="zipSourceWithExtras">
+		<zip destfile="${release}/${zip.prefix}_source.zip"
+			compress="true">
+
+			<zipfileset dir="${basedir}" prefix="${zip.prefix}/">
+				<exclude name="**/*.svn" />
+			</zipfileset>
+		</zip>
+	</target>
+	
+	<!--  description="create a zip file for developers including everything except for the .svn folders" -->
+	<target name="zipSrcFolder">
+		<zip destfile="${release}/${zip.prefix}_src.zip"
+			compress="true">
+
+			<zipfileset dir="src" prefix="${zip.prefix}/src/">
+				<exclude name="**/*.svn" />
+			</zipfileset>
+
+			<zipfileset dir="data/" prefix="${zip.prefix}/data/">
+				<exclude name="**/*.svn" />
+			</zipfileset>
+
+			<zipfileset dir="test" prefix="${zip.prefix}/test/">
+				<exclude name="**/*.svn" />
+			</zipfileset>
+		</zip>
+	</target>
 
 	<!-- javadoc -->
 	<target name="javadoc" description="Generate JavaDoc documentation">

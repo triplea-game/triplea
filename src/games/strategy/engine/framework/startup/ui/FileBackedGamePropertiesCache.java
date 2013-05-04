@@ -92,6 +92,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 						property.setValue(ser);
 					}
 				}
+				in.close();
 			}
 		} catch (final IOException e)
 		{

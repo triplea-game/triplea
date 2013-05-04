@@ -157,6 +157,7 @@ public class AutoPlacementFinder
 							}
 						}
 					}
+					reader2.close();
 					i++;
 					if (found)
 					{

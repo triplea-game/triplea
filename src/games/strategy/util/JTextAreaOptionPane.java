@@ -26,7 +26,7 @@ public class JTextAreaOptionPane
 	private int m_counter;
 	private final CountDownLatch m_countDownLatch;
 	
-	public JTextAreaOptionPane(final Window parentComponent, final String initialEditorText, final String labelText, final String title, final Image icon, final int editorSizeX,
+	public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText, final String title, final Image icon, final int editorSizeX,
 				final int editorSizeY, final boolean logToSystemOut, final int latchCount, final CountDownLatch countDownLatch)
 	{
 		m_logToSystemOut = logToSystemOut;
@@ -36,8 +36,8 @@ public class JTextAreaOptionPane
 		m_windowFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		if (icon != null)
 			m_windowFrame.setIconImage(icon);
-		else if (parentComponent != null && parentComponent.getIconImages() != null && !parentComponent.getIconImages().isEmpty())
-			m_windowFrame.setIconImage(parentComponent.getIconImages().get(0));
+		else if (parentComponent != null && parentComponent.getIconImage() != null)
+			m_windowFrame.setIconImage(parentComponent.getIconImage());
 		final BorderLayout layout = new BorderLayout();
 		layout.setHgap(30);
 		layout.setVgap(30);

@@ -42,6 +42,8 @@ public class ChangeTripleATest extends TestCase
 		final InputStream source = new ByteArrayInputStream(sink.toByteArray());
 		final ObjectInputStream input = new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_data), source);
 		final Change newChange = (Change) input.readObject();
+		input.close();
+		output.close();
 		return newChange;
 	}
 	
