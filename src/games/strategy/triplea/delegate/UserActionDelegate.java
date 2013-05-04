@@ -175,13 +175,24 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	 */
 	private boolean actionRollSucceeds(final UserActionAttachment uaa)
 	{
-		if (uaa.getChanceDiceSides() == uaa.getChanceToHit())
+		final int hitTarget = uaa.getChanceToHit();
+		final int diceSides = uaa.getChanceDiceSides();
+		if (hitTarget >= diceSides)
+		{
+			uaa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, true, true);
 			return true;
-		final int rollResult = m_bridge.getRandom(uaa.getChanceDiceSides(), m_player, DiceType.NONCOMBAT, "Attempting the User Action: " + MyFormatter.attachmentNameToText(uaa.getName())) + 1;
-		final boolean success = rollResult <= uaa.getChanceToHit();
-		final String notificationMessage = "rolling (" + uaa.getChanceToHit() + " out of " + uaa.getChanceDiceSides() + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
-		sendNotification(notificationMessage);
+		}
+		else if (hitTarget <= 0)
+		{
+			uaa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, false, true);
+			return false;
+		}
+		final int rollResult = m_bridge.getRandom(diceSides, m_player, DiceType.NONCOMBAT, "Attempting the User Action: " + MyFormatter.attachmentNameToText(uaa.getName())) + 1;
+		final boolean success = rollResult <= hitTarget;
+		final String notificationMessage = "rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.attachmentNameToText(uaa.getName()) + " : " + notificationMessage);
+		uaa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, success, true);
+		sendNotification(notificationMessage);
 		return success;
 	}
 	

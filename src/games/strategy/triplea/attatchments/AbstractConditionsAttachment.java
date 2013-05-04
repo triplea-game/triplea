@@ -1,12 +1,14 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -25,15 +27,18 @@ import java.util.List;
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition
 {
 	private static final long serialVersionUID = -9008441256118867078L;
-	private static final String AND = "AND";
-	private static final String OR = "OR";
-	private static final String XOR = "XOR";
-	private static final String DEFAULT_CHANCE = "1:1";
+	protected static final String AND = "AND";
+	protected static final String OR = "OR";
+	protected static final String XOR = "XOR";
+	protected static final String DEFAULT_CHANCE = "1:1";
+	protected static final String CHANCE = "chance";
 	
 	protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can contain
 	protected String m_conditionType = AND; // m_conditionType modifies the relationship of m_conditions
 	protected boolean m_invert = false; // will logically negate the entire condition, including contained conditions
 	protected String m_chance = DEFAULT_CHANCE; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
+	protected int m_chanceIncrementOnFailure = 0; // if chance fails, we should increment the chance by x
+	protected int m_chanceDecrementOnSuccess = 0; // if chance succeeds, we should decrement the chance by x
 	
 	public AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -358,6 +363,83 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	public int getChanceDiceSides()
 	{
 		return getInt(getChance().split(":")[1]);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setChanceIncrementOnFailure(final String value)
+	{
+		m_chanceIncrementOnFailure = getInt(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setChanceIncrementOnFailure(final Integer value)
+	{
+		m_chanceIncrementOnFailure = value;
+	}
+	
+	public int getChanceIncrementOnFailure()
+	{
+		return m_chanceIncrementOnFailure;
+	}
+	
+	public void resetChanceIncrementOnFailure()
+	{
+		m_chanceIncrementOnFailure = 0;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setChanceDecrementOnSuccess(final String value)
+	{
+		m_chanceDecrementOnSuccess = getInt(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setChanceDecrementOnSuccess(final Integer value)
+	{
+		m_chanceDecrementOnSuccess = value;
+	}
+	
+	public int getChanceDecrementOnSuccess()
+	{
+		return m_chanceDecrementOnSuccess;
+	}
+	
+	public void resetChanceDecrementOnSuccess()
+	{
+		m_chanceDecrementOnSuccess = 0;
+	}
+	
+	public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge aBridge, final boolean success, final boolean historyChild)
+	{
+		if (success)
+		{
+			if (m_chanceDecrementOnSuccess == 0)
+				return;
+			final int oldToHit = getChanceToHit();
+			final int diceSides = getChanceDiceSides();
+			final int newToHit = Math.max(0, Math.min(diceSides, (oldToHit - m_chanceDecrementOnSuccess)));
+			if (newToHit == oldToHit)
+				return;
+			final String newChance = newToHit + ":" + diceSides;
+			aBridge.getHistoryWriter().startEvent("Success changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
+			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+		}
+		else
+		{
+			if (m_chanceIncrementOnFailure == 0)
+				return;
+			final int oldToHit = getChanceToHit();
+			final int diceSides = getChanceDiceSides();
+			final int newToHit = Math.max(0, Math.min(diceSides, (oldToHit + m_chanceIncrementOnFailure)));
+			if (newToHit == oldToHit)
+				return;
+			final String newChance = newToHit + ":" + diceSides;
+			if (historyChild)
+				aBridge.getHistoryWriter().addChildToEvent("Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
+			else
+				aBridge.getHistoryWriter().startEvent("Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
+			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
+		}
 	}
 	
 	@Override

@@ -298,7 +298,7 @@ public class PoliticsPanel extends ActionPanel
 	
 	private JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa)
 	{
-		final String chanceString = paa.getChanceToHit() == paa.getChanceDiceSides() ? "" : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
+		final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? "" : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
 		return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
 	}
 }

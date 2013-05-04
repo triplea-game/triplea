@@ -619,7 +619,7 @@ public class GameRunner2
 				{
 					public void run()
 					{
-						EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false,
+						EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(false), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false,
 									new CountDownLatchHandler(true));
 					}
 				});

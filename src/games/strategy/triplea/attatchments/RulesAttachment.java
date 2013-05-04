@@ -961,17 +961,35 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			}
 		}
 		
+		//
 		// "chance" should ALWAYS be checked last!
-		final int hitTarget = getInt(m_chance.split(":")[0]);
-		final int diceSides = getInt(m_chance.split(":")[1]);
-		if (objectiveMet && hitTarget != diceSides)
+		//
+		final int hitTarget = getChanceToHit();
+		final int diceSides = getChanceDiceSides();
+		final int incrementOnFailure = this.getChanceIncrementOnFailure();
+		final int decrementOnSuccess = this.getChanceDecrementOnSuccess();
+		if (objectiveMet && (hitTarget != diceSides || incrementOnFailure != 0 || decrementOnSuccess != 0))
 		{
-			final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
-			objectiveMet = rollResult <= hitTarget;
-			final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (objectiveMet ? "Success!" : "Failure!") + " (for "
-						+ MyFormatter.attachmentNameToText(this.getName()) + ")";
-			aBridge.getHistoryWriter().startEvent(notificationMessage);
-			((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+			if (hitTarget >= diceSides)
+			{
+				objectiveMet = true;
+				changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, false);
+			}
+			else if (hitTarget <= 0)
+			{
+				objectiveMet = false;
+				changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, false);
+			}
+			else
+			{
+				final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
+				objectiveMet = rollResult <= hitTarget;
+				final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (objectiveMet ? "Success!" : "Failure!") + " (for "
+							+ MyFormatter.attachmentNameToText(this.getName()) + ")";
+				aBridge.getHistoryWriter().startEvent(notificationMessage);
+				changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, true);
+				((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+			}
 		}
 		
 		return objectiveMet != m_invert;

@@ -458,13 +458,24 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	 */
 	private boolean actionRollSucceeds(final PoliticalActionAttachment paa)
 	{
-		if (paa.getChanceDiceSides() == paa.getChanceToHit())
+		final int hitTarget = paa.getChanceToHit();
+		final int diceSides = paa.getChanceDiceSides();
+		if (hitTarget >= diceSides)
+		{
+			paa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, true, true);
 			return true;
-		final int rollResult = m_bridge.getRandom(paa.getChanceDiceSides(), m_player, DiceType.NONCOMBAT, "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
-		final boolean success = rollResult <= paa.getChanceToHit();
-		final String notificationMessage = "rolling (" + paa.getChanceToHit() + " out of " + paa.getChanceDiceSides() + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
-		sendNotification(notificationMessage);
+		}
+		else if (hitTarget <= 0)
+		{
+			paa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, false, true);
+			return false;
+		}
+		final int rollResult = m_bridge.getRandom(diceSides, m_player, DiceType.NONCOMBAT, "Attempting the Political Action: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
+		final boolean success = rollResult <= hitTarget;
+		final String notificationMessage = "rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : " + notificationMessage);
+		paa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, success, true);
+		sendNotification(notificationMessage);
 		return success;
 	}
 	

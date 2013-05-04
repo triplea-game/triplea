@@ -280,7 +280,7 @@ public class UserActionPanel extends ActionPanel
 	
 	private JLabel getActionDescriptionLabel(final UserActionAttachment paa)
 	{
-		final String chanceString = paa.getChanceToHit() == paa.getChanceDiceSides() ? "" : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
+		final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? "" : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
 		return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
 	}
 }

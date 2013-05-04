@@ -42,7 +42,8 @@ public class EngineVersionProperties
 	private final String m_linkAlt;
 	private final String m_changelogLink;
 	private volatile boolean m_done = false;
-	private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties"; // "http://www.tripleawarclub.org/lobby/latest_version.properties";
+	// private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties"; // only for testing when sourceforge is down
+	private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
 	
 	private EngineVersionProperties(final URL url)
 	{
@@ -218,7 +219,7 @@ public class EngineVersionProperties
 		return text.toString();
 	}
 	
-	private String getOutOfDateReleaseUpdates()
+	private String getOutOfDateReleaseUpdates(final boolean showAll)
 	{
 		final StringBuilder text = new StringBuilder("<html>");
 		final List<Version> versions = new ArrayList<Version>();
@@ -226,7 +227,7 @@ public class EngineVersionProperties
 		Collections.sort(versions, Version.getHighestToLowestComparator(false));
 		for (final Version v : versions)
 		{
-			if (EngineVersion.VERSION.isLessThan(v, false))
+			if (showAll || EngineVersion.VERSION.isLessThan(v, false))
 			{
 				text.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
 			}
@@ -277,7 +278,7 @@ public class EngineVersionProperties
 		return panel;
 	}
 	
-	public Component getOutOfDateComponent()
+	public Component getOutOfDateComponent(final boolean showAll)
 	{
 		final JPanel panel = new JPanel(new BorderLayout());
 		final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage());
@@ -296,7 +297,7 @@ public class EngineVersionProperties
 		};
 		intro.addHyperlinkListener(hyperlinkListener);
 		panel.add(intro, BorderLayout.NORTH);
-		final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates());
+		final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates(showAll));
 		updates.setEditable(false);
 		updates.setOpaque(false);
 		updates.setBorder(BorderFactory.createEmptyBorder());

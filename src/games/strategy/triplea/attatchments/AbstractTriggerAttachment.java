@@ -231,16 +231,24 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	protected boolean testChance(final IDelegateBridge aBridge)
 	{
 		// "chance" should ALWAYS be checked last! (always check all other conditions first)
-		final int hitTarget = getInt(m_chance.split(":")[0]);
-		final int diceSides = getInt(m_chance.split(":")[1]);
+		final int hitTarget = getChanceToHit();
+		final int diceSides = getChanceDiceSides();
 		if (hitTarget >= diceSides)
+		{
+			changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, true, false);
 			return true;
-		
+		}
+		else if (hitTarget <= 0)
+		{
+			changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, false, false);
+			return false;
+		}
 		final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
 		final boolean testChance = rollResult <= hitTarget;
 		final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (testChance ? "Success!" : "Failure!") + " (for "
 					+ MyFormatter.attachmentNameToText(this.getName()) + ")";
 		aBridge.getHistoryWriter().startEvent(notificationMessage);
+		changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, testChance, true);
 		((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
 		return testChance;
 	}

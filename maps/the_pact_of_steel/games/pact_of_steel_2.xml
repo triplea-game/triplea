@@ -3435,6 +3435,8 @@
 			when								values: this is a value of when the trigger should fire. it is optional, and if left out the trigger will fire at its default time. "before/after:name-of-step" (example: value="after:chineseEndTurn")
 														FYI: if your triggers are displaying odd behavior, MAKE SURE WHEN IS SET. complex triggers can experience unexpected behavior if 'when' is not set.
 			chance								values: "x:y", where x = to hit, and y = dice sides.  So "1:6" = 16.7% chance, while "3:10" = 30% chance
+			chanceIncrementOnFailure 			values: integer that will increase our chance by x each time we fail (default = 0)
+			chanceDecrementOnSuccess 			values: integer that will decrease our chance by x each time we succeed (default = 0)
 			victory								values: the string message from notifications.properties to be displayed if the condition is true.
 			notification						values: this is a popup window containing a message that will be given to the current player. "name-of-entry-in-notifications.properties" or "message"
 															both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.
@@ -4199,6 +4201,8 @@
 				invert 								value: 	true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 															This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 				chance								value: 	diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
+				chanceIncrementOnFailure 			value: 	integer that will increase our chance by x each time we fail (default = 0)
+				chanceDecrementOnSuccess 			value: 	integer that will decrease our chance by x each time we succeed (default = 0)
 				costPU								value: 	ammount of PU you will be charged to attempt this action
 				text								value: 	a KEY referring to politicstext.properties to indicate the texts used for regarding this action
 				actionAccept						value: 	a list of players that must accept this action before it takes effect (handy for peacetreaties)
@@ -4297,6 +4301,8 @@
 				invert 								value: 	true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 															This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 				chance								value: 	diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
+				chanceIncrementOnFailure 			value: 	integer that will increase our chance by x each time we fail (default = 0)
+				chanceDecrementOnSuccess 			value: 	integer that will decrease our chance by x each time we succeed (default = 0)
 				costPU								value: 	ammount of PU you will be charged to attempt this action
 				text								value: 	a KEY referring to actionstext.properties to indicate the texts used for regarding this action
 				actionAccept						value: 	a list of players that must accept this action before it takes effect
