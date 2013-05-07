@@ -44,14 +44,17 @@ public class ColorProperty extends AEditableProperty
 	{
 		super(name, description);
 		if (def > m_max || def < m_min)
-			throw new IllegalThreadStateException("Default value out of range");
+			throw new IllegalArgumentException("Default value out of range");
 		m_color = new Color(def);
 	}
 	
 	public ColorProperty(final String name, final String description, final Color def)
 	{
 		super(name, description);
-		m_color = def;
+		if (def == null)
+			m_color = Color.black;
+		else
+			m_color = def;
 	}
 	
 	public Object getValue()
@@ -61,7 +64,10 @@ public class ColorProperty extends AEditableProperty
 	
 	public void setValue(final Object value) throws ClassCastException
 	{
-		m_color = (Color) value;
+		if (value == null)
+			m_color = Color.black;
+		else
+			m_color = (Color) value;
 	}
 	
 	public JComponent getEditorComponent()
@@ -82,16 +88,21 @@ public class ColorProperty extends AEditableProperty
 		{
 			public void mouseClicked(final MouseEvent e)
 			{
-				System.out.println(m_color);
-				m_color = JColorChooser.showDialog(label, "Choose color", m_color);
-				// Ask Swing to repaint this label when it's convenient
-				SwingUtilities.invokeLater(new Runnable()
+				System.out.println("Old color: " + m_color);
+				final Color color = JColorChooser.showDialog(label, "Choose color", (m_color == null ? Color.black : m_color));
+				if (color != null)
 				{
-					public void run()
+					m_color = color;
+					System.out.println("New color: " + m_color);
+					// Ask Swing to repaint this label when it's convenient
+					SwingUtilities.invokeLater(new Runnable()
 					{
-						label.repaint();
-					}
-				});
+						public void run()
+						{
+							label.repaint();
+						}
+					});
+				}
 			}
 			
 			public void mouseEntered(final MouseEvent e)

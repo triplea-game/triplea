@@ -1,4 +1,8 @@
-Changes for 1.7
+Changes for 1.7.1.1
+* Fixed possible null pointer in color chooser for color property, which occurred when chosing the color for map text. (veqryn)
+
+
+Changes for 1.7.0.1
 * New attachment properties for Triggers, Politics, and User Actions: "chanceIncrementOnFailure" and "chanceDecrementOnSuccess" which will modify the "chance" value. (veqryn)
 
 * Fixing fuelCost to not be charged for units in transports. (veqryn)
