@@ -89,19 +89,25 @@ public class ColorProperty extends AEditableProperty
 			public void mouseClicked(final MouseEvent e)
 			{
 				System.out.println("Old color: " + m_color);
-				final Color color = JColorChooser.showDialog(label, "Choose color", (m_color == null ? Color.black : m_color));
-				if (color != null)
+				try
 				{
-					m_color = color;
-					System.out.println("New color: " + m_color);
-					// Ask Swing to repaint this label when it's convenient
-					SwingUtilities.invokeLater(new Runnable()
+					final Color color = JColorChooser.showDialog(label, "Choose color", (m_color == null ? Color.black : m_color));
+					if (color != null)
 					{
-						public void run()
+						m_color = color;
+						System.out.println("New color: " + m_color);
+						// Ask Swing to repaint this label when it's convenient
+						SwingUtilities.invokeLater(new Runnable()
 						{
-							label.repaint();
-						}
-					});
+							public void run()
+							{
+								label.repaint();
+							}
+						});
+					}
+				} catch (final Exception exception)
+				{
+					System.err.println(exception.getMessage());
 				}
 			}
 			

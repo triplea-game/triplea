@@ -1880,19 +1880,18 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		if (isDefendingSuicideAndMunitionUnitsDoNotFire())
 		{
-			remove(Match.getMatches(m_battleSite.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.UnitIsSuicide, Matches.unitIsOwnedBy(m_attacker))), bridge, m_battleSite, false);
-			getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide), m_dependentUnits);
-			m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+			final List<Unit> deadUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+			getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
+			remove(deadUnits, bridge, m_battleSite, false, false);
 		}
 		else
 		{
-			remove(Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsSuicide), bridge, m_battleSite, false);
-			// and remove them from the battle display
-			getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide), m_dependentUnits);
-			getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide), m_dependentUnits);
-			// and remove them from the map display
-			m_defendingUnits.removeAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
-			m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+			final List<Unit> deadUnits = new ArrayList<Unit>();
+			deadUnits.addAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
+			deadUnits.addAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+			getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
+			getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, deadUnits, m_dependentUnits);
+			remove(deadUnits, bridge, m_battleSite, false, null);
 		}
 	}
 	
@@ -1939,12 +1938,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				final Change change = ChangeFactory.markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea));
 				bridge.addChange(change);
-				remove(alliedTransports, bridge, m_battleSite, false);
-				// and remove them from the battle display
-				if (player.equals(m_defender))
-					m_defendingUnits.removeAll(alliedTransports);
-				else
-					m_attackingUnits.removeAll(alliedTransports);
+				final boolean defender = player.equals(m_defender);
+				remove(alliedTransports, bridge, m_battleSite, false, defender);
 			}
 		}
 	}
@@ -1983,12 +1978,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			// final Change change = ChangeFactory.markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea)); // I don't think this is needed, they should not have any movement left anyway
 			// bridge.addChange(change);
-			remove(unitsToKill, bridge, m_battleSite, false);
-			// and remove them from the battle display
-			if (attacker)
-				m_attackingUnits.removeAll(unitsToKill);
-			else
-				m_defendingUnits.removeAll(unitsToKill);
+			remove(unitsToKill, bridge, m_battleSite, false, !attacker);
 		}
 	}
 	
@@ -2222,11 +2212,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				m_defendingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
 			else
 				m_attackingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
-			remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite, isAA);
+			remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite, isAA, defender);
 		}
 		else if (returnFire == ReturnFire.NONE)
 		{
-			remove(killed, bridge, m_battleSite, isAA);
+			remove(killed, bridge, m_battleSite, isAA, defender);
 		}
 		// remove from the active fighting
 		if (defender)
@@ -2698,7 +2688,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return dependents;
 	}
 	
-	private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite, final boolean isAA)
+	private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite, final boolean isAA, final Boolean defenderDying)
 	{
 		if (killed.size() == 0)
 			return;
@@ -2716,6 +2706,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// otherwise remove them and the units involved
 		else
 			removeFromDependents(killed, bridge, dependentBattles);
+		// and remove them from the battle display
+		if (defenderDying == null || defenderDying.booleanValue())
+			m_defendingUnits.removeAll(killed);
+		if (defenderDying == null || !defenderDying.booleanValue())
+			m_attackingUnits.removeAll(killed);
 	}
 	
 	private void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge, final Collection<IBattle> dependents)
@@ -2741,8 +2736,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				throw new IllegalStateException("not unloaded?:" + units);
 			}
-			m_attackingUnits.removeAll(lost);
-			remove(lost, bridge, landedTerritory, false);
+			remove(lost, bridge, landedTerritory, false, false);
 		}
 	}
 	
@@ -2751,7 +2745,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Collection<Unit> units = new ArrayList<Unit>();
 		units.addAll(m_attackingWaitingToDie);
 		units.addAll(m_defendingWaitingToDie);
-		remove(units, bridge, m_battleSite, false);
+		remove(units, bridge, m_battleSite, false, null);
 		m_defendingWaitingToDie.clear();
 		m_attackingWaitingToDie.clear();
 	}
@@ -3163,7 +3157,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// now that they are definitely removed from our attacking list, make sure that they were not already removed from the territory by the previous battle's remove method
 		lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
 		if (!withdrawn)
-			remove(lost, bridge, m_battleSite, false);
+			remove(lost, bridge, m_battleSite, false, false);
 		if (m_attackingUnits.isEmpty())
 		{
 			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
