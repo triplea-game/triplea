@@ -1,4 +1,6 @@
 Changes for 1.7.1.1
+* Fixed bug causing national objectives which rewarded players on a per-territory basis using the "each" modifier to not work. (veqryn)
+
 * Fixed bug causing paratrooping land units who's air transports were hit by AA fire to not be removed from the battle. (veqryn)
 
 * Fixed possible null pointer in color chooser for color property, which occurred when chosing the color for map text. (veqryn)

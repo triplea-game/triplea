@@ -463,8 +463,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			}
 			if (name.equals("each"))
 			{
-				setTerritoryCount(String.valueOf(1));
 				m_countEach = true;
+				if (mustSetTerritoryCount)
+				{
+					haveSetCount = true;
+					setTerritoryCount(String.valueOf(1));
+				}
 				continue;
 			}
 			// Skip looking for the territory if the original list contains one of the 'group' commands
