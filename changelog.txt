@@ -1,4 +1,8 @@
 Changes for 1.7.1.1
+* Not allowing scrambling question when only and SBR raid is in a territory and scramble to SBR is turned off. (veqryn)
+
+* Fixed bug causing Territory Effects to not be applied at all, ever. Also fixed possible issue with 'choose best roll' in low luck. (veqryn)
+
 * Fixed bug causing national objectives which rewarded players on a per-territory basis using the "each" modifier to not work. (veqryn)
 
 * Fixed bug causing paratrooping land units who's air transports were hit by AA fire to not be removed from the battle. (veqryn)

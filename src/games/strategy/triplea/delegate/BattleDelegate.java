@@ -624,6 +624,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		final boolean fromIslandOnly = games.strategy.triplea.Properties.getScramble_From_Island_Only(data);
 		final boolean toSeaOnly = games.strategy.triplea.Properties.getScramble_To_Sea_Only(data);
 		final boolean toAnyAmphibious = games.strategy.triplea.Properties.getScrambleToAnyAmphibiousAssault(data);
+		final boolean toSBR = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
 		int maxScrambleDistance = 0;
 		final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
 		while (utIter.hasNext())
@@ -639,9 +640,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		if (fromIslandOnly)
 			canScramble.add(Matches.TerritoryIsIsland);
 		final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<Territory, HashSet<Territory>>();
-		final Collection<Territory> territoriesWithBattles = m_battleTracker.getPendingBattleSites().getAllBattleTerritories();
-		final Collection<Territory> territoriesWithBattlesWater = Match.getMatches(territoriesWithBattles, Matches.TerritoryIsWater);
-		final Collection<Territory> territoriesWithBattlesLand = Match.getMatches(territoriesWithBattles, Matches.TerritoryIsLand);
+		final Set<Territory> territoriesWithBattles = m_battleTracker.getPendingBattleSites().getNormalBattlesIncludingAirBattles();
+		if (toSBR)
+			territoriesWithBattles.addAll(m_battleTracker.getPendingBattleSites().getStrategicBombingRaidsIncludingAirBattles());
+		final Set<Territory> territoriesWithBattlesWater = new HashSet<Territory>();
+		final Set<Territory> territoriesWithBattlesLand = new HashSet<Territory>();
+		territoriesWithBattlesWater.addAll(Match.getMatches(territoriesWithBattles, Matches.TerritoryIsWater));
+		territoriesWithBattlesLand.addAll(Match.getMatches(territoriesWithBattles, Matches.TerritoryIsLand));
 		for (final Territory battleTerr : territoriesWithBattlesWater)
 		{
 			final HashSet<Territory> canScrambleFrom = new HashSet<Territory>(Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
@@ -888,11 +893,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 					}
 					if (Match.someMatch(attackingUnits, Matches.UnitIsAir.invert()))
 					{
-						// for now, we will hack and say that the attackers came from Everywhere, and hope the user will choose the correct place to retreat to! (TODO: Fix this)
+						// TODO: for now, we will hack and say that the attackers came from Everywhere, and hope the user will choose the correct place to retreat to! (TODO: Fix this)
 						final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<Territory, Collection<Unit>>();
 						final Collection<Territory> neighbors = data.getMap().getNeighbors(to, (Matches.TerritoryIsLand.match(to) ? Matches.TerritoryIsLand : Matches.TerritoryIsWater));
-						neighbors.removeAll(territoriesWithBattles);
-						neighbors.removeAll(Match.getMatches(neighbors, Matches.territoryHasEnemyUnits(m_player, data)));
+						// neighbors.removeAll(territoriesWithBattles);
+						// neighbors.removeAll(Match.getMatches(neighbors, Matches.territoryHasEnemyUnits(m_player, data)));
 						for (final Territory t : neighbors)
 						{
 							attackingFromMap.put(t, attackingUnits);

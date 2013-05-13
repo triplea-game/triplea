@@ -454,6 +454,7 @@ public class DiceRoll implements Externalizable
 				strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
 				strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
 			}
+			strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
 			strength = Math.min(Math.max(strength, 0), diceSides);
 			// now determine our rolls
 			int rolls;
@@ -504,7 +505,7 @@ public class DiceRoll implements Externalizable
 					{
 						// LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to simulate the gains of having the best die picked.
 						unitStrength += extraRollBonus * (unitRolls - 1);
-						totalPower += unitRolls * Math.min(unitStrength, diceSides);
+						totalPower += Math.min(unitStrength, diceSides);
 						totalRolls += unitRolls;
 					}
 					else
@@ -519,7 +520,7 @@ public class DiceRoll implements Externalizable
 					{
 						// Even though we are DICE, we still have to wait for actual dice to be thrown before we can pick the best die. So actually for dice this totalPower method is basically useless, so lets just use the approximation of adding on +1 to power for now.
 						unitStrength += extraRollBonus * (unitRolls - 1);
-						totalPower += unitRolls * Math.min(unitStrength, diceSides);
+						totalPower += Math.min(unitStrength, diceSides);
 						totalRolls += unitRolls;
 					}
 					else

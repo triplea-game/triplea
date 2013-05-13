@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Sent by the battle delegate to the game player to indicate
@@ -57,9 +58,9 @@ public class BattleListing implements Serializable
 		return m_battles;
 	}
 	
-	public Collection<Territory> getAllBattleTerritories()
+	public Set<Territory> getAllBattleTerritories()
 	{
-		final Collection<Territory> territories = new HashSet<Territory>();
+		final Set<Territory> territories = new HashSet<Territory>();
 		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
 		{
 			territories.addAll(entry.getValue());
@@ -67,9 +68,9 @@ public class BattleListing implements Serializable
 		return territories;
 	}
 	
-	public Collection<Territory> getNormalBattlesIncludingAirBattles()
+	public Set<Territory> getNormalBattlesIncludingAirBattles()
 	{
-		final Collection<Territory> territories = new HashSet<Territory>();
+		final Set<Territory> territories = new HashSet<Territory>();
 		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
 		{
 			if (!entry.getKey().isBombingRun())
@@ -78,9 +79,9 @@ public class BattleListing implements Serializable
 		return territories;
 	}
 	
-	public Collection<Territory> getStrategicBombingRaidsIncludingAirBattles()
+	public Set<Territory> getStrategicBombingRaidsIncludingAirBattles()
 	{
-		final Collection<Territory> territories = new HashSet<Territory>();
+		final Set<Territory> territories = new HashSet<Territory>();
 		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
 		{
 			if (entry.getKey().isBombingRun())
@@ -89,9 +90,9 @@ public class BattleListing implements Serializable
 		return territories;
 	}
 	
-	public Collection<Territory> getAirBattles()
+	public Set<Territory> getAirBattles()
 	{
-		final Collection<Territory> territories = new HashSet<Territory>();
+		final Set<Territory> territories = new HashSet<Territory>();
 		for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet())
 		{
 			if (entry.getKey().isAirPreBattleOrPreRaid())
