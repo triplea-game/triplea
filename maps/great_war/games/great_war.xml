@@ -4,11 +4,11 @@
 
 <game>
 
-        <info name="Great War" version="4.0"/>
+        <info name="Great War" version="4.1"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
-		<triplea minimumVersion="1.6.1"/>
+		<triplea minimumVersion="1.7"/>
 
         <map>
                 <!-- Territory Definitions -->
@@ -435,6 +435,7 @@
 
                 <connection t1="SZ 28 Norwegian Sea" t2="SZ 29 Norwegian Sea"/>
                 <connection t1="SZ 28 Norwegian Sea" t2="SZ 38 Norwegian Sea"/>
+                <connection t1="SZ 28 Norwegian Sea" t2="Barents Sea"/>
 
                 <connection t1="SZ 29 Norwegian Sea" t2="SZ 38 Norwegian Sea"/>
                 <connection t1="SZ 29 Norwegian Sea" t2="Norway"/>
@@ -746,6 +747,7 @@
                 <connection t1="SZ 86 Pacific Ocean" t2="SZ 87 Gulf of Alaska"/>
 
                 <connection t1="SZ 87 Gulf of Alaska" t2="SZ 88 Bering Sea"/>
+                <connection t1="SZ 87 Gulf of Alaska" t2="US Declares War"/>
 
                 <connection t1="SZ 88 Bering Sea" t2="SZ 89 Sea of Japan"/>
 
@@ -1046,7 +1048,6 @@
                 <connection t1="South Africa" t2="Mozambique"/>
                 <connection t1="South Africa" t2="Kalahari Desert"/>
 
-                <connection t1="Belgian Congo" t2="Sudan"/>
                 <connection t1="Belgian Congo" t2="Uganda"/>
                 <connection t1="Belgian Congo" t2="Northern Rhodesia"/>
 
@@ -1555,72 +1556,65 @@
                         <step name="americanBid" delegate="bid" player="Americans" maxRunCount="1"/>
                         <step name="americanBidPlace" delegate="placeBid" player="Americans" maxRunCount="1"/>
 
-                        <!-- Germans Game Sequence -->                        
-                        <step name="germanPurchase" delegate="purchase" player="Germans"/>
+                        <!-- Germans Game Sequence -->
                         <step name="germanCombatMove" delegate="move" player="Germans"/>
+                        <step name="germanPurchase" delegate="purchase" player="Germans"/>
                         <step name="germanBattle" delegate="battle" player="Germans"/>
                         <step name="germanNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
                         <step name="germanPlace" delegate="place" player="Germans"/>
                         <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
                         <!-- French Game Sequence -->
-                        
-                        <step name="frenchPurchase" delegate="purchase" player="French"/>
                         <step name="frenchCombatMove" delegate="move" player="French"/>
+                        <step name="frenchPurchase" delegate="purchase" player="French"/>
                         <step name="frenchBattle" delegate="battle" player="French"/>
                         <step name="frenchNonCombatMove" delegate="move" player="French" display="Non Combat Move"/>
                         <step name="frenchPlace" delegate="place" player="French"/>
                         <step name="frenchEndTurn" delegate="endTurn" player="French"/>
 
                         <!-- Russians Game Sequence -->
-
-                        <step name="russianPurchase" delegate="purchase" player="Russians"/>
                         <step name="russianCombatMove" delegate="move" player="Russians"/>
+                        <step name="russianPurchase" delegate="purchase" player="Russians"/>
                         <step name="russianBattle" delegate="battle" player="Russians"/>
                         <step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
                         <step name="russianPlace" delegate="place" player="Russians"/>
                         <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
                         <!-- Austrians Game Sequence -->
-                        
-                        <step name="austrianPurchase" delegate="purchase" player="Austrians"/>
                         <step name="austrianCombatMove" delegate="move" player="Austrians"/>
+                        <step name="austrianPurchase" delegate="purchase" player="Austrians"/>
                         <step name="austrianBattle" delegate="battle" player="Austrians"/>
                         <step name="austrianNonCombatMove" delegate="move" player="Austrians" display="Non Combat Move"/>
                         <step name="austrianPlace" delegate="place" player="Austrians"/>
                         <step name="austrianEndTurn" delegate="endTurn" player="Austrians"/>
 
                         <!-- Ottomans Game Sequence -->
-
-                        <step name="ottomanPurchase" delegate="purchase" player="Ottomans"/>
                         <step name="ottomanCombatMove" delegate="move" player="Ottomans"/>
+                        <step name="ottomanPurchase" delegate="purchase" player="Ottomans"/>
                         <step name="ottomanBattle" delegate="battle" player="Ottomans"/>
                         <step name="ottomanNonCombatMove" delegate="move" player="Ottomans" display="Non Combat Move"/>
                         <step name="ottomanPlace" delegate="place" player="Ottomans"/>
                         <step name="ottomanEndTurn" delegate="endTurn" player="Ottomans"/>
 
                         <!-- British Game Sequence -->
-
-                        <step name="britishPurchase" delegate="purchase" player="British"/>
                         <step name="britishCombatMove" delegate="move" player="British"/>
+                        <step name="britishPurchase" delegate="purchase" player="British"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
                         <step name="britishPlace" delegate="place" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British"/>
 
                         <!-- Italians Game Sequence -->
-
-                        <step name="italianPurchase" delegate="purchase" player="Italians"/>
                         <step name="italianCombatMove" delegate="move" player="Italians"/>
+                        <step name="italianPurchase" delegate="purchase" player="Italians"/>
                         <step name="italianBattle" delegate="battle" player="Italians"/>
                         <step name="italianNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
                         <step name="italianPlace" delegate="place" player="Italians"/>
                         <step name="italianEndTurn" delegate="endTurn" player="Italians"/>
 
                         <!-- Americans Game Sequence -->
-
-                        <step name="americanPurchase" delegate="purchase" player="Americans"/>
                         <step name="americanCombatMove" delegate="move" player="Americans"/>
+                        <step name="americanPurchase" delegate="purchase" player="Americans"/>
                         <step name="americanBattle" delegate="battle" player="Americans"/>
                         <step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
                         <step name="americanPlace" delegate="place" player="Americans"/>
@@ -3096,6 +3090,10 @@
                         <option name="production" value="1"/>
                     </attatchment>
 
+<attatchment name="territoryAttatchment" attatchTo="SZ 55 Tyrrhenian Sea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="1"/>
+                    </attatchment>
+
 <attatchment name="territoryAttatchment" attatchTo="SZ 56 Central Mediterranean" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                     </attatchment>
@@ -3214,21 +3212,39 @@
 						<option name="directOwnershipTerritories" value="US Declares War" count="1"/>
 				</attatchment>
 				
-				<!--
-				<attatchment name="triggerAttachment_Americans_Declare_War_2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+				<attatchment name="triggerAttachment_Americans_Declare_War_Homeland" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 						<option name="conditions" value="conditionAttachment_Americans_Own_USA_Declares_War_Territory"/>
 						<option name="when" value="after:americanNonCombatMove"/>
-						<option name="territories" value="US Declares War"/>
+						<option name="territories" value="United States"/>
 						<option name="territoryProperty" value="production" count="30"/>
 						<option name="uses" value="1"/>
-				</attatchment>-->
-				<attatchment name="triggerAttachment_Americans_Declare_War" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+				</attatchment>
+				
+				<attatchment name="triggerAttachment_Americans_Declare_War_Unrestricted" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 						<option name="conditions" value="conditionAttachment_Americans_Own_USA_Declares_War_Territory"/>
 						<option name="when" value="after:americanNonCombatMove"/>
 						<option name="uses" value="1"/>
 						<option name="players" value="Germans:French:Russians:Austrians:Ottomans:British:Italians"/>
 						<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
 						<option name="playerProperty" value="movementRestrictionTerritories" count="-reset-"/>
+				</attatchment>
+				
+				<attatchment name="conditionAttachment_Low_Luck_Switch" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="gameProperty" value="Low Luck"/>
+				</attatchment>
+				
+				<attatchment name="triggerAttachment_British_Low_Luck_Balancing_part1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="conditions" value="conditionAttachment_Low_Luck_Switch"/>
+						<option name="when" value="after:gameInitDelegate"/>
+						<option name="uses" value="1"/>
+						<option name="removeUnits" value="SZ 64 Sea of Crete:battlecruiser" count="1"/>
+				</attatchment>
+				
+				<attatchment name="triggerAttachment_British_Low_Luck_Balancing_part2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="conditions" value="conditionAttachment_Low_Luck_Switch"/>
+						<option name="when" value="after:gameInitDelegate"/>
+						<option name="uses" value="1"/>
+						<option name="placement" value="SZ 64 Sea of Crete:battleship"/>
 				</attatchment>
 				
 				
@@ -3448,6 +3464,7 @@
 			<!-- Italians Owned Convoy Zones -->
             		<territoryOwner territory="SZ 52 Balearic Sea" owner="Italians"/>
             		<territoryOwner territory="SZ 56 Central Mediterranean" owner="Italians"/>
+            		<territoryOwner territory="SZ 55 Tyrrhenian Sea" owner="Italians"/>
             		<territoryOwner territory="SZ 57 Ionian Sea" owner="Italians"/>
 
 			<!-- Americans Owned Territories -->
@@ -3606,14 +3623,12 @@
                         <unitPlacement unitType="transport" territory="SZ 36 North Sea" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="battlecruiser" territory="SZ 37 North Sea" quantity="1" owner="British"/>
-                        <unitPlacement unitType="cruiser" territory="SZ 37 North Sea" quantity="1" owner="British"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 37 North Sea" quantity="1" owner="British"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 37 North Sea" quantity="2" owner="British"/>
 
                         <unitPlacement unitType="battleship" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
-                        <unitPlacement unitType="cruiser" territory="SZ 38 Norwegian Sea" quantity="2" owner="British"/>                    
-                        <unitPlacement unitType="destroyer" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
+                        <unitPlacement unitType="cruiser" territory="SZ 38 Norwegian Sea" quantity="2" owner="British"/>
                         <unitPlacement unitType="transport" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
-				<unitPlacement unitType="battlecruiser" territory="SZ 38 Norwegian Sea" quantity="1" owner="British"/>
+				<unitPlacement unitType="battlecruiser" territory="SZ 38 Norwegian Sea" quantity="2" owner="British"/>
 
 				<unitPlacement unitType="battlecruiser" territory="SZ 39 North Atlantic" quantity="1" owner="British"/>
 				<unitPlacement unitType="cruiser" territory="SZ 39 North Atlantic" quantity="1" owner="British"/>
@@ -3686,7 +3701,7 @@
                         <unitPlacement unitType="destroyer" territory="SZ 94 Arafura Sea" quantity="1" owner="British"/>
                         <unitPlacement unitType="submarine" territory="SZ 94 Arafura Sea" quantity="1" owner="British"/>
                         <unitPlacement unitType="transport" territory="SZ 94 Arafura Sea" quantity="2" owner="British"/>
-				<unitPlacement unitType="battlecruiser" territory="SZ 94 Arafura Sea" quantity="1" owner="British"/>
+				<unitPlacement unitType="battleship" territory="SZ 94 Arafura Sea" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="factory" territory="Canada" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="Canada" quantity="4" owner="British"/>
@@ -3882,21 +3897,21 @@
                         <unitPlacement unitType="infantry" territory="Kharkiv" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Kharkiv" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Ryazan" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Ryazan" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Ryazan" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Suzdal" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Suzdal" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Moscow" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Moscow" quantity="6" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Moscow" quantity="4" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Moscow" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Moscow" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Moscow" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Smolensk" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Smolensk" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Smolensk" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Tver" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Tver" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Pskov" quantity="1" owner="Russians"/>
 
@@ -3904,23 +3919,23 @@
 						
                         <unitPlacement unitType="infantry" territory="Estonia" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Novgorod" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Novgorod" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Petrograd" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="6" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="9" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Petrograd" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="aaGun" territory="Petrograd" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Finland" quantity="3" owner="Russians"/>
-				<unitPlacement unitType="cavalry" territory="Finland" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Finland" quantity="5" owner="Russians"/>
+				<unitPlacement unitType="artillery" territory="Finland" quantity="2" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Karelia" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Karelia" quantity="4" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="3" owner="Russians"/>
 						
-                        <unitPlacement unitType="infantry" territory="Perm" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Perm" quantity="3" owner="Russians"/>
                         
                         <unitPlacement unitType="infantry" territory="Kazan" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="cavalry" territory="Kazan" quantity="1" owner="Russians"/>
@@ -3935,10 +3950,9 @@
                         <unitPlacement unitType="infantry" territory="Volgograd" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="cavalry" territory="Volgograd" quantity="1" owner="Russians"/>
                        
-                        <unitPlacement unitType="infantry" territory="Transcaspia" quantity="1" owner="Russians"/>
-				<unitPlacement unitType="cavalry" territory="Transcaspia" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Transcaspia" quantity="2" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Montenegro" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Montenegro" quantity="4" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Montenegro" quantity="1" owner="Russians"/>
 				
                         <unitPlacement unitType="factory" territory="Belgrade" quantity="1" owner="Russians"/>
@@ -4006,7 +4020,7 @@
 
 				<unitPlacement unitType="transport" territory="SZ 55 Tyrrhenian Sea" quantity="1" owner="Italians"/>
           
-                        <unitPlacement unitType="destroyer" territory="SZ 56 Central Mediterranean" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="cruiser" territory="SZ 56 Central Mediterranean" quantity="1" owner="Italians"/>
 
                         <unitPlacement unitType="battlecruiser" territory="SZ 57 Ionian Sea" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="destroyer" territory="SZ 57 Ionian Sea" quantity="2" owner="Italians"/>
@@ -4064,7 +4078,7 @@
                         <unitPlacement unitType="infantry" territory="Bavaria" quantity="3" owner="Germans"/>
 				<unitPlacement unitType="cavalry" territory="Bavaria" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Munich" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Munich" quantity="4" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Bulgaria" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="Bulgaria" quantity="8" owner="Germans"/>
@@ -4118,7 +4132,7 @@
                         <unitPlacement unitType="battleship" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="battlecruiser" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="cruiser" territory="SZ 33 Baltic Sea" quantity="2" owner="Germans"/>
-                        <unitPlacement unitType="destroyer" territory="SZ 32 Baltic Sea" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="destroyer" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="submarine" territory="SZ 33 Baltic Sea" quantity="2" owner="Germans"/>
 			<unitPlacement unitType="transport" territory="SZ 33 Baltic Sea" quantity="1" owner="Germans"/>
 
@@ -4312,9 +4326,9 @@
                         <unitPlacement unitType="factory" territory="Ankara" quantity="1" owner="Ottomans"/>
                         <unitPlacement unitType="infantry" territory="Ankara" quantity="4" owner="Ottomans"/>
                         <unitPlacement unitType="cavalry" territory="Ankara" quantity="3" owner="Ottomans"/>
-                        <unitPlacement unitType="artillery" territory="Ankara" quantity="2" owner="Ottomans"/>
+                        <unitPlacement unitType="artillery" territory="Ankara" quantity="1" owner="Ottomans"/>
 
-                        <unitPlacement unitType="infantry" territory="Smyrna" quantity="4" owner="Ottomans"/>
+                        <unitPlacement unitType="infantry" territory="Smyrna" quantity="3" owner="Ottomans"/>
                         <unitPlacement unitType="cavalry" territory="Smyrna" quantity="2" owner="Ottomans"/>
                         <unitPlacement unitType="artillery" territory="Smyrna" quantity="1" owner="Ottomans"/>
 
@@ -4349,7 +4363,7 @@
                         <resourceGiven player="British" resource="PUs" quantity="75"/>
                         <resourceGiven player="French" resource="PUs" quantity="60"/>
                         <resourceGiven player="Russians" resource="PUs" quantity="60"/>
-                        <resourceGiven player="Italians" resource="PUs" quantity="34"/>
+                        <resourceGiven player="Italians" resource="PUs" quantity="35"/>
                         <resourceGiven player="Germans" resource="PUs" quantity="103"/>
 				<resourceGiven player="Austrians" resource="PUs" quantity="51"/>
 				<resourceGiven player="Ottomans" resource="PUs" quantity="50"/>
@@ -4549,8 +4563,9 @@
 					<br> * Cairo and Istanbul are canals.
 					<br> * If only 1 Russian Capital is taken, no income is captured and Russia may continue to collect income and produce. 
 						If both capitals are taken, all income is captured and Russia can no longer produce new units or collect income.
-					<br> * The territory "US Declares War" can be captured by a single American ground unit (only USA may capture it from Neutrals).
-					<br>
+					<br> * The territory "US Declares War" can be captured by a single American ground unit (only USA may capture it from Neutrals). 
+					After captured the main "United States" drops to 30 production.
+					<br> * "US Declare War" Territory touches SZ87.
 					<br>
 					<br>
 					<br>
@@ -4637,7 +4652,8 @@
 						11 new territories were added in and around Russia.  3 new convoy zones were added.  
 						Russia has received a boost in power, and UK has lost a few naval vessels to make round 1 naval battles less dicey.
 						The Italian destroyer blocking the Austrian fleet has been removed as well.
-						USA receives a boost in the form of the US Declares War territory being worth 30 production, and can be captured by just 1 American ground unit.
+						USA receives a boost in the form of the US Declares War territory being worth 30 production, and can be captured by just 1 American ground unit, 
+						but after captured the main United States territory drops to 30 production as well.
 						Russia now has 2 capitals, and must lose both before it is affected in any way.
 						Enjoy! -Veqryn
 					<br>
