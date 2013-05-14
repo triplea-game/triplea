@@ -37,6 +37,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 public class EngineVersionProperties
 {
 	private final Version m_latestVersionOut;
+	private final Version m_showUpdatesFrom;
 	private final Map<Version, String> m_releaseNotes;
 	private final String m_link;
 	private final String m_linkAlt;
@@ -53,6 +54,8 @@ public class EngineVersionProperties
 	private EngineVersionProperties(final Properties props)
 	{
 		m_latestVersionOut = new Version(props.getProperty("LATEST", EngineVersion.VERSION.toStringFull(".")));
+		final Version showUpdatesFromTemp = new Version(props.getProperty("SHOW_FROM", EngineVersion.VERSION.toStringFull(".")));
+		m_showUpdatesFrom = (EngineVersion.VERSION.isLessThan(showUpdatesFromTemp, false) ? EngineVersion.VERSION : showUpdatesFromTemp);
 		m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/");
 		m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
 		m_changelogLink = props.getProperty("CHANGELOG", "https://triplea.svn.sourceforge.net/svnroot/triplea/trunk/triplea/changelog.txt");
@@ -184,6 +187,11 @@ public class EngineVersionProperties
 		return m_latestVersionOut;
 	}
 	
+	public Version getShowUpdatesFrom()
+	{
+		return m_showUpdatesFrom;
+	}
+	
 	public String getLinkToDownloadLatestVersion()
 	{
 		return m_link;
@@ -259,9 +267,20 @@ public class EngineVersionProperties
 		};
 		intro.addHyperlinkListener(hyperlinkListener);
 		panel.add(intro, BorderLayout.NORTH);
-		final JEditorPane updates = new JEditorPane("text/html",
-					"<html><br />" + getReleaseNotes().get(EngineVersion.VERSION) + "<br /><br />"
-								+ "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">" + getChangeLogLink() + "</a><br /></html>");
+		final StringBuilder releaseNotesBuilder = new StringBuilder("<html>");
+		final List<Version> versions = new ArrayList<Version>();
+		versions.addAll(getReleaseNotes().keySet());
+		Collections.sort(versions, Version.getHighestToLowestComparator(false));
+		for (final Version v : versions)
+		{
+			if (getShowUpdatesFrom().equals(v, false) || getShowUpdatesFrom().isLessThan(v, false))
+			{
+				releaseNotesBuilder.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
+			}
+		}
+		releaseNotesBuilder.append("Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">" + getChangeLogLink() + "</a><br />");
+		releaseNotesBuilder.append("</html>");
+		final JEditorPane updates = new JEditorPane("text/html", releaseNotesBuilder.toString());
 		updates.setEditable(false);
 		updates.setOpaque(false);
 		updates.setBorder(BorderFactory.createEmptyBorder());
