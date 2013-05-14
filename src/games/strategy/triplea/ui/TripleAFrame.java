@@ -85,6 +85,7 @@ import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Tuple;
 
 import java.awt.BorderLayout;
@@ -776,11 +777,12 @@ public class TripleAFrame extends MainGameFrame
 	@Override
 	public void notifyError(final String message)
 	{
+		final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
 		m_messageAndDialogThreadPool.runTask(new Runnable()
 		{
 			public void run()
 			{
-				EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, message, "Error", JOptionPane.ERROR_MESSAGE, true, getUIContext().getCountDownLatchHandler());
+				EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error", JOptionPane.ERROR_MESSAGE, true, getUIContext().getCountDownLatchHandler());
 			}
 		});
 	}
@@ -793,11 +795,12 @@ public class TripleAFrame extends MainGameFrame
 	 */
 	public void notifyMessage(final String message, final String title)
 	{
+		final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
 		m_messageAndDialogThreadPool.runTask(new Runnable()
 		{
 			public void run()
 			{
-				EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, message, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
+				EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
 			}
 		});
 	}
