@@ -5051,6 +5051,11 @@
 				<property name="Pacific Theater" value="false" editable="false">
 						<boolean/>
 				</property>-->
+				
+						<!-- Do we charge for fuel when we move units? -->
+				<property name="Use Fuel Cost" value="false" editable="false">
+						<boolean/>
+				</property>
 
 				<!-- These require an associated value in the attachments section above-->
 				<property name="Movement By Territory Restricted" value="true" editable="false">

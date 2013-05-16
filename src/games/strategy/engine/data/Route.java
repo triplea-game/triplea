@@ -21,14 +21,18 @@ package games.strategy.engine.data;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -531,9 +535,9 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return movementLeft;
 	}
 	
-	public ResourceCollection getMovementCharge(final Unit unit)
+	public ResourceCollection getMovementFuelCostCharge(final Unit unit, final GameData data)
 	{
-		final ResourceCollection col = new ResourceCollection(getStart().getData());
+		final ResourceCollection col = new ResourceCollection(data);
 		if (Matches.unitIsBeingTransported().match(unit))
 			return col;
 		final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -542,14 +546,35 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return col;
 	}
 	
-	public static ResourceCollection getMovementCharge(final Collection<Unit> units, final Route route)
+	public static ResourceCollection getMovementFuelCostCharge(final Collection<Unit> unitsAll, final Route route, final PlayerID currentPlayer, final GameData data, final boolean mustFight)
 	{
-		final ResourceCollection movementCharge = new ResourceCollection(route.getStart().getData());
+		final Set<Unit> units = new HashSet<Unit>(unitsAll);
+		if (!mustFight)
+			units.removeAll(getOwnedAirMovingWithOwnedCarriers(unitsAll, currentPlayer));
+		units.removeAll(Match.getMatches(unitsAll, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, route, currentPlayer, data, true)));
+		final ResourceCollection movementCharge = new ResourceCollection(data);
 		for (final Unit unit : units)
 		{
-			movementCharge.add(route.getMovementCharge(unit));
+			movementCharge.add(route.getMovementFuelCostCharge(unit, data));
 		}
 		return movementCharge;
-		
+	}
+	
+	private static Set<Unit> getOwnedAirMovingWithOwnedCarriers(final Collection<Unit> unitsAll, final PlayerID currentPlayer)
+	{
+		final Collection<Unit> ownedFighters = Match.getMatches(unitsAll, new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.UnitIsAir, Matches.unitIsOwnedBy(currentPlayer)));
+		if (ownedFighters.isEmpty())
+			return new HashSet<Unit>();
+		final Collection<Unit> ownedCarriers = Match.getMatches(unitsAll, new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.UnitIsSea, Matches.unitIsOwnedBy(currentPlayer)));
+		if (ownedCarriers.isEmpty())
+			return new HashSet<Unit>();
+		final Set<Unit> ownedFightersOnOwnedCarriers = new HashSet<Unit>();
+		for (final Unit carrier : ownedCarriers)
+		{
+			final Collection<Unit> carrying = MoveValidator.getCanCarry(carrier, ownedFighters);
+			ownedFighters.removeAll(carrying);
+			ownedFightersOnOwnedCarriers.addAll(carrying);
+		}
+		return ownedFightersOnOwnedCarriers;
 	}
 }

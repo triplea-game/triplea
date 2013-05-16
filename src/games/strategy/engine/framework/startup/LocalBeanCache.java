@@ -71,10 +71,12 @@ public class LocalBeanCache
 		{
 			try
 			{
+				FileInputStream fin = null;
 				ObjectInput oin = null;
 				try
 				{
-					oin = new ObjectInputStream(new FileInputStream(m_file));
+					fin = new FileInputStream(m_file);
+					oin = new ObjectInputStream(fin);
 					final Object o = oin.readObject();
 					if (o instanceof Map)
 					{
@@ -95,10 +97,25 @@ public class LocalBeanCache
 					return (HashMap<String, IBean>) o;
 				} finally
 				{
+					if (fin != null)
+					{
+						try
+						{
+							fin.close();// close stream, or we can delete the file (on windows)
+						} catch (final IOException e)
+						{
+							// ignore
+						}
+					}
 					if (oin != null)
 					{
-						// close stream, or we can delete the file (on windows)
-						oin.close();
+						try
+						{
+							oin.close();// close stream, or we can delete the file (on windows)
+						} catch (final IOException e)
+						{
+							// ignore
+						}
 					}
 				}
 			} catch (final Exception e)
@@ -139,9 +156,11 @@ public class LocalBeanCache
 		{
 			
 			ObjectOutputStream out = null;
+			FileOutputStream fout = null;
 			try
 			{
-				out = new ObjectOutputStream(new FileOutputStream(m_file, false));
+				fout = new FileOutputStream(m_file, false);
+				out = new ObjectOutputStream(fout);
 				out.writeObject(m_map);
 				
 			} catch (final IOException e)
@@ -149,6 +168,16 @@ public class LocalBeanCache
 				// ignore
 			} finally
 			{
+				if (fout != null)
+				{
+					try
+					{
+						fout.close();
+					} catch (final IOException e)
+					{
+						// ignore
+					}
+				}
 				if (out != null)
 				{
 					try

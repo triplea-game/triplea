@@ -867,6 +867,11 @@ public class Properties implements Constants
 		return data.getProperties().get(TERRITORIES_ARE_ASSIGNED_RANDOMLY, false);
 	}
 	
+	public static boolean getUseFuelCost(final GameData data)
+	{
+		return data.getProperties().get(USE_FUEL_COST, false);
+	}
+	
 	private Properties()
 	{
 	}

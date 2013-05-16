@@ -1,4 +1,8 @@
 Changes for 1.7.0.3
+* Made fuelCost no longer charge for allied air dependants, paratroopers, and owned air on owned fighters not making an attack. (veqryn)
+
+* Created new game option property, "Use Fuel Cost", which will control if we charge for fuel in our movement. (veqryn)
+
 * Added an option to turn off the end of turn report, into the game menu bar. (veqryn)
 
 * Created new engine preference option to set the maximum memory used for triplea, for joining, hosting, and also an option to have triplea always restart with higher memory maximum. (veqryn)

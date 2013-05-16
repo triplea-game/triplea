@@ -165,10 +165,7 @@ public class MovePerformer implements Serializable
 				// battles on (note water could have enemy but its
 				// not owned)
 				final GameData data = bridge.getData();
-				final CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
-				mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
-				mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
-				mustFightThrough.add(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
+				final CompositeMatch<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
 				final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits[0]));
 				final Collection<Unit> arrivedCopyForBattles = new ArrayList<Unit>(arrived);
 				final Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
@@ -184,6 +181,7 @@ public class MovePerformer implements Serializable
 				final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(arrived);
 				presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
 				markTransportsMovement(arrived, transporting, route);
+				boolean createdBattle = false;
 				if (route.someMatch(mustFightThrough) && arrived.size() != 0)
 				{
 					boolean bombing = false;
@@ -229,6 +227,7 @@ public class MovePerformer implements Serializable
 								targetedAttack = true;
 								final HashMap<Unit, HashSet<Unit>> targets = new HashMap<Unit, HashSet<Unit>>();
 								targets.put(target, new HashSet<Unit>(arrived));
+								createdBattle = true;
 								getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, dependentOnSomethingTilTheEndOfRoute, targets, false);
 							}
 						}
@@ -244,6 +243,7 @@ public class MovePerformer implements Serializable
 					}
 					if (!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
 					{
+						createdBattle = true;
 						getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, dependentOnSomethingTilTheEndOfRoute);
 					}
 					if (!ignoreBattle && MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
@@ -258,6 +258,7 @@ public class MovePerformer implements Serializable
 							if ((t.equals(route.getEnd()) && Match.allMatch(arrivedCopyForBattles, Matches.UnitIsAir))
 										|| (!t.equals(route.getEnd()) && Match.allMatch(presentFromStartTilEnd, Matches.UnitIsAir)))
 								continue;
+							createdBattle = true;
 							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrivedCopyForBattles);
 						}
 					}
@@ -275,7 +276,8 @@ public class MovePerformer implements Serializable
 					add = ChangeFactory.addUnits(route.getEnd(), arrived);
 					change.add(add, remove);
 				}
-				change.add(markFuelCostResourceChange(units, route, id));
+				if (games.strategy.triplea.Properties.getUseFuelCost(data))
+					change.add(markFuelCostResourceChange(units, route, id, data, createdBattle));
 				m_bridge.addChange(change);
 				m_currentMove.addChange(change);
 				m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
@@ -289,9 +291,18 @@ public class MovePerformer implements Serializable
 		m_executionStack.execute(m_bridge);
 	}
 	
-	private Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id)
+	public static CompositeMatch<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data)
 	{
-		return ChangeFactory.removeResourceCollection(id, Route.getMovementCharge(units, route));
+		final CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
+		mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
+		mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
+		mustFightThrough.add(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
+		return mustFightThrough;
+	}
+	
+	private Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id, final GameData data, final boolean mustFight)
+	{
+		return ChangeFactory.removeResourceCollection(id, Route.getMovementFuelCostCharge(units, route, id, data, mustFight));
 	}
 	
 	private Change markMovementChange(final Collection<Unit> units, final Route route, final PlayerID id)
