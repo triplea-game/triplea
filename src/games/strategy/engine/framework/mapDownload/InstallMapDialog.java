@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -54,6 +55,7 @@ public class InstallMapDialog extends JDialog
 	private static final String MAP_VERSION_PREFIX = "New Version: ";
 	private JButton m_installButton;
 	private JButton m_cancelButton;
+	private JLabel m_intro;
 	private final List<DownloadFileDescription> m_games;
 	private JList m_gamesList;
 	private JEditorPane m_descriptionPane;
@@ -115,6 +117,10 @@ public class InstallMapDialog extends JDialog
 	{
 		m_installButton = new JButton("Install Games");
 		m_cancelButton = new JButton("Cancel");
+		m_intro = new JLabel("<html>Click on any number of maps on the left side, then click 'Install' at the bottom to download them. "
+					+ "<br />Hold down CTRL to select more than one. "
+					+ "<br />Red and Bold means your map is out of date. Italics means your map is up-to-date. </html>");
+		m_intro.setHorizontalAlignment(SwingConstants.CENTER);
 		final Vector<String> gameNames = new Vector<String>();
 		final LinkedHashMap<String, DownloadFileDescription> gameMap = new LinkedHashMap<String, DownloadFileDescription>();
 		m_outOfDateMaps.clear();
@@ -182,6 +188,7 @@ public class InstallMapDialog extends JDialog
 	{
 		setLayout(new BorderLayout());
 		final JPanel buttonsPanel = new JPanel();
+		add(m_intro, BorderLayout.NORTH);
 		add(buttonsPanel, BorderLayout.SOUTH);
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 		buttonsPanel.add(Box.createGlue());
