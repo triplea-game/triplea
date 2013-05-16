@@ -66,6 +66,7 @@ import java.util.List;
  */
 public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractForumPosterDelegate
 {
+	public static final String END_TURN_REPORT_STRING = "End of Turn Report for ";
 	private boolean m_needToInitialize = true;
 	private boolean m_hasPostedTurnSummary = false;
 	private static int CONVOY_BLOCKADE_DICE_SIDES = 6;
@@ -214,8 +215,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		{
 			final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
 			final String player = m_player.getName();
-			currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >End of Turn Report for " + player + "</b><br /><br />" + endTurnReport + "</html>",
-						"End of Turn Report for " + player);
+			currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player + "</b><br /><br />" + endTurnReport + "</html>",
+						END_TURN_REPORT_STRING + player);
 		}
 	}
 	

@@ -84,6 +84,7 @@ public class UIContext
 	private final List<Active> m_activeToDeactivate = new ArrayList<Active>();
 	private final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false); // List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
 	private final static String LOCK_MAP = "LockMap";
+	private final static String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
 	private final static String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
 	private final static String AI_PAUSE_DURATION = "AIPauseDuration";
 	private Set<IGamePlayer> m_playerList;
@@ -586,6 +587,25 @@ public class UIContext
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
 		prefs.putBoolean(LOCK_MAP, aBool);
+		try
+		{
+			prefs.flush();
+		} catch (final BackingStoreException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	public boolean getShowEndOfTurnReport()
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		return prefs.getBoolean(SHOW_END_OF_TURN_REPORT, true);
+	}
+	
+	public void setShowEndOfTurnReport(final boolean value)
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		prefs.putBoolean(SHOW_END_OF_TURN_REPORT, value);
 		try
 		{
 			prefs.flush();

@@ -61,6 +61,7 @@ import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UserActionAttachment;
+import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
@@ -795,6 +796,8 @@ public class TripleAFrame extends MainGameFrame
 	 */
 	public void notifyMessage(final String message, final String title)
 	{
+		if (title.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1 && message.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1 && !getUIContext().getShowEndOfTurnReport())
+			return;
 		final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
 		m_messageAndDialogThreadPool.runTask(new Runnable()
 		{
@@ -805,17 +808,6 @@ public class TripleAFrame extends MainGameFrame
 		});
 	}
 	
-	/*
-	public void notifyNonBlockingMessage(final String message, final String title)
-	{
-		final JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-		final JDialog dialog = new JDialog(this, title, false);
-		dialog.setContentPane(optionPane);
-		dialog.setAlwaysOnTop(true);
-		dialog.setVisible(true);
-	}
-	*/
-
 	public boolean getOKToLetAirDie(final PlayerID m_id, final Collection<Territory> airCantLand, final boolean movePhase)
 	{
 		m_messageAndDialogThreadPool.waitForAll();

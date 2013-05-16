@@ -206,6 +206,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuGame.addSeparator();
 		addGameOptionsMenu(menuGame);
 		addPoliticsMenu(menuGame);
+		addEndTurnReport(menuGame);
 		addFocusOnCasualties(menuGame);
 		addShowEnemyCasualties(menuGame);
 		addShowAIBattles(menuGame);
@@ -618,6 +619,21 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		});
 		parentMenu.add(lockMapBox);
+	}
+	
+	private void addEndTurnReport(final JMenu parentMenu)
+	{
+		final JCheckBoxMenuItem showEndOfTurnReport = new JCheckBoxMenuItem("Show End of Turn Report");
+		showEndOfTurnReport.setMnemonic(KeyEvent.VK_T);
+		showEndOfTurnReport.setSelected(getUIContext().getShowEndOfTurnReport());
+		showEndOfTurnReport.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				getUIContext().setShowEndOfTurnReport(showEndOfTurnReport.isSelected());
+			}
+		});
+		parentMenu.add(showEndOfTurnReport);
 	}
 	
 	private void addShowAIBattles(final JMenu parentMenu)
