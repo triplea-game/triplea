@@ -30,7 +30,9 @@ public class ProcessRunnerUtil
 	public static void populateBasicJavaArgs(final List<String> commands, final String newClasspath)
 	{
 		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
-		final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
+		// final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
+		final long maxMemory = GameRunner2.getMaxMemoryInBytes();
+		System.out.println("Setting memory for new triplea process to: " + (maxMemory / (1024 * 1024)) + "m");
 		populateBasicJavaArgs(commands, newClasspath, maxMemory);
 	}
 	
@@ -80,11 +82,12 @@ public class ProcessRunnerUtil
 				// nothing
 			}
 		}
+		commands.add("-D" + GameRunner2.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString()); // since we are setting the xmx already, we need to make sure this property is set so that triplea doesn't restart
 	}
 	
 	public static void exec(final List<String> commands)
 	{
-		// System.out.println(commands);
+		// System.out.println("Commands: " + commands);
 		final ProcessBuilder builder = new ProcessBuilder(commands);
 		// merge the streams, so we only have to start one reader thread
 		builder.redirectErrorStream(true);
@@ -120,6 +123,18 @@ public class ProcessRunnerUtil
 	
 	public static void main(final String[] args)
 	{
+		final int mb = 1024 * 1024;
+		// Getting the runtime reference from system
+		final Runtime runtime = Runtime.getRuntime();
+		System.out.println("Heap utilization statistics [MB]");
+		// Print used memory
+		System.out.println("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+		// Print free memory
+		System.out.println("Free Memory:" + runtime.freeMemory() / mb);
+		// Print total available memory
+		System.out.println("Total Memory:" + runtime.totalMemory() / mb);
+		// Print Maximum available memory
+		System.out.println("Max Memory:" + runtime.maxMemory() / mb);
 		final List<String> commands = new ArrayList<String>();
 		ProcessRunnerUtil.populateBasicJavaArgs(commands);
 		final String javaClass = "util.image.MapCreator";
@@ -164,6 +179,13 @@ public class ProcessRunnerUtil
 		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
+		}
+		try
+		{
+			Thread.sleep(5000);
+		} catch (final InterruptedException e)
+		{
+			e.printStackTrace();
 		}
 		/*
 		System.out.println("Awaiting Latch");

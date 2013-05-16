@@ -1,4 +1,10 @@
 Changes for 1.7.0.3
+* Created new engine preference option to set the maximum memory used for triplea, for joining, hosting, and also an option to have triplea always restart with higher memory maximum. (veqryn)
+
+* Created new option in engine preferences to show engine log console, and also had the console show current memory usage. (veqryn)
+
+* Figuring out some user's Java jvm's and/or the JRE included with triplea, only allow up to xmx 1024mb of memory maximum, and that the program completely fails when going over this limit, often causing the user to be unable to join or host games online. (veqryn & diaz)
+
 * Fixing some lock not held errors. (veqryn)
 
 * Fixed bug causing triggered notifications to not use local images when shown on a client computer. (veqryn)

@@ -217,12 +217,15 @@ public class Console extends JFrame
 	{
 		System.gc();
 		final StringBuilder buf = new StringBuilder("MEMORY\n");
+		final Runtime runtime = Runtime.getRuntime();
 		buf.append("****\n");
-		buf.append("Total memory:" + Runtime.getRuntime().totalMemory());
+		buf.append("Used Memory: " + (runtime.totalMemory() - runtime.freeMemory()));
 		buf.append("\n");
-		buf.append("Free memory:" + Runtime.getRuntime().freeMemory());
+		buf.append("Free memory: " + runtime.freeMemory());
 		buf.append("\n");
-		buf.append("Max memory:" + Runtime.getRuntime().maxMemory());
+		buf.append("Total memory: " + runtime.totalMemory());
+		buf.append("\n");
+		buf.append("Max memory: " + runtime.maxMemory());
 		buf.append("\n");
 		return buf.toString();
 	}

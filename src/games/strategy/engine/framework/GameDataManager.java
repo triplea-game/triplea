@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.lobby.client.ui.LobbyGamePanel;
 import games.strategy.util.Version;
 
 import java.io.BufferedInputStream;
@@ -91,7 +90,7 @@ public class GameDataManager
 				// so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used for this savegame, and if so try to run it
 				try
 				{
-					final String newClassPath = LobbyGamePanel.findOldJar(readVersion, true);
+					final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
 					// ask user if we really want to do this?
 					final String messageString = "<html>This TripleA engine is version "
 								+ EngineVersion.VERSION.toString()
@@ -105,7 +104,7 @@ public class GameDataManager
 					final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to open old Save Game?", JOptionPane.YES_NO_OPTION);
 					if (answer != JOptionPane.YES_OPTION)
 						return null;
-					LobbyGamePanel.startGame(savegamePath, newClassPath);
+					TripleAProcessRunner.startGame(savegamePath, newClassPath, null);
 				} catch (final IOException e)
 				{
 					if (GameRunner2.areWeOldExtraJar())

@@ -46,7 +46,7 @@ public class MapCreator extends JFrame
 	private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
 	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
 	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
-	private static long s_memory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
+	private static long s_memory = Runtime.getRuntime().maxMemory();
 	private static File s_mapFolderLocation = null;
 	private static double s_unit_zoom = 0.75;
 	private static int s_unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;

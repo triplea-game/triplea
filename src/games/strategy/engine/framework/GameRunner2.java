@@ -73,14 +73,16 @@ public class GameRunner2
 	// proxy stuff
 	public static final String PROXY_HOST = "proxy.host";
 	public static final String PROXY_PORT = "proxy.port";
-	
 	// other stuff
 	public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
-	
+	public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx"; // what should our xmx be approximately?
+	public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set"; // has the memory been manually set or not?
+	// non-commandline-argument-properties (for preferences)
 	// first time we've run this version of triplea?
 	private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY = "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
 	private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
 	private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
+	public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly"; // only for Online?
 	
 	private static WaitWindow s_waitWindow;
 	private static CountDownLatch s_countDownLatch;
@@ -95,7 +97,7 @@ public class GameRunner2
 	{
 		return new String[] { TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY,
 					TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN,
-					PROXY_HOST, PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES };
+					PROXY_HOST, PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_XMX, TRIPLEA_MEMORY_SET };
 	}
 	
 	private static void usage()
@@ -113,6 +115,8 @@ public class GameRunner2
 					+ "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
 					+ "   " + PROXY_HOST + "=<Proxy_Host>\n"
 					+ "   " + PROXY_PORT + "=<Proxy_Port>\n"
+					+ "   " + TRIPLEA_MEMORY_XMX + "=<xmx value in MB>\n"
+					+ "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
 					+ "\n" + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
 					+ "taken as the name of the file to load.\n" + "\n"
 					+ "Example\n" + "   to start a game using the given file:\n" + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n"
@@ -149,7 +153,8 @@ public class GameRunner2
 			// just don't show the wait window
 		}
 		handleCommandLineArgs(args);
-		// do after we handle command line arts
+		// do after we handle command line args
+		checkForMemoryXMX();
 		setupProxies();
 		showMainFrame();
 		// lastly, check and see if there are new versions of TripleA out
@@ -341,6 +346,108 @@ public class GameRunner2
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private static void checkForMemoryXMX()
+	{
+		if (getUseMaxMemorySettingOnlyForOnlineJoinOrHost())
+			return;
+		// XMX is in mb
+		final String xmxString = System.getProperty(TRIPLEA_MEMORY_XMX, "-1");
+		final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, Boolean.FALSE.toString());
+		final boolean memSet = Boolean.parseBoolean(memSetString);
+		// if we have already set the memory, then return. (example: we used process runner to create a new triplea with a specific memory)
+		if (memSet)
+			return;
+		long xmx = -1;
+		try
+		{
+			xmx = Long.parseLong(xmxString);
+		} catch (final NumberFormatException e)
+		{
+		}
+		// if xmx is less than zero we haven't set it as a command line arg, but we may still have a preference already set, so check preferences
+		if (xmx <= 0)
+		{
+			final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+			xmx = pref.getInt(TRIPLEA_MEMORY_XMX, -1);
+		}
+		// if xmx still less than zero, return (because it means we do not want to change it)
+		if (xmx <= 0)
+			return;
+		final int mb = 1024 * 1024;
+		xmx = xmx * mb;
+		final long currentMaxMemory = Runtime.getRuntime().maxMemory();
+		System.out.println("Current max memory: " + currentMaxMemory + ";  and new xmx should be: " + xmx);
+		final long diff = Math.abs(currentMaxMemory - xmx);
+		// Runtime.maxMemory is never accurate, and is usually off by 5% to 15%, so if our difference is less than 20% we should just ignore the difference
+		if (diff <= xmx * 0.2)
+			return;
+		// the difference is significant enough that we should re-run triplea with a larger number
+		if (s_waitWindow != null)
+			s_waitWindow.doneWait();
+		if (s_countDownLatch != null)
+			s_countDownLatch.countDown();
+		TripleAProcessRunner.startNewTripleA(xmx);
+		System.exit(0); // must exit now
+	}
+	
+	public static long getMaxMemoryInBytes()
+	{
+		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value. Just something to be aware of.
+		final long max = Preferences.userNodeForPackage(GameRunner2.class).getInt(TRIPLEA_MEMORY_XMX, -1);
+		if (max <= 0)
+			return Runtime.getRuntime().maxMemory();
+		else
+			return 1024 * 1024 * max; // it is in MB
+	}
+	
+	public static void setMaxMemoryInMB(final int maxMemoryInMB)
+	{
+		System.out.println("Setting max memory for TripleA to: " + maxMemoryInMB + "m");
+		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+		pref.putInt(TRIPLEA_MEMORY_XMX, maxMemoryInMB);
+		try
+		{
+			pref.flush();
+			pref.sync();
+		} catch (final BackingStoreException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void clearMaxMemory()
+	{
+		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+		pref.remove(TRIPLEA_MEMORY_XMX);
+		try
+		{
+			pref.flush();
+			pref.sync();
+		} catch (final BackingStoreException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly)
+	{
+		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+		pref.putBoolean(TRIPLEA_MEMORY_ONLINE_ONLY, useForOnlineOnly);
+		try
+		{
+			pref.flush();
+			pref.sync();
+		} catch (final BackingStoreException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static boolean getUseMaxMemorySettingOnlyForOnlineJoinOrHost()
+	{
+		return Preferences.userNodeForPackage(GameRunner2.class).getBoolean(TRIPLEA_MEMORY_ONLINE_ONLY, true);
 	}
 	
 	private static void setupProxies()

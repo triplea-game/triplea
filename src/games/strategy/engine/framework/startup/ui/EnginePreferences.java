@@ -1,12 +1,15 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.debug.Console;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.GameRunner2.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
+import games.strategy.engine.framework.TripleAProcessRunner;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ui.TripleaMenu;
+import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
@@ -14,13 +17,13 @@ import games.strategy.util.Triple;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
@@ -28,6 +31,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -52,6 +56,8 @@ public class EnginePreferences extends JDialog
 	private JButton m_lookAndFeel;
 	private JButton m_gameParser;
 	private JButton m_setupProxies;
+	private JButton m_setMaxMemory;
+	private JButton m_console;
 	private JButton m_mapCreator;
 	private JButton m_userFolder;
 	private JButton m_programFolder;
@@ -79,10 +85,12 @@ public class EnginePreferences extends JDialog
 	private void createComponents()
 	{
 		m_okButton = new JButton("OK");
-		m_lookAndFeel = new JButton("Set Look And Feel...");
+		m_lookAndFeel = new JButton("Set Look And Feel");
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
 		m_setupProxies = new JButton("Setup Network and Proxy Settings");
+		m_setMaxMemory = new JButton("Set Max Memory Usage");
 		m_mapCreator = new JButton("Run the Map Creator");
+		m_console = new JButton("Show Console");
 		m_userFolder = new JButton("Open User Maps and Savegames Folder");
 		m_programFolder = new JButton("Open Installed Program Folder");
 		m_readme = new JButton("Open Readme / User Manual");
@@ -108,7 +116,11 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_setupProxies);
 		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_setMaxMemory);
+		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_mapCreator);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_console);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_userFolder);
 		buttonsPanel.add(new JLabel(" "));
@@ -127,7 +139,7 @@ public class EnginePreferences extends JDialog
 	
 	private void setupListeners()
 	{
-		m_okButton.addActionListener(new AbstractAction()
+		m_okButton.addActionListener(new AbstractAction("OK")
 		{
 			private static final long serialVersionUID = 8014389079875584858L;
 			
@@ -136,7 +148,7 @@ public class EnginePreferences extends JDialog
 				setVisible(false);
 			}
 		});
-		m_lookAndFeel.addActionListener(new AbstractAction()
+		m_lookAndFeel.addActionListener(new AbstractAction("Set Look And Feel")
 		{
 			private static final long serialVersionUID = -6524988243523615143L;
 			
@@ -162,7 +174,7 @@ public class EnginePreferences extends JDialog
 				}
 			}
 		});
-		m_gameParser.addActionListener(new AbstractAction()
+		m_gameParser.addActionListener(new AbstractAction("Enable/Disable Delayed Parsing of Game XML's")
 		{
 			private static final long serialVersionUID = -6223524855968800051L;
 			
@@ -184,7 +196,7 @@ public class EnginePreferences extends JDialog
 				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors", new CountDownLatchHandler(true));
 			}
 		});
-		m_setupProxies.addActionListener(new AbstractAction()
+		m_setupProxies.addActionListener(new AbstractAction("Setup Network and Proxy Settings")
 		{
 			private static final long serialVersionUID = 1673056396342959597L;
 			
@@ -228,9 +240,91 @@ public class EnginePreferences extends JDialog
 				GameRunner2.setProxy(hostText.getText(), portText.getText(), newChoice);
 			}
 		});
-		m_mapCreator.addActionListener(new AbstractAction()
+		m_setMaxMemory.addActionListener(new AbstractAction("Set Max Memory Usage")
 		{
 			private static final long serialVersionUID = 1262782772917758914L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final AtomicBoolean tested = new AtomicBoolean();
+				tested.set(false);
+				final String currentSetting = Preferences.userNodeForPackage(GameRunner2.class).get(GameRunner2.TRIPLEA_MEMORY_XMX, "");
+				final boolean isCurrentSetToSomething = currentSetting != null && currentSetting.trim().length() > 0;
+				final int currentMaxMemoryInMB = (int) (GameRunner2.getMaxMemoryInBytes() / (1024 * 1024));
+				final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMB, 5);
+				final JRadioButton noneButton = new JRadioButton("Use Default", !isCurrentSetToSomething);
+				final JRadioButton userButton = new JRadioButton("Use These User Settings:", isCurrentSetToSomething);
+				final ButtonGroup bgroup = new ButtonGroup();
+				bgroup.add(noneButton);
+				bgroup.add(userButton);
+				final JCheckBox onlyOnlineCheckBox = new JCheckBox("Only use these user memory settings for online games (join/host). [Default = On]");
+				onlyOnlineCheckBox.setSelected(GameRunner2.getUseMaxMemorySettingOnlyForOnlineJoinOrHost());
+				onlyOnlineCheckBox.setToolTipText("<html>If checked, only joining and hosting from online lobby will be affected by these settings."
+							+ "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time you start TripleA.</html>");
+				final JButton test = new JButton("Test User Settings");
+				test.addActionListener(new AbstractAction("Test User Settings")
+				{
+					private static final long serialVersionUID = -4398183978989504112L;
+					
+					public void actionPerformed(final ActionEvent e)
+					{
+						tested.set(true);
+						System.out.println("Testing TripleA launch with max memory of: " + newMaxMemory.getValue() + "m");
+						TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864); // it is in MB
+					}
+				});
+				final JPanel radioPanel = new JPanel();
+				radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
+				radioPanel.add(new JLabel("<html>Configure TripleA's Maxmimum Memory Usage Settings: "
+							+ "<br />(TripleA will only use 80-90% of this, the rest is used by Java VM)</html>"));
+				radioPanel.add(new JLabel(" "));
+				radioPanel.add(new JLabel("<html><b>WARNING: You could permanently stop TripleA from working if you mess with this! </b></html>"));
+				radioPanel.add(new JLabel("<html><em><p>By default TripleA uses a bit less than 1gb of RAM memory, "
+							+ "<br />and this is because on some computers Java can fail when greater than 1gb (1024mb). "
+							+ "<br />The symptoms of this failing are: TripleA not starting, not being able to 'Join' or 'Host' "
+							+ "<br />in the online lobby, and not being able to start the map creator. "
+							+ "<br />For whatever max you set, Java requires you to have approximately double that much "
+							+ "<br />free memory available, not being used by your operating system or other programs you are running. "
+							+ "<br />Otherwise, TripleA will fail to start, and/or fail to join/host games online. "
+							+ "<br />If you do mess this up, you can always run TripleA by command line with a different setting: "
+							+ "<br />java -Xmx512m -classpath triplea.jar games.strategy.engine.framework.GameRunner triplea.memory.Xmx=512 triplea.memory.set=true</p>"
+							+ "<br /><p>In order to make sure you do not mess this up, click the 'Test' button and make sure that "
+							+ "<br />a new TripleA process is able to run with your new max memory setting. "
+							+ "<br />If one does not run, you had better lower the setting or just use the default. </p></em></html>"));
+				radioPanel.add(new JLabel(" "));
+				radioPanel.add(onlyOnlineCheckBox);
+				radioPanel.add(new JLabel(" "));
+				radioPanel.add(noneButton);
+				radioPanel.add(userButton);
+				radioPanel.add(new JLabel("Maximum Memory: "));
+				radioPanel.add(newMaxMemory);
+				radioPanel.add(new JLabel(" "));
+				radioPanel.add(new JLabel("<html>After clicking the 'Test' button, a new TripleA should launch. "
+							+ "<br />If nothing launches, there is something wrong and you probably set the maximum too high. "
+							+ "<br />You MUST test user settings before you use them! Otherwise the engine will discard changes. "
+							+ "<br />TripleA has no way of knowing if this fails or succeeds, and there will not be an error message of any kind. </html>"));
+				radioPanel.add(test);
+				radioPanel.add(new JLabel(" "));
+				final Object[] options = { "Accept", "Cancel" };
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, radioPanel, "Max Memory Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							options, options[1]);
+				if (answer != JOptionPane.YES_OPTION)
+					return;
+				GameRunner2.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(noneButton.isSelected() || onlyOnlineCheckBox.isSelected());
+				if (noneButton.isSelected())
+				{
+					GameRunner2.clearMaxMemory();
+				}
+				else if (userButton.isSelected())
+				{
+					if (newMaxMemory.getValue() > 64 && tested.get())
+						GameRunner2.setMaxMemoryInMB(newMaxMemory.getValue());
+				}
+			}
+		});
+		m_mapCreator.addActionListener(new AbstractAction("Run the Map Creator")
+		{
+			private static final long serialVersionUID = -3588932090184978286L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -241,8 +335,20 @@ public class EnginePreferences extends JDialog
 				ProcessRunnerUtil.exec(commands);
 			}
 		});
-		m_userFolder.addActionListener(new ActionListener()
+		m_console.addActionListener(new AbstractAction("Show Console")
 		{
+			private static final long serialVersionUID = 5333381080739176703L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				Console.getConsole().setVisible(true);
+				reportMemoryUsageToConsole();
+			}
+		});
+		m_userFolder.addActionListener(new AbstractAction("Open User Maps and Savegames Folder")
+		{
+			private static final long serialVersionUID = -3881256681728469915L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -254,8 +360,10 @@ public class EnginePreferences extends JDialog
 				}
 			}
 		});
-		m_programFolder.addActionListener(new ActionListener()
+		m_programFolder.addActionListener(new AbstractAction("Open Installed Program Folder")
 		{
+			private static final long serialVersionUID = 3621594974694705701L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -267,8 +375,10 @@ public class EnginePreferences extends JDialog
 				}
 			}
 		});
-		m_readme.addActionListener(new ActionListener()
+		m_readme.addActionListener(new AbstractAction("Open Readme / User Manual")
 		{
+			private static final long serialVersionUID = 7125025575496109985L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -280,6 +390,20 @@ public class EnginePreferences extends JDialog
 				}
 			}
 		});
+	}
+	
+	private void reportMemoryUsageToConsole()
+	{
+		final int mb = 1024 * 1024;
+		final Runtime runtime = Runtime.getRuntime(); // Getting the runtime reference from system
+		System.out.println("Heap utilization statistics [MB]");
+		System.out.println("Used Memory: " + (runtime.totalMemory() - runtime.freeMemory()) / mb); // Print used memory
+		System.out.println("Free Memory: " + runtime.freeMemory() / mb); // Print free memory
+		System.out.println("Total Memory: " + runtime.totalMemory() / mb); // Print total available memory
+		System.out.println("Max Memory: " + runtime.maxMemory() / mb); // Print Maximum available memory
+		final int currentMaxSetting = Preferences.userNodeForPackage(GameRunner2.class).getInt(GameRunner2.TRIPLEA_MEMORY_XMX, -1);
+		if (currentMaxSetting > 0)
+			System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
 	}
 	
 	private void setWidgetActivation()

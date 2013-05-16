@@ -23,6 +23,7 @@ import games.strategy.util.ListenerList;
 import java.awt.FlowLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -80,6 +81,23 @@ public class IntTextField extends JTextField
 		this();
 		setMin(min);
 		setMax(max);
+	}
+	
+	public IntTextField(final int min, final int max, final int current)
+	{
+		this();
+		setMin(min);
+		setMax(max);
+		setValue(current);
+	}
+	
+	public IntTextField(final int min, final int max, final int current, final int columns)
+	{
+		super(columns);
+		initTextField();
+		setMin(min);
+		setMax(max);
+		setValue(current);
 	}
 	
 	private void initTextField()
