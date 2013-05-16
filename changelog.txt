@@ -1,4 +1,6 @@
 Changes for 1.7.0.3
+* Fixing some lock not held errors. (veqryn)
+
 * Fixed bug causing triggered notifications to not use local images when shown on a client computer. (veqryn)
 
 * Not allowing scrambling question when only and SBR raid is in a territory and scramble to SBR is turned off. (veqryn)

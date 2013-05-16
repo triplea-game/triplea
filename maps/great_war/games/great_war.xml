@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="Great War" version="4.1"/>
+        <info name="Great War" version="4.1.1"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -435,10 +435,10 @@
 
                 <connection t1="SZ 28 Norwegian Sea" t2="SZ 29 Norwegian Sea"/>
                 <connection t1="SZ 28 Norwegian Sea" t2="SZ 38 Norwegian Sea"/>
-                <connection t1="SZ 28 Norwegian Sea" t2="Barents Sea"/>
 
                 <connection t1="SZ 29 Norwegian Sea" t2="SZ 38 Norwegian Sea"/>
                 <connection t1="SZ 29 Norwegian Sea" t2="Norway"/>
+                <connection t1="SZ 29 Norwegian Sea" t2="Barents Sea"/>
 
                 <connection t1="SZ 30 Baltic Sea" t2="SZ 31 Gulf of Bothnia"/>
                 <connection t1="SZ 30 Baltic Sea" t2="SZ 32 Baltic Sea"/>

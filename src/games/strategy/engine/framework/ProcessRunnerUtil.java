@@ -5,7 +5,9 @@ import games.strategy.util.Version;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * To hold various static utility methods for running a java program.
@@ -82,6 +84,7 @@ public class ProcessRunnerUtil
 	
 	public static void exec(final List<String> commands)
 	{
+		// System.out.println(commands);
 		final ProcessBuilder builder = new ProcessBuilder(commands);
 		// merge the streams, so we only have to start one reader thread
 		builder.redirectErrorStream(true);
@@ -115,4 +118,69 @@ public class ProcessRunnerUtil
 		}
 	}
 	
+	public static void main(final String[] args)
+	{
+		final List<String> commands = new ArrayList<String>();
+		ProcessRunnerUtil.populateBasicJavaArgs(commands);
+		final String javaClass = "util.image.MapCreator";
+		commands.add(javaClass);
+		System.out.println("Testing ProcessRunnerUtil");
+		System.out.println(commands);
+		final CountDownLatch latch = new CountDownLatch(1);
+		final ProcessBuilder builder = new ProcessBuilder(commands);
+		// merge the streams, so we only have to start one reader thread
+		builder.redirectErrorStream(true);
+		Thread t = null;
+		try
+		{
+			final Process p = builder.start();
+			final InputStream s = p.getInputStream();
+			// we need to read the input stream to prevent possible
+			// deadlocks
+			t = new Thread(new Runnable()
+			{
+				public void run()
+				{
+					System.out.println("Gobbling intput/output");
+					try
+					{
+						while (true)
+						{
+							final int read = s.read();
+							System.out.println(read);
+							if (read < 0)
+								break;
+						}
+					} catch (final IOException e)
+					{
+						e.printStackTrace();
+					}
+					System.out.println("Finished Gobbling");
+					latch.countDown();
+				}
+			}, "Process ouput gobbler");
+			t.setDaemon(true);
+			t.start();
+		} catch (final IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+		/*
+		System.out.println("Awaiting Latch");
+		try
+		{
+			latch.await();
+		} catch (final InterruptedException e)
+		{
+			e.printStackTrace();
+		}*/
+		/*
+		if (t != null)
+		{
+			System.out.println("Interrupting and Stopping");
+			t.interrupt();
+			t.stop();
+		}*/
+		System.out.println("Finished");
+	}
 }

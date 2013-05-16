@@ -481,7 +481,14 @@ public class OddsCalculatorPanel extends JPanel
 		m_defenderLeftWhenDefenderWon.setText(formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon()) + " /" + defendersTotal);
 		m_attackerLeftWhenAttackerWon.setText(formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon()) + " /" + attackersTotal);
 		m_roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
-		m_averageChangeInTUV.setText("" + formatValue(results.get().getAverageTUVswing(getAttacker(), mainCombatAttackers, getDefender(), mainCombatDefenders, m_data)));
+		try
+		{
+			m_data.acquireReadLock();
+			m_averageChangeInTUV.setText("" + formatValue(results.get().getAverageTUVswing(getAttacker(), mainCombatAttackers, getDefender(), mainCombatDefenders, m_data)));
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
 		m_count.setText(results.get().getRollCount() + "");
 		m_time.setText(formatValue(results.get().getTime() / 1000.0) + "s");
 	}
@@ -774,32 +781,38 @@ public class OddsCalculatorPanel extends JPanel
 		m_keepOneAttackingLandUnitCheckBox.setEnabled(m_landBattleCheckBox.isSelected());
 		m_amphibiousCheckBox.setEnabled(m_landBattleCheckBox.isSelected());
 		final boolean isLand = isLand();
-		// do not include bombardment and aa guns in our "total" labels
-		final List<Unit> attackers = Match.getMatches(m_attackingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
-		final List<Unit> defenders = Match.getMatches(m_defendingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
-		
-		m_attackerUnitsTotalNumber.setText("Units: " + attackers.size());
-		m_defenderUnitsTotalNumber.setText("Units: " + defenders.size());
-		m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(attackers, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
-		m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(defenders, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
-		final int attackHP = BattleCalculator.getTotalHitpoints(attackers);
-		final int defenseHP = BattleCalculator.getTotalHitpoints(defenders);
-		m_attackerUnitsTotalHitpoints.setText("HP: " + attackHP);
-		m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
-		final boolean isAmphibiousBattle = isAmphibiousBattle();
-		final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-		final int attackPower = DiceRoll.getTotalPowerAndRolls(
-					DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, attackers, defenders, false, getAttacker(), m_data, m_location, territoryEffects, isAmphibiousBattle,
-								(isAmphibiousBattle ? attackers : new ArrayList<Unit>())), m_data).getFirst();
-		final int defensePower = DiceRoll.getTotalPowerAndRolls(
-					DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, defenders, attackers, true, getDefender(), m_data, m_location, territoryEffects,
-								isAmphibiousBattle, new ArrayList<Unit>()), m_data).getFirst(); // defender is never amphibious
-		m_attackerUnitsTotalPower.setText("Power: " + attackPower);
-		m_defenderUnitsTotalPower.setText("Power: " + defensePower);
-		m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())
-					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
-		m_defenderUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP, m_data.getDiceSides())
-					+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+		try
+		{
+			m_data.acquireReadLock();
+			// do not include bombardment and aa guns in our "total" labels
+			final List<Unit> attackers = Match.getMatches(m_attackingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
+			final List<Unit> defenders = Match.getMatches(m_defendingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
+			m_attackerUnitsTotalNumber.setText("Units: " + attackers.size());
+			m_defenderUnitsTotalNumber.setText("Units: " + defenders.size());
+			m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(attackers, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
+			m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(defenders, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
+			final int attackHP = BattleCalculator.getTotalHitpoints(attackers);
+			final int defenseHP = BattleCalculator.getTotalHitpoints(defenders);
+			m_attackerUnitsTotalHitpoints.setText("HP: " + attackHP);
+			m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
+			final boolean isAmphibiousBattle = isAmphibiousBattle();
+			final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
+			final int attackPower = DiceRoll.getTotalPowerAndRolls(
+						DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, attackers, defenders, false, getAttacker(), m_data, m_location, territoryEffects, isAmphibiousBattle,
+									(isAmphibiousBattle ? attackers : new ArrayList<Unit>())), m_data).getFirst();
+			final int defensePower = DiceRoll.getTotalPowerAndRolls(
+						DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, defenders, attackers, true, getDefender(), m_data, m_location, territoryEffects,
+									isAmphibiousBattle, new ArrayList<Unit>()), m_data).getFirst(); // defender is never amphibious
+			m_attackerUnitsTotalPower.setText("Power: " + attackPower);
+			m_defenderUnitsTotalPower.setText("Power: " + defensePower);
+			m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())
+						+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+			m_defenderUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP, m_data.getDiceSides())
+						+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
 	}
 	
 	
