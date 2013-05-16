@@ -292,7 +292,7 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	/*public void setRenderingData(final Object renderingData)
 	{
 	}*/
-
+	
 	public void shutDown()
 	{
 	}
@@ -365,7 +365,7 @@ class DummyPlayer extends AbstractAI
 		// no scramble
 		return null;
 	}*/
-
+	
 	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{

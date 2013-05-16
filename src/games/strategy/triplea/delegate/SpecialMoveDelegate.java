@@ -336,7 +336,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		}
 		return rVal;
 	}*/
-
+	
 	public static boolean allowAirborne(final PlayerID player, final GameData data)
 	{
 		if (!TechAbilityAttachment.getAllowAirborneForces(player, data))

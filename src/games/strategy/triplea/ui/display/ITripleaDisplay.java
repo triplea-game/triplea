@@ -116,7 +116,7 @@ public interface ITripleaDisplay extends IDisplay
 	public void scrambleNotification(GUID battleID, String step, PlayerID player, Collection<Unit> scrambled, Map<Unit, Collection<Unit>> dependents);
 	
 	public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer);*/
-
+	
 	/**
 	 * Notification of the results of a bombing raid
 	 */

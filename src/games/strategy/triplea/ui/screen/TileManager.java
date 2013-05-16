@@ -166,7 +166,7 @@ public class TileManager
 			LockUtil.releaseLock(m_lock);
 		}
 	}*/
-
+	
 	public Collection<UnitsDrawer> getUnitDrawables()
 	{
 		LockUtil.acquireLock(m_lock);
@@ -673,7 +673,7 @@ public class TileManager
 			LockUtil.releaseLock(m_lock);
 		}
 	}*/
-
+	
 	private void drawForCreate(final Territory selected, final GameData data, final MapData mapData, final Rectangle bounds, final Graphics2D graphics, final boolean drawOutline)
 	{
 		final Set<IDrawable> drawablesSet = new HashSet<IDrawable>();

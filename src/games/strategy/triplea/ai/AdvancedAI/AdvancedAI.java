@@ -200,7 +200,7 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	{
 		return m_battleTerr;
 	}*/
-
+	
 	private void setImpassableTerrs(final PlayerID player)
 	{
 		final GameData data = getGameData();
@@ -369,11 +369,11 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			@Override
 			public boolean match(final Territory o)
-		{
-			final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassible();
-			final boolean isLandableOn = false;
-			return !impassable && !o.isWater() && AdvUtils.hasLandRouteToEnemyOwnedCapitol(o, player, data) && isLandableOn;
-		}
+			{
+				final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassible();
+				final boolean isLandableOn = false;
+				return !impassable && !o.isWater() && AdvUtils.hasLandRouteToEnemyOwnedCapitol(o, player, data) && isLandableOn;
+			}
 		};
 		r = AdvUtils.findNearest(ourCapitol, endMatch, routeCond, data);
 		if (r == null || r.hasNoSteps())
@@ -3241,9 +3241,9 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			@Override
 			public boolean match(final Unit o)
-		{
-			return !alreadyMoved.contains(o);
-		}
+			{
+				return !alreadyMoved.contains(o);
+			}
 		});
 		final Match<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
 		final Match<Unit> HasntMoved2 = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved, notAlreadyMoved);
@@ -3806,9 +3806,9 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			@Override
 			public boolean match(final Unit o)
-		{
-			return !alreadyMoved.contains(o);
-		}
+			{
+				return !alreadyMoved.contains(o);
+			}
 		});
 		final Match<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
 		final Match<Unit> ownedAC = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitIsCarrier);
@@ -4589,9 +4589,9 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			@Override
 			public boolean match(final Unit o)
-		{
-			return !unitsAlreadyMoved.contains(o);
-		}
+			{
+				return !unitsAlreadyMoved.contains(o);
+			}
 		});
 		for (final Unit u : data.getUnits().getUnits())
 		{
@@ -5064,9 +5064,9 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			@Override
 			public boolean match(final Territory o)
-		{
-			return !delegate.getBattleTracker().wasConquered(o);
-		}
+			{
+				return !delegate.getBattleTracker().wasConquered(o);
+			}
 		});
 		final Match<Unit> bomberUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsStrategicBomber);
 		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player,
@@ -6120,9 +6120,9 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			@Override
 			public boolean match(final Territory o)
-		{
-			return !delegate.getBattleTracker().wasConquered(o);
-		}
+			{
+				return !delegate.getBattleTracker().wasConquered(o);
+			}
 		});
 		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player,
 					data));
@@ -6452,13 +6452,13 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		final List<Territory> liveEnemyCaps = AdvUtils.getLiveEnemyCapitals(data, player);
 		final CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitCanMove,
 					Matches.UnitCanNotProduceUnits, Matches.UnitIsNotInfrastructure, Matches.UnitCanNotMoveDuringCombatMove.invert(), new Match<Unit>()
-			{
-				@Override
-				public boolean match(final Unit o)
-			{
-				return !unitsAlreadyMoved.contains(o);
-			}
-			});
+					{
+						@Override
+						public boolean match(final Unit o)
+						{
+							return !unitsAlreadyMoved.contains(o);
+						}
+					});
 		// CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir);
 		final CompositeMatch<Unit> alliedNotOwned = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), new InverseMatch<Unit>(Matches.unitIsOwnedBy(player)));
 		final CompositeMatch<Unit> alliedAirUnit = new CompositeMatchAnd<Unit>(alliedNotOwned, Matches.UnitIsAir);
@@ -7226,13 +7226,13 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			@Override
 			public boolean match(final Territory ter)
-		{
-			if (!data.getRelationshipTracker().isAllied(player, ter.getOwner()))
-				return false;
-			if (data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).isEmpty())
-				return false;
-			return true;
-		}
+			{
+				if (!data.getRelationshipTracker().isAllied(player, ter.getOwner()))
+					return false;
+				if (data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).isEmpty())
+					return false;
+				return true;
+			}
 		};
 		for (final Territory ter : data.getMap().getTerritoriesOwnedBy(player))
 		{
@@ -10327,7 +10327,7 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	{
 	  return null;
 	}*/
-
+	
 	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{

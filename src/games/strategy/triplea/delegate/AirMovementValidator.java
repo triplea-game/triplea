@@ -390,7 +390,7 @@ public class AirMovementValidator
 		}
 		return min;
 	}*/
-
+	
 	private static Comparator<Territory> getLowestToHighestDistance(final Territory territoryWeMeasureDistanceFrom, final Match<Territory> condition)
 	{
 		return new Comparator<Territory>()
@@ -897,7 +897,7 @@ public class AirMovementValidator
 		}
 		return false;
 	}*/
-
+	
 	/* Original Code, from Sean and ComradeKev:
 	private static MoveValidationResult validateAirCanLand(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result,
 				final IntegerMap<Unit> movementLeft)

@@ -49,7 +49,7 @@ public class BetterAI extends GridAbstractAI
 		DFS
 	}
 	
-
+	
 	/** Heuristic */
 	public enum Heuristic
 	{
@@ -348,7 +348,7 @@ public class BetterAI extends GridAbstractAI
 		}
 	}
 	
-
+	
 	class Move
 	{
 		private final Pair<Integer, Integer> m_start;
@@ -377,7 +377,7 @@ public class BetterAI extends GridAbstractAI
 		}
 	}
 	
-
+	
 	class Pair<First, Second>
 	{
 		private final First m_first;

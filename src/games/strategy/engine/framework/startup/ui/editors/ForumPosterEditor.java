@@ -161,7 +161,7 @@ public class ForumPosterEditor extends EditorPanel
 						fout.close();
 						poster.addSaveGame(f, "test.txt");
 						*/
-
+						
 						// For .jpg use this:
 						final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
 						final Graphics g = image.getGraphics();

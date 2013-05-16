@@ -112,7 +112,7 @@ public class UnitImageFactory
 		}
 		return image;
 	}*/
-
+	
 	private String getBaseImageName(final UnitType type, final PlayerID id, final GameData data)
 	{
 		final StringBuilder name = new StringBuilder(32);

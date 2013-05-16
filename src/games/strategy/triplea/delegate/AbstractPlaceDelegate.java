@@ -1451,7 +1451,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		}
 		return rVal;
 	}*/
-
+	
 	protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		return new Comparator<Territory>()

@@ -442,8 +442,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 				costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
 			}
 		}
-		final float discount = TechAbilityAttachment.getRepairDiscount(player, getData());
-		if (discount != 1.0F)
+		final double discount = TechAbilityAttachment.getRepairDiscount(player, getData());
+		if (discount != 1.0D)
 			costs.multiplyAllValuesBy(discount, 3);
 		return costs;
 	}

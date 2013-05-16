@@ -517,7 +517,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 	{
 		return m_rocketDiceSides;
 	}*/
-
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 */
@@ -1105,9 +1105,9 @@ public class TechAbilityAttachment extends DefaultAttachment
 		return Math.max(0, rVal);
 	}
 	
-	public static float getRepairDiscount(final PlayerID player, final GameData data)
+	public static double getRepairDiscount(final PlayerID player, final GameData data)
 	{
-		float rVal = 1.0F;
+		double rVal = 1.0F;
 		for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data))
 		{
 			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -1118,13 +1118,13 @@ public class TechAbilityAttachment extends DefaultAttachment
 					continue;
 				else
 				{
-					float fmin = min;
+					double fmin = min;
 					fmin = fmin / 100.0F;
 					rVal -= fmin;
 				}
 			}
 		}
-		return Math.max(0.0F, rVal);
+		return Math.max(0.0D, rVal);
 	}
 	
 	public static int getWarBondDiceSides(final PlayerID player, final GameData data)
@@ -1174,7 +1174,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 		}
 		return Math.max(0, rVal);
 	}*/
-
+	
 	private static int getRocketDiceNumber(final UnitType ut, final PlayerID player, final GameData data)
 	{
 		int rVal = 0;

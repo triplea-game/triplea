@@ -128,27 +128,27 @@ public class DecorationPlacer extends JFrame
 			picker.setLocationRelativeTo(null);
 			picker.setVisible(true);
 			JOptionPane.showMessageDialog(picker, new JLabel("<html>"
-									+ "This is the DecorationPlacer, it will create a text file for you containing the points to place images at. "
-									+ "<br><br>In order to begin this, you must already have the map file, as well as the centers.txt and polygons.txt finished. "
-									+ "<br>To start, load you map image. Then you will be asked which kind of Image Point File you are creating. "
-									+ "<br><br>There are basically 2 different kinds of image point files, and with each of those are 2 different sub-types. "
-									+ "<br>The 1st type is a folder full of many different images, that after being placed on the map will never be changed. "
-									+ "<br>Examples of this are the decorations.txt file [misc folder] and the name_place.txt file [territoryNames folder]. "
-									+ "<br>In these files the 'point' string directly corresponds to exact name of an image file in the folder, with the only "
-									+ "<br>exception being whether the point string needs the .png extension or not (decorations do, name_place does not). "
-									+ "<br><br>The 2nd type is single image, or small set of images, where the chosen image is determined by something in the xml file. "
-									+ "<br>Examples of this are the pu_place.txt file [PUs folder] and the capitols.txt file [flags folder]. "
-									+ "<br>In these files, the 'point' string is the exact name of a territory, while the image file has a different name, "
-									+ "<br>and is chosen by the engine based on the game data.  For things like the pu_place you may want the decoration placer "
-									+ "<br>to generate placements for all territories, while others like capitols are more rare and you may want to individually "
-									+ "<br>select which territories you need a placement point for."
-									+ "<br><br>After selecting the point file type you want to make, the program will choose the default selections for you, "
-									+ "<br>but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do not know the answers. "
-									+ "<br><br>Any images that this program can not find the point for, will start in the upper left corner of the map, "
-									+ "<br>and you may click on them to move them to their appropriate place."
-									+ "<br><br>Do not forget to save the points when finished. To save and continue with another set of images, choose the "
-									+ "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all currently image points, use 'Load Image Points'."
-									+ "</html>"));
+						+ "This is the DecorationPlacer, it will create a text file for you containing the points to place images at. "
+						+ "<br><br>In order to begin this, you must already have the map file, as well as the centers.txt and polygons.txt finished. "
+						+ "<br>To start, load you map image. Then you will be asked which kind of Image Point File you are creating. "
+						+ "<br><br>There are basically 2 different kinds of image point files, and with each of those are 2 different sub-types. "
+						+ "<br>The 1st type is a folder full of many different images, that after being placed on the map will never be changed. "
+						+ "<br>Examples of this are the decorations.txt file [misc folder] and the name_place.txt file [territoryNames folder]. "
+						+ "<br>In these files the 'point' string directly corresponds to exact name of an image file in the folder, with the only "
+						+ "<br>exception being whether the point string needs the .png extension or not (decorations do, name_place does not). "
+						+ "<br><br>The 2nd type is single image, or small set of images, where the chosen image is determined by something in the xml file. "
+						+ "<br>Examples of this are the pu_place.txt file [PUs folder] and the capitols.txt file [flags folder]. "
+						+ "<br>In these files, the 'point' string is the exact name of a territory, while the image file has a different name, "
+						+ "<br>and is chosen by the engine based on the game data.  For things like the pu_place you may want the decoration placer "
+						+ "<br>to generate placements for all territories, while others like capitols are more rare and you may want to individually "
+						+ "<br>select which territories you need a placement point for."
+						+ "<br><br>After selecting the point file type you want to make, the program will choose the default selections for you, "
+						+ "<br>but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do not know the answers. "
+						+ "<br><br>Any images that this program can not find the point for, will start in the upper left corner of the map, "
+						+ "<br>and you may click on them to move them to their appropriate place."
+						+ "<br><br>Do not forget to save the points when finished. To save and continue with another set of images, choose the "
+						+ "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all currently image points, use 'Load Image Points'."
+						+ "</html>"));
 			picker.loadImagesAndPoints();
 		}
 		else
@@ -967,7 +967,7 @@ enum ImagePointType
 				"name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' folder",
 				"<html>name_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image " +
 							"<br>Right click = nothing <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
-
+	
 	pu_place("pu_place.txt", "PUs", "2.png", false, false, true, true, false, false, "pu_place.txt is the point where the PUs get shown, and picks the PU images (like '2.png') from the 'PUs' folder",
 				"<html>pu_place.txt only allows 1 point per image/territory. <br>Left Click = select closest image  OR  place currently selected image " +
 							"<br>Right click = create an image and point for this territory if none exists yet <br>CTRL/SHIFT + Right Click = delete currently selected image point</html>"),

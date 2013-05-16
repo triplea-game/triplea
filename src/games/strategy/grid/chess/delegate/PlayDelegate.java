@@ -979,7 +979,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 					if (end.getX() > start.getX())
 					{
 						final List<Unit> rook = map.getTerritoryFromCoordinates(lastColumn, start.getY()).getUnits().getMatches(
-												new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
+									new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
 						if (!rook.isEmpty())
 						{
 							for (int i = start.getX() + 1; i < lastColumn; i++)

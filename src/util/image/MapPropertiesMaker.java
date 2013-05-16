@@ -493,10 +493,10 @@ public class MapPropertiesMaker extends JFrame
 				{
 					usagePrinted = true;
 					System.out.println("Arguments\r\n"
-									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
-									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
-									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
-									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+								+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
+								+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
+								+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
+								+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
 				}
 			}
 		}

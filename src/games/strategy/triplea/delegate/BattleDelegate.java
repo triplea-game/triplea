@@ -300,7 +300,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	{
 		return m_originalOwnerTracker;
 	}*/
-
+	
 	/**
 	 * Add bombardment units to battles.
 	 */
@@ -1252,7 +1252,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 							}
 							if (battle.isAmphibious() &&
 										((battle instanceof MustFightBattle && ((MustFightBattle) battle).getAmphibiousAttackTerritories().contains(t))
-													|| (battle instanceof NonFightingBattle && ((NonFightingBattle) battle).getAmphibiousAttackTerritories().contains(t))))
+										|| (battle instanceof NonFightingBattle && ((NonFightingBattle) battle).getAmphibiousAttackTerritories().contains(t))))
 							{
 								amphib = true;
 								break;

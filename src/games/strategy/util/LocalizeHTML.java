@@ -23,7 +23,7 @@ public class LocalizeHTML
 	 * So here are the best one I could find.
 	 * Regex's found at http://www.mkyong.com/
 	 */
-
+	
 	// frigoref suggested we use this one instead, however it is overly complicated:
 	// private static final String PATTERN_HTML_IMG_SRC_URL = ".*<img [^>\"]*src\\s*=\\s*\"((https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})[^\"]*)\".*";
 	

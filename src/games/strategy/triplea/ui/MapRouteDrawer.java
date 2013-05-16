@@ -220,7 +220,7 @@ public class MapRouteDrawer
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
 				}*/
-
+				
 				final Image cursorImage = routeDescription.getCursorImage();
 				if (cursorImage != null)
 				{

@@ -609,7 +609,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		};
 		m_forumPosterComponent = new ForumPosterComponent(m_gameData, doneAction, "Turn Summary");
 		panel.add(m_forumPosterComponent.layoutComponents(poster, delegate, bridge, m_parentGridGameFrame, hasPosted,
-							allowIncludeTerritorySummary, allowIncludeTerritoryAllPlayersSummary, allowIncludeProductionSummary, allowDiceBattleDetails, allowDiceStatistics));
+					allowIncludeTerritorySummary, allowIncludeTerritoryAllPlayersSummary, allowIncludeProductionSummary, allowDiceBattleDetails, allowDiceStatistics));
 		return panel;
 	}
 	

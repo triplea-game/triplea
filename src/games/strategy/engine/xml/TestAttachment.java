@@ -74,7 +74,7 @@ public class TestAttachment extends DefaultAttachment
 	public void setData(final GameData m_data)
 	{
 	}*/
-
+	
 	@Override
 	public void validate(final GameData data)
 	{

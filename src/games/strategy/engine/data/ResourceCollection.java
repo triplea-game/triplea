@@ -186,23 +186,23 @@ public class ResourceCollection extends GameDataComponent
 	}
 	
 	/**
-	 * Will apply a discount if giving a fractional float (ie: 0.5 = 50% discount). Will round up remainder.
+	 * Will apply a discount if giving a fractional double (ie: 0.5 = 50% discount). Will round up remainder.
 	 * 
-	 * @param multiplyBy
+	 * @param discount
 	 */
-	public void discount(final float multiplyBy)
+	public void discount(final double discount)
 	{
-		multiplyAllValuesBy(multiplyBy, 3);
+		multiplyAllValuesBy(discount, 3);
 	}
 	
 	/**
-	 * Will multiply all values by a given float. Can be used to divide all numbers, if given a fractional float (ie: to divide by 2, use 0.5 as the float)
+	 * Will multiply all values by a given double. Can be used to divide all numbers, if given a fractional double (ie: to divide by 2, use 0.5 as the double)
 	 * 
 	 * @param multiplyBy
 	 * @param roundType
 	 *            (1 = floor, 2 = round, 3 = ceil)
 	 */
-	public void multiplyAllValuesBy(final float multiplyBy, final int roundType)
+	public void multiplyAllValuesBy(final double multiplyBy, final int roundType)
 	{
 		m_resources.multiplyAllValuesBy(multiplyBy, roundType);
 	}

@@ -89,7 +89,7 @@ public class PBEMMessagePoster implements Serializable
 	{
 		m_forumPoster = msgr;
 	}*/
-
+	
 	public IForumPoster getForumPoster()
 	{
 		return m_forumPoster;

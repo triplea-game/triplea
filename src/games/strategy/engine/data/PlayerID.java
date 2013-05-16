@@ -199,7 +199,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 			return null;
 		return buf.toString().replaceFirst(", ", "");
 	}*/
-
+	
 	/**
 	 * Do not use this ever. The Null PlayerID has no GameData associated with it, so you WILL get a Null Pointer error.
 	 */

@@ -67,23 +67,23 @@ public class TileImageReconstructor
 		}
 		final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, s_mapFolderLocation, JFileChooser.FILES_ONLY, new File(s_mapFolderLocation, "map.png"),
 					new javax.swing.filechooser.FileFilter()
-		{
-			@Override
-			public boolean accept(final File f)
-			{
-				if (f.isDirectory())
-					return false;
-				if (f.getName().endsWith(".png"))
-					return true;
-				return false;
-			}
-			
-			@Override
-			public String getDescription()
-			{
-				return "*.png";
-			}
-		});
+					{
+						@Override
+						public boolean accept(final File f)
+						{
+							if (f.isDirectory())
+								return false;
+							if (f.getName().endsWith(".png"))
+								return true;
+							return false;
+						}
+						
+						@Override
+						public String getDescription()
+						{
+							return "*.png";
+						}
+					});
 		imageSaveLocation = imageSaveLocationSelection.getPathString();
 		if (imageSaveLocation == null)
 		{

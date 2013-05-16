@@ -472,7 +472,7 @@ public class MapProperties
 	{
 		DONT_DRAW_TERRITORY_NAMES = value;
 	}*/
-
+	
 	public String getDONT_DRAW_TERRITORY_NAMES()
 	{
 		return DONT_DRAW_TERRITORY_NAMES;
@@ -528,7 +528,7 @@ public class MapProperties
 	{
 		MAP_MAPBLENDALPHA = value;
 	}*/
-
+	
 	public String getMAP_MAPBLENDALPHA()
 	{
 		return MAP_MAPBLENDALPHA;

@@ -177,7 +177,7 @@ public class PoliticsPanel extends ActionPanel
 						(overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
 						(overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview :
 									(overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0)
-												+ (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
+									+ (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
 			// politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 10.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 			// politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 			final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));

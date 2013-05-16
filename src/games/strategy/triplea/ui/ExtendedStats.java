@@ -156,7 +156,7 @@ public class ExtendedStats extends StatPanel
 		}
 	}
 	
-
+	
 	class GenericResourceStat extends AbstractStat
 	{
 		private String m_name = null;
@@ -177,7 +177,7 @@ public class ExtendedStats extends StatPanel
 		}
 	}
 	
-
+	
 	class GenericTechNameStat extends AbstractStat
 	{
 		private TechAdvance m_ta = null;
@@ -200,7 +200,7 @@ public class ExtendedStats extends StatPanel
 		}
 	}
 	
-
+	
 	class GenericUnitNameStat extends AbstractStat
 	{
 		private UnitType m_ut = null;
@@ -227,7 +227,7 @@ public class ExtendedStats extends StatPanel
 		}
 	}
 	
-
+	
 	class TechTokenStat extends ResourceStat
 	{
 		public TechTokenStat()

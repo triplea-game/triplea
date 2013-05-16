@@ -46,6 +46,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -693,7 +694,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			if (ta == null)
 				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
 			if (ta == null)
-				throw new GameParseException("Technology not found :" + s + thisErrorMsg());
+				throw new GameParseException("Technology not found :" + Arrays.toString(s) + thisErrorMsg());
 			m_techs.add(ta);
 		}
 	}
@@ -1017,7 +1018,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipTypeIsAllied.match(currentRelationshipType)
 						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipTypeIsNeutral.match(currentRelationshipType)
 						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipTypeIsAtWar.match(currentRelationshipType) || currentRelationshipType
-						.equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2]))))
+							.equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2]))))
 				return false;
 		}
 		return true;

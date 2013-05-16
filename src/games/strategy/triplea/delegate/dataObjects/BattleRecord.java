@@ -80,7 +80,7 @@ public class BattleRecord extends GameDataComponent
 		m_bombingDamage = bombingDamage;
 		m_battleType = battleType;
 	}*/
-
+	
 	protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType, final GameData data)
 	{
 		super(data);

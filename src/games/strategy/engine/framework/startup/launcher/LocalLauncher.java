@@ -76,12 +76,12 @@ public class LocalLauncher extends AbstractLauncher
 			final String message = error.getMessage();
 			m_gameLoadingWindow.doneWait();
 			SwingUtilities.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-						}
-					});
+			{
+				public void run()
+				{
+					JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+				}
+			});
 			
 		} catch (final Exception ex)
 		{
@@ -104,12 +104,12 @@ public class LocalLauncher extends AbstractLauncher
 			// todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
 			m_gameSelectorModel.loadDefaultGame(parent);
 			SwingUtilities.invokeLater(new Runnable()
-					{
-						public void run()
-						{
-							JOptionPane.getFrameForComponent(parent).setVisible(true);
-						}
-					});
+			{
+				public void run()
+				{
+					JOptionPane.getFrameForComponent(parent).setVisible(true);
+				}
+			});
 		}
 		// }
 		// };

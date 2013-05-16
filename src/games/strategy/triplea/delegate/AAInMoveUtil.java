@@ -187,7 +187,7 @@ class AAInMoveUtil implements Serializable
 		final PlayerID movingPlayer = movingPlayer(units);
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
 		final List<Unit> defendingAA = territory.getUnits().getMatches(
-								Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
+					Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
 		final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // comes ordered alphabetically already
 		Collections.reverse(AAtypes); // stacks are backwards
 		for (final String currentTypeAA : AAtypes)

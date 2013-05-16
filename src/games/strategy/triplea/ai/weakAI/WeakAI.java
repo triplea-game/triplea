@@ -673,7 +673,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (!randomInts.containsKey(o2))
 					randomInts.put(o2, (int) (Math.random() * 1000));
 				return randomInts.get(o1) - randomInts.get(o2);*/
-
+				
 				// next take territories with largest PU value
 				return ta2.getProduction() - ta1.getProduction();
 			}

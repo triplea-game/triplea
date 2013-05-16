@@ -561,7 +561,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			}
 		};
 	}*/
-
+	
 	private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(final Collection<Territory> blockadeZones, final GameMap map)
 	{
 		return new Comparator<Territory>()

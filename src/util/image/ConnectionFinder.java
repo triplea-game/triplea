@@ -144,7 +144,7 @@ public class ConnectionFinder
 			}
 		}
 		if (JOptionPane.showConfirmDialog(null, "Scale set to " + scalePixels + " pixels larger, and minimum overlap set to " + minOverlap + " pixels. \r\n" +
-								"Do you wish to continue with this? \r\nSelect Yes to continue, Select No to override and change the size.", "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1)
+					"Do you wish to continue with this? \r\nSelect Yes to continue, Select No to override and change the size.", "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1)
 		{
 			final String scale = JOptionPane.showInputDialog(null,
 						"Enter the number of pixels larger each territory should become? \r\n(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");

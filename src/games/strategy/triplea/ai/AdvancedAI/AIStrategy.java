@@ -29,14 +29,14 @@ import javax.swing.JOptionPane;
 public class AIStrategy
 {
 	private final String[] mapNames = { "World War II Classic", "World War II Revised", "World War II v3 1941",
-									"World War II v3 1942", "WW2 NWO 2.0 Neutrals", "WW2 NWO 3.0 Neutrals",
-									"WW2 Phillipines - v2", "New World Order 1939 Lebowski", "Stalingrad",
-									"The Rising Sun", "Big World : 1942", "Big World : 1942 v3 Rules",
-									"New World Order" }; // currently 13...not used yet
+				"World War II v3 1942", "WW2 NWO 2.0 Neutrals", "WW2 NWO 3.0 Neutrals",
+				"WW2 Phillipines - v2", "New World Order 1939 Lebowski", "Stalingrad",
+				"The Rising Sun", "Big World : 1942", "Big World : 1942 v3 Rules",
+				"New World Order" }; // currently 13...not used yet
 	private final String[] fileNames = { "World War II Classic", "World War II Revised", "World War II v3",
-									"World War II v3", "WW2 NEW WORLD ORDER", "WW2 NEW WORLD ORDER",
-									"WW2 Phillipines", "New World Order Lebowski Edition", "Stalingrad",
-									"The_Rising_Sun", "big_world", "big_world", "new_world_order" };
+				"World War II v3", "WW2 NEW WORLD ORDER", "WW2 NEW WORLD ORDER",
+				"WW2 Phillipines", "New World Order Lebowski Edition", "Stalingrad",
+				"The_Rising_Sun", "big_world", "big_world", "new_world_order" };
 	
 	private final HashMap<Integer, AITurn> hashTurns; // contains the turn data
 	private PlayerID player;

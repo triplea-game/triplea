@@ -115,7 +115,7 @@ public class TripleaDisplay implements ITripleaDisplay
 			return;
 		m_ui.getBattlePanel().notifyScramble(shortMessage, message, step, scramblingPlayer);
 	}*/
-
+	
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
 	 */

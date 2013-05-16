@@ -76,7 +76,7 @@ public class BattleResults extends GameDataComponent implements Serializable
 	{
 		return m_defendingUnitsLeft;
 	}*/
-
+	
 	public List<Unit> getRemainingAttackingUnits()
 	{
 		return m_remainingAttackingUnits;

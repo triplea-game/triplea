@@ -46,7 +46,7 @@ public interface IBattle extends java.io.Serializable
 		NOTFINISHED, DRAW, ATTACKER, DEFENDER
 	}
 	
-
+	
 	public static enum BattleType
 	{
 		NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");

@@ -310,7 +310,7 @@ public class BetterAI extends GridAbstractAI
 		}
 	}
 	
-
+	
 	class Play
 	{
 		private final int m_x;

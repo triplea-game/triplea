@@ -4742,6 +4742,10 @@
 						<boolean/>
 				</property>-->
 
+				<property name="Use Fuel Cost" value="true" editable="true">
+						<boolean/>
+				</property>
+
 				<!-- These require an associated value in the attachments section above-->
 				<property name="Movement By Territory Restricted" value="true" editable="false">
 						<boolean/>

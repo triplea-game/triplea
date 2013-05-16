@@ -1705,7 +1705,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
 	}*/
-
+	
 	//
 	// And now for the actual triggers, as called throughout the engine.
 	// Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for when 'when' is not used.

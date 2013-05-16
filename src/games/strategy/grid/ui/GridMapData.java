@@ -114,7 +114,7 @@ public class GridMapData
 	{
 		return m_gameData;
 	}*/
-
+	
 	public synchronized Map<String, Polygon> getStringPolygons()
 	{
 		return m_polys;

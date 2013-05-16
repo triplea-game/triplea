@@ -371,7 +371,7 @@ public class TableSorter extends AbstractTableModel
 		}
 	}
 	
-
+	
 	private class TableModelHandler implements TableModelListener
 	{
 		public void tableChanged(final TableModelEvent e)
@@ -424,7 +424,7 @@ public class TableSorter extends AbstractTableModel
 		}
 	}
 	
-
+	
 	private class MouseHandler extends MouseAdapter
 	{
 		@Override
@@ -450,7 +450,7 @@ public class TableSorter extends AbstractTableModel
 		}
 	}
 	
-
+	
 	private static class Arrow implements Icon
 	{
 		private final boolean descending;
@@ -508,7 +508,7 @@ public class TableSorter extends AbstractTableModel
 		}
 	}
 	
-
+	
 	private class SortableHeaderRenderer implements TableCellRenderer
 	{
 		private final TableCellRenderer tableCellRenderer;
@@ -532,7 +532,7 @@ public class TableSorter extends AbstractTableModel
 		}
 	}
 	
-
+	
 	private static class Directive
 	{
 		private final int column;

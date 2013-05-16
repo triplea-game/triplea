@@ -79,7 +79,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 			throw new IllegalArgumentException("Attachments: " + aString + " should equal "
 						+ Constants.PROPERTY_DEFAULT + " or " + Constants.PROPERTY_TRUE + " or " + Constants.PROPERTY_FALSE);
 	}*/
-
+	
 	/**
 	 * Throws an error if format is invalid. Must be either true or false ignoring case.
 	 */

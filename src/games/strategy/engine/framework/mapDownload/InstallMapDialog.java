@@ -293,7 +293,7 @@ public class InstallMapDialog extends JDialog
 	{
 		return NewGameChooserModel.getDefaultMapNames().contains(selected.getMapName());
 	}*/
-
+	
 	private void install(final DownloadFileDescription selected, final int count, final int total)
 	{
 		/* we no longer stop people from downloading, because we can handle having multiple copies of a map in the different directories triplea uses for maps

@@ -256,5 +256,5 @@ public interface Constants
 	/*public static final char VALUE_TRUE = 't';
 	public static final char VALUE_FALSE = 'f';
 	public static final char VALUE_DEFAULT = 'd';*/
-
+	
 }

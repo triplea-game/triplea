@@ -273,8 +273,8 @@ public class ProductionRepairPanel extends JPanel
 		{
 			spent.add(current.getCost(), current.getQuantity());
 		}
-		final float discount = TechAbilityAttachment.getRepairDiscount(m_id, m_data);
-		if (discount != 1.0F)
+		final double discount = TechAbilityAttachment.getRepairDiscount(m_id, m_data);
+		if (discount != 1.0D)
 			spent.discount(discount);
 		final ResourceCollection leftToSpend = resources.difference(spent);
 		setLeft(leftToSpend);

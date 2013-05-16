@@ -49,7 +49,7 @@ public class Properties implements Constants
 	{
 		return data.getProperties().get(PREVIOUS_UNITS_FIGHT, false);
 	}*/
-
+	
 	public static boolean getPartialAmphibiousRetreat(final GameData data)
 	{
 		return data.getProperties().get(PARTIAL_AMPHIBIOUS_RETREAT, false);
@@ -374,7 +374,7 @@ public class Properties implements Constants
 		return data.getProperties().get(HARI_KARI_UNITS, false);
 	}
 	 */
-
+	
 	public static boolean getUnplacedUnitsLive(final GameData data)
 	{
 		return data.getProperties().get(UNPLACED_UNITS_LIVE, false);

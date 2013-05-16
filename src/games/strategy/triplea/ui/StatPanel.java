@@ -237,7 +237,7 @@ public class StatPanel extends AbstractStatPanel
 			setIcon((ImageIcon) value);
 		}
 	}*/
-
+	
 	class JComponentTableCellRenderer implements TableCellRenderer
 	{
 		public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
@@ -246,7 +246,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	/*
 	 * Custom table model.
 	 * 
@@ -397,7 +397,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	class TechTableModel extends AbstractTableModel implements GameDataChangeListener
 	{
 		private static final long serialVersionUID = -4612476336419396081L;
@@ -584,7 +584,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	class ProductionStat extends AbstractStat
 	{
 		public String getName()
@@ -609,7 +609,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	class PUStat extends ResourceStat
 	{
 		public PUStat()
@@ -618,7 +618,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	class UnitsStat extends AbstractStat
 	{
 		public String getName()
@@ -638,7 +638,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	class TUVStat extends AbstractStat
 	{
 		public String getName()
@@ -660,7 +660,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	class VictoryCityStat extends AbstractStat
 	{
 		public String getName()
@@ -687,7 +687,7 @@ public class StatPanel extends AbstractStatPanel
 		}
 	}
 	
-
+	
 	class VPStat extends AbstractStat
 	{
 		public String getName()

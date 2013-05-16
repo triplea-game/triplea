@@ -494,7 +494,7 @@ public class BattleDisplay extends JPanel
 		}
 		return chosenUnits;
 	}*/
-
+	
 	public void waitForConfirmation(final String message)
 	{
 		if (SwingUtilities.isEventDispatchThread())
@@ -839,7 +839,7 @@ public class BattleDisplay extends JPanel
 			return selectedTerritories;
 		}
 	}*/
-
+	
 	public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit)
 	{

@@ -162,10 +162,10 @@ public class AutoPlacementFinder
 					if (found)
 					{
 						final int result = JOptionPane.showConfirmDialog(new JPanel(),
-										"A map.properties file was found in the map's folder, " +
-													"\r\n do you want to use the file to supply the info for the placement box size? " +
-													"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height +
-													",    Result = (" + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")", "File Suggestion", 1);
+									"A map.properties file was found in the map's folder, " +
+												"\r\n do you want to use the file to supply the info for the placement box size? " +
+												"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height +
+												",    Result = (" + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")", "File Suggestion", 1);
 						// if (result == 2)
 						// return;
 						if (result == 0)
@@ -593,10 +593,10 @@ public class AutoPlacementFinder
 				{
 					usagePrinted = true;
 					System.out.println("Arguments\r\n"
-									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
-									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
-									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
-									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+								+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
+								+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
+								+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
+								+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
 				}
 			}
 		}

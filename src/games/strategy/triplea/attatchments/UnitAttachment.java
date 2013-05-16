@@ -3080,7 +3080,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		return games.strategy.triplea.Properties.getWW2V3TechModel(data);
 	}*/
-
+	
 	private boolean playerHasRockets(final PlayerID player)
 	{
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
@@ -3146,7 +3146,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  isDestroyer:" + m_isDestroyer
 					+ "  canBombard:" + m_canBombard
 					+ "  bombard:" + m_bombard
-
+					
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
@@ -3162,7 +3162,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  targetsAA:" + (m_targetsAA != null ? (m_targetsAA.size() == 0 ? "empty" : m_targetsAA.toString()) : "all air units")
 					+ "  willNotFireIfPresent:" + (m_willNotFireIfPresent != null ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString()) : "null")
 					+ "  isRocket:" + m_isRocket
-
+					
 					+ "  canProduceUnits:" + m_canProduceUnits
 					+ "  canProduceXUnits:" + m_canProduceXUnits
 					+ "  createsUnitsList:" + (m_createsUnitsList != null ? (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString()) : "null")

@@ -393,15 +393,13 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 */
 	public boolean extend(final Route baseRoute)
 	{
-		if (!baseRoute.m_start.equals(baseRoute.m_start))
-		{
+		if (!this.m_start.equals(baseRoute.m_start))
 			return false;
-		}
-		if (baseRoute.numberOfSteps() > numberOfSteps())
+		if (baseRoute.numberOfSteps() > this.numberOfSteps())
 			return false;
 		for (int i = 0; i < baseRoute.m_steps.size(); i++)
 		{
-			if (!baseRoute.getTerritoryAtStep(i).equals(getTerritoryAtStep(i)))
+			if (!baseRoute.getTerritoryAtStep(i).equals(this.getTerritoryAtStep(i)))
 				return false;
 		}
 		return true;

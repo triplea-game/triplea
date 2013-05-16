@@ -172,7 +172,7 @@ public class AlphaBeta extends HeuristicAI
 		return new Tuple<Long, Integer>(getPointsForBoardSituationTotal(theAI, data), 0);
 	}
 	*/
-
+	
 	static long getPointsForBoardSituationTotal(final PlayerID theAI, final GameData data)
 	{
 		long points = 0;

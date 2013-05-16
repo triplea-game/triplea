@@ -266,7 +266,7 @@ public class ForumPosterComponent extends JPanel
 		return round;
 	}
 	*/
-
+	
 	// abstract protected boolean allowIncludeTerritorySummary();
 	
 	// abstract protected boolean allowIncludeProductionSummary();

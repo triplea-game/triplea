@@ -147,9 +147,9 @@ public class ServerLauncher extends AbstractLauncher
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					public void run()
-				{
-					JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-				}
+					{
+						JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+					}
 				});
 				
 			} catch (final Exception e)
@@ -163,60 +163,60 @@ public class ServerLauncher extends AbstractLauncher
 			{
 				@Override
 				public void run()
-			{
-				try
 				{
-					m_isLaunching = false;
-					if (!m_abortLaunch)
-					{
-						if (useSecureRandomSource)
-						{
-							warmUpCryptoRandomSource();
-						}
-						m_gameLoadingWindow.doneWait();
-						m_serverGame.startGame();
-					}
-					else
-					{
-						m_serverGame.stopGame();
-						SwingUtilities.invokeLater(new Runnable()
-						{
-							public void run()
-							{
-								JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
-							}
-						});
-					}
-				} catch (final MessengerException me)
-				{
-					me.printStackTrace(System.out);
-					// we lost a connection
-					// wait for the connection handler to notice, and shut us down
 					try
 					{
-						// we are already aborting the launch
+						m_isLaunching = false;
 						if (!m_abortLaunch)
-							m_erroLatch.await();
-					} catch (final InterruptedException e)
+						{
+							if (useSecureRandomSource)
+							{
+								warmUpCryptoRandomSource();
+							}
+							m_gameLoadingWindow.doneWait();
+							m_serverGame.startGame();
+						}
+						else
+						{
+							m_serverGame.stopGame();
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								public void run()
+								{
+									JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
+								}
+							});
+						}
+					} catch (final MessengerException me)
 					{
-						e.printStackTrace();
+						me.printStackTrace(System.out);
+						// we lost a connection
+						// wait for the connection handler to notice, and shut us down
+						try
+						{
+							// we are already aborting the launch
+							if (!m_abortLaunch)
+								m_erroLatch.await();
+						} catch (final InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+					}
+					m_gameSelectorModel.loadDefaultGame(parent);
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							JOptionPane.getFrameForComponent(parent).setVisible(true);
+						}
+					});
+					m_serverModel.setServerLauncher(null);
+					m_serverModel.newGame();
+					if (m_inGameLobbyWatcher != null)
+					{
+						m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
 					}
 				}
-				m_gameSelectorModel.loadDefaultGame(parent);
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					public void run()
-					{
-						JOptionPane.getFrameForComponent(parent).setVisible(true);
-					}
-				});
-				m_serverModel.setServerLauncher(null);
-				m_serverModel.newGame();
-				if (m_inGameLobbyWatcher != null)
-				{
-					m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
-				}
-			}
 			};
 			t.start();
 		} finally

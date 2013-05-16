@@ -216,7 +216,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return (IGridGamePlayer) m_bridge.getRemote(id);
 	}
 	*/
-
+	
 	/**
 	 * Move a piece from the start <code>Territory</code> to the end <code>Territory</code>.
 	 * 

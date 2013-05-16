@@ -53,7 +53,7 @@ public class EventThreadJOptionPane
 		});
 	}
 	*/
-
+	
 	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final CountDownLatchHandler latchHandler)
 	{
 		EventThreadJOptionPane.showMessageDialog(parentComponent, message, title, messageType, false, latchHandler);

@@ -144,32 +144,32 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	}
 	
 	/**
-	 * Will multiply all values by a given float.
-	 * Can be used to divide all numbers, if given a fractional float
-	 * (ie: to divide by 2, use 0.5 as the float)
+	 * Will multiply all values by a given double.
+	 * Can be used to divide all numbers, if given a fractional double
+	 * (ie: to divide by 2, use 0.5 as the double)
 	 * 
-	 * @param i
+	 * @param multiplyBy
 	 * @param RoundType
 	 *            (1 = floor, 2 = round, 3 = ceil)
 	 */
-	public void multiplyAllValuesBy(final float i, final int RoundType)
+	public void multiplyAllValuesBy(final double multiplyBy, final int RoundType)
 	{
 		for (final T t : keySet())
 		{
-			float val = m_values.get(t);
+			double val = m_values.get(t);
 			switch (RoundType)
 			{
 				case 1:
-					val = (float) Math.floor(val * i);
+					val = Math.floor(val * multiplyBy);
 					break;
 				case 2:
-					val = Math.round(val * i);
+					val = Math.round(val * multiplyBy);
 					break;
 				case 3:
-					val = (float) Math.ceil(val * i);
+					val = Math.ceil(val * multiplyBy);
 					break;
 				default:
-					val = val * i;
+					val = val * multiplyBy;
 					break;
 			}
 			put(t, (int) val);

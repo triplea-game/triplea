@@ -78,7 +78,7 @@ public class PropertyUtil
 			throw new IllegalStateException("Could not clear property:" + propertyName + " subject:" + subject, e);
 		}
 	}*/
-
+	
 	public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
 	{
 		Field rVal = null;
@@ -155,7 +155,7 @@ public class PropertyUtil
 			throw new IllegalStateException("Could not get property:" + property + " subject:" + subject, e);
 		}
 	}*/
-
+	
 	private static String capitalizeFirstLetter(final String aString)
 	{
 		char first = aString.charAt(0);

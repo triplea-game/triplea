@@ -120,7 +120,7 @@ public class UnitImageFactory
 		return (int) (m_scaleFactor * (width < 0 ? UNIT_ICON_WIDTH : width));
 	}
 	 */
-
+	
 	/**
 	 * Return the width of scaled units.
 	 */
@@ -141,7 +141,7 @@ public class UnitImageFactory
 		return (int) (m_scaleFactor * (height < 0 ? UNIT_ICON_HEIGHT : height));
 	}
 	 */
-
+	
 	/**
 	 * Return the height of scaled units
 	 */

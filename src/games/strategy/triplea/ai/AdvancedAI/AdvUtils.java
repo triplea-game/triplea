@@ -1215,7 +1215,7 @@ public class AdvUtils
 		return newDist;
 	}
 	*/
-
+	
 	/**
 	 * List containing the enemy Capitals
 	 */
@@ -2227,9 +2227,9 @@ public class AdvUtils
 		{
 			@Override
 			public boolean match(final Territory t)
-		{
-			return t.getUnits().getMatches(unitCondition).size() > maxUnits;
-		}
+			{
+				return t.getUnits().getMatches(unitCondition).size() > maxUnits;
+			}
 		};
 		return findNearest(start, new CompositeMatchAnd<Territory>(endCondition, condition), routeCondition, data);
 		/*
@@ -2331,9 +2331,9 @@ public class AdvUtils
 		{
 			@Override
 			public boolean match(final Territory t)
-		{
-			return t.getUnits().someMatch(ownedCarrier);
-		}
+			{
+				return t.getUnits().someMatch(ownedCarrier);
+			}
 		};
 		final int rDist = data.getMap().getDistance(source, target, AdvUtils.TerritoryIsNotImpassableToAirUnits(data));
 		boolean landable = false;
@@ -2357,9 +2357,9 @@ public class AdvUtils
 		{
 			@Override
 			public boolean match(final Territory t)
-		{
-			return Matches.isTerritoryAllied(owner, data).match(t) && !t.isWater();
-		}
+			{
+				return Matches.isTerritoryAllied(owner, data).match(t) && !t.isWater();
+			}
 		};
 		final int rDist = data.getMap().getDistance(source, target, AdvUtils.TerritoryIsNotImpassableToAirUnits(data));
 		boolean landable = false;
@@ -4441,29 +4441,29 @@ public class AdvUtils
 		Collections.sort(reorder, new Comparator<Object>()
 		{
 			public int compare(final Object o1, final Object o2)
-		{
-			// get int returns 0 if no value
-			int v1 = map.getInt(o1);
-			int v2 = map.getInt(o2);
-			if (greaterThan)
-		{
-			final int t = v1;
-			v1 = v2;
-			v2 = t;
-		}
-		if (v1 > v2)
-		{
-			return 1;
-		}
-		else if (v1 == v2)
-		{
-			return 0;
-		}
-		else
-		{
-			return -1;
-		}
-	}
+			{
+				// get int returns 0 if no value
+				int v1 = map.getInt(o1);
+				int v2 = map.getInt(o2);
+				if (greaterThan)
+				{
+					final int t = v1;
+					v1 = v2;
+					v2 = t;
+				}
+				if (v1 > v2)
+				{
+					return 1;
+				}
+				else if (v1 == v2)
+				{
+					return 0;
+				}
+				else
+				{
+					return -1;
+				}
+			}
 		});
 	}
 	
@@ -4472,37 +4472,37 @@ public class AdvUtils
 		Collections.sort(reorder, new Comparator<Object>()
 		{
 			public int compare(final Object o1, final Object o2)
-		{
-			double v1 = safeGet(map, o1);
-			double v2 = safeGet(map, o2);
-			if (greaterThan)
-		{
-			final double t = v1;
-			v1 = v2;
-			v2 = t;
-		}
-		if (v1 > v2)
-		{
-			return 1;
-		}
-		else if (v1 == v2)
-		{
-			return 0;
-		}
-		else
-		{
-			return -1;
-		}
-	}
+			{
+				double v1 = safeGet(map, o1);
+				double v2 = safeGet(map, o2);
+				if (greaterThan)
+				{
+					final double t = v1;
+					v1 = v2;
+					v2 = t;
+				}
+				if (v1 > v2)
+				{
+					return 1;
+				}
+				else if (v1 == v2)
+				{
+					return 0;
+				}
+				else
+				{
+					return -1;
+				}
+			}
 			
 			private double safeGet(final Map<?, ? extends Number> map, final Object o1)
-		{
-			if (!map.containsKey(o1))
-		{
-			return 0;
-		}
-		return map.get(o1).doubleValue();
-	}
+			{
+				if (!map.containsKey(o1))
+				{
+					return 0;
+				}
+				return map.get(o1).doubleValue();
+			}
 		});
 	}
 	

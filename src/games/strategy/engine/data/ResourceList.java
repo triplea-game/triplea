@@ -45,7 +45,7 @@ public class ResourceList extends GameDataComponent
 		}
 		return PUresource;
 	}*/
-
+	
 	public ResourceList(final GameData data)
 	{
 		super(data);

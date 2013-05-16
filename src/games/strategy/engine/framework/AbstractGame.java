@@ -118,7 +118,7 @@ abstract public class AbstractGame implements IGame
 		m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
 		m_data.getGameLoader().shutDown();
 	}*/
-
+	
 	public GameData getData()
 	{
 		return m_data;

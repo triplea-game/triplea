@@ -37,7 +37,7 @@ public class PropertyUtilTest extends TestCase
 		PropertyUtil.set("IconTextGap", 10, label);
 		PropertyUtil.get("IconTextGap", label);
 	}*/
-
+	
 	public void testGetFieldObject()
 	{
 		final RulesAttachment at = new RulesAttachment("test", null, null);

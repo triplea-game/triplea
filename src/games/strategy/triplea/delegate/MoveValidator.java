@@ -924,7 +924,7 @@ public class MoveValidator
 		return true;
 	}
 	*/
-
+	
 	public static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units)
 	{
 		final Collection<Unit> retUnits = new ArrayList<Unit>();
@@ -1807,7 +1807,7 @@ public class MoveValidator
 	{
 		return games.strategy.triplea.Properties.getTransportControlSeaZone(data);
 	}*/
-
+	
 	private static boolean isMovementByTerritoryRestricted(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);

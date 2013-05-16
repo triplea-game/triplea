@@ -653,7 +653,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 				{
 					@SuppressWarnings("unused")
 					final int choice = JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
-									JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+								JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 					return null;
 				}
 			}
@@ -666,7 +666,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			if (f.exists())
 			{
 				final int choice = JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
-								JOptionPane.WARNING_MESSAGE);
+							JOptionPane.WARNING_MESSAGE);
 				if (choice != JOptionPane.OK_OPTION)
 				{
 					return null;
@@ -789,36 +789,36 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 						"org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
 						"org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
 						"org.jvnet.substance.skin.SubstanceTwilightLookAndFeel"
-
-			/* Substance (insubstantial) 7.x
-			"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
-			"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"*/
+						
+						/* Substance (insubstantial) 7.x
+						"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"*/
 			})));
 		}
 		if (isJavaGreatThan6())

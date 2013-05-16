@@ -347,9 +347,9 @@ public class AirBattle extends AbstractBattle
 			{
 				HashMap<Unit, HashSet<Unit>> targets = null;
 				final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(
-										Matches.enemyUnit(bridge.getPlayerID(), m_data),
-										Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
-										Matches.unitIsBeingTransported().invert()));
+							Matches.enemyUnit(bridge.getPlayerID(), m_data),
+							Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+							Matches.unitIsBeingTransported().invert()));
 				for (final Unit unit : bombers)
 				{
 					final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal, Matches.UnitIsLegalBombingTargetBy(unit));
@@ -600,7 +600,7 @@ public class AirBattle extends AbstractBattle
 		}
 	}
 	
-
+	
 	class AttackersFire implements IExecutable
 	{
 		private static final long serialVersionUID = -5289634214875797408L;
@@ -653,7 +653,7 @@ public class AirBattle extends AbstractBattle
 		}
 	}
 	
-
+	
 	class DefendersFire implements IExecutable
 	{
 		private static final long serialVersionUID = -7277182945495744003L;

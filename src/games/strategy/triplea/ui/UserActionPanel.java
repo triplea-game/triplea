@@ -161,7 +161,7 @@ public class UserActionPanel extends ActionPanel
 						(overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
 						(overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview :
 									(overviewScroll.getPreferredSize().height + (m_validUserActions.isEmpty() ? 26 : 0)
-												+ (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
+									+ (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
 			final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
 			choiceScroll.setBorder(BorderFactory.createEtchedBorder());
 			choiceScroll.setPreferredSize(new Dimension((choiceScroll.getPreferredSize().width > availWidth ? availWidth : (choiceScroll.getPreferredSize().width +

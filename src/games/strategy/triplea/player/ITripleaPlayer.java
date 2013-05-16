@@ -149,7 +149,7 @@ public interface ITripleaPlayer extends IRemotePlayer
 	 *            the message sent
 	public void reportPoliticalMessage(String message);
 	 */
-
+	
 	/**
 	 * One or more bombers have just moved into a territory where a strategic bombing
 	 * raid can be conducted, should the bomber bomb?
@@ -242,7 +242,7 @@ public interface ITripleaPlayer extends IRemotePlayer
 	 *            - user displayable message
 	 * @return the territory to retreat to, or null if the player doesn't wish to retreat
 	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player);*/
-
+	
 	/**
 	 * Ask the player which units, if any, they want to scramble to defend against the attacker.
 	 * 

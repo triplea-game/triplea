@@ -868,7 +868,8 @@ public class GridGameFrame extends MainGameFrame
 			return null;
 		} finally
 		{
-			m_mapPanel.removeShutdownLatch(m_waiting);
+			if (m_mapPanel != null)
+				m_mapPanel.removeShutdownLatch(m_waiting);
 		}
 		return endTurn;
 	}

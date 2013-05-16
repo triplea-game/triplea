@@ -693,7 +693,7 @@ class BlendComposite implements java.awt.Composite
 		}
 	}
 	
-
+	
 	static abstract class Blender
 	{
 		public abstract int[] blend(int[] src, int[] dst);

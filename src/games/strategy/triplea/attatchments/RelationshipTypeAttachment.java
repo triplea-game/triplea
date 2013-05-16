@@ -459,7 +459,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	{
 		m_helpsDefendAtSea = PROPERTY_DEFAULT;
 	}*/
-
+	
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

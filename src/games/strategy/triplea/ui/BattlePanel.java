@@ -566,7 +566,7 @@ public class BattlePanel extends ActionPanel
 			return null;
 		return m_battleDisplay.getScramble(bridge, message, possible, player);
 	}*/
-
+	
 	public void bombingResults(final GUID battleID, final List<Die> dice, final int cost)
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -643,7 +643,7 @@ public class BattlePanel extends ActionPanel
 		}
 	}
 	
-
+	
 	class FightBattleAction extends AbstractAction
 	{
 		private static final long serialVersionUID = 5510976406003707776L;

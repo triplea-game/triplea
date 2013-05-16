@@ -282,21 +282,21 @@ public class MicroWebPosterEditor extends EditorPanel
 					poster.addSaveGame(f, "Test.jpg");
 					poster.postTurnSummary(null, "Test Turn Summary.", "TestPlayer", 1);
 				}
-					catch (final Exception ex)
-					{
-						tmpException = ex;
-					}
-					finally
-					{
-						progressWindow.setVisible(false);
-					}
-					
-					final Exception exception = tmpException;
-					
-					// now that we have a result, marshall it back unto the swing thread
-					SwingUtilities.invokeLater(new Runnable()
-					{
-						public void run()
+				catch (final Exception ex)
+				{
+					tmpException = ex;
+				}
+				finally
+				{
+					progressWindow.setVisible(false);
+				}
+				
+				final Exception exception = tmpException;
+				
+				// now that we have a result, marshall it back unto the swing thread
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
 					{
 						try
 						{
@@ -307,8 +307,8 @@ public class MicroWebPosterEditor extends EditorPanel
 							// should never happen in a GUI app
 						}
 					}
-					});
-				}
+				});
+			}
 		};
 		// start a background thread
 		final Thread t = new Thread(runnable);

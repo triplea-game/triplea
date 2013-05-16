@@ -197,7 +197,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		}
 	}
 	
-
+	
 	class ViewAction extends AbstractAction
 	{
 		private static final long serialVersionUID = -6999284663802575467L;

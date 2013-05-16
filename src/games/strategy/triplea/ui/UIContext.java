@@ -444,7 +444,7 @@ public class UIContext
 			latch.countDown();
 		}
 	} */
-
+	
 	public boolean isShutDown()
 	{
 		return m_isShutDown;
