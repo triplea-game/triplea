@@ -1,4 +1,6 @@
 Changes for 1.7.0.3
+* Updating packaged JRE to Java 7 update 21 for x86. (veqryn)
+
 * Made fuelCost no longer charge for allied air dependants, paratroopers, and owned air on owned fighters not making an attack. (veqryn)
 
 * Created new game option property, "Use Fuel Cost", which will control if we charge for fuel in our movement. (veqryn)

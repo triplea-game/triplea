@@ -184,7 +184,7 @@
 	<target name="compile" description="Compile the source files"
 		depends="checkBuildEnv,copyResources">
 		<javac srcdir="${src}" destdir="${classes}" debug="true"
-			deprecation="true" classpathref="src.classpath" target="1.5"
+			deprecation="true" classpathref="src.classpath" target="1.5" source="1.5"
 			encoding="utf8" includeantruntime="false" />
 
 		<!-- to check the correct java version, we need to compile the startup 
@@ -773,7 +773,7 @@
 		<mkdir dir="${test-classes}" />
 
 		<javac srcdir="${test-src}" destdir="${test-classes}" debug="true"
-			deprecation="true" target="1.5" includeantruntime="false">
+			deprecation="true" target="1.5" source="1.5" includeantruntime="false">
 			<classpath refid="test.classpath" />
 		</javac>
 
@@ -849,9 +849,9 @@
 		<winInstaller exe.file="windows_installer_with_java.exe">
 			<add-java-elements>
 				<echo message="adding JRE" />
-				<unzip src="installer/jre1.6.0_33_x86.zip" dest="@{install.loc}" />
+				<unzip src="installer/jre7_21_x86.zip" dest="@{install.loc}" />
 				<move todir="@{install.loc}/${zip.prefix}/jre">
-					<fileset dir="@{install.loc}/jre1.6.0_33_x86" />
+					<fileset dir="@{install.loc}/jre7_21_x86" />
 				</move>
 				<copy file="triplea_embeded_jre.exe" tofile="@{install.loc}/${zip.prefix}/triplea.exe" overwrite="true" />
 				<!-- the bat file doesnt work, since it does not point to the jre -->
