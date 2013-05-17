@@ -9,6 +9,8 @@ Changes for 1.7.0.3
 
 * Added an option to turn off the end of turn report, into the game menu bar. (veqryn)
 
+* Changed engine preference for max memory into a "system.ini" file, that way a user can delete or reinstall TripleA if they screw up. (veqryn)
+
 * Created new engine preference option to set the maximum memory used for triplea, for joining, hosting, and also an option to have triplea always restart with higher memory maximum. (veqryn)
 
 * Created new option in engine preferences to show engine log console, and also had the console show current memory usage. (veqryn)

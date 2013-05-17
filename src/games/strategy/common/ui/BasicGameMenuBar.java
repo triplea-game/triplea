@@ -55,7 +55,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -524,7 +523,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		System.out.println("Free Memory: " + runtime.freeMemory() / mb); // Print free memory
 		System.out.println("Total Memory: " + runtime.totalMemory() / mb); // Print total available memory
 		System.out.println("Max Memory: " + runtime.maxMemory() / mb); // Print Maximum available memory
-		final int currentMaxSetting = Preferences.userNodeForPackage(GameRunner2.class).getInt(GameRunner2.TRIPLEA_MEMORY_XMX, -1);
+		final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
 		if (currentMaxSetting > 0)
 			System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
 	}

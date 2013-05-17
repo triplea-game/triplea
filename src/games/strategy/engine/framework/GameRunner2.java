@@ -19,6 +19,9 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
@@ -30,6 +33,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.LogManager;
@@ -75,7 +80,6 @@ public class GameRunner2
 	public static final String PROXY_PORT = "proxy.port";
 	// other stuff
 	public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
-	public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx"; // what should our xmx be approximately?
 	public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set"; // has the memory been manually set or not?
 	// non-commandline-argument-properties (for preferences)
 	// first time we've run this version of triplea?
@@ -83,6 +87,9 @@ public class GameRunner2
 	private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
 	private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
 	public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly"; // only for Online?
+	public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx"; // what should our xmx be approximately?
+	public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
+	public static final String SYSTEM_INI = "system.ini";
 	
 	private static WaitWindow s_waitWindow;
 	private static CountDownLatch s_countDownLatch;
@@ -97,7 +104,7 @@ public class GameRunner2
 	{
 		return new String[] { TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY,
 					TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN,
-					PROXY_HOST, PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_XMX, TRIPLEA_MEMORY_SET };
+					PROXY_HOST, PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET };
 	}
 	
 	private static void usage()
@@ -115,7 +122,6 @@ public class GameRunner2
 					+ "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
 					+ "   " + PROXY_HOST + "=<Proxy_Host>\n"
 					+ "   " + PROXY_PORT + "=<Proxy_Port>\n"
-					+ "   " + TRIPLEA_MEMORY_XMX + "=<xmx value in MB>\n"
 					+ "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
 					+ "\n" + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
 					+ "taken as the name of the file to load.\n" + "\n"
@@ -135,6 +141,9 @@ public class GameRunner2
 		Console.getConsole().displayStandardOutput();
 		System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
 		System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
+		handleCommandLineArgs(args);
+		// do after we handle command line args
+		checkForMemoryXMX();
 		setupLookAndFeel();
 		s_countDownLatch = new CountDownLatch(1);
 		try
@@ -152,9 +161,6 @@ public class GameRunner2
 		{
 			// just don't show the wait window
 		}
-		handleCommandLineArgs(args);
-		// do after we handle command line args
-		checkForMemoryXMX();
 		setupProxies();
 		showMainFrame();
 		// lastly, check and see if there are new versions of TripleA out
@@ -350,29 +356,18 @@ public class GameRunner2
 	
 	private static void checkForMemoryXMX()
 	{
-		if (getUseMaxMemorySettingOnlyForOnlineJoinOrHost())
-			return;
-		// XMX is in mb
-		final String xmxString = System.getProperty(TRIPLEA_MEMORY_XMX, "-1");
-		final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, Boolean.FALSE.toString());
+		final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, "false");
 		final boolean memSet = Boolean.parseBoolean(memSetString);
 		// if we have already set the memory, then return. (example: we used process runner to create a new triplea with a specific memory)
 		if (memSet)
 			return;
-		long xmx = -1;
-		try
-		{
-			xmx = Long.parseLong(xmxString);
-		} catch (final NumberFormatException e)
-		{
-		}
-		// if xmx is less than zero we haven't set it as a command line arg, but we may still have a preference already set, so check preferences
-		if (xmx <= 0)
-		{
-			final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-			xmx = pref.getInt(TRIPLEA_MEMORY_XMX, -1);
-		}
-		// if xmx still less than zero, return (because it means we do not want to change it)
+		final Properties systemIni = getSystemIni();
+		if (useDefaultMaxMemory(systemIni))
+			return;
+		if (getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni))
+			return;
+		long xmx = getMaxMemoryFromSystemIniFileInMB(systemIni);
+		// if xmx less than zero, return (because it means we do not want to change it)
 		if (xmx <= 0)
 			return;
 		final int mb = 1024 * 1024;
@@ -392,62 +387,151 @@ public class GameRunner2
 		System.exit(0); // must exit now
 	}
 	
-	public static long getMaxMemoryInBytes()
+	public static boolean useDefaultMaxMemory(final Properties systemIni)
 	{
-		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value. Just something to be aware of.
-		final long max = Preferences.userNodeForPackage(GameRunner2.class).getInt(TRIPLEA_MEMORY_XMX, -1);
-		if (max <= 0)
-			return Runtime.getRuntime().maxMemory();
-		else
-			return 1024 * 1024 * max; // it is in MB
+		final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
+		final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
+		return useDefaultMaxMemory;
 	}
 	
-	public static void setMaxMemoryInMB(final int maxMemoryInMB)
+	public static long getMaxMemoryInBytes()
+	{
+		final Properties systemIni = getSystemIni();
+		final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
+		final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
+		final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
+		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value. Just something to be aware of.
+		long max = Runtime.getRuntime().maxMemory();
+		if (!useDefaultMaxMemory && maxMemoryString.length() > 0)
+		{
+			try
+			{
+				final int maxMemorySet = Integer.parseInt(maxMemoryString);
+				max = 1024 * 1024 * ((long) maxMemorySet); // it is in MB
+			} catch (final NumberFormatException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return max;
+	}
+	
+	public static int getMaxMemoryFromSystemIniFileInMB(final Properties systemIni)
+	{
+		final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
+		int maxMemorySet = -1;
+		if (maxMemoryString.length() > 0)
+		{
+			try
+			{
+				maxMemorySet = Integer.parseInt(maxMemoryString);
+			} catch (final NumberFormatException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return maxMemorySet;
+	}
+	
+	public static Properties setMaxMemoryInMB(final int maxMemoryInMB)
 	{
 		System.out.println("Setting max memory for TripleA to: " + maxMemoryInMB + "m");
-		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		pref.putInt(TRIPLEA_MEMORY_XMX, maxMemoryInMB);
-		try
-		{
-			pref.flush();
-			pref.sync();
-		} catch (final BackingStoreException e)
-		{
-			e.printStackTrace();
-		}
+		final Properties prop = new Properties();
+		prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "false");
+		prop.put(TRIPLEA_MEMORY_XMX, "" + maxMemoryInMB);
+		return prop;
 	}
 	
 	public static void clearMaxMemory()
 	{
-		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		pref.remove(TRIPLEA_MEMORY_XMX);
-		try
-		{
-			pref.flush();
-			pref.sync();
-		} catch (final BackingStoreException e)
-		{
-			e.printStackTrace();
-		}
+		final Properties prop = new Properties();
+		prop.put(TRIPLEA_MEMORY_USE_DEFAULT, "true");
+		prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
+		prop.put(TRIPLEA_MEMORY_XMX, "");
+		writeSystemIni(prop, false);
 	}
 	
-	public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly)
+	public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly, final Properties prop)
 	{
-		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		pref.putBoolean(TRIPLEA_MEMORY_ONLINE_ONLY, useForOnlineOnly);
-		try
-		{
-			pref.flush();
-			pref.sync();
-		} catch (final BackingStoreException e)
-		{
-			e.printStackTrace();
-		}
+		prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "" + useForOnlineOnly);
 	}
 	
-	public static boolean getUseMaxMemorySettingOnlyForOnlineJoinOrHost()
+	public static boolean getUseMaxMemorySettingOnlyForOnlineJoinOrHost(final Properties systemIni)
 	{
-		return Preferences.userNodeForPackage(GameRunner2.class).getBoolean(TRIPLEA_MEMORY_ONLINE_ONLY, true);
+		final String forOnlineOnlyString = systemIni.getProperty(TRIPLEA_MEMORY_ONLINE_ONLY, "true");
+		final boolean forOnlineOnly = Boolean.parseBoolean(forOnlineOnlyString);
+		return forOnlineOnly;
+	}
+	
+	public static Properties getSystemIni()
+	{
+		final Properties rVal = new Properties();
+		final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
+		if (systemIni != null && systemIni.exists())
+		{
+			FileInputStream fis = null;
+			try
+			{
+				fis = new FileInputStream(systemIni);
+				rVal.load(fis);
+				// rVal.loadFromXML(fis);
+			} catch (final FileNotFoundException e)
+			{
+				e.printStackTrace();
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+			} finally
+			{
+				if (fis != null)
+				{
+					try
+					{
+						fis.close();
+					} catch (final IOException e)
+					{
+					}
+				}
+			}
+		}
+		return rVal;
+	}
+	
+	public static void writeSystemIni(final Properties properties, final boolean clearOldAndOverwrite)
+	{
+		final Properties toWrite;
+		if (clearOldAndOverwrite)
+			toWrite = properties;
+		else
+		{
+			toWrite = getSystemIni();
+			for (final Entry<Object, Object> entry : properties.entrySet())
+			{
+				toWrite.put(entry.getKey(), entry.getValue());
+			}
+		}
+		FileOutputStream fos = null;
+		try
+		{
+			final File systemIni = new File(GameRunner2.getRootFolder(), SYSTEM_INI);
+			fos = new FileOutputStream(systemIni);
+			toWrite.store(fos, SYSTEM_INI);
+			// toWrite.storeToXML(fos, SYSTEM_INI);
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (fos != null)
+			{
+				try
+				{
+					fos.close();
+				} catch (final IOException e)
+				{
+				}
+			}
+		}
 	}
 	
 	private static void setupProxies()

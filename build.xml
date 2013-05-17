@@ -312,6 +312,10 @@
 		</exec>
 
 		<exec executable="cp">
+			<arg line="system.ini /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
 			<arg line="MacOS_users_read_this_first.txt /Volumes/TripleA/" />
 		</exec>
 
@@ -399,6 +403,10 @@
 
 		<exec executable="cp">
 			<arg line="readme.html /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="system.ini /Volumes/TripleA/" />
 		</exec>
 
 		<exec executable="cp">
@@ -518,6 +526,7 @@
 						<include name="@{app.file}/**" />
 						<include name="doc/**" />
 						<include name="readme.html" />
+						<include name="system.ini" />
 						<include name="TripleA_RuleBook.pdf" />
 					</fileset>
 				</copy>
@@ -554,6 +563,7 @@
 						<include name="@{app.file}/**" />
 						<include name="doc/**" />
 						<include name="readme.html" />
+						<include name="system.ini" />
 					</fileset>
 				</copy>
 			</basedir-copy>
@@ -596,6 +606,7 @@
 
 			<zipfileset dir="${basedir}" prefix="${zip.prefix}/">
 				<include name="readme.html" />
+				<include name="system.ini" />
 				<include name="*.bat" />
 				<include name="triplea.exe" />
 				<include name="changelog.txt" />
@@ -683,6 +694,7 @@
 				<include name="ServerInfo.plist" />
 				<include name="changelog.txt" />
 				<include name="readme.html" />
+				<include name="system.ini" />
 				<include name="MacOS_users_read_this_first.txt" />
 				<include name="TripleA_RuleBook.pdf" />
 				<include name="TripleA_RuleBook.docx" />

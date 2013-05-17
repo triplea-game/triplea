@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.prefs.Preferences;
 
@@ -248,17 +249,19 @@ public class EnginePreferences extends JDialog
 			{
 				final AtomicBoolean tested = new AtomicBoolean();
 				tested.set(false);
-				final String currentSetting = Preferences.userNodeForPackage(GameRunner2.class).get(GameRunner2.TRIPLEA_MEMORY_XMX, "");
-				final boolean isCurrentSetToSomething = currentSetting != null && currentSetting.trim().length() > 0;
+				final Properties systemIni = GameRunner2.getSystemIni();
+				final int currentSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(systemIni);
+				final boolean useDefault = GameRunner2.useDefaultMaxMemory(systemIni) || currentSetting <= 0;
 				final int currentMaxMemoryInMB = (int) (GameRunner2.getMaxMemoryInBytes() / (1024 * 1024));
 				final IntTextField newMaxMemory = new IntTextField(0, (1024 * 3), currentMaxMemoryInMB, 5);
-				final JRadioButton noneButton = new JRadioButton("Use Default", !isCurrentSetToSomething);
-				final JRadioButton userButton = new JRadioButton("Use These User Settings:", isCurrentSetToSomething);
+				final JRadioButton noneButton = new JRadioButton("Use Default", useDefault);
+				final JRadioButton userButton = new JRadioButton("Use These User Settings:", !useDefault);
 				final ButtonGroup bgroup = new ButtonGroup();
 				bgroup.add(noneButton);
 				bgroup.add(userButton);
+				final boolean onlineOnlyOriginalSetting = GameRunner2.getUseMaxMemorySettingOnlyForOnlineJoinOrHost(systemIni);
 				final JCheckBox onlyOnlineCheckBox = new JCheckBox("Only use these user memory settings for online games (join/host). [Default = On]");
-				onlyOnlineCheckBox.setSelected(GameRunner2.getUseMaxMemorySettingOnlyForOnlineJoinOrHost());
+				onlyOnlineCheckBox.setSelected(onlineOnlyOriginalSetting);
 				onlyOnlineCheckBox.setToolTipText("<html>If checked, only joining and hosting from online lobby will be affected by these settings."
 							+ "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time you start TripleA.</html>");
 				final JButton test = new JButton("Test User Settings");
@@ -287,7 +290,8 @@ public class EnginePreferences extends JDialog
 							+ "<br />free memory available, not being used by your operating system or other programs you are running. "
 							+ "<br />Otherwise, TripleA will fail to start, and/or fail to join/host games online. "
 							+ "<br />If you do mess this up, you can always run TripleA by command line with a different setting: "
-							+ "<br />java -Xmx512m -classpath triplea.jar games.strategy.engine.framework.GameRunner triplea.memory.Xmx=512 triplea.memory.set=true</p>"
+							+ "<br />java -Xmx512m -classpath triplea.jar games.strategy.engine.framework.GameRunner triplea.memory.set=true"
+							+ "<br />Or you can delete or change the 'system.ini' file located where TripleA was installed. </p>"
 							+ "<br /><p>In order to make sure you do not mess this up, click the 'Test' button and make sure that "
 							+ "<br />a new TripleA process is able to run with your new max memory setting. "
 							+ "<br />If one does not run, you had better lower the setting or just use the default. </p></em></html>"));
@@ -296,7 +300,7 @@ public class EnginePreferences extends JDialog
 				radioPanel.add(new JLabel(" "));
 				radioPanel.add(noneButton);
 				radioPanel.add(userButton);
-				radioPanel.add(new JLabel("Maximum Memory: "));
+				radioPanel.add(new JLabel("Maximum Memory (in MB): "));
 				radioPanel.add(newMaxMemory);
 				radioPanel.add(new JLabel(" "));
 				radioPanel.add(new JLabel("<html>After clicking the 'Test' button, a new TripleA should launch. "
@@ -310,15 +314,24 @@ public class EnginePreferences extends JDialog
 							options, options[1]);
 				if (answer != JOptionPane.YES_OPTION)
 					return;
-				GameRunner2.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(noneButton.isSelected() || onlyOnlineCheckBox.isSelected());
 				if (noneButton.isSelected())
 				{
 					GameRunner2.clearMaxMemory();
 				}
 				else if (userButton.isSelected())
 				{
-					if (newMaxMemory.getValue() > 64 && tested.get())
-						GameRunner2.setMaxMemoryInMB(newMaxMemory.getValue());
+					final boolean setOnlineOnly = onlineOnlyOriginalSetting != onlyOnlineCheckBox.isSelected();
+					final boolean setMaxMemory = newMaxMemory.getValue() > 64 && tested.get();
+					if (setOnlineOnly || setMaxMemory)
+					{
+						Properties prop;
+						if (setMaxMemory)
+							prop = GameRunner2.setMaxMemoryInMB(newMaxMemory.getValue());
+						else
+							prop = new Properties();
+						GameRunner2.setUseMaxMemorySettingOnlyForOnlineJoinOrHost(onlyOnlineCheckBox.isSelected(), prop);
+						GameRunner2.writeSystemIni(prop, false);
+					}
 				}
 			}
 		});
@@ -401,7 +414,7 @@ public class EnginePreferences extends JDialog
 		System.out.println("Free Memory: " + runtime.freeMemory() / mb); // Print free memory
 		System.out.println("Total Memory: " + runtime.totalMemory() / mb); // Print total available memory
 		System.out.println("Max Memory: " + runtime.maxMemory() / mb); // Print Maximum available memory
-		final int currentMaxSetting = Preferences.userNodeForPackage(GameRunner2.class).getInt(GameRunner2.TRIPLEA_MEMORY_XMX, -1);
+		final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
 		if (currentMaxSetting > 0)
 			System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
 	}
