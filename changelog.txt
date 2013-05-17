@@ -1,4 +1,6 @@
 Changes for 1.7.0.3
+* First pass at setting up framework for a headless game server. (veqryn)
+
 * Updating packaged JRE to Java 7 update 21 for x86. (veqryn)
 
 * Made fuelCost no longer charge for allied air dependants, paratroopers, and owned air on owned fighters not making an attack. (veqryn)

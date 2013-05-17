@@ -59,6 +59,11 @@ public class GameSelectorModel extends Observable
 		setGameData(null);
 	}
 	
+	public void load(final GameData data)
+	{
+		setGameData(data);
+	}
+	
 	public void load(final NewGameChooserEntry entry)
 	{
 		// we don't want to load anything if we are an older jar, because otherwise the user may get confused on which version of triplea they are using right now,
@@ -84,12 +89,18 @@ public class GameSelectorModel extends Observable
 		final GameDataManager manager = new GameDataManager();
 		if (!file.exists())
 		{
-			error("Could not find file:" + file, ui);
+			if (ui == null)
+				System.out.println("Could not find file:" + file);
+			else
+				error("Could not find file:" + file, ui);
 			return;
 		}
 		if (file.isDirectory())
 		{
-			error("Cannot load a directory:" + file, ui);
+			if (ui == null)
+				System.out.println("Cannot load a directory:" + file);
+			else
+				error("Cannot load a directory:" + file, ui);
 			return;
 		}
 		GameData newData;
@@ -98,7 +109,16 @@ public class GameSelectorModel extends Observable
 			// if the file name is xml, load it as a new game
 			if (file.getName().toLowerCase().endsWith("xml"))
 			{
-				newData = (new GameParser()).parse(new FileInputStream(file), false);
+				FileInputStream fis = null;
+				try
+				{
+					fis = new FileInputStream(file);
+					newData = (new GameParser()).parse(fis, false);
+				} finally
+				{
+					if (fis != null)
+						fis.close();
+				}
 			}
 			// the extension should be tsvg, but
 			// try to load it as a saved game whatever the extension
@@ -117,7 +137,8 @@ public class GameSelectorModel extends Observable
 		} catch (final Exception e)
 		{
 			e.printStackTrace(System.out);
-			error(e.getMessage(), ui);
+			if (ui != null)
+				error(e.getMessage(), ui);
 		}
 	}
 	

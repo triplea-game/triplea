@@ -268,7 +268,7 @@ public class TripleAFrame extends MainGameFrame
 		m_chatSplit.setOneTouchExpandable(true);
 		m_chatSplit.setDividerSize(8);
 		m_chatSplit.setResizeWeight(0.95);
-		if (MainFrame.getInstance().getChat() != null)
+		if (MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null)
 		{
 			m_commentSplit = new JSplitPane();
 			m_commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);

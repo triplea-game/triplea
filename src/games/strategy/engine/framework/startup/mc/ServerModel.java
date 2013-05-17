@@ -70,6 +70,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private static Logger s_logger = Logger.getLogger(ServerModel.class.getName());
 	private final GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
 	private final SetupPanelModel m_typePanelModel;
+	private final boolean m_headless;
 	private IServerMessenger m_serverMessenger;
 	private IRemoteMessenger m_remoteMessenger;
 	private IChannelMessenger m_channelMessenger;
@@ -97,6 +98,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		m_gameSelectorModel = gameSelectorModel;
 		m_typePanelModel = typePanelModel;
 		m_gameSelectorModel.addObserver(m_gameSelectorObserver);
+		m_headless = false;
+	}
+	
+	public ServerModel(final GameSelectorModel gameSelectorModel)
+	{
+		m_gameSelectorModel = gameSelectorModel;
+		m_typePanelModel = null;
+		m_gameSelectorModel.addObserver(m_gameSelectorObserver);
+		m_headless = true;
 	}
 	
 	public void cancel()
@@ -184,7 +194,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		final int port = options.getPort();
 		if (port >= 65536 || port == 0)
 		{
-			JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+			if (m_headless)
+				System.out.println("Invalid Port: " + port);
+			else
+				JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		final ServerProps props = new ServerProps();
@@ -200,7 +213,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	 */
 	public boolean createServerMessenger(Component ui)
 	{
-		ui = JOptionPane.getFrameForComponent(ui);
+		ui = ui == null ? null : JOptionPane.getFrameForComponent(ui);
 		m_ui = ui;
 		final ServerProps props = getServerProps(ui);
 		if (props == null)
@@ -227,7 +240,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace(System.out);
-			JOptionPane.showMessageDialog(ui, "Unable to create server socket:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			if (m_headless)
+				System.out.println("Unable to create server socket:" + ioe.getMessage());
+			else
+				JOptionPane.showMessageDialog(ui, "Unable to create server socket:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 	}
@@ -332,8 +348,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	
 	public void messengerInvalid(final IMessenger messenger, final Exception reason)
 	{
-		JOptionPane.showMessageDialog(m_ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
-		m_typePanelModel.showSelectType();
+		if (m_headless)
+		{
+			System.out.println("Connection Lost");
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(m_ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
+			m_typePanelModel.showSelectType();
+		}
 	}
 	
 	public void connectionAdded(final INode to)

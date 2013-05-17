@@ -63,7 +63,7 @@ public class ServerOptions extends JDialog
 	 */
 	public ServerOptions(final Component owner, final String defaultName, final int defaultPort, final boolean showComment)
 	{
-		super(JOptionPane.getFrameForComponent(owner), "Server options", true);
+		super(owner == null ? null : JOptionPane.getFrameForComponent(owner), "Server options", true);
 		m_showComment = showComment;
 		initComponents();
 		layoutComponents();

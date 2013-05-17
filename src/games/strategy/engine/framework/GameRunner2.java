@@ -912,7 +912,13 @@ public class GameRunner2
 		final File f = new File(getUserRootFolder(), "maps");
 		if (!f.exists())
 		{
-			f.mkdirs();
+			try
+			{
+				f.mkdirs();
+			} catch (final SecurityException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		return f;
 	}

@@ -933,7 +933,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		chatTimeBox.setSelected(false);
 		parentMenu.add(chatTimeBox);
-		chatTimeBox.setEnabled(MainFrame.getInstance().getChat() != null);
+		chatTimeBox.setEnabled(MainFrame.getInstance() != null && MainFrame.getInstance().getChat() != null);
 	}
 	
 	protected void addAISleepDuration(final JMenu parentMenu)
