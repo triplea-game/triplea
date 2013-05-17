@@ -1,4 +1,6 @@
 Changes for 1.7.0.3
+* Fixed bug causing Random Territory Start delegate to fail in online games due to requesting dice too quickly. (veqryn)
+
 * Updating Great War ww1 map and xml, to improve options and balance. (veqryn)
 
 * First pass at setting up framework for a headless game server. (veqryn)

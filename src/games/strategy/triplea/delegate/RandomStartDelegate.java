@@ -95,26 +95,34 @@ public class RandomStartDelegate extends BaseTripleADelegate
 		// we need a main event
 		if (!playersCanPick.isEmpty())
 			m_bridge.getHistoryWriter().startEvent("Assigning Territories");
+		// for random:
+		final int[] hitRandom = (!randomTerritories ? new int[0] :
+					m_bridge.getRandom(allPickableTerritories.size(), allPickableTerritories.size(), null, DiceType.ENGINE, "Picking random territories"));
+		int i = 0;
+		int pos = 0;
 		// divvy up territories
 		while (!allPickableTerritories.isEmpty() && !playersCanPick.isEmpty())
 		{
 			if (m_currentPickingPlayer == null || !playersCanPick.contains(m_currentPickingPlayer))
 				m_currentPickingPlayer = playersCanPick.get(0);
+			try
+			{
+				Thread.sleep(250);
+			} catch (final InterruptedException e)
+			{
+			}
 			
 			Territory picked;
 			if (randomTerritories)
 			{
+				pos += hitRandom[i];
+				i++;
 				final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_currentPickingPlayer, data);
 				final List<Unit> units = new ArrayList<Unit>(m_currentPickingPlayer.getUnits().getUnits());
 				Collections.sort(units, new UnitCostComparator(costs));
 				final Set<Unit> unitsToPlace = new HashSet<Unit>();
 				unitsToPlace.add(units.get(0));
-				final int random;
-				if (allPickableTerritories.size() == 1)
-					random = 0;
-				else
-					random = m_bridge.getRandom(allPickableTerritories.size(), null, DiceType.ENGINE, "Picking random territory for " + m_currentPickingPlayer.getName());
-				picked = allPickableTerritories.get(random);
+				picked = allPickableTerritories.get(pos % allPickableTerritories.size());
 				final CompositeChange change = new CompositeChange();
 				change.add(ChangeFactory.changeOwner(picked, m_currentPickingPlayer));
 				final Collection<Unit> factoryAndInfrastructure = Match.getMatches(unitsToPlace, Matches.UnitIsInfrastructure);
