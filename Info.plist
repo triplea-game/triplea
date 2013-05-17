@@ -33,7 +33,7 @@
 		<key>MainClass</key>
 		<string>games.strategy.engine.framework.GameRunner</string>
 		<key>VMOptions</key>
-		<string>-Dapple.laf.useScreenMenuBar=true -Xmx1024m </string>
+		<string>-Dapple.laf.useScreenMenuBar=true -Xmx896m </string>
 	</dict>
 </dict>
 </plist>

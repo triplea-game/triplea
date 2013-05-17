@@ -1107,7 +1107,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 	
 	public static double getRepairDiscount(final PlayerID player, final GameData data)
 	{
-		double rVal = 1.0F;
+		double rVal = 1.0D;
 		for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data))
 		{
 			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);

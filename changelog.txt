@@ -11,6 +11,8 @@ Changes for 1.7.0.3
 
 * Created new option in engine preferences to show engine log console, and also had the console show current memory usage. (veqryn)
 
+* Reducing maximum memory to 896mb, down from 1024mb, in order to stop these errors from happening, and not allowing engine to add 20% to this when joining online games or hosting. (veqryn)
+
 * Figuring out some user's Java jvm's and/or the JRE included with triplea, only allow up to xmx 1024mb of memory maximum, and that the program completely fails when going over this limit, often causing the user to be unable to join or host games online. (veqryn & diaz)
 
 * Fixing some lock not held errors. (veqryn)
