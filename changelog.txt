@@ -1,4 +1,6 @@
 Changes for 1.7.0.3
+* Updating Great War ww1 map and xml, to improve options and balance. (veqryn)
+
 * First pass at setting up framework for a headless game server. (veqryn)
 
 * Updating packaged JRE to Java 7 update 21 for x86. (veqryn)

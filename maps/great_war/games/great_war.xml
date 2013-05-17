@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="Great War" version="4.1.1"/>
+        <info name="Great War" version="4.2"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -3909,7 +3909,6 @@
 				<unitPlacement unitType="fighter" territory="Moscow" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Smolensk" quantity="1" owner="Russians"/>
-				<unitPlacement unitType="artillery" territory="Smolensk" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Tver" quantity="1" owner="Russians"/>
 
