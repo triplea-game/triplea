@@ -135,7 +135,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	public void notifyRetreat(final String shortMessage, final String message, final String step, final PlayerID retreatingPlayer)
 	{
 		// we just told the game to retreat, so we already know
-		if (m_ui.playing(retreatingPlayer))
+		if (m_ui.getLocalPlayers().playing(retreatingPlayer))
 			return;
 		m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
 	}
@@ -179,7 +179,7 @@ public class TripleaDisplay implements ITripleaDisplay
 			boolean isObserver = true;
 			if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers)
 			{
-				for (final IGamePlayer player : m_ui.GetLocalPlayers())
+				for (final IGamePlayer player : m_ui.getLocalPlayers().getLocalPlayers())
 				{
 					isObserver = false; // if we have any local players, we are not an observer
 					if (player instanceof TripleAPlayer)
@@ -210,7 +210,7 @@ public class TripleaDisplay implements ITripleaDisplay
 		{
 			for (final PlayerID p : butNotThesePlayers)
 			{
-				if (m_ui.playing(p))
+				if (m_ui.getLocalPlayers().playing(p))
 				{
 					return;
 				}
@@ -219,7 +219,7 @@ public class TripleaDisplay implements ITripleaDisplay
 		boolean isPlaying = false;
 		for (final PlayerID p : playersToSendTo)
 		{
-			if (m_ui.playing(p))
+			if (m_ui.getLocalPlayers().playing(p))
 			{
 				isPlaying = true;
 				break;

@@ -45,7 +45,7 @@ public class TestGameLoader implements IGameLoader
 	/**
 	 * The game is about to start.
 	 */
-	public void startGame(final IGame game, final Set<IGamePlayer> players)
+	public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless)
 	{
 	}
 	

@@ -76,9 +76,9 @@ public class ServerLauncher extends AbstractLauncher
 	private InGameLobbyWatcher m_inGameLobbyWatcher;
 	
 	public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger, final IMessenger messenger,
-				final GameSelectorModel gameSelectorModel, final Map<String, String> localPlayerMapping, final Map<String, INode> remotelPlayers, final ServerModel serverModel)
+				final GameSelectorModel gameSelectorModel, final Map<String, String> localPlayerMapping, final Map<String, INode> remotelPlayers, final ServerModel serverModel, final boolean headless)
 	{
-		super(gameSelectorModel);
+		super(gameSelectorModel, headless);
 		m_clientCount = clientCount;
 		m_remoteMessenger = remoteMessenger;
 		m_channelMessenger = channelMessenger;
@@ -135,7 +135,7 @@ public class ServerLauncher extends AbstractLauncher
 			}
 			try
 			{
-				m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet);
+				m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet, m_headless);
 			} catch (final IllegalStateException e)
 			{
 				m_abortLaunch = true;
@@ -143,7 +143,8 @@ public class ServerLauncher extends AbstractLauncher
 				while (error.getMessage() == null)
 					error = error.getCause();
 				final String message = error.getMessage();
-				m_gameLoadingWindow.doneWait();
+				if (m_gameLoadingWindow != null)
+					m_gameLoadingWindow.doneWait();
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					public void run()
@@ -173,7 +174,8 @@ public class ServerLauncher extends AbstractLauncher
 							{
 								warmUpCryptoRandomSource();
 							}
-							m_gameLoadingWindow.doneWait();
+							if (m_gameLoadingWindow != null)
+								m_gameLoadingWindow.doneWait();
 							m_serverGame.startGame();
 						}
 						else
@@ -221,7 +223,8 @@ public class ServerLauncher extends AbstractLauncher
 			t.start();
 		} finally
 		{
-			m_gameLoadingWindow.doneWait();
+			if (m_gameLoadingWindow != null)
+				m_gameLoadingWindow.doneWait();
 			if (m_inGameLobbyWatcher != null)
 			{
 				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);

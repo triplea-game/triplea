@@ -44,6 +44,7 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -224,7 +225,7 @@ public class TripleAFrame extends MainGameFrame
 	private TripleaMenu m_menu;
 	
 	/** Creates new TripleAFrame */
-	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
+	public TripleAFrame(final IGame game, final LocalPlayers players) throws IOException
 	{
 		super("TripleA - " + game.getData().getGameName(), players);
 		m_game = game;
@@ -236,7 +237,7 @@ public class TripleAFrame extends MainGameFrame
 		m_uiContext = new UIContext();
 		m_uiContext.setDefaultMapDir(game.getData());
 		m_uiContext.getMapData().verify(m_data);
-		m_uiContext.setPlayerList(players);
+		m_uiContext.setLocalPlayers(players);
 		this.setCursor(m_uiContext.getCursor());
 		// initialize m_editModeButtonModel before createMenuBar()
 		m_editModeButtonModel = new JToggleButton.ToggleButtonModel();
@@ -1620,7 +1621,7 @@ public class TripleAFrame extends MainGameFrame
 		}
 		m_round.setText("Round:" + round + " ");
 		m_step.setText(stepDisplayName);
-		final boolean isPlaying = playing(player);
+		final boolean isPlaying = m_localPlayers.playing(player);
 		if (player != null)
 			m_player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
 		if (player != null && !player.isNull())
@@ -2402,7 +2403,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			// We need to check and make sure there are no local human players
 			boolean foundHuman = false;
-			for (final IGamePlayer gamePlayer : m_localPlayers)
+			for (final IGamePlayer gamePlayer : m_localPlayers.getLocalPlayers())
 			{
 				if (gamePlayer instanceof TripleAPlayer)
 				{

@@ -1,8 +1,8 @@
 package games.strategy.sound;
 
-import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.TripleAPlayer;
 
@@ -17,11 +17,11 @@ import java.util.HashSet;
  */
 public class DefaultSoundChannel implements ISound
 {
-	private final MainGameFrame m_ui;
+	private LocalPlayers m_localPlayers;
 	
-	public DefaultSoundChannel(final MainGameFrame gameFrame)
+	public DefaultSoundChannel(final LocalPlayers localPlayers)
 	{
-		m_ui = gameFrame;
+		m_localPlayers = localPlayers;
 	}
 	
 	/**
@@ -46,6 +46,7 @@ public class DefaultSoundChannel implements ISound
 	public void shutDown()
 	{
 		// nothing for now
+		m_localPlayers = null;
 	}
 	
 	public void playSoundForAll(final String clipName, final String subFolder)
@@ -64,7 +65,7 @@ public class DefaultSoundChannel implements ISound
 			boolean isObserver = true;
 			if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers)
 			{
-				for (final IGamePlayer player : m_ui.GetLocalPlayers())
+				for (final IGamePlayer player : m_localPlayers.getLocalPlayers())
 				{
 					isObserver = false; // if we have any local players, we are not an observer
 					if (player instanceof TripleAPlayer)
@@ -95,7 +96,7 @@ public class DefaultSoundChannel implements ISound
 		{
 			for (final PlayerID p : butNotThesePlayers)
 			{
-				if (m_ui.playing(p))
+				if (m_localPlayers.playing(p))
 				{
 					return;
 				}
@@ -104,7 +105,7 @@ public class DefaultSoundChannel implements ISound
 		boolean isPlaying = false;
 		for (final PlayerID p : playersToSendTo)
 		{
-			if (m_ui.playing(p))
+			if (m_localPlayers.playing(p))
 			{
 				isPlaying = true;
 				break;

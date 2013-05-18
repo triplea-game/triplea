@@ -2,10 +2,16 @@ package games.strategy.grid;
 
 import games.strategy.engine.data.DefaultUnitFactory;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.display.IDisplayBridge;
+import games.strategy.engine.framework.AbstractGameLoader;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
@@ -17,6 +23,8 @@ import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridGameMenu;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
+import games.strategy.grid.ui.IGridEndTurnData;
+import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.grid.ui.display.GridGameDisplay;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.sound.DefaultSoundChannel;
@@ -26,6 +34,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,20 +46,13 @@ import javax.swing.SwingUtilities;
  * @author veqryn
  * 
  */
-abstract public class GridGame implements IGameLoader
+abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 {
 	private static final long serialVersionUID = -7194416906783331148L;
 	// When serializing, do not save transient member variables
-	protected transient GridGameDisplay m_display;
-	protected transient DefaultSoundChannel m_soundChannel;
-	protected transient IGame m_game;
+	protected transient IGridGameDisplay m_display;
 	
 	abstract public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames);
-	
-	/**
-	 * Return an array of player types that can play on the server.
-	 */
-	abstract public String[] getServerPlayerTypes();
 	
 	abstract protected Class<? extends GridMapPanel> getGridMapPanelClass();
 	
@@ -89,7 +91,7 @@ abstract public class GridGame implements IGameLoader
 	{
 	}
 	
-	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
+	public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception
 	{
 		try
 		{
@@ -108,46 +110,122 @@ abstract public class GridGame implements IGameLoader
 					((ServerGame) game).addDelegateMessenger(delegate);
 				}
 			}
-			SwingUtilities.invokeAndWait(new Runnable()
+			final LocalPlayers localPlayers = new LocalPlayers(players);
+			if (headless)
 			{
-				public void run()
+				m_display = new IGridGameDisplay()
 				{
-					final GridGameFrame frame = new GridGameFrame(game, players, getGridMapPanelClass(), getGridMapDataClass(), getGridTableMenuClass(), getSquareWidth(), getSquareHeight(),
-								getBevelSize());
-					m_display = new GridGameDisplay(frame);
-					m_game.addDisplay(m_display);
-					m_soundChannel = new DefaultSoundChannel(frame);
-					m_game.addSoundChannel(m_soundChannel);
-					initializeGame();
-					connectPlayers(players, frame);
-					SwingUtilities.invokeLater(new Runnable()
+					public void initialize(final IDisplayBridge bridge)
 					{
-						public void run()
+					}
+					
+					public void shutDown()
+					{
+					}
+					
+					public void setStatus(final String status)
+					{
+					}
+					
+					public void setGameOver()
+					{
+					}
+					
+					public void refreshTerritories(final Collection<Territory> territories)
+					{
+					}
+					
+					public void showGridPlayDataMove(final IGridPlayData move)
+					{
+					}
+					
+					public void showGridEndTurnData(final IGridEndTurnData endTurnData)
+					{
+					}
+					
+					public void initializeGridMapData(final GameMap map)
+					{
+					}
+					
+					public GridGameFrame getGridGameFrame()
+					{
+						return null;
+					}
+				};
+				m_soundChannel = new ISound()
+				{
+					public void initialize()
+					{
+					}
+					
+					public void shutDown()
+					{
+					}
+					
+					public void playSoundForAll(final String clipName, final String subFolder)
+					{
+					}
+					
+					public void playSoundForAll(final String clipName, final String subFolder, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
+					{
+					}
+					
+					public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers)
+					{
+					}
+					
+					public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo)
+					{
+					}
+				};
+				m_game.addDisplay(m_display);
+				m_game.addSoundChannel(m_soundChannel);
+				initializeGame();
+				connectPlayers(players, null); // technically not needed because we won't have any "local human players" in a headless game.
+			}
+			else
+			{
+				SwingUtilities.invokeAndWait(new Runnable()
+				{
+					public void run()
+					{
+						final GridGameFrame frame = new GridGameFrame(game, localPlayers, getGridMapPanelClass(), getGridMapDataClass(), getGridTableMenuClass(), getSquareWidth(), getSquareHeight(),
+									getBevelSize());
+						m_display = new GridGameDisplay(frame);
+						m_game.addDisplay(m_display);
+						m_soundChannel = new DefaultSoundChannel(localPlayers);
+						m_game.addSoundChannel(m_soundChannel);
+						initializeGame();
+						connectPlayers(players, frame);
+						SwingUtilities.invokeLater(new Runnable()
 						{
-							final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-							final int availHeight = screenResolution.height - 30;
-							final int availWidth = screenResolution.width;
-							// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-							final Dimension currentSize = frame.getPreferredSize();
-							// add a little, since we have stuff like history tab, etc, that increases the width
-							currentSize.height = Math.min(availHeight, currentSize.height + 10);
-							currentSize.width = Math.min(availWidth, currentSize.width + 10);
-							frame.setPreferredSize(currentSize);
-							frame.setSize(currentSize);
-							if (currentSize.height > availHeight - 100 && currentSize.width > availWidth - 200)
-								frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-							else if (currentSize.height > availHeight)
-								frame.setExtendedState(Frame.MAXIMIZED_VERT);
-							else if (currentSize.width > availWidth)
-								frame.setExtendedState(Frame.MAXIMIZED_HORIZ);
-							frame.setLocationRelativeTo(null);
-							frame.setVisible(true);
-							frame.toFront();
-							frame.minimizeRightSidePanel();
-						}
-					});
-				}
-			});
+							public void run()
+							{
+								final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+								final int availHeight = screenResolution.height - 30;
+								final int availWidth = screenResolution.width;
+								// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+								final Dimension currentSize = frame.getPreferredSize();
+								// add a little, since we have stuff like history tab, etc, that increases the width
+								currentSize.height = Math.min(availHeight, currentSize.height + 10);
+								currentSize.width = Math.min(availWidth, currentSize.width + 10);
+								frame.setPreferredSize(currentSize);
+								frame.setSize(currentSize);
+								if (currentSize.height > availHeight - 100 && currentSize.width > availWidth - 200)
+									frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+								else if (currentSize.height > availHeight)
+									frame.setExtendedState(Frame.MAXIMIZED_VERT);
+								else if (currentSize.width > availWidth)
+									frame.setExtendedState(Frame.MAXIMIZED_HORIZ);
+								frame.setLocationRelativeTo(null);
+								frame.setVisible(true);
+								frame.toFront();
+								frame.minimizeRightSidePanel();
+							}
+						});
+					}
+				});
+			}
 		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
@@ -172,14 +250,10 @@ abstract public class GridGame implements IGameLoader
 		}
 	}
 	
+	@Override
 	public void shutDown()
 	{
-		if (m_soundChannel != null)
-		{
-			m_game.removeSoundChannel(m_soundChannel);
-			m_soundChannel.shutDown();
-			m_soundChannel = null;
-		}
+		super.shutDown();
 		if (m_display != null)
 		{
 			m_game.removeDisplay(m_display);

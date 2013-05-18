@@ -22,14 +22,19 @@ package games.strategy.triplea;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.display.IDisplayBridge;
+import games.strategy.engine.framework.AbstractGameLoader;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.net.GUID;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
@@ -37,7 +42,10 @@ import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.ai.weakAI.DoesNothingAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.EditDelegate;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
@@ -46,7 +54,9 @@ import games.strategy.triplea.ui.display.TripleaDisplay;
 import java.awt.Frame;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,7 +66,7 @@ import javax.swing.SwingUtilities;
  * @author Sean Bridges
  * @version 1.0
  */
-public class TripleA implements IGameLoader
+public class TripleA extends AbstractGameLoader implements IGameLoader
 {
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = -8374315848374732436L;
@@ -67,9 +77,7 @@ public class TripleA implements IGameLoader
 	public static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix Land-Only (AI)";
 	public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
 	// public static final String NONE = "None (AI)";
-	private transient TripleaDisplay m_display;
-	private transient DefaultSoundChannel m_soundChannel;
-	private transient IGame m_game;
+	protected transient ITripleaDisplay m_display;
 	
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
@@ -112,14 +120,10 @@ public class TripleA implements IGameLoader
 		return players;
 	}
 	
+	@Override
 	public void shutDown()
 	{
-		if (m_soundChannel != null)
-		{
-			m_game.removeSoundChannel(m_soundChannel);
-			m_soundChannel.shutDown();
-			m_soundChannel = null;
-		}
+		super.shutDown();
 		if (m_display != null)
 		{
 			m_game.removeDisplay(m_display);
@@ -128,7 +132,11 @@ public class TripleA implements IGameLoader
 		}
 	}
 	
-	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
+	protected void initializeGame()
+	{
+	}
+	
+	public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception
 	{
 		try
 		{
@@ -152,38 +160,143 @@ public class TripleA implements IGameLoader
 					((ServerGame) game).addDelegateMessenger(delegate);
 				}
 			}
-			SwingUtilities.invokeAndWait(new Runnable()
+			final LocalPlayers localPlayers = new LocalPlayers(players);
+			if (headless)
 			{
-				public void run()
+				m_display = new ITripleaDisplay()
 				{
-					final TripleAFrame frame;
-					try
+					public void initialize(final IDisplayBridge bridge)
 					{
-						frame = new TripleAFrame(game, players);
-					} catch (final IOException e)
-					{
-						e.printStackTrace();
-						System.exit(-1);
-						return;
 					}
-					m_display = new TripleaDisplay(frame);
-					game.addDisplay(m_display);
-					m_soundChannel = new DefaultSoundChannel(frame);
-					game.addSoundChannel(m_soundChannel);
-					frame.setSize(700, 400);
-					frame.setVisible(true);
-					DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_GAME_START, null);
-					connectPlayers(players, frame);
-					SwingUtilities.invokeLater(new Runnable()
+					
+					public void shutDown()
 					{
-						public void run()
+					}
+					
+					public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
+					{
+					}
+					
+					public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers, final String message, final String title)
+					{
+					}
+					
+					public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
+								final Collection<Unit> killedUnits,
+								final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
+								final PlayerID defender,
+								final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers)
+					{
+					}
+					
+					public void listBattleSteps(final GUID battleID, final List<String> steps)
+					{
+					}
+					
+					public void battleEnd(final GUID battleID, final String message)
+					{
+					}
+					
+					public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed, final Collection<Unit> damaged,
+								final Map<Unit, Collection<Unit>> dependents)
+					{
+					}
+					
+					public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> dead, final Map<Unit, Collection<Unit>> dependents)
+					{
+					}
+					
+					public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits, final Collection<Unit> addedUnits,
+								final Map<Unit, Collection<Unit>> dependents)
+					{
+					}
+					
+					public void bombingResults(final GUID battleID, final List<Die> dice, final int cost)
+					{
+					}
+					
+					public void notifyRetreat(final String shortMessage, final String message, final String step, final PlayerID retreatingPlayer)
+					{
+					}
+					
+					public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating)
+					{
+					}
+					
+					public void notifyDice(final GUID battleId, final DiceRoll dice, final String stepName)
+					{
+					}
+					
+					public void gotoBattleStep(final GUID battleId, final String step)
+					{
+					}
+				};
+				m_soundChannel = new ISound()
+				{
+					public void initialize()
+					{
+					}
+					
+					public void shutDown()
+					{
+					}
+					
+					public void playSoundForAll(final String clipName, final String subFolder)
+					{
+					}
+					
+					public void playSoundForAll(final String clipName, final String subFolder, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
+					{
+					}
+					
+					public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers)
+					{
+					}
+					
+					public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo)
+					{
+					}
+				};
+				game.addDisplay(m_display);
+				game.addSoundChannel(m_soundChannel);
+				initializeGame();
+				connectPlayers(players, null);// technically not needed because we won't have any "local human players" in a headless game.
+			}
+			else
+			{
+				SwingUtilities.invokeAndWait(new Runnable()
+				{
+					public void run()
+					{
+						final TripleAFrame frame;
+						try
 						{
-							frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-							frame.toFront();
+							frame = new TripleAFrame(game, localPlayers);
+						} catch (final IOException e)
+						{
+							e.printStackTrace();
+							System.exit(-1);
+							return;
 						}
-					});
-				}
-			});
+						m_display = new TripleaDisplay(frame);
+						game.addDisplay(m_display);
+						m_soundChannel = new DefaultSoundChannel(localPlayers);
+						game.addSoundChannel(m_soundChannel);
+						frame.setSize(700, 400);
+						frame.setVisible(true);
+						DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_GAME_START, null);
+						connectPlayers(players, frame);
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+								frame.toFront();
+							}
+						});
+					}
+				});
+			}
 		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
@@ -211,6 +324,7 @@ public class TripleA implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
+	@Override
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE,

@@ -35,10 +35,10 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
@@ -79,7 +79,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -154,7 +153,7 @@ public class GridGameFrame extends MainGameFrame
 	 * @param game
 	 * @param players
 	 */
-	public GridGameFrame(final IGame game, final Set<IGamePlayer> players, final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends GridMapData> gridMapDataClass,
+	public GridGameFrame(final IGame game, final LocalPlayers players, final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends GridMapData> gridMapDataClass,
 				final Class<? extends GridGameMenu<GridGameFrame>> menuBarClass, final int squareWidth, final int squareHeight, final int bevelSize)
 	{
 		super("TripleA - " + game.getData().getGameName(), players);

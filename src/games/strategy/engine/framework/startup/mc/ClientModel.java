@@ -336,7 +336,7 @@ public class ClientModel implements IMessengerErrorListener
 					{
 						try
 						{
-							data.getGameLoader().startGame(m_game, playerSet);
+							data.getGameLoader().startGame(m_game, playerSet, false);
 							data.testLocksOnRead();
 							NewGameChooser.clearNewGameChooserModel();
 						} catch (final Exception e)

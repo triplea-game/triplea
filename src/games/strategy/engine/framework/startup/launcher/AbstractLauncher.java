@@ -23,10 +23,21 @@ abstract public class AbstractLauncher implements ILauncher
 {
 	protected final GameData m_gameData;
 	protected final GameSelectorModel m_gameSelectorModel;
-	protected final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
+	protected final WaitWindow m_gameLoadingWindow;
+	protected final boolean m_headless;
 	
 	protected AbstractLauncher(final GameSelectorModel gameSelectorModel)
 	{
+		this(gameSelectorModel, false);
+	}
+	
+	protected AbstractLauncher(final GameSelectorModel gameSelectorModel, final boolean headless)
+	{
+		m_headless = headless;
+		if (m_headless)
+			m_gameLoadingWindow = null;
+		else
+			m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
 		m_gameSelectorModel = gameSelectorModel;
 		m_gameData = gameSelectorModel.getGameData();
 	}
@@ -36,7 +47,7 @@ abstract public class AbstractLauncher implements ILauncher
 	 */
 	public void launch(final Component parent)
 	{
-		if (!SwingUtilities.isEventDispatchThread())
+		if (!m_headless && !SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
 		final Runnable r = new Runnable()
 		{
@@ -47,10 +58,14 @@ abstract public class AbstractLauncher implements ILauncher
 			}
 		};
 		final Thread t = new Thread(r, "Triplea start thread");
-		m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
-		m_gameLoadingWindow.setVisible(true);
-		m_gameLoadingWindow.showWait();
-		JOptionPane.getFrameForComponent(parent).setVisible(false);
+		if (!m_headless && m_gameLoadingWindow != null)
+		{
+			m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
+			m_gameLoadingWindow.setVisible(true);
+			m_gameLoadingWindow.showWait();
+		}
+		if (!m_headless && parent != null)
+			JOptionPane.getFrameForComponent(parent).setVisible(false);
 		t.start();
 	}
 	

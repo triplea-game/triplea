@@ -654,7 +654,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addChangeDynamixAISettings(final JMenu parentMenu)
 	{
 		boolean areThereDynamixAIs = false;
-		final Set<IGamePlayer> players = (m_frame).GetLocalPlayers();
+		final Set<IGamePlayer> players = (m_frame).getLocalPlayers().getLocalPlayers();
 		for (final IGamePlayer player : players)
 		{
 			if (player instanceof Dynamix_AI)

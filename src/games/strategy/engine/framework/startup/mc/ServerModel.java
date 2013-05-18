@@ -427,7 +427,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 					}
 				}
 			}
-			final ServerLauncher launcher = new ServerLauncher(clientCount, m_remoteMessenger, m_channelMessenger, m_serverMessenger, m_gameSelectorModel, localPlayerMappings, remotePlayers, this);
+			final ServerLauncher launcher = new ServerLauncher(clientCount, m_remoteMessenger, m_channelMessenger, m_serverMessenger, m_gameSelectorModel, localPlayerMappings, remotePlayers, this,
+						m_headless);
 			return launcher;
 		}
 	}

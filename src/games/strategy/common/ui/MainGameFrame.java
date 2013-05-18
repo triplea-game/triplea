@@ -13,13 +13,9 @@
  */
 package games.strategy.common.ui;
 
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.IGame;
-import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.triplea.TripleAPlayer;
-
-import java.util.Set;
+import games.strategy.engine.framework.LocalPlayers;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -32,9 +28,9 @@ import javax.swing.JFrame;
 public abstract class MainGameFrame extends JFrame
 {
 	private static final long serialVersionUID = 7433347393639606647L;
-	protected Set<IGamePlayer> m_localPlayers;
+	protected LocalPlayers m_localPlayers;
 	
-	public MainGameFrame(final String name, final Set<IGamePlayer> players)
+	public MainGameFrame(final String name, final LocalPlayers players)
 	{
 		super(name);
 		m_localPlayers = players;
@@ -53,22 +49,13 @@ public abstract class MainGameFrame extends JFrame
 	
 	public abstract void setShowChatTime(final boolean showTime);
 	
-	public Set<IGamePlayer> GetLocalPlayers()
+	public LocalPlayers getLocalPlayers()
 	{
 		return m_localPlayers;
 	}
-	
+	/*
 	public boolean playing(final PlayerID id)
 	{
-		if (id == null)
-			return false;
-		for (final IGamePlayer gamePlayer : m_localPlayers)
-		{
-			if (gamePlayer.getPlayerID().equals(id) && gamePlayer instanceof TripleAPlayer)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+		return m_localPlayers.playing(id);
+	}*/
 }

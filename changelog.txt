@@ -1,9 +1,11 @@
 Changes for 1.7.0.3
+* Got headless game server to be able to host minimap, with the game screen headless. (veqryn)
+
+* First pass at setting up framework for a headless game server. (veqryn)
+
 * Fixed bug causing Random Territory Start delegate to fail in online games due to requesting dice too quickly. (veqryn)
 
 * Updating Great War ww1 map and xml, to improve options and balance. (veqryn)
-
-* First pass at setting up framework for a headless game server. (veqryn)
 
 * Updating packaged JRE to Java 7 update 21 for x86. (veqryn)
 

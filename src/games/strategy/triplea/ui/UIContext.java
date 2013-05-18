@@ -15,7 +15,7 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,7 +86,7 @@ public class UIContext
 	private final static String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
 	private final static String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
 	private final static String AI_PAUSE_DURATION = "AIPauseDuration";
-	private Set<IGamePlayer> m_playerList;
+	private LocalPlayers m_localPlayers;
 	private double m_scale = 1;
 	private static ResourceLoader m_resourceLoader;
 	// private final MainGameFrame m_frame;
@@ -634,14 +633,14 @@ public class UIContext
 		}
 	}
 	
-	public Set<IGamePlayer> getPlayerList()
+	public LocalPlayers getLocalPlayers()
 	{
-		return m_playerList;
+		return m_localPlayers;
 	}
 	
-	public void setPlayerList(final Set<IGamePlayer> value)
+	public void setLocalPlayers(final LocalPlayers players)
 	{
-		m_playerList = value;
+		m_localPlayers = players;
 	}
 	
 	public void setUnitScaleFactor(final double scaleFactor)

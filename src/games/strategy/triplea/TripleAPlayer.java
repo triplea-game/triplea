@@ -681,7 +681,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 		// no need, we have already confirmed since we are firing player
-		if (m_ui.playing(hitPlayer))
+		if (m_ui.getLocalPlayers().playing(hitPlayer))
 			return;
 		// we dont want to confirm enemy casualties
 		if (!BattleDisplay.getShowEnemyCasualtyNotification())

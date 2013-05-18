@@ -9,6 +9,7 @@ import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.util.ClassLoaderUtil;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.zip.ZipInputStream;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * Ideally a way of hosting a game, but headless.
@@ -91,8 +93,13 @@ public class HeadlessGameServer
 					model.cancel();
 					return;
 				}
+				final JFrame frame = new JFrame("Test Frame");
+				frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+				frame.setPreferredSize(new Dimension(250, 250));
+				frame.setSize(new Dimension(250, 250));
+				frame.setLocationRelativeTo(null);
 				serverSetupPanel.preStartGame();
-				serverSetupPanel.getLauncher().launch(new JFrame("Test Frame"));
+				serverSetupPanel.getLauncher().launch(frame);
 				serverSetupPanel.postStartGame();
 			}
 		});
