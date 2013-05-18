@@ -26,8 +26,8 @@ import java.util.Observable;
 
 public class SetupPanelModel extends Observable
 {
-	private final GameSelectorModel m_gameSelectorModel;
-	private SetupPanel m_panel;
+	protected final GameSelectorModel m_gameSelectorModel;
+	protected SetupPanel m_panel;
 	
 	public SetupPanelModel(final GameSelectorModel gameSelectorModel)
 	{
@@ -41,7 +41,8 @@ public class SetupPanelModel extends Observable
 	
 	public void setWidgetActivation()
 	{
-		m_panel.setWidgetActivation();
+		if (m_panel != null)
+			m_panel.setWidgetActivation();
 	}
 	
 	public void showSelectType()
@@ -86,7 +87,7 @@ public class SetupPanelModel extends Observable
 		setGameTypePanel(new ClientSetupPanel(model));
 	}
 	
-	private void setGameTypePanel(final SetupPanel panel)
+	protected void setGameTypePanel(final SetupPanel panel)
 	{
 		if (m_panel != null)
 		{

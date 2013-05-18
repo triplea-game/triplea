@@ -564,8 +564,16 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				properties.add(unitCountColor);
 				properties.add(factoryDamageColor);
 				final PropertiesUI pui = new PropertiesUI(properties, true);
+				final JPanel ui = new JPanel();
+				ui.setLayout(new BorderLayout());
+				ui.add(pui, BorderLayout.CENTER);
+				ui.add(new JLabel("<html>Change the font and color of 'text' (not pictures) on the map. "
+							+ "<br /><em>(Some people encounter problems with the color picker, and this "
+							+ "<br />is a bug outside of triplea, located in the 'look and feel' that "
+							+ "<br />you are using. If you have an error come up, try switching to the "
+							+ "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"), BorderLayout.NORTH);
 				final Object[] options = { "Set Properties", "Reset To Default", "Cancel" };
-				final int result = JOptionPane.showOptionDialog(m_frame, pui, "Edit Map Font and Color", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
+				final int result = JOptionPane.showOptionDialog(m_frame, ui, "Edit Map Font and Color", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
 				if (result == 2)
 					return;
 				else if (result == 1)

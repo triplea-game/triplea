@@ -64,7 +64,7 @@ abstract public class AbstractLauncher implements ILauncher
 			m_gameLoadingWindow.setVisible(true);
 			m_gameLoadingWindow.showWait();
 		}
-		if (!m_headless && parent != null)
+		if (parent != null)
 			JOptionPane.getFrameForComponent(parent).setVisible(false);
 		t.start();
 	}

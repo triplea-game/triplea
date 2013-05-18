@@ -145,13 +145,18 @@ public class ServerLauncher extends AbstractLauncher
 				final String message = error.getMessage();
 				if (m_gameLoadingWindow != null)
 					m_gameLoadingWindow.doneWait();
-				SwingUtilities.invokeLater(new Runnable()
+				if (!m_headless)
 				{
-					public void run()
+					SwingUtilities.invokeLater(new Runnable()
 					{
-						JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
-					}
-				});
+						public void run()
+						{
+							JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+						}
+					});
+				}
+				else
+					System.out.println(message);
 				
 			} catch (final Exception e)
 			{
@@ -181,13 +186,18 @@ public class ServerLauncher extends AbstractLauncher
 						else
 						{
 							m_serverGame.stopGame();
-							SwingUtilities.invokeLater(new Runnable()
+							if (!m_headless)
 							{
-								public void run()
+								SwingUtilities.invokeLater(new Runnable()
 								{
-									JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
-								}
-							});
+									public void run()
+									{
+										JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
+									}
+								});
+							}
+							else
+								System.out.println("Error during startup, game aborted.");
 						}
 					} catch (final MessengerException me)
 					{
@@ -204,14 +214,20 @@ public class ServerLauncher extends AbstractLauncher
 							e.printStackTrace();
 						}
 					}
-					m_gameSelectorModel.loadDefaultGame(parent);
-					SwingUtilities.invokeLater(new Runnable()
+					if (m_headless)
+						m_gameSelectorModel.load(new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME), null);
+					else
+						m_gameSelectorModel.loadDefaultGame(parent);
+					if (parent != null)
 					{
-						public void run()
+						SwingUtilities.invokeLater(new Runnable()
 						{
-							JOptionPane.getFrameForComponent(parent).setVisible(true);
-						}
-					});
+							public void run()
+							{
+								JOptionPane.getFrameForComponent(parent).setVisible(true);
+							}
+						});
+					}
 					m_serverModel.setServerLauncher(null);
 					m_serverModel.newGame();
 					if (m_inGameLobbyWatcher != null)
@@ -314,14 +330,19 @@ public class ServerLauncher extends AbstractLauncher
 		final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
 		m_serverGame.saveGame(f);
 		m_serverGame.stopGame();
-		SwingUtilities.invokeLater(new Runnable()
+		if (!m_headless)
 		{
-			public void run()
+			SwingUtilities.invokeLater(new Runnable()
 			{
-				final String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
-				JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
-			}
-		});
+				public void run()
+				{
+					final String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+					JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
+				}
+			});
+		}
+		else
+			System.out.println("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());
 	}
 }
 

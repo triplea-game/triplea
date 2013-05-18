@@ -95,18 +95,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	
 	public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel)
 	{
+		this(gameSelectorModel, typePanelModel, false);
+	}
+	
+	public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel, final boolean headless)
+	{
 		m_gameSelectorModel = gameSelectorModel;
 		m_typePanelModel = typePanelModel;
 		m_gameSelectorModel.addObserver(m_gameSelectorObserver);
-		m_headless = false;
-	}
-	
-	public ServerModel(final GameSelectorModel gameSelectorModel)
-	{
-		m_gameSelectorModel = gameSelectorModel;
-		m_typePanelModel = null;
-		m_gameSelectorModel.addObserver(m_gameSelectorObserver);
-		m_headless = true;
+		m_headless = headless;
 	}
 	
 	public void cancel()
@@ -351,6 +348,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		if (m_headless)
 		{
 			System.out.println("Connection Lost");
+			if (m_typePanelModel != null)
+				m_typePanelModel.showSelectType();
 		}
 		else
 		{

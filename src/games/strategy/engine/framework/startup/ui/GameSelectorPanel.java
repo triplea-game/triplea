@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,7 +72,6 @@ public class GameSelectorPanel extends JPanel implements Observer
 		updateGameData();
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void updateGameData()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -89,12 +89,16 @@ public class GameSelectorPanel extends JPanel implements Observer
 		m_versionText.setText(m_model.getGameVersion());
 		m_roundText.setText(m_model.getGameRound());
 		String fileName = m_model.getFileName();
-		try
+		if (fileName != null && fileName.length() > 1)
 		{
-			fileName = URLDecoder.decode(fileName);
-		} catch (final IllegalArgumentException e)
-		{
-			// ignore
+			try
+			{
+				fileName = URLDecoder.decode(fileName, "UTF-8");
+			} catch (final IllegalArgumentException e)
+			{// ignore
+			} catch (final UnsupportedEncodingException e)
+			{// ignore
+			}
 		}
 		m_fileNameText.setText(getLimitedFileNameText(fileName));
 		m_fileNameText.setToolTipText(fileName);

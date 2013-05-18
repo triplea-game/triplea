@@ -177,7 +177,7 @@ public class ResourceLoader
 		String fileName;
 		try
 		{
-			fileName = URLDecoder.decode(rVal.getFile(), "utf-8");
+			fileName = URLDecoder.decode(rVal.getFile(), "UTF-8");
 		} catch (final IOException e)
 		{
 			throw new IllegalStateException(e);

@@ -13,6 +13,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.ui.HeadlessGameServerUI;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
@@ -113,6 +114,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 			final LocalPlayers localPlayers = new LocalPlayers(players);
 			if (headless)
 			{
+				final HeadlessGameServerUI headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, null);
 				m_display = new IGridGameDisplay()
 				{
 					public void initialize(final IDisplayBridge bridge)
@@ -121,6 +123,9 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 					
 					public void shutDown()
 					{
+						// make sure to shut down the ui if there is one
+						if (headlessFrameUI != null)
+							headlessFrameUI.stopGame();
 					}
 					
 					public void setStatus(final String status)
@@ -182,6 +187,13 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 				m_game.addSoundChannel(m_soundChannel);
 				initializeGame();
 				connectPlayers(players, null); // technically not needed because we won't have any "local human players" in a headless game.
+				if (headlessFrameUI != null)
+				{
+					headlessFrameUI.setLocationRelativeTo(null);
+					headlessFrameUI.setSize(700, 400);
+					headlessFrameUI.setVisible(true);
+					headlessFrameUI.toFront();
+				}
 			}
 			else
 			{

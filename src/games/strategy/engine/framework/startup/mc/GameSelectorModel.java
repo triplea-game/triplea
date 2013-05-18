@@ -59,9 +59,10 @@ public class GameSelectorModel extends Observable
 		setGameData(null);
 	}
 	
-	public void load(final GameData data)
+	public void load(final GameData data, final String fileName)
 	{
 		setGameData(data);
+		m_fileName = fileName;
 	}
 	
 	public void load(final NewGameChooserEntry entry)
@@ -86,7 +87,6 @@ public class GameSelectorModel extends Observable
 	
 	public void load(final File file, final Component ui)
 	{
-		final GameDataManager manager = new GameDataManager();
 		if (!file.exists())
 		{
 			if (ui == null)
@@ -103,6 +103,7 @@ public class GameSelectorModel extends Observable
 				error("Cannot load a directory:" + file, ui);
 			return;
 		}
+		final GameDataManager manager = new GameDataManager();
 		GameData newData;
 		try
 		{

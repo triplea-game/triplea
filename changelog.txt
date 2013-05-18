@@ -1,4 +1,6 @@
 Changes for 1.7.0.3
+* Got headless game server to be able to pick games, and have a mini-ui for hosting and for during the game. (veqryn)
+
 * Got headless game server to be able to host minimap, with the game screen headless. (veqryn)
 
 * First pass at setting up framework for a headless game server. (veqryn)
