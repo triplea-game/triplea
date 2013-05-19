@@ -14,11 +14,11 @@
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PBEMSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
-import games.strategy.engine.framework.startup.ui.SetupPanel;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,7 +27,7 @@ import java.util.Observable;
 public class SetupPanelModel extends Observable
 {
 	protected final GameSelectorModel m_gameSelectorModel;
-	protected SetupPanel m_panel;
+	protected ISetupPanel m_panel;
 	
 	public SetupPanelModel(final GameSelectorModel gameSelectorModel)
 	{
@@ -87,7 +87,7 @@ public class SetupPanelModel extends Observable
 		setGameTypePanel(new ClientSetupPanel(model));
 	}
 	
-	protected void setGameTypePanel(final SetupPanel panel)
+	protected void setGameTypePanel(final ISetupPanel panel)
 	{
 		if (m_panel != null)
 		{
@@ -99,7 +99,7 @@ public class SetupPanelModel extends Observable
 		super.clearChanged();
 	}
 	
-	public SetupPanel getPanel()
+	public ISetupPanel getPanel()
 	{
 		return m_panel;
 	}

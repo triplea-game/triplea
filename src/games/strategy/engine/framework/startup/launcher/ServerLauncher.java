@@ -16,6 +16,7 @@ package games.strategy.engine.framework.startup.launcher;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -215,9 +216,19 @@ public class ServerLauncher extends AbstractLauncher
 						}
 					}
 					if (m_headless)
-						m_gameSelectorModel.load(new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME), null);
+					{
+						try
+						{
+							Thread.sleep(250);
+						} catch (final InterruptedException e)
+						{
+						}
+						m_gameSelectorModel.load(new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName()), null);
+					}
 					else
+					{
 						m_gameSelectorModel.loadDefaultGame(parent);
+					}
 					if (parent != null)
 					{
 						SwingUtilities.invokeLater(new Runnable()
@@ -233,6 +244,11 @@ public class ServerLauncher extends AbstractLauncher
 					if (m_inGameLobbyWatcher != null)
 					{
 						m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
+					}
+					if (m_headless)
+					{
+						// tell headless server to wait for new connections:
+						HeadlessGameServer.waitForUsersHeadlessInstance();
 					}
 				}
 			};
@@ -327,7 +343,12 @@ public class ServerLauncher extends AbstractLauncher
 	{
 		final DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
 		SaveGameFileChooser.ensureDefaultDirExists();
-		final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
+		// a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
+		final File f;
+		if (m_headless)
+			f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+		else
+			f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
 		m_serverGame.saveGame(f);
 		m_serverGame.stopGame();
 		if (!m_headless)
@@ -342,7 +363,9 @@ public class ServerLauncher extends AbstractLauncher
 			});
 		}
 		else
+		{
 			System.out.println("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());
+		}
 	}
 }
 

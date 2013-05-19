@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Action;
 import javax.swing.JPanel;
 
-public abstract class SetupPanel extends JPanel
+public abstract class SetupPanel extends JPanel implements ISetupPanel
 {
 	private static final long serialVersionUID = 4001323470187210773L;
 	private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
@@ -25,7 +25,7 @@ public abstract class SetupPanel extends JPanel
 		m_listeners.add(observer);
 	}
 	
-	protected void notifyObservers()
+	public void notifyObservers()
 	{
 		for (final Observer observer : m_listeners)
 		{

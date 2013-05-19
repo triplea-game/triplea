@@ -39,7 +39,7 @@ public class MainPanel extends JPanel implements Observer
 	private JButton m_quitButton;
 	private JButton m_cancelButton;
 	private final GameSelectorModel m_gameSelectorModel;
-	private SetupPanel m_gameSetupPanel;
+	private ISetupPanel m_gameSetupPanel;
 	private JPanel m_gameSetupPanelHolder;
 	private JPanel m_chatPanelHolder;
 	private final SetupPanelModel m_gameTypePanelModel;
@@ -143,16 +143,21 @@ public class MainPanel extends JPanel implements Observer
 		m_isChatShowing = chat != null;
 	}
 	
-	public void setGameSetupPanel(final SetupPanel panel)
+	public void setGameSetupPanel(final ISetupPanel panel)
 	{
+		SetupPanel setupPanel = null;
+		if (SetupPanel.class.isAssignableFrom(panel.getClass()))
+			setupPanel = (SetupPanel) panel;
 		if (m_gameSetupPanel != null)
 		{
 			m_gameSetupPanel.removeObserver(this);
-			m_gameSetupPanelHolder.remove(panel);
+			if (setupPanel != null)
+				m_gameSetupPanelHolder.remove(setupPanel);
 		}
 		m_gameSetupPanel = panel;
 		m_gameSetupPanelHolder.removeAll();
-		m_gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
+		if (setupPanel != null)
+			m_gameSetupPanelHolder.add(setupPanel, BorderLayout.CENTER);
 		panel.addObserver(this);
 		setWidgetActivation();
 		// add the cancel button if we are not choosing the type.

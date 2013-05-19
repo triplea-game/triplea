@@ -364,7 +364,7 @@ public class ServerGame extends AbstractGame
 		try
 		{
 			SaveGameFileChooser.ensureDefaultDirExists();
-			final File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_FILE_NAME);
+			final File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
 			out = new FileOutputStream(autosaveFile);
 			saveGame(out);
 		} catch (final Exception e)
@@ -391,9 +391,9 @@ public class ServerGame extends AbstractGame
 			SaveGameFileChooser.ensureDefaultDirExists();
 			File autosaveFile;
 			if (m_data.getSequence().getRound() % 2 == 0)
-				autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_EVEN_ROUND_FILE_NAME);
+				autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveEvenFileName());
 			else
-				autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.AUTOSAVE_ODD_ROUND_FILE_NAME);
+				autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveOddFileName());
 			out = new FileOutputStream(autosaveFile);
 			saveGame(out);
 		} catch (final Exception e)

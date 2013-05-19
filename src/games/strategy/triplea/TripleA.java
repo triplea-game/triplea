@@ -27,6 +27,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.engine.framework.AbstractGameLoader;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -167,9 +168,14 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 			{
 				final UIContext uiContext = new UIContext();
 				uiContext.setDefaultMapDir(game.getData());
-				uiContext.getMapData().verify(game.getData());
+				// uiContext.getMapData().verify(game.getData());
 				uiContext.setLocalPlayers(localPlayers);
-				final HeadlessGameServerUI headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
+				final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
+				final HeadlessGameServerUI headlessFrameUI;
+				if (useServerUI)
+					headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
+				else
+					headlessFrameUI = null;
 				m_display = new ITripleaDisplay()
 				{
 					public void initialize(final IDisplayBridge bridge)

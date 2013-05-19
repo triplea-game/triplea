@@ -149,7 +149,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 				m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
 				for (final String name : m_data.getPlayerList().getNames())
 				{
-					m_players.put(name, m_serverMessenger.getLocalNode().getName());
+					if (m_headless)// && !(name.startsWith("Neutral") || name.startsWith("AI"))) // debateable whether we want a headless server doing any AI stuff
+						m_players.put(name, null);
+					else
+						m_players.put(name, m_serverMessenger.getLocalNode().getName());
 					m_playerNamesAndAlliancesInTurnOrder.put(name, m_data.getAllianceTracker().getAlliancesPlayerIsIn(m_data.getPlayerList().getPlayerID(name)));
 				}
 			}

@@ -72,7 +72,7 @@ public class MainFrame extends JFrame
 	 */
 	public Chat getChat()
 	{
-		final SetupPanel model = m_setupPanelModel.getPanel();
+		final ISetupPanel model = m_setupPanelModel.getPanel();
 		if (model instanceof ServerSetupPanel)
 		{
 			return model.getChatPanel().getChat();

@@ -25,6 +25,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -319,9 +320,19 @@ public class EndRoundDelegate extends BaseTripleADelegate
 						((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
 			// send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
 			getDisplay(aBridge).reportMessageToAll(status, status, true, false, true); // we send the bridge, because we can call this method from outside this delegate, which means our local copy of m_bridge could be null.
-			// now tell the HOST, and see if they want to continue the game.
-			final int rVal = EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true));
-			if (rVal != JOptionPane.OK_OPTION)
+			final boolean stopGame;
+			if (HeadlessGameServer.headless())
+			{
+				// a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the game.
+				stopGame = true;
+			}
+			else
+			{
+				// now tell the HOST, and see if they want to continue the game.
+				stopGame = (JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION,
+							new CountDownLatchHandler(true)));
+			}
+			if (stopGame)
 				aBridge.stopGameSequence();
 		}
 	}

@@ -18,6 +18,7 @@ import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -253,14 +254,19 @@ public class InGameLobbyWatcher
 								String portString = System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY);
 								if (portString == null || portString.trim().length() <= 0)
 									portString = "3300";
-								final int port = Integer.parseInt(portString);
-								final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
 								final String message = "Your computer is not reachable from the internet.\r\n"
 											+ "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\r\n"
 											+ "(The firewall exception must be updated every time a new version of TripleA comes out.)\r\n"
 											+ "And that your Router is configured to send TCP traffic on port " + portString + " to your local ip address.\r\n"
 											+ "See 'How To Host...' in the help menu, at the top of the lobby screen.\r\n"
 											+ "The server tried to connect to your external ip: " + addressUsed + "\r\n";
+								if (HeadlessGameServer.headless())
+								{
+									System.out.println(message);
+									System.exit(-1);
+								}
+								final int port = Integer.parseInt(portString);
+								final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
 								JOptionPane.showMessageDialog(parentComponent, message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
 								final String question = "TripleA has a new feature (in BETA) that will attempt to set your Port Forwarding for you.\r\n"
 											+ "You must have Universal Plug and Play (UPnP) enabled on your router.\r\n"

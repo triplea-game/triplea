@@ -80,8 +80,15 @@ public class GameDataManager
 		try
 		{
 			final Version readVersion = (Version) input.readObject();
+			final boolean headless = HeadlessGameServer.headless();
 			if (!readVersion.equals(EngineVersion.VERSION, true))
 			{
+				// a hack for now, but a headless server should not try to open any savegame that in its version
+				if (headless)
+				{
+					System.out.println("Incompatible game save, we are: " + EngineVersion.VERSION + "  Trying to load game created with: " + readVersion);
+					return null;
+				}
 				final String error = "<html>Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion
 							+ "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
 				if (savegamePath == null)
@@ -118,7 +125,7 @@ public class GameDataManager
 				}
 				return null;
 			}
-			else if (readVersion.isGreaterThan(EngineVersion.VERSION, false))
+			else if (!headless && readVersion.isGreaterThan(EngineVersion.VERSION, false))
 			{
 				// we can still load it because first 3 numbers of the version are the same, however this save was made by a newer engine, so prompt the user to upgrade
 				final String messageString = "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."

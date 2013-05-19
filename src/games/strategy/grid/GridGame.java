@@ -9,6 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.engine.framework.AbstractGameLoader;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -114,7 +115,12 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 			final LocalPlayers localPlayers = new LocalPlayers(players);
 			if (headless)
 			{
-				final HeadlessGameServerUI headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, null);
+				final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
+				final HeadlessGameServerUI headlessFrameUI;
+				if (useServerUI)
+					headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, null);
+				else
+					headlessFrameUI = null;
 				m_display = new IGridGameDisplay()
 				{
 					public void initialize(final IDisplayBridge bridge)

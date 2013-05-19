@@ -6,10 +6,15 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
@@ -35,7 +40,6 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,6 +57,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.LogManager;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -85,21 +90,53 @@ import javax.swing.border.EtchedBorder;
 public class HeadlessGameServer
 {
 	public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
-	public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.lobby.console";
+	public static final String TRIPLEA_HEADLESS = "triplea.headless";
+	// public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.lobby.console";
 	private static HeadlessGameServer s_instance = null;
 	private final AvailableGames m_availableGames;
 	private final GameSelectorModel m_gameSelectorModel;
 	private SetupPanelModel m_setupPanelModel;
 	private HeadlessServerMainPanel m_mainPanel;
+	private final boolean m_useUI;
 	
 	public static String[] getProperties()
 	{
-		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY };
+		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY, GameRunner2.TRIPLEA_PORT_PROPERTY,
+					GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT, GameRunner2.LOBBY_GAME_COMMENTS, GameRunner2.LOBBY_GAME_HOSTED_BY,
+					GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY };
 	}
 	
 	private static void usage()
 	{
-		System.out.println("Arguments\n");
+		System.out.println("Arguments\n"
+					+ "   " + GameRunner2.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+					+ "   " + TRIPLEA_GAME_HOST_UI_PROPERTY + "=<FILE_NAME>\n"
+					+ "   " + GameRunner2.TRIPLEA_SERVER_PROPERTY + "=true\n"
+					+ "   " + GameRunner2.TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+					+ "   " + GameRunner2.TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+					+ "   " + GameRunner2.LOBBY_HOST + "=<LOBBY_HOST>\n"
+					+ "   " + GameRunner2.LOBBY_PORT + "=<LOBBY_PORT>\n"
+					+ "   " + GameRunner2.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+					+ "   " + GameRunner2.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+					+ "   " + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=<password>\n"
+					+ "\n"
+					+ "   If there is only one argument, and it does not start with a prefix, the argument will be \n"
+					+ "   taken as the name of the file to load.\n"
+					+ "\n"
+					+ "   Examples:\n"
+					+ "   To start a game using the given file:\n"
+					+ "\n"
+					+ "   triplea /home/sgb/games/test.xml\n"
+					+ "\n"
+					+ "   or\n"
+					+ "\n"
+					+ "   triplea triplea.game=/home/sgb/games/test.xml\n"
+					+ "\n"
+					+ "   To start a server with the given game\n"
+					+ "\n"
+					+ "   triplea triplea.game=/home/sgb/games/test.xml triplea.port=3300 triplea.name=Allan"
+					+ "\n"
+					+ "   To start a server, you can optionally password protect the game using triplea.server.password=foo");
 	}
 	
 	public static HeadlessGameServer getInstance()
@@ -107,12 +144,25 @@ public class HeadlessGameServer
 		return s_instance;
 	}
 	
-	public HeadlessGameServer()
+	public static boolean getUseGameServerUI()
+	{
+		return Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_UI_PROPERTY, "false"));
+	}
+	
+	public static boolean headless()
+	{
+		if (getInstance() != null)
+			return true;
+		return Boolean.parseBoolean(System.getProperty(TRIPLEA_HEADLESS, "false"));
+	}
+	
+	public HeadlessGameServer(final boolean useUI)
 	{
 		super();
 		if (s_instance != null)
 			throw new IllegalStateException("Instance already exists");
 		s_instance = this;
+		m_useUI = useUI;
 		m_availableGames = new AvailableGames();
 		m_gameSelectorModel = new GameSelectorModel();
 		final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
@@ -121,28 +171,89 @@ public class HeadlessGameServer
 			final File file = new File(fileName);
 			m_gameSelectorModel.load(file, null);
 		}
+		if (m_useUI)
+		{
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					final JFrame frame = new JFrame("TripleA Headless Game Server UI Main Frame");
+					frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+					frame.setPreferredSize(new Dimension(700, 630));
+					frame.setSize(new Dimension(700, 630));
+					frame.setLocationRelativeTo(null);
+					m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, frame);
+					m_setupPanelModel.showSelectType();
+					m_mainPanel = new HeadlessServerMainPanel(m_setupPanelModel, m_availableGames);
+					frame.getContentPane().add(m_mainPanel);
+					frame.pack();
+					frame.setVisible(true);
+					frame.toFront();
+					System.out.println("Waiting for users to connect.");
+				}
+			});
+		}
 		else
 		{
-			m_gameSelectorModel.load(m_availableGames.getGameData("Minimap"), m_availableGames.getGameFilePath("Minimap")); // TODO: remove
+			final Runnable r = new Runnable()
+			{
+				public void run()
+				{
+					m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
+					m_setupPanelModel.showSelectType();
+					System.out.println("Waiting for users to connect.");
+					waitForUsersHeadless();
+				}
+			};
+			final Thread t = new Thread(r, "Initialize Headless Server Setup Model");
+			t.start();
 		}
-		SwingUtilities.invokeLater(new Runnable()
+	}
+	
+	public void waitForUsersHeadless()
+	{
+		if (m_useUI)
+			return;
+		final Runnable r = new Runnable()
 		{
 			public void run()
 			{
-				final JFrame frame = new JFrame("TripleA Headless Game Server UI Main Frame");
-				frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-				frame.setPreferredSize(new Dimension(700, 630));
-				frame.setSize(new Dimension(700, 630));
-				frame.setLocationRelativeTo(null);
-				m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, frame);
-				m_setupPanelModel.showSelectType();
-				m_mainPanel = new HeadlessServerMainPanel(m_setupPanelModel, m_availableGames);
-				frame.getContentPane().add(m_mainPanel);
-				frame.pack();
-				frame.setVisible(true);
-				frame.toFront();
+				while (true)
+				{
+					try
+					{
+						Thread.sleep(5000);
+					} catch (final InterruptedException e)
+					{
+					}
+					if (m_setupPanelModel.getPanel().canGameStart())
+					{
+						System.out.println("Starting Game.");
+						m_setupPanelModel.getPanel().preStartGame();
+						m_setupPanelModel.getPanel().getLauncher().launch(null);
+						m_setupPanelModel.getPanel().postStartGame();
+						break; // TODO: need a latch instead?
+					}
+				}
 			}
-		});
+		};
+		final Thread t = new Thread(r, "Headless Server Waiting For Users To Connect And Start");
+		t.start();
+	}
+	
+	public static void waitForUsersHeadlessInstance()
+	{
+		final HeadlessGameServer server = getInstance();
+		if (server == null)
+		{
+			System.err.println("Couldn't find instance.");
+			System.exit(-1);
+		}
+		else
+		{
+			System.out.println("Waiting for users to connect.");
+			server.waitForUsersHeadless();
+		}
 	}
 	
 	/**
@@ -152,7 +263,7 @@ public class HeadlessGameServer
 	 */
 	public Chat getChat()
 	{
-		final SetupPanel model = m_setupPanelModel.getPanel();
+		final ISetupPanel model = m_setupPanelModel.getPanel();
 		if (model instanceof ServerSetupPanel)
 		{
 			return model.getChatPanel().getChat();
@@ -171,22 +282,26 @@ public class HeadlessGameServer
 	{
 		setupLogging();
 		handleCommandLineArgs(args);
-		final boolean startUI = Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_UI_PROPERTY, "false"));
+		final boolean startUI = getUseGameServerUI();
 		if (!startUI)
 		{
 			ClipPlayer.setBeSilent(true);
 		}
-		else
-		{
-			// startUI(server);
-		}
-		if (Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, "false")))
+		/*if (Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, "false")))
 		{
 			final InputStream in = System.in;
 			final PrintStream out = System.out;
 			// startConsole(server, in, out);
+		}*/
+		try
+		{
+			@SuppressWarnings("unused")
+			final HeadlessGameServer server = new HeadlessGameServer(startUI);
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+			// main(new String[] {});
 		}
-		final HeadlessGameServer server = new HeadlessGameServer();
 	}
 	
 	public static void setupLogging()
@@ -206,6 +321,7 @@ public class HeadlessGameServer
 	 */
 	private static void handleCommandLineArgs(final String[] args)
 	{
+		System.getProperties().setProperty(TRIPLEA_HEADLESS, "true");
 		final String[] properties = getProperties();
 		// if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
 		// optionally, it may not start with the property name
@@ -270,6 +386,125 @@ public class HeadlessGameServer
 }
 
 
+class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
+{
+	private static final long serialVersionUID = 9021977178348892504L;
+	private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
+	private final ServerModel m_model;
+	private final GameSelectorModel m_gameSelectorModel;
+	private final InGameLobbyWatcher m_lobbyWatcher;
+	
+	public HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel)
+	{
+		m_model = model;
+		m_gameSelectorModel = gameSelectorModel;
+		m_model.setRemoteModelListener(this);
+		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null);
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.setGameSelectorModel(gameSelectorModel);
+		}
+		setupListeners();
+		setWidgetActivation();
+		internalPlayerListChanged();
+	}
+	
+	private void setupListeners()
+	{
+	}
+	
+	public void setWidgetActivation()
+	{
+	}
+	
+	public void cancel()
+	{
+		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
+		m_model.cancel();
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.shutDown();
+		}
+	}
+	
+	public boolean canGameStart()
+	{
+		if (m_gameSelectorModel.getGameData() == null)
+			return false;
+		final Map<String, String> players = m_model.getPlayers();
+		for (final String player : players.keySet())
+		{
+			if (players.get(player) == null)
+				return false;
+		}
+		return true;
+	}
+	
+	public void playerListChanged()
+	{
+		internalPlayerListChanged();
+	}
+	
+	public void playersTakenChanged()
+	{
+		internalPlayersTakenChanged();
+	}
+	
+	private void internalPlayersTakenChanged()
+	{
+		notifyObservers();
+	}
+	
+	private void internalPlayerListChanged()
+	{
+		internalPlayersTakenChanged();
+	}
+	
+	public ChatPanel getChatPanel()
+	{
+		return m_model.getChatPanel();
+	}
+	
+	public ILauncher getLauncher()
+	{
+		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
+		launcher.setInGameLobbyWatcher(m_lobbyWatcher);
+		return launcher;
+	}
+	
+	public List<Action> getUserActions()
+	{
+		return null;
+	}
+	
+	public void addObserver(final Observer observer)
+	{
+		m_listeners.add(observer);
+	}
+	
+	public void removeObserver(final Observer observer)
+	{
+		m_listeners.add(observer);
+	}
+	
+	public void notifyObservers()
+	{
+		for (final Observer observer : m_listeners)
+		{
+			observer.update(null, null);
+		}
+	}
+	
+	public void preStartGame()
+	{
+	}
+	
+	public void postStartGame()
+	{
+	}
+}
+
+
 class HeadlessServerSetupPanelModel extends SetupPanelModel
 {
 	protected final Component m_ui;
@@ -289,8 +524,16 @@ class HeadlessServerSetupPanelModel extends SetupPanelModel
 			model.cancel();
 			return;
 		}
-		final ServerSetupPanel serverSetupPanel = new ServerSetupPanel(model, m_gameSelectorModel);
-		setGameTypePanel(serverSetupPanel);
+		if (m_ui == null)
+		{
+			final HeadlessServerSetup serverSetup = new HeadlessServerSetup(model, m_gameSelectorModel);
+			setGameTypePanel(serverSetup);
+		}
+		else
+		{
+			final ServerSetupPanel serverSetupPanel = new ServerSetupPanel(model, m_gameSelectorModel);
+			setGameTypePanel(serverSetupPanel);
+		}
 	}
 }
 
@@ -304,7 +547,7 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 	private JButton m_quitButton;
 	// private JButton m_cancelButton;
 	private final GameSelectorModel m_gameSelectorModel;
-	private SetupPanel m_gameSetupPanel;
+	private ISetupPanel m_gameSetupPanel;
 	private JPanel m_gameSetupPanelHolder;
 	private JPanel m_chatPanelHolder;
 	private final SetupPanelModel m_gameTypePanelModel;
@@ -395,16 +638,21 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 		m_isChatShowing = chat != null;
 	}
 	
-	public void setGameSetupPanel(final SetupPanel panel)
+	public void setGameSetupPanel(final ISetupPanel panel)
 	{
+		SetupPanel setupPanel = null;
+		if (SetupPanel.class.isAssignableFrom(panel.getClass()))
+			setupPanel = (SetupPanel) panel;
 		if (m_gameSetupPanel != null)
 		{
 			m_gameSetupPanel.removeObserver(this);
-			m_gameSetupPanelHolder.remove(panel);
+			if (setupPanel != null)
+				m_gameSetupPanelHolder.remove(setupPanel);
 		}
 		m_gameSetupPanel = panel;
 		m_gameSetupPanelHolder.removeAll();
-		m_gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
+		if (setupPanel != null)
+			m_gameSetupPanelHolder.add(setupPanel, BorderLayout.CENTER);
 		panel.addObserver(this);
 		setWidgetActivation();
 		// add the cancel button if we are not choosing the type.
@@ -491,6 +739,7 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 	private void play()
 	{
 		ErrorHandler.setGameOver(false);
+		System.out.println("Starting Game.");
 		m_gameSetupPanel.preStartGame();
 		m_gameTypePanelModel.getPanel().getLauncher().launch(this);
 		m_gameSetupPanel.postStartGame();
@@ -529,7 +778,7 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 
 class AvailableGames
 {
-	private static final boolean s_delayedParsing = true;
+	private static final boolean s_delayedParsing = false;
 	private final TreeMap<String, URI> m_availableGames = new TreeMap<String, URI>();
 	
 	public AvailableGames()

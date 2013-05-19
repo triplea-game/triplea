@@ -176,6 +176,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public static LinkedHashMap<String, String> currentPlayers(final GameData data)
 	{
 		final LinkedHashMap<String, String> rVal = new LinkedHashMap<String, String>();
+		if (data == null)
+			return rVal;
 		for (final PlayerID player : data.getPlayerList().getPlayers())
 		{
 			rVal.put(player.getName(), player.getWhoAmI().split(":")[1]);
