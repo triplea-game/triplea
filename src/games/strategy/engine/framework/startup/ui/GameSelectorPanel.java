@@ -11,6 +11,7 @@ import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
+import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -291,6 +292,45 @@ public class GameSelectorPanel extends JPanel implements Observer
 		setWidgetActivation();
 	}
 	
+	public static File selectGameFile(final Component parent)
+	{
+		if (GameRunner.isMac())
+		{
+			final FileDialog fileDialog = new FileDialog(JOptionPane.getFrameForComponent(parent));
+			fileDialog.setMode(FileDialog.LOAD);
+			SaveGameFileChooser.ensureDefaultDirExists();
+			fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
+			fileDialog.setFilenameFilter(new FilenameFilter()
+			{
+				public boolean accept(final File dir, final String name)
+				{
+					// the extension should be .tsvg, but find svg extensions as well
+					// also, macs download the file as tsvg.gz, so accept that as well
+					return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
+				}
+			});
+			fileDialog.setVisible(true);
+			final String fileName = fileDialog.getFile();
+			final String dirName = fileDialog.getDirectory();
+			if (fileName == null)
+				return null;
+			else
+			{
+				final File f = new File(dirName, fileName);
+				return f;
+			}
+		}
+		else
+		{
+			// Non-Mac platforms should use the normal Swing JFileChooser
+			final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+			final int rVal = fileChooser.showOpenDialog(JOptionPane.getFrameForComponent(parent));
+			if (rVal != JFileChooser.APPROVE_OPTION)
+				return null;
+			return fileChooser.getSelectedFile();
+		}
+	}
+	
 	private void selectGameFile(final boolean saved)
 	{
 		// For some strange reason,
@@ -298,43 +338,11 @@ public class GameSelectorPanel extends JPanel implements Observer
 		// is to use an AWT FileDialog instead of a Swing JDialog
 		if (saved)
 		{
-			if (GameRunner.isMac())
-			{
-				final FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
-				fileDialog.setMode(FileDialog.LOAD);
-				SaveGameFileChooser.ensureDefaultDirExists();
-				fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
-				fileDialog.setFilenameFilter(new FilenameFilter()
-				{
-					public boolean accept(final File dir, final String name)
-					{
-						// the extension should be .tsvg, but find svg extensions as well
-						// also, macs download the file as tsvg.gz, so accept that as well
-						return name.endsWith(".tsvg") || name.endsWith(".svg") || name.endsWith("tsvg.gz");
-					}
-				});
-				fileDialog.setVisible(true);
-				final String fileName = fileDialog.getFile();
-				final String dirName = fileDialog.getDirectory();
-				if (fileName == null)
-					return;
-				else
-				{
-					final File f = new File(dirName, fileName);
-					m_model.load(f, this);
-					setOriginalPropertiesMap(m_model.getGameData());
-				}
-			}
-			// Non-Mac platforms should use the normal Swing JFileChooser
-			else
-			{
-				final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-				final int rVal = fileChooser.showOpenDialog(JOptionPane.getFrameForComponent(this));
-				if (rVal != JFileChooser.APPROVE_OPTION)
-					return;
-				m_model.load(fileChooser.getSelectedFile(), this);
-				setOriginalPropertiesMap(m_model.getGameData());
-			}
+			final File file = selectGameFile(GameRunner.isMac() ? MainFrame.getInstance() : JOptionPane.getFrameForComponent(this));
+			if (file == null || !file.exists())
+				return;
+			m_model.load(file, this);
+			setOriginalPropertiesMap(m_model.getGameData());
 		}
 		else
 		{

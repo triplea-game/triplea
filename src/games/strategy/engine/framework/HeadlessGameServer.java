@@ -40,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,14 +51,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -98,6 +104,7 @@ public class HeadlessGameServer
 	private SetupPanelModel m_setupPanelModel;
 	private HeadlessServerMainPanel m_mainPanel;
 	private final boolean m_useUI;
+	private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
 	
 	public static String[] getProperties()
 	{
@@ -139,21 +146,62 @@ public class HeadlessGameServer
 					+ "   To start a server, you can optionally password protect the game using triplea.server.password=foo");
 	}
 	
-	public static HeadlessGameServer getInstance()
+	public static synchronized HeadlessGameServer getInstance()
 	{
 		return s_instance;
 	}
 	
-	public static boolean getUseGameServerUI()
+	public static synchronized boolean getUseGameServerUI()
 	{
 		return Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_UI_PROPERTY, "false"));
 	}
 	
-	public static boolean headless()
+	public static synchronized boolean headless()
 	{
 		if (getInstance() != null)
 			return true;
 		return Boolean.parseBoolean(System.getProperty(TRIPLEA_HEADLESS, "false"));
+	}
+	
+	public Set<String> getAvailableGames()
+	{
+		return new HashSet<String>(m_availableGames.getGameNames());
+	}
+	
+	public synchronized void setGameMapTo(final String gameName)
+	{
+		// don't change mid-game
+		if (m_setupPanelModel.getPanel() != null)
+		{
+			m_gameSelectorModel.load(m_availableGames.getGameData(gameName), m_availableGames.getGameFilePath(gameName));
+		}
+	}
+	
+	public synchronized void loadGameSave(final File file)
+	{
+		// don't change mid-game
+		if (m_setupPanelModel.getPanel() != null)
+		{
+			m_gameSelectorModel.load(file, null);
+		}
+	}
+	
+	public synchronized void loadGameSave(final InputStream input, final String fileName)
+	{
+		// don't change mid-game
+		if (m_setupPanelModel.getPanel() != null)
+		{
+			m_gameSelectorModel.load(input, fileName);
+		}
+	}
+	
+	public synchronized void loadGameSave(final ObjectInputStream input, final String fileName)
+	{
+		// don't change mid-game
+		if (m_setupPanelModel.getPanel() != null)
+		{
+			m_gameSelectorModel.load(input, fileName);
+		}
 	}
 	
 	public HeadlessGameServer(final boolean useUI)
@@ -208,6 +256,76 @@ public class HeadlessGameServer
 			final Thread t = new Thread(r, "Initialize Headless Server Setup Model");
 			t.start();
 		}
+		m_lobbyWatcherResetupThread.scheduleAtFixedRate(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					final ISetupPanel setup = m_setupPanelModel.getPanel();
+					if (setup == null)
+						return;
+					if (setup instanceof ServerSetupPanel)
+					{
+						System.out.println("Restarting lobby watcher");
+						((ServerSetupPanel) setup).shutDownLobbyWatcher();
+						try
+						{
+							Thread.sleep(1000);
+						} catch (final InterruptedException e)
+						{
+						}
+						resetLobbyHostOldExtensionProperties();
+						((ServerSetupPanel) setup).createLobbyWatcher();
+					}
+					else if (setup instanceof HeadlessServerSetup)
+					{
+						System.out.println("Restarting lobby watcher");
+						((HeadlessServerSetup) setup).shutDownLobbyWatcher();
+						try
+						{
+							Thread.sleep(1000);
+						} catch (final InterruptedException e)
+						{
+						}
+						resetLobbyHostOldExtensionProperties();
+						((HeadlessServerSetup) setup).createLobbyWatcher();
+					}
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}, 28800, 28800, TimeUnit.SECONDS);
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
+		{
+			
+			public void run()
+			{
+				shutdown();
+			}
+		}));
+	}
+	
+	private void resetLobbyHostOldExtensionProperties()
+	{
+		for (final String property : getProperties())
+		{
+			if (GameRunner2.LOBBY_HOST.equals(property) || GameRunner2.LOBBY_PORT.equals(property) || GameRunner2.LOBBY_GAME_HOSTED_BY.equals(property))
+			{
+				// for these 3 properties, we clear them after hosting, but back them up.
+				final String oldValue = System.getProperty(property + GameRunner2.OLD_EXTENSION);
+				if (oldValue != null)
+				{
+					System.setProperty(property, oldValue);
+				}
+			}
+		}
+	}
+	
+	public void shutdown()
+	{
+		m_lobbyWatcherResetupThread.shutdown();
 	}
 	
 	public void waitForUsersHeadless()
@@ -392,21 +510,34 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
 	private final ServerModel m_model;
 	private final GameSelectorModel m_gameSelectorModel;
-	private final InGameLobbyWatcher m_lobbyWatcher;
+	private InGameLobbyWatcher m_lobbyWatcher;
 	
 	public HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel)
 	{
 		m_model = model;
 		m_gameSelectorModel = gameSelectorModel;
 		m_model.setRemoteModelListener(this);
-		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null);
-		if (m_lobbyWatcher != null)
-		{
-			m_lobbyWatcher.setGameSelectorModel(gameSelectorModel);
-		}
+		createLobbyWatcher();
 		setupListeners();
 		setWidgetActivation();
 		internalPlayerListChanged();
+	}
+	
+	public void createLobbyWatcher()
+	{
+		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null);
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
+		}
+	}
+	
+	public void shutDownLobbyWatcher()
+	{
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.shutDown();
+		}
 	}
 	
 	private void setupListeners()
@@ -429,9 +560,11 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	
 	public boolean canGameStart()
 	{
-		if (m_gameSelectorModel.getGameData() == null)
+		if (m_gameSelectorModel.getGameData() == null || m_model == null)
 			return false;
 		final Map<String, String> players = m_model.getPlayers();
+		if (players == null || players.isEmpty())
+			return false;
 		for (final String player : players.keySet())
 		{
 			if (players.get(player) == null)

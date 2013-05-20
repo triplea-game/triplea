@@ -37,6 +37,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
+import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
@@ -49,9 +50,11 @@ import games.strategy.util.EventThreadJOptionPane;
 import java.awt.Component;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -70,7 +73,7 @@ public class ClientModel implements IMessengerErrorListener
 	private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
 	private IChannelMessenger m_channelMessenger;
 	private IRemoteMessenger m_remoteMessenger;
-	private IMessenger m_messenger;
+	private IClientMessenger m_messenger;
 	private final GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
 	private final GameSelectorModel m_gameSelectorModel;
 	private final SetupPanelModel m_typePanelModel;
@@ -185,6 +188,14 @@ public class ClientModel implements IMessengerErrorListener
 	private IServerStartupRemote getServerStartup()
 	{
 		return (IServerStartupRemote) m_remoteMessenger.getRemote(ServerModel.SERVER_REMOTE_NAME);
+	}
+	
+	public List<String> getAvailableServerGames()
+	{
+		final Set<String> games = getServerStartup().getAvailableGames();
+		if (games == null)
+			return new ArrayList<String>();
+		return new ArrayList<String>(games);
 	}
 	
 	public void cancel()
@@ -409,9 +420,14 @@ public class ClientModel implements IMessengerErrorListener
 		}
 	}
 	
-	public IMessenger getMessenger()
+	public IClientMessenger getMessenger()
 	{
 		return m_messenger;
+	}
+	
+	public IServerStartupRemote getServerStartupRemote()
+	{
+		return getServerStartup();
 	}
 	
 	private void connectionLost()
@@ -433,6 +449,14 @@ public class ClientModel implements IMessengerErrorListener
 	public ChatPanel getChatPanel()
 	{
 		return m_chatPanel;
+	}
+	
+	public boolean getIsServerHeadless()
+	{
+		final IServerStartupRemote serverRemote = getServerStartup();
+		if (serverRemote != null)
+			return serverRemote.getIsServerHeadless();
+		return false;
 	}
 }
 

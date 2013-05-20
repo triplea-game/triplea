@@ -13,21 +13,31 @@
  */
 package games.strategy.net;
 
+import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.message.HubInvoke;
+import games.strategy.engine.message.RemoteMethodCall;
+import games.strategy.engine.message.RemoteName;
 import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.NIOSocket;
 import games.strategy.net.nio.NIOSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.util.ListenerList;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-public class ClientMessenger implements IMessenger, NIOSocketListener
+public class ClientMessenger implements IClientMessenger, NIOSocketListener
 {
 	private INode m_node;
 	private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
@@ -273,5 +283,94 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	public InetSocketAddress getRemoteServerSocketAddress()
 	{
 		return (InetSocketAddress) m_socketChannel.socket().getRemoteSocketAddress();
+	}
+	
+	private void bareBonesSendMessageToServer(final String methodName, final Object... messages)
+	{
+		final List<Object> args = new ArrayList<Object>();
+		final Class[] argTypes = new Class[messages.length];
+		for (int i = 0; i < messages.length; i++)
+		{
+			final Object message = messages[i];
+			args.add(message);
+			argTypes[i] = args.get(i).getClass();
+		}
+		final RemoteName rn = ServerModel.SERVER_REMOTE_NAME;
+		final RemoteMethodCall call = new RemoteMethodCall(rn.getName(), methodName, args.toArray(), argTypes, rn.getClazz());
+		final HubInvoke hubInvoke = new HubInvoke(null, false, call);
+		send(hubInvoke, getServerNode());
+	}
+	
+	public void changeServerGameTo(final String gameName)
+	{
+		bareBonesSendMessageToServer("changeServerGameTo", gameName);
+	}
+	
+	public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave)
+	{
+		bareBonesSendMessageToServer("changeToLatestAutosave", typeOfAutosave);
+	}
+	
+	public void changeToGameSave(final byte[] bytes, final String fileName)
+	{
+		bareBonesSendMessageToServer("changeToGameSave", bytes, fileName);
+	}
+	
+	public void changeToGameSave(final File saveGame, final String fileName)
+	{
+		final byte[] bytes = getBytesFromFile(saveGame);
+		if (bytes == null || bytes.length == 0)
+			return;
+		changeToGameSave(bytes, fileName);
+	}
+	
+	private static byte[] getBytesFromFile(final File file)
+	{
+		if (file == null || !file.exists())
+			return null;
+		// Get the size of the file
+		final long length = file.length();
+		if (length > Integer.MAX_VALUE)
+		{
+			return null;
+		}
+		// Create the byte array to hold the data
+		final byte[] bytes = new byte[(int) length];
+		InputStream is = null;
+		try
+		{
+			is = new FileInputStream(file);
+			is.read(bytes);
+			/* Read in the bytes
+			int offset = 0;
+			int numRead = 0;
+			while (offset < bytes.length
+						&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
+			{
+				offset += numRead;
+			}
+			// Ensure all the bytes have been read in
+			if (offset < bytes.length)
+			{
+				is.close();
+				throw new IOException("Could not completely read file " + file.getName());
+			}*/
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			// Close the input stream and return bytes
+			if (is != null)
+			{
+				try
+				{
+					is.close();
+				} catch (final IOException e)
+				{
+				}
+			}
+		}
+		return bytes;
 	}
 }

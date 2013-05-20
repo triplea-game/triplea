@@ -65,23 +65,36 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	private final GameSelectorModel m_gameSelectorModel;
 	private JPanel m_info;
 	private JPanel m_networkPanel;
-	private final InGameLobbyWatcher m_lobbyWatcher;
+	private InGameLobbyWatcher m_lobbyWatcher;
 	
 	public ServerSetupPanel(final ServerModel model, final GameSelectorModel gameSelectorModel)
 	{
 		m_model = model;
 		m_gameSelectorModel = gameSelectorModel;
 		m_model.setRemoteModelListener(this);
-		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this);
-		if (m_lobbyWatcher != null)
-		{
-			m_lobbyWatcher.setGameSelectorModel(gameSelectorModel);
-		}
+		createLobbyWatcher();
 		createComponents();
 		layoutComponents();
 		setupListeners();
 		setWidgetActivation();
 		internalPlayerListChanged();
+	}
+	
+	public void createLobbyWatcher()
+	{
+		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this);
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
+		}
+	}
+	
+	public void shutDownLobbyWatcher()
+	{
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.shutDown();
+		}
 	}
 	
 	private void createComponents()
@@ -222,9 +235,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	@Override
 	public boolean canGameStart()
 	{
-		if (m_gameSelectorModel.getGameData() == null)
+		if (m_gameSelectorModel.getGameData() == null || m_model == null)
 			return false;
 		final Map<String, String> players = m_model.getPlayers();
+		if (players == null || players.isEmpty())
+			return false;
 		for (final String player : players.keySet())
 		{
 			if (players.get(player) == null)

@@ -27,6 +27,9 @@ import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.util.Observable;
 import java.util.prefs.BackingStoreException;
@@ -82,6 +85,40 @@ public class GameSelectorModel extends Observable
 		} catch (final BackingStoreException e)
 		{
 			// ignore
+		}
+	}
+	
+	public void load(final InputStream input, final String fileName)
+	{
+		final GameDataManager manager = new GameDataManager();
+		GameData newData;
+		try
+		{
+			newData = manager.loadGame(input, null);
+			if (newData != null)
+			{
+				m_fileName = fileName;
+				setGameData(newData);
+			}
+		} catch (final IOException e)
+		{
+		}
+	}
+	
+	public void load(final ObjectInputStream input, final String fileName)
+	{
+		final GameDataManager manager = new GameDataManager();
+		GameData newData;
+		try
+		{
+			newData = manager.loadGame(input, null);
+			if (newData != null)
+			{
+				m_fileName = fileName;
+				setGameData(newData);
+			}
+		} catch (final IOException e)
+		{
 		}
 	}
 	

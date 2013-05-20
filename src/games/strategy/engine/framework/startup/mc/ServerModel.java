@@ -17,13 +17,16 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelMessenger;
@@ -40,7 +43,12 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.util.Version;
 
 import java.awt.Component;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -276,6 +284,115 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			else
 			{
 				return false;
+			}
+		}
+		
+		public boolean getIsServerHeadless()
+		{
+			return HeadlessGameServer.headless();
+		}
+		
+		/**
+		 * This should not be called from within game, only from the game setup screen, while everyone is waiting for game to start
+		 */
+		public byte[] getSaveGame()
+		{
+			System.out.println("Sending save game");
+			final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
+			byte[] bytes = null;
+			try
+			{
+				new GameDataManager().saveGame(sink, m_data);
+				bytes = sink.toByteArray();
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+				throw new IllegalStateException(e);
+			} finally
+			{
+				try
+				{
+					sink.close();
+				} catch (final IOException e)
+				{
+				}
+			}
+			return bytes;
+		}
+		
+		public Set<String> getAvailableGames()
+		{
+			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+			if (headless == null)
+				return null;
+			return headless.getAvailableGames();
+		}
+		
+		public void changeServerGameTo(final String gameName)
+		{
+			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+			if (headless == null)
+				return;
+			System.out.println("Changing to game map: " + gameName);
+			headless.setGameMapTo(gameName);
+		}
+		
+		public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave)
+		{
+			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+			if (headless == null)
+				return;
+			final File save;
+			if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE.equals(typeOfAutosave))
+				save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+			else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave))
+				save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveOddFileName());
+			else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave))
+				save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveEvenFileName());
+			else
+				return;
+			System.out.println("Changing to autosave of type: " + typeOfAutosave.toString());
+			headless.loadGameSave(save);
+		}
+		
+		public void changeToGameSave(final byte[] bytes, final String fileName)
+		{
+			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+			if (headless == null || bytes == null)
+				return;
+			System.out.println("Changing to user savegame: " + fileName);
+			ByteArrayInputStream input = null;
+			InputStream oinput = null;
+			try
+			{
+				input = new ByteArrayInputStream(bytes);
+				oinput = new BufferedInputStream(input);
+				headless.loadGameSave(oinput, fileName);
+			} catch (final Exception e)
+			{
+				e.printStackTrace();
+			} finally
+			{
+				if (input != null)
+				{
+					try
+					{
+						input.close();
+					} catch (final IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				if (oinput != null)
+				{
+					try
+					{
+						oinput.close();
+					} catch (final IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	};

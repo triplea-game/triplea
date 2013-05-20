@@ -2,8 +2,13 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.networkMaintenance.ChangeGameToSaveGameClientAction;
+import games.strategy.engine.framework.networkMaintenance.ChangeToAutosaveClientAction;
+import games.strategy.engine.framework.networkMaintenance.GetGameSaveClientAction;
+import games.strategy.engine.framework.networkMaintenance.SetMapClientAction;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -268,5 +273,21 @@ public class ClientSetupPanel extends SetupPanel
 	public ChatPanel getChatPanel()
 	{
 		return m_model.getChatPanel();
+	}
+	
+	@Override
+	public List<Action> getUserActions()
+	{
+		final boolean isServerHeadless = m_model.getIsServerHeadless();
+		if (!isServerHeadless)
+			return null;
+		final List<Action> rVal = new ArrayList<Action>();
+		rVal.add(new SetMapClientAction(this, m_model.getMessenger(), m_model.getAvailableServerGames()));
+		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+		rVal.add(new ChangeGameToSaveGameClientAction(this, m_model.getMessenger()));
+		rVal.add(new GetGameSaveClientAction(this, m_model.getServerStartupRemote()));
+		return rVal;
 	}
 }

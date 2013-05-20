@@ -34,6 +34,12 @@ public class SaveGameFileChooser extends JFileChooser
 	public static final File DEFAULT_DIRECTORY = new File(GameRunner2.getUserRootFolder(), "savedGames");
 	private static SaveGameFileChooser s_instance;
 	
+	
+	public enum AUTOSAVE_TYPE
+	{
+		AUTOSAVE, AUTOSAVE_ODD, AUTOSAVE_EVEN
+	}
+	
 	public static String getAutoSaveFileName()
 	{
 		if (HeadlessGameServer.headless())

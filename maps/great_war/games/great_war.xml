@@ -3892,7 +3892,7 @@
                         <unitPlacement unitType="factory" territory="Crimea" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Crimea" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Crimea" quantity="2" owner="Russians"/>
-                        <unitPlacement unitType="artillery" territory="Crimea" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="artillery" territory="Crimea" quantity="1" owner="Russians"/>
 						
                         <unitPlacement unitType="infantry" territory="Kharkiv" quantity="2" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Kharkiv" quantity="1" owner="Russians"/>
@@ -3903,8 +3903,8 @@
                         <unitPlacement unitType="infantry" territory="Suzdal" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Moscow" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Moscow" quantity="4" owner="Russians"/>
-				<unitPlacement unitType="artillery" territory="Moscow" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Moscow" quantity="3" owner="Russians"/>
+				<unitPlacement unitType="artillery" territory="Moscow" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Moscow" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Moscow" quantity="1" owner="Russians"/>
 
@@ -4044,7 +4044,7 @@
                         <unitPlacement unitType="fighter" territory="Hanover" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="zeppelin" territory="Hanover" quantity="2" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Saxony" quantity="5" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Saxony" quantity="6" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Saxony" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Saxony" quantity="2" owner="Germans"/>
 
@@ -4065,7 +4065,7 @@
                         <unitPlacement unitType="infantry" territory="Konigsberg" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Konigsberg" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Silesia" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Silesia" quantity="2" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Ruhr" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="Ruhr" quantity="3" owner="Germans"/>
@@ -4077,7 +4077,7 @@
                         <unitPlacement unitType="infantry" territory="Bavaria" quantity="3" owner="Germans"/>
 				<unitPlacement unitType="cavalry" territory="Bavaria" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Munich" quantity="4" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Munich" quantity="5" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Bulgaria" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="Bulgaria" quantity="8" owner="Germans"/>

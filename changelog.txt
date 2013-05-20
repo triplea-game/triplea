@@ -1,4 +1,8 @@
 Changes for 1.7.0.3
+* Got headless game to show options to client's, for changing the game, changing to an autosave, sending a save to the server, and getting the savegame from the host. (veqryn)
+
+* Got headless game to restart its lobby connection once per 8 hours. (veqryn)
+
 * Got headless game server to be able to connect to lobby, and host games repeatedly without requiring any UI or swing event thread. Also got to immediately reload autosave when a player quits. (veqryn)
 
 * Got headless game server to be able to pick games, and have a mini-ui for hosting and for during the game. (veqryn)

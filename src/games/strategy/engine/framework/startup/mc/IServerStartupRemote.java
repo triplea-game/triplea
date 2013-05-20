@@ -14,8 +14,11 @@
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
+
+import java.util.Set;
 
 /**
  * 
@@ -41,4 +44,16 @@ public interface IServerStartupRemote extends IRemote
 	 * Note, the return value may come back after our ObserverWaitingToJoin has been created
 	 */
 	public boolean isGameStarted(INode newNode);
+	
+	public boolean getIsServerHeadless();
+	
+	public Set<String> getAvailableGames();
+	
+	public void changeServerGameTo(final String gameName);
+	
+	public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave);
+	
+	public void changeToGameSave(final byte[] bytes, final String fileName);
+	
+	public byte[] getSaveGame();
 }
