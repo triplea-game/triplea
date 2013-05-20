@@ -472,8 +472,8 @@ public class OddsCalculatorPanel extends JPanel
 		m_defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
 		m_draw.setText(formatPercentage(results.get().getDrawPercent()));
 		final boolean isLand = isLand();
-		final List<Unit> mainCombatAttackers = Match.getMatches(attackers.get(), Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
-		final List<Unit> mainCombatDefenders = Match.getMatches(defenders.get(), Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
+		final List<Unit> mainCombatAttackers = Match.getMatches(attackers.get(), Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, true, true));
+		final List<Unit> mainCombatDefenders = Match.getMatches(defenders.get(), Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, true, true));
 		final int attackersTotal = mainCombatAttackers.size();
 		final int defendersTotal = mainCombatDefenders.size();
 		m_defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
@@ -510,7 +510,7 @@ public class OddsCalculatorPanel extends JPanel
 		if (units == null)
 			units = Collections.emptyList();
 		final boolean isLand = isLand();
-		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, false, false));
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, false, false));
 		m_defendingUnitsPanel.init(getDefender(), units, isLand);
 		/* setWidgetActivation now does all this
 		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
@@ -532,7 +532,7 @@ public class OddsCalculatorPanel extends JPanel
 		if (units == null)
 			units = Collections.emptyList();
 		final boolean isLand = isLand();
-		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, false, false));
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, false, false));
 		m_attackingUnitsPanel.init(getAttacker(), units, isLand);
 		/* setWidgetActivation now does all this
 		final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
@@ -785,8 +785,8 @@ public class OddsCalculatorPanel extends JPanel
 		{
 			m_data.acquireReadLock();
 			// do not include bombardment and aa guns in our "total" labels
-			final List<Unit> attackers = Match.getMatches(m_attackingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
-			final List<Unit> defenders = Match.getMatches(m_defendingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
+			final List<Unit> attackers = Match.getMatches(m_attackingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, true, true));
+			final List<Unit> defenders = Match.getMatches(m_defendingUnitsPanel.getUnits(), Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, true, true));
 			m_attackerUnitsTotalNumber.setText("Units: " + attackers.size());
 			m_defenderUnitsTotalNumber.setText("Units: " + defenders.size());
 			m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(attackers, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
@@ -1008,7 +1008,7 @@ class PlayerUnitsPanel extends JPanel
 		}
 		// we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
 		// in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other combat abilities.
-		rVal = Match.getMatches(rVal, Matches.UnitTypeCanBeInBattle(!m_defender, m_isLand, player, m_data, false, false, false));
+		rVal = Match.getMatches(rVal, Matches.UnitTypeCanBeInBattle(!m_defender, m_isLand, player, m_data, 1, false, false, false));
 		return rVal;
 	}
 	

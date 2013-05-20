@@ -921,7 +921,7 @@ class AvailableGames
 	
 	public List<String> getGameNames()
 	{
-		return new ArrayList<String>(m_availableGames.navigableKeySet());
+		return new ArrayList<String>(m_availableGames.keySet());
 	}
 	
 	/**

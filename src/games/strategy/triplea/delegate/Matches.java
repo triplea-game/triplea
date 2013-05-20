@@ -1164,6 +1164,19 @@ public class Matches
 		};
 	}
 	
+	public static final Match<UnitType> UnitTypeIsAAthatCanFireOnRound(final int battleRoundNumber)
+	{
+		return new Match<UnitType>()
+		{
+			@Override
+			public boolean match(final UnitType obj)
+			{
+				final int maxRoundsAA = UnitAttachment.get(obj).getMaxRoundsAA();
+				return maxRoundsAA < 0 || maxRoundsAA >= battleRoundNumber;
+			}
+		};
+	}
+	
 	public static final Match<Unit> UnitIsAAthatCanFireOnRound(final int battleRoundNumber)
 	{
 		return new Match<Unit>()
@@ -1171,8 +1184,7 @@ public class Matches
 			@Override
 			public boolean match(final Unit obj)
 			{
-				final int maxRoundsAA = UnitAttachment.get(obj.getType()).getMaxRoundsAA();
-				return maxRoundsAA < 0 || maxRoundsAA >= battleRoundNumber;
+				return UnitTypeIsAAthatCanFireOnRound(battleRoundNumber).match(obj.getType());
 			}
 		};
 	}
@@ -3963,7 +3975,7 @@ public class Matches
 		};
 	}
 	
-	public static final Match<Unit> UnitCanBeInBattle(final boolean attack, final boolean isLandBattle, final GameData data, final boolean includeAttackersThatCanNotMove,
+	public static final Match<Unit> UnitCanBeInBattle(final boolean attack, final boolean isLandBattle, final GameData data, final int battleRound, final boolean includeAttackersThatCanNotMove,
 				final boolean doNotIncludeAA, final boolean doNotIncludeBombardingSeaUnits)
 	{
 		return new Match<Unit>()
@@ -3971,12 +3983,13 @@ public class Matches
 			@Override
 			public boolean match(final Unit u)
 			{
-				return Matches.UnitTypeCanBeInBattle(attack, isLandBattle, u.getOwner(), data, includeAttackersThatCanNotMove, doNotIncludeAA, doNotIncludeBombardingSeaUnits).match(u.getType());
+				return Matches.UnitTypeCanBeInBattle(attack, isLandBattle, u.getOwner(), data, battleRound, includeAttackersThatCanNotMove, doNotIncludeAA, doNotIncludeBombardingSeaUnits).match(
+							u.getType());
 			}
 		};
 	}
 	
-	public static final Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final boolean isLandBattle, final PlayerID player, final GameData data,
+	public static final Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final boolean isLandBattle, final PlayerID player, final GameData data, final int battleRound,
 				final boolean includeAttackersThatCanNotMove, final boolean doNotIncludeAA, final boolean doNotIncludeBombardingSeaUnits)
 	{
 		return new Match<UnitType>()
@@ -4017,7 +4030,11 @@ public class Matches
 					{
 						final CompositeMatch<UnitType> defenseMatchOR = new CompositeMatchOr<UnitType>();// OR match
 						if (!doNotIncludeAA)
-							defenseMatchOR.add(Matches.UnitTypeIsAAforCombatOnly);
+						{
+							final boolean match2 = Matches.UnitTypeIsAAthatCanFireOnRound(battleRound).match(ut);
+							final boolean match = (new CompositeMatchAnd<UnitType>(Matches.UnitTypeIsAAforCombatOnly, Matches.UnitTypeIsAAthatCanFireOnRound(battleRound))).match(ut);
+							defenseMatchOR.add(new CompositeMatchAnd<UnitType>(Matches.UnitTypeIsAAforCombatOnly, Matches.UnitTypeIsAAthatCanFireOnRound(battleRound)));
+						}
 						defenseMatchOR.add(supporterOrNotInfrastructure);
 						defenseMatchAND.add(defenseMatchOR);
 					}

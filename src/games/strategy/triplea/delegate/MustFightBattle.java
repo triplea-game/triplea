@@ -373,9 +373,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (m_stack.isExecuting())
 		{
 			final ITripleaDisplay display = getDisplay(bridge);
-			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false, false),
-						removeNonCombatants(m_defendingUnits, false, m_defender, false, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
-						isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
+			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
+						removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker,
+						m_defender, isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
 			display.listBattleSteps(m_battleID, m_stepStrings);
 			m_stack.execute(bridge);
 			return;
@@ -407,9 +407,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
-		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false, false),
-					removeNonCombatants(m_defendingUnits, false, m_defender, false, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
-					isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
+		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false, false, false),
+					removeNonCombatants(m_defendingUnits, false, m_defender, false, false, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker,
+					m_defender, isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
 		display.listBattleSteps(m_battleID, m_stepStrings);
 		if (!m_headless)
 		{
@@ -760,7 +760,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = 3802352488499530533L;
+				private static final long serialVersionUID = 3802352588499530533L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -772,7 +772,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = -1370090785530214199L;
+				private static final long serialVersionUID = -1370090785540214199L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -784,7 +784,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = 8762796162264296436L;
+				private static final long serialVersionUID = 8762796262264296436L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -792,11 +792,23 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				}
 			});
 		}
+		if (m_round > 1)
+		{
+			steps.add(new IExecutable()
+			{
+				private static final long serialVersionUID = 2781652892457063082L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					removeNonCombatants(bridge, false, false, true);
+				}
+			});
+		}
 		if (firstRun)
 		{
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = -2255283529092427441L;
+				private static final long serialVersionUID = -2255284529092427441L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -805,7 +817,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			});
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = 6578247830066963474L;
+				private static final long serialVersionUID = 6578267830066963474L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -814,7 +826,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			});
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = 2731651892447063082L;
+				private static final long serialVersionUID = 2731652892447063082L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -823,17 +835,16 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			});
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = 3389635458184415797L;
+				private static final long serialVersionUID = 3389635558184415797L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					// we can remove any AA guns at this point
-					removeNonCombatants(bridge, true, false);
+					removeNonCombatants(bridge, false, false, true);
 				}
 			});
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = 7193352768857658286L;
+				private static final long serialVersionUID = 7193353768857658286L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -842,7 +853,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			});
 			steps.add(new IExecutable()
 			{
-				private static final long serialVersionUID = -6676306363537467594L;
+				private static final long serialVersionUID = -6676316363537467594L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
@@ -2585,7 +2596,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 *         combatants include such things as factories, aaguns, land units
 	 *         in a water battle.
 	 */
-	private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking, final PlayerID player, final boolean doNotIncludeAA, final boolean doNotIncludeSeaBombardmentUnits)
+	private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking, final PlayerID player, final boolean doNotIncludeAA, final boolean doNotIncludeSeaBombardmentUnits,
+				final boolean removeForNextRound)
 	{
 		final List<Unit> unitList = new ArrayList<Unit>(units);
 		if (m_battleSite.isWater())
@@ -2593,7 +2605,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		
 		// still allow infrastructure type units that can provide support have combat abilities
 		// remove infrastructure units that can't take part in combat (air/naval bases, etc...)
-		unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data, true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits).invert()));
+		unitList.removeAll(Match.getMatches(unitList,
+					Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data, (removeForNextRound ? m_round + 1 : m_round), true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits).invert()));
 		// remove any disabled units from combat
 		unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled()));
 		// remove capturableOnEntering units (veqryn)
@@ -2605,10 +2618,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return unitList;
 	}
 	
-	private void removeNonCombatants(final IDelegateBridge bridge, final boolean doNotIncludeAA, final boolean doNotIncludeSeaBombardmentUnits)
+	private void removeNonCombatants(final IDelegateBridge bridge, final boolean doNotIncludeAA, final boolean doNotIncludeSeaBombardmentUnits, final boolean removeForNextRound)
 	{
-		final List<Unit> notRemovedDefending = removeNonCombatants(m_defendingUnits, false, m_defender, doNotIncludeAA, doNotIncludeSeaBombardmentUnits);
-		final List<Unit> notRemovedAttacking = removeNonCombatants(m_attackingUnits, true, m_attacker, doNotIncludeAA, doNotIncludeSeaBombardmentUnits);
+		final List<Unit> notRemovedDefending = removeNonCombatants(m_defendingUnits, false, m_defender, doNotIncludeAA, doNotIncludeSeaBombardmentUnits, removeForNextRound);
+		final List<Unit> notRemovedAttacking = removeNonCombatants(m_attackingUnits, true, m_attacker, doNotIncludeAA, doNotIncludeSeaBombardmentUnits, removeForNextRound);
 		final Collection<Unit> toRemoveDefending = Util.difference(m_defendingUnits, notRemovedDefending);
 		final Collection<Unit> toRemoveAttacking = Util.difference(m_attackingUnits, notRemovedAttacking);
 		m_defendingUnits = notRemovedDefending;
