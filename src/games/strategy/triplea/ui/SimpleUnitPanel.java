@@ -42,9 +42,9 @@ import javax.swing.JPanel;
 public class SimpleUnitPanel extends JPanel
 {
 	private static final long serialVersionUID = -3768796793775300770L;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public SimpleUnitPanel(final UIContext uiContext)
+	public SimpleUnitPanel(final IUIContext uiContext)
 	{
 		m_uiContext = uiContext;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

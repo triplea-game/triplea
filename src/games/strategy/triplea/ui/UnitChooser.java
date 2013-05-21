@@ -67,12 +67,12 @@ public class UnitChooser extends JPanel
 	private boolean m_allowTwoHit = false;
 	private JButton m_autoSelectButton;
 	private JButton m_selectNoneButton;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private final Match<Collection<Unit>> m_match;
 	
 	/** Creates new UnitChooser */
 	public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
-				final UIContext context)
+				final IUIContext context)
 	{
 		m_dependents = dependent;
 		m_data = data;
@@ -83,7 +83,7 @@ public class UnitChooser extends JPanel
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
-				final UIContext context, final Match<Collection<Unit>> match)
+				final IUIContext context, final Match<Collection<Unit>> match)
 	{
 		m_match = match;
 		m_dependents = dependent;
@@ -93,19 +93,19 @@ public class UnitChooser extends JPanel
 		layoutEntries();
 	}
 	
-	public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit, final UIContext uiContext)
+	public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit, final IUIContext uiContext)
 	{
 		this(units, Collections.<Unit> emptyList(), dependent, data, allowTwoHit, uiContext);
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
-				final UIContext uiContext)
+				final IUIContext uiContext)
 	{
 		this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
-				final UIContext uiContext)
+				final IUIContext uiContext)
 	{
 		m_dependents = dependent;
 		m_data = data;
@@ -119,7 +119,7 @@ public class UnitChooser extends JPanel
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final UIContext uiContext)
+				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final IUIContext uiContext)
 	{
 		m_dependents = dependent;
 		m_data = data;
@@ -131,7 +131,7 @@ public class UnitChooser extends JPanel
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final UIContext uiContext, final Match<Collection<Unit>> match)
+				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final IUIContext uiContext, final Match<Collection<Unit>> match)
 	{
 		m_dependents = dependent;
 		m_data = data;
@@ -143,7 +143,7 @@ public class UnitChooser extends JPanel
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-				final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data, final boolean allowTwoHit, final UIContext uiContext,
+				final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data, final boolean allowTwoHit, final IUIContext uiContext,
 				final Match<Collection<Unit>> match)
 	{
 		m_dependents = dependent;
@@ -442,9 +442,9 @@ class ChooserEntry
 	private JLabel m_secondHitLabel;
 	private int m_leftToSelect = 0;
 	private static Insets nullInsets = new Insets(0, 0, 0, 0);
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	ChooserEntry(final UnitCategory category, final ScrollableTextFieldListener listener, final GameData data, final boolean allowTwoHit, final int defaultValue, final UIContext uiContext)
+	ChooserEntry(final UnitCategory category, final ScrollableTextFieldListener listener, final GameData data, final boolean allowTwoHit, final int defaultValue, final IUIContext uiContext)
 	{
 		m_hitTextFieldListener = listener;
 		m_data = data;
@@ -561,9 +561,9 @@ class ChooserEntry
 	{
 		private static final long serialVersionUID = 591598594559651745L;
 		private final boolean m_forceDamaged;
-		private final UIContext m_uiContext;
+		private final IUIContext m_uiContext;
 		
-		UnitChooserEntryIcon(final boolean forceDamaged, final UIContext uiContext)
+		UnitChooserEntryIcon(final boolean forceDamaged, final IUIContext uiContext)
 		{
 			m_forceDamaged = forceDamaged;
 			m_uiContext = uiContext;

@@ -44,13 +44,13 @@ public class EditProductionPanel extends ProductionPanel
 {
 	private static final long serialVersionUID = 5826523459539469173L;
 	
-	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final UIContext context)
+	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final IUIContext uiContext)
 	{
-		return new EditProductionPanel(context).show(id, parent, data, false, new IntegerMap<ProductionRule>());
+		return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<ProductionRule>());
 	}
 	
 	/** Creates new ProductionPanel */
-	private EditProductionPanel(final UIContext uiContext)
+	private EditProductionPanel(final IUIContext uiContext)
 	{
 		super(uiContext);
 	}

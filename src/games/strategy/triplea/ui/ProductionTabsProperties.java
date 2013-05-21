@@ -39,7 +39,7 @@ public class ProductionTabsProperties
 	protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> mRules)
 	{
 		m_rules = mRules;
-		final ResourceLoader loader = UIContext.getResourceLoader();
+		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
 		String propertyFile = PROPERTY_FILE + "." + playerId.getName() + ".properties";
 		URL url = loader.getResource(propertyFile);
 		if (url == null)

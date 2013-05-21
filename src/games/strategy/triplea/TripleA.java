@@ -49,8 +49,9 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.HeadlessUIContext;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 
@@ -166,7 +167,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 			final LocalPlayers localPlayers = new LocalPlayers(players);
 			if (headless)
 			{
-				final UIContext uiContext = new UIContext();
+				final IUIContext uiContext = new HeadlessUIContext();
 				uiContext.setDefaultMapDir(game.getData());
 				// uiContext.getMapData().verify(game.getData());
 				uiContext.setLocalPlayers(localPlayers);

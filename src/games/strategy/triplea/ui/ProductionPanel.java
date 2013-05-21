@@ -71,7 +71,7 @@ public class ProductionPanel extends JPanel
 	private JFrame m_owner;
 	private JDialog m_dialog;
 	// Edwin: made these protected so the class can be extended
-	protected final UIContext m_uiContext;
+	protected final IUIContext m_uiContext;
 	protected List<Rule> m_rules = new ArrayList<Rule>();
 	protected JLabel m_left = new JLabel();
 	protected JButton m_done;
@@ -80,7 +80,7 @@ public class ProductionPanel extends JPanel
 	protected GameData m_data;
 	
 	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid, final IntegerMap<ProductionRule> initialPurchase,
-				final UIContext context)
+				final IUIContext context)
 	{
 		return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
 	}
@@ -136,7 +136,7 @@ public class ProductionPanel extends JPanel
 	
 	/** Creates new ProductionPanel */
 	// the constructor can be accessed by subclasses
-	protected ProductionPanel(final UIContext uiContext)
+	protected ProductionPanel(final IUIContext uiContext)
 	{
 		m_uiContext = uiContext;
 	}

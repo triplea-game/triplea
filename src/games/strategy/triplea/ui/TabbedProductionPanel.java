@@ -58,15 +58,15 @@ public class TabbedProductionPanel extends ProductionPanel
 	private int m_rows;
 	private int m_columns;
 	
-	protected TabbedProductionPanel(final UIContext uiContext)
+	protected TabbedProductionPanel(final IUIContext uiContext)
 	{
 		super(uiContext);
 	}
 	
 	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid, final IntegerMap<ProductionRule> initialPurchase,
-				final UIContext context)
+				final IUIContext uiContext)
 	{
-		return new TabbedProductionPanel(context).show(id, parent, data, bid, initialPurchase);
+		return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
 	}
 	
 	@Override

@@ -51,7 +51,7 @@ public class PoliticalStateOverview extends JPanel
 {
 	private static final long serialVersionUID = -8445782272897831080L;
 	public final static String LABEL_SELF = "----";
-	private final UIContext m_uic;
+	private final IUIContext m_uic;
 	private final GameData m_data;
 	private final boolean m_editable;
 	private final Set<Triple<PlayerID, PlayerID, RelationshipType>> m_editChanges = new HashSet<Triple<PlayerID, PlayerID, RelationshipType>>();
@@ -61,12 +61,12 @@ public class PoliticalStateOverview extends JPanel
 	 * 
 	 * @param data
 	 *            gamedata to get the info from
-	 * @param uic
+	 * @param uiContext
 	 *            uicontext to use to show this panel.
 	 */
-	public PoliticalStateOverview(final GameData data, final UIContext uic, final boolean editable)
+	public PoliticalStateOverview(final GameData data, final IUIContext uiContext, final boolean editable)
 	{
-		m_uic = uic;
+		m_uic = uiContext;
 		m_data = data;
 		m_editable = editable;
 		drawPoliticsUI();

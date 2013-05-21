@@ -1,7 +1,7 @@
 package games.strategy.util;
 
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.UIContext;
+import games.strategy.triplea.ui.AbstractUIContext;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public class LocalizeHTML
 	 */
 	public static String localizeImgLinksInHTML(final String htmlText)
 	{
-		return localizeImgLinksInHTML(htmlText, UIContext.getResourceLoader(), null);
+		return localizeImgLinksInHTML(htmlText, AbstractUIContext.getResourceLoader(), null);
 	}
 	
 	public static String localizeImgLinksInHTML(final String htmlText, final ResourceLoader resourceLoader, final String mapNameDir)

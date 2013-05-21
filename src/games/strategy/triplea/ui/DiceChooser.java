@@ -34,7 +34,7 @@ import javax.swing.ScrollPaneConstants;
 public class DiceChooser extends JPanel
 {
 	private static final long serialVersionUID = -3658408802544268998L;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private JPanel m_dicePanel;
 	private final int[] m_random;
 	private int m_diceCount = 0;
@@ -47,7 +47,7 @@ public class DiceChooser extends JPanel
 	// private final GameData m_data;
 	private int m_diceSides = 6;
 	
-	public DiceChooser(final UIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final int diceSides, final GameData data)
+	public DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final int diceSides, final GameData data)
 	{
 		m_uiContext = uiContext;
 		m_numRolls = numRolls;

@@ -121,7 +121,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		setWidgetActivation();
 	}
 	
-	private UIContext getUIContext()
+	private IUIContext getUIContext()
 	{
 		return m_frame.getUIContext();
 	}
@@ -1168,7 +1168,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		mapSubMenu.setMnemonic(KeyEvent.VK_K);
 		final ButtonGroup mapButtonGroup = new ButtonGroup();
 		menuGame.add(mapSubMenu);
-		final Map<String, String> skins = UIContext.getSkins(m_frame.getGame().getData());
+		final Map<String, String> skins = AbstractUIContext.getSkins(m_frame.getGame().getData());
 		for (final String key : skins.keySet())
 		{
 			mapMenuItem = new JRadioButtonMenuItem(key);
@@ -1177,7 +1177,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			mapButtonGroup.add(mapMenuItem);
 			mapSubMenu.add(mapMenuItem);
 			mapSubMenu.setEnabled(skins.size() > 1);
-			if (skins.get(key).equals(UIContext.getMapDir()))
+			if (skins.get(key).equals(AbstractUIContext.getMapDir()))
 				mapMenuItem.setSelected(true);
 			mapMenuItem.addActionListener(new ActionListener()
 			{

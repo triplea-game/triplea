@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.ui.UIContext;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
@@ -90,7 +90,7 @@ public class OddsCalculatorPanel extends JPanel
 	private JLabel m_averageChangeInTUV;
 	private JLabel m_roundsAverage;
 	private JLabel m_count;
-	private final UIContext m_context;
+	private final IUIContext m_context;
 	private final GameData m_data;
 	private IntTextField m_numRuns;
 	private JPanel m_resultsPanel;
@@ -133,7 +133,7 @@ public class OddsCalculatorPanel extends JPanel
 		}
 	};
 	
-	public OddsCalculatorPanel(final GameData data, final UIContext context, final Territory location, final Window parent)
+	public OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location, final Window parent)
 	{
 		m_data = data;
 		m_context = context;
@@ -855,7 +855,7 @@ class PlayerUnitsPanel extends JPanel
 {
 	private static final long serialVersionUID = -1206338960403314681L;
 	private final GameData m_data;
-	private final UIContext m_context;
+	private final IUIContext m_context;
 	private final boolean m_defender;
 	private boolean m_isLand = true;
 	private List<UnitCategory> m_categories = null;
@@ -868,7 +868,7 @@ class PlayerUnitsPanel extends JPanel
 		}
 	};
 	
-	PlayerUnitsPanel(final GameData data, final UIContext context, final boolean defender)
+	PlayerUnitsPanel(final GameData data, final IUIContext context, final boolean defender)
 	{
 		m_data = data;
 		m_context = context;
@@ -1035,7 +1035,7 @@ class PlayerUnitsPanel extends JPanel
 class UnitPanel extends JPanel
 {
 	private static final long serialVersionUID = 1509643150038705671L;
-	private final UIContext m_context;
+	private final IUIContext m_context;
 	private final UnitCategory m_category;
 	private final ScrollableTextField m_textField;
 	private final GameData m_data;
@@ -1048,7 +1048,7 @@ class UnitPanel extends JPanel
 		}
 	};
 	
-	public UnitPanel(final GameData data, final UIContext context, final UnitCategory category, final IntegerMap<UnitType> costs)
+	public UnitPanel(final GameData data, final IUIContext context, final UnitCategory category, final IntegerMap<UnitType> costs)
 	{
 		m_category = category;
 		m_context = context;
@@ -1132,7 +1132,7 @@ class OrderOfLossesInputPanel extends JPanel
 {
 	private static final long serialVersionUID = 8815617685388156219L;
 	private final GameData m_data;
-	private final UIContext m_context;
+	private final IUIContext m_context;
 	private final List<UnitCategory> m_attackerCategories;
 	private final List<UnitCategory> m_defenderCategories;
 	private final JTextField m_attackerTextField;
@@ -1143,7 +1143,7 @@ class OrderOfLossesInputPanel extends JPanel
 	private final boolean m_land;
 	
 	public OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder, final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories,
-				final boolean land, final UIContext context, final GameData data)
+				final boolean land, final IUIContext context, final GameData data)
 	{
 		m_data = data;
 		m_context = context;

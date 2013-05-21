@@ -50,13 +50,13 @@ import javax.swing.border.EmptyBorder;
 public class TerritoryDetailPanel extends AbstractStatPanel
 {
 	private static final long serialVersionUID = 1377022163587438988L;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private final JButton m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
 	private Territory m_currentTerritory;
 	private final TripleAFrame m_frame;
 	private Territory m_new_territory = null; // if not null, shift is pressed
 	
-	public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UIContext uiContext, final TripleAFrame frame)
+	public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext, final TripleAFrame frame)
 	{
 		super(data);
 		m_frame = frame;
@@ -180,7 +180,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel
 		refresh();
 	}
 	
-	private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final UIContext uiContext, final GameData data)
+	private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext, final GameData data)
 	{
 		final JPanel panel = new JPanel();
 		panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));

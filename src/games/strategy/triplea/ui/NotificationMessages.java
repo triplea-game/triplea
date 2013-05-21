@@ -35,7 +35,7 @@ public class NotificationMessages
 	
 	protected NotificationMessages()
 	{
-		final ResourceLoader loader = UIContext.getResourceLoader();
+		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
 		final URL url = loader.getResource(PROPERTY_FILE);
 		if (url == null)
 		{

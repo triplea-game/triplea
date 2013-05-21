@@ -205,7 +205,7 @@ public class TripleAFrame extends MainGameFrame
 	private boolean m_inHistory = false;
 	private boolean m_inGame = true;
 	private HistorySynchronizer m_historySyncher;
-	private UIContext m_uiContext;
+	private IUIContext m_uiContext;
 	private JPanel m_mapAndChatPanel;
 	private ChatPanel m_chatPanel;
 	private CommentPanel m_commentPanel;
@@ -1569,7 +1569,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	private void updateStep()
 	{
-		final UIContext context = m_uiContext;
+		final IUIContext context = m_uiContext;
 		if (context == null || context.isShutDown())
 			return;
 		m_data.acquireReadLock();
@@ -2663,7 +2663,7 @@ public class TripleAFrame extends MainGameFrame
 		return m_saveScreenshotAction;
 	}
 	
-	public UIContext getUIContext()
+	public IUIContext getUIContext()
 	{
 		return m_uiContext;
 	}

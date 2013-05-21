@@ -47,7 +47,7 @@ public class IndividualUnitPanel extends JPanel
 	private final GameData m_data;
 	private JButton m_autoSelectButton;
 	private JButton m_selectNoneButton;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private ScrollableTextField m_textFieldPurelyForListening;
 	private final ScrollableTextFieldListener m_countOptionalTextFieldListener;
 	private final boolean m_showSelectAll;
@@ -68,17 +68,17 @@ public class IndividualUnitPanel extends JPanel
 	 * @param units
 	 * @param title
 	 * @param data
-	 * @param context
+	 * @param uiContext
 	 * @param max
 	 * @param showMinAndMax
 	 * @param showSelectAll
 	 * @param optionalListener
 	 */
-	public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data, final UIContext context, final int max,
+	public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data, final IUIContext uiContext, final int max,
 				final boolean showMinAndMax, final boolean showSelectAll, final ScrollableTextFieldListener optionalListener)
 	{
 		m_data = data;
-		m_uiContext = context;
+		m_uiContext = uiContext;
 		m_title = new JTextArea(title);
 		m_title.setBackground(this.getBackground());
 		m_title.setEditable(false);
@@ -109,7 +109,7 @@ public class IndividualUnitPanel extends JPanel
 	 * @param showSelectAll
 	 * @param optionalListener
 	 */
-	public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent, final String title, final GameData data, final UIContext context, final int max,
+	public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent, final String title, final GameData data, final IUIContext context, final int max,
 				final boolean showMinAndMax, final boolean showSelectAll, final ScrollableTextFieldListener optionalListener)
 	{
 		m_data = data;
@@ -286,18 +286,19 @@ class SingleUnitPanel extends JPanel
 {
 	private static final long serialVersionUID = 5034287842323633030L;
 	private final Unit m_unit;
-	private final UIContext m_context;
+	private final IUIContext m_context;
 	private final ScrollableTextField m_textField;
 	private final GameData m_data;
 	private static Insets nullInsets = new Insets(0, 0, 0, 0);
 	private final ScrollableTextFieldListener m_countTextFieldListener;
 	
-	public SingleUnitPanel(final Unit unit, final GameData data, final UIContext context, final ScrollableTextFieldListener textFieldListener, final int max, final int min, final boolean showMaxAndMin)
+	public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext uiContext, final ScrollableTextFieldListener textFieldListener, final int max, final int min,
+				final boolean showMaxAndMin)
 	{
-		this(unit, data, context, textFieldListener, max, min, 0, showMaxAndMin);
+		this(unit, data, uiContext, textFieldListener, max, min, 0, showMaxAndMin);
 	}
 	
-	public SingleUnitPanel(final Unit unit, final GameData data, final UIContext context, final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
+	public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext context, final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
 				final boolean showMaxAndMin)
 	{
 		m_unit = unit;

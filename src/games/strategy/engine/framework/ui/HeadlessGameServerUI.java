@@ -14,7 +14,7 @@ import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.triplea.ui.UIContext;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -47,7 +47,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 	private static final long serialVersionUID = -3446398256211409031L;
 	private GameData m_data;
 	private IGame m_game;
-	private UIContext m_uiContext;
+	private IUIContext m_uiContext;
 	private final boolean m_uiContextOriginallyNull;
 	private JLabel m_gameName;
 	private JLabel m_round;
@@ -60,7 +60,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 	private JSplitPane m_chatSplit;
 	private ChatPanel m_chatPanel;
 	
-	public HeadlessGameServerUI(final IGame game, final LocalPlayers players, final UIContext uiContext)
+	public HeadlessGameServerUI(final IGame game, final LocalPlayers players, final IUIContext uiContext)
 	{
 		super("TripleA Headless Server - " + game.getData().getGameName(), players);
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -175,7 +175,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 	
 	private void updateStep()
 	{
-		final UIContext context = m_uiContext;
+		final IUIContext context = m_uiContext;
 		if (!m_uiContextOriginallyNull && (context == null || context.isShutDown()))
 			return;
 		m_data.acquireReadLock();
@@ -233,7 +233,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 			m_player.setText("Player: " + player.getName());
 	}
 	
-	public UIContext getUIContext()
+	public IUIContext getUIContext()
 	{
 		return m_uiContext;
 	}

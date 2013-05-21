@@ -37,9 +37,9 @@ public class PlayersPanel extends JPanel
 {
 	private static final long serialVersionUID = 9177417134839960231L;
 	private final PlayerManager m_players;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public PlayersPanel(final PlayerManager players, final UIContext uiContext, final GameData data)
+	public PlayersPanel(final PlayerManager players, final IUIContext uiContext, final GameData data)
 	{
 		m_players = players;
 		m_uiContext = uiContext;
@@ -52,7 +52,7 @@ public class PlayersPanel extends JPanel
 		}
 	}
 	
-	public static void showPlayers(final IGame game, final UIContext context, final Component parent)
+	public static void showPlayers(final IGame game, final IUIContext context, final Component parent)
 	{
 		final PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), context, game.getData());
 		JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players", JOptionPane.PLAIN_MESSAGE);

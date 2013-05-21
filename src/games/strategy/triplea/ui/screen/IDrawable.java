@@ -23,8 +23,8 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapData;
-import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.Color;
@@ -104,9 +104,9 @@ class DrawableComparator implements Comparator<IDrawable>
 class TerritoryNameDrawable implements IDrawable
 {
 	private final String m_territoryName;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public TerritoryNameDrawable(final String territoryName, final UIContext context)
+	public TerritoryNameDrawable(final String territoryName, final IUIContext context)
 	{
 		this.m_territoryName = territoryName;
 		this.m_uiContext = context;
@@ -295,9 +295,9 @@ class CapitolMarkerDrawable implements IDrawable
 {
 	private final String m_player;
 	private final String m_location;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public CapitolMarkerDrawable(final PlayerID player, final Territory location, final UIContext uiContext)
+	public CapitolMarkerDrawable(final PlayerID player, final Territory location, final IUIContext uiContext)
 	{
 		super();
 		if (player == null)
@@ -329,14 +329,14 @@ abstract class MapTileDrawable implements IDrawable
 	protected boolean m_noImage = false;
 	protected final int m_x;
 	protected final int m_y;
-	protected final UIContext m_uiContext;
+	protected final IUIContext m_uiContext;
 	protected boolean m_unscaled;
 	
-	public MapTileDrawable(final int x, final int y, final UIContext context)
+	public MapTileDrawable(final int x, final int y, final IUIContext uiContext)
 	{
 		m_x = x;
 		m_y = y;
-		m_uiContext = context;
+		m_uiContext = uiContext;
 		m_unscaled = false;
 	}
 	
@@ -381,7 +381,7 @@ abstract class MapTileDrawable implements IDrawable
 
 class ReliefMapDrawable extends MapTileDrawable
 {
-	public ReliefMapDrawable(final int x, final int y, final UIContext context)
+	public ReliefMapDrawable(final int x, final int y, final IUIContext context)
 	{
 		super(x, y, context);
 	}
@@ -420,9 +420,9 @@ class ReliefMapDrawable extends MapTileDrawable
 
 class BaseMapDrawable extends MapTileDrawable
 {
-	public BaseMapDrawable(final int x, final int y, final UIContext context)
+	public BaseMapDrawable(final int x, final int y, final IUIContext uiContext)
 	{
-		super(x, y, context);
+		super(x, y, uiContext);
 	}
 	
 	@Override
@@ -460,9 +460,9 @@ class ConvoyZoneDrawable implements IDrawable
 {
 	private final String m_player;
 	private final String m_location;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public ConvoyZoneDrawable(final PlayerID player, final Territory location, final UIContext uiContext)
+	public ConvoyZoneDrawable(final PlayerID player, final Territory location, final IUIContext uiContext)
 	{
 		super();
 		m_player = player.getName();
@@ -492,13 +492,13 @@ class ConvoyZoneDrawable implements IDrawable
 class KamikazeZoneDrawable implements IDrawable
 {
 	private final String m_location;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public KamikazeZoneDrawable(final PlayerID player, final Territory location, final UIContext uiContext)
+	public KamikazeZoneDrawable(final PlayerID player, final Territory location, final IUIContext uiContext2)
 	{
 		super();
 		m_location = location.getName();
-		m_uiContext = uiContext;
+		m_uiContext = uiContext2;
 	}
 	
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
@@ -543,7 +543,7 @@ class BlockadeZoneDrawable implements IDrawable
 	private final String m_location;
 	
 	// private final UIContext m_uiContext;
-	public BlockadeZoneDrawable(final Territory location, final UIContext uiContext)
+	public BlockadeZoneDrawable(final Territory location, final IUIContext uiContext)
 	{
 		super();
 		m_location = location.getName();

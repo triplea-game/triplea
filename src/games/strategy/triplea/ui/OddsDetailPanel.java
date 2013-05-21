@@ -44,7 +44,7 @@ public class OddsDetailPanel extends JPanel
 	private Territory m_currentTerritory;
 	private final TerritoryListener m_territoryListener;
 	
-	public OddsDetailPanel(final MapPanel mapPanel, final GameData data, final UIContext uiContext)
+	public OddsDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext)
 	{
 		m_data = data;
 		// m_uiContext = uiContext;

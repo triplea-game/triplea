@@ -72,7 +72,7 @@ public class ProductionRepairPanel extends JPanel
 	private static final long serialVersionUID = -6344711064699083729L;
 	private JFrame m_owner;
 	private JDialog m_dialog;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private final List<Rule> m_rules = new ArrayList<Rule>();
 	private final JLabel m_left = new JLabel();
 	private JButton m_done;
@@ -82,9 +82,9 @@ public class ProductionRepairPanel extends JPanel
 	private static HashMap<Unit, Integer> m_repairCount = new HashMap<Unit, Integer>();
 	
 	public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
-				final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final UIContext context)
+				final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext)
 	{
-		return new ProductionRepairPanel(context).show(id, parent, data, bid, initialPurchase);
+		return new ProductionRepairPanel(uiContext).show(id, parent, data, bid, initialPurchase);
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public class ProductionRepairPanel extends JPanel
 	
 	/** Creates new ProductionRepairPanel */
 	// the constructor can be accessed by subclasses
-	public ProductionRepairPanel(final UIContext uiContext)
+	public ProductionRepairPanel(final IUIContext uiContext)
 	{
 		m_uiContext = uiContext;
 	}
@@ -322,7 +322,7 @@ public class ProductionRepairPanel extends JPanel
 		private final Unit m_unit;
 		private final int m_maxRepairAmount;
 		
-		Rule(final RepairRule rule, final PlayerID id, final UIContext uiContext, final Unit repairUnit)
+		Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit)
 		{
 			setLayout(new GridBagLayout());
 			m_unit = repairUnit;

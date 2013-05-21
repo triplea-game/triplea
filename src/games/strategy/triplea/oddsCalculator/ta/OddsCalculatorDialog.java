@@ -2,8 +2,8 @@ package games.strategy.triplea.oddsCalculator.ta;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.UIContext;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -60,7 +60,7 @@ public class OddsCalculatorDialog extends JDialog
 		taFrame.getUIContext().addShutdownWindow(dialog);
 	}
 	
-	OddsCalculatorDialog(final GameData data, final UIContext context, final JFrame parent, final Territory location)
+	OddsCalculatorDialog(final GameData data, final IUIContext context, final JFrame parent, final Territory location)
 	{
 		super(parent, "Odds Calculator");
 		m_panel = new OddsCalculatorPanel(data, context, location, this);

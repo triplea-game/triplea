@@ -111,18 +111,18 @@ public class MapPanel extends ImageScrollerLargeView
 	private final BackgroundDrawer m_backgroundDrawer;
 	private BufferedImage m_mouseShadowImage = null;
 	private String m_movementLeftForCurrentUnits = "";
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private final LinkedBlockingQueue<Tile> m_undrawnTiles = new LinkedBlockingQueue<Tile>();
 	private Map<Territory, List<Unit>> m_highlightUnits;
 	private Cursor m_hiddenCursor = null;
 	
 	/** Creates new MapPanel */
-	public MapPanel(final GameData data, final MapPanelSmallView smallView, final UIContext uiContext, final ImageScrollModel model) throws IOException
+	public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext, final ImageScrollModel model) throws IOException
 	{
 		super(uiContext.getMapData().getMapDimensions(), model);
-		this.setCursor(uiContext.getCursor());
 		m_uiContext = uiContext;
-		m_scale = uiContext.getScale();
+		this.setCursor(m_uiContext.getCursor());
+		m_scale = m_uiContext.getScale();
 		m_backgroundDrawer = new BackgroundDrawer(this);
 		m_tileManager = new TileManager(m_uiContext);
 		final Thread t = new Thread(m_backgroundDrawer, "Map panel background drawer");
@@ -147,7 +147,7 @@ public class MapPanel extends ImageScrollerLargeView
 				});
 			}
 		});
-		recreateTiles(data, uiContext);
+		recreateTiles(data, m_uiContext);
 		m_uiContext.addActive(new Active()
 		{
 			public void deactivate()
@@ -165,7 +165,7 @@ public class MapPanel extends ImageScrollerLargeView
 		return m_undrawnTiles;
 	}
 	
-	private void recreateTiles(final GameData data, final UIContext uiContext)
+	private void recreateTiles(final GameData data, final IUIContext uiContext)
 	{
 		m_tileManager.createTiles(new Rectangle(m_uiContext.getMapData().getMapDimensions()), data, m_uiContext.getMapData());
 		m_tileManager.resetTiles(data, uiContext.getMapData());
@@ -966,7 +966,7 @@ public class MapPanel extends ImageScrollerLargeView
 		m_tileManager.clearTerritoryOverlay(territory, m_data, m_uiContext.getMapData());
 	}
 	
-	public UIContext getUIContext()
+	public IUIContext getUIContext()
 	{
 		return m_uiContext;
 	}

@@ -74,13 +74,13 @@ public class StatPanel extends AbstractStatPanel
 	private JTable m_techTable;
 	private Image m_statsImage = null;
 	protected final Map<PlayerID, ImageIcon> m_mapPlayerImage = new HashMap<PlayerID, ImageIcon>();
-	protected UIContext m_uiContext;
+	protected IUIContext m_uiContext;
 	
 	/** Creates a new instance of InfoPanel */
-	public StatPanel(final GameData data, final UIContext uiContext)
+	public StatPanel(final GameData data, final IUIContext uiContext2)
 	{
 		super(data);
-		m_uiContext = uiContext;
+		m_uiContext = uiContext2;
 		m_dataModel = new StatTableModel();
 		m_techModel = new TechTableModel();
 		fillPlayerIcons();

@@ -21,8 +21,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapData;
-import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
 import games.strategy.triplea.util.UnitCategory;
@@ -72,11 +72,11 @@ public class TileManager
 	// maps territoryname - collection of tiles where the territory is drawn
 	private final Map<String, Set<Tile>> m_territoryTiles = new HashMap<String, Set<Tile>>();
 	private final Collection<UnitsDrawer> m_allUnitDrawables = new ArrayList<UnitsDrawer>();
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public TileManager(final UIContext context)
+	public TileManager(final IUIContext uiContext)
 	{
-		m_uiContext = context;
+		m_uiContext = uiContext;
 	}
 	
 	/**

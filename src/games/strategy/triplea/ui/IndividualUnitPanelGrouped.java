@@ -46,7 +46,7 @@ public class IndividualUnitPanelGrouped extends JPanel
 	private final boolean m_showMinAndMax;
 	private final JTextArea m_title;
 	private final GameData m_data;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private final Map<String, Collection<Unit>> m_unitsToChooseFrom;
 	private final Collection<Tuple<String, IndividualUnitPanel>> m_entries = new ArrayList<Tuple<String, IndividualUnitPanel>>();
 	private final JLabel m_leftToSelect = new JLabel();
@@ -69,17 +69,17 @@ public class IndividualUnitPanelGrouped extends JPanel
 	 * 
 	 * @param unitsToChooseFrom
 	 * @param data
-	 * @param context
+	 * @param uiContext
 	 * @param title
 	 * @param maxTotal
 	 * @param showMinAndMax
 	 * @param showSelectAll
 	 */
-	public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom, final GameData data, final UIContext context, final String title,
+	public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom, final GameData data, final IUIContext uiContext, final String title,
 				final int maxTotal, final boolean showMinAndMax, final boolean showSelectAll)
 	{
 		m_data = data;
-		m_uiContext = context;
+		m_uiContext = uiContext;
 		setMaxAndShowMaxButton(maxTotal);
 		m_showMinAndMax = showMinAndMax;
 		m_title = new JTextArea(title);

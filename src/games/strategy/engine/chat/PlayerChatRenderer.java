@@ -7,7 +7,7 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
 import games.strategy.net.INode;
-import games.strategy.triplea.ui.UIContext;
+import games.strategy.triplea.ui.IUIContext;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -27,14 +27,14 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 {
 	private static final long serialVersionUID = -8195565028281374498L;
 	private final IGame m_game;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
 	int m_maxIconCounter = 0;
 	
 	HashMap<String, List<Icon>> m_iconMap = new HashMap<String, List<Icon>>();
 	HashMap<String, Set<String>> m_playerMap = new HashMap<String, Set<String>>();
 	
-	public PlayerChatRenderer(final IGame game, final UIContext uiContext)
+	public PlayerChatRenderer(final IGame game, final IUIContext uiContext)
 	{
 		m_game = game;
 		m_uiContext = uiContext;
@@ -93,7 +93,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 				final List<Icon> icons = new ArrayList<Icon>(players.size());
 				for (final String player : players)
 				{
-					if (m_uiContext != null)
+					if (m_uiContext != null && m_uiContext.getFlagImageFactory() != null)
 						icons.add(new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));
 				}
 				m_maxIconCounter = Math.max(m_maxIconCounter, icons.size());

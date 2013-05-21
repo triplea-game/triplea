@@ -119,7 +119,7 @@ public class BattleDisplay extends JPanel
 	private final JLabel LABEL_NONE_ATTACKER = new JLabel("None");
 	private final JLabel LABEL_NONE_DEFENDER = new JLabel("None");
 	// private MovePerformer m_tempMovePerformer;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private final JLabel m_messageLabel = new JLabel();
 	private final Action m_nullAction = new AbstractAction(" ")
 	{
@@ -167,7 +167,7 @@ public class BattleDisplay extends JPanel
 	{
 		m_actionButton.setAction(m_nullAction);
 		m_steps.deactivate();
-		m_mapPanel.getUIContext().removeACtive(m_steps);
+		m_mapPanel.getUIContext().removeActive(m_steps);
 		m_steps = null;
 	}
 	
@@ -1093,7 +1093,7 @@ class BattleTable extends JTable
 class BattleModel extends DefaultTableModel
 {
 	private static final long serialVersionUID = 6913324191512043963L;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	private final GameData m_data;
 	// is the player the aggressor?
 	private final boolean m_attack;
@@ -1123,7 +1123,7 @@ class BattleModel extends DefaultTableModel
 	}
 	
 	BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType, final PlayerID player, final GameData data, final Territory battleLocation,
-				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final UIContext uiContext)
+				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final IUIContext uiContext)
 	{
 		super(new Object[0][0], varDiceArray(data));
 		m_uiContext = uiContext;
@@ -1281,7 +1281,7 @@ class TableData
 	{
 	}
 	
-	TableData(final PlayerID player, final int count, final UnitType type, final GameData data, final boolean damaged, final boolean disabled, final UIContext uiContext)
+	TableData(final PlayerID player, final int count, final UnitType type, final GameData data, final boolean damaged, final boolean disabled, final IUIContext uiContext)
 	{
 		m_count = count;
 		// TODO Kev determine if we need to identify if the unit is hit/disabled
@@ -1311,9 +1311,9 @@ class CasualtyNotificationPanel extends JPanel
 	private final JPanel m_killed = new JPanel();
 	private final JPanel m_damaged = new JPanel();
 	private final GameData m_data;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public CasualtyNotificationPanel(final GameData data, final UIContext uiContext)
+	public CasualtyNotificationPanel(final GameData data, final IUIContext uiContext)
 	{
 		m_data = data;
 		m_uiContext = uiContext;

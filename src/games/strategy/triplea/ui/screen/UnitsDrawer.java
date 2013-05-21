@@ -10,8 +10,8 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapData;
-import games.strategy.triplea.ui.UIContext;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -37,10 +37,10 @@ public class UnitsDrawer implements IDrawable
 	private final boolean m_disabled;
 	private final boolean m_overflow;
 	private final String m_territoryName;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
 	public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, final boolean disabled, final boolean overflow,
-				final String territoryName, final UIContext uiContext)
+				final String territoryName, final IUIContext uiContext2)
 	{
 		m_count = count;
 		m_unitType = unitType;
@@ -50,7 +50,7 @@ public class UnitsDrawer implements IDrawable
 		m_disabled = disabled;
 		m_overflow = overflow;
 		m_territoryName = territoryName;
-		m_uiContext = uiContext;
+		m_uiContext = uiContext2;
 	}
 	
 	public void prepare()

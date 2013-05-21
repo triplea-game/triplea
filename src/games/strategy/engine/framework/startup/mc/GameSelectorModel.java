@@ -50,11 +50,11 @@ public class GameSelectorModel extends Observable
 	private static final String DEFAULT_GAME_NAME = "Big World : 1942";
 	private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
 	private static final String DEFAULT_GAME_URI = "";
-	private GameData m_data;
-	private String m_gameName;
-	private String m_gameVersion;
-	private String m_gameRound;
-	private String m_fileName;
+	private GameData m_data = null;
+	private String m_gameName = "";
+	private String m_gameVersion = "";
+	private String m_gameRound = "";
+	private String m_fileName = "";
 	private boolean m_canSelect = true;
 	
 	public GameSelectorModel()

@@ -21,7 +21,7 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
-import games.strategy.triplea.ui.UIContext;
+import games.strategy.triplea.ui.AbstractUIContext;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -944,7 +944,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			public void actionPerformed(final ActionEvent e)
 			{
 				final IntTextField text = new IntTextField(0, 10000);
-				text.setText(String.valueOf(UIContext.getAIPauseDuration()));
+				text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
 				final JPanel panel = new JPanel();
 				panel.setLayout(new GridBagLayout());
 				panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
@@ -953,7 +953,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							new String[] { "OK" }, "OK");
 				try
 				{
-					UIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
+					AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
 				} catch (final Exception ex)
 				{
 				}

@@ -37,11 +37,11 @@ import javax.swing.JScrollPane;
 public class TechResultsDisplay extends JPanel
 {
 	private static final long serialVersionUID = -8303376983862918107L;
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public TechResultsDisplay(final TechResults msg, final UIContext context, final GameData data)
+	public TechResultsDisplay(final TechResults msg, final IUIContext uiContext, final GameData data)
 	{
-		m_uiContext = context;
+		m_uiContext = uiContext;
 		setLayout(new GridBagLayout());
 		add(new JLabel("You got " + msg.getHits() + " hit" + (msg.getHits() != 1 ? "s" : "") + "."), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 					new Insets(0, 0, 5, 0), 0, 0));

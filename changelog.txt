@@ -1,3 +1,7 @@
+Changes for 1.7.0.5
+* Created a headless UIContext for use with headless game server, so that it may run on a linux platform that has no configured graphics environment. (veqryn)
+
+
 Changes for 1.7.0.3
 * Got headless game to show options to client's, for changing the game, changing to an autosave, sending a save to the server, and getting the savegame from the host. (veqryn)
 

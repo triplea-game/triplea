@@ -17,7 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
-import games.strategy.triplea.ui.UIContext;
+import games.strategy.triplea.ui.IUIContext;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -65,7 +65,7 @@ public class HistoryPanel extends JPanel
 	// private final UIContext m_uiContext;
 	// private boolean m_lockBefore;
 	
-	public HistoryPanel(final GameData data, final IHistoryDetailsPanel details, final JPopupMenu popup, final UIContext uiContext)
+	public HistoryPanel(final GameData data, final IHistoryDetailsPanel details, final JPopupMenu popup, final IUIContext uiContext)
 	{
 		// m_uiContext = uiContext;
 		m_mouseOverPanel = false;
@@ -494,11 +494,11 @@ class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
 {
 	private static final long serialVersionUID = -72258573320689596L;
 	private final ImageIcon icon = new ImageIcon();
-	private final UIContext m_uiContext;
+	private final IUIContext m_uiContext;
 	
-	public HistoryTreeCellRenderer(final UIContext context)
+	public HistoryTreeCellRenderer(final IUIContext uiContext)
 	{
-		m_uiContext = context;
+		m_uiContext = uiContext;
 	}
 	
 	@Override

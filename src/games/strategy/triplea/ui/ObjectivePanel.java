@@ -515,7 +515,7 @@ public class ObjectivePanel extends AbstractStatPanel
 		final GameSelectorModel model = new GameSelectorModel();
 		model.loadDefaultGame(f);
 		final GameData data = model.getGameData();
-		final UIContext uiContext = new UIContext();
+		final IUIContext uiContext = new UIContext();
 		uiContext.setDefaultMapDir(data);
 		uiContext.getMapData().verify(data);
 		// uiContext.setPlayerList(players);
@@ -555,7 +555,7 @@ class ObjectiveProperties
 	
 	protected ObjectiveProperties()
 	{
-		final ResourceLoader loader = UIContext.getResourceLoader();
+		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
 		final URL url = loader.getResource(PROPERTY_FILE);
 		if (url == null)
 		{
