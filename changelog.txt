@@ -1,4 +1,6 @@
 Changes for 1.7.0.5
+* Added a console to automated headless game server host, which allows commands such as 'help', 'status', 'memory', 'threads', and 'quit'. (veqryn)
+
 * Created a headless UIContext for use with headless game server, so that it may run on a linux platform that has no configured graphics environment. (veqryn)
 
 

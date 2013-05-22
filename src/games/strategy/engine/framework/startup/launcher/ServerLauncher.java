@@ -164,6 +164,10 @@ public class ServerLauncher extends AbstractLauncher
 				e.printStackTrace();
 				m_abortLaunch = true;
 			}
+			if (m_headless)
+			{
+				HeadlessGameServer.setServerGame(m_serverGame);
+			}
 			m_serverReady.await();
 			m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
 			final Thread t = new Thread("Triplea, start server game")

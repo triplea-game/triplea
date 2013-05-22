@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import games.strategy.debug.Console;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
@@ -30,17 +31,21 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,6 +55,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -97,27 +103,30 @@ public class HeadlessGameServer
 {
 	public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
 	public static final String TRIPLEA_HEADLESS = "triplea.headless";
-	// public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.lobby.console";
+	public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
 	private static HeadlessGameServer s_instance = null;
 	private final AvailableGames m_availableGames;
 	private final GameSelectorModel m_gameSelectorModel;
-	private SetupPanelModel m_setupPanelModel;
-	private HeadlessServerMainPanel m_mainPanel;
+	private SetupPanelModel m_setupPanelModel = null;
+	private HeadlessServerMainPanel m_mainPanel = null;
 	private final boolean m_useUI;
 	private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
+	private static ServerGame m_iGame = null;
+	private boolean m_shutDown = false;
 	
 	public static String[] getProperties()
 	{
-		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY, GameRunner2.TRIPLEA_PORT_PROPERTY,
-					GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT, GameRunner2.LOBBY_GAME_COMMENTS, GameRunner2.LOBBY_GAME_HOSTED_BY,
-					GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY };
+		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY,
+					GameRunner2.TRIPLEA_PORT_PROPERTY, GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT, GameRunner2.LOBBY_GAME_COMMENTS,
+					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY };
 	}
 	
 	private static void usage()
 	{
 		System.out.println("Arguments\n"
 					+ "   " + GameRunner2.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-					+ "   " + TRIPLEA_GAME_HOST_UI_PROPERTY + "=<FILE_NAME>\n"
+					+ "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
+					+ "   " + TRIPLEA_GAME_HOST_UI_PROPERTY + "=<true/false>\n"
 					+ "   " + GameRunner2.TRIPLEA_SERVER_PROPERTY + "=true\n"
 					+ "   " + GameRunner2.TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
 					+ "   " + GameRunner2.TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
@@ -204,12 +213,38 @@ public class HeadlessGameServer
 		}
 	}
 	
+	public static synchronized void setServerGame(final ServerGame serverGame)
+	{
+		final HeadlessGameServer instance = getInstance();
+		if (instance != null)
+			m_iGame = serverGame;
+	}
+	
+	ServerGame getIGame()
+	{
+		return m_iGame;
+	}
+	
+	public boolean isShutDown()
+	{
+		return m_shutDown;
+	}
+	
 	public HeadlessGameServer(final boolean useUI)
 	{
 		super();
 		if (s_instance != null)
 			throw new IllegalStateException("Instance already exists");
 		s_instance = this;
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
+		{
+			
+			public void run()
+			{
+				System.out.println("Running shutdown script");
+				shutdown();
+			}
+		}));
 		m_useUI = useUI;
 		m_availableGames = new AvailableGames();
 		m_gameSelectorModel = new GameSelectorModel();
@@ -297,14 +332,6 @@ public class HeadlessGameServer
 				}
 			}
 		}, 28800, 28800, TimeUnit.SECONDS);
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
-		{
-			
-			public void run()
-			{
-				shutdown();
-			}
-		}));
 	}
 	
 	private void resetLobbyHostOldExtensionProperties()
@@ -323,20 +350,88 @@ public class HeadlessGameServer
 		}
 	}
 	
-	public void shutdown()
+	public synchronized void shutdown()
 	{
-		m_lobbyWatcherResetupThread.shutdown();
+		m_shutDown = true;
+		try
+		{
+			if (m_lobbyWatcherResetupThread != null)
+			{
+				m_lobbyWatcherResetupThread.shutdown();
+				Thread.sleep(250);
+			}
+		} catch (final Exception e)
+		{
+		}
+		try
+		{
+			if (m_iGame != null)
+			{
+				m_iGame.stopGame();
+				Thread.sleep(500);
+			}
+		} catch (final Exception e)
+		{
+		}
+		try
+		{
+			if (m_setupPanelModel != null)
+			{
+				final ISetupPanel setup = m_setupPanelModel.getPanel();
+				if (setup != null && setup instanceof ServerSetupPanel)
+				{
+					((ServerSetupPanel) setup).cancel();
+				}
+				else if (setup != null && setup instanceof HeadlessServerSetup)
+				{
+					((HeadlessServerSetup) setup).cancel();
+				}
+				Thread.sleep(250);
+			}
+		} catch (final Exception e)
+		{
+		}
+		try
+		{
+			if (m_gameSelectorModel != null && m_gameSelectorModel.getGameData() != null)
+			{
+				m_gameSelectorModel.getGameData().clearAllListeners();
+				Thread.sleep(250);
+			}
+		} catch (final Exception e)
+		{
+		}
+		try
+		{
+			if (m_mainPanel != null)
+			{
+				m_mainPanel.setVisible(false);
+				final Frame frame = JOptionPane.getFrameForComponent(m_mainPanel);
+				m_mainPanel.removeAll();
+				frame.setVisible(false);
+				frame.removeAll();
+				frame.dispose();
+				m_mainPanel = null;
+			}
+		} catch (final Exception e)
+		{
+		}
+		s_instance = null;
+		m_setupPanelModel = null;
+		m_mainPanel = null;
+		m_iGame = null;
 	}
 	
 	public void waitForUsersHeadless()
 	{
+		setServerGame(null);
 		if (m_useUI)
 			return;
 		final Runnable r = new Runnable()
 		{
 			public void run()
 			{
-				while (true)
+				while (!m_shutDown)
 				{
 					try
 					{
@@ -344,7 +439,7 @@ public class HeadlessGameServer
 					} catch (final InterruptedException e)
 					{
 					}
-					if (m_setupPanelModel.getPanel().canGameStart())
+					if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null && m_setupPanelModel.getPanel().canGameStart())
 					{
 						System.out.println("Starting Game.");
 						m_setupPanelModel.getPanel().preStartGame();
@@ -405,21 +500,28 @@ public class HeadlessGameServer
 		{
 			ClipPlayer.setBeSilent(true);
 		}
-		/*if (Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, "false")))
-		{
-			final InputStream in = System.in;
-			final PrintStream out = System.out;
-			// startConsole(server, in, out);
-		}*/
+		HeadlessGameServer server = null;
 		try
 		{
-			@SuppressWarnings("unused")
-			final HeadlessGameServer server = new HeadlessGameServer(startUI);
+			server = new HeadlessGameServer(startUI);
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			// main(new String[] {});
 		}
+		if (Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, "false")))
+		{
+			final InputStream in = System.in;
+			final PrintStream out = System.out;
+			startConsole(server, in, out);
+		}
+	}
+	
+	private static void startConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out)
+	{
+		System.out.println("Starting console.");
+		final HeadlessGameServerConsole thread = new HeadlessGameServerConsole(server, in, out);
+		thread.start();
 	}
 	
 	public static void setupLogging()
@@ -1434,5 +1536,140 @@ class HeadlessGameSelectorPanel extends JPanel implements Observer
 				m_model.load(m_availableGames.getGameData(gameSelected), m_availableGames.getGameFilePath(gameSelected));
 			}
 		}
+	}
+}
+
+
+class HeadlessGameServerConsole
+{
+	private final HeadlessGameServer server;
+	private final PrintStream out;
+	private final BufferedReader in;
+	@SuppressWarnings("deprecation")
+	private final String startDate = new Date().toGMTString();
+	private boolean m_shutDown = false;
+	
+	public HeadlessGameServerConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out)
+	{
+		this.out = out;
+		this.in = new BufferedReader(new InputStreamReader(in));
+		this.server = server;
+	}
+	
+	public void start()
+	{
+		final Thread t = new Thread(new Runnable()
+		{
+			public void run()
+			{
+				printEvalLoop();
+			}
+		}, "Headless console eval print loop");
+		t.setDaemon(true);
+		t.start();
+	}
+	
+	private void printEvalLoop()
+	{
+		out.println();
+		while (!m_shutDown)
+		{
+			out.print(">>>>");
+			out.flush();
+			try
+			{
+				final String command = in.readLine();
+				process(command.trim());
+			} catch (final Throwable t)
+			{
+				t.printStackTrace();
+				t.printStackTrace(out);
+			}
+		}
+	}
+	
+	private void process(final String command)
+	{
+		if (command.equals(""))
+		{
+			return;
+		}
+		final String noun = command.split("\\s")[0];
+		if (noun.equalsIgnoreCase("help"))
+		{
+			showHelp();
+		}
+		else if (noun.equalsIgnoreCase("status"))
+		{
+			showStatus();
+		}
+		else if (noun.equalsIgnoreCase("quit"))
+		{
+			quit();
+		}
+		else if (noun.equalsIgnoreCase("memory"))
+		{
+			memory();
+		}
+		else if (noun.equalsIgnoreCase("threads"))
+		{
+			threads();
+		}
+		else
+		{
+			out.println("Unrecognized command:" + command);
+			showHelp();
+		}
+	}
+	
+	private void threads()
+	{
+		out.println(Console.getThreadDumps());
+	}
+	
+	private void memory()
+	{
+		out.println(Console.getMemory());
+	}
+	
+	private void quit()
+	{
+		out.println("Are you sure? (y/n)");
+		try
+		{
+			if (in.readLine().toLowerCase().startsWith("y"))
+			{
+				m_shutDown = true;
+				System.exit(0);
+			}
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void showStatus()
+	{
+		String message = "Server Start Date: " + startDate;
+		if (server != null)
+		{
+			final ServerGame game = server.getIGame();
+			if (game != null)
+			{
+				message += "\nIs currently running: " + game.isGameSequenceRunning() + "\nIs GameOver: " + game.isGameOver()
+							+ "\nGame: " + game.getData().getGameName() + "\nRound: " + game.getData().getSequence().getRound();
+			}
+			else
+			{
+				message += "\nCurrently Waiting To Start A Game";
+			}
+		}
+		out.println(message);
+	}
+	
+	private void showHelp()
+	{
+		out.println("Available commands:\n" + "  help - show this message\n" + "  memory - show memory usage\n" + "  status - show status information\n" + "  threads - get thread dumps\n"
+					+ "  quit - quit\n");
 	}
 }
