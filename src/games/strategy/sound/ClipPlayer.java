@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.triplea.ResourceLoader;
 
 import java.io.File;
@@ -150,8 +151,8 @@ public class ClipPlayer
 	private ClipPlayer(final ResourceLoader resourceLoader)
 	{
 		m_resourceLoader = resourceLoader;
-		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, false);
+		final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
+		m_beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false")) || prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, false);
 		final HashSet<String> choices = SoundPath.getAllSoundOptions();
 		/* until we get better sounds, all sounds start as muted, except for Slapping
 		choices.remove(SoundPath.CLIP_CHAT_SLAP);
@@ -188,9 +189,13 @@ public class ClipPlayer
 	{
 		final ClipPlayer clipPlayer = getInstance();
 		clipPlayer.m_beSilent = aBool;
-		
-		final Preferences prefs = Preferences.userNodeForPackage(clipPlayer.getClass());
-		prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, clipPlayer.m_beSilent);
+		setBeSilentInPreferencesWithoutAffectingCurrent(aBool);
+	}
+	
+	public static void setBeSilentInPreferencesWithoutAffectingCurrent(final boolean aBool)
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
+		prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, aBool);
 		try
 		{
 			prefs.flush();
@@ -210,7 +215,7 @@ public class ClipPlayer
 	private void putSoundInPreferences(final String clip, final boolean isMuted)
 	{
 		final ClipPlayer clipPlayer = getInstance();
-		final Preferences prefs = Preferences.userNodeForPackage(clipPlayer.getClass());
+		final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
 		prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clip, isMuted);
 		try
 		{

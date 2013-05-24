@@ -498,7 +498,7 @@ public class HeadlessGameServer
 		final boolean startUI = getUseGameServerUI();
 		if (!startUI)
 		{
-			ClipPlayer.setBeSilent(true);
+			ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 		}
 		HeadlessGameServer server = null;
 		try

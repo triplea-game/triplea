@@ -15,6 +15,7 @@ package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.lobby.server.headless.HeadlessLobbyConsole;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.ui.LobbyAdminConsole;
@@ -116,7 +117,7 @@ public class LobbyServer
 			// turn off sound if no ui
 			final boolean startUI = Boolean.parseBoolean(System.getProperty(TRIPLEA_LOBBY_UI_PROPERTY, "false"));
 			if (!startUI)
-				ClipPlayer.setBeSilent(true);
+				ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 			// grab these before we override them with the loggers
 			final InputStream in = System.in;
 			final PrintStream out = System.out;
@@ -172,6 +173,7 @@ public class LobbyServer
 	 */
 	private static void handleCommandLineArgs(final String[] args)
 	{
+		System.getProperties().setProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "true");
 		final String[] properties = getProperties();
 		
 		boolean usagePrinted = false;
