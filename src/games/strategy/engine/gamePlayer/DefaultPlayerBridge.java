@@ -28,6 +28,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessengerException;
+import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.RemoteNotFoundException;
 
 import java.lang.reflect.InvocationHandler;
@@ -102,14 +103,36 @@ public class DefaultPlayerBridge implements IPlayerBridge
 			try
 			{
 				final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
-				return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+				if (delegate == null)
+				{
+					final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. CurrentStep: " + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
+					System.err.println(errorMessage);
+					throw new GameOverException(errorMessage); // Veqryn: hope that this suffices...?
+				}
+				final RemoteName remoteName;
+				try
+				{
+					remoteName = ServerGame.getRemoteName(delegate);
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
+					// veqryn: We are getting a IllegalArgumentException (formerly a NullPointerException) here occasionally for hosts, because the 'class' variable is null.
+					// This should be impossible, and indeed all the classes it has occurred for have a non-null IRemote delegate interface class for their getRemote().
+					// On top of this, it is also occassionally occurring for HeadlessGameServer hostbots, which are not playing any players (therefore we should never be in TripleAPlayer -> start() -> deleget.getRemote())
+					// My only guess is that someone disconnects at some very sensitive point, and then the classes are destroyed or set to null or something, resulting in a null for the interface class.
+					// I am hoping that we are in the middle of getting a connection lost error, and therefore we can just print the stack trace and ignore, letting the connection lost error do the work.
+					final String errorMessage = "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: " + m_currentStep + ", and CurrentDelegate: "
+								+ m_currentDelegate;
+					throw new GameOverException(errorMessage);
+				}
+				return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(remoteName));
 			} finally
 			{
 				m_game.getData().releaseReadLock();
 			}
 		} catch (final MessengerException me)
 		{
-			throw new GameOverException("Game Over");
+			throw new GameOverException("Game Over!");
 		}
 	}
 	
@@ -132,7 +155,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 			}
 		} catch (final MessengerException me)
 		{
-			throw new GameOverException("Game Over");
+			throw new GameOverException("Game Over!");
 		}
 	}
 	
@@ -171,10 +194,10 @@ class GameOverInvocationHandler implements InvocationHandler
 			if (!m_game.isGameOver())
 				throw ite.getCause();
 			else
-				throw new GameOverException("Game Over Exception");
+				throw new GameOverException("Game Over Exception!");
 		} catch (final RemoteNotFoundException rnfe)
 		{
-			throw new GameOverException("Game Over");
+			throw new GameOverException("Game Over!");
 		}
 	}
 }

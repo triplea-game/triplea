@@ -195,7 +195,17 @@ public class ClientGame extends AbstractGame
 			final IGamePlayer gp = m_gamePlayers.get(player);
 			if (gp == null)
 				throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
-			gp.start(stepName);
+			try
+			{
+				gp.start(stepName);
+			} catch (final ClassCastException e)
+			{
+				e.printStackTrace();
+				// veqryn: We are getting a ClassCastException here occasionally for hosts. This is doubly weird because we are getting it for host-bots (HeadlessGameServer's) who are not even playing.
+				// Which for the bot means that it is neither a client, nor playing any players (not even AI), so we should NEVER end up here (doubly never).
+				// My only guess is that someone disconnects at some very sensitive point, and then the host runs the wrong player step as a client step for the wrong node (the server node).
+				// I am hoping that we are in the middle of getting a connection lost error, and therefore we can just print the stack trace and ignore, letting the connection lost error do the work.
+			}
 		}
 	};
 	

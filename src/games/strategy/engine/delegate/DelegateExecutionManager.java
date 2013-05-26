@@ -112,7 +112,7 @@ public class DelegateExecutionManager
 					return method.invoke(implementor, args);
 				} catch (final MessengerException me)
 				{
-					throw new GameOverException("Game Over");
+					throw new GameOverException("Game Over!");
 				} catch (final InvocationTargetException ite)
 				{
 					assertGameNotOver();

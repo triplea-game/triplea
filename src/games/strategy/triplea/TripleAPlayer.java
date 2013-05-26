@@ -19,6 +19,7 @@
 package games.strategy.triplea;
 
 import games.strategy.common.player.AbstractHumanPlayer;
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -225,7 +226,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void politics(final boolean firstRun)
 	{
-		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
+		final IPoliticsDelegate iPoliticsDelegate;
+		try
+		{
+			iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		/*
 		if (!iPoliticsDelegate.stuffToDoInThisDelegate())
 			return;
@@ -240,7 +248,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void userActions(final boolean firstRun)
 	{
-		final IUserActionDelegate iUserActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemote();
+		final IUserActionDelegate iUserActionDelegate;
+		try
+		{
+			iUserActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		/*
 		if (!iUserActionDelegate.stuffToDoInThisDelegate())
 			return;
@@ -263,7 +278,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void tech()
 	{
-		final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemote();
+		final ITechDelegate techDelegate;
+		try
+		{
+			techDelegate = (ITechDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		/*
 		if (!techDelegate.stuffToDoInThisDelegate())
 			return;
@@ -292,7 +314,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void move(final boolean nonCombat, final String stepName)
 	{
-		final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemote();
+		final IMoveDelegate moveDel;
+		try
+		{
+			moveDel = (IMoveDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		/*
 		if (!moveDel.stuffToDoInThisDelegate())
 			return;
@@ -334,10 +363,16 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private boolean canAirLand(final boolean movePhase, final PlayerID player)
 	{
 		Collection<Territory> airCantLand;
-		if (movePhase)
-			airCantLand = ((IMoveDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereAirCantLand(player);
-		else
-			airCantLand = ((IAbstractPlaceDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereAirCantLand();
+		try
+		{
+			if (movePhase)
+				airCantLand = ((IMoveDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereAirCantLand(player);
+			else
+				airCantLand = ((IAbstractPlaceDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereAirCantLand();
+		} catch (final GameOverException goe)
+		{
+			return false;
+		}
 		if (airCantLand.isEmpty())
 			return true;
 		else
@@ -351,7 +386,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private boolean canUnitsFight()
 	{
 		Collection<Territory> unitsCantFight;
-		unitsCantFight = ((IMoveDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereUnitsCantFight();
+		try
+		{
+			unitsCantFight = ((IMoveDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereUnitsCantFight();
+		} catch (final GameOverException goe)
+		{
+			return false;
+		}
 		if (unitsCantFight.isEmpty())
 			return false;
 		else
@@ -364,7 +405,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void purchase(final boolean bid)
 	{
-		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
 		/*
 		if (!purchaseDel.stuffToDoInThisDelegate())
 			return;
@@ -405,7 +445,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 					final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(id, bid);
 					if (repair != null)
 					{
-						purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
+						final IPurchaseDelegate purchaseDel;
+						try
+						{
+							purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
+						} catch (final GameOverException goe)
+						{
+							return;
+						}
 						error = purchaseDel.purchaseRepair(repair);
 						if (error != null)
 						{
@@ -429,7 +476,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 					final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(id, bid);
 					if (repair != null)
 					{
-						purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote(); // TODO: veq fix
+						final IPurchaseDelegate purchaseDel;
+						try
+						{
+							purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
+						} catch (final GameOverException goe)
+						{
+							return;
+						}
 						error = purchaseDel.purchaseRepair(repair);
 						if (error != null)
 						{
@@ -444,7 +498,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		final IntegerMap<ProductionRule> prod = m_ui.getProduction(id, bid);
 		if (prod == null)
 			return;
-		purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
+		final IPurchaseDelegate purchaseDel;
+		try
+		{
+			purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		error = purchaseDel.purchase(prod);
 		if (error != null)
 		{
@@ -456,7 +517,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void battle()
 	{
-		final IBattleDelegate battleDel = (IBattleDelegate) getPlayerBridge().getRemote();
+		final IBattleDelegate battleDel;
+		try
+		{
+			battleDel = (IBattleDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		/* 
 		if (!battleDel.stuffToDoInThisDelegate())
 			return;
@@ -494,7 +562,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private void place(final boolean bid)
 	{
 		final PlayerID id = getPlayerID();
-		final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
+		final IAbstractPlaceDelegate placeDel;
+		try
+		{
+			placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		/*
 		if (!placeDel.stuffToDoInThisDelegate())
 			return;
@@ -526,7 +601,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		final GameData data = getGameData();
 		// play a sound for this phase
-		final IAbstractForumPosterDelegate endTurnDelegate = (IAbstractForumPosterDelegate) getPlayerBridge().getRemote();
+		final IAbstractForumPosterDelegate endTurnDelegate;
+		try
+		{
+			endTurnDelegate = (IAbstractForumPosterDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), data))
 		{
 			// do not play if we are reloading a savegame from pbem (gets annoying)

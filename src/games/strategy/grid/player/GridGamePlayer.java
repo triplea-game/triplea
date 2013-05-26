@@ -14,6 +14,7 @@
 package games.strategy.grid.player;
 
 import games.strategy.common.player.AbstractHumanPlayer;
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -85,7 +86,14 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		// change to active player
 		m_ui.changeActivePlayer(getPlayerID());
 		// Get the relevant delegate
-		final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel;
+		try
+		{
+			playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		// final PlayerID me = getPlayerID();
 		IGridPlayData play = null;
 		while (play == null)

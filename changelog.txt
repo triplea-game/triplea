@@ -1,4 +1,6 @@
 Changes for 1.7.0.5
+* Fixed two possible hang/freeze points in Server Game. (veqryn)
+
 * Making sure sound system never loads sound clips for headless game server. (veqryn)
 
 * Added a console to automated headless game server host, which allows commands such as 'help', 'status', 'memory', 'threads', and 'quit'. (veqryn)

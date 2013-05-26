@@ -1,5 +1,6 @@
 package games.strategy.grid.go.player;
 
+import games.strategy.engine.GameOverException;
 import games.strategy.grid.go.delegate.remote.IGoEndTurnDelegate;
 import games.strategy.grid.go.delegate.remote.IGoPlayDelegate;
 import games.strategy.grid.go.ui.GoMapPanel;
@@ -20,7 +21,14 @@ public class GoPlayer extends GridGamePlayer
 	@Override
 	protected void play()
 	{
-		final IGoPlayDelegate playDel = (IGoPlayDelegate) getPlayerBridge().getRemote();
+		final IGoPlayDelegate playDel;
+		try
+		{
+			playDel = (IGoPlayDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		// if (playDel.haveTwoPassedInARow())
 		// return;
 		
@@ -65,7 +73,14 @@ public class GoPlayer extends GridGamePlayer
 	@Override
 	protected void endTurn()
 	{
-		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemote();
+		final IGoEndTurnDelegate endTurnDel;
+		try
+		{
+			endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemote();
+		} catch (final GameOverException goe)
+		{
+			return;
+		}
 		// if (!endTurnDel.haveTwoPassedInARow())
 		// return;
 		

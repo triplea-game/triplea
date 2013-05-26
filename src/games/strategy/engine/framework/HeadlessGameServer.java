@@ -111,7 +111,7 @@ public class HeadlessGameServer
 	private HeadlessServerMainPanel m_mainPanel = null;
 	private final boolean m_useUI;
 	private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
-	private static ServerGame m_iGame = null;
+	private ServerGame m_iGame = null;
 	private boolean m_shutDown = false;
 	
 	public static String[] getProperties()
@@ -217,7 +217,7 @@ public class HeadlessGameServer
 	{
 		final HeadlessGameServer instance = getInstance();
 		if (instance != null)
-			m_iGame = serverGame;
+			instance.m_iGame = serverGame;
 	}
 	
 	ServerGame getIGame()

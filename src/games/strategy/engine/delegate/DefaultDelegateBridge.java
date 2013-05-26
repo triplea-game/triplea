@@ -146,7 +146,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 			return (IRemotePlayer) getOutbound(implementor);
 		} catch (final MessengerException me)
 		{
-			throw new GameOverException("Game Over");
+			throw new GameOverException("Game Over!");
 		}
 	}
 	
