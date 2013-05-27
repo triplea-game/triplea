@@ -17,6 +17,7 @@ import games.strategy.net.INode;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,6 +38,24 @@ public class PlayerManager
 	public Map<String, INode> getPlayerMapping()
 	{
 		return new HashMap<String, INode>(m_playerMapping);
+	}
+	
+	@Override
+	public String toString()
+	{
+		if (m_playerMapping == null || m_playerMapping.isEmpty())
+			return "empty";
+		final StringBuilder sb = new StringBuilder();
+		final Iterator<String> iter = m_playerMapping.keySet().iterator();
+		while (iter.hasNext())
+		{
+			final String key = iter.next();
+			final INode value = m_playerMapping.get(key);
+			sb.append(key + "=" + value.getName());
+			if (iter.hasNext())
+				sb.append(", ");
+		}
+		return sb.toString();
 	}
 	
 	public Set<INode> getNodes()

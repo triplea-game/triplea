@@ -1,4 +1,6 @@
 Changes for 1.7.0.5
+* Adding many more additional commands to headless game server console, including show connections, ban player, save game, and stop game. (veqryn)
+
 * Stopped headless game server from being able to load any savegame for a map to which it does not have the required map files for. (veqryn)
 
 * Possible fix another possible hang/freeze point causing a Could Not Block Delegate Execution error. (veqryn)

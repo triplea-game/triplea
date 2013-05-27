@@ -23,6 +23,8 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ui.ErrorHandler;
@@ -466,7 +468,7 @@ public class HeadlessGameServer
 				{
 					try
 					{
-						Thread.sleep(5000);
+						Thread.sleep(8000);
 					} catch (final InterruptedException e)
 					{
 					}
@@ -506,6 +508,27 @@ public class HeadlessGameServer
 			System.out.println("Waiting for users to connect.");
 			server.waitForUsersHeadless();
 		}
+	}
+	
+	SetupPanelModel getSetupPanelModel()
+	{
+		return m_setupPanelModel;
+	}
+	
+	ServerModel getServerModel()
+	{
+		if (m_setupPanelModel == null)
+			return null;
+		final ISetupPanel setup = m_setupPanelModel.getPanel();
+		if (setup != null && setup instanceof ServerSetupPanel)
+		{
+			return ((ServerSetupPanel) setup).getModel();
+		}
+		else if (setup != null && setup instanceof HeadlessServerSetup)
+		{
+			return ((HeadlessServerSetup) setup).getModel();
+		}
+		return null;
 	}
 	
 	/**
@@ -755,6 +778,11 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	public ChatPanel getChatPanel()
 	{
 		return m_model.getChatPanel();
+	}
+	
+	public ServerModel getModel()
+	{
+		return m_model;
 	}
 	
 	public synchronized ILauncher getLauncher()
@@ -1685,9 +1713,25 @@ class HeadlessGameServerConsole
 		{
 			showStatus();
 		}
+		else if (noun.equalsIgnoreCase("save"))
+		{
+			save();
+		}
+		else if (noun.equalsIgnoreCase("stop"))
+		{
+			stop();
+		}
 		else if (noun.equalsIgnoreCase("quit"))
 		{
 			quit();
+		}
+		else if (noun.equalsIgnoreCase("connections"))
+		{
+			showConnections();
+		}
+		else if (noun.equalsIgnoreCase("ban"))
+		{
+			ban();
 		}
 		else if (noun.equalsIgnoreCase("memory"))
 		{
@@ -1714,6 +1758,131 @@ class HeadlessGameServerConsole
 		out.println(Console.getMemory());
 	}
 	
+	private void ban()
+	{
+		if (server == null || server.getServerModel() == null)
+			return;
+		final IServerMessenger messenger = server.getServerModel().getMessenger();
+		if (messenger == null)
+			return;
+		final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
+		if (nodes == null)
+			return;
+		out.println("Input player name to mini-ban: ");
+		try
+		{
+			final String name = in.readLine();
+			if (name == null || name.length() < 1)
+			{
+				out.println("Invalid name");
+				return;
+			}
+			for (final INode node : nodes)
+			{
+				if (node.getName().equals(name))
+				{
+					final String realName = node.getName().split(" ")[0];
+					try
+					{
+						messenger.NotifyUsernameMiniBanningOfPlayer(realName);
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+					try
+					{
+						messenger.NotifyIPMiniBanningOfPlayer(node.getAddress().getHostAddress());
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+					try
+					{
+						messenger.NotifyMacMiniBanningOfPlayer(messenger.GetPlayerMac(node.getName()));
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+					messenger.removeConnection(node);
+					return;
+				}
+			}
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void save()
+	{
+		final ServerGame game = server.getIGame();
+		if (game == null)
+		{
+			out.println("No Game Currently Running");
+			return;
+		}
+		else
+		{
+			out.println("Input savegame filename: ");
+			try
+			{
+				String saveName = in.readLine();
+				if (saveName == null || saveName.length() < 2)
+				{
+					out.println("Invalid save name");
+					return;
+				}
+				if (!saveName.endsWith(".tsvg"))
+					saveName += ".tsvg";
+				SaveGameFileChooser.ensureDefaultDirExists();
+				final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, saveName);
+				try
+				{
+					game.saveGame(f);
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
+				}
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void stop()
+	{
+		final ServerGame game = server.getIGame();
+		if (game == null)
+		{
+			out.println("No Game Currently Running");
+			return;
+		}
+		out.println("Are you sure? (y/n)");
+		try
+		{
+			if (in.readLine().toLowerCase().startsWith("y"))
+			{
+				SaveGameFileChooser.ensureDefaultDirExists();
+				final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+				try
+				{
+					game.saveGame(f);
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
+				}
+				game.stopGame();
+			}
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	private void quit()
 	{
 		out.println("Are you sure? (y/n)");
@@ -1730,6 +1899,25 @@ class HeadlessGameServerConsole
 		}
 	}
 	
+	private void showConnections()
+	{
+		if (server != null && server.getServerModel() != null && server.getServerModel().getMessenger() != null)
+		{
+			final StringBuilder sb = new StringBuilder("Connected: " + server.getServerModel().getMessenger().isConnected() + "\n" + "Nodes: \n");
+			final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
+			if (nodes == null)
+				sb.append("  null\n");
+			else
+			{
+				for (final INode node : nodes)
+				{
+					sb.append("  " + node + "\n");
+				}
+			}
+			out.println(sb.toString());
+		}
+	}
+	
 	private void showStatus()
 	{
 		String message = "Server Start Date: " + startDate;
@@ -1739,7 +1927,8 @@ class HeadlessGameServerConsole
 			if (game != null)
 			{
 				message += "\nIs currently running: " + game.isGameSequenceRunning() + "\nIs GameOver: " + game.isGameOver()
-							+ "\nGame: " + game.getData().getGameName() + "\nRound: " + game.getData().getSequence().getRound();
+							+ "\nGame: " + game.getData().getGameName() + "\nRound: " + game.getData().getSequence().getRound()
+							+ "\nPlayers: " + game.getPlayerManager().toString();
 			}
 			else
 			{
@@ -1751,7 +1940,8 @@ class HeadlessGameServerConsole
 	
 	private void showHelp()
 	{
-		out.println("Available commands:\n" + "  help - show this message\n" + "  memory - show memory usage\n" + "  status - show status information\n" + "  threads - get thread dumps\n"
-					+ "  quit - quit\n");
+		out.println("Available commands:\n" + "  help - show this message\n" + "  status - show status information\n" + "  connections - show all connected players\n" + "  ban - ban player\n"
+					+ "  memory - show memory usage\n" + "  threads - get thread dumps\n" + "  save - saves game to filename\n"
+					+ "  stop - saves then stops current game and goes back to waiting\n" + "  quit - quit\n");
 	}
 }

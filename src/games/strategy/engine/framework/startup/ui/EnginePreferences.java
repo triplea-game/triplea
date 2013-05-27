@@ -59,6 +59,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_setupProxies;
 	private JButton m_setMaxMemory;
 	private JButton m_console;
+	// private JButton m_runAutoHost;
 	private JButton m_mapCreator;
 	private JButton m_userFolder;
 	private JButton m_programFolder;
@@ -90,6 +91,7 @@ public class EnginePreferences extends JDialog
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
 		m_setupProxies = new JButton("Setup Network and Proxy Settings");
 		m_setMaxMemory = new JButton("Set Max Memory Usage");
+		// m_runAutoHost = new JButton("Run an Automated Game Host Bot");
 		m_mapCreator = new JButton("Run the Map Creator");
 		m_console = new JButton("Show Console");
 		m_userFolder = new JButton("Open User Maps and Savegames Folder");
@@ -119,6 +121,8 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_setMaxMemory);
 		buttonsPanel.add(new JLabel(" "));
+		// buttonsPanel.add(m_runAutoHost);
+		// buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_mapCreator);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_console);
@@ -142,7 +146,7 @@ public class EnginePreferences extends JDialog
 	{
 		m_okButton.addActionListener(new AbstractAction("OK")
 		{
-			private static final long serialVersionUID = 8014389079875584858L;
+			private static final long serialVersionUID = 8014389179875584858L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -151,7 +155,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_lookAndFeel.addActionListener(new AbstractAction("Set Look And Feel")
 		{
-			private static final long serialVersionUID = -6524988243523615143L;
+			private static final long serialVersionUID = -6524988343523615143L;
 			
 			public void actionPerformed(final ActionEvent event)
 			{
@@ -177,7 +181,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_gameParser.addActionListener(new AbstractAction("Enable/Disable Delayed Parsing of Game XML's")
 		{
-			private static final long serialVersionUID = -6223524855968800051L;
+			private static final long serialVersionUID = -6223524865968800051L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -199,7 +203,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_setupProxies.addActionListener(new AbstractAction("Setup Network and Proxy Settings")
 		{
-			private static final long serialVersionUID = 1673056396342959597L;
+			private static final long serialVersionUID = 1673056396542959597L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -243,7 +247,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_setMaxMemory.addActionListener(new AbstractAction("Set Max Memory Usage")
 		{
-			private static final long serialVersionUID = 1262782772917758914L;
+			private static final long serialVersionUID = 1262782782917758914L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -335,9 +339,27 @@ public class EnginePreferences extends JDialog
 				}
 			}
 		});
+		/*
+		m_runAutoHost.addActionListener(new AbstractAction("Run an Automated Game Host Bot")
+		{
+			private static final long serialVersionUID = -3582932190184978286L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final List<String> commands = new ArrayList<String>();
+				ProcessRunnerUtil.populateBasicJavaArgs(commands, 1024 * 1024 * 64);
+				final String javaClass = "games.strategy.engine.framework.HeadlessGameServer";
+				commands.add(javaClass);
+				commands.addAll(Arrays.asList(new String[] {
+							"triplea.game.host.console=true", "triplea.game.host.ui=true", "triplea.game=", "triplea.server=true", "triplea.port=3300", "triplea.name=BotTest1",
+							"triplea.lobby.game.hostedBy=BotTest1", "triplea.lobby.host=173.255.229.134", "triplea.lobby.port=3303", "triplea.lobby.game.comments=\"automated_hosting_service\""
+				}));
+				ProcessRunnerUtil.exec(commands);
+			}
+		});*/
 		m_mapCreator.addActionListener(new AbstractAction("Run the Map Creator")
 		{
-			private static final long serialVersionUID = -3588932090184978286L;
+			private static final long serialVersionUID = -3588932790184974286L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -350,7 +372,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_console.addActionListener(new AbstractAction("Show Console")
 		{
-			private static final long serialVersionUID = 5333381080739176703L;
+			private static final long serialVersionUID = 5333381081739176723L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -360,7 +382,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_userFolder.addActionListener(new AbstractAction("Open User Maps and Savegames Folder")
 		{
-			private static final long serialVersionUID = -3881256681728469915L;
+			private static final long serialVersionUID = -3882256687728469915L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -375,7 +397,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_programFolder.addActionListener(new AbstractAction("Open Installed Program Folder")
 		{
-			private static final long serialVersionUID = 3621594974694705701L;
+			private static final long serialVersionUID = 3621594954694705711L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -390,7 +412,7 @@ public class EnginePreferences extends JDialog
 		});
 		m_readme.addActionListener(new AbstractAction("Open Readme / User Manual")
 		{
-			private static final long serialVersionUID = 7125025575496109985L;
+			private static final long serialVersionUID = 7125025575496119585L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
