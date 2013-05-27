@@ -997,15 +997,32 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				final File rootDir = new File(System.getProperties().getProperty("user.dir"));
 				final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
-				String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
+				int round = 0;
+				try
+				{
+					getData().acquireReadLock();
+					round = getData().getSequence().getRound();
+				} finally
+				{
+					getData().releaseReadLock();
+				}
+				String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
 				defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
 				defaultFileName = defaultFileName + ".xml";
 				chooser.setSelectedFile(new File(rootDir, defaultFileName));
 				if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
 					return;
 				final GameData data = getData();
-				final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
-				final String xmlFile = exporter.getXML();
+				final String xmlFile;
+				try
+				{
+					data.acquireReadLock();
+					final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
+					xmlFile = exporter.getXML();
+				} finally
+				{
+					data.releaseReadLock();
+				}
 				try
 				{
 					final FileWriter writer = new FileWriter(chooser.getSelectedFile());

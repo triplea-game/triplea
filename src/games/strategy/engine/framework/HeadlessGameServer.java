@@ -28,6 +28,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ui.ErrorHandler;
+import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.ClassLoaderUtil;
 
 import java.awt.BorderLayout;
@@ -74,7 +75,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -114,6 +117,8 @@ public class HeadlessGameServer
 	public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
 	public static final String TRIPLEA_HEADLESS = "triplea.headless";
 	public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
+	final static Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
+	static HeadlessGameServerConsole s_console = null;
 	private static HeadlessGameServer s_instance = null;
 	private final AvailableGames m_availableGames;
 	private final GameSelectorModel m_gameSelectorModel;
@@ -190,7 +195,7 @@ public class HeadlessGameServer
 	public synchronized void setGameMapTo(final String gameName)
 	{
 		// don't change mid-game
-		if (m_setupPanelModel.getPanel() != null)
+		if (m_setupPanelModel.getPanel() != null && m_iGame == null)
 		{
 			if (!m_availableGames.getGameNames().contains(gameName))
 				return;
@@ -201,7 +206,7 @@ public class HeadlessGameServer
 	public synchronized void loadGameSave(final File file)
 	{
 		// don't change mid-game
-		if (m_setupPanelModel.getPanel() != null)
+		if (m_setupPanelModel.getPanel() != null && m_iGame == null)
 		{
 			if (file == null || !file.exists())
 				return;
@@ -212,7 +217,7 @@ public class HeadlessGameServer
 	public synchronized void loadGameSave(final InputStream input, final String fileName)
 	{
 		// don't change mid-game
-		if (m_setupPanelModel.getPanel() != null)
+		if (m_setupPanelModel.getPanel() != null && m_iGame == null)
 		{
 			if (input == null || fileName == null)
 				return;
@@ -235,7 +240,7 @@ public class HeadlessGameServer
 	public synchronized void loadGameSave(final ObjectInputStream input, final String fileName)
 	{
 		// don't change mid-game
-		if (m_setupPanelModel.getPanel() != null)
+		if (m_setupPanelModel.getPanel() != null && m_iGame == null)
 		{
 			if (input == null || fileName == null)
 				return;
@@ -301,6 +306,7 @@ public class HeadlessGameServer
 			{
 				public void run()
 				{
+					System.out.println("Starting UI");
 					final JFrame frame = new JFrame("TripleA Headless Game Server UI Main Frame");
 					frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 					frame.setPreferredSize(new Dimension(700, 630));
@@ -323,6 +329,7 @@ public class HeadlessGameServer
 			{
 				public void run()
 				{
+					System.out.println("Headless Start");
 					m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
 					m_setupPanelModel.showSelectType();
 					System.out.println("Waiting for users to connect.");
@@ -339,6 +346,7 @@ public class HeadlessGameServer
 				restartLobbyWatcher(m_setupPanelModel, m_iGame);
 			}
 		}, 21600, 21600, TimeUnit.SECONDS);
+		s_logger.info("Game Server initialized");
 	}
 	
 	private static synchronized void restartLobbyWatcher(final SetupPanelModel setupPanelModel, final ServerGame iGame)
@@ -555,8 +563,11 @@ public class HeadlessGameServer
 	
 	public static void main(final String[] args)
 	{
-		setupLogging();
 		handleCommandLineArgs(args);
+		// grab these before we override them with the loggers
+		final InputStream in = System.in;
+		final PrintStream out = System.out;
+		setupLogging();// after handling the command lines, because we use the triplea.game.name= property in our log file name
 		final boolean startUI = getUseGameServerUI();
 		if (!startUI)
 		{
@@ -573,8 +584,6 @@ public class HeadlessGameServer
 		}
 		if (Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, "false")))
 		{
-			final InputStream in = System.in;
-			final PrintStream out = System.out;
 			startConsole(server, in, out);
 		}
 	}
@@ -582,8 +591,8 @@ public class HeadlessGameServer
 	private static void startConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out)
 	{
 		System.out.println("Starting console.");
-		final HeadlessGameServerConsole thread = new HeadlessGameServerConsole(server, in, out);
-		thread.start();
+		s_console = new HeadlessGameServerConsole(server, in, out);
+		s_console.start();
 	}
 	
 	public static void setupLogging()
@@ -591,11 +600,14 @@ public class HeadlessGameServer
 		// setup logging to read our logging.properties
 		try
 		{
-			LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
+			LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("headless-game-server-logging.properties"));
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
+		Logger.getAnonymousLogger().info("Redirecting std out");
+		System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
+		System.setOut(new LoggingPrintStream("OUT", Level.INFO));
 	}
 	
 	/**
@@ -1756,6 +1768,11 @@ class HeadlessGameServerConsole
 	private void memory()
 	{
 		out.println(Console.getMemory());
+	}
+	
+	public void println(final String string)
+	{
+		out.println(string);
 	}
 	
 	private void ban()

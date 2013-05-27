@@ -559,7 +559,16 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	
 	protected boolean waitForPlayByEmailOrForumPoster(final PlayerID player, final IPlayerBridge bridge)
 	{
-		m_posterPBEM = new PBEMMessagePoster(m_gameData, player, m_gameData.getSequence().getRound(), "Turn Summary");
+		int round = 0;
+		try
+		{
+			m_gameData.acquireReadLock();
+			round = m_gameData.getSequence().getRound();
+		} finally
+		{
+			m_gameData.releaseReadLock();
+		}
+		m_posterPBEM = new PBEMMessagePoster(m_gameData, player, round, "Turn Summary");
 		if (!m_posterPBEM.hasMessengers())
 			return false;
 		if (skipPosting() || Boolean.parseBoolean(bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))

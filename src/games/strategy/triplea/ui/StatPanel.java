@@ -428,14 +428,21 @@ public class StatPanel extends AbstractStatPanel
 			 * Italian player.
 			 */
 			boolean useTech = false;
-			if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
+			try
 			{
-				useTech = true;
-				data = new String[TechAdvance.getTechAdvances(m_data).size() + 1][colList.length + 2];
-			}
-			else
+				m_data.acquireReadLock();
+				if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
+				{
+					useTech = true;
+					data = new String[TechAdvance.getTechAdvances(m_data).size() + 1][colList.length + 2];
+				}
+				else
+				{
+					data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
+				}
+			} finally
 			{
-				data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
+				m_data.releaseReadLock();
 			}
 			/* Load the technology -> row mapping */
 			rowMap = new HashMap<String, Integer>();
@@ -614,7 +621,7 @@ public class StatPanel extends AbstractStatPanel
 	{
 		public PUStat()
 		{
-			super(m_data.getResourceList().getResource(Constants.PUS));
+			super(getResourcePUs(m_data));
 		}
 	}
 	

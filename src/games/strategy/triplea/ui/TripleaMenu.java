@@ -818,231 +818,155 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		final File rootDir = new File(System.getProperties().getProperty("user.dir"));
 		final DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
-		String defaultFileName = "stats_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + (showPhaseStats ? "_full" : "_short");
+		int currentRound = 0;
+		try
+		{
+			getData().acquireReadLock();
+			currentRound = getData().getSequence().getRound();
+		} finally
+		{
+			getData().releaseReadLock();
+		}
+		String defaultFileName = "stats_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + currentRound + (showPhaseStats ? "_full" : "_short");
 		defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
 		defaultFileName = defaultFileName + ".csv";
 		chooser.setSelectedFile(new File(rootDir, defaultFileName));
 		if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
 			return;
+		final StringBuilder text = new StringBuilder(1000);
 		GameData clone;
-		getData().acquireReadLock();
 		try
 		{
+			getData().acquireReadLock();
 			clone = GameDataUtils.cloneGameData(getData());
-		} finally
-		{
-			getData().releaseReadLock();
-		}
-		final IStat[] stats = statPanel.getStats();
-		// extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech tokens or # techs, etc.
-		final IStat[] statsExtended = statPanel.getStatsExtended(getData());
-		final String[] alliances = statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
-		final PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
-		// its important here to translate the player objects into our game data
-		// the players for the stat panel are only relevant with respect to
-		// the game data they belong to
-		for (int i = 0; i < players.length; i++)
-		{
-			players[i] = clone.getPlayerList().getPlayerID(players[i].getName());
-		}
-		final StringBuilder text = new StringBuilder(1000);
-		text.append(defaultFileName + ",");
-		text.append("\n");
-		text.append("TripleA Engine Version: ,");
-		text.append(games.strategy.engine.EngineVersion.VERSION.toString() + ",");
-		text.append("\n");
-		text.append("Game Name: ,");
-		text.append(getData().getGameName() + ",");
-		text.append("\n");
-		text.append("Game Version: ,");
-		text.append(getData().getGameVersion() + ",");
-		text.append("\n");
-		text.append("\n");
-		text.append("Current Round: ,");
-		text.append(getData().getSequence().getRound() + ",");
-		text.append("\n");
-		text.append("Number of Players: ,");
-		text.append(statPanel.getPlayers().size() + ",");
-		text.append("\n");
-		text.append("Number of Alliances: ,");
-		text.append(statPanel.getAlliances().size() + ",");
-		text.append("\n");
-		text.append("\n");
-		text.append("Turn Order: ,");
-		text.append("\n");
-		final List<PlayerID> playerOrderList = new ArrayList<PlayerID>();
-		playerOrderList.addAll(getData().getPlayerList().getPlayers());
-		Collections.sort(playerOrderList, new PlayerOrderComparator(getData()));
-		final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<PlayerID>(playerOrderList);
-		final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
-		while (playerOrderIterator.hasNext())
-		{
-			final PlayerID currentPlayerID = playerOrderIterator.next();
-			text.append(currentPlayerID.getName() + ",");
-			final Iterator<String> allianceName = getData().getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
-			while (allianceName.hasNext())
+			final IStat[] stats = statPanel.getStats();
+			// extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech tokens or # techs, etc.
+			final IStat[] statsExtended = statPanel.getStatsExtended(getData());
+			final String[] alliances = statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
+			final PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
+			// its important here to translate the player objects into our game data
+			// the players for the stat panel are only relevant with respect to
+			// the game data they belong to
+			for (int i = 0; i < players.length; i++)
 			{
-				text.append(allianceName.next() + ",");
+				players[i] = clone.getPlayerList().getPlayerID(players[i].getName());
 			}
+			text.append(defaultFileName + ",");
 			text.append("\n");
-		}
-		text.append("\n");
-		text.append("Winners: ,");
-		final EndRoundDelegate delegateEndRound = (EndRoundDelegate) getData().getDelegateList().getDelegate("endRound");
-		if (delegateEndRound != null && delegateEndRound.getWinners() != null)
-		{
-			for (final PlayerID p : delegateEndRound.getWinners())
+			text.append("TripleA Engine Version: ,");
+			text.append(games.strategy.engine.EngineVersion.VERSION.toString() + ",");
+			text.append("\n");
+			text.append("Game Name: ,");
+			text.append(getData().getGameName() + ",");
+			text.append("\n");
+			text.append("Game Version: ,");
+			text.append(getData().getGameVersion() + ",");
+			text.append("\n");
+			text.append("\n");
+			text.append("Current Round: ,");
+			text.append(currentRound + ",");
+			text.append("\n");
+			text.append("Number of Players: ,");
+			text.append(statPanel.getPlayers().size() + ",");
+			text.append("\n");
+			text.append("Number of Alliances: ,");
+			text.append(statPanel.getAlliances().size() + ",");
+			text.append("\n");
+			text.append("\n");
+			text.append("Turn Order: ,");
+			text.append("\n");
+			final List<PlayerID> playerOrderList = new ArrayList<PlayerID>();
+			playerOrderList.addAll(getData().getPlayerList().getPlayers());
+			Collections.sort(playerOrderList, new PlayerOrderComparator(getData()));
+			final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<PlayerID>(playerOrderList);
+			final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
+			while (playerOrderIterator.hasNext())
 			{
-				text.append(p.getName() + ",");
-			}
-		}
-		else
-			text.append("none yet; game not over,");
-		text.append("\n");
-		text.append("\n");
-		text.append("Resource Chart: ,");
-		text.append("\n");
-		final Iterator<Resource> resourceIterator = getData().getResourceList().getResources().iterator();
-		while (resourceIterator.hasNext())
-		{
-			text.append(resourceIterator.next().getName() + ",");
-			text.append("\n");
-		}
-		// if short, we won't both showing production and unit info
-		if (showPhaseStats)
-		{
-			text.append("\n");
-			text.append("Production Rules: ,");
-			text.append("\n");
-			text.append("Name,Result,Quantity,Cost,Resource,\n");
-			final Iterator<ProductionRule> purchaseOptionsIterator = getData().getProductionRuleList().getProductionRules().iterator();
-			while (purchaseOptionsIterator.hasNext())
-			{
-				final ProductionRule pr = purchaseOptionsIterator.next();
-				String costString = pr.toStringCosts().replaceAll("; ", ",");
-				costString = costString.replaceAll(" ", ",");
-				text.append(pr.getName() + "," + pr.getResults().keySet().iterator().next().getName() + "," + pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + ","
-							+ costString + ",");
+				final PlayerID currentPlayerID = playerOrderIterator.next();
+				text.append(currentPlayerID.getName() + ",");
+				final Iterator<String> allianceName = getData().getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
+				while (allianceName.hasNext())
+				{
+					text.append(allianceName.next() + ",");
+				}
 				text.append("\n");
 			}
 			text.append("\n");
-			text.append("Unit Types: ,");
-			text.append("\n");
-			text.append("Name,Listed Abilities\n");
-			final Iterator<UnitType> allUnitsIterator = getData().getUnitTypeList().iterator();
-			while (allUnitsIterator.hasNext())
+			text.append("Winners: ,");
+			final EndRoundDelegate delegateEndRound = (EndRoundDelegate) getData().getDelegateList().getDelegate("endRound");
+			if (delegateEndRound != null && delegateEndRound.getWinners() != null)
 			{
-				final UnitAttachment ua = UnitAttachment.get(allUnitsIterator.next());
-				if (ua == null)
-					continue;
-				String toModify = ua.allUnitStatsForExporter();
-				toModify = toModify.replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "")
-							.replaceAll("\n", ";").replaceAll(",", ";");
-				toModify = toModify.replaceAll("  ", ",");
-				toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");
-				text.append(toModify);
-				text.append("\n");
+				for (final PlayerID p : delegateEndRound.getWinners())
+				{
+					text.append(p.getName() + ",");
+				}
 			}
-		}
-		text.append("\n");
-		text.append((showPhaseStats ? "Full Stats (includes each phase that had activity)," : "Short Stats (only shows first phase with activity per player per round),"));
-		text.append("\n");
-		text.append("Turn Stats: ,");
-		text.append("\n");
-		text.append("Round,Player Turn,Phase Name,");
-		for (int i = 0; i < stats.length; i++)
-		{
-			for (int j = 0; j < players.length; j++)
-			{
-				text.append(stats[i].getName()).append(" ");
-				text.append(players[j].getName());
-				text.append(",");
-			}
-			for (int j = 0; j < alliances.length; j++)
-			{
-				text.append(stats[i].getName()).append(" ");
-				text.append(alliances[j]);
-				text.append(",");
-			}
-		}
-		for (int i = 0; i < statsExtended.length; i++)
-		{
-			for (int j = 0; j < players.length; j++)
-			{
-				text.append(statsExtended[i].getName()).append(" ");
-				text.append(players[j].getName());
-				text.append(",");
-			}
-			for (int j = 0; j < alliances.length; j++)
-			{
-				text.append(statsExtended[i].getName()).append(" ");
-				text.append(alliances[j]);
-				text.append(",");
-			}
-		}
-		text.append("\n");
-		clone.getHistory().gotoNode(clone.getHistory().getLastNode());
-		@SuppressWarnings("rawtypes")
-		final Enumeration nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
-		PlayerID currentPlayer = null;
-		int round = 0;
-		while (nodes.hasMoreElements())
-		{
-			// we want to export on change of turn
-			final HistoryNode element = (HistoryNode) nodes.nextElement();
-			if (element instanceof Round)
-				round++;
-			if (!(element instanceof Step))
-				continue;
-			final Step step = (Step) element;
-			if (step.getPlayerID() == null || step.getPlayerID().isNull())
-				continue;
-			// this is to stop from having multiple entries for each players turn.
-			if (!showPhaseStats)
-			{
-				if (step.getPlayerID() == currentPlayer)
-					continue;
-			}
-			currentPlayer = step.getPlayerID();
-			clone.getHistory().gotoNode(element);
-			final String playerName = step.getPlayerID() == null ? "" : step.getPlayerID().getName() + ": ";
-			String stepName = step.getStepName();
-			// copied directly from TripleAPlayer, will probably have to be updated in the future if more delegates are made
-			if (stepName.endsWith("Bid"))
-				stepName = "Bid";
-			else if (stepName.endsWith("Tech"))
-				stepName = "Tech";
-			else if (stepName.endsWith("TechActivation"))
-				stepName = "TechActivation";
-			else if (stepName.endsWith("Purchase"))
-				stepName = "Purchase";
-			else if (stepName.endsWith("NonCombatMove"))
-				stepName = "NonCombatMove";
-			else if (stepName.endsWith("Move"))
-				stepName = "Move";
-			else if (stepName.endsWith("Battle"))
-				stepName = "Battle";
-			else if (stepName.endsWith("BidPlace"))
-				stepName = "BidPlace";
-			else if (stepName.endsWith("Place"))
-				stepName = "Place";
-			else if (stepName.endsWith("Politics"))
-				stepName = "Politics";
-			else if (stepName.endsWith("EndTurn"))
-				stepName = "EndTurn";
 			else
-				stepName = "";
-			text.append(round).append(",").append(playerName).append(",").append(stepName).append(",");
+				text.append("none yet; game not over,");
+			text.append("\n");
+			text.append("\n");
+			text.append("Resource Chart: ,");
+			text.append("\n");
+			final Iterator<Resource> resourceIterator = getData().getResourceList().getResources().iterator();
+			while (resourceIterator.hasNext())
+			{
+				text.append(resourceIterator.next().getName() + ",");
+				text.append("\n");
+			}
+			// if short, we won't both showing production and unit info
+			if (showPhaseStats)
+			{
+				text.append("\n");
+				text.append("Production Rules: ,");
+				text.append("\n");
+				text.append("Name,Result,Quantity,Cost,Resource,\n");
+				final Iterator<ProductionRule> purchaseOptionsIterator = getData().getProductionRuleList().getProductionRules().iterator();
+				while (purchaseOptionsIterator.hasNext())
+				{
+					final ProductionRule pr = purchaseOptionsIterator.next();
+					String costString = pr.toStringCosts().replaceAll("; ", ",");
+					costString = costString.replaceAll(" ", ",");
+					text.append(pr.getName() + "," + pr.getResults().keySet().iterator().next().getName() + "," + pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + ","
+								+ costString + ",");
+					text.append("\n");
+				}
+				text.append("\n");
+				text.append("Unit Types: ,");
+				text.append("\n");
+				text.append("Name,Listed Abilities\n");
+				final Iterator<UnitType> allUnitsIterator = getData().getUnitTypeList().iterator();
+				while (allUnitsIterator.hasNext())
+				{
+					final UnitAttachment ua = UnitAttachment.get(allUnitsIterator.next());
+					if (ua == null)
+						continue;
+					String toModify = ua.allUnitStatsForExporter();
+					toModify = toModify.replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "")
+								.replaceAll("\n", ";").replaceAll(",", ";");
+					toModify = toModify.replaceAll("  ", ",");
+					toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");
+					text.append(toModify);
+					text.append("\n");
+				}
+			}
+			text.append("\n");
+			text.append((showPhaseStats ? "Full Stats (includes each phase that had activity)," : "Short Stats (only shows first phase with activity per player per round),"));
+			text.append("\n");
+			text.append("Turn Stats: ,");
+			text.append("\n");
+			text.append("Round,Player Turn,Phase Name,");
 			for (int i = 0; i < stats.length; i++)
 			{
 				for (int j = 0; j < players.length; j++)
 				{
-					text.append(stats[i].getFormatter().format(stats[i].getValue(players[j], clone)));
+					text.append(stats[i].getName()).append(" ");
+					text.append(players[j].getName());
 					text.append(",");
 				}
 				for (int j = 0; j < alliances.length; j++)
 				{
-					text.append(stats[i].getFormatter().format(stats[i].getValue(alliances[j], clone)));
+					text.append(stats[i].getName()).append(" ");
+					text.append(alliances[j]);
 					text.append(",");
 				}
 			}
@@ -1050,16 +974,101 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			{
 				for (int j = 0; j < players.length; j++)
 				{
-					text.append(statsExtended[i].getFormatter().format(statsExtended[i].getValue(players[j], clone)));
+					text.append(statsExtended[i].getName()).append(" ");
+					text.append(players[j].getName());
 					text.append(",");
 				}
 				for (int j = 0; j < alliances.length; j++)
 				{
-					text.append(statsExtended[i].getFormatter().format(statsExtended[i].getValue(alliances[j], clone)));
+					text.append(statsExtended[i].getName()).append(" ");
+					text.append(alliances[j]);
 					text.append(",");
 				}
 			}
 			text.append("\n");
+			clone.getHistory().gotoNode(clone.getHistory().getLastNode());
+			@SuppressWarnings("rawtypes")
+			final Enumeration nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
+			PlayerID currentPlayer = null;
+			int round = 0;
+			while (nodes.hasMoreElements())
+			{
+				// we want to export on change of turn
+				final HistoryNode element = (HistoryNode) nodes.nextElement();
+				if (element instanceof Round)
+					round++;
+				if (!(element instanceof Step))
+					continue;
+				final Step step = (Step) element;
+				if (step.getPlayerID() == null || step.getPlayerID().isNull())
+					continue;
+				// this is to stop from having multiple entries for each players turn.
+				if (!showPhaseStats)
+				{
+					if (step.getPlayerID() == currentPlayer)
+						continue;
+				}
+				currentPlayer = step.getPlayerID();
+				clone.getHistory().gotoNode(element);
+				final String playerName = step.getPlayerID() == null ? "" : step.getPlayerID().getName() + ": ";
+				String stepName = step.getStepName();
+				// copied directly from TripleAPlayer, will probably have to be updated in the future if more delegates are made
+				if (stepName.endsWith("Bid"))
+					stepName = "Bid";
+				else if (stepName.endsWith("Tech"))
+					stepName = "Tech";
+				else if (stepName.endsWith("TechActivation"))
+					stepName = "TechActivation";
+				else if (stepName.endsWith("Purchase"))
+					stepName = "Purchase";
+				else if (stepName.endsWith("NonCombatMove"))
+					stepName = "NonCombatMove";
+				else if (stepName.endsWith("Move"))
+					stepName = "Move";
+				else if (stepName.endsWith("Battle"))
+					stepName = "Battle";
+				else if (stepName.endsWith("BidPlace"))
+					stepName = "BidPlace";
+				else if (stepName.endsWith("Place"))
+					stepName = "Place";
+				else if (stepName.endsWith("Politics"))
+					stepName = "Politics";
+				else if (stepName.endsWith("EndTurn"))
+					stepName = "EndTurn";
+				else
+					stepName = "";
+				text.append(round).append(",").append(playerName).append(",").append(stepName).append(",");
+				for (int i = 0; i < stats.length; i++)
+				{
+					for (int j = 0; j < players.length; j++)
+					{
+						text.append(stats[i].getFormatter().format(stats[i].getValue(players[j], clone)));
+						text.append(",");
+					}
+					for (int j = 0; j < alliances.length; j++)
+					{
+						text.append(stats[i].getFormatter().format(stats[i].getValue(alliances[j], clone)));
+						text.append(",");
+					}
+				}
+				for (int i = 0; i < statsExtended.length; i++)
+				{
+					for (int j = 0; j < players.length; j++)
+					{
+						text.append(statsExtended[i].getFormatter().format(statsExtended[i].getValue(players[j], clone)));
+						text.append(",");
+					}
+					for (int j = 0; j < alliances.length; j++)
+					{
+						text.append(statsExtended[i].getFormatter().format(statsExtended[i].getValue(alliances[j], clone)));
+						text.append(",");
+					}
+				}
+				text.append("\n");
+			}
+		} finally
+		{
+			getData().releaseReadLock();
 		}
 		try
 		{

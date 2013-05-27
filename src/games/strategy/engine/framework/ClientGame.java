@@ -92,7 +92,8 @@ public class ClientGame extends AbstractGame
 					try
 					{
 						m_data.getSequence().next();
-						int currentRound = m_data.getSequence().getRound();
+						final int ourOriginalCurrentRound = m_data.getSequence().getRound();
+						int currentRound = ourOriginalCurrentRound;
 						if (m_data.getSequence().testWeAreOnLastStep())
 							m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
 						while (!m_data.getSequence().getStep().getName().equals(stepName) || !m_data.getSequence().getStep().getPlayerID().equals(player)
@@ -102,8 +103,13 @@ public class ClientGame extends AbstractGame
 							if (m_data.getSequence().testWeAreOnLastStep())
 								m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
 						}
-						if (currentRound > round)
+						// TODO: this is causing problems if the very last step is a client step. we end up creating a new round before the host's rounds has started.
+						// right now, fixing it with a hack. but in reality we probably need to have a better way of determining when a new round has started (like with a roundChanged listener).
+						if ((currentRound - 1 > round && ourOriginalCurrentRound >= round) || (currentRound > round && ourOriginalCurrentRound < round))
+						{
+							System.err.println("Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
 							throw new IllegalStateException("Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
+						}
 					} finally
 					{
 						m_data.releaseWriteLock();

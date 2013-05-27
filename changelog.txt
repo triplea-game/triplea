@@ -1,4 +1,8 @@
 Changes for 1.7.0.5
+* Fixed bug causing fatal errors in client-server games when client owned very last step/delegate of game (only applied to some grid based games). (veqryn)
+
+* Adding a log file for the headless server located at /log/headless-game-server-<servername>-log<#>.txt, to keep track of events. (veqryn)
+
 * Adding many more additional commands to headless game server console, including show connections, ban player, save game, and stop game. (veqryn)
 
 * Stopped headless game server from being able to load any savegame for a map to which it does not have the required map files for. (veqryn)

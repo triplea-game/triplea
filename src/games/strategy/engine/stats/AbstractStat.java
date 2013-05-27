@@ -15,6 +15,8 @@ package games.strategy.engine.stats;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
+import games.strategy.triplea.Constants;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -46,5 +48,19 @@ public abstract class AbstractStat implements IStat
 	public NumberFormat getFormatter()
 	{
 		return DECIMAL_FORMAT;
+	}
+	
+	protected static Resource getResourcePUs(final GameData data)
+	{
+		Resource pus = null;
+		try
+		{
+			data.acquireReadLock();
+			pus = data.getResourceList().getResource(Constants.PUS);
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		return pus;
 	}
 }
