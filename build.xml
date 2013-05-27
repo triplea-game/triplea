@@ -264,6 +264,38 @@
 		</exec>
 
 		<exec executable="cp">
+			<arg line="-r doc ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="readme.html ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="run-headless-game-host-mac-os.sh ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="chmod">
+			<arg line="755 ${app.file}/Contents/Resources/run-headless-game-host-mac-os.sh" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="system.ini ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="MacOS_users_read_this_first.txt ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="TripleA_RuleBook.pdf ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="license/gpl.txt ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
 			<arg line="-r assets ${app.file}/Contents/Resources/" />
 		</exec>
 
@@ -375,6 +407,14 @@
 
 		<exec executable="cp">
 			<arg line="-r icons ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="run-headless-game-host-mac-os.sh ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="chmod">
+			<arg line="755 ${app.file}/Contents/Resources/run-headless-game-host-mac-os.sh" />
 		</exec>
 
 		<exec executable="/Developer/Tools/SetFile">
@@ -619,6 +659,7 @@
 				<include name="*.sh" />
 				<exclude name="fix_mac_icon.sh" />
 				<exclude name="run-server.sh" />
+				<exclude name="run-headless-game-host-mac-os.sh" />
 			</zipfileset>
 
 			<zipfileset dir="bin" prefix="${zip.prefix}/bin/"
@@ -647,6 +688,7 @@
 			<zipfileset dir="${basedir}" prefix="${zip.prefix}"
 				filemode="755">
 				<include name="run-server.sh" />
+				<include name="run-headless-game-host.sh" />
 			</zipfileset>
 		</zip>
 	</target>
