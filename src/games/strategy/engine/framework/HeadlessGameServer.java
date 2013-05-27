@@ -24,6 +24,7 @@ import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.sound.ClipPlayer;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ClassLoaderUtil;
 
@@ -102,6 +103,12 @@ import javax.swing.border.EtchedBorder;
  */
 public class HeadlessGameServer
 {
+	/*static
+	{
+		// must be very first thing in the class:
+		System.setProperty("java.awt.headless", "true");
+		// System.out.println("Headless AWT Test: " + java.awt.GraphicsEnvironment.isHeadless());
+	}*/
 	public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
 	public static final String TRIPLEA_HEADLESS = "triplea.headless";
 	public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
@@ -183,6 +190,8 @@ public class HeadlessGameServer
 		// don't change mid-game
 		if (m_setupPanelModel.getPanel() != null)
 		{
+			if (!m_availableGames.getGameNames().contains(gameName))
+				return;
 			m_gameSelectorModel.load(m_availableGames.getGameData(gameName), m_availableGames.getGameFilePath(gameName));
 		}
 	}
@@ -192,6 +201,8 @@ public class HeadlessGameServer
 		// don't change mid-game
 		if (m_setupPanelModel.getPanel() != null)
 		{
+			if (file == null || !file.exists())
+				return;
 			m_gameSelectorModel.load(file, null);
 		}
 	}
@@ -201,7 +212,21 @@ public class HeadlessGameServer
 		// don't change mid-game
 		if (m_setupPanelModel.getPanel() != null)
 		{
-			m_gameSelectorModel.load(input, fileName);
+			if (input == null || fileName == null)
+				return;
+			final GameData data = m_gameSelectorModel.getGameData(input, fileName);
+			if (data == null)
+			{
+				System.out.println("Loading GameData failed for: " + fileName);
+				return;
+			}
+			final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
+			if (!m_availableGames.getAvailableMapFolderOrZipNames().contains(mapNameProperty))
+			{
+				System.out.println("Game mapName not in available games listing: " + mapNameProperty);
+				return;
+			}
+			m_gameSelectorModel.load(data, fileName);
 		}
 	}
 	
@@ -210,7 +235,21 @@ public class HeadlessGameServer
 		// don't change mid-game
 		if (m_setupPanelModel.getPanel() != null)
 		{
-			m_gameSelectorModel.load(input, fileName);
+			if (input == null || fileName == null)
+				return;
+			final GameData data = m_gameSelectorModel.getGameData(input, fileName);
+			if (data == null)
+			{
+				System.out.println("Loading GameData failed for: " + fileName);
+				return;
+			}
+			final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
+			if (!m_availableGames.getAvailableMapFolderOrZipNames().contains(mapNameProperty))
+			{
+				System.out.println("Game mapName not in available games listing: " + mapNameProperty);
+				return;
+			}
+			m_gameSelectorModel.load(data, fileName);
 		}
 	}
 	
@@ -239,10 +278,9 @@ public class HeadlessGameServer
 		s_instance = this;
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
 		{
-			
 			public void run()
 			{
-				System.out.println("Running shutdown script");
+				System.out.println("Running ShutdownHook.");
 				shutdown();
 			}
 		}));
@@ -344,6 +382,7 @@ public class HeadlessGameServer
 	
 	public synchronized void shutdown()
 	{
+		System.out.println("Running shutdown script.");
 		m_shutDown = true;
 		try
 		{
@@ -1032,16 +1071,28 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 class AvailableGames
 {
 	private static final boolean s_delayedParsing = false;
+	private static final String ZIP_EXTENSION = ".zip";
 	private final TreeMap<String, URI> m_availableGames = new TreeMap<String, URI>();
+	private final Set<String> m_availableMapFolderOrZipNames = new HashSet<String>();
 	
 	public AvailableGames()
 	{
-		populateAvailableGames(m_availableGames);
+		final Set<String> mapNamePropertyList = new HashSet<String>();
+		populateAvailableGames(m_availableGames, m_availableMapFolderOrZipNames, mapNamePropertyList);
+		// System.out.println(mapNamePropertyList);
+		// System.out.println(m_availableMapFolderOrZipNames);
+		m_availableMapFolderOrZipNames.retainAll(mapNamePropertyList);
+		// System.out.println(m_availableMapFolderOrZipNames);
 	}
 	
 	public List<String> getGameNames()
 	{
 		return new ArrayList<String>(m_availableGames.keySet());
+	}
+	
+	public Set<String> getAvailableMapFolderOrZipNames()
+	{
+		return new HashSet<String>(m_availableMapFolderOrZipNames);
 	}
 	
 	/**
@@ -1062,18 +1113,18 @@ class AvailableGames
 		return getGameXMLLocation(m_availableGames.get(gameName));
 	}
 	
-	private static void populateAvailableGames(final Map<String, URI> availableGames)
+	private static void populateAvailableGames(final Map<String, URI> availableGames, final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList)
 	{
 		System.out.println("Parsing all available games (this could take a while). ");
 		for (final File map : allMapFiles())
 		{
 			if (map.isDirectory())
 			{
-				populateFromDirectory(map, availableGames);
+				populateFromDirectory(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
 			}
-			else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip"))
+			else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION))
 			{
-				populateFromZip(map, availableGames);
+				populateFromZip(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
 			}
 		}
 		System.out.println("Finished parsing all available game xmls. ");
@@ -1098,7 +1149,7 @@ class AvailableGames
 		return Arrays.asList(files);
 	}
 	
-	private static void populateFromDirectory(final File mapDir, final Map<String, URI> availableGames)
+	private static void populateFromDirectory(final File mapDir, final Map<String, URI> availableGames, final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList)
 	{
 		final File games = new File(mapDir, "games");
 		if (!games.exists())
@@ -1108,11 +1159,15 @@ class AvailableGames
 		for (final File game : games.listFiles())
 		{
 			if (game.isFile() && game.getName().toLowerCase().endsWith("xml"))
-				addToAvailableGames(game.toURI(), availableGames);
+			{
+				final boolean added = addToAvailableGames(game.toURI(), availableGames, mapNamePropertyList);
+				if (added)
+					availableMapFolderOrZipNames.add(mapDir.getName());
+			}
 		}
 	}
 	
-	private static void populateFromZip(final File map, final Map<String, URI> availableGames)
+	private static void populateFromZip(final File map, final Map<String, URI> availableGames, final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList)
 	{
 		try
 		{
@@ -1133,7 +1188,9 @@ class AvailableGames
 							ClassLoaderUtil.closeLoader(loader);
 							try
 							{
-								addToAvailableGames(new URI(url.toString().replace(" ", "%20")), availableGames);
+								final boolean added = addToAvailableGames(new URI(url.toString().replace(" ", "%20")), availableGames, mapNamePropertyList);
+								if (added && map.getName().length() > 4)
+									availableMapFolderOrZipNames.add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
 							} catch (final URISyntaxException e)
 							{
 								// only happens when URI couldn't be build and therefore no entry was added. That's fine
@@ -1156,10 +1213,10 @@ class AvailableGames
 		}
 	}
 	
-	public static void addToAvailableGames(final URI uri, final Map<String, URI> availableGames)
+	public static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames, final Set<String> mapNamePropertyList)
 	{
 		if (uri == null)
-			return;
+			return false;
 		InputStream input;
 		try
 		{
@@ -1168,8 +1225,14 @@ class AvailableGames
 			{
 				final GameData data = new GameParser().parse(input, s_delayedParsing);
 				final String name = data.getGameName();
+				final String mapName = data.getProperties().get(Constants.MAP_NAME, "");
 				if (!availableGames.containsKey(name))
+				{
 					availableGames.put(name, uri);
+					if (mapName.length() > 0)
+						mapNamePropertyList.add(mapName);
+					return true;
+				}
 			} catch (final Exception e2)
 			{// ignore
 			} finally
@@ -1185,6 +1248,7 @@ class AvailableGames
 		} catch (final Exception e1)
 		{// ignore
 		}
+		return false;
 	}
 	
 	public static String getGameXMLLocation(final URI uri)

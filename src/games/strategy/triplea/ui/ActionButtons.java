@@ -207,11 +207,13 @@ public class ActionButtons extends JPanel
 		m_current.setActive(false);
 		m_current = newCurrent;
 		m_current.display(id);
+		final String currentName = m_current.toString();
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				m_layout.show(ActionButtons.this, m_current.toString());
+				if (m_layout != null)
+					m_layout.show(ActionButtons.this, currentName);
 			}
 		});
 	}

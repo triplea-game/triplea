@@ -283,10 +283,10 @@ public class ClientSetupPanel extends SetupPanel
 			return null;
 		final List<Action> rVal = new ArrayList<Action>();
 		rVal.add(new SetMapClientAction(this, m_model.getMessenger(), m_model.getAvailableServerGames()));
+		rVal.add(new ChangeGameToSaveGameClientAction(this, m_model.getMessenger()));
 		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
 		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
 		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
-		rVal.add(new ChangeGameToSaveGameClientAction(this, m_model.getMessenger()));
 		rVal.add(new GetGameSaveClientAction(this, m_model.getServerStartupRemote()));
 		return rVal;
 	}

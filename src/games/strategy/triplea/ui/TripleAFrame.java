@@ -667,12 +667,16 @@ public class TripleAFrame extends MainGameFrame
 	
 	public void clearStatusMessage()
 	{
+		if (m_status == null)
+			return;
 		m_status.setText("");
 		m_status.setIcon(null);
 	}
 	
 	public void setStatusErrorMessage(final String msg)
 	{
+		if (m_status == null)
+			return;
 		m_status.setText(msg);
 		if (!msg.equals(""))
 			m_status.setIcon(new ImageIcon(m_mapPanel.getErrorImage()));
@@ -682,6 +686,8 @@ public class TripleAFrame extends MainGameFrame
 	
 	public void setStatusWarningMessage(final String msg)
 	{
+		if (m_status == null)
+			return;
 		m_status.setText(msg);
 		if (!msg.equals(""))
 			m_status.setIcon(new ImageIcon(m_mapPanel.getWarningImage()));
@@ -691,6 +697,8 @@ public class TripleAFrame extends MainGameFrame
 	
 	public void setStatusInfoMessage(final String msg)
 	{
+		if (m_status == null)
+			return;
 		m_status.setText(msg);
 		if (!msg.equals(""))
 			m_status.setIcon(new ImageIcon(m_mapPanel.getInfoImage()));

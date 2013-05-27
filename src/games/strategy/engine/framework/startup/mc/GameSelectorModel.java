@@ -122,6 +122,40 @@ public class GameSelectorModel extends Observable
 		}
 	}
 	
+	public GameData getGameData(final InputStream input, final String fileName)
+	{
+		final GameDataManager manager = new GameDataManager();
+		GameData newData;
+		try
+		{
+			newData = manager.loadGame(input, null);
+			if (newData != null)
+			{
+				return newData;
+			}
+		} catch (final IOException e)
+		{
+		}
+		return null;
+	}
+	
+	public GameData getGameData(final ObjectInputStream input, final String fileName)
+	{
+		final GameDataManager manager = new GameDataManager();
+		GameData newData;
+		try
+		{
+			newData = manager.loadGame(input, null);
+			if (newData != null)
+			{
+				return newData;
+			}
+		} catch (final IOException e)
+		{
+		}
+		return null;
+	}
+	
 	public void load(final File file, final Component ui)
 	{
 		if (!file.exists())

@@ -61,7 +61,8 @@ public abstract class AbstractMovePanel extends ActionPanel
 		public void actionPerformed(final ActionEvent e)
 		{
 			cancelMoveAction();
-			m_frame.clearStatusMessage();
+			if (m_frame != null)
+				m_frame.clearStatusMessage();
 			this.setEnabled(false);
 			m_CANCEL_MOVE_ACTION.setEnabled(false);
 		}

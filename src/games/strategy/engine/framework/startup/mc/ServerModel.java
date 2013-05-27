@@ -351,12 +351,17 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 				save = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveEvenFileName());
 			else
 				return;
+			if (save == null || !save.exists())
+			{
+				return;
+			}
 			System.out.println("Changing to autosave of type: " + typeOfAutosave.toString());
 			headless.loadGameSave(save);
 		}
 		
 		public void changeToGameSave(final byte[] bytes, final String fileName)
 		{
+			// TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
 			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
 			if (headless == null || bytes == null)
 				return;
