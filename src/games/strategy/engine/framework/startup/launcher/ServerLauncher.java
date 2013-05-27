@@ -13,6 +13,7 @@
  */
 package games.strategy.engine.framework.startup.launcher;
 
+import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
@@ -23,7 +24,6 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IClientChannel;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -74,7 +74,7 @@ public class ServerLauncher extends AbstractLauncher
 	// we need to track these, because when we loose connections to them
 	// we can ignore the connection lost
 	private final List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
-	private InGameLobbyWatcher m_inGameLobbyWatcher;
+	private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
 	
 	public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger, final IMessenger messenger,
 				final GameSelectorModel gameSelectorModel, final Map<String, String> localPlayerMapping, final Map<String, INode> remotelPlayers, final ServerModel serverModel, final boolean headless)
@@ -89,7 +89,7 @@ public class ServerLauncher extends AbstractLauncher
 		m_serverModel = serverModel;
 	}
 	
-	public void setInGameLobbyWatcher(final InGameLobbyWatcher watcher)
+	public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper watcher)
 	{
 		m_inGameLobbyWatcher = watcher;
 	}
@@ -353,7 +353,16 @@ public class ServerLauncher extends AbstractLauncher
 			f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
 		else
 			f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
-		m_serverGame.saveGame(f);
+		try
+		{
+			m_serverGame.saveGame(f);
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+			// TODO: Veqryn: we seem to be occassionally getting this in our headless game server hostbots, and I have no idea why.
+			// Symptoms and/or causes include the client not having any buttons in their action tab, followed by them leaving (connection lost) the game out of frustration,
+			// followed by a "Could not lock delegate execution" error, followed by a "IllegalMonitorStateException" error in savegame.
+		}
 		m_serverGame.stopGame();
 		if (!m_headless)
 		{

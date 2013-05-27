@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.framework;
 
+import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.debug.Console;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
@@ -34,7 +35,6 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -81,7 +81,7 @@ public class ServerGame extends AbstractGame
 	private IRandomSource m_randomSource = new PlainRandomSource();
 	private IRandomSource m_delegateRandomSource;
 	private final DelegateExecutionManager m_delegateExecutionManager = new DelegateExecutionManager();
-	private InGameLobbyWatcher m_inGameLobbyWatcher;
+	private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
 	private boolean m_needToInitialize = true;
 	/**
 	 * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
@@ -441,7 +441,7 @@ public class ServerGame extends AbstractGame
 	{
 		try
 		{
-			if (!m_delegateExecutionManager.blockDelegateExecution(3000))
+			if (!m_delegateExecutionManager.blockDelegateExecution(4000))
 			{
 				new IOException("Could not lock delegate execution").printStackTrace();
 			}
@@ -564,12 +564,12 @@ public class ServerGame extends AbstractGame
 		{
 			addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
 		}
+		notifyGameStepChanged(stepIsRestoredFromSavedGame);
 		m_delegateExecutionManager.enterDelegateExecution();
 		try
 		{
 			final IDelegate delegate = getCurrentStep().getDelegate();
 			delegate.setDelegateBridgeAndPlayer(bridge);
-			notifyGameStepChanged(stepIsRestoredFromSavedGame); // TODO: i hope it is ok to put this inside of the "enterDelegateExecution" try block???
 			delegate.start();
 		} finally
 		{
@@ -685,12 +685,12 @@ public class ServerGame extends AbstractGame
 		m_delegateRandomSource = null;
 	}
 	
-	public InGameLobbyWatcher getInGameLobbyWatcher()
+	public InGameLobbyWatcherWrapper getInGameLobbyWatcher()
 	{
 		return m_inGameLobbyWatcher;
 	}
 	
-	public void setInGameLobbyWatcher(final InGameLobbyWatcher inGameLobbyWatcher)
+	public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper inGameLobbyWatcher)
 	{
 		m_inGameLobbyWatcher = inGameLobbyWatcher;
 	}

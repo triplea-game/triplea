@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.debug.Console;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
@@ -295,46 +296,37 @@ public class HeadlessGameServer
 		{
 			public void run()
 			{
-				try
-				{
-					final ISetupPanel setup = m_setupPanelModel.getPanel();
-					if (setup == null)
-						return;
-					if (setup instanceof ServerSetupPanel)
-					{
-						System.out.println("Restarting lobby watcher");
-						((ServerSetupPanel) setup).shutDownLobbyWatcher();
-						try
-						{
-							Thread.sleep(1000);
-						} catch (final InterruptedException e)
-						{
-						}
-						resetLobbyHostOldExtensionProperties();
-						((ServerSetupPanel) setup).createLobbyWatcher();
-					}
-					else if (setup instanceof HeadlessServerSetup)
-					{
-						System.out.println("Restarting lobby watcher");
-						((HeadlessServerSetup) setup).shutDownLobbyWatcher();
-						try
-						{
-							Thread.sleep(1000);
-						} catch (final InterruptedException e)
-						{
-						}
-						resetLobbyHostOldExtensionProperties();
-						((HeadlessServerSetup) setup).createLobbyWatcher();
-					}
-				} catch (final Exception e)
-				{
-					e.printStackTrace();
-				}
+				restartLobbyWatcher(m_setupPanelModel, m_iGame);
 			}
-		}, 28800, 28800, TimeUnit.SECONDS);
+		}, 21600, 21600, TimeUnit.SECONDS);
 	}
 	
-	private void resetLobbyHostOldExtensionProperties()
+	private static synchronized void restartLobbyWatcher(final SetupPanelModel setupPanelModel, final ServerGame iGame)
+	{
+		try
+		{
+			final ISetupPanel setup = setupPanelModel.getPanel();
+			if (setup == null)
+				return;
+			if (iGame != null)
+				return;
+			if (setup.canGameStart())
+				return;
+			if (setup instanceof ServerSetupPanel)
+			{
+				((ServerSetupPanel) setup).repostLobbyWatcher(iGame);
+			}
+			else if (setup instanceof HeadlessServerSetup)
+			{
+				((HeadlessServerSetup) setup).repostLobbyWatcher(iGame);
+			}
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void resetLobbyHostOldExtensionProperties()
 	{
 		for (final String property : getProperties())
 		{
@@ -441,10 +433,7 @@ public class HeadlessGameServer
 					}
 					if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null && m_setupPanelModel.getPanel().canGameStart())
 					{
-						System.out.println("Starting Game.");
-						m_setupPanelModel.getPanel().preStartGame();
-						m_setupPanelModel.getPanel().getLauncher().launch(null);
-						m_setupPanelModel.getPanel().postStartGame();
+						startHeadlessGame(m_setupPanelModel);
 						break; // TODO: need a latch instead?
 					}
 				}
@@ -452,6 +441,17 @@ public class HeadlessGameServer
 		};
 		final Thread t = new Thread(r, "Headless Server Waiting For Users To Connect And Start");
 		t.start();
+	}
+	
+	private synchronized static void startHeadlessGame(final SetupPanelModel setupPanelModel)
+	{
+		if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart())
+		{
+			System.out.println("Starting Game.");
+			setupPanelModel.getPanel().preStartGame();
+			setupPanelModel.getPanel().getLauncher().launch(null);
+			setupPanelModel.getPanel().postStartGame();
+		}
 	}
 	
 	public static void waitForUsersHeadlessInstance()
@@ -612,7 +612,7 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
 	private final ServerModel m_model;
 	private final GameSelectorModel m_gameSelectorModel;
-	private InGameLobbyWatcher m_lobbyWatcher;
+	private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();
 	
 	public HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel)
 	{
@@ -627,11 +627,29 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	
 	public void createLobbyWatcher()
 	{
-		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null);
+		m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null, m_lobbyWatcher.getInGameLobbyWatcher()));
 		if (m_lobbyWatcher != null)
 		{
 			m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
 		}
+	}
+	
+	public synchronized void repostLobbyWatcher(final IGame iGame)
+	{
+		if (iGame != null)
+			return;
+		if (canGameStart())
+			return;
+		System.out.println("Restarting lobby watcher");
+		shutDownLobbyWatcher();
+		try
+		{
+			Thread.sleep(1000);
+		} catch (final InterruptedException e)
+		{
+		}
+		HeadlessGameServer.resetLobbyHostOldExtensionProperties();
+		createLobbyWatcher();
 	}
 	
 	public void shutDownLobbyWatcher()
@@ -700,7 +718,7 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		return m_model.getChatPanel();
 	}
 	
-	public ILauncher getLauncher()
+	public synchronized ILauncher getLauncher()
 	{
 		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
 		launcher.setInGameLobbyWatcher(m_lobbyWatcher);

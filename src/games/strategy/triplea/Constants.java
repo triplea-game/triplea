@@ -179,7 +179,7 @@ public interface Constants
 	public static final String TRIGGERS = "Use Triggers";
 	public static final String PU_MULTIPLIER = "Multiply PUs";
 	
-	// veqryn (Mark Christopher Duncan)
+	// Veqryn (Mark Christopher Duncan)
 	public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
 	public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
 	public static final String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";

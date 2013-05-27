@@ -13,7 +13,6 @@ import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
 import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
 import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
@@ -93,7 +92,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		m_frame = frame;
 		createFileMenu(this);
 		createGameSpecificMenus(this);
-		final InGameLobbyWatcher watcher = createLobbyMenu(this);
+		final InGameLobbyWatcherWrapper watcher = createLobbyMenu(this);
 		createNetworkMenu(this, watcher);
 		createWebHelpMenu(this);
 		createHelpMenu(this);
@@ -198,12 +197,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		}
 	}
 	
-	protected InGameLobbyWatcher createLobbyMenu(final JMenuBar menuBar)
+	protected InGameLobbyWatcherWrapper createLobbyMenu(final JMenuBar menuBar)
 	{
 		if (!(m_frame.getGame() instanceof ServerGame))
 			return null;
 		final ServerGame serverGame = (ServerGame) m_frame.getGame();
-		final InGameLobbyWatcher watcher = serverGame.getInGameLobbyWatcher();
+		final InGameLobbyWatcherWrapper watcher = serverGame.getInGameLobbyWatcher();
 		if (watcher == null || !watcher.isActive())
 		{
 			return watcher;
@@ -219,7 +218,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param menuBar
 	 */
-	protected void createNetworkMenu(final JMenuBar menuBar, final InGameLobbyWatcher watcher)
+	protected void createNetworkMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher)
 	{
 		// revisit
 		// if we are not a client or server game
@@ -306,7 +305,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param menuGame
 	 */
-	protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcher watcher)
+	protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher)
 	{
 		if (!getGame().getMessenger().isServer())
 			return;

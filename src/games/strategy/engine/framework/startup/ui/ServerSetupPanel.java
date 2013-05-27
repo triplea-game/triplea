@@ -13,8 +13,11 @@
  */
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.HeadlessGameServer;
+import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
 import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
 import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
@@ -65,7 +68,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	private final GameSelectorModel m_gameSelectorModel;
 	private JPanel m_info;
 	private JPanel m_networkPanel;
-	private InGameLobbyWatcher m_lobbyWatcher;
+	private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();
 	
 	public ServerSetupPanel(final ServerModel model, final GameSelectorModel gameSelectorModel)
 	{
@@ -82,11 +85,29 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	
 	public void createLobbyWatcher()
 	{
-		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this);
+		m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this, m_lobbyWatcher.getInGameLobbyWatcher()));
 		if (m_lobbyWatcher != null)
 		{
 			m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
 		}
+	}
+	
+	public synchronized void repostLobbyWatcher(final IGame iGame)
+	{
+		if (iGame != null)
+			return;
+		if (canGameStart())
+			return;
+		System.out.println("Restarting lobby watcher");
+		shutDownLobbyWatcher();
+		try
+		{
+			Thread.sleep(1000);
+		} catch (final InterruptedException e)
+		{
+		}
+		HeadlessGameServer.resetLobbyHostOldExtensionProperties();
+		createLobbyWatcher();
 	}
 	
 	public void shutDownLobbyWatcher()
@@ -407,7 +428,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	}
 	
 	@Override
-	public ILauncher getLauncher()
+	public synchronized ILauncher getLauncher()
 	{
 		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
 		launcher.setInGameLobbyWatcher(m_lobbyWatcher);

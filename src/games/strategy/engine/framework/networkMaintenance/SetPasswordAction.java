@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.networkMaintenance;
 
+import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -18,9 +18,9 @@ public class SetPasswordAction extends AbstractAction
 	private static final long serialVersionUID = -7767288210554177480L;
 	private final ClientLoginValidator m_validator;
 	private final Component m_parent;
-	private final InGameLobbyWatcher m_lobbyWatcher;
+	private final InGameLobbyWatcherWrapper m_lobbyWatcher;
 	
-	public SetPasswordAction(final Component parent, final InGameLobbyWatcher watcher, final ClientLoginValidator validator)
+	public SetPasswordAction(final Component parent, final InGameLobbyWatcherWrapper watcher, final ClientLoginValidator validator)
 	{
 		super("Set Game Password...");
 		// TODO Auto-generated constructor stub

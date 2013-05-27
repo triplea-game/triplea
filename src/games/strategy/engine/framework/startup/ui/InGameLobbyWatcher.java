@@ -95,6 +95,7 @@ public class InGameLobbyWatcher
 	private final GameDescription m_gameDescription;
 	private final Object m_mutex = new Object();
 	private final IConnectionChangeListener m_connectionChangeListener;
+	private final IMessengerErrorListener m_messengerErrorListener;
 	
 	/**
 	 * Reads SystemProperties to see if we should connect to a lobby server
@@ -105,7 +106,7 @@ public class InGameLobbyWatcher
 	 * 
 	 * @return null if no watcher should be created
 	 */
-	public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent)
+	public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent, final InGameLobbyWatcher oldWatcher)
 	{
 		final String host = System.getProperties().getProperty(GameRunner2.LOBBY_HOST);
 		final String port = System.getProperties().getProperty(GameRunner2.LOBBY_PORT);
@@ -148,7 +149,7 @@ public class InGameLobbyWatcher
 			final RemoteMessenger rm = new RemoteMessenger(um);
 			final HeartBeat h = new HeartBeat(messenger.getServerNode());
 			rm.registerRemote(h, HeartBeat.getHeartBeatName(um.getLocalNode()));
-			return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent);
+			return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
@@ -199,28 +200,34 @@ public class InGameLobbyWatcher
 		}
 	}
 	
-	public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IServerMessenger serverMessenger, final JComponent parent)
+	public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IServerMessenger serverMessenger, final JComponent parent, final InGameLobbyWatcher oldWatcher)
 	{
 		m_messenger = messenger;
 		m_remoteMessenger = remoteMessenger;
 		m_gameMessenger = serverMessenger;
 		final String password = System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY);
 		final boolean passworded = password != null && password.length() > 0;
-		m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger
+		final Date startDateTime = (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getStartDateTime() == null) ? new Date() : oldWatcher.m_gameDescription
+					.getStartDateTime();
+		final int playerCount = (oldWatcher == null || oldWatcher.m_gameDescription == null) ? 1 : oldWatcher.m_gameDescription.getPlayerCount();
+		final GameStatus gameStatus = (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getStatus() == null) ? GameStatus.WAITING_FOR_PLAYERS
+					: oldWatcher.m_gameDescription.getStatus();
+		final String gameRound = (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getRound() == null) ? "-" : oldWatcher.m_gameDescription.getRound();
+		m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), startDateTime, "???", playerCount, gameStatus, gameRound, m_gameMessenger
 					.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, EngineVersion.VERSION.toString(), "0");
 		final ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
 		synchronized (m_mutex)
 		{
 			controller.postGame(m_gameID, (GameDescription) m_gameDescription.clone());
 		}
-		// if we loose our connection, then shutdown
-		m_messenger.addErrorListener(new IMessengerErrorListener()
+		m_messengerErrorListener = new IMessengerErrorListener()
 		{
 			public void messengerInvalid(final IMessenger messenger, final Exception reason)
 			{
 				shutDown();
 			}
-		});
+		};
+		m_messenger.addErrorListener(m_messengerErrorListener);
 		m_connectionChangeListener = new IConnectionChangeListener()
 		{
 			public void connectionRemoved(final INode to)
@@ -236,6 +243,11 @@ public class InGameLobbyWatcher
 		// when players join or leave the game
 		// update the connection count
 		m_gameMessenger.addConnectionChangeListener(m_connectionChangeListener);
+		if (oldWatcher != null && oldWatcher.m_gameDescription != null)
+		{
+			this.setGameStatus(oldWatcher.m_gameDescription.getStatus(), oldWatcher.m_game);
+		}
+		// if we loose our connection, then shutdown
 		final Runnable r = new Runnable()
 		{
 			public void run()
@@ -336,9 +348,14 @@ public class InGameLobbyWatcher
 	public void shutDown()
 	{
 		m_shutdown = true;
+		m_messenger.removeErrorListener(m_messengerErrorListener);
 		m_messenger.shutDown();
 		m_gameMessenger.removeConnectionChangeListener(m_connectionChangeListener);
 		cleanUpGameModelListener();
+		if (m_game != null)
+		{
+			m_game.removeGameStepListener(m_gameStepListener);
+		}
 	}
 	
 	public boolean isActive()

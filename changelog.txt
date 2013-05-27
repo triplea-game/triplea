@@ -1,5 +1,9 @@
 Changes for 1.7.0.5
-* Fixed two possible hang/freeze points in Server Game. (veqryn)
+* Possible fix another possible hang/freeze point causing a Could Not Block Delegate Execution error. (veqryn)
+
+* Fixed headless game server's connect to lobby so that resetting the connection does not erase info about the game. (veqryn)
+
+* Possible fixes two possible hang/freeze points in Server Game, one caused by a bogus ClassCastException in ClientGame, the other by a bogus NullPointerError/IllegalArgumentError in RemoteName from PlayerDelegateBridge. (veqryn)
 
 * Making sure sound system never loads sound clips for headless game server. (veqryn)
 

@@ -116,7 +116,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 				} catch (final Exception e)
 				{
 					e.printStackTrace();
-					// veqryn: We are getting a IllegalArgumentException (formerly a NullPointerException) here occasionally for hosts, because the 'class' variable is null.
+					// TODO: Veqryn: We are getting a IllegalArgumentException (formerly a NullPointerException) here occasionally for hosts, because the 'class' variable is null.
 					// This should be impossible, and indeed all the classes it has occurred for have a non-null IRemote delegate interface class for their getRemote().
 					// On top of this, it is also occassionally occurring for HeadlessGameServer hostbots, which are not playing any players (therefore we should never be in TripleAPlayer -> start() -> deleget.getRemote())
 					// My only guess is that someone disconnects at some very sensitive point, and then the classes are destroyed or set to null or something, resulting in a null for the interface class.
