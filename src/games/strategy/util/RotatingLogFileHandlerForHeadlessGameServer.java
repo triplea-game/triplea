@@ -31,7 +31,7 @@ public class RotatingLogFileHandlerForHeadlessGameServer extends FileHandler
 	{
 		super(logFile, Integer.parseInt(System.getProperty(LOG_FILE_SIZE_PROP, DEFAULT_SIZE)), 10, true);
 		final TALogFormatter logFormatter = new TALogFormatter();
-		logFormatter.setShowDates(false);
+		logFormatter.setShowDates(true);
 		setFormatter(logFormatter);
 	}
 }

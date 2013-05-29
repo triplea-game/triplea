@@ -58,7 +58,7 @@ public class TALogFormatter extends Formatter
 		if (m_showDates)
 		{
 			builder.append(new Date());
-			builder.append("");
+			builder.append(" ");
 		}
 		builder.append(record.getLevel());
 		builder.append(" [");
