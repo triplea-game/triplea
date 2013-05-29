@@ -115,6 +115,30 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	@Override
 	public void start(final String name)
 	{
+		{ // TODO: this is for testing purposes only. We are having game hangs caused by class cast exceptions that are caused by having stepnames that don't match. Can be removed after problem is fixed.
+			final String bridgeStepTest1 = getPlayerBridge().getStepName();
+			if (!name.equals(bridgeStepTest1))
+			{
+				System.err.println("Start step: " + name + " does not match player bridge step: " + bridgeStepTest1 + ". Player Bridge GameOver="
+							+ getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+				try
+				{
+					Thread.sleep(2500);
+				} catch (final InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				final String bridgeStepTest2 = getPlayerBridge().getStepName();
+				if (!name.equals(bridgeStepTest2))
+				{
+					System.err.println("Start step: " + name + " still does not match player bridge step: " + bridgeStepTest2
+								+ " even after waiting 2 seconds. This will probably result in a ClassCastException very soon. Player Bridge GameOver="
+								+ getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+					// getPlayerBridge().printErrorStatus();
+				}
+			}
+		}
+		
 		// TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate class seems like a bad way of doing this whole method. however i can't think of anything better right now.
 		// TODO: certain properties, like if we are bid/not-bid, or combatmove/noncombatmove, should not be found out through the "stepName", but instead through the GameStep.getProperties(). (If we do make this change, remember to make it backwards compatible with all existing map xmls)
 		// This is how we find out our game step: getGameData().getSequence().getStep()
@@ -749,7 +773,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		return m_ui.getBattlePanel().getScramble(getPlayerBridge(), battleID, message, possibleTerritories, player);
 	}*/
-	
+
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);

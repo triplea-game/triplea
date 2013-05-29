@@ -213,6 +213,11 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener
 		}
 	}
 	
+	public boolean isShutDown()
+	{
+		return m_shutDown;
+	}
+	
 	public void messageReceived(final MessageHeader msg, final SocketChannel channel)
 	{
 		if (msg.getFor() != null && !msg.getFor().equals(m_node))

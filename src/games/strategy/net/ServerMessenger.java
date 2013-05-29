@@ -157,6 +157,11 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	public synchronized boolean isShutDown()
+	{
+		return m_shutdown;
+	}
+	
 	public boolean isConnected()
 	{
 		return !m_shutdown;

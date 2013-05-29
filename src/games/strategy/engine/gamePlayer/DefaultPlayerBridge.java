@@ -64,6 +64,39 @@ public class DefaultPlayerBridge implements IPlayerBridge
 		return m_currentStep;
 	}
 	
+	/* TODO: add this into next release, along with interface method.
+	 * Get the name of the current delegate being executed.
+	public String getDelegateName()
+	{
+		return m_currentDelegate;
+	}*/
+
+	/* TODO: add this into next release
+	public void printErrorStatus()
+	{
+		if (m_game == null)
+		{
+			System.err.println("WTF?? IGame == null");
+		}
+		else
+		{
+			String error = "IGame Status: Player Manager: " + m_game.getPlayerManager() + ", GameOver: " + m_game.isGameOver();
+			final IMessenger messenger = m_game.getMessenger();
+			if (messenger == null)
+			{
+				error += ", IMessenger == null (WTF?)";
+			}
+			else
+			{
+				error += ", Connected: " + messenger.isConnected() + ", Is Server: " + messenger.isServer() + ", Local Node: "
+							+ messenger.getLocalNode() + ", Server Node: " + messenger.getServerNode() + ", Messenger ShutDown: " + messenger.isShutDown();
+				if (m_game.getMessenger() instanceof IServerMessenger)
+					error += ((IServerMessenger) m_game.getMessenger()).getNodes();
+			}
+			System.err.println(error);
+		}
+	}*/
+
 	public boolean isGameOver()
 	{
 		return m_game.isGameOver();

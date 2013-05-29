@@ -243,4 +243,9 @@ public class DummyMessenger implements IServerMessenger
 	{
 		return false;
 	}
+	
+	public boolean isShutDown()
+	{
+		return false;
+	}
 }

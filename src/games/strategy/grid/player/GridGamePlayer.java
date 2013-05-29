@@ -48,6 +48,29 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	@Override
 	public void start(final String stepName)
 	{
+		{ // TODO: this is for testing purposes only. We are having game hangs caused by class cast exceptions that are caused by having stepnames that don't match. Can be removed after problem is fixed.
+			final String bridgeStepTest1 = getPlayerBridge().getStepName();
+			if (!stepName.equals(bridgeStepTest1))
+			{
+				System.err.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStepTest1 + ". Player Bridge GameOver="
+							+ getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+				try
+				{
+					Thread.sleep(2500);
+				} catch (final InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				final String bridgeStepTest2 = getPlayerBridge().getStepName();
+				if (!stepName.equals(bridgeStepTest2))
+				{
+					System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStepTest2
+								+ " even after waiting 2 seconds. This will probably result in a ClassCastException very soon. Player Bridge GameOver="
+								+ getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+					// getPlayerBridge().printErrorStatus();
+				}
+			}
+		}
 		// if (m_ui!=null && ((KingsTableFrame)m_ui).isGameOver())
 		if (m_ui != null && m_ui.isGameOver())
 			return;

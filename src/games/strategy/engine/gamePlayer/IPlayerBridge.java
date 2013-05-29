@@ -57,6 +57,10 @@ public interface IPlayerBridge
 	 */
 	public String getStepName();
 	
+	/*
+	 * Get the name of the current delegate being executed. TODO: add this in to next release
+	public String getDelegateName();*/
+
 	/**
 	 * Get the properties for the current step.
 	 */
