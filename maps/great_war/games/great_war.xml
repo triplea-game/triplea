@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="Great War" version="4.2"/>
+        <info name="Great War" version="4.3"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -3247,6 +3247,14 @@
 						<option name="placement" value="SZ 64 Sea of Crete:battleship"/>
 				</attatchment>
 				
+				<attatchment name="triggerAttachment_British_Low_Luck_Balancing_part3" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="conditions" value="conditionAttachment_Low_Luck_Switch"/>
+						<option name="invert" value="true"/>
+						<option name="when" value="after:gameInitDelegate"/>
+						<option name="uses" value="1"/>
+						<option name="removeUnits" value="SZ 3 Atlantic Ocean:cruiser" count="1"/>
+				</attatchment>
+				
 				
 					<attatchment name="playerAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
 							<!-- retainCapitalNumber means that we do not lose our money if we still control at least this many of our capitals (defaults to 1). 
@@ -3866,7 +3874,7 @@
                         <unitPlacement unitType="infantry" territory="Warsaw" quantity="4" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Lodz" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Lithuania" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Lithuania" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Lithuania" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Lithuania" quantity="1" owner="Russians"/>
 
@@ -3874,16 +3882,14 @@
                         <unitPlacement unitType="cavalry" territory="Ukraine" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Ukraine" quantity="1" owner="Russians"/>
 						
-                        <unitPlacement unitType="infantry" territory="Kiev" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Kiev" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Kiev" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Kiev" quantity="1" owner="Russians"/>
 						
                         <unitPlacement unitType="infantry" territory="Belarus" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="artillery" territory="Belarus" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Belarus" quantity="1" owner="Russians"/>
 						
                         <unitPlacement unitType="infantry" territory="Bryansk" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="cavalry" territory="Bryansk" quantity="1" owner="Russians"/>
 						
                         <unitPlacement unitType="infantry" territory="Odesa" quantity="4" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Odesa" quantity="1" owner="Russians"/>
@@ -3891,7 +3897,7 @@
 
                         <unitPlacement unitType="factory" territory="Crimea" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="infantry" territory="Crimea" quantity="2" owner="Russians"/>
-                        <unitPlacement unitType="cavalry" territory="Crimea" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="cavalry" territory="Crimea" quantity="1" owner="Russians"/>
                         <unitPlacement unitType="artillery" territory="Crimea" quantity="1" owner="Russians"/>
 						
                         <unitPlacement unitType="infantry" territory="Kharkiv" quantity="2" owner="Russians"/>
@@ -3921,20 +3927,20 @@
                         <unitPlacement unitType="infantry" territory="Novgorod" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="factory" territory="Petrograd" quantity="1" owner="Russians"/>
-                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="9" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Petrograd" quantity="6" owner="Russians"/>
                         <unitPlacement unitType="cavalry" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Petrograd" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="fighter" territory="Petrograd" quantity="1" owner="Russians"/>
 				<unitPlacement unitType="aaGun" territory="Petrograd" quantity="1" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Finland" quantity="5" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Finland" quantity="4" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Finland" quantity="2" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Karelia" quantity="4" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Karelia" quantity="3" owner="Russians"/>
 
-                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Arkhangelsk" quantity="2" owner="Russians"/>
 						
-                        <unitPlacement unitType="infantry" territory="Perm" quantity="3" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Perm" quantity="1" owner="Russians"/>
                         
                         <unitPlacement unitType="infantry" territory="Kazan" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="cavalry" territory="Kazan" quantity="1" owner="Russians"/>
@@ -3949,7 +3955,7 @@
                         <unitPlacement unitType="infantry" territory="Volgograd" quantity="2" owner="Russians"/>
 				<unitPlacement unitType="cavalry" territory="Volgograd" quantity="1" owner="Russians"/>
                        
-                        <unitPlacement unitType="infantry" territory="Transcaspia" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Transcaspia" quantity="1" owner="Russians"/>
 
                         <unitPlacement unitType="infantry" territory="Montenegro" quantity="4" owner="Russians"/>
 				<unitPlacement unitType="artillery" territory="Montenegro" quantity="1" owner="Russians"/>
@@ -4043,6 +4049,7 @@
                         <unitPlacement unitType="infantry" territory="Hanover" quantity="5" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Hanover" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="zeppelin" territory="Hanover" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Hanover" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Saxony" quantity="6" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Saxony" quantity="2" owner="Germans"/>
@@ -4065,14 +4072,15 @@
                         <unitPlacement unitType="infantry" territory="Konigsberg" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Konigsberg" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Silesia" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Silesia" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="artillery" territory="Silesia" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="Ruhr" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="Ruhr" quantity="3" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Ruhr" quantity="1" owner="Germans"/>
 				<unitPlacement unitType="fighter" territory="Ruhr" quantity="1" owner="Germans"/>
 
-                        <unitPlacement unitType="infantry" territory="Wurttemburg" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="infantry" territory="Wurttemburg" quantity="3" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Bavaria" quantity="3" owner="Germans"/>
 				<unitPlacement unitType="cavalry" territory="Bavaria" quantity="1" owner="Germans"/>
@@ -4366,7 +4374,7 @@
                         <resourceGiven player="Germans" resource="PUs" quantity="103"/>
 				<resourceGiven player="Austrians" resource="PUs" quantity="51"/>
 				<resourceGiven player="Ottomans" resource="PUs" quantity="50"/>
-                        <resourceGiven player="Americans" resource="PUs" quantity="50"/>
+                        <resourceGiven player="Americans" resource="PUs" quantity="48"/>
                 </resourceInitialize>
 
         </initialize>

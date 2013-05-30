@@ -1,4 +1,6 @@
 Changes for 1.7.0.5
+* Rebalancing Great War world war 1 game. (veqryn)
+
 * Fixed bug where chanceIncrementOnFailure and chanceDecrementOnSuccess were not allowing any number of zero or less for chance. (veqryn)
 
 * Fixed error where games with a round offset where doubling what round the game started on each time it was saved via the history panel. (veqryn)
