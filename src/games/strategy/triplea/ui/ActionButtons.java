@@ -206,6 +206,9 @@ public class ActionButtons extends JPanel
 	{
 		m_current.setActive(false);
 		m_current = newCurrent;
+		// newCurrent might be null if we are shutting down
+		if (m_current == null)
+			return;
 		m_current.display(id);
 		final String currentName = m_current.toString();
 		SwingUtilities.invokeLater(new Runnable()

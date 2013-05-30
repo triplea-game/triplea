@@ -304,9 +304,19 @@ public class ServerGame extends AbstractGame
 	
 	public void stopGame()
 	{
+		stopGame(false);
+	}
+	
+	public void stopGame(final boolean forceRetry)
+	{
 		// we have already shut down
 		if (m_isGameOver)
-			return;
+		{
+			if (HeadlessGameServer.headless())
+				System.out.println("Game previous stopped." + (forceRetry ? "" : " Can not stop again."));
+			if (!forceRetry)
+				return;
+		}
 		m_isGameOver = true;
 		ErrorHandler.setGameOver(true);
 		m_delegateExecutionStoppedLatch.countDown();
@@ -316,6 +326,7 @@ public class ServerGame extends AbstractGame
 		{
 			if (!m_delegateExecutionManager.blockDelegateExecution(4000))
 			{
+				System.err.println("Could not stop delegate execution.");
 				Console.getConsole().dumpStacks();
 				System.exit(0);
 			}
@@ -356,6 +367,8 @@ public class ServerGame extends AbstractGame
 			m_delegateExecutionManager.resumeDelegateExecution();
 		}
 		m_data.getGameLoader().shutDown();
+		if (HeadlessGameServer.headless())
+			System.out.println("StopGame successful.");
 	}
 	
 	private void autoSave()

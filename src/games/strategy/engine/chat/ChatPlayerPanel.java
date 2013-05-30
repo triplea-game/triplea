@@ -72,7 +72,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 	private JList m_players;
 	private DefaultListModel m_listModel;
 	private Chat m_chat;
-	public Set<String> m_hiddenPlayers = new HashSet<String>();
+	private final Set<String> m_hiddenPlayers = new HashSet<String>();
 	private final IStatusListener m_statusListener;
 	// if our renderer is overridden
 	// we do not set this directly on the JList,
@@ -99,6 +99,18 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 	public void addHiddenPlayerName(final String name)
 	{
 		m_hiddenPlayers.add(name);
+	}
+	
+	public void shutDown()
+	{
+		if (m_chat != null)
+		{
+			m_chat.removeChatListener(this);
+			m_chat.getStatusManager().removeStatusListener(m_statusListener);
+		}
+		m_chat = null;
+		this.setVisible(false);
+		this.removeAll();
 	}
 	
 	public void setChat(final Chat chat)

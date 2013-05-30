@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -125,12 +126,13 @@ public class MainPanel extends JPanel implements Observer
 		remove(m_mainPanel);
 		remove(m_chatSplit);
 		m_chatPanelHolder.removeAll();
-		final ChatPanel chat = m_gameTypePanelModel.getPanel().getChatPanel();
-		if (chat != null)
+		final IChatPanel chat = m_gameTypePanelModel.getPanel().getChatPanel();
+		if (chat != null && chat instanceof ChatPanel)
 		{
+			final ChatPanel chatPanel = (ChatPanel) chat;
 			m_chatPanelHolder = new JPanel();
 			m_chatPanelHolder.setLayout(new BorderLayout());
-			m_chatPanelHolder.add(chat, BorderLayout.CENTER);
+			m_chatPanelHolder.add(chatPanel, BorderLayout.CENTER);
 			m_chatSplit.setTopComponent(m_mainPanel);
 			m_chatSplit.setBottomComponent(m_chatPanelHolder);
 			add(m_chatSplit, BorderLayout.CENTER);
@@ -224,7 +226,7 @@ public class MainPanel extends JPanel implements Observer
 			{
 				try
 				{
-					m_gameSetupPanel.cancel();
+					m_gameSetupPanel.shutDown();
 				} finally
 				{
 					System.exit(0);

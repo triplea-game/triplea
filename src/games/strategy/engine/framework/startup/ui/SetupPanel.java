@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel
 	/**
 	 * Subclasses that have chat override this.
 	 */
-	public ChatPanel getChatPanel()
+	public IChatPanel getChatPanel()
 	{
 		return null;
 	}

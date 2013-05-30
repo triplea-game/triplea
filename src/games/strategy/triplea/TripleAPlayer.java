@@ -119,8 +119,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			final String bridgeStepTest1 = getPlayerBridge().getStepName();
 			if (!name.equals(bridgeStepTest1))
 			{
-				System.err.println("Start step: " + name + " does not match player bridge step: " + bridgeStepTest1 + ". Player Bridge GameOver="
-							+ getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+				System.out.println("Start step: " + name + " does not match player bridge step: " + bridgeStepTest1 + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
+							+ getPlayerID().getName() + ", Game: " + getGameData().getGameName());
 				try
 				{
 					Thread.sleep(2500);
@@ -773,7 +773,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		return m_ui.getBattlePanel().getScramble(getPlayerBridge(), battleID, message, possibleTerritories, player);
 	}*/
-
+	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);

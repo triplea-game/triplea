@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.networkMaintenance.ChangeGameToSaveGameClientAction;
 import games.strategy.engine.framework.networkMaintenance.ChangeToAutosaveClientAction;
@@ -155,6 +155,11 @@ public class ClientSetupPanel extends SetupPanel
 	{
 	}
 	
+	public void shutDown()
+	{
+		m_model.shutDown();
+	}
+	
 	@Override
 	public void cancel()
 	{
@@ -270,7 +275,7 @@ public class ClientSetupPanel extends SetupPanel
 	}
 	
 	@Override
-	public ChatPanel getChatPanel()
+	public IChatPanel getChatPanel()
 	{
 		return m_model.getChatPanel();
 	}

@@ -16,6 +16,8 @@ package games.strategy.engine.framework.startup.mc;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.HeadlessChat;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
@@ -88,7 +90,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
 	private final GameSelectorModel m_gameSelectorModel;
 	private Component m_ui;
-	private ChatPanel m_chatPanel;
+	private IChatPanel m_chatPanel;
 	private ChatController m_chatController;
 	private final Map<String, String> m_localPlayerTypes = new HashMap<String, String>();
 	// while our server launcher is not null, delegate new/lost connections to it
@@ -112,6 +114,18 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		m_typePanelModel = typePanelModel;
 		m_gameSelectorModel.addObserver(m_gameSelectorObserver);
 		m_headless = headless;
+	}
+	
+	public void shutDown()
+	{
+		m_gameSelectorModel.deleteObserver(m_gameSelectorObserver);
+		if (m_serverMessenger != null)
+		{
+			m_chatController.deactivate();
+			m_serverMessenger.shutDown();
+			m_serverMessenger.removeErrorListener(this);
+			m_chatPanel.shutDown();
+		}
 	}
 	
 	public void cancel()
@@ -241,7 +255,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			final NullModeratorController moderatorController = new NullModeratorController(m_serverMessenger);
 			moderatorController.register(m_remoteMessenger);
 			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger, moderatorController);
-			m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+			if (ui == null && m_headless)
+				m_chatPanel = new HeadlessChat(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+			else
+				m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
 			m_serverMessenger.setAcceptNewConnections(true);
 			gameDataChanged();
 			return true;
@@ -514,7 +531,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
-	public ChatPanel getChatPanel()
+	public IChatPanel getChatPanel()
 	{
 		return m_chatPanel;
 	}

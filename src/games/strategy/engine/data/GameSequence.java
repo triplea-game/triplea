@@ -110,6 +110,11 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		return m_round + m_roundOffset;
 	}
 	
+	public int getRoundOffset()
+	{
+		return m_roundOffset;
+	}
+	
 	public void setRoundOffset(final int roundOffset)
 	{
 		m_roundOffset = roundOffset;

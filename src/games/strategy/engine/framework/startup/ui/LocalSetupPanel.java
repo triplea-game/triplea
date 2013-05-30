@@ -88,6 +88,11 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 		return m_gameSelectorModel.getGameData() != null;
 	}
 	
+	public void shutDown()
+	{
+		m_gameSelectorModel.deleteObserver(this);
+	}
+	
 	@Override
 	public void cancel()
 	{

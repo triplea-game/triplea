@@ -283,6 +283,11 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		return cached;
 	}
 	
+	public void shutDown()
+	{
+		m_gameSelectorModel.deleteObserver(this);
+	}
+	
 	/**
 	 * Called when the current game changes
 	 */

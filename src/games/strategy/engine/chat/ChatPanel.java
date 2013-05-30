@@ -39,7 +39,7 @@ import javax.swing.JSplitPane;
  * 
  * @author Sean Bridges
  */
-public class ChatPanel extends JPanel
+public class ChatPanel extends JPanel implements IChatPanel
 {
 	private static final long serialVersionUID = -6177517517279779486L;
 	
@@ -67,6 +67,20 @@ public class ChatPanel extends JPanel
 		createComponents();
 		layoutComponents();
 		setSize(300, 200);
+	}
+	
+	public String getAllText()
+	{
+		return m_chatMessagePanel.getAllText();
+	}
+	
+	public void shutDown()
+	{
+		final Chat chat = getChat(); // get first, before below turns it null
+		m_chatMessagePanel.shutDown();
+		m_chatPlayerPanel.shutDown();
+		if (chat != null)
+			chat.shutdown(); // now shut down
 	}
 	
 	public void setChat(final Chat chat)

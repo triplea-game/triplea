@@ -1,4 +1,10 @@
 Changes for 1.7.0.5
+* Fixed bug where chanceIncrementOnFailure and chanceDecrementOnSuccess were not allowing any number of zero or less for chance. (veqryn)
+
+* Fixed error where games with a round offset where doubling what round the game started on each time it was saved via the history panel. (veqryn)
+
+* Creating a headless chat service, so that server can be created in a headless environment and still chat. (veqryn)
+
 * Fixed bug causing fatal errors in client-server games when client owned very last step/delegate of game (only applied to some grid based games). (veqryn)
 
 * Adding a log file for the headless server located at /log/headless-game-server-<servername>-log<#>.txt, to keep track of events. (veqryn)

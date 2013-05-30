@@ -435,6 +435,10 @@ public class MetaSetupPanel extends SetupPanel
 		return false;
 	}
 	
+	public void shutDown()
+	{
+	}
+	
 	@Override
 	public void cancel()
 	{

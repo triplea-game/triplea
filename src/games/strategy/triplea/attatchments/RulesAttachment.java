@@ -971,7 +971,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		final int decrementOnSuccess = this.getChanceDecrementOnSuccess();
 		if (objectiveMet && (hitTarget != diceSides || incrementOnFailure != 0 || decrementOnSuccess != 0))
 		{
-			if (hitTarget >= diceSides)
+			if (diceSides <= 0 || hitTarget >= diceSides)
 			{
 				objectiveMet = true;
 				changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, false);

@@ -460,7 +460,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	{
 		final int hitTarget = paa.getChanceToHit();
 		final int diceSides = paa.getChanceDiceSides();
-		if (hitTarget >= diceSides)
+		if (diceSides <= 0 || hitTarget >= diceSides)
 		{
 			paa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, true, true);
 			return true;

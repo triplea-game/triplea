@@ -4,6 +4,8 @@ import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.debug.Console;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.HeadlessChat;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -165,9 +167,7 @@ public class HeadlessGameServer
 					+ "\n"
 					+ "   To start a server with the given game\n"
 					+ "\n"
-					+ "   triplea triplea.game=/home/sgb/games/test.xml triplea.port=3300 triplea.name=Allan"
-					+ "\n"
-					+ "   To start a server, you can optionally password protect the game using triplea.server.password=foo");
+					+ "   triplea triplea.game=/home/sgb/games/test.xml triplea.port=3300 triplea.name=Allan");
 	}
 	
 	public static synchronized HeadlessGameServer getInstance()
@@ -264,7 +264,14 @@ public class HeadlessGameServer
 	{
 		final HeadlessGameServer instance = getInstance();
 		if (instance != null)
+		{
 			instance.m_iGame = serverGame;
+			if (serverGame != null)
+			{
+				System.out.println("Game running: " + instance.m_iGame.isGameSequenceRunning() + ", GameOver: " + instance.m_iGame.isGameOver() + ", Players: "
+							+ instance.m_iGame.getPlayerManager().toString());
+			}
+		}
 	}
 	
 	ServerGame getIGame()
@@ -392,7 +399,6 @@ public class HeadlessGameServer
 	
 	public synchronized void shutdown()
 	{
-		System.out.println("Running shutdown script.");
 		m_shutDown = true;
 		try
 		{
@@ -421,11 +427,11 @@ public class HeadlessGameServer
 				final ISetupPanel setup = m_setupPanelModel.getPanel();
 				if (setup != null && setup instanceof ServerSetupPanel)
 				{
-					((ServerSetupPanel) setup).cancel();
+					((ServerSetupPanel) setup).shutDown();
 				}
 				else if (setup != null && setup instanceof HeadlessServerSetup)
 				{
-					((HeadlessServerSetup) setup).cancel();
+					((HeadlessServerSetup) setup).shutDown();
 				}
 				Thread.sleep(250);
 			}
@@ -461,6 +467,7 @@ public class HeadlessGameServer
 		m_setupPanelModel = null;
 		m_mainPanel = null;
 		m_iGame = null;
+		System.out.println("Shutdown Script Finished.");
 	}
 	
 	public void waitForUsersHeadless()
@@ -496,7 +503,9 @@ public class HeadlessGameServer
 	{
 		if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart())
 		{
-			System.out.println("Starting Game.");
+			ErrorHandler.setGameOver(false);
+			System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName() + ", Round: "
+						+ setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
 			setupPanelModel.getPanel().preStartGame();
 			setupPanelModel.getPanel().getLauncher().launch(null);
 			setupPanelModel.getPanel().postStartGame();
@@ -555,6 +564,10 @@ public class HeadlessGameServer
 		{
 			return model.getChatPanel().getChat();
 		}
+		else if (model instanceof HeadlessServerSetup)
+		{
+			return model.getChatPanel().getChat();
+		}
 		else
 		{
 			return null;
@@ -601,13 +614,13 @@ public class HeadlessGameServer
 		try
 		{
 			LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("headless-game-server-logging.properties"));
+			Logger.getAnonymousLogger().info("Redirecting std out");
+			System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
+			System.setOut(new LoggingPrintStream("OUT", Level.INFO));
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
-		Logger.getAnonymousLogger().info("Redirecting std out");
-		System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
-		System.setOut(new LoggingPrintStream("OUT", Level.INFO));
 	}
 	
 	/**
@@ -742,6 +755,16 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	{
 	}
 	
+	public void shutDown()
+	{
+		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
+		m_model.shutDown();
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.shutDown();
+		}
+	}
+	
 	public void cancel()
 	{
 		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
@@ -787,7 +810,7 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		internalPlayersTakenChanged();
 	}
 	
-	public ChatPanel getChatPanel()
+	public IChatPanel getChatPanel()
 	{
 		return m_model.getChatPanel();
 	}
@@ -951,9 +974,10 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 		remove(m_chatSplit);
 		m_chatPanelHolder.removeAll();
 		final ChatPanel chat;
-		if (m_gameTypePanelModel != null && m_gameTypePanelModel.getPanel() != null && m_gameTypePanelModel.getPanel().getChatPanel() != null)
+		if (m_gameTypePanelModel != null && m_gameTypePanelModel.getPanel() != null && m_gameTypePanelModel.getPanel().getChatPanel() != null
+					&& m_gameTypePanelModel.getPanel().getChatPanel() instanceof ChatPanel)
 		{
-			chat = m_gameTypePanelModel.getPanel().getChatPanel();
+			chat = (ChatPanel) m_gameTypePanelModel.getPanel().getChatPanel();
 			m_chatPanelHolder = new JPanel();
 			m_chatPanelHolder.setLayout(new BorderLayout());
 			m_chatPanelHolder.add(chat, BorderLayout.CENTER);
@@ -1051,7 +1075,7 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 			{
 				try
 				{
-					m_gameSetupPanel.cancel();
+					m_gameSetupPanel.shutDown();
 				} finally
 				{
 					System.exit(0);
@@ -1071,7 +1095,7 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 	private void play()
 	{
 		ErrorHandler.setGameOver(false);
-		System.out.println("Starting Game.");
+		System.out.println("Starting Game: " + m_gameSelectorModel.getGameData().getGameName() + ", Round: " + m_gameSelectorModel.getGameData().getSequence().getRound());
 		m_gameSetupPanel.preStartGame();
 		m_gameTypePanelModel.getPanel().getLauncher().launch(this);
 		m_gameSetupPanel.postStartGame();
@@ -1670,6 +1694,7 @@ class HeadlessGameServerConsole
 	@SuppressWarnings("deprecation")
 	private final String startDate = new Date().toGMTString();
 	private boolean m_shutDown = false;
+	private boolean m_chatMode = false;
 	
 	public HeadlessGameServerConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out)
 	{
@@ -1689,6 +1714,14 @@ class HeadlessGameServerConsole
 		}, "Headless console eval print loop");
 		t.setDaemon(true);
 		t.start();
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
+		{
+			public void run()
+			{
+				// m_shutDown = true;
+				out.println("Shutting Down.   See log file.");
+			}
+		}));
 	}
 	
 	private void printEvalLoop()
@@ -1701,6 +1734,8 @@ class HeadlessGameServerConsole
 			try
 			{
 				final String command = in.readLine();
+				// if (m_shutDown)
+				// break;
 				process(command.trim());
 			} catch (final Throwable t)
 			{
@@ -1727,7 +1762,7 @@ class HeadlessGameServerConsole
 		}
 		else if (noun.equalsIgnoreCase("save"))
 		{
-			save();
+			save(command);
 		}
 		else if (noun.equalsIgnoreCase("stop"))
 		{
@@ -1741,9 +1776,21 @@ class HeadlessGameServerConsole
 		{
 			showConnections();
 		}
+		else if (noun.equalsIgnoreCase("send"))
+		{
+			send(command);
+		}
+		else if (noun.equalsIgnoreCase("chatlog"))
+		{
+			chatlog();
+		}
+		else if (noun.equalsIgnoreCase("chatmode"))
+		{
+			chatmode();
+		}
 		else if (noun.equalsIgnoreCase("ban"))
 		{
-			ban();
+			ban(command);
 		}
 		else if (noun.equalsIgnoreCase("memory"))
 		{
@@ -1758,6 +1805,57 @@ class HeadlessGameServerConsole
 			out.println("Unrecognized command:" + command);
 			showHelp();
 		}
+	}
+	
+	private void send(final String command)
+	{
+		if (server == null || command == null)
+			return;
+		final Chat chat = server.getChat();
+		if (chat == null)
+			return;
+		try
+		{
+			final String message;
+			if (command.length() > 5)
+			{
+				message = command.substring(5, command.length());
+			}
+			else
+			{
+				out.println("Input chat message: ");
+				message = in.readLine();
+			}
+			chat.sendMessage(message, false);
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void chatlog()
+	{
+		if (server == null)
+			return;
+		final IChatPanel chat = server.getServerModel().getChatPanel();
+		if (chat == null)
+			return;
+		out.println();
+		out.println(chat.getAllText());
+		out.println();
+	}
+	
+	private void chatmode()
+	{
+		if (server == null)
+			return;
+		final IChatPanel chat = server.getServerModel().getChatPanel();
+		if (chat == null || !(chat instanceof HeadlessChat))
+			return;
+		m_chatMode = !m_chatMode;
+		out.println("chatmode is now " + (m_chatMode ? "on" : "off"));
+		final HeadlessChat headlessChat = (HeadlessChat) chat;
+		headlessChat.setPrintStream(m_chatMode ? out : null);
 	}
 	
 	private void threads()
@@ -1775,7 +1873,7 @@ class HeadlessGameServerConsole
 		out.println(string);
 	}
 	
-	private void ban()
+	private void ban(final String command)
 	{
 		if (server == null || server.getServerModel() == null)
 			return;
@@ -1785,10 +1883,18 @@ class HeadlessGameServerConsole
 		final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
 		if (nodes == null)
 			return;
-		out.println("Input player name to mini-ban: ");
 		try
 		{
-			final String name = in.readLine();
+			final String name;
+			if (command.length() > 4)
+			{
+				name = command.substring(4, command.length());
+			}
+			else
+			{
+				out.println("Input player name to mini-ban: ");
+				name = in.readLine();
+			}
 			if (name == null || name.length() < 1)
 			{
 				out.println("Invalid name");
@@ -1833,7 +1939,7 @@ class HeadlessGameServerConsole
 		}
 	}
 	
-	private void save()
+	private void save(final String command)
 	{
 		final ServerGame game = server.getIGame();
 		if (game == null)
@@ -1843,10 +1949,18 @@ class HeadlessGameServerConsole
 		}
 		else
 		{
-			out.println("Input savegame filename: ");
 			try
 			{
-				String saveName = in.readLine();
+				String saveName;
+				if (command.length() > 5)
+				{
+					saveName = command.substring(5, command.length());
+				}
+				else
+				{
+					out.println("Input savegame filename: ");
+					saveName = in.readLine();
+				}
 				if (saveName == null || saveName.length() < 2)
 				{
 					out.println("Invalid save name");
@@ -1878,10 +1992,13 @@ class HeadlessGameServerConsole
 			out.println("No Game Currently Running");
 			return;
 		}
-		out.println("Are you sure? (y/n)");
+		out.println("Are you sure? (y/f/n) [f = yes + force stop]");
 		try
 		{
-			if (in.readLine().toLowerCase().startsWith("y"))
+			final String readin = in.readLine();
+			final boolean stop = readin.toLowerCase().startsWith("y");
+			final boolean forceStop = readin.toLowerCase().startsWith("f");
+			if (stop || forceStop)
 			{
 				SaveGameFileChooser.ensureDefaultDirExists();
 				final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
@@ -1892,7 +2009,7 @@ class HeadlessGameServerConsole
 				{
 					e.printStackTrace();
 				}
-				game.stopGame();
+				game.stopGame(forceStop);
 			}
 		} catch (final IOException e)
 		{
@@ -1958,6 +2075,7 @@ class HeadlessGameServerConsole
 	private void showHelp()
 	{
 		out.println("Available commands:\n" + "  help - show this message\n" + "  status - show status information\n" + "  connections - show all connected players\n" + "  ban - ban player\n"
+					+ "  send - sends a chat message\n" + "  chatmode - toggles the showing of chat messages as they come in\n" + "  chatlog - shows the chat log\n"
 					+ "  memory - show memory usage\n" + "  threads - get thread dumps\n" + "  save - saves game to filename\n"
 					+ "  stop - saves then stops current game and goes back to waiting\n" + "  quit - quit\n");
 	}

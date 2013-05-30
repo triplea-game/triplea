@@ -233,7 +233,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		// "chance" should ALWAYS be checked last! (always check all other conditions first)
 		final int hitTarget = getChanceToHit();
 		final int diceSides = getChanceDiceSides();
-		if (hitTarget >= diceSides)
+		if (diceSides <= 0 || hitTarget >= diceSides)
 		{
 			changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, true, false);
 			return true;

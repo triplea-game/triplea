@@ -14,7 +14,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
@@ -242,6 +242,16 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 	}
 	
+	public void shutDown()
+	{
+		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
+		m_model.shutDown();
+		if (m_lobbyWatcher != null)
+		{
+			m_lobbyWatcher.shutDown();
+		}
+	}
+	
 	@Override
 	public void cancel()
 	{
@@ -422,7 +432,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	}
 	
 	@Override
-	public ChatPanel getChatPanel()
+	public IChatPanel getChatPanel()
 	{
 		return m_model.getChatPanel();
 	}

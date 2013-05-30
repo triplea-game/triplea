@@ -82,6 +82,7 @@ public class ModeratorControllerTest extends TestCase
 	
 	public void testResetUserPassword() throws UnknownHostException
 	{
+		MessageContext.setSenderNodeForThread(m_adminNode);
 		final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
 		final String userName = Util.createUniqueTimeStamp();
 		new DBUserController().createUser(userName, "n@n.n", newPassword, false);
@@ -92,12 +93,14 @@ public class ModeratorControllerTest extends TestCase
 	
 	public void testCantResetAdminPassword() throws UnknownHostException
 	{
+		MessageContext.setSenderNodeForThread(m_adminNode);
 		final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
 		assertNotNull(m_controller.setPassword(m_adminNode, newPassword));
 	}
 	
 	public void testResetUserPasswordUnknownUser() throws UnknownHostException
 	{
+		MessageContext.setSenderNodeForThread(m_adminNode);
 		final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
 		final INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
 		assertNotNull(m_controller.setPassword(node, newPassword));

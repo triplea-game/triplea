@@ -1998,7 +1998,7 @@ public class TripleAFrame extends MainGameFrame
 								final HistoryNode node = (HistoryNode) enumeration.nextElement();
 								if (node instanceof Round)
 								{
-									round = ((Round) node).getRoundNo();
+									round = Math.max(0, ((Round) node).getRoundNo() - datacopy.getSequence().getRoundOffset());
 									currentPlayer = null;
 									stepDisplayName = node.getTitle();
 								}

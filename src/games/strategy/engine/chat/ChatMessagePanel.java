@@ -98,6 +98,23 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 		setSize(300, 200);
 	}
 	
+	public String getAllText()
+	{
+		return m_text.getText();
+	}
+	
+	public void shutDown()
+	{
+		if (m_chat != null)
+		{
+			m_chat.removeChatListener(this);
+			cleanupKeyMap();
+		}
+		m_chat = null;
+		this.setVisible(false);
+		this.removeAll();
+	}
+	
 	public void setChat(final Chat chat)
 	{
 		if (!SwingUtilities.isEventDispatchThread())

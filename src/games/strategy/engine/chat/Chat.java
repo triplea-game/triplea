@@ -241,7 +241,7 @@ public class Chat
 		remote.slapOccured(playerName);
 	}
 	
-	void sendMessage(final String message, final boolean meMessage)
+	public void sendMessage(final String message, final boolean meMessage)
 	{
 		final IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
 		if (meMessage)

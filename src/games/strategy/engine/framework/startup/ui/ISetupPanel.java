@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 
 import java.util.List;
@@ -25,12 +25,14 @@ public interface ISetupPanel extends java.io.Serializable
 	/**
 	 * Subclasses that have chat override this.
 	 */
-	public ChatPanel getChatPanel();
+	public IChatPanel getChatPanel();
 	
 	/**
 	 * Cleanup should occur here that occurs when we cancel
 	 */
 	public abstract void cancel();
+	
+	public abstract void shutDown();
 	
 	/**
 	 * Can we start the game?

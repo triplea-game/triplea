@@ -177,7 +177,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	{
 		final int hitTarget = uaa.getChanceToHit();
 		final int diceSides = uaa.getChanceDiceSides();
-		if (hitTarget >= diceSides)
+		if (diceSides <= 0 || hitTarget >= diceSides)
 		{
 			uaa.changeChanceDecrementOrIncrementOnSuccessOrFailure(m_bridge, true, true);
 			return true;

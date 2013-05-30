@@ -65,9 +65,10 @@ public class TALogFormatter extends Formatter
 		builder.append(Thread.currentThread().getName());
 		builder.append("] ");
 		builder.append(shortName);
-		builder.append("->");
+		builder.append(" -> ");
 		builder.append(record.getMessage());
-		builder.append("\n");
+		if (!builder.toString().endsWith("\n"))
+			builder.append("\n");
 		if (record.getThrown() != null)
 		{
 			final StringWriter writer = new StringWriter();
@@ -76,6 +77,8 @@ public class TALogFormatter extends Formatter
 			pw.flush();
 			builder.append(writer.getBuffer());
 		}
+		if (!builder.toString().endsWith("\n"))
+			builder.append("\n");
 		return builder.toString();
 	}
 }

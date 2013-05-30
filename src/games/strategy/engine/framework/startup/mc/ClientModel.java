@@ -15,6 +15,7 @@ package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
@@ -78,7 +79,7 @@ public class ClientModel implements IMessengerErrorListener
 	private final GameSelectorModel m_gameSelectorModel;
 	private final SetupPanelModel m_typePanelModel;
 	private Component m_ui;
-	private ChatPanel m_chatPanel;
+	private IChatPanel m_chatPanel;
 	private ClientGame m_game;
 	private final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
 	// we set the game data to be null, since we
@@ -196,6 +197,18 @@ public class ClientModel implements IMessengerErrorListener
 		if (games == null)
 			return new ArrayList<String>();
 		return new ArrayList<String>(games);
+	}
+	
+	public void shutDown()
+	{
+		if (m_messenger == null)
+			return;
+		m_objectStreamFactory.setData(null);
+		m_messenger.shutDown();
+		m_chatPanel.shutDown();
+		m_gameSelectorModel.setGameData(null);
+		m_gameSelectorModel.setCanSelect(false);
+		m_messenger.removeErrorListener(this);
 	}
 	
 	public void cancel()
@@ -446,7 +459,7 @@ public class ClientModel implements IMessengerErrorListener
 		connectionLost();
 	}
 	
-	public ChatPanel getChatPanel()
+	public IChatPanel getChatPanel()
 	{
 		return m_chatPanel;
 	}
