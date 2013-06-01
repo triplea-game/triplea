@@ -273,11 +273,17 @@ public class ClipPlayer
 		{
 			public void run()
 			{
-				final Clip clip = loadClip(clipName, subFolder, false);
-				if (clip != null)
+				try
 				{
-					clip.setFramePosition(0);
-					clip.loop(0);
+					final Clip clip = loadClip(clipName, subFolder, false);
+					if (clip != null)
+					{
+						clip.setFramePosition(0);
+						clip.loop(0);
+					}
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
 				}
 			}
 		};
