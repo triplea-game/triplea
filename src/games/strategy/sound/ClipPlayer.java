@@ -309,10 +309,25 @@ public class ClipPlayer
 	{
 		if (m_beSilent || isMuted(clipName))
 			return null;
-		final Clip clip = loadClipPath(clipName + (subFolder == null ? "" : ("_" + subFolder)), (subFolder != null), parseThenTestOnly);
-		if (clip == null)
-			return loadClipPath(clipName, false, parseThenTestOnly);
-		return clip;
+		try
+		{
+			if (subFolder != null && subFolder.length() > 0)
+			{
+				final Clip clip = loadClipPath(clipName + "_" + subFolder, true, parseThenTestOnly);
+				if (clip != null)
+					return clip;
+				// if null, there is no sub folder, so check for a non-sub-folder sound.
+				return loadClipPath(clipName, false, parseThenTestOnly);
+			}
+			else
+			{
+				return loadClipPath(clipName, false, parseThenTestOnly);
+			}
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	private Clip loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly)
