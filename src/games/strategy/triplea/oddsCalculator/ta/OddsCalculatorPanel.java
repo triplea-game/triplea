@@ -468,29 +468,37 @@ public class OddsCalculatorPanel extends JPanel
 		// run after this code executes, since this
 		// code is running on the swing event thread
 		dialog.setVisible(true);
-		m_attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
-		m_defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
-		m_draw.setText(formatPercentage(results.get().getDrawPercent()));
-		final boolean isLand = isLand();
-		final List<Unit> mainCombatAttackers = Match.getMatches(attackers.get(), Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, true, true));
-		final List<Unit> mainCombatDefenders = Match.getMatches(defenders.get(), Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, true, true));
-		final int attackersTotal = mainCombatAttackers.size();
-		final int defendersTotal = mainCombatDefenders.size();
-		m_defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
-		m_attackerLeft.setText(formatValue(results.get().getAverageAttackingUnitsLeft()) + " /" + attackersTotal);
-		m_defenderLeftWhenDefenderWon.setText(formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon()) + " /" + defendersTotal);
-		m_attackerLeftWhenAttackerWon.setText(formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon()) + " /" + attackersTotal);
-		m_roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
-		try
+		// results.get() could be null if we cancelled to quickly or something weird like that.
+		if (results == null || results.get() == null)
 		{
-			m_data.acquireReadLock();
-			m_averageChangeInTUV.setText("" + formatValue(results.get().getAverageTUVswing(getAttacker(), mainCombatAttackers, getDefender(), mainCombatDefenders, m_data)));
-		} finally
-		{
-			m_data.releaseReadLock();
+			setResultsToBlank();
 		}
-		m_count.setText(results.get().getRollCount() + "");
-		m_time.setText(formatValue(results.get().getTime() / 1000.0) + "s");
+		else
+		{
+			m_attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
+			m_defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
+			m_draw.setText(formatPercentage(results.get().getDrawPercent()));
+			final boolean isLand = isLand();
+			final List<Unit> mainCombatAttackers = Match.getMatches(attackers.get(), Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, true, true));
+			final List<Unit> mainCombatDefenders = Match.getMatches(defenders.get(), Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, true, true));
+			final int attackersTotal = mainCombatAttackers.size();
+			final int defendersTotal = mainCombatDefenders.size();
+			m_defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
+			m_attackerLeft.setText(formatValue(results.get().getAverageAttackingUnitsLeft()) + " /" + attackersTotal);
+			m_defenderLeftWhenDefenderWon.setText(formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon()) + " /" + defendersTotal);
+			m_attackerLeftWhenAttackerWon.setText(formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon()) + " /" + attackersTotal);
+			m_roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
+			try
+			{
+				m_data.acquireReadLock();
+				m_averageChangeInTUV.setText("" + formatValue(results.get().getAverageTUVswing(getAttacker(), mainCombatAttackers, getDefender(), mainCombatDefenders, m_data)));
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
+			m_count.setText(results.get().getRollCount() + "");
+			m_time.setText(formatValue(results.get().getTime() / 1000.0) + "s");
+		}
 	}
 	
 	public String formatPercentage(final double percentage)
@@ -745,23 +753,12 @@ public class OddsCalculatorPanel extends JPanel
 		m_retreatAfterXUnitsLeft.setToolTipText("-1 means never. If positive and 'retreat when only air left' is also selected, then we will retreat when X of non-air units is left.");
 		m_calculateButton = new JButton("Calculate Odds");
 		m_resultsPanel = new JPanel();
-		final String blank = "------";
-		m_attackerWin = new JLabel(blank);
-		m_defenderWin = new JLabel(blank);
-		m_draw = new JLabel(blank);
-		m_defenderLeft = new JLabel(blank);
+		setResultsToBlank();
 		m_defenderLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-		m_attackerLeft = new JLabel(blank);
 		m_attackerLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-		m_defenderLeftWhenDefenderWon = new JLabel(blank);
 		m_defenderLeftWhenDefenderWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-		m_attackerLeftWhenAttackerWon = new JLabel(blank);
 		m_attackerLeftWhenAttackerWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-		m_averageChangeInTUV = new JLabel(blank);
 		m_averageChangeInTUV.setToolTipText("TUV Swing does not include captured AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
-		m_roundsAverage = new JLabel(blank);
-		m_count = new JLabel(blank);
-		m_time = new JLabel(blank);
 		m_closeButton = new JButton("Close");
 		m_clearButton = new JButton("Clear");
 		m_SwapSidesButton = new JButton("Swap Sides");
@@ -774,6 +771,22 @@ public class OddsCalculatorPanel extends JPanel
 		m_retreatWhenMetaPowerIsLower.setToolTipText("We retreat if our 'meta power' is lower than the opponent. Meta Power is equal to:  Power  +  (2 * HitPoints * DiceSides / 6)");
 		m_attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
 		m_defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not include Bombarding sea units for land battles.");
+	}
+	
+	private void setResultsToBlank()
+	{
+		final String blank = "------";
+		m_attackerWin.setText(blank);
+		m_defenderWin.setText(blank);
+		m_draw.setText(blank);
+		m_defenderLeft.setText(blank);
+		m_attackerLeft.setText(blank);
+		m_defenderLeftWhenDefenderWon.setText(blank);
+		m_attackerLeftWhenAttackerWon.setText(blank);
+		m_roundsAverage.setText(blank);
+		m_averageChangeInTUV.setText(blank);
+		m_count.setText(blank);
+		m_time.setText(blank);
 	}
 	
 	public void setWidgetActivation()
@@ -950,7 +963,15 @@ class PlayerUnitsPanel extends JPanel
 		}
 		else
 			predicate = Matches.UnitTypeIsSeaOrAir;
-		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(id, m_data);
+		final IntegerMap<UnitType> costs;
+		try
+		{
+			m_data.acquireReadLock();
+			costs = BattleCalculator.getCostsForTUV(id, m_data);
+		} finally
+		{
+			m_data.releaseReadLock();
+		}
 		for (final UnitCategory category : m_categories)
 		{
 			if (predicate.match(category.getType()))

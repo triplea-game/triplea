@@ -1,4 +1,6 @@
 Changes for 1.7.0.5
+* Fixed null pointer error in battle calculator when spamming the cancel button. (veqryn)
+
 * Rebalancing Great War world war 1 game. (veqryn)
 
 * Fixed bug where chanceIncrementOnFailure and chanceDecrementOnSuccess were not allowing any number of zero or less for chance. (veqryn)
