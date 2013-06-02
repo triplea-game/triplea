@@ -105,7 +105,7 @@ public class ServerLauncher extends AbstractLauncher
 				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
 				try
 				{
-					Thread.sleep(1000);
+					Thread.sleep(2000);
 				} catch (final InterruptedException e1)
 				{
 				}
@@ -279,23 +279,7 @@ public class ServerLauncher extends AbstractLauncher
 				m_gameLoadingWindow.doneWait();
 			if (m_inGameLobbyWatcher != null)
 			{
-				final Thread t = new Thread(new Runnable()
-				{
-					public void run()
-					{
-						try
-						{
-							Thread.sleep(5000);
-						} catch (final InterruptedException e1)
-						{
-						}
-						if (m_inGameLobbyWatcher.getGameDescription() == null || !GameDescription.GameStatus.WAITING_FOR_PLAYERS.equals(m_inGameLobbyWatcher.getGameDescription().getStatus()))
-						{
-							m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);
-						}
-					}
-				});
-				t.start();
+				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);
 			}
 		}
 	}

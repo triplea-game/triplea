@@ -172,6 +172,13 @@ public class ClientModel implements IMessengerErrorListener
 		m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
 		m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
 		m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+		if (getIsServerHeadless())
+		{
+			((ChatPanel) m_chatPanel).getChatMessagePanel().addServerMessage("Welcome to an automated dedicated host service (a host bot). "
+						+ "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
+						+ "\nYou can get the current save, or you can load a save (only saves that it has the map for)."
+						+ "\nClick the 'NETWORK' button, and then select 'Change Game To...', then pick the map/game. ");
+		}
 		m_remoteMessenger.registerRemote(m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
 		// save this, it will be cleared later
 		m_gameDataOnStartup = m_gameSelectorModel.getGameData();

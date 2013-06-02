@@ -123,10 +123,21 @@ public class ChatPanel extends JPanel implements IChatPanel
 	{
 		m_chatMessagePanel.setShowTime(showTime);
 	}
+	
 	/*public void setMessage(String message)
 	{
 		if (message == null)
 			return;
 		m_chatMessagePanel.addMessage(message, "Server", true);
 	}*/
+	
+	public ChatPlayerPanel getChatPlayerPanel()
+	{
+		return m_chatPlayerPanel;
+	}
+	
+	public ChatMessagePanel getChatMessagePanel()
+	{
+		return m_chatMessagePanel;
+	}
 }

@@ -256,9 +256,16 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			moderatorController.register(m_remoteMessenger);
 			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger, moderatorController);
 			if (ui == null && m_headless)
+			{
 				m_chatPanel = new HeadlessChat(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+				// final String headlessName = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY);
+				// if (headlessName != null && headlessName.length() > 0)
+				// ((HeadlessChat) m_chatPanel).addHiddenPlayerName(headlessName);
+			}
 			else
+			{
 				m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+			}
 			m_serverMessenger.setAcceptNewConnections(true);
 			gameDataChanged();
 			return true;
