@@ -3,6 +3,7 @@ package games.strategy.common.ui;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
+import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 
 public class InGameLobbyWatcherWrapper
@@ -63,5 +64,12 @@ public class InGameLobbyWatcherWrapper
 	{
 		if (m_lobbyWatcher != null)
 			m_lobbyWatcher.setPassworded(passworded);
+	}
+	
+	public GameDescription getGameDescription()
+	{
+		if (m_lobbyWatcher != null)
+			return m_lobbyWatcher.getGameDescription();
+		return null;
 	}
 }

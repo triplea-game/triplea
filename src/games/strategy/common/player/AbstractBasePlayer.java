@@ -81,6 +81,13 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 		return m_playerID;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return (m_playerID == null || m_playerID.getName() == null || !m_playerID.getName().equals(m_name)) ?
+					(m_type + ":" + m_name + ":" + (m_playerID == null ? "NullID" : m_playerID.getName())) : (m_type + ":" + m_name);
+	}
+	
 	/**
 	 * The given phase has started. We parse the phase name and call the apropiate method.
 	 */

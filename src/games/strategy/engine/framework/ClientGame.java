@@ -179,39 +179,56 @@ public class ClientGame extends AbstractGame
 			// make sure we are in the correct step
 			// steps are advanced on a different channel, and the
 			// message advancing the step may be being processed in a different thread
-			while (true)
 			{
-				m_data.acquireReadLock();
-				try
+				int i = 0;
+				boolean shownErrorMessage = false;
+				while (true)
 				{
-					if (m_data.getSequence().getStep().getName().equals(stepName))
-						break;
-				} finally
-				{
-					m_data.releaseReadLock();
-				}
-				try
-				{
-					Thread.sleep(50);
-				} catch (final InterruptedException e)
-				{
-					// no worries mate
+					m_data.acquireReadLock();
+					try
+					{
+						if (m_data.getSequence().getStep().getName().equals(stepName))
+							break;
+					} finally
+					{
+						m_data.releaseReadLock();
+					}
+					try
+					{
+						Thread.sleep(50);
+						i++;
+						if (i > 1000 && !shownErrorMessage)
+						{
+							System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
+							shownErrorMessage = true;
+							// TODO: should we throw an illegal state error? or just return? or a game over exception?
+							// TODO: should we request the server to send the step update again or something?
+						}
+					} catch (final InterruptedException e)
+					{
+						// no worries mate
+					}
 				}
 			}
 			final IGamePlayer gp = m_gamePlayers.get(player);
 			if (gp == null)
 				throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
-			try
-			{
-				gp.start(stepName);
-			} catch (final ClassCastException e)
+			if (HeadlessGameServer.headless())
+			{ // TODO: can delete this after we discover why game freezes/hangs with a ClassCastException in start method
+				System.out.println("Client local player step: " + stepName + " for PlayerID: " + player.getName() + ", player name: " + gp.getName() + ", player type: "
+							+ gp.getType() + ". All local players: " + m_gamePlayers + ". All players: " + m_playerManager);
+			}
+			// try
+			// {
+			gp.start(stepName);
+			/*} catch (final ClassCastException e)
 			{
 				e.printStackTrace();
 				// TODO: Veqryn: We are getting a ClassCastException here occasionally for hosts. This is doubly weird because we are getting it for host-bots (HeadlessGameServer's) who are not even playing.
 				// Which for the bot means that it is neither a client, nor playing any players (not even AI), so we should NEVER end up here (doubly never).
 				// My only guess is that someone disconnects at some very sensitive point, and then the host runs the wrong player step as a client step for the wrong node (the server node).
 				// I am hoping that we are in the middle of getting a connection lost error, and therefore we can just print the stack trace and ignore, letting the connection lost error do the work.
-			}
+			}*/
 		}
 	};
 	

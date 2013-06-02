@@ -14,7 +14,6 @@
 package games.strategy.grid.player;
 
 import games.strategy.common.player.AbstractHumanPlayer;
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -55,10 +54,10 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 			if (!stepName.equals(bridgeStepTest1))
 			{
 				System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStepTest1 + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
-							+ getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+							+ getPlayerID().getName() + ", Game: " + getGameData().getGameName() + ". Will wait 2 seconds and try again.");
 				try
 				{
-					Thread.sleep(2500);
+					Thread.sleep(2000);
 				} catch (final InterruptedException e)
 				{
 					e.printStackTrace();
@@ -112,8 +111,10 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		try
 		{
 			playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		// final PlayerID me = getPlayerID();

@@ -1,4 +1,8 @@
 Changes for 1.7.0.5
+* Possible fix for game hang / game freeze during hosting, if error occurs game should now drop back to waiting screen instead of just hanging or ghosting. (veqryn)
+
+* Adding much more logging to HeadlessServerGame in order to try to find cause of the CastClassExceptions in TripleAPlayer.start() and NullPointer/IllegalArgumentExceptions in RemoteName. (veqryn)
+
 * Fixed null pointer error in battle calculator when spamming the cancel button. (veqryn)
 
 * Rebalancing Great War world war 1 game. (veqryn)

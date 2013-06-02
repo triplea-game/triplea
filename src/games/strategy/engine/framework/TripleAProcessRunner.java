@@ -2,6 +2,7 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.lobby.server.GameDescription;
+import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.net.Messengers;
 import games.strategy.util.Version;
 
@@ -81,6 +82,9 @@ public class TripleAProcessRunner
 	
 	public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent)
 	{
+		final GameStatus status = description.getStatus();
+		if (GameStatus.LAUNCHING.equals(status))
+			return;
 		final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
 		String newClassPath = null;
 		if (!EngineVersion.VERSION.equals(engineVersionOfGameToJoin))

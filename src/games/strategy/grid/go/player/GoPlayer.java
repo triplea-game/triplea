@@ -1,6 +1,5 @@
 package games.strategy.grid.go.player;
 
-import games.strategy.engine.GameOverException;
 import games.strategy.grid.go.delegate.remote.IGoEndTurnDelegate;
 import games.strategy.grid.go.delegate.remote.IGoPlayDelegate;
 import games.strategy.grid.go.ui.GoMapPanel;
@@ -25,8 +24,10 @@ public class GoPlayer extends GridGamePlayer
 		try
 		{
 			playDel = (IGoPlayDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		// if (playDel.haveTwoPassedInARow())
@@ -77,8 +78,10 @@ public class GoPlayer extends GridGamePlayer
 		try
 		{
 			endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		// if (!endTurnDel.haveTwoPassedInARow())

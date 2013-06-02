@@ -19,7 +19,6 @@
 package games.strategy.triplea;
 
 import games.strategy.common.player.AbstractHumanPlayer;
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -120,10 +119,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			if (!name.equals(bridgeStepTest1))
 			{
 				System.out.println("Start step: " + name + " does not match player bridge step: " + bridgeStepTest1 + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
-							+ getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+							+ getPlayerID().getName() + ", Game: " + getGameData().getGameName() + ". Will wait 2 seconds and try again.");
 				try
 				{
-					Thread.sleep(2500);
+					Thread.sleep(2000);
 				} catch (final InterruptedException e)
 				{
 					e.printStackTrace();
@@ -202,6 +201,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			m_ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemote("edit"));
 		} catch (final Exception e)
 		{
+			e.printStackTrace();
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -254,8 +254,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		/*
@@ -276,8 +278,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			iUserActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		/*
@@ -306,8 +310,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			techDelegate = (ITechDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		/*
@@ -342,8 +348,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			moveDel = (IMoveDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		/*
@@ -393,8 +401,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				airCantLand = ((IMoveDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereAirCantLand(player);
 			else
 				airCantLand = ((IAbstractPlaceDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereAirCantLand();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return false;
 		}
 		if (airCantLand.isEmpty())
@@ -413,8 +423,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			unitsCantFight = ((IMoveDelegate) getPlayerBridge().getRemote()).getTerritoriesWhereUnitsCantFight();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return false;
 		}
 		if (unitsCantFight.isEmpty())
@@ -473,8 +485,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 						try
 						{
 							purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
-						} catch (final GameOverException goe)
+						} catch (final ClassCastException e)
 						{
+							System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+							e.printStackTrace();
 							return;
 						}
 						error = purchaseDel.purchaseRepair(repair);
@@ -504,8 +518,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 						try
 						{
 							purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
-						} catch (final GameOverException goe)
+						} catch (final ClassCastException e)
 						{
+							System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+							e.printStackTrace();
 							return;
 						}
 						error = purchaseDel.purchaseRepair(repair);
@@ -526,8 +542,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		error = purchaseDel.purchase(prod);
@@ -545,8 +563,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			battleDel = (IBattleDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		/* 
@@ -590,8 +610,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		/*
@@ -629,8 +651,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		try
 		{
 			endTurnDelegate = (IAbstractForumPosterDelegate) getPlayerBridge().getRemote();
-		} catch (final GameOverException goe)
+		} catch (final ClassCastException e)
 		{
+			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			e.printStackTrace();
 			return;
 		}
 		if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), data))

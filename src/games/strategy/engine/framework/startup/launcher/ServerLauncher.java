@@ -14,6 +14,7 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
+import games.strategy.debug.Console;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
@@ -102,6 +103,12 @@ public class ServerLauncher extends AbstractLauncher
 			if (m_inGameLobbyWatcher != null)
 			{
 				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
+				try
+				{
+					Thread.sleep(1000);
+				} catch (final InterruptedException e1)
+				{
+				}
 			}
 			m_ui = parent;
 			m_serverModel.setServerLauncher(this);
@@ -218,9 +225,18 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							e.printStackTrace();
 						}
+					} catch (final Exception e)
+					{
+						// TODO: figure out why we are getting any errors that make us end up here! We should NEVER end up here.
+						e.printStackTrace(System.err);
+						if (m_headless)
+							System.out.println(Console.getThreadDumps());
+						m_serverGame.stopGame();
 					}
+					// either game ended, or aborted, or a player left or disconnected
 					if (m_headless)
 					{
+						System.out.println("Game ended, going back to waiting.");
 						try
 						{
 							Thread.sleep(250);
@@ -263,7 +279,23 @@ public class ServerLauncher extends AbstractLauncher
 				m_gameLoadingWindow.doneWait();
 			if (m_inGameLobbyWatcher != null)
 			{
-				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);
+				final Thread t = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						try
+						{
+							Thread.sleep(5000);
+						} catch (final InterruptedException e1)
+						{
+						}
+						if (m_inGameLobbyWatcher.getGameDescription() == null || !GameDescription.GameStatus.WAITING_FOR_PLAYERS.equals(m_inGameLobbyWatcher.getGameDescription().getStatus()))
+						{
+							m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);
+						}
+					}
+				});
+				t.start();
 			}
 		}
 	}

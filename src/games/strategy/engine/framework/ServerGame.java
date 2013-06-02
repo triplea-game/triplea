@@ -313,9 +313,13 @@ public class ServerGame extends AbstractGame
 		if (m_isGameOver)
 		{
 			if (HeadlessGameServer.headless())
-				System.out.println("Game previous stopped." + (forceRetry ? "" : " Can not stop again."));
+				System.out.println("Game previously stopped." + (forceRetry ? " Forcing re-try re-stop." : " Can not stop again."));
 			if (!forceRetry)
 				return;
+		}
+		else if (HeadlessGameServer.headless())
+		{
+			System.out.println("Attempting to stop game.");
 		}
 		m_isGameOver = true;
 		ErrorHandler.setGameOver(true);
@@ -368,7 +372,9 @@ public class ServerGame extends AbstractGame
 		}
 		m_data.getGameLoader().shutDown();
 		if (HeadlessGameServer.headless())
+		{
 			System.out.println("StopGame successful.");
+		}
 	}
 	
 	private void autoSave()
@@ -602,6 +608,11 @@ public class ServerGame extends AbstractGame
 		if (player != null)
 		{
 			// a local player
+			if (HeadlessGameServer.headless())
+			{ // TODO: can delete this after we discover why game freezes/hangs with a ClassCastException in start method
+				System.out.println("Local Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName() + ", player name: " + player.getName() + ", player type: "
+							+ player.getType() + ". All local players: " + m_gamePlayers + ". All players: " + m_playerManager);
+			}
 			player.start(getCurrentStep().getName());
 		}
 		else
@@ -609,6 +620,11 @@ public class ServerGame extends AbstractGame
 			// a remote player
 			final INode destination = m_playerManager.getNode(playerID.getName());
 			final IGameStepAdvancer advancer = (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
+			if (HeadlessGameServer.headless())
+			{ // TODO: can delete this after we discover why game freezes/hangs with a ClassCastException in start method
+				System.out.println("Remote Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName() + ", Player Node: " + destination + ". All local players: "
+							+ m_gamePlayers + ". All players: " + m_playerManager);
+			}
 			advancer.startPlayerStep(getCurrentStep().getName(), playerID);
 		}
 	}

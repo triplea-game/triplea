@@ -386,6 +386,11 @@ public class InGameLobbyWatcher
 		return m_gameDescription.getComment();
 	}
 	
+	public GameDescription getGameDescription()
+	{
+		return m_gameDescription;
+	}
+	
 	public void setGameComments(final String comments)
 	{
 		synchronized (m_mutex)

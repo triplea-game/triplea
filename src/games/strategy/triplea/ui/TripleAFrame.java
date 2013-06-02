@@ -1640,19 +1640,28 @@ public class TripleAFrame extends MainGameFrame
 		}
 		// if the game control has passed to someone else and we are not just showing the map
 		// show the history
-		if (player != null && !player.isNull() && !isPlaying && !m_inHistory && !m_uiContext.getShowMapOnly())
+		if (player != null && !player.isNull())
 		{
-			if (!SwingUtilities.isEventDispatchThread())
-				throw new IllegalStateException("We should be in dispatch thread");
-			showHistory();
-		}
-		else if (player != null && !player.isNull() && isPlaying && m_inHistory)
-		{
-			// if the game control is with us
-			// show the current game
-			showGame();
-			m_requiredTurnSeries.put(player, true);
-			// System.out.println("Changing step to " + stepDisplayName + " for " + player.getName());
+			if (isPlaying)
+			{
+				if (m_inHistory)
+				{
+					m_requiredTurnSeries.put(player, true);
+					// if the game control is with us
+					// show the current game
+					showGame();
+					// System.out.println("Changing step to " + stepDisplayName + " for " + player.getName());
+				}
+			}
+			else
+			{
+				if (!m_inHistory && !m_uiContext.getShowMapOnly())
+				{
+					if (!SwingUtilities.isEventDispatchThread())
+						throw new IllegalStateException("We should be in dispatch thread");
+					showHistory();
+				}
+			}
 		}
 	}
 	
@@ -1662,6 +1671,12 @@ public class TripleAFrame extends MainGameFrame
 			return;
 		try
 		{
+			try
+			{
+				Thread.sleep(300);
+			} catch (final InterruptedException e1)
+			{
+			}
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
 				public void run()
