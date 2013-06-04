@@ -44,13 +44,13 @@ public interface IPlayerBridge
 	 * Get a remote reference to the current delegate, the type of the reference
 	 * is declared by the delegates getRemoteType() method
 	 */
-	public IRemote getRemote();
+	public IRemote getRemoteDelegate();
 	
 	/**
 	 * Get a remote reference to the named delegate, the type of the reference
 	 * is declared by the delegates getRemoteType() method
 	 */
-	public IRemote getRemote(String name);
+	public IRemote getRemotePersistentDelegate(String name);
 	
 	/**
 	 * Get the name of the current step being exectued.

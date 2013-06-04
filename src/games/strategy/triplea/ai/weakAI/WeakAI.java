@@ -586,7 +586,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private void movePlanesHomeNonCom(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player, final GameData data)
 	{
 		// the preferred way to get the delegate
-		final IMoveDelegate delegateRemote = (IMoveDelegate) getPlayerBridge().getRemote();
+		final IMoveDelegate delegateRemote = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
 		// this works because we are on the server
 		final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
 		final Match<Territory> canLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), new Match<Territory>()

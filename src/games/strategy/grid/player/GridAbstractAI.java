@@ -47,6 +47,7 @@ public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGame
 	@Override
 	public void start(final String stepName)
 	{
+		super.start(stepName); // must call super.start
 		if (stepName.endsWith("Play"))
 			play();
 		else if (stepName.endsWith("EndTurn"))

@@ -44,7 +44,7 @@ public class AlphaBeta extends HeuristicAI
 		final PlayerID me = getPlayerID();
 		final GameData data = getGameData();
 		// get our delegate for playing
-		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemoteDelegate();
 		final Collection<PlayerID> enemies = data.getPlayerList().getPlayers();
 		enemies.remove(me);
 		final PlayerID enemy = enemies.iterator().next();

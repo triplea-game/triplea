@@ -395,10 +395,11 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	@Override
 	public final void start(final String name)
 	{
+		super.start(name); // must call super.start
 		final PlayerID id = getPlayerID();
 		if (name.endsWith("Bid"))
 		{
-			final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemote();
+			final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
 			/*if (!purchaseDelegate.stuffToDoInThisDelegate())
 				return;*/
 			final String propertyName = id.getName() + " bid";
@@ -407,7 +408,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		else if (name.endsWith("Purchase"))
 		{
-			final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemote();
+			final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
 			/*if (!purchaseDelegate.stuffToDoInThisDelegate())
 				return;*/
 			final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
@@ -416,7 +417,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		else if (name.endsWith("Tech"))
 		{
-			final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemote();
+			final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
 			/*if (!techDelegate.stuffToDoInThisDelegate())
 				return;*/
 			tech(techDelegate, getGameData(), id);
@@ -424,7 +425,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		else if (name.endsWith("Move"))
 		{
 			
-			final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemote();
+			final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
 			/* if (!moveDel.stuffToDoInThisDelegate())
 				return; */
 			if (name.endsWith("AirborneCombatMove"))
@@ -440,19 +441,19 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			}
 		}
 		else if (name.endsWith("Battle"))
-			battle((IBattleDelegate) getPlayerBridge().getRemote(), getGameData(), id);
+			battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
 		else if (name.endsWith("Politics"))
 			politicalActions();
 		else if (name.endsWith("Place"))
 		{
-			final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
+			final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
 			/*if (!placeDel.stuffToDoInThisDelegate())
 				return;*/
 			place(name.indexOf("Bid") != -1, placeDel, getGameData(), id);
 		}
 		else if (name.endsWith("EndTurn"))
 		{
-			endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemote(), getGameData(), id);
+			endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
 		}
 	}
 	
@@ -502,7 +503,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	
 	public void politicalActions()
 	{
-		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
+		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
 		/*
 		if (!iPoliticsDelegate.stuffToDoInThisDelegate())
 			return;

@@ -52,7 +52,7 @@ public class RandomAI extends GridAbstractAI
 		final GameMap map = getGameData().getMap();
 		final Collection<Territory> territories = map.getTerritories();
 		// Get the play delegate
-		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemoteDelegate();
 		final PlayerID me = getPlayerID();
 		// Find the blank tile
 		Territory blank = null;

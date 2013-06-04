@@ -501,7 +501,7 @@ public class GoMapPanel extends GridMapPanel
 			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
 		
 		IGridEndTurnData endPhaseData = new GridEndTurnData(null, false, player);
-		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) bridge.getRemote();
+		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) bridge.getRemoteDelegate();
 		final IGridEndTurnData lastEndTurnData = endTurnDel.getTerritoryAdjustment();
 		// if we are reloading a pbem game, we don't want to re-do the last player's turn (this would be fixed if we moved this stuff to play delegate)
 		if (lastEndTurnData != null && player.equals(lastEndTurnData.getPlayer()))

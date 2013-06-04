@@ -601,7 +601,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(new EmptyBorder(5, 5, 0, 0));
 		panel.add(new JLabel("PBEM/PBF " + player.getName() + " Turn Summary"));
-		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) bridge.getRemote();
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) bridge.getRemoteDelegate();
 		final boolean hasPosted = delegate.getHasPostedTurnSummary();
 		final Action doneAction = new AbstractAction("Done")
 		{

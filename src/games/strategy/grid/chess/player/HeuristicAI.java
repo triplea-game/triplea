@@ -52,7 +52,7 @@ public class HeuristicAI extends GridAbstractAI
 			return;
 		}
 		// get our delegate for playing
-		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemoteDelegate();
 		final Collection<PlayerID> enemies = data.getPlayerList().getPlayers();
 		enemies.remove(me);
 		final PlayerID enemy = enemies.iterator().next();

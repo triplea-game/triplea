@@ -49,29 +49,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	{
 		if (m_ui != null && m_ui.isGameOver())
 			return;
-		{ // TODO: this is for testing purposes only. We are having game hangs caused by class cast exceptions that are caused by having stepnames that don't match. Can be removed after problem is fixed.
-			final String bridgeStepTest1 = getPlayerBridge().getStepName();
-			if (!stepName.equals(bridgeStepTest1))
-			{
-				System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStepTest1 + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
-							+ getPlayerID().getName() + ", Game: " + getGameData().getGameName() + ". Will wait 2 seconds and try again.");
-				try
-				{
-					Thread.sleep(2000);
-				} catch (final InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-				final String bridgeStepTest2 = getPlayerBridge().getStepName();
-				if (!stepName.equals(bridgeStepTest2))
-				{
-					System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStepTest2
-								+ " even after waiting 2 seconds. This will probably result in a ClassCastException very soon. Player Bridge GameOver="
-								+ getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
-					// getPlayerBridge().printErrorStatus();
-				}
-			}
-		}
+		super.start(stepName); // must call super.start
+		
 		enableEditModeMenu();
 		/*{
 		    CountDownLatch waitToLeaveGame = new CountDownLatch(1);
@@ -110,12 +89,13 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		final IGridPlayDelegate playDel;
 		try
 		{
-			playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
+			playDel = (IGridPlayDelegate) getPlayerBridge().getRemoteDelegate();
 		} catch (final ClassCastException e)
 		{
-			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemoteDelegate().getClass();
+			System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to err too
 			e.printStackTrace();
-			return;
+			throw new IllegalStateException(errorContext, e);
 		}
 		// final PlayerID me = getPlayerID();
 		IGridPlayData play = null;
@@ -168,7 +148,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	{
 		try
 		{
-			m_ui.setEditDelegate((IGridEditDelegate) getPlayerBridge().getRemote("edit"));
+			m_ui.setEditDelegate((IGridEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
 		} catch (final Exception e)
 		{
 		}
@@ -206,7 +186,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 			{
 				// Set edit mode
 				// All GameDataChangeListeners will be notified upon success
-				final IGridEditDelegate editDelegate = (IGridEditDelegate) getPlayerBridge().getRemote("edit");
+				final IGridEditDelegate editDelegate = (IGridEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
 				editDelegate.setEditMode(editMode);
 			} catch (final Exception e)
 			{

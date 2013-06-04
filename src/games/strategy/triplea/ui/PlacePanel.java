@@ -157,7 +157,7 @@ public class PlacePanel extends AbstractMovePanel
 				units = Match.getMatches(units, Matches.UnitIsNotSea);
 			if (units.isEmpty())
 				return Collections.emptyList();
-			final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
+			final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
 			final PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
 			if (production.isError())
 			{

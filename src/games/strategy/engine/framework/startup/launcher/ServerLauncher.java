@@ -14,7 +14,6 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
-import games.strategy.debug.Console;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
@@ -28,6 +27,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.server.GameDescription;
+import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessengerException;
@@ -213,7 +213,11 @@ public class ServerLauncher extends AbstractLauncher
 						}
 					} catch (final MessengerException me)
 					{
-						me.printStackTrace(System.out);
+						// if just connection lost, no need to scare the user with some giant stack trace
+						if (me instanceof ConnectionLostException)
+							System.out.println("Game Player disconnection: " + me.getMessage());
+						else
+							me.printStackTrace(System.out);
 						// we lost a connection
 						// wait for the connection handler to notice, and shut us down
 						try
@@ -230,7 +234,7 @@ public class ServerLauncher extends AbstractLauncher
 						// TODO: figure out why we are getting any errors that make us end up here! We should NEVER end up here.
 						e.printStackTrace(System.err);
 						if (m_headless)
-							System.out.println(Console.getThreadDumps());
+							System.out.println(games.strategy.debug.Console.getThreadDumps());
 						m_serverGame.stopGame();
 					}
 					// either game ended, or aborted, or a player left or disconnected

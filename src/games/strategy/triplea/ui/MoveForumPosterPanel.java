@@ -64,27 +64,27 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel
 	@Override
 	protected IAbstractForumPosterDelegate getForumPosterDelegate()
 	{
-		return (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		return (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
 	}
 	
 	@Override
 	protected boolean getHasPostedTurnSummary()
 	{
-		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
 		return delegate.getHasPostedTurnSummary();
 	}
 	
 	@Override
 	protected void setHasPostedTurnSummary(final boolean posted)
 	{
-		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
 		delegate.setHasPostedTurnSummary(posted);
 	}
 	
 	@Override
 	protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame)
 	{
-		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemote();
+		final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) m_bridge.getRemoteDelegate();
 		return delegate.postTurnSummary(poster, getTitle(), includeSaveGame);
 	}
 	

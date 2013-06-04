@@ -132,6 +132,8 @@ public class NewGameChooserModel extends DefaultListModel
 							final URL url = loader.getResource(entry.getName());
 							// we have to close the loader to allow files to be deleted on windows
 							ClassLoaderUtil.closeLoader(loader);
+							if (url == null)
+								continue;
 							try
 							{
 								addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));

@@ -31,7 +31,7 @@ public class RandomAI extends GridAbstractAI
 	@Override
 	protected void play()
 	{
-		final IGoPlayDelegate playDel = (IGoPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGoPlayDelegate playDel = (IGoPlayDelegate) this.getPlayerBridge().getRemoteDelegate();
 		final PlayerID me = getPlayerID();
 		final GameData data = getGameData();
 		// if (playDel.haveTwoPassedInARow())
@@ -84,7 +84,7 @@ public class RandomAI extends GridAbstractAI
 	@Override
 	protected void endTurn()
 	{
-		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemote();
+		final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemoteDelegate();
 		// if (!endTurnDel.haveTwoPassedInARow())
 		// return;
 		pause();

@@ -141,7 +141,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	
 	private IAbstractMoveDelegate getDelegate()
 	{
-		return (IAbstractMoveDelegate) m_bridge.getRemote();
+		return (IAbstractMoveDelegate) m_bridge.getRemoteDelegate();
 	}
 	
 	protected final void updateMoves()

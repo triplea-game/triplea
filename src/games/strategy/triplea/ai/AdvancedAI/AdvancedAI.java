@@ -6103,7 +6103,7 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	{
 		// planes are doing silly things like landing in territories that can be invaded with cheap units
 		// we want planes to find an aircraft carrier
-		final IMoveDelegate delegateRemote = (IMoveDelegate) getPlayerBridge().getRemote();
+		final IMoveDelegate delegateRemote = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
 		final CompositeMatch<Unit> alliedFactory = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanProduceUnits);
 		final CompositeMatch<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier);
 		final CompositeMatch<Unit> bomberUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier.invert(), Matches.UnitIsAir);

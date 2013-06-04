@@ -117,7 +117,7 @@ public class BetterAI extends GridAbstractAI
 			else
 				move = AIAlgorithm.minimaxSearch(initial_state);
 			// System.out.println(m_id.getName() + " should move from (" + move.getStart().getFirst() + "," +move.getStart().getSecond() + ") to (" + move.getEnd().getFirst()+ "," +move.getEnd().getSecond() + ")");
-			final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
+			final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemoteDelegate();
 			final PlayerID me = getPlayerID();
 			final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
 			final Territory end = getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());

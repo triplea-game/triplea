@@ -81,7 +81,7 @@ public class BetterAI extends GridAbstractAI
 	@Override
 	protected void play()
 	{
-		final IGridPlayDelegate iPlayDelegate = (IGridPlayDelegate) getPlayerBridge().getRemote();
+		final IGridPlayDelegate iPlayDelegate = (IGridPlayDelegate) getPlayerBridge().getRemoteDelegate();
 		final PlayerID me = getPlayerID();
 		if (m_moves == null)
 		{

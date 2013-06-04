@@ -195,14 +195,13 @@ public class ClientGame extends AbstractGame
 					}
 					try
 					{
-						Thread.sleep(50);
+						Thread.sleep(100);
 						i++;
-						if (i > 1000 && !shownErrorMessage)
+						if (i > 300 && !shownErrorMessage)
 						{
 							System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
 							shownErrorMessage = true;
-							// TODO: should we throw an illegal state error? or just return? or a game over exception?
-							// TODO: should we request the server to send the step update again or something?
+							// TODO: should we throw an illegal state error? or just return? or a game over exception? should we request the server to send the step update again or something?
 						}
 					} catch (final InterruptedException e)
 					{
@@ -213,22 +212,12 @@ public class ClientGame extends AbstractGame
 			final IGamePlayer gp = m_gamePlayers.get(player);
 			if (gp == null)
 				throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
-			if (HeadlessGameServer.headless())
-			{ // TODO: can delete this after we discover why game freezes/hangs with a ClassCastException in start method
+			/* if (HeadlessGameServer.headless())
+			{
 				System.out.println("Client local player step: " + stepName + " for PlayerID: " + player.getName() + ", player name: " + gp.getName() + ", player type: "
 							+ gp.getType() + ". All local players: " + m_gamePlayers + ". All players: " + m_playerManager);
-			}
-			// try
-			// {
-			gp.start(stepName);
-			/*} catch (final ClassCastException e)
-			{
-				e.printStackTrace();
-				// TODO: Veqryn: We are getting a ClassCastException here occasionally for hosts. This is doubly weird because we are getting it for host-bots (HeadlessGameServer's) who are not even playing.
-				// Which for the bot means that it is neither a client, nor playing any players (not even AI), so we should NEVER end up here (doubly never).
-				// My only guess is that someone disconnects at some very sensitive point, and then the host runs the wrong player step as a client step for the wrong node (the server node).
-				// I am hoping that we are in the middle of getting a connection lost error, and therefore we can just print the stack trace and ignore, letting the connection lost error do the work.
 			}*/
+			gp.start(stepName);
 		}
 	};
 	

@@ -51,7 +51,7 @@ public class RandomAI extends GridAbstractAI
 		int trymeEnd;
 		String error;
 		// Get the play delegate
-		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemoteDelegate();
 		final PlayerID me = getPlayerID();
 		// Randomly select a territory and try playing there
 		// If that play isn't legal, try again

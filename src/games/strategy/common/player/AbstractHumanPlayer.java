@@ -34,9 +34,6 @@ public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame>
 		super(name, type);
 	}
 	
-	@Override
-	public abstract void start(String stepName);
-	
 	public final void setFrame(final CustomGameFrame frame)
 	{
 		m_ui = frame;

@@ -70,7 +70,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	{
 		return m_currentDelegate;
 	}*/
-	
+
 	/* TODO: add this into next release
 	public void printErrorStatus()
 	{
@@ -96,7 +96,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 			System.err.println(error);
 		}
 	}*/
-	
+
 	public boolean isGameOver()
 	{
 		return m_game.isGameOver();
@@ -126,7 +126,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	/* 
 	 * @see games.strategy.engine.gamePlayer.PlayerBridge#getRemote()
 	 */
-	public IRemote getRemote()
+	public IRemote getRemoteDelegate()
 	{
 		if (m_game.isGameOver())
 			throw new GameOverException("Game Over");
@@ -139,8 +139,8 @@ public class DefaultPlayerBridge implements IPlayerBridge
 				if (delegate == null)
 				{
 					final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. CurrentStep: " + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
-					System.err.println(errorMessage);
-					throw new GameOverException(errorMessage); // Veqryn: hope that this suffices...?
+					System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err too
+					throw new IllegalStateException(errorMessage); // Veqryn: hope that this suffices...?
 				}
 				final RemoteName remoteName;
 				try
@@ -149,14 +149,10 @@ public class DefaultPlayerBridge implements IPlayerBridge
 				} catch (final Exception e)
 				{
 					e.printStackTrace();
-					// TODO: Veqryn: We are getting a IllegalArgumentException (formerly a NullPointerException) here occasionally for hosts, because the 'class' variable is null.
-					// This should be impossible, and indeed all the classes it has occurred for have a non-null IRemote delegate interface class for their getRemote().
-					// On top of this, it is also occassionally occurring for HeadlessGameServer hostbots, which are not playing any players (therefore we should never be in TripleAPlayer -> start() -> deleget.getRemote())
-					// My only guess is that someone disconnects at some very sensitive point, and then the classes are destroyed or set to null or something, resulting in a null for the interface class.
-					// I am hoping that we are in the middle of getting a connection lost error, and therefore we can just print the stack trace and ignore, letting the connection lost error do the work.
 					final String errorMessage = "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: " + m_currentStep + ", and CurrentDelegate: "
 								+ m_currentDelegate;
-					throw new GameOverException(errorMessage);
+					System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err too
+					throw new IllegalStateException(errorMessage, e);
 				}
 				return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(remoteName));
 			} finally
@@ -169,7 +165,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 		}
 	}
 	
-	public IRemote getRemote(final String name)
+	public IRemote getRemotePersistentDelegate(final String name)
 	{
 		if (m_game.isGameOver())
 			throw new GameOverException("Game Over");
@@ -179,6 +175,12 @@ public class DefaultPlayerBridge implements IPlayerBridge
 			try
 			{
 				final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(name);
+				if (delegate == null)
+				{
+					final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. Looking for delegate named: " + name;
+					System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err too
+					throw new IllegalStateException(errorMessage);
+				}
 				if (!(delegate instanceof IPersistentDelegate))
 					return null;
 				return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));

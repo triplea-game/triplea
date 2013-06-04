@@ -23,12 +23,13 @@ public class GoPlayer extends GridGamePlayer
 		final IGoPlayDelegate playDel;
 		try
 		{
-			playDel = (IGoPlayDelegate) getPlayerBridge().getRemote();
+			playDel = (IGoPlayDelegate) getPlayerBridge().getRemoteDelegate();
 		} catch (final ClassCastException e)
 		{
-			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemoteDelegate().getClass();
+			System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to err too
 			e.printStackTrace();
-			return;
+			throw new IllegalStateException(errorContext, e);
 		}
 		// if (playDel.haveTwoPassedInARow())
 		// return;
@@ -77,12 +78,13 @@ public class GoPlayer extends GridGamePlayer
 		final IGoEndTurnDelegate endTurnDel;
 		try
 		{
-			endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemote();
+			endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemoteDelegate();
 		} catch (final ClassCastException e)
 		{
-			System.err.println("PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemote().getClass());
+			final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemoteDelegate().getClass();
+			System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to err too
 			e.printStackTrace();
-			return;
+			throw new IllegalStateException(errorContext, e);
 		}
 		// if (!endTurnDel.haveTwoPassedInARow())
 		// return;

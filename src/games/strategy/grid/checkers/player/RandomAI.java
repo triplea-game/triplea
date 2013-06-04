@@ -43,7 +43,7 @@ public class RandomAI extends GridAbstractAI
 		}
 		Collections.shuffle(validMoves);
 		Collections.sort(validMoves, getBestCaptureComparator(me, data));
-		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemoteDelegate();
 		final Iterator<Tuple<GridPlayData, Collection<Territory>>> iter = validMoves.iterator();
 		String error;
 		do
