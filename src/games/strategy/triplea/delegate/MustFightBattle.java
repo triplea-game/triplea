@@ -77,20 +77,20 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		ALL, SUBS, NONE
 	}
 	
-	
+
 	public static enum RetreatType
 	{
 		DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
 	}
 	
-	
+
 	// these class exist for testing
 	public static abstract class AttackSubs implements IExecutable
 	{
 		private static final long serialVersionUID = 4872551667582174716L;
 	}
 	
-	
+
 	public static abstract class DefendSubs implements IExecutable
 	{
 		private static final long serialVersionUID = 3768066729336520095L;
@@ -1418,7 +1418,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		return Match.allMatch(m_attackingUnits, Matches.UnitIsTransportButNotCombatTransport);
 	}*/
-	
+
 	private boolean canAttackerRetreatSubs()
 	{
 		if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
@@ -2392,7 +2392,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return games.strategy.triplea.Properties.getSurvivingAirMoveToLand(m_data);
 	}
 	 */
-	
+
 	/**
 	 * @return
 	 */
@@ -2554,8 +2554,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					} catch (final ConnectionLostException cle)
 					{
 						// somone else will deal with this
-						cle.printStackTrace(System.out);
+						// System.out.println(cle.getMessage());
+						// cle.printStackTrace(System.out);
 					} catch (final GameOverException e)
+					{
+						// ignore
+					} catch (final Exception e)
 					{
 						// ignore
 					}
@@ -2659,7 +2663,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						final Unit unit = dependentsIter.next();
 						change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
 					}*/
-					
+
 					bridge.addChange(change);
 					// remove bombers from m_dependentUnits
 					for (final Unit unit : airTransports)
@@ -2814,7 +2818,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 	}
 	 */
-	
+
 	/**
 	 * The defender has won, but there may be defending fighters that cant stay
 	 * in the sea zone due to insufficient carriers.
@@ -2985,7 +2989,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// remove those that landed in case it was a carrier
 		m_defendingAir.removeAll(defendingAir);
 	}*/
-	
+
 	private void attackerWins(final IDelegateBridge bridge)
 	{
 		m_whoWon = WhoWon.ATTACKER;

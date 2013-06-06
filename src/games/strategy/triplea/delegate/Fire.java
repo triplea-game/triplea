@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -186,7 +187,14 @@ public class Fire implements IExecutable
 				} catch (final ConnectionLostException cle)
 				{
 					// somone else will deal with this
-					cle.printStackTrace(System.out);
+					// System.out.println(cle.getMessage());
+					// cle.printStackTrace(System.out);
+				} catch (final GameOverException e)
+				{
+					// ignore
+				} catch (final Exception e)
+				{
+					// ignore
 				}
 			}
 		};

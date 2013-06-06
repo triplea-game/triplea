@@ -17,6 +17,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseEditDelegate;
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -28,6 +29,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -488,8 +490,22 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		{
 			public void run()
 			{
-				final ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemotePlayer(m_defender);
-				defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
+				try
+				{
+					final ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemotePlayer(m_defender);
+					defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
+				} catch (final ConnectionLostException cle)
+				{
+					// somone else will deal with this
+					// System.out.println(cle.getMessage());
+					// cle.printStackTrace(System.out);
+				} catch (final GameOverException e)
+				{
+					// ignore
+				} catch (final Exception e)
+				{
+					// ignore
+				}
 			}
 		};
 		final Thread t = new Thread(r, "click to continue waiter");
