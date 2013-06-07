@@ -60,6 +60,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -95,6 +97,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private final Map<String, String> m_localPlayerTypes = new HashMap<String, String>();
 	// while our server launcher is not null, delegate new/lost connections to it
 	private volatile ServerLauncher m_serverLauncher;
+	private CountDownLatch m_removeConnectionsLatch = null;
 	private final Observer m_gameSelectorObserver = new Observer()
 	{
 		public void update(final Observable o, final Object arg)
@@ -513,6 +516,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	
 	public void connectionRemoved(final INode node)
 	{
+		if (m_removeConnectionsLatch != null)
+		{
+			try
+			{
+				m_removeConnectionsLatch.await(5, TimeUnit.SECONDS);
+			} catch (final InterruptedException e)
+			{// no worries
+			}
+		}
 		// will be handled elsewhere
 		if (m_serverLauncher != null)
 		{
@@ -543,10 +555,25 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		return m_chatPanel;
 	}
 	
+	public void disallowRemoveConnections()
+	{
+		m_removeConnectionsLatch = new CountDownLatch(1);
+	}
+	
+	public void allowRemoveConnections()
+	{
+		while (m_removeConnectionsLatch != null && m_removeConnectionsLatch.getCount() > 0)
+		{
+			m_removeConnectionsLatch.countDown();
+		}
+		m_removeConnectionsLatch = null;
+	}
+	
 	public ILauncher getLauncher()
 	{
 		synchronized (this)
 		{
+			disallowRemoveConnections();
 			// -1 since we dont count outselves
 			final int clientCount = m_serverMessenger.getNodes().size() - 1;
 			final Map<String, String> localPlayerMappings = new HashMap<String, String>();
@@ -555,6 +582,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			for (final String player : m_players.keySet())
 			{
 				final String playedBy = m_players.get(player);
+				if (playedBy == null)
+					return null;
 				if (playedBy.equals(m_serverMessenger.getLocalNode().getName()))
 				{
 					String type = defaultLocalType;

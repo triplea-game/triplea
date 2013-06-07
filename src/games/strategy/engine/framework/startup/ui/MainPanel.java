@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.ui.ErrorHandler;
@@ -247,7 +248,9 @@ public class MainPanel extends JPanel implements Observer
 	{
 		ErrorHandler.setGameOver(false);
 		m_gameSetupPanel.preStartGame();
-		m_gameTypePanelModel.getPanel().getLauncher().launch(this);
+		final ILauncher launcher = m_gameTypePanelModel.getPanel().getLauncher();
+		if (launcher != null)
+			launcher.launch(this);
 		m_gameSetupPanel.postStartGame();
 	}
 	

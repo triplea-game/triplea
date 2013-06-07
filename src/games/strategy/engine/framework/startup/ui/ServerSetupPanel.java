@@ -446,6 +446,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	public synchronized ILauncher getLauncher()
 	{
 		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
+		if (launcher == null)
+			return null;
 		launcher.setInGameLobbyWatcher(m_lobbyWatcher);
 		return launcher;
 	}

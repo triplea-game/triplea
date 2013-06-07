@@ -1,4 +1,6 @@
 Changes for 1.7.0.5
+* Possible fix for host game hang, when host is launching and another player leaves or joins at start of launch. (veqryn)
+
 * Possible fix for game hang / game freeze during hosting, client start step should now wait for delegate bridge to finish updating. (veqryn)
 
 * Possible workaround for game hang / game freeze during hosting, if error occurs game should now drop back to waiting screen instead of just hanging or ghosting. (veqryn)

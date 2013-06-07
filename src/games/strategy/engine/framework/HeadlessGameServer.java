@@ -489,8 +489,11 @@ public class HeadlessGameServer
 					}
 					if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null && m_setupPanelModel.getPanel().canGameStart())
 					{
-						startHeadlessGame(m_setupPanelModel);
-						break; // TODO: need a latch instead?
+						final boolean started = startHeadlessGame(m_setupPanelModel);
+						if (!started)
+							System.out.println("Error in launcher, going back to waiting.");
+						else
+							break; // TODO: need a latch instead?
 					}
 				}
 			}
@@ -499,17 +502,27 @@ public class HeadlessGameServer
 		t.start();
 	}
 	
-	private synchronized static void startHeadlessGame(final SetupPanelModel setupPanelModel)
+	private synchronized static boolean startHeadlessGame(final SetupPanelModel setupPanelModel)
 	{
-		if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart())
+		try
 		{
-			ErrorHandler.setGameOver(false);
-			System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName() + ", Round: "
-						+ setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
-			setupPanelModel.getPanel().preStartGame();
-			setupPanelModel.getPanel().getLauncher().launch(null);
-			setupPanelModel.getPanel().postStartGame();
+			if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart())
+			{
+				ErrorHandler.setGameOver(false);
+				System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName() + ", Round: "
+							+ setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
+				setupPanelModel.getPanel().preStartGame();
+				final ILauncher launcher = setupPanelModel.getPanel().getLauncher();
+				if (launcher != null)
+					launcher.launch(null);
+				setupPanelModel.getPanel().postStartGame();
+				return launcher != null;
+			}
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
 		}
+		return false;
 	}
 	
 	public static void waitForUsersHeadlessInstance()
@@ -823,6 +836,8 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	public synchronized ILauncher getLauncher()
 	{
 		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
+		if (launcher == null)
+			return null;
 		launcher.setInGameLobbyWatcher(m_lobbyWatcher);
 		return launcher;
 	}
@@ -1097,7 +1112,9 @@ class HeadlessServerMainPanel extends JPanel implements Observer
 		ErrorHandler.setGameOver(false);
 		System.out.println("Starting Game: " + m_gameSelectorModel.getGameData().getGameName() + ", Round: " + m_gameSelectorModel.getGameData().getSequence().getRound());
 		m_gameSetupPanel.preStartGame();
-		m_gameTypePanelModel.getPanel().getLauncher().launch(this);
+		final ILauncher launcher = m_gameTypePanelModel.getPanel().getLauncher();
+		if (launcher != null)
+			launcher.launch(this);
 		m_gameSetupPanel.postStartGame();
 	}
 	
@@ -1525,7 +1542,7 @@ class HeadlessGameSelectorPanel extends JPanel implements Observer
 			}
 		}
 	}*/
-	
+
 	private void selectGameOptions()
 	{
 		// backup current game properties before showing dialog

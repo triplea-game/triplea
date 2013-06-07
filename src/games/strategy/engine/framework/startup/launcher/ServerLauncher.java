@@ -100,21 +100,37 @@ public class ServerLauncher extends AbstractLauncher
 	{
 		try
 		{
+			m_ui = parent;
+			m_serverReady = new ServerReady(m_clientCount);
+			m_serverModel.setServerLauncher(this);
+			m_serverModel.allowRemoveConnections();
 			if (m_inGameLobbyWatcher != null)
 			{
 				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
-				try
+			}
+			s_logger.fine("Starting server");
+			m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
+			if (m_gameData == null || m_serverModel == null)
+			{
+				m_abortLaunch = true;
+			}
+			else
+			{
+				final Map<String, String> players = m_serverModel.getPlayers();
+				if (players == null || players.isEmpty())
+					m_abortLaunch = true;
+				else
 				{
-					Thread.sleep(2000);
-				} catch (final InterruptedException e1)
-				{
+					for (final String player : players.keySet())
+					{
+						if (players.get(player) == null)
+						{
+							m_abortLaunch = true;
+							break;
+						}
+					}
 				}
 			}
-			m_ui = parent;
-			m_serverModel.setServerLauncher(this);
-			s_logger.fine("Starting server");
-			m_serverReady = new ServerReady(m_clientCount);
-			m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
 			byte[] gameDataAsBytes;
 			try
 			{
@@ -331,14 +347,14 @@ public class ServerLauncher extends AbstractLauncher
 	
 	public void connectionLost(final INode node)
 	{
+		// System.out.println("Connection lost to: " + node);
 		if (m_isLaunching)
 		{
 			// this is expected, we told the observer
 			// he couldnt join, so now we loose the connection
 			if (m_observersThatTriedToJoinDuringStartup.remove(node))
 				return;
-			// a player has dropped out
-			// abort
+			// a player has dropped out, abort
 			m_serverReady.clientReady();
 			m_abortLaunch = true;
 			return;

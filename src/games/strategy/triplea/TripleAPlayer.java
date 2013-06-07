@@ -115,6 +115,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	public void start(final String name)
 	{
 		super.start(name); // must call super.start
+		if (getPlayerBridge().isGameOver())
+			return;
 		// TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate class seems like a bad way of doing this whole method. however i can't think of anything better right now.
 		// TODO: certain properties, like if we are bid/not-bid, or combatmove/noncombatmove, should not be found out through the "stepName", but instead through the GameStep.getProperties(). (If we do make this change, remember to make it backwards compatible with all existing map xmls)
 		// This is how we find out our game step: getGameData().getSequence().getStep()
