@@ -557,6 +557,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	
 	public void disallowRemoveConnections()
 	{
+		while (m_removeConnectionsLatch != null && m_removeConnectionsLatch.getCount() > 0)
+		{
+			m_removeConnectionsLatch.countDown();
+		}
 		m_removeConnectionsLatch = new CountDownLatch(1);
 	}
 	
