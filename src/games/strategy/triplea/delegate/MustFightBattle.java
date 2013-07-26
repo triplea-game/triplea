@@ -240,6 +240,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Map<Unit, Collection<Unit>> dependencies = transporting(units);
 		if (isAlliedAirDependents())
 		{
+			// TODO: this is causing a bug where the fighters can not participate in later battles, even during their own turn...
 			dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
 			for (final Unit carrier : dependencies.keySet())
 			{

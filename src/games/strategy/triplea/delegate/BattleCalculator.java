@@ -1109,7 +1109,7 @@ public class BattleCalculator
 		
 		rolls += DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, false, true);
 		rolls += DiceRoll.getSupport(unit.getType(), supportRulesEnemy, supportLeftEnemyCopy, false, true);
-		
+		// TODO: if we are strategic bombing, we do not care what the strength of the unit is...
 		int strength;
 		if (defend)
 			strength = unitAttachment.getDefense(unit.getOwner());
