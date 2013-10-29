@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original), Veqryn (abstraction)
  * 
  */
 public interface IGridPlayData extends Serializable

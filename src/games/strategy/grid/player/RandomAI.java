@@ -27,7 +27,7 @@ import java.util.Random;
  * 
  * Plays by attempting to move a random piece to a random square on the board.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original), Veqryn (updates)
  * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public class RandomAI extends GridAbstractAI

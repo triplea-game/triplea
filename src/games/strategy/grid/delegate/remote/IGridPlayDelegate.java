@@ -20,7 +20,7 @@ import games.strategy.grid.ui.IGridPlayData;
 /**
  * Implementing class is responsible for performing a turn in a Kings Table game.
  * 
- * @author Lane Schwartz
+ * @author Lane Schwartz (original), Veqryn (abstraction)
  * @version $LastChangedDate: 2012-12-25 06:54:45 +0800 (Tue, 25 Dec 2012) $
  */
 public interface IGridPlayDelegate extends IRemote, IDelegate
