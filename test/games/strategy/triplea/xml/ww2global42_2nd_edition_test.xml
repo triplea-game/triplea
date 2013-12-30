@@ -2984,6 +2984,7 @@
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Celebes" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
+						<option name="occupiedTerrOf" value="Dutch"/>
 						<option name="changeUnitOwners" value="British"/>
 						<option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
                    </attatchment>
@@ -5786,6 +5787,8 @@
 						<unitPlacement unitType="fighter" territory="Manchuria" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="tactical_bomber" territory="Manchuria" quantity="1" owner="Japanese"/>
 						
+						<unitPlacement unitType="infantry" territory="Korea" quantity="1" owner="Japanese"/>
+						
 						<unitPlacement unitType="infantry" territory="Paulau Island" quantity="1" owner="Japanese"/>
 						
 						<unitPlacement unitType="infantry" territory="Kiangsi" quantity="1" owner="Japanese"/>
@@ -5828,7 +5831,7 @@
 
 						<unitPlacement unitType="infantry" territory="Java" quantity="2" owner="Japanese"/>
 
-						<unitPlacement unitType="infantry" territory="Kwangtung" quantity="3" owner="Japanese"/>
+						<unitPlacement unitType="infantry" territory="Kwangtung" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="artillery" territory="Kwangtung" quantity="1" owner="Japanese"/>
 						<unitPlacement unitType="harbour" territory="Kwangtung" quantity="1" owner="Japanese"/>
 
