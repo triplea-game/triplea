@@ -119,7 +119,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
 		m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
-		m_maxRounds = games.strategy.triplea.Properties.getBattleRounds(data);
+		if (battleSite.isWater())
+		{
+			m_maxRounds = games.strategy.triplea.Properties.getSeaBattleRounds(data);
+		}
+		else
+		{
+			m_maxRounds = games.strategy.triplea.Properties.getLandBattleRounds(data);
+		}
 	}
 	
 	public void resetDefendingUnits(final Territory battleSite, final PlayerID attacker, final GameData data)

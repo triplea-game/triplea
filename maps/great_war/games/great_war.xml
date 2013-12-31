@@ -4485,7 +4485,15 @@
                         <boolean/>
                 </property>
 				
-				<property name="Battle Rounds" value="-1" editable="true">
+				<property name="Land Battle Rounds" value="-1" editable="true">
+						<number min="-1" max="100"/>
+				</property>
+				
+				<property name="Sea Battle Rounds" value="-1" editable="true">
+						<number min="-1" max="100"/>
+				</property>
+				
+				<property name="Air Battle Rounds" value="-1" editable="false">
 						<number min="-1" max="100"/>
 				</property>
 				

@@ -842,9 +842,14 @@ public class Properties implements Constants
 		return data.getProperties().get(AIR_BATTLE_ROUNDS, 1);
 	}
 	
-	public static int getBattleRounds(final GameData data)
+	public static int getSeaBattleRounds(final GameData data)
 	{
-		return data.getProperties().get(BATTLE_ROUNDS, -1); // negative = infinite
+		return data.getProperties().get(SEA_BATTLE_ROUNDS, -1); // negative = infinite
+	}
+	
+	public static int getLandBattleRounds(final GameData data)
+	{
+		return data.getProperties().get(LAND_BATTLE_ROUNDS, -1); // negative = infinite
 	}
 	
 	public static boolean getAirBattleAttackersCanRetreat(final GameData data)

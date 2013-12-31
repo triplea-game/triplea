@@ -5333,8 +5333,13 @@
 						<boolean/>
 				</property>
 				
-						<!-- Battle Rounds means the number of rounds that a normal Battle goes on for (sea and land). Default is -1, and if negative, the battle continues forever until 1 side is eliminated. -->
-				<property name="Battle Rounds" value="-1" editable="false">
+						<!-- Land Battle Rounds means the number of rounds that a normal Battle goes on for (land). Default is -1, and if negative, the battle continues forever until 1 side is eliminated. -->
+				<property name="Land Battle Rounds" value="-1" editable="false">
+						<number min="-1" max="100"/>
+				</property>
+				
+						<!-- Sea Battle Rounds means the number of rounds that a normal Battle goes on for (sea). Default is -1, and if negative, the battle continues forever until 1 side is eliminated. -->
+				<property name="Sea Battle Rounds" value="-1" editable="false">
 						<number min="-1" max="100"/>
 				</property>
 				
