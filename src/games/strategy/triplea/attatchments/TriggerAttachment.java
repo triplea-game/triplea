@@ -2375,8 +2375,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				for (final Territory terr : territories)
 				{
 					final PlayerID currentOwner = terr.getOwner();
-					if (currentOwner == null || currentOwner.isNull() || TerritoryAttachment.get(terr) == null)
-						continue; // any territory that has null owner or has no territory attachment should definitely not be changed
+					if (TerritoryAttachment.get(terr) == null)
+						continue; // any territory that has no territory attachment should definitely not be changed
 					if (oldOwner != null && !oldOwner.equals(currentOwner))
 						continue;
 					aBridge.getHistoryWriter().startEvent(
