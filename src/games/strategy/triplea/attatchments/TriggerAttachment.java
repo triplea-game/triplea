@@ -273,7 +273,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final int currentUses = trig.getUses();
 			// we only care about triggers that have WHEN set. Triggers without When set are changed during EndRoundDelegate.
-			if (currentUses > 0 && trig.getWhen() != null)
+			if (currentUses > 0 && !trig.getWhen().isEmpty())
 			{
 				change.add(ChangeFactory.attachmentPropertyChange(trig, Integer.toString(currentUses - 1), "uses"));
 				if (trig.getUsedThisRound())
@@ -2630,9 +2630,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	//
 	// All triggers can be activated in only 1 of 2 places: default or when
 	//
-	// default = t.getWhen == null (this means when was not set, and so the trigger should activate in its default place, like before purchase phase for production frontier trigger changes
+	// default = t.getWhen.isEmpty() (this means when was not set, and so the trigger should activate in its default place, like before purchase phase for production frontier trigger changes
 	//
-	// when = t.getWhen != null (this means when was set, and so the trigger should not activate in its default place, and instead should activate before or after a specific stepName
+	// when = !t.getWhen.isEmpty() (this means when was set, and so the trigger should not activate in its default place, and instead should activate before or after a specific stepName
 	//
 	
 	public static Match<TriggerAttachment> prodMatch()

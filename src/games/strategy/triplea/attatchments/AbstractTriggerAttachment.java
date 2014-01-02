@@ -16,6 +16,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	
 	private String m_notification = null;
 	
-	private Tuple<String, String> m_when = null;
+	private ArrayList<Tuple<String, String>> m_when = new ArrayList<Tuple<String, String>>();
 	
 	public AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -160,36 +161,42 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		m_uses = -1;
 	}
 	
-	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 *
+	 * @param when
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setWhen(final String when) throws GameParseException
 	{
-		if (when == null)
-		{
-			m_when = null;
-			return;
-		}
 		final String[] s = when.split(":");
 		if (s.length != 2)
 			throw new GameParseException("when must exist in 2 parts: \"before/after:stepName\"." + thisErrorMsg());
 		if (!(s[0].equals(AFTER) || s[0].equals(BEFORE)))
 			throw new GameParseException("when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
-		m_when = new Tuple<String, String>(s[0], s[1]);
+		m_when.add(new Tuple<String, String>(s[0], s[1]));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setWhen(final Tuple<String, String> value)
+	public void setWhen(final ArrayList<Tuple<String, String>> value)
 	{
 		m_when = value;
 	}
 	
-	public Tuple<String, String> getWhen()
+	public ArrayList<Tuple<String, String>> getWhen()
 	{
 		return m_when;
 	}
 	
+	public void clearWhen()
+	{
+		m_when.clear();
+	}
+	
 	public void resetWhen()
 	{
-		m_when = null;
+		m_when = new ArrayList<Tuple<String, String>>();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -266,8 +273,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	}
 	
 	/**
-	 * If t.getWhen(), beforeOrAfter, and stepName, are all null, then this returns true.
-	 * Otherwise, all must be not null, and when's values must match the arguments.
+	 * If t.getWhen() is empty, and beforeOrAfter and stepName are both null, then this returns true.
+	 * Otherwise, all must be not null, and one of when's values must match the arguments.
 	 * 
 	 * @param beforeOrAfter
 	 *            can be null, or must be "before" or "after"
@@ -282,10 +289,18 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				if (beforeOrAfter == null && stepName == null && t.getWhen() == null)
+				if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty())
 					return true;
-				else if (beforeOrAfter != null && stepName != null && t.getWhen() != null && beforeOrAfter.equals(t.getWhen().getFirst()) && stepName.equals(t.getWhen().getSecond()))
-					return true;
+				else if (beforeOrAfter != null && stepName != null && !t.getWhen().isEmpty())
+				{
+					for (final Tuple<String, String> w : t.getWhen())
+					{
+						if (beforeOrAfter.equals(w.getFirst()) && stepName.equals(w.getSecond()))
+						{
+							return true;
+						}
+					}
+				}
 				return false;
 			}
 		};

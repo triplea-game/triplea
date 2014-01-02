@@ -3432,7 +3432,7 @@
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
-			when								values: this is a value of when the trigger should fire. it is optional, and if left out the trigger will fire at its default time. "before/after:name-of-step" (example: value="after:chineseEndTurn")
+			when								values: this is a value of when the trigger should fire. it is optional, and if left out the trigger will fire at its default time. "before/after:name-of-step" (example: value="after:chineseEndTurn").  'when' can be set multiple times if you want a trigger to fire in multiple spots.
 														FYI: if your triggers are displaying odd behavior, MAKE SURE WHEN IS SET. complex triggers can experience unexpected behavior if 'when' is not set.
 			chance								values: "x:y", where x = to hit, and y = dice sides.  So "1:6" = 16.7% chance, while "3:10" = 30% chance
 			chanceIncrementOnFailure 			values: integer that will increase our chance by x each time we fail (default = 0)
@@ -3563,6 +3563,7 @@
 					
 				Trigger Attachments:
 					conditions
+					when
 					productionRule
 					tech
 					availableTech

@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Changed trigger property "when" so that it can be set multiple times, allowing a trigger to fire multiple times per round. (frogg)
+
 * Changed game property option "Battle Rounds" to "Land Battle Rounds". (veqryn)
 
 * Added game property option "Sea Battle Rounds". (frogg)
