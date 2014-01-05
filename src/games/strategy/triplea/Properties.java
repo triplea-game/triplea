@@ -890,6 +890,11 @@ public class Properties implements Constants
 		return data.getProperties().get(CONTESTED_TERRITORIES_PRODUCE_NO_INCOME, false);
 	}
 	
+	public static boolean getSeaBattlesMayBeIgnored(final GameData data)
+	{
+		return data.getProperties().get(SEA_BATTLES_MAY_BE_IGNORED, false);
+	}
+	
 	private Properties()
 	{
 	}

@@ -563,52 +563,66 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				battleTracker.removeBattle(battle);
 				continue;
 			}
-			// Check for ignored units
-			if (!attackingUnits.isEmpty() && (ignoreTransports || ignoreSubs))
+			// possibility to ignore battle altogether
+			if (!attackingUnits.isEmpty())
 			{
-				// TODO check if incoming units can attack before asking
 				final ITripleaPlayer remotePlayer = getRemotePlayer(aBridge);
-				// if only enemy transports... attack them?
-				if (ignoreTransports && Match.allMatch(enemyUnits, seaTransports))
-				{
-					if (!remotePlayer.selectAttackTransports(territory))
-					{
-						final BattleResults results = new BattleResults(battle, WhoWon.ATTACKER, data);
-						battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
-						battleTracker.removeBattle(battle);
-						// TODO perhaps try to reverse the setting of 0 movement left
-						/*CompositeChange change = new CompositeChange();
-						Iterator<Unit> attackIter = attackingUnits.iterator();
-						while(attackIter.hasNext())
-						{
-						 TripleAUnit attacker = (TripleAUnit) attackIter.next();
-						 change.add(ChangeFactory.unitPropertyChange(attacker, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED));
-						 //change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(attackingUnits));    + attacker.getMovementLeft()
-						}*/
-					}
-					continue;
-				}
-				// if only enemy subs... attack them?
-				if (ignoreSubs && Match.allMatch(enemyUnits, Matches.UnitIsSub))
-				{
-					if (!remotePlayer.selectAttackSubs(territory))
-					{
-						final BattleResults results = new BattleResults(battle, WhoWon.ATTACKER, data);
-						battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
-						battleTracker.removeBattle(battle);
-					}
-					continue;
-				}
-				// if only enemy transports and subs... attack them?
-				if (ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsOrSubs))
+				if (territory.isWater() && games.strategy.triplea.Properties.getSeaBattlesMayBeIgnored(data))
 				{
 					if (!remotePlayer.selectAttackUnits(territory))
 					{
-						final BattleResults results = new BattleResults(battle, WhoWon.ATTACKER, data);
-						battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
+						final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+						battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
 						battleTracker.removeBattle(battle);
 					}
 					continue;
+				}
+				// Check for ignored units
+				if (ignoreTransports || ignoreSubs)
+				{
+					// TODO check if incoming units can attack before asking
+					// if only enemy transports... attack them?
+					if (ignoreTransports && Match.allMatch(enemyUnits, seaTransports))
+					{
+						if (!remotePlayer.selectAttackTransports(territory))
+						{
+							final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+							battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+							battleTracker.removeBattle(battle);
+							// TODO perhaps try to reverse the setting of 0 movement left
+							/*CompositeChange change = new CompositeChange();
+							Iterator<Unit> attackIter = attackingUnits.iterator();
+							while(attackIter.hasNext())
+							{
+							TripleAUnit attacker = (TripleAUnit) attackIter.next();
+							change.add(ChangeFactory.unitPropertyChange(attacker, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED));
+							//change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(attackingUnits));    + attacker.getMovementLeft()
+							}*/
+						}
+						continue;
+					}
+					// if only enemy subs... attack them?
+					if (ignoreSubs && Match.allMatch(enemyUnits, Matches.UnitIsSub))
+					{
+						if (!remotePlayer.selectAttackSubs(territory))
+						{
+							final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+							battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+							battleTracker.removeBattle(battle);
+						}
+						continue;
+					}
+					// if only enemy transports and subs... attack them?
+					if (ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsOrSubs))
+					{
+						if (!remotePlayer.selectAttackUnits(territory))
+						{
+							final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+							battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+							battleTracker.removeBattle(battle);
+						}
+						continue;
+					}
 				}
 			}
 		}

@@ -5339,6 +5339,11 @@
 						<boolean/>
 				</property>
 				
+						<!-- Attacker is given the option not to create a battle for sea battles -->
+				<property name="Sea Battles May Be Ignored" value="false" editable="false">
+						<boolean/>
+				</property>
+				
 						<!-- Land Battle Rounds means the number of rounds that a normal Battle goes on for (land). Default is -1, and if negative, the battle continues forever until 1 side is eliminated. -->
 				<property name="Land Battle Rounds" value="-1" editable="false">
 						<number min="-1" max="100"/>
