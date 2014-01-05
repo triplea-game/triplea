@@ -5306,6 +5306,11 @@
 				<property name="Use Destroyers and Artillery" value="false" editable="false">
 						<boolean/>
 				</property>-->
+				
+						<!-- Any territory that contains enemy units will not produce any income or resources -->
+				<property name="Contested Territories Produce No Income" value="false" editable="false">
+						<boolean/>
+				</property>
 
 						<!-- may only bomb or rocket a factory to a max of its territory value per turn (the individual two parts are below) -->
 				<property name="Territory Turn Limit" value="false" editable="false">

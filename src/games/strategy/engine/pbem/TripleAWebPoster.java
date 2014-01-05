@@ -325,7 +325,7 @@ class ProductionStat extends AbstractStat
 		for (final Territory place : data.getMap().getTerritories())
 		{
 			final TerritoryAttachment ta = TerritoryAttachment.get(place);
-			/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
+			/* Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, and also check if territory is contested */
 			if (ta != null && player != null && player.equals(place.getOwner()) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
 			{
 				rVal += ta.getProduction();

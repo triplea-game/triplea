@@ -351,7 +351,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			final ResourceCollection toAdd = attachment.getResources();
 			if (toAdd == null)
 				continue;
-			// Check if territory is originally owned convoy center
+			// Match will Check if territory is originally owned convoy center, or if contested
 			if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current))
 				rVal.add(toAdd);
 		}

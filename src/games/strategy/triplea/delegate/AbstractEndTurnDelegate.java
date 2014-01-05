@@ -391,7 +391,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			final TerritoryAttachment attachment = TerritoryAttachment.get(current);
 			if (attachment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
-			// Check if territory is originally owned convoy center
+			// Match will Check if territory is originally owned convoy center, or if it is contested
 			if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current))
 				value += attachment.getProduction();
 		}
@@ -413,6 +413,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		boolean rolledDice = false;
 		for (final Territory b : blockable)
 		{
+			// match will check for land, convoy zones, and also contested territories
 			final List<Territory> viableNeighbors = Match.getMatches(map.getNeighbors(b),
 						new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.territoryCanCollectIncomeFrom(player, data)));
 			final int maxLoss = getProduction(viableNeighbors);

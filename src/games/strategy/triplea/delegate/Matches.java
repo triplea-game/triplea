@@ -1481,8 +1481,9 @@ public class Matches
 	};
 	
 	/**
-	 * Tests for Convoys and unowned water.
-	 * Assumes player is either the owner of the territory we are testing, or about to become the owner.
+	 * Tests for Land, Convoys Centers and Convoy Routes, and Contested Territories.
+	 * Assumes player is either the owner of the territory we are testing, or about to become the owner (ie: this doesn't test ownership).
+	 * If the game option for contested territories not producing is on, then will also remove any contested territories.
 	 * 
 	 * @param player
 	 * @param data
@@ -1490,6 +1491,7 @@ public class Matches
 	 */
 	public static Match<Territory> territoryCanCollectIncomeFrom(final PlayerID player, final GameData data)
 	{
+		final boolean contestedDoNotProduce = games.strategy.triplea.Properties.getContestedTerritoriesProduceNoIncome(data);
 		return new Match<Territory>()
 		{
 			@Override
@@ -1517,6 +1519,10 @@ public class Matches
 					}
 					if (!atLeastOne)
 						return false;
+				}
+				if (contestedDoNotProduce && !Matches.territoryHasNoEnemyUnits(player, data).match(t))
+				{
+					return false;
 				}
 				return true;
 			}

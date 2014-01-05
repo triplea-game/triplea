@@ -885,6 +885,11 @@ public class Properties implements Constants
 		return data.getProperties().get(RETREATING_UNITS_REMAIN_IN_PLACE, false);
 	}
 	
+	public static boolean getContestedTerritoriesProduceNoIncome(final GameData data)
+	{
+		return data.getProperties().get(CONTESTED_TERRITORIES_PRODUCE_NO_INCOME, false);
+	}
+	
 	private Properties()
 	{
 	}

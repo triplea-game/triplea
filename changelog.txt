@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Created new game property option "Contested Territories Produce No Income", which will stop all production in territories that contain enemy units. (frogg)
+
 * Created new game property option "Retreating Units Remain In Place", which will allow retreats to only the same territory as the battle. (frogg & veqryn)
 
 * Allowed AxisAndAllies.org forum poster to maintain "notify me" settings. (Bruce Nielsen)

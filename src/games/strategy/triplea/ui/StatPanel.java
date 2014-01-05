@@ -605,7 +605,7 @@ public class StatPanel extends AbstractStatPanel
 			for (final Territory place : data.getMap().getTerritories())
 			{
 				final TerritoryAttachment ta = TerritoryAttachment.get(place);
-				/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
+				/* Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested */
 				if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
 				{
 					rVal += ta.getProduction();

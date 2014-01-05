@@ -233,6 +233,7 @@ public interface Constants
 	public static final String TERRITORIES_ARE_ASSIGNED_RANDOMLY = "Territories Are Assigned Randomly";
 	public static final String USE_FUEL_COST = "Use Fuel Cost";
 	public static final String RETREATING_UNITS_REMAIN_IN_PLACE = "Retreating Units Remain In Place";
+	public static final String CONTESTED_TERRITORIES_PRODUCE_NO_INCOME = "Contested Territories Produce No Income";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
