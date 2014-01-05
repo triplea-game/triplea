@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Created new game property option "Retreating Units Remain In Place", which will allow retreats to only the same territory as the battle. (frogg & veqryn)
+
 * Allowed AxisAndAllies.org forum poster to maintain "notify me" settings. (Bruce Nielsen)
 
 * Changed trigger property "when" so that it can be set multiple times, allowing a trigger to fire multiple times per round. (frogg)

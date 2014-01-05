@@ -77,20 +77,20 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		ALL, SUBS, NONE
 	}
 	
-
+	
 	public static enum RetreatType
 	{
 		DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
 	}
 	
-
+	
 	// these class exist for testing
 	public static abstract class AttackSubs implements IExecutable
 	{
 		private static final long serialVersionUID = 4872551667582174716L;
 	}
 	
-
+	
 	public static abstract class DefendSubs implements IExecutable
 	{
 		private static final long serialVersionUID = 3768066729336520095L;
@@ -1344,9 +1344,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		// TODO: when attacking with paratroopers (air + carried land), there are several bugs in retreating.
 		// TODO: air should always be able to retreat. paratrooped land units can only retreat if there are other non-paratrooper non-amphibious land units.
-		// If attacker is all planes, just return collection of current
-		// territory
-		if (m_headless || Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+		// If attacker is all planes, just return collection of current territory
+		if (m_headless || Match.allMatch(m_attackingUnits, Matches.UnitIsAir) || games.strategy.triplea.Properties.getRetreatingUnitsRemainInPlace(m_data))
 		{
 			final Collection<Territory> oneTerritory = new ArrayList<Territory>(2);
 			oneTerritory.add(m_battleSite);
@@ -1426,7 +1425,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		return Match.allMatch(m_attackingUnits, Matches.UnitIsTransportButNotCombatTransport);
 	}*/
-
+	
 	private boolean canAttackerRetreatSubs()
 	{
 		if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
@@ -2400,7 +2399,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return games.strategy.triplea.Properties.getSurvivingAirMoveToLand(m_data);
 	}
 	 */
-
+	
 	/**
 	 * @return
 	 */
@@ -2671,7 +2670,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						final Unit unit = dependentsIter.next();
 						change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
 					}*/
-
+					
 					bridge.addChange(change);
 					// remove bombers from m_dependentUnits
 					for (final Unit unit : airTransports)
@@ -2826,7 +2825,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 	}
 	 */
-
+	
 	/**
 	 * The defender has won, but there may be defending fighters that cant stay
 	 * in the sea zone due to insufficient carriers.
@@ -2997,7 +2996,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// remove those that landed in case it was a carrier
 		m_defendingAir.removeAll(defendingAir);
 	}*/
-
+	
 	private void attackerWins(final IDelegateBridge bridge)
 	{
 		m_whoWon = WhoWon.ATTACKER;

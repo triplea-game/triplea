@@ -5349,6 +5349,11 @@
 						<number min="-1" max="100"/>
 				</property>
 				
+						<!-- Retreating Units Remain In Place means units retreat to the same territory as the battle territory, both both land and sea territories -->
+				<property name="Retreating Units Remain In Place" value="false" editable="false">
+						<boolean/>
+				</property>
+				
 				<property name="Air Battle Attackers Can Retreat" value="false" editable="false">
 						<boolean/>
 				</property>

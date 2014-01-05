@@ -232,6 +232,7 @@ public interface Constants
 	public static final String CAN_SCRAMBLE_INTO_AIR_BATTLES = "Can Scramble Into Air Battles";
 	public static final String TERRITORIES_ARE_ASSIGNED_RANDOMLY = "Territories Are Assigned Randomly";
 	public static final String USE_FUEL_COST = "Use Fuel Cost";
+	public static final String RETREATING_UNITS_REMAIN_IN_PLACE = "Retreating Units Remain In Place";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

@@ -25,6 +25,9 @@ import games.strategy.engine.data.GameData;
  */
 public class Properties implements Constants
 {
+	// These should always default to false, if boolean, and if not should default to whatever is the "default" behavior of TripleA.
+	// If you want something to default to "true", when change the wording of the constant to make it a negative of itself, then default to false. (ex: "Do not do something", false; instead of "Do something", true;)
+	
 	public static int getNeutralCharge(final GameData data)
 	{
 		return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);
@@ -875,6 +878,11 @@ public class Properties implements Constants
 	public static boolean getUseFuelCost(final GameData data)
 	{
 		return data.getProperties().get(USE_FUEL_COST, false);
+	}
+	
+	public static boolean getRetreatingUnitsRemainInPlace(final GameData data)
+	{
+		return data.getProperties().get(RETREATING_UNITS_REMAIN_IN_PLACE, false);
 	}
 	
 	private Properties()
