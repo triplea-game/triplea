@@ -2778,6 +2778,23 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		m_whoWon = WhoWon.DEFENDER;
 		getDisplay(bridge).battleEnd(m_battleID, m_defender.getName() + " win");
+		if (games.strategy.triplea.Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(m_data))
+		{
+			if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0)
+			{
+				final List<Unit> allyOfAttackerUnits = m_battleSite.getUnits().getMatches(Matches.UnitIsNotInfrastructure);
+				if (!allyOfAttackerUnits.isEmpty())
+				{
+					final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
+					bridge.getHistoryWriter().addChildToEvent(abandonedToPlayer.getName() + " takes over " + m_battleSite.getName() + " as there are no defenders left", allyOfAttackerUnits);
+					m_battleTracker.takeOver(m_battleSite, abandonedToPlayer, bridge, null, allyOfAttackerUnits); // should we create a new battle records to show the ally capturing the territory (in the case where they didn't already own/allied it)?
+				}
+			}
+			else
+			{
+				m_battleTracker.takeOver(m_battleSite, m_defender, bridge, null, m_defendingUnits); // should we create a new battle records to show the defender capturing the territory (in the case where they didn't already own/allied it)?
+			}
+		}
 		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win", m_defendingUnits);
 		m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 		showCasualties(bridge);

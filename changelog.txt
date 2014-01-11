@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Created new game property option "Abandoned Territories May Be Taken Over Immediately", which allows an abandoned territory to be taken over on the turn it was abandoned, rather than waiting for it to be attacked. (veqryn)
+
 * Created new game property option "Sea Battles May Be Ignored", which allows attackers to not create a battle in a contested sea zone. (frogg)
 
 * Created new game property option "Contested Territories Produce No Income", which will stop all production in territories that contain enemy units. (frogg)

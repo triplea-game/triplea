@@ -956,9 +956,7 @@ public class BattleTracker implements java.io.Serializable
 		{
 			if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing)
 			{
-				if (type == null)
-					return battle;
-				else if (type.equals(battle.getBattleType()))
+				if (type == null || type.equals(battle.getBattleType()))
 					return battle;
 			}
 		}

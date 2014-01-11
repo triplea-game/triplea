@@ -1972,6 +1972,7 @@
 						<option name="maxScrambleDistance" value="1"/>
 						<option name="canIntercept" value="true"/>
 						<option name="canEscort" value="true"/>
+						<option name="canAirBattle" value="true"/>
 						<option name="airDefense" value="2"/>
 						<option name="airAttack" value="2"/>
 				</attatchment>
@@ -1990,6 +1991,7 @@
 						<!--<option name="isKamikaze" value="true"/>-->
 						<option name="canIntercept" value="true"/>
 						<option name="canEscort" value="true"/>
+						<option name="canAirBattle" value="true"/>
 						<option name="airDefense" value="2"/>
 						<option name="airAttack" value="2"/>
 				</attatchment>
@@ -2002,9 +2004,11 @@
 						<option name="defense" value="1"/>
 						<!-- isStrategicBomber allows a unit to bombing factories and canBeDamaged units -->
 						<option name="isStrategicBomber" value="true"/>
+						<option name="canAirBattle" value="true"/>
 						<!-- transportCapacity + isAirTransport can be used for transporting units IF you have the paratroopers technology -->
 						<option name="transportCapacity" value="2"/>
 						<option name="isAirTransport" value="true"/>
+						<option name="airDefense" value="1"/>
 						<option name="airAttack" value="1"/>
 						<!--<option name="bombingMaxDieSides" value="6"/>
 						<option name="bombingBonus" value="0"/>-->
@@ -2016,9 +2020,12 @@
 						<option name="isAir" value="true"/>
 						<option name="attack" value="0"/>
 						<option name="defense" value="0"/>
+						<option name="canAirBattle" value="true"/>
 						<!-- transportCapacity + isAirTransport can be used for transporting units IF you have the paratroopers technology -->
 						<option name="transportCapacity" value="6"/>
 						<option name="isAirTransport" value="true"/>
+						<option name="airDefense" value="1"/>
+						<option name="airAttack" value="1"/>
 				</attatchment>
 
 				<!-- Transport -->
@@ -5311,6 +5318,11 @@
 				<property name="Contested Territories Produce No Income" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+						<!-- Any territory abandoned may be taken over by the remaining units on the same turn it was abandoned on. Also includes if a territory is attacked and both all the attackers and all defenders die, then any other player with combat units will take over the territory. -->
+				<property name="Abandoned Territories May Be Taken Over Immediately" value="false" editable="false">
+						<boolean/>
+				</property>
 
 						<!-- may only bomb or rocket a factory to a max of its territory value per turn (the individual two parts are below) -->
 				<property name="Territory Turn Limit" value="false" editable="false">
@@ -5373,7 +5385,7 @@
 				</property>
 				
 						<!-- Allows normal battles to have Escort aircraft and also be Intercepted by the defender -->
-				<property name="Battles May Be Preceeded By Air Battles" value="false" editable="false">
+				<property name="Battles May Be Preceeded By Air Battles" value="false" editable="true">
 						<boolean/>
 				</property>
 				

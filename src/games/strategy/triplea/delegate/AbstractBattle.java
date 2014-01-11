@@ -292,6 +292,27 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		return defender;
 	}
 	
+	public static PlayerID findPlayerWithMostUnits(final Collection<Unit> units)
+	{
+		final IntegerMap<PlayerID> playerUnitCount = new IntegerMap<PlayerID>();
+		for (final Unit unit : units)
+		{
+			playerUnitCount.add(unit.getOwner(), 1);
+		}
+		int max = -1;
+		PlayerID rVal = null;
+		for (final PlayerID current : playerUnitCount.keySet())
+		{
+			final int count = playerUnitCount.getInt(current);
+			if (count > max)
+			{
+				max = count;
+				rVal = current;
+			}
+		}
+		return rVal;
+	}
+	
 	/** The maximum number of hits that this collection of units can sustain, taking into account units with two hits, and accounting for existing damage. */
 	public static int getMaxHits(final Collection<Unit> units)
 	{

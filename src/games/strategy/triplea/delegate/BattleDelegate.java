@@ -221,6 +221,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	public static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge aBridge)
 	{
 		setupUnitsInSameTerritoryBattles(battleTracker, aBridge);
+		setupTerritoriesAbandonedToTheEnemy(battleTracker, aBridge);
 		battleTracker.clearFinishedBattles(aBridge); // these are "blitzed" and "conquered" territories without a fight, without a pending battle
 		resetMaxScrambleCount(aBridge);
 	}
@@ -625,6 +626,92 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Setup the battles where we have abandoned a contested territory during combat move to the enemy.
+	 * The enemy then takes over the territory in question.
+	 */
+	private static void setupTerritoriesAbandonedToTheEnemy(final BattleTracker battleTracker, final IDelegateBridge aBridge)
+	{
+		final GameData data = aBridge.getData();
+		if (!games.strategy.triplea.Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data))
+			return;
+		final PlayerID player = aBridge.getPlayerID();
+		final TransportTracker transportTracker = new TransportTracker();
+		final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnitsAndIsOwnedByTheirEnemyAndIsNotUnownedWater(player, data))
+					.iterator();
+		// all territories that contain enemy units, where the territory is owned by an enemy of these units
+		while (battleTerritories.hasNext())
+		{
+			final Territory territory = battleTerritories.next();
+			final List<Unit> abandonedToUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
+			final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(abandonedToUnits);
+			{
+				// now make sure to add any units that must move with these units, so that they get included as dependencies
+				final Map<Unit, Collection<Unit>> transportMap = transportTracker.transporting(territory.getUnits().getUnits());
+				final HashSet<Unit> dependants = new HashSet<Unit>();
+				for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet())
+				{
+					// only consider those transports that are part of our group
+					if (abandonedToUnits.contains(entry.getKey()))
+					{
+						dependants.addAll(entry.getValue());
+					}
+				}
+				dependants.removeAll(abandonedToUnits); // no duplicates
+				abandonedToUnits.addAll(dependants); // add the dependants to the attacking list
+			}
+			// either we have abandoned the territory (so there are no more units that are enemy units of our enemy units)
+			// or we are possibly bombing the territory (so we may have units there still)
+			final Set<Unit> enemyUnitsOfAbandonedToUnits = new HashSet<Unit>();
+			final Set<PlayerID> enemyPlayers = new HashSet<PlayerID>();
+			for (final Unit u : abandonedToUnits)
+			{
+				enemyPlayers.add(u.getOwner());
+			}
+			for (final PlayerID p : enemyPlayers)
+			{
+				enemyUnitsOfAbandonedToUnits.addAll(territory.getUnits().getMatches(Matches.unitIsEnemyOf(data, p)));
+			}
+			// only look at bombing battles, because otherwise the normal attack will determine the ownership of the territory
+			final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true, null);
+			if (bombingBattle != null)
+				enemyUnitsOfAbandonedToUnits.removeAll(bombingBattle.getAttackingUnits());
+			if (!enemyUnitsOfAbandonedToUnits.isEmpty())
+				continue;
+			final IBattle nonFightingBattle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
+			if (nonFightingBattle != null)
+				throw new IllegalStateException("Should not be possible to have a normal battle in: " + territory.getName() + " and have abandoned or only bombing there too.");
+			aBridge.getHistoryWriter().startEvent(player.getName() + " has abandoned " + territory.getName() + " to " + abandonedToPlayer.getName(), abandonedToUnits);
+			battleTracker.takeOver(territory, abandonedToPlayer, aBridge, null, abandonedToUnits);
+			// TODO: if there are multiple defending unit owners, allow picking which one takes over the territory
+			/* below way could be changed to use a FinishedBattle, but this is overly complicated and would only be needed if people plan to use BattleRecords or a condition based on BattleRecords to find the 'conquering' of an abandoned territory
+			// nonFightingBattle = new FinishedBattle(territory, abandonedToPlayer, battleTracker, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, abandonedToUnits);
+			// m_pendingBattles.add(nonFightingBattle);
+			// getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFightingBattle.getBattleType(), data);
+			aBridge.getHistoryWriter().startEvent(abandonedToPlayer.getName() + " creates battle in territory " + territory.getName());
+			battleTracker.addBattle(new RouteScripted(territory), abandonedToUnits, false, abandonedToPlayer, aBridge, null, null);
+			nonFightingBattle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
+			if (nonFightingBattle == null)
+				continue;
+			// There is a potential bug, where if we are bombing a territory that would otherwise be taken over by the enemy (through this method), the bomber will 'defend' against the 'abandonedToPlayer'.
+			if (nonFightingBattle.isEmpty())
+				nonFightingBattle.addAttackChange(new RouteScripted(territory), abandonedToUnits, null);
+			if (!nonFightingBattle.getAttackingUnits().containsAll(abandonedToUnits))
+			{
+				List<Unit> attackingUnitsNeedToBeAdded = new ArrayList<Unit>(abandonedToUnits);
+				attackingUnitsNeedToBeAdded.removeAll(nonFightingBattle.getAttackingUnits());
+				if (territory.isWater())
+					attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
+				else
+					attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsSea.invert());
+				if (!attackingUnitsNeedToBeAdded.isEmpty())
+				{
+					nonFightingBattle.addAttackChange(new RouteScripted(territory), attackingUnitsNeedToBeAdded, null);
+				}
+			}*/
 		}
 	}
 	

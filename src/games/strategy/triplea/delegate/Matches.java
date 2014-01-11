@@ -2677,6 +2677,28 @@ public class Matches
 		};
 	}
 	
+	/** The territory is owned by the enemy of those enemy units (ie: probably owned by you or your ally, but not necessarily so in an FFA type game) and is not unowned water. */
+	public static Match<Territory> territoryHasEnemyUnitsAndIsOwnedByTheirEnemyAndIsNotUnownedWater(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (t.getOwner() == null)
+					return false;
+				if (t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull())
+					return false;
+				final Set<PlayerID> enemies = new HashSet<PlayerID>();
+				for (final Unit u : t.getUnits().getMatches(enemyUnit(player, data)))
+				{
+					enemies.add(u.getOwner());
+				}
+				return (Matches.isAtWarWithAnyOfThesePlayers(enemies, data)).match(t.getOwner());
+			}
+		};
+	}
+	
 	public static Match<Territory> territoryHasOwnedTransportingUnits(final PlayerID player)
 	{
 		return new Match<Territory>()
