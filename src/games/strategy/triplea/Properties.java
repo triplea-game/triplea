@@ -897,7 +897,7 @@ public class Properties implements Constants
 	
 	public static boolean getAbandonedTerritoriesMayBeTakenOverImmediately(final GameData data)
 	{
-		return data.getProperties().get(ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY, true);
+		return data.getProperties().get(ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY, false);
 	}
 	
 	private Properties()
