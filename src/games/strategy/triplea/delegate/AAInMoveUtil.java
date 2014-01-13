@@ -153,14 +153,21 @@ class AAInMoveUtil implements Serializable
 				territoriesWhereAAWillFire.add(current);
 			}
 		}
-		// check start as well, prevent user from moving to and from AA sites one at a time
-		// if there was a battle fought there then don't fire, this covers the case where we fight, and always on AA wants to fire after the battle.
-		// TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont fire
-		if (route.getStart().getUnits().someMatch(hasAA) && !getBattleTracker().wasBattleFought(route.getStart()))
-			territoriesWhereAAWillFire.add(route.getStart());
-		
-		if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(getData()) && route.getEnd().getUnits().someMatch(hasAA))
-			territoriesWhereAAWillFire.add(route.getEnd());
+		if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(getData()))
+		{
+			if (route.getEnd().getUnits().someMatch(hasAA))
+			{
+				territoriesWhereAAWillFire.add(route.getEnd());
+			}
+		}
+		else
+		{
+			// Since we are not firing on the last step, check the start as well, to prevent the user from moving to and from AA sites one at a time
+			// if there was a battle fought there then don't fire, this covers the case where we fight, and "Always On AA" wants to fire after the battle.
+			// TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont fire
+			if (route.getStart().getUnits().someMatch(hasAA) && !getBattleTracker().wasBattleFought(route.getStart()))
+				territoriesWhereAAWillFire.add(route.getStart());
+		}
 		return territoriesWhereAAWillFire;
 	}
 	
