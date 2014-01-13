@@ -58,6 +58,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 /**
@@ -103,7 +104,13 @@ public class ProductionRepairPanel extends JPanel
 		this.calculateLimits();
 		m_dialog.pack();
 		m_dialog.setLocationRelativeTo(parent);
-		m_done.requestFocusInWindow();
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_done.requestFocusInWindow();
+			}
+		});
 		m_dialog.setVisible(true);
 		m_dialog.dispose();
 		return getProduction();

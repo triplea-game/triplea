@@ -56,6 +56,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 /**
@@ -101,7 +102,13 @@ public class ProductionPanel extends JPanel
 		this.calculateLimits();
 		m_dialog.pack();
 		m_dialog.setLocationRelativeTo(parent);
-		m_done.requestFocusInWindow();
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_done.requestFocusInWindow();
+			}
+		});
 		m_dialog.setVisible(true);
 		m_dialog.dispose();
 		return getProduction();
@@ -195,9 +202,9 @@ public class ProductionPanel extends JPanel
 		final int availWidthRules = availWidth - 16;
 		final JScrollPane scroll = new JScrollPane(panel);
 		scroll.setBorder(BorderFactory.createEmptyBorder());
-		scroll.setPreferredSize(new Dimension(
-					(scroll.getPreferredSize().width > availWidthRules ? availWidthRules : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 20 : 0)),
-					(scroll.getPreferredSize().height > availHeightRules ? availHeightRules : scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidthRules ? 20 : 0))));
+		scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidthRules ? availWidthRules : scroll.getPreferredSize().width
+					+ (scroll.getPreferredSize().height > availHeightRules ? 20 : 0)), (scroll.getPreferredSize().height > availHeightRules ? availHeightRules : scroll.getPreferredSize().height
+					+ (scroll.getPreferredSize().width > availWidthRules ? 20 : 0))));
 		this.add(scroll, new GridBagConstraints(0, 1, 30, 1, 100, 100, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 4), 0, 0));
 		// final int startY = m_rules.size() / rows;
 		this.add(m_left, new GridBagConstraints(0, 2, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
