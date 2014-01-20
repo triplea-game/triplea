@@ -684,9 +684,23 @@
 								These stepProperty options are not validated at all, so if you have a typo it will not be caught.
 								Currently allowed stepProperty options:
 									For any "EndTurn" delegate (such as EndTurnDelegate or NoPUEndTurnDelegate or etc):
-										skipPosting 		= true/false (default is false). Do we skip the Play-by-Email/Play-by-Forum turn summary and savegame Posting?
-										turnSummaryPlayers 	= a list of players, separated by colons ":"  default is the step player.  
-																Determines which players this forum posting turn summary will include (will only use all steps that touch this step, or touch the step that touches this step AND is owned by one of these listed players)
+										skipPosting 				= true/false (default is false). Do we skip the Play-by-Email/Play-by-Forum turn summary and savegame Posting?
+										turnSummaryPlayers 			= a list of players, separated by colons ":"  default is the step player.  
+																		Determines which players this forum posting turn summary will include (will only use all steps that touch this step, or touch the step that touches this step AND is owned by one of these listed players)
+										repairUnits 				= true/false will repair own or all damaged units (default depends on game option)
+									
+									For any "Place" delegate (such as PlaceDelegate or NoAirCheckPlaceDelegate or etc):
+										removeAirThatCanNotLand 	= true/false will kill air units that can not land (default is true at end of phase)
+									
+									For any "Move" delegate (such as MoveDelegate or SpecialMoveDelegate or etc):
+										combatMove 					= true/false do we have combat after this phase? this will affect movement validation and certain unit property recordings such as submerged, amphibious, etc. (default is true if delegate ends with "CombatMove" but not "NonCombatMove")
+										nonCombatMove 				= true/false do we have combat before this phase? this will affect movement validation. (default is true if delegate ends with "NonCombatMove")
+										fireRocketsAfter 			= true/false (default depends on game option [ww2v2 and ww2v3 have this after delegates that end with "CombatMove" but not "NonCombatMove"])
+										giveBonusMovement 			= true/false resets and gives bonus movement (default is true at start of phase if delegate ends with "CombatMove" but not "NonCombatMove")
+										resetUnitState 				= true/false resets movement points and other unit states such as submerged, amphibious, unload/load, etc. (default at end of phase depends if delegate ends with "NonCombatMove")
+										repairUnits 				= true/false will repair own or all damaged units (default depends on game option, but would normally be start of combat move)
+										removeAirThatCanNotLand 	= true/false will kill all air units that can not land, but will make an exception for air by factories if a carrier was purchased for maps using v3/lhtr rules (default is true at end of phase)
+										
 						-->
 						
 						<step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>

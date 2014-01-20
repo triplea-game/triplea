@@ -1,4 +1,16 @@
 Changes for 1.8.0.0
+* Created new step properties for move and end turn delegates, "repairUnits", which controls when units get repaired. (veqyrn)
+
+* Created new step properties for move and place delegates, "removeAirThatCanNotLand", which controls when air that can not land gets killed. (veqryn)
+
+* Created new step properties for move delegates, "resetUnitState", which controls when units get their movement and other stats reset. (veqryn)
+
+* Created new step properties for move delegates, "giveBonusMovement", which controls when bonus movement is given. (veqryn)
+
+* Created new step properties for move delegates, "fireRocketsAfter", which controls when rockets fire. (veqryn)
+
+* Created new step properties for move delegates, "combatMove" and "nonCombatMove", which control movement validation. (veqryn)
+
 * Prevented AA type units from firing on both start and end of movement, when option "Force AA Attacks For Last Step Of Fly Over" is turned on. (frogg)
 
 * Created new game property option "Abandoned Territories May Be Taken Over Immediately", which allows an abandoned territory to be taken over on the turn it was abandoned, rather than waiting for it to be attacked. (veqryn)

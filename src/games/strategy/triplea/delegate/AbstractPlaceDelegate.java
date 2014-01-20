@@ -126,7 +126,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		// reset ourselves for next turn
 		m_produced = new HashMap<Territory, Collection<Unit>>();
 		m_placements.clear();
-		removeAirThatCantLand();
+		if (AbstractMoveDelegate.isRemoveAirThatCanNotLand(data))
+			removeAirThatCantLand();
 	}
 	
 	public boolean delegateCurrentlyRequiresUserInput()
@@ -273,8 +274,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 			if (unitsLeftToPlace.isEmpty())
 				break;
 			// units may have special restrictions like RequiresUnits
-			final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) :
-						new ArrayList<Unit>(unitsLeftToPlace));
+			final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
+						: new ArrayList<Unit>(unitsLeftToPlace));
 			Collections.sort(unitsCanBePlacedByThisProducer, getHardestToPlaceWithRequiresUnitsRestrictions(true));
 			final int maxPlaceable = maxPlaceableMap.getInt(producer);
 			// System.out.println("Max Placeable: " + maxPlaceable + " for this producer: " + producer);
@@ -1094,8 +1095,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 				final Collection<Territory> notUsableAsOtherProducers, final Map<Territory, Integer> currentAvailablePlacementForOtherProducers)
 	{
 		// we may have special units with requiresUnits restrictions
-		final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) :
-					new ArrayList<Unit>(units));
+		final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) : new ArrayList<Unit>(
+					units));
 		if (unitsCanBePlacedByThisProducer.size() <= 0)
 			return 0;
 		// if its an original factory then unlimited production

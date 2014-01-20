@@ -34,6 +34,7 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UserActionAttachment;
+import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
@@ -140,7 +141,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 		else if (name.endsWith("Move"))
 		{
-			final boolean nonCombat = name.endsWith("NonCombatMove");
+			final boolean nonCombat = AbstractMoveDelegate.isNonCombatMove(getGameData());
 			move(nonCombat, name);
 			if (!nonCombat)
 				m_ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());
@@ -357,12 +358,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
 		if (moveDescription == null)
 		{
-			if (nonCombat)
+			if (AbstractMoveDelegate.isRemoveAirThatCanNotLand(getGameData()))
 			{
 				if (!canAirLand(true, id))
 					move(nonCombat, stepName);
 			}
-			else
+			if (!nonCombat)
 			{
 				if (canUnitsFight())
 					move(nonCombat, stepName);
@@ -622,7 +623,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			if (placeData == null)
 			{
 				// this only happens in lhtr rules
-				if (canAirLand(false, id))
+				if (!AbstractMoveDelegate.isRemoveAirThatCanNotLand(getGameData()) || canAirLand(false, id))
 					return;
 				else
 					continue;
@@ -788,7 +789,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		return m_ui.getBattlePanel().getScramble(getPlayerBridge(), battleID, message, possibleTerritories, player);
 	}*/
-
+	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);

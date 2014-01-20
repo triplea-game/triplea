@@ -197,9 +197,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			}
 		}
 		
-		if (doBattleShipsRepairEndOfTurn())
+		if (AbstractMoveDelegate.isRepairUnits(data))
 		{
-			MoveDelegate.repairBattleShips(m_bridge, m_bridge.getPlayerID(), false);
+			MoveDelegate.repairBattleShips(m_bridge, m_bridge.getPlayerID());
 		}
 		if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
 		{
@@ -215,8 +215,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		{
 			final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
 			final String player = m_player.getName();
-			currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player + "</b><br /><br />" + endTurnReport + "</html>",
-						END_TURN_REPORT_STRING + player);
+			currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player + "</b><br /><br />" + endTurnReport + "</html>", END_TURN_REPORT_STRING + player);
 		}
 	}
 	

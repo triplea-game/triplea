@@ -3,11 +3,11 @@ package games.strategy.triplea.delegate;
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -29,7 +29,6 @@ import java.util.Map;
  */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate
 {
-	protected boolean m_nonCombat;
 	protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();// A collection of UndoableMoves
 	protected final TransportTracker m_transportTracker = new TransportTracker();
 	protected MovePerformer m_tempMovePerformer;// if we are in the process of doing a move. this instance will allow us to resume the move
@@ -51,7 +50,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 	public void start()
 	{
 		super.start();
-		m_nonCombat = isNonCombat(m_bridge);
 		if (m_tempMovePerformer != null)
 		{
 			m_tempMovePerformer.initialize(this);
@@ -76,7 +74,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		final AbstractMoveExtendedDelegateState state = new AbstractMoveExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
-		state.m_nonCombat = m_nonCombat;
 		state.m_movesToUndo = m_movesToUndo;
 		state.m_tempMovePerformer = m_tempMovePerformer;
 		return state;
@@ -88,11 +85,140 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		final AbstractMoveExtendedDelegateState s = (AbstractMoveExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
-		m_nonCombat = s.m_nonCombat;
 		// if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo move
 		if (s.m_movesToUndo != null)
 			m_movesToUndo = s.m_movesToUndo;
 		m_tempMovePerformer = s.m_tempMovePerformer;
+	}
+	
+	private static boolean isNonCombatDelegate(final GameData data)
+	{
+		if (data.getSequence().getStep().getName().endsWith("NonCombatMove"))
+			return true;
+		return false;
+	}
+	
+	private static boolean isCombatDelegate(final GameData data)
+	{
+		if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) // we have to do this check, because otherwise all NonCombatMove delegates become CombatMove delegates too
+			return false;
+		else if (data.getSequence().getStep().getName().endsWith("CombatMove"))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * For various things related to movement validation.
+	 */
+	public static boolean isCombatMove(final GameData data)
+	{
+		final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_combatMove);
+		if (prop != null)
+			return Boolean.parseBoolean(prop);
+		if (isCombatDelegate(data))
+			return true;
+		else if (isNonCombatDelegate(data))
+			return false;
+		else
+			throw new IllegalStateException("Cannot determine combat or not");
+	}
+	
+	/**
+	 * For various things related to movement validation.
+	 */
+	public static boolean isNonCombatMove(final GameData data)
+	{
+		final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_nonCombatMove);
+		if (prop != null)
+			return Boolean.parseBoolean(prop);
+		if (isNonCombatDelegate(data))
+			return true;
+		else if (isCombatDelegate(data))
+			return false;
+		else
+			throw new IllegalStateException("Cannot determine combat or not");
+	}
+	
+	/**
+	 * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat move for WW2v1.
+	 */
+	public static boolean isFireRocketsAfter(final GameData data)
+	{
+		final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_fireRocketsAfter);
+		if (prop != null)
+			return Boolean.parseBoolean(prop);
+		if (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data))
+		{
+			if (isCombatDelegate(data))
+				return true;
+		}
+		else if (isNonCombatDelegate(data))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Repairs damaged units. Normally would occur at either start of combat move or end of turn, depending.
+	 */
+	public static boolean isRepairUnits(final GameData data)
+	{
+		final boolean repairAtStartAndOnlyOwn = games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(data);
+		final boolean repairAtEndAndAll = games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(data);
+		// if both are off, we do no repairing, no matter what
+		if (!repairAtStartAndOnlyOwn && !repairAtEndAndAll)
+			return false;
+		final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairUnits);
+		if (prop != null)
+			return Boolean.parseBoolean(prop);
+		if (isCombatDelegate(data) && repairAtStartAndOnlyOwn)
+			return true;
+		else if (data.getSequence().getStep().getName().endsWith("EndTurn") && repairAtEndAndAll)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Resets then gives bonus movement. Normally would occur at the start of combat movement phase.
+	 */
+	public static boolean isGiveBonusMovement(final GameData data)
+	{
+		final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_giveBonusMovement);
+		if (prop != null)
+			return Boolean.parseBoolean(prop);
+		if (isCombatDelegate(data))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Kills all air that can not land. Normally would occur both at the end of noncombat movement and also at end of placement phase.
+	 */
+	public static boolean isRemoveAirThatCanNotLand(final GameData data)
+	{
+		final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_removeAirThatCanNotLand);
+		if (prop != null)
+			return Boolean.parseBoolean(prop);
+		if (isNonCombatDelegate(data))
+			return true;
+		else if (data.getSequence().getStep().getName().endsWith("Place"))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of noncombat move phase.
+	 */
+	public static boolean isResetUnitState(final GameData data)
+	{
+		final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitState);
+		if (prop != null)
+			return Boolean.parseBoolean(prop);
+		if (isNonCombatDelegate(data))
+			return true;
+		return false;
 	}
 	
 	public TransportTracker getTransportTracker()
@@ -188,7 +314,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 	 */
 	public Route getRouteUsedToMoveInto(final Unit unit, final Territory end)
 	{
-		return MoveDelegate.getRouteUsedToMoveInto(m_movesToUndo, unit, end);
+		return AbstractMoveDelegate.getRouteUsedToMoveInto(m_movesToUndo, unit, end);
 	}
 	
 	/**
@@ -214,16 +340,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 				return move.getRoute();
 		}
 		return null;
-	}
-	
-	public static boolean isNonCombat(final IDelegateBridge aBridge)
-	{
-		if (aBridge.getStepName().endsWith("NonCombatMove"))
-			return true;
-		else if (aBridge.getStepName().endsWith("CombatMove"))
-			return false;
-		else
-			throw new IllegalStateException("Cannot determine combat or not");
 	}
 	
 	public static BattleTracker getBattleTracker(final GameData data)

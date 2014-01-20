@@ -49,7 +49,6 @@ import java.util.Set;
 class AAInMoveUtil implements Serializable
 {
 	private static final long serialVersionUID = 1787497998642717678L;
-	private transient boolean m_nonCombat;
 	private transient IDelegateBridge m_bridge;
 	private transient PlayerID m_player;
 	private Collection<Unit> m_casualties = new ArrayList<Unit>();
@@ -61,7 +60,6 @@ class AAInMoveUtil implements Serializable
 	
 	public AAInMoveUtil initialize(final IDelegateBridge bridge)
 	{
-		m_nonCombat = MoveDelegate.isNonCombat(bridge);
 		m_bridge = bridge;
 		m_player = bridge.getPlayerID();
 		return this;
@@ -133,17 +131,18 @@ class AAInMoveUtil implements Serializable
 		// Just the attacked territory will have AA firing
 		if (!alwaysOnAA && isAATerritoryRestricted())
 			return Collections.emptyList();
+		final GameData data = getData();
 		// No AA in nonCombat unless 'Always on AA'
-		if (m_nonCombat && !alwaysOnAA)
+		if (AbstractMoveDelegate.isNonCombatMove(data) && !alwaysOnAA)
 			return Collections.emptyList();
 		// can't rely on m_player being the unit owner in Edit Mode
 		// look at the units being moved to determine allies and enemies
 		final PlayerID movingPlayer = movingPlayer(units);
-		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
+		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, data);
 		// don't iterate over the end
 		// that will be a battle
 		// and handled else where in this tangled mess
-		final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData());
+		final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, data);
 		// AA guns in transports shouldn't be able to fire
 		final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 		for (final Territory current : route.getMiddleSteps())
@@ -153,7 +152,7 @@ class AAInMoveUtil implements Serializable
 				territoriesWhereAAWillFire.add(current);
 			}
 		}
-		if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(getData()))
+		if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(data))
 		{
 			if (route.getEnd().getUnits().someMatch(hasAA))
 			{
@@ -193,8 +192,8 @@ class AAInMoveUtil implements Serializable
 			return;
 		final PlayerID movingPlayer = movingPlayer(units);
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
-		final List<Unit> defendingAA = territory.getUnits().getMatches(
-					Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
+		final List<Unit> defendingAA = territory.getUnits()
+					.getMatches(Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
 		final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // comes ordered alphabetically already
 		Collections.reverse(AAtypes); // stacks are backwards
 		for (final String currentTypeAA : AAtypes)
