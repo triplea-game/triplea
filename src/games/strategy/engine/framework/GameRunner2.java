@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.Console;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
@@ -10,7 +11,6 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
-import games.strategy.triplea.ui.TripleaMenu;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
@@ -73,6 +73,7 @@ public class GameRunner2
 	public static final String LOBBY_HOST = "triplea.lobby.host";
 	public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
 	public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
+	public static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
 	// what is the default version of triplea (the one in the "bin" folder)
 	public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
 	// proxy stuff
@@ -330,7 +331,7 @@ public class GameRunner2
 			defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
 		}
 		final String userDefault = pref.get(LOOK_AND_FEEL_PREF, defaultLookAndFeel);
-		final List<String> availableSkins = TripleaMenu.getLookAndFeelAvailableList();
+		final List<String> availableSkins = BasicGameMenuBar.getLookAndFeelAvailableList();
 		if (!availableSkins.contains(userDefault))
 		{
 			if (!availableSkins.contains(defaultLookAndFeel))

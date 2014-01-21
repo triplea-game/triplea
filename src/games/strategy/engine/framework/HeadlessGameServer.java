@@ -32,6 +32,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.ClassLoaderUtil;
+import games.strategy.util.Util;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -135,12 +136,12 @@ public class HeadlessGameServer
 	{
 		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY,
 					GameRunner2.TRIPLEA_PORT_PROPERTY, GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT, GameRunner2.LOBBY_GAME_COMMENTS,
-					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY };
+					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY };
 	}
 	
 	private static void usage()
 	{
-		System.out.println("Arguments\n"
+		System.out.println("\nUsage and Valid Arguments:\n"
 					+ "   " + GameRunner2.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
 					+ "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
 					+ "   " + TRIPLEA_GAME_HOST_UI_PROPERTY + "=<true/false>\n"
@@ -151,23 +152,12 @@ public class HeadlessGameServer
 					+ "   " + GameRunner2.LOBBY_PORT + "=<LOBBY_PORT>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
 					+ "   " + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=<password>\n"
 					+ "\n"
-					+ "   If there is only one argument, and it does not start with a prefix, the argument will be \n"
-					+ "   taken as the name of the file to load.\n"
-					+ "\n"
-					+ "   Examples:\n"
-					+ "   To start a game using the given file:\n"
-					+ "\n"
-					+ "   triplea /home/sgb/games/test.xml\n"
-					+ "\n"
-					+ "   or\n"
-					+ "\n"
-					+ "   triplea triplea.game=/home/sgb/games/test.xml\n"
-					+ "\n"
-					+ "   To start a server with the given game\n"
-					+ "\n"
-					+ "   triplea triplea.game=/home/sgb/games/test.xml triplea.port=3300 triplea.name=Allan");
+					+ "   You must start the Name and HostedBy with \"Bot\".\n"
+					+ "   Game Comments must have this string in it: \"automated_hosting\".\n"
+					+ "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error.\n");
 	}
 	
 	public static synchronized HeadlessGameServer getInstance()
@@ -663,7 +653,7 @@ public class HeadlessGameServer
 			}
 		}
 		
-		boolean usagePrinted = false;
+		boolean printUsage = false;
 		for (int argIndex = 0; argIndex < args.length; argIndex++)
 		{
 			boolean found = false;
@@ -686,13 +676,37 @@ public class HeadlessGameServer
 			}
 			if (!found)
 			{
-				System.out.println("Unrecogized:" + args[argIndex]);
-				if (!usagePrinted)
-				{
-					usagePrinted = true;
-					usage();
-				}
+				System.out.println("Unrecogized argument: " + args[argIndex]);
+				printUsage = true;
 			}
+		}
+		
+		{ // now check for required fields
+			final String playerName = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, "");
+			final String hostName = System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, "");
+			final String comments = System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS, "");
+			final String email = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, "");
+			if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName) || !playerName.startsWith("Bot") || !hostName.startsWith("Bot"))
+			{
+				System.out.println("Invalide argument: " + GameRunner2.TRIPLEA_NAME_PROPERTY + " and " + GameRunner2.LOBBY_GAME_HOSTED_BY
+							+ " must start with \"Bot\" and be at least 7 characters long and be the same.");
+				printUsage = true;
+			}
+			if (comments.indexOf("automated_hosting") == -1)
+			{
+				System.out.println("Invalide argument: " + GameRunner2.LOBBY_GAME_COMMENTS + " must contain the string \"automated_hosting\".");
+				printUsage = true;
+			}
+			if (email.length() < 3 || !Util.isMailValid(email))
+			{
+				System.out.println("Invalide argument: " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
+				printUsage = true;
+			}
+		}
+		if (printUsage)
+		{
+			usage();
+			System.exit(1);
 		}
 	}
 	
@@ -1542,7 +1556,7 @@ class HeadlessGameSelectorPanel extends JPanel implements Observer
 			}
 		}
 	}*/
-
+	
 	private void selectGameOptions()
 	{
 		// backup current game properties before showing dialog
