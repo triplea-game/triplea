@@ -1,4 +1,8 @@
 Changes for 1.8.0.0
+* Created new step properties for move delegates, "combinedTurns", which changes some validation for intermeshed player phases, such as allowing air to live if the ally could place a carrier under them. (veqyrn)
+
+* Created new step properties for purchase and place delegates, "bid", which controls if it is a bid phase. (veqyrn)
+
 * Created new step properties for move and end turn delegates, "repairUnits", which controls when units get repaired. (veqyrn)
 
 * Created new step properties for move and place delegates, "removeAirThatCanNotLand", which controls when air that can not land gets killed. (veqryn)

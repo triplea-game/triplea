@@ -1408,7 +1408,9 @@
                         <step name="britishCombatMove" delegate="move" player="British"/>
 						<step name="britishAirborneCombatMove" delegate="specialCombatMove" player="British" display="Airborne Attack Move"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
-                        <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
+                        <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move">
+								<stepProperty name="combinedTurns" value="British:UK_Pacific"/>
+						</step>
 						
                         <step name="britishNoAirCheckPlace" delegate="placeNoAirCheck" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British">

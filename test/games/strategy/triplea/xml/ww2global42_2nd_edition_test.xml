@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global 1942 Test 2nd Edition" version="3.8"/>
+        <info name="World War II Global 1942 Test 2nd Edition" version="3.9"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6.1"/>
 		<diceSides value="6"/>
@@ -1407,7 +1407,9 @@
                         <step name="britishCombatMove" delegate="move" player="British"/>
 						<step name="britishAirborneCombatMove" delegate="specialCombatMove" player="British" display="Airborne Attack Move"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
-                        <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
+                        <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move">
+								<stepProperty name="combinedTurns" value="British:UK_Pacific"/>
+						</step>
 						
                         <step name="britishNoAirCheckPlace" delegate="placeNoAirCheck" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British">
@@ -7134,6 +7136,10 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>3.9
+<br>Stopped British fighters from dying if UK Pacific could place a carrier under them.
+<br>
 <br>
 <br>3.8
 <br>Moved Politics phase to be after Purchase phase and before Combat Move phase.

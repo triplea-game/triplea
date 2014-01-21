@@ -34,8 +34,8 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UserActionAttachment;
-import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
@@ -119,7 +119,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		if (getPlayerBridge().isGameOver())
 			return;
 		// TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate class seems like a bad way of doing this whole method. however i can't think of anything better right now.
-		// TODO: certain properties, like if we are bid/not-bid, or combatmove/noncombatmove, should not be found out through the "stepName", but instead through the GameStep.getProperties(). (If we do make this change, remember to make it backwards compatible with all existing map xmls)
+		
 		// This is how we find out our game step: getGameData().getSequence().getStep()
 		// The game step contains information, like the exact delegate and the delegate's class, that we can further use if needed.
 		// This is how we get our communication bridge for affecting the gamedata: (ISomeDelegate) getPlayerBridge().getRemote()
@@ -128,20 +128,18 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		m_ui.requiredTurnSeries(getPlayerID());
 		boolean badStep = false;
 		enableEditModeMenu();
-		if (name.endsWith("Bid"))
-			purchase(true);
-		else if (name.endsWith("Tech"))
+		if (name.endsWith("Tech"))
 			tech();
 		else if (name.endsWith("TechActivation"))
 		{
 		} // the delegate handles everything
-		else if (name.endsWith("Purchase"))
+		else if (name.endsWith("Bid") || name.endsWith("Purchase"))
 		{
-			purchase(false);
+			purchase(GameStepPropertiesHelper.isBid(getGameData()));
 		}
 		else if (name.endsWith("Move"))
 		{
-			final boolean nonCombat = AbstractMoveDelegate.isNonCombatMove(getGameData());
+			final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData());
 			move(nonCombat, name);
 			if (!nonCombat)
 				m_ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());
@@ -150,7 +148,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		else if (name.endsWith("Battle"))
 			battle();
 		else if (name.endsWith("Place"))
-			place(name.endsWith("BidPlace"));
+			place(GameStepPropertiesHelper.isBid(getGameData()));
 		else if (name.endsWith("Politics"))
 			politics(true);
 		else if (name.endsWith("UserActions"))
@@ -358,7 +356,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
 		if (moveDescription == null)
 		{
-			if (AbstractMoveDelegate.isRemoveAirThatCanNotLand(getGameData()))
+			if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData()))
 			{
 				if (!canAirLand(true, id))
 					move(nonCombat, stepName);
@@ -623,7 +621,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			if (placeData == null)
 			{
 				// this only happens in lhtr rules
-				if (!AbstractMoveDelegate.isRemoveAirThatCanNotLand(getGameData()) || canAirLand(false, id))
+				if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData()) || canAirLand(false, id))
 					return;
 				else
 					continue;

@@ -53,6 +53,8 @@ public class GameStep extends GameDataComponent
 	public static final String PROPERTY_giveBonusMovement = "giveBonusMovement";
 	public static final String PROPERTY_removeAirThatCanNotLand = "removeAirThatCanNotLand";
 	public static final String PROPERTY_resetUnitState = "resetUnitState";
+	public static final String PROPERTY_bid = "bid";
+	public static final String PROPERTY_combinedTurns = "combinedTurns";
 	
 	/**
 	 * Creates new GameStep
@@ -160,6 +162,8 @@ public class GameStep extends GameDataComponent
 	 * Move delegates -> giveBonusMovement = true/false<br>
 	 * Move & Place delegates -> removeAirThatCanNotLand = true/false<br>
 	 * Move delegates -> resetUnitState = true/false<br>
+	 * Purchase & Place delegates -> bid = true/false<br>
+	 * Move delegates -> combinedTurns = colon separated list of players which have intermeshed phases<br>
 	 */
 	public Properties getProperties()
 	{

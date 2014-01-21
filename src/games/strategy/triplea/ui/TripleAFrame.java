@@ -66,6 +66,7 @@ import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -830,7 +831,11 @@ public class TripleAFrame extends MainGameFrame
 			buf.append(" ");
 		}
 		final boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(m_data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(m_data);
-		final int carrierCount = m_id.getUnits().getMatches(Matches.UnitIsCarrier).size();
+		int carrierCount = 0;
+		for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(m_data, m_id))
+		{
+			carrierCount += p.getUnits().getMatches(Matches.UnitIsCarrier).size();
+		}
 		final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
 		if (canProduceCarriersUnderFighter && carrierCount > 0)
 		{
@@ -1104,7 +1109,7 @@ public class TripleAFrame extends MainGameFrame
 				final JOptionPane optionPane = new JOptionPane(unitPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
 				final JDialog dialog = new JDialog((Frame) getParent(), "Select units to Suicide Attack using " + attackResourceToken.getName());
 				dialog.setContentPane(optionPane);
-				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 				dialog.setLocationRelativeTo(getParent());
 				dialog.setAlwaysOnTop(true);
 				dialog.pack();
@@ -1209,7 +1214,7 @@ public class TripleAFrame extends MainGameFrame
 					panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
 					panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
 					final JLabel whereFrom = new JLabel("From: " + from.getName());
-					whereFrom.setHorizontalAlignment(JLabel.LEFT);
+					whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
 					whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
 					panelChooser.add(whereFrom);
 					panelChooser.add(new JLabel(" "));
@@ -1230,7 +1235,7 @@ public class TripleAFrame extends MainGameFrame
 				final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
 				final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
 				dialog.setContentPane(optionPane);
-				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 				dialog.setLocationRelativeTo(getParent());
 				dialog.setAlwaysOnTop(true);
 				dialog.pack();
@@ -1324,7 +1329,7 @@ public class TripleAFrame extends MainGameFrame
 				panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
 				panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
 				final JLabel whereFrom = new JLabel("From: " + current.getName());
-				whereFrom.setHorizontalAlignment(JLabel.LEFT);
+				whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
 				whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
 				panelChooser.add(whereFrom);
 				panelChooser.add(new JLabel(" "));
@@ -1341,7 +1346,7 @@ public class TripleAFrame extends MainGameFrame
 				final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
 				final JDialog dialog = new JDialog((Frame) getParent(), message);
 				dialog.setContentPane(optionPane);
-				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 				dialog.setLocationRelativeTo(getParent());
 				dialog.setAlwaysOnTop(true);
 				dialog.pack();

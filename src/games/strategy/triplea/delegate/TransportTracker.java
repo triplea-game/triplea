@@ -171,7 +171,7 @@ public class TransportTracker
 		final ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
 		newUnloaded.add(unit);
 		change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
-		if (AbstractMoveDelegate.isCombatMove(unit.getData()))
+		if (GameStepPropertiesHelper.isCombatMove(unit.getData()))
 		{
 			change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
 			change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
@@ -201,7 +201,7 @@ public class TransportTracker
 		final ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
 		newUnloaded.add(unit);
 		change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
-		if (AbstractMoveDelegate.isCombatMove(unit.getData()))
+		if (GameStepPropertiesHelper.isCombatMove(unit.getData()))
 		{
 			change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
 			// change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
@@ -309,7 +309,7 @@ public class TransportTracker
 			// then we must have been transported on our own transport
 			final TripleAUnit taUnit = (TripleAUnit) u;
 			if (taUnit.getWasLoadedThisTurn() && taUnit.getTransportedBy() != null &&
-			// an allied transport if the owner of the transport is not the owner of the unit
+						// an allied transport if the owner of the transport is not the owner of the unit
 						!taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner()))
 			{
 				rVal.add(u);
@@ -326,7 +326,7 @@ public class TransportTracker
 		{
 			final TripleAUnit taUnit = (TripleAUnit) u;
 			// cannot unload in two different phases
-			if (AbstractMoveDelegate.isNonCombatMove(transport.getData()) && taUnit.getWasUnloadedInCombatPhase())
+			if (GameStepPropertiesHelper.isNonCombatMove(transport.getData()) && taUnit.getWasUnloadedInCombatPhase())
 				return true;
 		}
 		return false;
@@ -366,7 +366,7 @@ public class TransportTracker
 			else
 			{
 				// cannot unload to two different territories in combat phase
-				if (!AbstractMoveDelegate.isNonCombatMove(transport.getData()) && !taUnit.getUnloadedTo().equals(territory))
+				if (!GameStepPropertiesHelper.isNonCombatMove(transport.getData()) && !taUnit.getUnloadedTo().equals(territory))
 					return true;
 			}
 		}
@@ -391,7 +391,7 @@ public class TransportTracker
 	public boolean isTransportUnloadRestrictedInNonCombat(final Unit transport)
 	{
 		final TripleAUnit taUnit = (TripleAUnit) transport;
-		if (AbstractMoveDelegate.isNonCombatMove(transport.getData()) && taUnit.getWasInCombat() && taUnit.getWasLoadedAfterCombat())
+		if (GameStepPropertiesHelper.isNonCombatMove(transport.getData()) && taUnit.getWasInCombat() && taUnit.getWasLoadedAfterCombat())
 			return true;
 		return false;
 	}

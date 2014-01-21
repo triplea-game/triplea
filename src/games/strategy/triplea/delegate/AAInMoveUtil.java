@@ -133,7 +133,7 @@ class AAInMoveUtil implements Serializable
 			return Collections.emptyList();
 		final GameData data = getData();
 		// No AA in nonCombat unless 'Always on AA'
-		if (AbstractMoveDelegate.isNonCombatMove(data) && !alwaysOnAA)
+		if (GameStepPropertiesHelper.isNonCombatMove(data) && !alwaysOnAA)
 			return Collections.emptyList();
 		// can't rely on m_player being the unit owner in Edit Mode
 		// look at the units being moved to determine allies and enemies

@@ -123,7 +123,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
 		final PlayerID player = getUnitsOwner(units);
 		// here we have our own new validation method....
-		final MoveValidationResult result = SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, isNonCombatMove(data), m_movesToUndo, data);
+		final MoveValidationResult result = SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data), m_movesToUndo,
+					data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";

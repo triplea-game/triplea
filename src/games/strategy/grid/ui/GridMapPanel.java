@@ -17,7 +17,6 @@ import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.image.UnitImageFactory;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -28,6 +27,7 @@ import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.MapSelectionListener;
 import games.strategy.triplea.ui.MouseDetails;
@@ -571,7 +571,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		m_posterPBEM = new PBEMMessagePoster(m_gameData, player, round, "Turn Summary");
 		if (!m_posterPBEM.hasMessengers())
 			return false;
-		if (skipPosting() || Boolean.parseBoolean(bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))
+		if (skipPosting() || GameStepPropertiesHelper.isSkipPosting(m_gameData))
 			return false;
 		return true;
 	}

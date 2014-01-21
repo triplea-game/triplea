@@ -126,7 +126,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		// reset ourselves for next turn
 		m_produced = new HashMap<Territory, Collection<Unit>>();
 		m_placements.clear();
-		if (AbstractMoveDelegate.isRemoveAirThatCanNotLand(data))
+		if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(data))
 			removeAirThatCantLand();
 	}
 	

@@ -124,7 +124,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 						moveCombatDelegateBeforeBonusTriggerMatch,
 						moveCombatDelegateAfterBonusTriggerMatch);
 			
-			if (isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data))
+			if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data))
 			{
 				final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
 							moveCombatDelegateAllTriggerMatch, m_bridge);
@@ -152,13 +152,13 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			}
 			
 			// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
-			if (isRepairUnits(data))
+			if (GameStepPropertiesHelper.isRepairUnits(data))
 			{
 				MoveDelegate.repairBattleShips(m_bridge, m_player);
 			}
 			
 			// reset any bonus of units, and give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
-			if (isGiveBonusMovement(data))
+			if (GameStepPropertiesHelper.isGiveBonusMovement(data))
 			{
 				resetBonusMovement();
 				if (games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(data))
@@ -169,7 +169,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
 			
 			// placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
-			if (isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data))
+			if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data))
 			{
 				final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
 							moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
@@ -195,11 +195,11 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		super.end();
 		final GameData data = getData();
-		if (isRemoveAirThatCanNotLand(data))
+		if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(data))
 			removeAirThatCantLand();
 		// WW2V2/WW2V3, fires at end of combat move
 		// WW2V1, fires at end of non combat move
-		if (isFireRocketsAfter(data))
+		if (GameStepPropertiesHelper.isFireRocketsAfter(data))
 		{
 			if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID()))
 			{
@@ -210,7 +210,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		}
 		final CompositeChange change = new CompositeChange();
 		// do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round, while loading.
-		if (isResetUnitState(data))
+		if (GameStepPropertiesHelper.isResetUnitState(data))
 		{
 			for (final Unit u : data.getUnits())
 			{
@@ -291,7 +291,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));
 		moveableUnitOwnedByMe.add(Matches.unitHasMovementLeft);
 		// if not non combat, can not move aa units
-		if (isCombatMove(getData()))
+		if (GameStepPropertiesHelper.isCombatMove(getData()))
 			moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
 		for (final Territory item : getData().getMap().getTerritories())
 		{
@@ -505,7 +505,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final GameData data = getData();
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
 		final PlayerID player = getUnitsOwner(units);
-		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, isNonCombatMove(data), m_movesToUndo, data);
+		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data), m_movesToUndo, data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
@@ -591,7 +591,15 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		final GameData data = getData();
 		final boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
-		final boolean hasProducedCarriers = m_player.getUnits().someMatch(Matches.UnitIsCarrier);
+		boolean hasProducedCarriers = false;
+		for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, m_player))
+		{
+			if (p.getUnits().someMatch(Matches.UnitIsCarrier))
+			{
+				hasProducedCarriers = true;
+				break;
+			}
+		}
 		final AirThatCantLandUtil util = new AirThatCantLandUtil(m_bridge);
 		util.removeAirThatCantLand(m_player, lhtrCarrierProd && hasProducedCarriers);
 		// if edit mode has been on, we need to clean up after all players

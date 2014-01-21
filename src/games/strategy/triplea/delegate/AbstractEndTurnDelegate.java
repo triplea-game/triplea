@@ -71,11 +71,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	private boolean m_hasPostedTurnSummary = false;
 	private static int CONVOY_BLOCKADE_DICE_SIDES = 6;
 	
-	private boolean doBattleShipsRepairEndOfTurn()
-	{
-		return games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData());
-	}
-	
 	private boolean isGiveUnitsByTerritory()
 	{
 		return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
@@ -197,7 +192,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			}
 		}
 		
-		if (AbstractMoveDelegate.isRepairUnits(data))
+		if (GameStepPropertiesHelper.isRepairUnits(data))
 		{
 			MoveDelegate.repairBattleShips(m_bridge, m_bridge.getPlayerID());
 		}

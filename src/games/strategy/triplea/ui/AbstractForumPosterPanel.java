@@ -19,13 +19,13 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
 import java.awt.event.ActionEvent;
@@ -136,7 +136,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		m_poster = new PBEMMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
 		if (!m_poster.hasMessengers())
 			return;
-		if (skipPosting() || Boolean.parseBoolean(m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))
+		if (skipPosting() || GameStepPropertiesHelper.isSkipPosting(getData()))
 			return;
 		
 		final boolean hasPosted = getHasPostedTurnSummary();

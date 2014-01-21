@@ -2,17 +2,16 @@ package games.strategy.engine.pbem;
 
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.random.IRandomStats;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.history.HistoryLog;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -203,23 +202,7 @@ public class ForumPosterComponent extends JPanel
 	
 	private void updateHistoryLog()
 	{
-		// parse allowed players
-		final String allowedPlayers = m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);
-		final Collection<PlayerID> allowedIDs;
-		if (allowedPlayers != null)
-		{
-			allowedIDs = new HashSet<PlayerID>();
-			for (final String p : allowedPlayers.split(":"))
-			{
-				final PlayerID id = m_data.getPlayerList().getPlayerID(p);
-				if (id == null)
-					System.err.println("gamePlay sequence step: " + m_bridge.getStepName() + " stepProperty: " + GameStep.PROPERTY_turnSummaryPlayers + " player: " + p + " DOES NOT EXIST");
-				else
-					allowedIDs.add(id);
-			}
-		}
-		else
-			allowedIDs = null;
+		final Collection<PlayerID> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(m_data);
 		// clear first, then update
 		m_historyLog.clear();
 		m_historyLog.printFullTurn(m_data, m_showDetailsCheckbox.isSelected(), allowedIDs);
