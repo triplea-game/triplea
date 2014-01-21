@@ -706,6 +706,8 @@ public class MapPanel extends ImageScrollerLargeView
 					if (territoryUnitsOfSameCategory.isEmpty())
 						continue;
 					final Rectangle r = m_tileManager.getUnitRect(territoryUnitsOfSameCategory, m_data);
+					if (r == null)
+						continue;
 					final BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(category.getType(), category.getOwner(), m_data, category.getDamaged(),
 								category.getDisabled());
 					final AffineTransform t = new AffineTransform();

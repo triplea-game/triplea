@@ -550,11 +550,11 @@ class DummyPlayer extends AbstractAI
 					final int ourHP = BattleCalculator.getTotalHitpoints(ourUnits);
 					final int enemyHP = BattleCalculator.getTotalHitpoints(enemyUnits);
 					final int ourPower = DiceRoll.getTotalPowerAndRolls(
-								DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits, ourUnits, enemyUnits, !m_isAttacker, (m_isAttacker ? battle.getAttacker() : battle.getDefender()),
+								DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits, ourUnits, enemyUnits, !m_isAttacker, false, (m_isAttacker ? battle.getAttacker() : battle.getDefender()),
 											m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
 											(battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<Unit>())), m_bridge.getData()).getFirst();
 					final int enemyPower = DiceRoll.getTotalPowerAndRolls(
-								DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, enemyUnits, ourUnits, m_isAttacker, (m_isAttacker ? battle.getDefender() : battle.getAttacker()),
+								DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, enemyUnits, ourUnits, m_isAttacker, false, (m_isAttacker ? battle.getDefender() : battle.getAttacker()),
 											m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
 											(battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())), m_bridge.getData()).getFirst();
 					final int diceSides = m_bridge.getData().getDiceSides();

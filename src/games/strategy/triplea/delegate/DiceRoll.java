@@ -408,7 +408,7 @@ public class DiceRoll implements Externalizable
 	}
 	
 	public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
-				final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final PlayerID player, final GameData data, final Territory location,
+				final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing, final PlayerID player, final GameData data, final Territory location,
 				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle, final Collection<Unit> amphibiousLandAttackers)
 	{
 		final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<Unit, Tuple<Integer, Integer>>();
@@ -458,7 +458,7 @@ public class DiceRoll implements Externalizable
 			strength = Math.min(Math.max(strength, 0), diceSides);
 			// now determine our rolls
 			int rolls;
-			if (strength == 0)
+			if (!bombing && strength == 0)
 				rolls = 0;
 			else
 			{
@@ -544,7 +544,7 @@ public class DiceRoll implements Externalizable
 		final Territory location = battle.getTerritory();
 		final boolean isAmphibiousBattle = battle.isAmphibious();
 		final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
-		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, player, data,
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false, player, data,
 					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
 		final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
 		final int power = totalPowerAndRolls.getFirst();
@@ -905,7 +905,7 @@ public class DiceRoll implements Externalizable
 		final Territory location = battle.getTerritory();
 		final boolean isAmphibiousBattle = battle.isAmphibious();
 		final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
-		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, player, data,
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false, player, data,
 					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
 		final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
 		final int rollCount = totalPowerAndRolls.getSecond();

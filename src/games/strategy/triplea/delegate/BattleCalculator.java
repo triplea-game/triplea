@@ -1077,26 +1077,27 @@ public class BattleCalculator
 		return false;
 	}
 	
-	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
-				final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy, final Set<List<UnitSupportAttachment>> supportRulesEnemy,
+	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final boolean bombing,
+				final Set<List<UnitSupportAttachment>> supportRulesFriendly, final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy, final Set<List<UnitSupportAttachment>> supportRulesEnemy,
 				final IntegerMap<UnitSupportAttachment> supportLeftEnemyCopy, final Collection<TerritoryEffect> territoryEffects)
 	{
 		int count = 0;
 		for (final Unit unit : units)
 		{
-			final int unitRoll = getRolls(unit, location, id, defend, supportRulesFriendly, supportLeftFriendlyCopy, supportRulesEnemy, supportLeftEnemyCopy, territoryEffects);
+			final int unitRoll = getRolls(unit, location, id, defend, bombing, supportRulesFriendly, supportLeftFriendlyCopy, supportRulesEnemy, supportLeftEnemyCopy, territoryEffects);
 			count += unitRoll;
 		}
 		return count;
 	}
 	
-	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final Collection<TerritoryEffect> territoryEffects)
+	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final boolean bombing,
+				final Collection<TerritoryEffect> territoryEffects)
 	{
-		return getRolls(units, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
+		return getRolls(units, location, id, defend, bombing, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
 					new IntegerMap<UnitSupportAttachment>(), territoryEffects);
 	}
 	
-	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
+	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
 				final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy, final Set<List<UnitSupportAttachment>> supportRulesEnemy,
 				final IntegerMap<UnitSupportAttachment> supportLeftEnemyCopy, final Collection<TerritoryEffect> territoryEffects)
 	{
@@ -1109,7 +1110,12 @@ public class BattleCalculator
 		
 		rolls += DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, false, true);
 		rolls += DiceRoll.getSupport(unit.getType(), supportRulesEnemy, supportLeftEnemyCopy, false, true);
-		// TODO: if we are strategic bombing, we do not care what the strength of the unit is...
+		rolls = Math.max(0, rolls);
+		
+		// if we are strategic bombing, we do not care what the strength of the unit is...
+		if (bombing)
+			return rolls;
+		
 		int strength;
 		if (defend)
 			strength = unitAttachment.getDefense(unit.getOwner());
@@ -1138,9 +1144,9 @@ public class BattleCalculator
 		return rolls;
 	}
 	
-	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final Collection<TerritoryEffect> territoryEffects)
+	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final boolean bombing, final Collection<TerritoryEffect> territoryEffects)
 	{
-		return getRolls(unit, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
+		return getRolls(unit, location, id, defend, bombing, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), new HashSet<List<UnitSupportAttachment>>(),
 					new IntegerMap<UnitSupportAttachment>(), territoryEffects);
 	}
 	

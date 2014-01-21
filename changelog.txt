@@ -1,4 +1,8 @@
 Changes for 1.8.0.0
+* Fixed another bug in getMaxUnitsToBePlaced, it will no longer stop the game if it frees up enough capacity to place but not equal to theoretical maximum. (veqryn)
+
+* Fixed bug where a strategic bombing unit receiving negative support and/or negative terrain modifier would be unable to bomb is its attack power decreased to zero. (veqryn)
+
 * Created new step properties for move delegates, "combinedTurns", which changes some validation for intermeshed player phases, such as allowing air to live if the ally could place a carrier under them. (veqyrn)
 
 * Created new step properties for purchase and place delegates, "bid", which controls if it is a bid phase. (veqyrn)

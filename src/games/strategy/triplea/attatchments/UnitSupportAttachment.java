@@ -51,17 +51,17 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private boolean m_defence = false; // Do Not Export
 	
 	@InternalDoNotExport
-	private boolean m_roll = false; // TODO: finish support attachments
+	private boolean m_roll = false;
 	@InternalDoNotExport
-	private boolean m_strength = false; // TODO: finish support attachments
+	private boolean m_strength = false;
 	
 	private int m_bonus = 0;
 	private int m_number = 0;
 	
 	@InternalDoNotExport
-	private boolean m_allied = false; // TODO: finish support attachments
+	private boolean m_allied = false;
 	@InternalDoNotExport
-	private boolean m_enemy = false; // TODO: finish support attachments
+	private boolean m_enemy = false;
 	
 	private String m_bonusType = null;
 	private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();

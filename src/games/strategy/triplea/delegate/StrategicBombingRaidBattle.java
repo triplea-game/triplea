@@ -574,7 +574,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		
 		private void rollDice(final IDelegateBridge bridge)
 		{
-			final int rollCount = BattleCalculator.getRolls(m_attackingUnits, m_battleSite, m_attacker, false, m_territoryEffects);
+			final int rollCount = BattleCalculator.getRolls(m_attackingUnits, m_battleSite, m_attacker, false, true, m_territoryEffects);
 			if (rollCount == 0)
 			{
 				m_dice = null;
@@ -606,7 +606,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 						final int diceSides = m_data.getDiceSides();
 						for (final Unit u : m_attackingUnits)
 						{
-							final int rolls = BattleCalculator.getRolls(u, m_battleSite, m_attacker, false, m_territoryEffects);
+							final int rolls = BattleCalculator.getRolls(u, m_battleSite, m_attacker, false, true, m_territoryEffects);
 							if (rolls < 1)
 								continue;
 							final UnitAttachment ua = UnitAttachment.get(u.getType());
@@ -644,7 +644,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 					final int diceSides = m_data.getDiceSides();
 					for (final Unit u : m_attackingUnits)
 					{
-						final int rolls = BattleCalculator.getRolls(u, m_battleSite, m_attacker, false, m_territoryEffects);
+						final int rolls = BattleCalculator.getRolls(u, m_battleSite, m_attacker, false, true, m_territoryEffects);
 						if (rolls < 1)
 							continue;
 						final UnitAttachment ua = UnitAttachment.get(u.getType());
@@ -716,7 +716,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 			{
 				final UnitAttachment ua = UnitAttachment.get(attacker.getType());
 				int rolls;
-				rolls = BattleCalculator.getRolls(attacker, m_battleSite, m_attacker, false, m_territoryEffects);
+				rolls = BattleCalculator.getRolls(attacker, m_battleSite, m_attacker, false, true, m_territoryEffects);
 				int costThisUnit = 0;
 				if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 				{

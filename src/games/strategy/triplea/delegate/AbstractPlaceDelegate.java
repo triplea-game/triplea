@@ -296,7 +296,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 			{
 				freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
 				final int newMaxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
-				if (newMaxForThisProducer != maxPlaceable)
+				if (newMaxForThisProducer != maxPlaceable && neededExtra > newMaxForThisProducer)
 				{
 					throw new IllegalStateException("getMaxUnitsToBePlaced originally returned: " + maxPlaceable + ", \r\nWhich is not the same as it is returning after using freePlacementCapacity: "
 								+ newMaxForThisProducer + ", \r\nFor territory: " + at.getName() + ", Current Producer: " + producer.getName() + ", All Producers: " + producers

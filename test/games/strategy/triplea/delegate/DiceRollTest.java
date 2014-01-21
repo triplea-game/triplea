@@ -429,15 +429,15 @@ public class DiceRollTest extends TestCase
 		final Unit bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);
 		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(location);
 		// default 1 roll
-		assertEquals(1, BattleCalculator.getRolls(bombers, location, british, false, territoryEffects));
-		assertEquals(1, BattleCalculator.getRolls(bombers, location, british, true, territoryEffects));
+		assertEquals(1, BattleCalculator.getRolls(bombers, location, british, false, true, territoryEffects));
+		assertEquals(1, BattleCalculator.getRolls(bombers, location, british, true, true, territoryEffects));
 		// hb, for revised 2 on attack, 1 on defence
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
 		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		// lhtr hb, 2 for both
 		m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false, territoryEffects));
-		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, true, territoryEffects));
+		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false, true, territoryEffects));
+		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, true, true, territoryEffects));
 		// non-lhtr, only 1 for defense.
 		// m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.FALSE);
 		// assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false));

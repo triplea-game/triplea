@@ -80,6 +80,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -972,7 +973,7 @@ public class BattleDisplay extends JPanel
 		final JPanel lInstantCasualtiesPanel = new JPanel();
 		lInstantCasualtiesPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		lInstantCasualtiesPanel.setLayout(new GridBagLayout());
-		final JLabel lCausalities = new JLabel("Casualties", JLabel.CENTER);
+		final JLabel lCausalities = new JLabel("Casualties", SwingConstants.CENTER);
 		lCausalities.setFont(getPlayerComponent(m_attacker).getFont().deriveFont(Font.BOLD, 14));
 		lInstantCasualtiesPanel.add(lCausalities, new GridBagConstraints(0, 0, 2, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		lInstantCasualtiesPanel.add(m_casualtiesInstantPanelAttacker, new GridBagConstraints(0, 2, 1, 1, 1.0d, 1.0d, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
@@ -1189,7 +1190,7 @@ class BattleModel extends DefaultTableModel
 			if (m_battleType.isAirPreBattleOrPreRaid())
 				unitPowerAndRollsMap = null;
 			else
-				unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, new ArrayList<Unit>(m_enemyBattleModel.getUnits()), !m_attack, m_player, m_data, m_location,
+				unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, new ArrayList<Unit>(m_enemyBattleModel.getUnits()), !m_attack, false, m_player, m_data, m_location,
 							m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
 		} finally
 		{
