@@ -32,12 +32,16 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -120,7 +124,15 @@ public class PlacePanel extends AbstractMovePanel
 			final String messageText = "Place units in " + territory.getName();
 			if (maxUnits[0] > 0)
 				chooser.setMaxAndShowMaxButton(maxUnits[0]);
-			final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+			final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+			final int availHeight = screenResolution.height - 120;
+			final int availWidth = screenResolution.width - 40;
+			final JScrollPane scroll = new JScrollPane(chooser);
+			scroll.setBorder(BorderFactory.createEmptyBorder());
+			scroll.setPreferredSize(new Dimension(
+						(scroll.getPreferredSize().width > availWidth ? availWidth : (scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
+						(scroll.getPreferredSize().height > availHeight ? availHeight : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
+			final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 			if (option == JOptionPane.OK_OPTION)
 			{
 				final Collection<Unit> choosen = chooser.getSelected();

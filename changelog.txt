@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Adding scroll bars to placement window. (veqryn)
+
 * Fixed another bug in getMaxUnitsToBePlaced, it will no longer stop the game if it frees up enough capacity to place but not equal to theoretical maximum. (veqryn)
 
 * Fixed bug where a strategic bombing unit receiving negative support and/or negative terrain modifier would be unable to bomb is its attack power decreased to zero. (veqryn)
