@@ -115,7 +115,7 @@ public class MoveValidator
 			return result;
 		// dont let the user move out of a battle zone
 		// the exception is air units and unloading units into a battle zone
-		if (MoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false) && Match.someMatch(units, Matches.UnitIsNotAir))
+		if (AbstractMoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false) && Match.someMatch(units, Matches.UnitIsNotAir))
 		{
 			// if the units did not move into the territory, then they can move out
 			// this will happen if there is a submerged sub in the area, and
@@ -124,7 +124,7 @@ public class MoveValidator
 			boolean unitsStartedInTerritory = true;
 			for (final Unit unit : units)
 			{
-				if (MoveDelegate.getRouteUsedToMoveInto(undoableMoves, unit, route.getEnd()) != null)
+				if (AbstractMoveDelegate.getRouteUsedToMoveInto(undoableMoves, unit, route.getEnd()) != null)
 				{
 					unitsStartedInTerritory = false;
 					break;
@@ -134,7 +134,7 @@ public class MoveValidator
 			{
 				final boolean unload = MoveValidator.isUnload(route);
 				final PlayerID endOwner = route.getEnd().getOwner();
-				final boolean attack = !data.getRelationshipTracker().isAllied(endOwner, player) || MoveDelegate.getBattleTracker(data).wasConquered(route.getEnd());
+				final boolean attack = !data.getRelationshipTracker().isAllied(endOwner, player) || AbstractMoveDelegate.getBattleTracker(data).wasConquered(route.getEnd());
 				// unless they are unloading into another battle
 				if (!(unload && attack))
 					return result.setErrorReturnResult("Cannot move units out of battle zone");
@@ -266,7 +266,7 @@ public class MoveValidator
 			{
 				if (current.isWater())
 					continue;
-				if (data.getRelationshipTracker().isAtWar(current.getOwner(), player) || MoveDelegate.getBattleTracker(data).wasConquered(current))
+				if (data.getRelationshipTracker().isAtWar(current.getOwner(), player) || AbstractMoveDelegate.getBattleTracker(data).wasConquered(current))
 				{
 					enemyCount++;
 					allEnemyBlitzable &= Matches.TerritoryIsBlitzable(player, data).match(current);
@@ -287,9 +287,10 @@ public class MoveValidator
 				final Match<Territory> territoryIsNotEnd = new InverseMatch<Territory>(Matches.territoryIs(route.getEnd()));
 				final Match<Territory> nonFriendlyTerritories = new InverseMatch<Territory>(Matches.isTerritoryFriendly(player, data));
 				final Match<Territory> notEndOrFriendlyTerrs = new CompositeMatchAnd<Territory>(nonFriendlyTerritories, territoryIsNotEnd);
-				final Match<Territory> foughtOver = Matches.territoryWasFoughOver(MoveDelegate.getBattleTracker(data));
+				final Match<Territory> foughtOver = Matches.territoryWasFoughOver(AbstractMoveDelegate.getBattleTracker(data));
 				final Match<Territory> notEndWasFought = new CompositeMatchAnd<Territory>(territoryIsNotEnd, foughtOver);
-				final Boolean wasStartFoughtOver = MoveDelegate.getBattleTracker(data).wasConquered(route.getStart()) || MoveDelegate.getBattleTracker(data).wasBlitzed(route.getStart());
+				final Boolean wasStartFoughtOver = AbstractMoveDelegate.getBattleTracker(data).wasConquered(route.getStart())
+							|| AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(route.getStart());
 				nonBlitzingUnits.addAll(Match.getMatches(units,
 							Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
 				for (final Unit unit : nonBlitzingUnits)
@@ -557,8 +558,9 @@ public class MoveValidator
 					{
 						mechanizedSupportAvailable--;
 					}
-					else if (Matches.UnitTypeCanLandOnCarrier.match(unit.getType()) && isAlliedAirDependents(data) && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data)))
-					{
+					else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit) && Matches.UnitTypeCanLandOnCarrier.match(unit.getType())
+								&& isAlliedAirDependents(data) && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data)))
+					{ // this is so that if the unit is owned by any ally and it is cargo, then it will not count. (shouldn't it be a dependant in this case??)
 						continue;
 					}
 					else
@@ -812,7 +814,7 @@ public class MoveValidator
 	{
 		for (final Territory current : route.getMiddleSteps())
 		{
-			if (!Matches.TerritoryIsWater.match(current) && MoveDelegate.getBattleTracker(data).wasConquered(current) && !MoveDelegate.getBattleTracker(data).wasBlitzed(current))
+			if (!Matches.TerritoryIsWater.match(current) && AbstractMoveDelegate.getBattleTracker(data).wasConquered(current) && !AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(current))
 				return true;
 		}
 		return false;
@@ -1093,7 +1095,7 @@ public class MoveValidator
 							}
 						}
 					}
-					else if (!MoveDelegate.getBattleTracker(data).wasConquered(routeEnd))
+					else if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(routeEnd))
 					{
 						// this is an unload to a friendly territory
 						if (isScramblingOrKamikazeAttacksEnabled || Matches.territoryHasEnemyUnits(player, data).match(routeStart))
@@ -1188,7 +1190,7 @@ public class MoveValidator
 			{
 				if (!onlyIgnoredUnitsOnPath(route, player, data, false))
 				{
-					if (!MoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player, route.getEnd().getUnits().getUnits(), data))
+					if (!AbstractMoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player, route.getEnd().getUnits().getUnits(), data))
 						return result.setErrorReturnResult("Cannot load when enemy sea units are present");
 				}
 			}
@@ -1461,7 +1463,7 @@ public class MoveValidator
 				{
 					return "Must own " + borderTerritory.getName() + " to go through " + attachment.getCanalName();
 				}
-				if (MoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
+				if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
 				{
 					return "Cannot move through " + attachment.getCanalName() + " without owning " + borderTerritory.getName() + " for an entire turn";
 				}
