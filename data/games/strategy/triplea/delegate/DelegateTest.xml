@@ -508,6 +508,14 @@
 			<step name="chineseNonCombatMove" delegate="move" player="Chinese"/>
 			<step name="chinesePlace" delegate="place" player="Chinese"/>
 			<step name="chineseEndTurn" delegate="endTurnNoPU" player="Chinese"/>
+			
+			<step name="russianTech" delegate="tech" player="Russians"/>
+			<step name="russianPurchase" delegate="purchase" player="Russians"/>
+			<step name="russianCombatMove" delegate="move" player="Russians"/>
+			<step name="russianBattle" delegate="battle" player="Russians"/>
+			<step name="russianNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+			<step name="russianPlace" delegate="place" player="Russians"/>
+			<step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 							
 		</sequence>
 	</gamePlay>

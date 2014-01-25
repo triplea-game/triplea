@@ -38,6 +38,8 @@ public interface ITestDelegateBridge extends IDelegateBridge
 	
 	public void setStepName(String name);
 	
+	public void setStepName(String name, boolean doNotChangeSequence);
+	
 	public void setRandomSource(IRandomSource randomSource);
 	
 	public void setRemote(IRemotePlayer remote);

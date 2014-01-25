@@ -120,7 +120,7 @@ public class PacificTest extends DelegateTest
 		SZ25 = m_data.getMap().getTerritory("25 Sea Zone");
 		SZ27 = m_data.getMap().getTerritory("27 Sea Zone");
 		bridge = getDelegateBridge(americans);
-		bridge.setStepName("americansCombatMove");
+		bridge.setStepName("japaneseCombatMove");
 		m_delegate = new MoveDelegate();
 		m_delegate.initialize("MoveDelegate", "MoveDelegate");
 		m_delegate.setDelegateBridgeAndPlayer(bridge);
@@ -153,7 +153,8 @@ public class PacificTest extends DelegateTest
 	
 	public void testNonJapanAttack()
 	{
-		bridge.setStepName("NotJapanAttack");
+		bridge.setStepName("japaneseEndTurn"); // this will get us to round 2
+		bridge.setStepName("japaneseBattle");
 		// Defending US infantry hit on a 2 (0 base)
 		final List<Unit> infantryUS = infantry.create(1, americans);
 		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
@@ -216,7 +217,7 @@ public class PacificTest extends DelegateTest
 	
 	public void testCanLand2Airfields()
 	{
-		bridge.setStepName("americansCombatMove");
+		bridge.setStepName("americanCombatMove");
 		final Route route = new Route();
 		route.setStart(US);
 		route.add(SZ5);
@@ -233,7 +234,7 @@ public class PacificTest extends DelegateTest
 	
 	public void testCanLand1AirfieldStart()
 	{
-		bridge.setStepName("americansCombatMove");
+		bridge.setStepName("americanCombatMove");
 		final Route route = new Route();
 		route.setStart(US);
 		route.add(SZ5);
@@ -250,7 +251,7 @@ public class PacificTest extends DelegateTest
 	
 	public void testCanLand1AirfieldEnd()
 	{
-		bridge.setStepName("americansCombatMove");
+		bridge.setStepName("americanCombatMove");
 		final Route route = new Route();
 		route.setStart(US);
 		route.add(SZ5);
@@ -266,7 +267,7 @@ public class PacificTest extends DelegateTest
 	
 	public void testCanMoveNavalBase()
 	{
-		bridge.setStepName("americansNonCombatMove");
+		bridge.setStepName("americanNonCombatMove");
 		final Route route = new Route();
 		route.setStart(SZ5);
 		route.add(SZ7);
@@ -281,10 +282,10 @@ public class PacificTest extends DelegateTest
 	public void testJapaneseDestroyerTransport()
 	{
 		bridge = getDelegateBridge(japanese);
-		bridge.setStepName("japaneseNonCombatMove");
 		m_delegate = new MoveDelegate();
 		m_delegate.initialize("MoveDelegate", "MoveDelegate");
 		m_delegate.setDelegateBridgeAndPlayer(bridge);
+		bridge.setStepName("japaneseNonCombatMove");
 		m_delegate.start();
 		final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 		map.put(infantry, 1);

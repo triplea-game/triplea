@@ -53,7 +53,7 @@ public class LHTRTest extends TestCase
 		delegate.initialize("MoveDelegate", "MoveDelegate");
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
-		bridge.setStepName("GermansNonCombatMove");
+		bridge.setStepName("germanNonCombatMove");
 		delegate.setDelegateBridgeAndPlayer(bridge);
 		delegate.start();
 		final Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
@@ -81,7 +81,7 @@ public class LHTRTest extends TestCase
 		delegate.initialize("MoveDelegate", "MoveDelegate");
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
-		bridge.setStepName("GermansNonCombatMove");
+		bridge.setStepName("germanNonCombatMove");
 		delegate.setDelegateBridgeAndPlayer(bridge);
 		delegate.start();
 		final Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
@@ -105,7 +105,7 @@ public class LHTRTest extends TestCase
 		delegate.initialize("MoveDelegate", "MoveDelegate");
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
-		bridge.setStepName("GermansNonCombatMove");
+		bridge.setStepName("germanNonCombatMove");
 		delegate.setDelegateBridgeAndPlayer(bridge);
 		delegate.start();
 		// if we try to move aa, then the game will ask us if we want to move

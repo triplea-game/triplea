@@ -271,7 +271,7 @@ public class RevisedTest extends TestCase
 		final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
 		battle.setDelegateBridgeAndPlayer(bridge);
 		battle.start();
-		final BattleTracker tracker = MoveDelegate.getBattleTracker(m_data);
+		final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(m_data);
 		// The battle should NOT be empty
 		assertTrue(tracker.hasPendingBattle(sz5, false));
 		assertFalse(tracker.getPendingBattle(sz5, false, null).isEmpty());
@@ -299,7 +299,7 @@ public class RevisedTest extends TestCase
 	public void testBidPlace()
 	{
 		final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
-		bridge.setStepName("placeBid");
+		bridge.setStepName("BidPlace");
 		bidPlaceDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
 		bidPlaceDelegate(m_data).start();
 		// create 20 british infantry
@@ -333,7 +333,7 @@ public class RevisedTest extends TestCase
 		final Route route = new Route(uk, territory("6 Sea Zone", m_data), territory("5 Sea Zone", m_data), germany);
 		final String error = moveDelegate.move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
 		assertNull(error);
-		final BattleTracker tracker = MoveDelegate.getBattleTracker(m_data);
+		final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(m_data);
 		// there should be a bombing battle
 		assertTrue(tracker.hasPendingBattle(germany, true));
 		// there should not be a normal battle
@@ -780,7 +780,7 @@ public class RevisedTest extends TestCase
 		sz50To45.add(sz45);
 		String error = moveDelegate.move(sz50.getUnits().getMatches(Matches.UnitIsAir), sz50To45);
 		assertNull(error);
-		assertEquals(1, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
+		assertEquals(1, AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
 		// we should be able to move the sub out of the sz
 		final Route sz45To50 = new Route();
 		sz45To50.setStart(sz45);
@@ -790,14 +790,14 @@ public class RevisedTest extends TestCase
 		// make sure no error
 		assertNull(error);
 		// make sure the battle is still there
-		assertEquals(1, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
+		assertEquals(1, AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
 		// we should be able to undo the move of the sub
 		error = moveDelegate.undoMove(1);
 		assertNull(error);
 		// undo the move of the fighter, should be no battles now
 		error = moveDelegate.undoMove(0);
 		assertNull(error);
-		assertEquals(0, MoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
+		assertEquals(0, AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattleSites(false).size());
 	}
 	
 	public void testAAOwnership()
@@ -839,7 +839,7 @@ public class RevisedTest extends TestCase
 		assertValid(validResults);
 		moveDelegate(m_data).end();
 		// Set up battle
-		MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
+		MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
 		delegateBridge.setRemote(new DummyTripleAPlayer());
 		// fight
 		ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 5);
@@ -861,7 +861,7 @@ public class RevisedTest extends TestCase
 		validResults = moveDelegate.move(japaneseUnits, new Route(kwang, fic));
 		assertValid(validResults);
 		moveDelegate(m_data).end();
-		battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
+		battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
 		delegateBridge.setRemote(new DummyTripleAPlayer());
 		// fight
 		randomSource = new ScriptedRandomSource(0, 5);
@@ -883,7 +883,7 @@ public class RevisedTest extends TestCase
 		validResults = moveDelegate.move(americanUnits, new Route(china, fic));
 		assertValid(validResults);
 		moveDelegate(m_data).end();
-		battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
+		battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(fic, false, null);
 		delegateBridge.setRemote(new DummyTripleAPlayer());
 		// fight
 		randomSource = new ScriptedRandomSource(0, 5);
@@ -1018,7 +1018,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(Arrays.asList(attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
 					steps.toString());
@@ -1039,7 +1039,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(Arrays.asList(attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
 					steps.toString());
@@ -1060,7 +1060,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES,
@@ -1095,7 +1095,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		/* Here are the exact errata clarifications on how REVISED rules subs work:
 		 * 
@@ -1141,7 +1141,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		/* Here are the exact errata clarifications on how REVISED rules subs work:
 		 * 
@@ -1190,7 +1190,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE,
@@ -1226,7 +1226,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		/* Here are the exact errata clarifications on how REVISED rules subs work:
 		 * 
@@ -1276,7 +1276,7 @@ public class RevisedTest extends TestCase
 		moveDelegate(m_data).start();
 		move(from.getUnits().getUnits(), new Route(from, attacked));
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
@@ -1410,7 +1410,7 @@ public class RevisedTest extends TestCase
 		move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, uk));
 		// fight the battle
 		moveDelegate(m_data).end();
-		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz6, false, null);
+		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(sz6, false, null);
 		// everything hits, this will kill both transports
 		bridge.setRandomSource(new ScriptedRandomSource(0));
 		battle.fight(bridge);

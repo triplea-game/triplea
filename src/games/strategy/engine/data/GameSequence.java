@@ -181,6 +181,11 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		return m_steps.iterator();
 	}
 	
+	public int size()
+	{
+		return m_steps.size();
+	}
+	
 	/** make sure transient lock object is initialized on deserialization. */
 	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{

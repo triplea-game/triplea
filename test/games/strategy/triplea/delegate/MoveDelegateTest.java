@@ -60,7 +60,7 @@ public class MoveDelegateTest extends DelegateTest
 	{
 		super.setUp();
 		m_bridge = super.getDelegateBridge(british);
-		m_bridge.setStepName("BritishCombatMove");
+		m_bridge.setStepName("britishCombatMove");
 		m_delegate = new MoveDelegate();
 		m_delegate.initialize("MoveDelegate", "MoveDelegate");
 		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
@@ -523,7 +523,7 @@ public class MoveDelegateTest extends DelegateTest
 	public void testTransportCantLoadUnloadAfterBattle()
 	{
 		m_bridge = super.getDelegateBridge(russians);
-		m_bridge.setStepName("RussianCombatMove");
+		m_bridge.setStepName("russianCombatMove");
 		westEurope.setOwner(russians);
 		// Attacking force
 		final List<Unit> attackTrns = transport.create(1, russians);
@@ -532,7 +532,7 @@ public class MoveDelegateTest extends DelegateTest
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
 		final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, m_bridge, new MockBattle(balticSeaZone), "", TerritoryEffectHelper.getEffects(balticSeaZone), null);
 		assertEquals(2, roll.getHits());
-		m_bridge.setStepName("RussianNonCombatMove");
+		m_bridge.setStepName("russianNonCombatMove");
 		// Test the move
 		final Collection<Unit> moveInf = infantry.create(2, russians);
 		final Route route = new Route();
@@ -547,7 +547,7 @@ public class MoveDelegateTest extends DelegateTest
 	public void testLoadUnloadLoadMoveTransports()
 	{
 		m_bridge = super.getDelegateBridge(japanese);
-		m_bridge.setStepName("JapaneseCombatMove");
+		m_bridge.setStepName("japaneseCombatMove");
 		m_bridge.setPlayerID(japanese);
 		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
 		m_delegate.start();
@@ -958,7 +958,7 @@ public class MoveDelegateTest extends DelegateTest
 	public void testReloadTransportAfterRetreatAmphibious()
 	{
 		m_bridge = super.getDelegateBridge(british);
-		m_bridge.setStepName("BritishCombatMove");
+		m_bridge.setStepName("britishCombatMove");
 		Route route = new Route();
 		route.setStart(northSea);
 		route.add(balticSeaZone);
@@ -1015,7 +1015,7 @@ public class MoveDelegateTest extends DelegateTest
 	public void testReloadTransportAfterDyingAmphibious()
 	{
 		m_bridge = super.getDelegateBridge(british);
-		m_bridge.setStepName("BritishCombatMove");
+		m_bridge.setStepName("britishCombatMove");
 		Route route = new Route();
 		route.setStart(northSea);
 		route.add(balticSeaZone);
@@ -1072,7 +1072,7 @@ public class MoveDelegateTest extends DelegateTest
 	public void testReloadTransportAfterRetreatAllied()
 	{
 		m_bridge = super.getDelegateBridge(british);
-		m_bridge.setStepName("BritishCombatMove");
+		m_bridge.setStepName("britishCombatMove");
 		Route route = new Route();
 		route.setStart(northSea);
 		route.add(balticSeaZone);
@@ -1126,7 +1126,7 @@ public class MoveDelegateTest extends DelegateTest
 	public void testReloadTransportAfterDyingAllied()
 	{
 		m_bridge = super.getDelegateBridge(british);
-		m_bridge.setStepName("BritishCombatMove");
+		m_bridge.setStepName("britishCombatMove");
 		Route route = new Route();
 		route.setStart(northSea);
 		route.add(balticSeaZone);
@@ -1191,7 +1191,7 @@ public class MoveDelegateTest extends DelegateTest
 	
 	public void testNonCombatAttack()
 	{
-		m_bridge.setStepName("BritishNonCombatMove");
+		m_bridge.setStepName("britishNonCombatMove");
 		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
 		m_delegate.start();
 		final Route route = new Route();
@@ -1205,7 +1205,7 @@ public class MoveDelegateTest extends DelegateTest
 	
 	public void testNonCombatAttackNeutral()
 	{
-		m_bridge.setStepName("BritishNonCombatMove");
+		m_bridge.setStepName("britishNonCombatMove");
 		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
 		m_delegate.start();
 		final Route route = new Route();
@@ -1228,7 +1228,7 @@ public class MoveDelegateTest extends DelegateTest
 		String results = m_delegate.move(getUnits(map, route.getStart()), route);
 		assertValid(results);
 		// go to non combat
-		m_bridge.setStepName("BritishNonCombatMove");
+		m_bridge.setStepName("britishNonCombatMove");
 		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
 		m_delegate.start();
 		// move more into libya
@@ -1243,7 +1243,7 @@ public class MoveDelegateTest extends DelegateTest
 	
 	public void testAACantMoveToConquered()
 	{
-		m_bridge.setStepName("JapaneseCombatMove");
+		m_bridge.setStepName("japaneseCombatMove");
 		m_bridge.setPlayerID(japanese);
 		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
 		m_delegate.start();

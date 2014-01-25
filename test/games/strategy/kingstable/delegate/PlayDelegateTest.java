@@ -51,9 +51,9 @@ public class PlayDelegateTest extends DelegateTest
 	{
 		super.setUp();
 		m_bridgeBlack = new TestDelegateBridge(m_data, black, new DummyDisplay());
-		m_bridgeBlack.setStepName("BlackTurn");
+		m_bridgeBlack.setStepName("BlackTurn", true);
 		m_bridgeWhite = new TestDelegateBridge(m_data, white, new DummyDisplay());
-		m_bridgeWhite.setStepName("WhiteTurn");
+		m_bridgeWhite.setStepName("WhiteTurn", true);
 		// setupTurn(white);
 		setupTurn(black);
 	}
