@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Allowed TripleA clip player to access sound files within a zipped map. (veqryn)
+
 * Fixed bug that allowed fighters to be moved greater than their allowed movement if paired with a carrier. (veqryn)
 
 * Adding scroll bars to placement window. (veqryn)

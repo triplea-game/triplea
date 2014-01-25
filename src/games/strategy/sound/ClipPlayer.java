@@ -22,17 +22,21 @@ import games.strategy.triplea.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -113,7 +117,7 @@ public class ClipPlayer
 	private static ClipPlayer s_clipPlayer;
 	private boolean m_beSilent = false;
 	private final HashSet<String> m_mutedClips = new HashSet<String>();
-	private final HashMap<String, List<File>> m_sounds = new HashMap<String, List<File>>();
+	private final HashMap<String, List<URL>> m_sounds = new HashMap<String, List<URL>>();
 	private final ResourceLoader m_resourceLoader;
 	private final Set<String> m_subFolders = new HashSet<String>();
 	private final ClipCache m_clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time, so we'll be safe and pick 24
@@ -337,11 +341,11 @@ public class ClipPlayer
 			// parse sounds for the first time
 			parseClipPaths(pathName, subFolder);
 		}
-		final List<File> availableSounds = m_sounds.get(pathName);
+		final List<URL> availableSounds = m_sounds.get(pathName);
 		if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty())
 			return null;
 		Collections.shuffle(availableSounds); // we want to pick a random sound from this folder, as users don't like hearing the same ones over and over again
-		final File clipFile = availableSounds.get(0);
+		final URL clipFile = availableSounds.get(0);
 		return m_clipCache.get(clipFile);
 	}
 	
@@ -370,7 +374,7 @@ public class ClipPlayer
 		// resourcePath = resourcePath.replace('/', File.separatorChar);
 		// resourcePath = resourcePath.replace('\\', File.separatorChar);
 		resourcePath = resourcePath.replace('\\', '/');
-		final List<File> availableSounds = new ArrayList<File>();
+		final List<URL> availableSounds = new ArrayList<URL>();
 		for (final String path : resourcePath.split(";"))
 		{
 			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + path));
@@ -389,9 +393,9 @@ public class ClipPlayer
 	 *            (URL uses '/', not File.separator or '\')
 	 * @return
 	 */
-	private List<File> createAndAddClips(final String resourceAndPathURL)
+	private List<URL> createAndAddClips(final String resourceAndPathURL)
 	{
-		final List<File> availableSounds = new ArrayList<File>();
+		final List<URL> availableSounds = new ArrayList<URL>();
 		final URL thisSoundURL = m_resourceLoader.getResource(resourceAndPathURL);
 		if (thisSoundURL == null)
 		{
@@ -400,40 +404,122 @@ public class ClipPlayer
 			return availableSounds;
 		}
 		URI thisSoundURI;
-		File thisSound;
+		File thisSoundFile;
+		// we are checking to see if this is a file, to see if it is a directory, or a sound, or a zipped directory, or a zipped sound. There might be a better way to do this...
 		try
 		{
 			thisSoundURI = thisSoundURL.toURI();
-			thisSound = new File(thisSoundURI);
-		} catch (final URISyntaxException e)
-		{
-			thisSound = new File(thisSoundURL.getPath());
-		}
-		if (thisSound == null || !thisSound.exists())
-		{
-			return availableSounds;
-		}
-		if (!thisSound.isDirectory())
-		{
-			if (!(thisSound.getName().endsWith(".wav") || thisSound.getName().endsWith(".au") || thisSound.getName().endsWith(".aiff") || thisSound.getName().endsWith(".midi")))
-				return availableSounds;
-			if (testClipSuccessful(thisSound))
-				availableSounds.add(thisSound);
-		}
-		else
-		{
-			for (final File sound : thisSound.listFiles())
+			try
 			{
-				if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff") || sound.getName().endsWith(".midi")))
-					continue;
-				if (testClipSuccessful(sound))
-					availableSounds.add(sound);
+				thisSoundFile = new File(thisSoundURI);
+			} catch (final Exception e)
+			{
+				thisSoundFile = new File(thisSoundURL.getPath());
+			}
+		} catch (final URISyntaxException e1)
+		{
+			thisSoundFile = new File(thisSoundURL.getPath());
+		}
+		if (thisSoundFile != null)
+		{
+			if (!thisSoundFile.exists())
+			{
+				// final long startTime = System.currentTimeMillis();
+				// we are probably using zipped sounds. there might be a better way to do this...
+				final String soundFilePath = thisSoundURL.getPath();
+				if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.indexOf(".zip!") != -1)
+				{
+					// so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test if it exists, if it starts with that it doesn't exist
+					final int index1 = Math.max(0, Math.min(soundFilePath.length(), soundFilePath.indexOf("file:") != -1 ? soundFilePath.indexOf("file:") + 5 : 0));
+					final String zipFilePath = soundFilePath.substring(index1, Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
+					if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip"))
+					{
+						ZipFile zf = null;
+						try
+						{
+							final File zipFile = new File(zipFilePath);
+							if (zipFile != null && zipFile.exists())
+							{
+								zf = new ZipFile(zipFile);
+								if (zf != null)
+								{
+									final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
+									while (zipEnumeration.hasMoreElements())
+									{
+										final ZipEntry zipElement = zipEnumeration.nextElement();
+										if (zipElement != null && zipElement.getName() != null && zipElement.getName().indexOf(resourceAndPathURL) != -1 &&
+													(zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
+																|| zipElement.getName().endsWith(".aiff") || zipElement.getName().endsWith(".midi")))
+										{
+											try
+											{
+												final URL zipSoundURL = m_resourceLoader.getResource(zipElement.getName());
+												if (zipSoundURL == null)
+													continue;
+												// System.out.println("Zipped Sound URL: " + zipSoundURL);
+												if (testClipSuccessful(zipSoundURL))
+													availableSounds.add(zipSoundURL);
+											} catch (final Exception e)
+											{
+												e.printStackTrace();
+											}
+										}
+									}
+								}
+							}
+						} catch (final Exception e)
+						{
+							System.out.println(e.getMessage());
+						} finally
+						{
+							if (zf != null)
+							{
+								try
+								{
+									zf.close();
+								} catch (final IOException e)
+								{
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				}
+				// System.out.println(System.currentTimeMillis() - startTime);
+			}
+			else
+			{
+				// we must be using unzipped sounds
+				if (!thisSoundFile.isDirectory())
+				{
+					if (!(thisSoundFile.getName().endsWith(".wav") || thisSoundFile.getName().endsWith(".au") || thisSoundFile.getName().endsWith(".aiff") || thisSoundFile.getName().endsWith(".midi")))
+						return availableSounds;
+					if (testClipSuccessful(thisSoundURL))
+						availableSounds.add(thisSoundURL);
+				}
+				else
+				{
+					for (final File sound : thisSoundFile.listFiles())
+					{
+						if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff") || sound.getName().endsWith(".midi")))
+							continue;
+						try
+						{
+							final URL individualSoundURL = sound.toURI().toURL();
+							if (testClipSuccessful(individualSoundURL))
+								availableSounds.add(individualSoundURL);
+						} catch (final MalformedURLException e)
+						{
+							System.out.println("Error " + e.getMessage() + " with sound file: " + sound.getPath());
+						}
+					}
+				}
 			}
 		}
 		return availableSounds;
 	}
 	
-	static synchronized Clip createClip(final File clipFile, final boolean testOnly)
+	static synchronized Clip createClip(final URL clipFile, final boolean testOnly)
 	{
 		try
 		{
@@ -464,7 +550,7 @@ public class ClipPlayer
 		return null;
 	}
 	
-	static synchronized boolean testClipSuccessful(final File clipFile)
+	static synchronized boolean testClipSuccessful(final URL clipFile)
 	{
 		Clip clip = null;
 		boolean successful = false;
@@ -523,7 +609,7 @@ public class ClipPlayer
 				if (file.getName().indexOf("svn") != -1)
 					continue;
 				final String name = folder.getName() + "/" + file.getName();
-				final List<File> availableSounds = new ArrayList<File>();
+				final List<URL> availableSounds = new ArrayList<URL>();
 				availableSounds.addAll(getInstance().createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + name));
 				getInstance().m_sounds.put(name, availableSounds);
 			}
@@ -538,7 +624,9 @@ public class ClipPlayer
 				{
 					if (file.getName().indexOf("svn") != -1)
 						continue;
-					play(folder.getName() + "/" + file.getName(), null);
+					final String soundPath = folder.getName() + "/" + file.getName();
+					System.out.println(soundPath);
+					play(soundPath, null);
 					try
 					{
 						Thread.sleep(4000);
@@ -555,8 +643,8 @@ public class ClipPlayer
 
 class ClipCache
 {
-	private final HashMap<File, Clip> m_clipMap = new HashMap<File, Clip>();
-	private final List<File> m_cacheOrder = new ArrayList<File>();
+	private final HashMap<URL, Clip> m_clipMap = new HashMap<URL, Clip>();
+	private final List<URL> m_cacheOrder = new ArrayList<URL>();
 	private final int MAXSIZE;
 	
 	ClipCache(final int max)
@@ -566,7 +654,7 @@ class ClipCache
 		MAXSIZE = max;
 	}
 	
-	public synchronized Clip get(final File file)
+	public synchronized Clip get(final URL file)
 	{
 		Clip clip = m_clipMap.get(file);
 		if (clip != null)
@@ -577,7 +665,7 @@ class ClipCache
 		}
 		if (m_clipMap.size() >= MAXSIZE)
 		{
-			final File leastPlayed = m_cacheOrder.get(0);
+			final URL leastPlayed = m_cacheOrder.get(0);
 			// System.out.println("Removing " + leastPlayed + " and adding " + file);
 			final Clip leastClip = m_clipMap.remove(leastPlayed);
 			leastClip.stop();
