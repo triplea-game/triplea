@@ -546,6 +546,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			{
 				List<Unit> attackingUnitsNeedToBeAdded = new ArrayList<Unit>(attackingUnits);
 				attackingUnitsNeedToBeAdded.removeAll(battle.getAttackingUnits());
+				attackingUnitsNeedToBeAdded.removeAll(battle.getDependentUnits(battle.getAttackingUnits()));
 				if (territory.isWater())
 					attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
 				else
@@ -815,12 +816,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			// find who we should ask
 			PlayerID defender = null;
 			if (m_battleTracker.hasPendingBattle(to, false))
-				defender = MustFightBattle.findDefender(to, m_player, data);
+				defender = AbstractBattle.findDefender(to, m_player, data);
 			for (final Territory from : scrambleTerrs.get(to))
 			{
 				if (defender == null)
 				{
-					defender = MustFightBattle.findDefender(from, m_player, data);
+					defender = AbstractBattle.findDefender(from, m_player, data);
 				}
 				// find how many is the max this territory can scramble
 				final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
@@ -1158,7 +1159,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			final Collection<Unit> defendingAir = entry.getValue();
 			if (defendingAir == null || defendingAir.isEmpty())
 				continue;
-			final PlayerID defender = MustFightBattle.findDefender(battleSite, m_player, data);
+			final PlayerID defender = AbstractBattle.findDefender(battleSite, m_player, data);
 			// Get all land territories where we can land
 			final Set<Territory> neighbors = data.getMap().getNeighbors(battleSite);
 			final CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(defender, data));

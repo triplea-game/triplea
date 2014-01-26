@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Fixing a bug where attacking with a carrier loaded with allied fighters, then retreating, would prevent those fighters from being able to participate in battles for the rest of the game. (veqryn)
+
 * Allowed TripleA clip player to access sound files within a zipped map. (veqryn)
 
 * Fixed bug that allowed fighters to be moved greater than their allowed movement if paired with a carrier. (veqryn)

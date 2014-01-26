@@ -247,7 +247,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Map<Unit, Collection<Unit>> dependencies = transporting(units);
 		if (isAlliedAirDependents())
 		{
-			// TODO: this is causing a bug where the fighters can not participate in later battles, even during their own turn...
 			dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
 			for (final Unit carrier : dependencies.keySet())
 			{
@@ -3048,9 +3047,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				bridge.addChange(change);
 			}
 		}
-		final CompositeChange clearAlliedAir = clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
-		if (!clearAlliedAir.isEmpty())
-			bridge.addChange(clearAlliedAir);
 		bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
 		showCasualties(bridge);
 		if (!m_headless)
@@ -3118,6 +3114,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		clearWaitingToDie(bridge);
 		m_isOver = true;
 		m_battleTracker.removeBattle(this);
+		final CompositeChange clearAlliedAir = clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
+		if (!clearAlliedAir.isEmpty())
+			bridge.addChange(clearAlliedAir);
 	}
 	
 	@Override
