@@ -37,7 +37,7 @@ public class LobbyGameTableModel extends AbstractTableModel
 	
 	enum Column
 	{
-		Host, Name, GV, Round, Players, PW, EV, Started, Status, Comments, GUID
+		Host, Name, GV, Round, Players, P, B, EV, Started, Status, Comments, GUID
 	}
 	
 	private final IMessenger m_messenger;
@@ -174,8 +174,10 @@ public class LobbyGameTableModel extends AbstractTableModel
 				return description.getGameName();
 			case Players:
 				return description.getPlayerCount();
-			case PW:
+			case P:
 				return (description.getPassworded() ? "*" : "");
+			case B:
+				return (description.getBotSupportEmail() != null && description.getBotSupportEmail().length() > 0 ? "*" : "");
 			case GV:
 				return description.getGameVersion();
 			case EV:

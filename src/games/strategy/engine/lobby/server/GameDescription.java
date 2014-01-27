@@ -13,6 +13,8 @@
  */
 package games.strategy.engine.lobby.server;
 
+import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 
@@ -76,6 +78,8 @@ public class GameDescription implements Externalizable, Cloneable
 	private boolean m_passworded;
 	private String m_engineVersion;
 	private String m_gameVersion;
+	
+	private String m_botSupportEmail = HeadlessGameServer.getInstance() != null ? System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, "") : "";
 	
 	// if you add a field, add it to write/read object as well for Externalizable
 	public GameDescription()
@@ -196,6 +200,11 @@ public class GameDescription implements Externalizable, Cloneable
 		return m_gameVersion;
 	}
 	
+	public String getBotSupportEmail()
+	{
+		return m_botSupportEmail;
+	}
+	
 	public String getRound()
 	{
 		return m_round;
@@ -270,6 +279,7 @@ public class GameDescription implements Externalizable, Cloneable
 		m_passworded = in.readBoolean();
 		m_engineVersion = in.readUTF();
 		m_gameVersion = in.readUTF();
+		m_botSupportEmail = in.readUTF();
 	}
 	
 	public void writeExternal(final ObjectOutput out) throws IOException
@@ -287,6 +297,7 @@ public class GameDescription implements Externalizable, Cloneable
 		out.writeBoolean(m_passworded);
 		out.writeUTF(m_engineVersion);
 		out.writeUTF(m_gameVersion);
+		out.writeUTF(m_botSupportEmail);
 	}
 	
 	@Override

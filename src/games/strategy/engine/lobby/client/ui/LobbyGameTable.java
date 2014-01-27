@@ -13,12 +13,19 @@
  */
 package games.strategy.engine.lobby.client.ui;
 
+import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.GUID;
+import games.strategy.ui.TableSorter;
+
+import java.awt.Component;
+import java.awt.Font;
 
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 public class LobbyGameTable extends JTable
@@ -26,6 +33,8 @@ public class LobbyGameTable extends JTable
 	private static final long serialVersionUID = 8632519876114231003L;
 	private GUID m_selectedGame;
 	private boolean inTableChange = false;
+	private final Font m_defaultFont = UIManager.getDefaults().getFont("Table.font");
+	private final Font m_italicFont = new Font(m_defaultFont.getFamily(), Font.ITALIC, m_defaultFont.getSize());
 	
 	public LobbyGameTable(final TableModel model)
 	{
@@ -41,9 +50,30 @@ public class LobbyGameTable extends JTable
 		});
 	}
 	
+	@Override
+	public Component prepareRenderer(final TableCellRenderer renderer, final int rowIndex, final int vColIndex)
+	{
+		final Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+		if (this.dataModel instanceof TableSorter)
+		{
+			final TableSorter tmodel = (TableSorter) this.dataModel;
+			if (tmodel.getTableModel() instanceof LobbyGameTableModel)
+			{
+				final LobbyGameTableModel lmodel = (LobbyGameTableModel) tmodel.getTableModel();
+				final int row = tmodel.getUnderlyingModelRowAt(rowIndex);
+				final GameDescription gd = lmodel.get(row);
+				if (gd.getBotSupportEmail() != null && gd.getBotSupportEmail().length() > 0)
+					c.setFont(m_italicFont);
+				else
+					c.setFont(m_defaultFont);
+			}
+		}
+		return c;
+	}
+	
 	/**
 	 * The sorting model will loose the currently selected row.
-	 * So we need to resotre the selection after it has updated
+	 * So we need to restore the selection after it has updated
 	 */
 	@Override
 	public void tableChanged(final TableModelEvent e)

@@ -136,7 +136,7 @@ public class HeadlessGameServer
 	{
 		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY,
 					GameRunner2.TRIPLEA_PORT_PROPERTY, GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT, GameRunner2.LOBBY_GAME_COMMENTS,
-					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY };
+					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL };
 	}
 	
 	private static void usage()
@@ -153,10 +153,9 @@ public class HeadlessGameServer
 					+ "   " + GameRunner2.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
-					+ "   " + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=<password>\n"
 					+ "\n"
 					+ "   You must start the Name and HostedBy with \"Bot\".\n"
-					+ "   Game Comments must have this string in it: \"automated_hosting\".\n"
+					+ "   Game Comments must have this string in it: \"automated_host\".\n"
 					+ "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error.\n");
 	}
 	
@@ -258,10 +257,17 @@ public class HeadlessGameServer
 			instance.m_iGame = serverGame;
 			if (serverGame != null)
 			{
-				System.out.println("Game running: " + instance.m_iGame.isGameSequenceRunning() + ", GameOver: " + instance.m_iGame.isGameOver() + ", Players: "
+				System.out.println("Game starting up: " + instance.m_iGame.isGameSequenceRunning() + ", GameOver: " + instance.m_iGame.isGameOver() + ", Players: "
 							+ instance.m_iGame.getPlayerManager().toString());
 			}
 		}
+	}
+	
+	public static synchronized void log(final String stdout)
+	{
+		final HeadlessGameServer instance = getInstance();
+		if (instance != null)
+			System.out.println(stdout);
 	}
 	
 	ServerGame getIGame()
@@ -692,9 +698,9 @@ public class HeadlessGameServer
 							+ " must start with \"Bot\" and be at least 7 characters long and be the same.");
 				printUsage = true;
 			}
-			if (comments.indexOf("automated_hosting") == -1)
+			if (comments.indexOf("automated_host") == -1)
 			{
-				System.out.println("Invalide argument: " + GameRunner2.LOBBY_GAME_COMMENTS + " must contain the string \"automated_hosting\".");
+				System.out.println("Invalide argument: " + GameRunner2.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
 				printUsage = true;
 			}
 			if (email.length() < 3 || !Util.isMailValid(email))

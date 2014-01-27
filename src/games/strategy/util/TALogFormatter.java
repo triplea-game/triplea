@@ -67,8 +67,12 @@ public class TALogFormatter extends Formatter
 		builder.append(shortName);
 		builder.append(" -> ");
 		builder.append(record.getMessage());
-		if (!builder.toString().endsWith("\n"))
-			builder.append("\n");
+		if (!builder.toString().endsWith("\r\n"))
+		{
+			if (builder.toString().endsWith("\n"))
+				builder.setLength(builder.toString().length() - 1);
+			builder.append("\r\n");
+		}
 		if (record.getThrown() != null)
 		{
 			final StringWriter writer = new StringWriter();
@@ -77,8 +81,12 @@ public class TALogFormatter extends Formatter
 			pw.flush();
 			builder.append(writer.getBuffer());
 		}
-		if (!builder.toString().endsWith("\n"))
-			builder.append("\n");
+		if (!builder.toString().endsWith("\r\n"))
+		{
+			if (builder.toString().endsWith("\n"))
+				builder.setLength(builder.toString().length() - 1);
+			builder.append("\r\n");
+		}
 		return builder.toString();
 	}
 }

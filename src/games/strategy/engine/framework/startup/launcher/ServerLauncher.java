@@ -95,42 +95,45 @@ public class ServerLauncher extends AbstractLauncher
 		m_inGameLobbyWatcher = watcher;
 	}
 	
+	private boolean testShouldWeAbort()
+	{
+		if (m_gameData == null || m_serverModel == null)
+			return true;
+		else
+		{
+			final Map<String, String> players = m_serverModel.getPlayers();
+			if (players == null || players.isEmpty())
+				return true;
+			else
+			{
+				for (final String player : players.keySet())
+				{
+					if (players.get(player) == null)
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	protected void launchInNewThread(final Component parent)
 	{
 		try
 		{
-			m_ui = parent;
-			m_serverReady = new ServerReady(m_clientCount);
-			m_serverModel.setServerLauncher(this);
-			m_serverModel.allowRemoveConnections();
 			if (m_inGameLobbyWatcher != null)
 			{
 				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
 			}
+			if (m_headless)
+				HeadlessGameServer.log("Game Status: Launching");
+			m_ui = parent;
+			m_serverReady = new ServerReady(m_clientCount);
+			m_serverModel.setServerLauncher(this);
+			m_serverModel.allowRemoveConnections();
 			s_logger.fine("Starting server");
 			m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
-			if (m_gameData == null || m_serverModel == null)
-			{
-				m_abortLaunch = true;
-			}
-			else
-			{
-				final Map<String, String> players = m_serverModel.getPlayers();
-				if (players == null || players.isEmpty())
-					m_abortLaunch = true;
-				else
-				{
-					for (final String player : players.keySet())
-					{
-						if (players.get(player) == null)
-						{
-							m_abortLaunch = true;
-							break;
-						}
-					}
-				}
-			}
+			m_abortLaunch = testShouldWeAbort();
 			byte[] gameDataAsBytes;
 			try
 			{
@@ -144,6 +147,10 @@ public class ServerLauncher extends AbstractLauncher
 			final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
 			m_serverGame = new ServerGame(m_gameData, localPlayerSet, m_remotelPlayers, messengers);
 			m_serverGame.setInGameLobbyWatcher(m_inGameLobbyWatcher);
+			if (m_headless)
+			{
+				HeadlessGameServer.setServerGame(m_serverGame);
+			}
 			// tell the clients to start,
 			// later we will wait for them to all
 			// signal that they are ready.
@@ -188,9 +195,7 @@ public class ServerLauncher extends AbstractLauncher
 				m_abortLaunch = true;
 			}
 			if (m_headless)
-			{
-				HeadlessGameServer.setServerGame(m_serverGame);
-			}
+				HeadlessGameServer.log("Game Successfully Loaded. " + (m_abortLaunch ? "Aborting Launch." : "Starting Game."));
 			m_serverReady.await();
 			m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
 			final Thread t = new Thread("Triplea, start server game")
@@ -201,6 +206,7 @@ public class ServerLauncher extends AbstractLauncher
 					try
 					{
 						m_isLaunching = false;
+						m_abortLaunch = testShouldWeAbort();
 						if (!m_abortLaunch)
 						{
 							if (useSecureRandomSource)
@@ -209,6 +215,8 @@ public class ServerLauncher extends AbstractLauncher
 							}
 							if (m_gameLoadingWindow != null)
 								m_gameLoadingWindow.doneWait();
+							if (m_headless)
+								HeadlessGameServer.log("Starting Game Delegates.");
 							m_serverGame.startGame();
 						}
 						else
@@ -289,6 +297,7 @@ public class ServerLauncher extends AbstractLauncher
 					{
 						// tell headless server to wait for new connections:
 						HeadlessGameServer.waitForUsersHeadlessInstance();
+						HeadlessGameServer.log("Game Status: Waiting For Players");
 					}
 				}
 			};
@@ -301,6 +310,8 @@ public class ServerLauncher extends AbstractLauncher
 			{
 				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);
 			}
+			if (m_headless)
+				HeadlessGameServer.log("Game Status: In Progress");
 		}
 	}
 	

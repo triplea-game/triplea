@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -312,9 +313,24 @@ public class TableSorter extends AbstractTableModel
 		return tableModel.isCellEditable(modelIndex(row), column);
 	}
 	
+	public int getUnderlyingModelRowAt(final int row)
+	{
+		return modelIndex(row);
+	}
+	
 	public Object getValueAt(final int row, final int column)
 	{
 		return tableModel.getValueAt(modelIndex(row), column);
+	}
+	
+	public List<Object> getRowAt(final int row)
+	{
+		final List<Object> objects = new ArrayList<Object>();
+		for (int i = 0; i < tableModel.getColumnCount(); i++)
+		{
+			objects.add(getValueAt(row, i));
+		}
+		return objects;
 	}
 	
 	@Override
@@ -524,7 +540,7 @@ public class TableSorter extends AbstractTableModel
 			if (c instanceof JLabel)
 			{
 				final JLabel l = (JLabel) c;
-				l.setHorizontalTextPosition(JLabel.LEFT);
+				l.setHorizontalTextPosition(SwingConstants.LEFT);
 				final int modelColumn = table.convertColumnIndexToModel(column);
 				l.setIcon(getHeaderRendererIcon(modelColumn, l.getFont().getSize()));
 			}
