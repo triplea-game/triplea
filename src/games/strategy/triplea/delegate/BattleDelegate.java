@@ -646,7 +646,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			return;
 		final PlayerID player = aBridge.getPlayerID();
 		final TransportTracker transportTracker = new TransportTracker();
-		final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnitsAndIsOwnedByTheirEnemyAndIsNotUnownedWater(player, data))
+		final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(player, data))
 					.iterator();
 		// all territories that contain enemy units, where the territory is owned by an enemy of these units
 		while (battleTerritories.hasNext())

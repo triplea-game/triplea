@@ -1787,7 +1787,7 @@ public class Matches
 					return false;
 				if (!t.getUnits().someMatch(Matches.UnitCanProduceUnits))
 					return false;
-				final BattleTracker bt = MoveDelegate.getBattleTracker(data);
+				final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
 				if (bt == null || bt.wasConquered(t))
 					return false;
 				return true;
@@ -2368,7 +2368,7 @@ public class Matches
 					return false;
 				
 				// was conquered but not blitzed
-				if (MoveDelegate.getBattleTracker(data).wasConquered(t) && !MoveDelegate.getBattleTracker(data).wasBlitzed(t))
+				if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(t) && !AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(t))
 					return false;
 				
 				final CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
@@ -2648,7 +2648,7 @@ public class Matches
 			@Override
 			public boolean match(final Territory t)
 			{
-				return t.getUnits().someMatch(enemyUnit(player, data)) && t.getUnits().someMatch(Matches.UnitIsLand);
+				return t.getUnits().someMatch(new CompositeMatchAnd<Unit>(enemyUnit(player, data), UnitIsLand));
 			}
 		};
 	}
@@ -2678,7 +2678,7 @@ public class Matches
 	}
 	
 	/** The territory is owned by the enemy of those enemy units (ie: probably owned by you or your ally, but not necessarily so in an FFA type game) and is not unowned water. */
-	public static Match<Territory> territoryHasEnemyUnitsAndIsOwnedByTheirEnemyAndIsNotUnownedWater(final PlayerID player, final GameData data)
+	public static Match<Territory> territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
@@ -2690,7 +2690,7 @@ public class Matches
 				if (t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull())
 					return false;
 				final Set<PlayerID> enemies = new HashSet<PlayerID>();
-				for (final Unit u : t.getUnits().getMatches(enemyUnit(player, data)))
+				for (final Unit u : t.getUnits().getMatches(new CompositeMatchAnd<Unit>(enemyUnit(player, data), UnitIsNotAir)))
 				{
 					enemies.add(u.getOwner());
 				}
@@ -3892,7 +3892,7 @@ public class Matches
 			{
 				if (!Matches.TerritoryIsLand.match(t))
 					return false;
-				final BattleTracker bt = MoveDelegate.getBattleTracker(data);
+				final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
 				if (bt.wasConquered(t))
 					return false;
 				// I can't think of why we have this... If there is a pending battle, and the owner is enemy, then we will be prevented from landing when we check the owner. And if the owner is us, we will be prevented from landing if we have conquered it.
