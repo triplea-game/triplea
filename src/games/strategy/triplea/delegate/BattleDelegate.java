@@ -562,6 +562,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			{
 				final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
 				battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.STALEMATE, results, 0);
+				battle.cancelBattle(aBridge);
 				battleTracker.removeBattle(battle);
 				continue;
 			}
@@ -575,6 +576,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 					{
 						final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
 						battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+						battle.cancelBattle(aBridge);
 						battleTracker.removeBattle(battle);
 					}
 					continue;
@@ -590,6 +592,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 						{
 							final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
 							battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+							battle.cancelBattle(aBridge);
 							battleTracker.removeBattle(battle);
 							// TODO perhaps try to reverse the setting of 0 movement left
 							/*CompositeChange change = new CompositeChange();
@@ -610,6 +613,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 						{
 							final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
 							battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+							battle.cancelBattle(aBridge);
 							battleTracker.removeBattle(battle);
 						}
 						continue;
@@ -621,6 +625,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 						{
 							final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
 							battleTracker.getBattleRecords(data).addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+							battle.cancelBattle(aBridge);
 							battleTracker.removeBattle(battle);
 						}
 						continue;

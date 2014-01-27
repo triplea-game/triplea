@@ -751,6 +751,7 @@ public class BattleTracker implements java.io.Serializable
 			{
 				final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
 				getBattleRecords(data).addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
+				bombingBattle.cancelBattle(bridge);
 				removeBattle(bombingBattle);
 				throw new IllegalStateException("Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
 			}

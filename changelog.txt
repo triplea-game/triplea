@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Fixed order of firing in ww2v3 and Global 1940, so that defending subs that are not sneak attacking will fire after all attackers have fired. (veqryn)
+
 * Fixing a bug where attacking with a carrier loaded with allied fighters, then retreating, would prevent those fighters from being able to participate in battles for the rest of the game. (veqryn)
 
 * Allowed TripleA clip player to access sound files within a zipped map. (veqryn)

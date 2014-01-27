@@ -243,7 +243,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			m_amphibiousLandAttackers.addAll(Match.getMatches(attackingUnits, Matches.UnitIsLand));
 			m_isAmphibious = true;
 		}
-		// TODO add dependencies for transported units?
 		final Map<Unit, Collection<Unit>> dependencies = transporting(units);
 		if (isAlliedAirDependents())
 		{
@@ -599,7 +598,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			if (Match.someMatch(m_attackingUnits, Matches.UnitIsTransport) || Match.someMatch(m_defendingUnits, Matches.UnitIsTransport))
 				steps.add(REMOVE_UNESCORTED_TRANSPORTS);
 		}
-		final boolean defenderSubsFireFirst = defenderSubsFireFirst();
+		final boolean defenderSubsFireFirst = defenderSubsFireFirst(); // if attacker has no sneak attack subs, then defendering sneak attack subs fire first and remove casualties
 		if (defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
 		{
 			steps.add(m_defender.getName() + SUBS_FIRE);
@@ -621,12 +620,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
 		}
+		// ww2v2 rules, all subs fire FIRST in combat, regardless of presence of destroyers.
+		final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst && !games.strategy.triplea.Properties.getWW2V2(m_data) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
 		// defender subs sneak attack
 		// Defending subs have no sneak attack in Pacific/Europe Theaters or if Destroyers are present
 		final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack3();
 		if (m_battleSite.isWater())
 		{
-			if (!defendingSubsFireWithAllDefendersAlways && !defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+			if (!defendingSubsFireWithAllDefendersAlways && !defendingSubsFireWithAllDefenders && !defenderSubsFireFirst && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
 			{
 				steps.add(m_defender.getName() + SUBS_FIRE);
 				steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
@@ -660,12 +661,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			steps.add(m_defender.getName() + SELECT_CASUALTIES);
 		}
 		// classic rules, subs fire with all defenders
+		// also, ww2v3/global rules, defending subs without sneak attack fire with all defenders
 		if (m_battleSite.isWater())
 		{
 			final Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
 			units.addAll(m_defendingUnits);
 			units.addAll(m_defendingWaitingToDie);
-			if (defendingSubsFireWithAllDefendersAlways && !defenderSubsFireFirst && Match.someMatch(units, Matches.UnitIsSub))
+			if (Match.someMatch(units, Matches.UnitIsSub) && !defenderSubsFireFirst && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways))
 			{
 				steps.add(m_defender.getName() + SUBS_FIRE);
 				steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
@@ -1188,7 +1190,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				attackSubs(bridge, returnFireAgainstAttackingSubs);
 			}
 		});
-		if (defendingSubsSneakAttack3() && !defenderSubsFireFirst())
+		final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst() && !games.strategy.triplea.Properties.getWW2V2(m_data) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
+		if (defendingSubsSneakAttack3() && !defenderSubsFireFirst() && !defendingSubsFireWithAllDefenders)
 		{
 			steps.add(new DefendSubs()
 			{
@@ -1224,7 +1227,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				attackNonSubs(bridge);
 			}
 		});
-		if (!defendingSubsSneakAttack3() && !defenderSubsFireFirst())
+		if (!defenderSubsFireFirst() && (!defendingSubsSneakAttack3() || defendingSubsFireWithAllDefenders))
 		{
 			steps.add(new DefendSubs()
 			{
@@ -3117,6 +3120,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final CompositeChange clearAlliedAir = clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
 		if (!clearAlliedAir.isEmpty())
 			bridge.addChange(clearAlliedAir);
+	}
+	
+	@Override
+	public void cancelBattle(final IDelegateBridge bridge)
+	{
+		endBattle(bridge);
 	}
 	
 	@Override

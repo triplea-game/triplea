@@ -870,8 +870,8 @@ public class WW2V3_41_Test extends TestCase
 		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
-					Arrays.asList(attacker + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, defender + SUBS_FIRE,
-								attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
+					Arrays.asList(attacker + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
+								defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
 		bridge.setRemote(new DummyTripleAPlayer());
 		// attacking subs sneak attack and hit
 		// no chance to return fire
@@ -904,7 +904,7 @@ public class WW2V3_41_Test extends TestCase
 		final MustFightBattle battle = (MustFightBattle) AbstractMoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false, null);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
-					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
+					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
 								defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
 		bridge.setRemote(new DummyTripleAPlayer()
 		{

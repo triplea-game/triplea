@@ -138,6 +138,10 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		return m_isOver;
 	}
 	
+	public void cancelBattle(final IDelegateBridge bridge)
+	{
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#isBombingRun()

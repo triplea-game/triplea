@@ -161,6 +161,11 @@ public interface IBattle extends java.io.Serializable
 	public void removeAttack(Route route, Collection<Unit> units);
 	
 	/**
+	 * If we need to cancel the battle, we may need to perform some cleanup.
+	 */
+	public void cancelBattle(IDelegateBridge bridge);
+	
+	/**
 	 * Test-method after an attack has been removed.
 	 * 
 	 * @return whether there are still units left to fight
