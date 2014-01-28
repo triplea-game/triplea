@@ -1,7 +1,7 @@
 package games.strategy.engine.framework;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
-import games.strategy.debug.Console;
+import games.strategy.debug.DebugUtils;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
@@ -112,9 +112,10 @@ import javax.swing.border.EtchedBorder;
  */
 public class HeadlessGameServer
 {
-	/*static
+	/* 
 	{
-		// must be very first thing in the class:
+		// we are not using this, in case the user wants to have a host bot with the host bot ui. so instead let them set it with: java -Djava.awt.headless=true
+		// must be static, must be very first thing in the class:
 		System.setProperty("java.awt.headless", "true");
 		// System.out.println("Headless AWT Test: " + java.awt.GraphicsEnvironment.isHeadless());
 	}*/
@@ -604,6 +605,7 @@ public class HeadlessGameServer
 	
 	public static void main(final String[] args)
 	{
+		System.out.println("Headless AWT Test: " + java.awt.GraphicsEnvironment.isHeadless());
 		handleCommandLineArgs(args);
 		// grab these before we override them with the loggers
 		final InputStream in = System.in;
@@ -1917,12 +1919,12 @@ class HeadlessGameServerConsole
 	
 	private void threads()
 	{
-		out.println(Console.getThreadDumps());
+		out.println(DebugUtils.getThreadDumps());
 	}
 	
 	private void memory()
 	{
-		out.println(Console.getMemory());
+		out.println(DebugUtils.getMemory());
 	}
 	
 	public void println(final String string)

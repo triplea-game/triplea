@@ -258,7 +258,7 @@ public class ServerLauncher extends AbstractLauncher
 						// TODO: figure out why we are getting any errors that make us end up here! We should NEVER end up here.
 						e.printStackTrace(System.err);
 						if (m_headless)
-							System.out.println(games.strategy.debug.Console.getThreadDumps());
+							System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
 						m_serverGame.stopGame();
 					}
 					// either game ended, or aborted, or a player left or disconnected

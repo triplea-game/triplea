@@ -13,7 +13,7 @@
  */
 package games.strategy.engine.lobby.server.headless;
 
-import games.strategy.debug.Console;
+import games.strategy.debug.DebugUtils;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ui.DBExplorerPanel;
 import games.strategy.engine.lobby.server.userDB.Database;
@@ -149,12 +149,12 @@ public class HeadlessLobbyConsole
 	
 	private void threads()
 	{
-		out.println(Console.getThreadDumps());
+		out.println(DebugUtils.getThreadDumps());
 	}
 	
 	private void memory()
 	{
-		out.println(Console.getMemory());
+		out.println(DebugUtils.getMemory());
 	}
 	
 	private void backup()

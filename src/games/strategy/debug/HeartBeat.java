@@ -34,7 +34,7 @@ public class HeartBeat implements IHeartBeat
 	public String getDebugInfo()
 	{
 		if (MessageContext.getSender().equals(m_serverNode))
-			return Console.getDebugReport();
+			return DebugUtils.getDebugReportWithFramesAndWindows();
 		else
 			return "";
 	}
