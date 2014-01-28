@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Added an updated engine jar for 1.7.0.5 so that the new engine can play old 1.7.0.x savegames. (veqryn)
+
 * Changed game setup screen so that the buttons for "Choose Game", "Load Saved Game", and "Game Options", will no longer be greyed out for Clients who have connected to an automated hosting bot. Those buttons will perform the same as if the client used the "Network" menu instead. (veqryn)
 
 * Adding a menu option to change an automated hosting bot's game options, and creating backend to process this request. (veqryn)
