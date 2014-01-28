@@ -1,4 +1,8 @@
 Changes for 1.8.0.0
+* Forcing automated hosting bots have have a "support email address", so that when a bot has hung or stopped responding, a moderator in the lobby can email the bot's owner to notify them of the situation. (veqryn)
+
+* Forcing automated hosting bots to have no password, to start with the string "Bot", and have "automated_host" somewhere in comments. (veqryn)
+
 * Adding a column to the lobby called "B" for "Bots", which will show which hosts are automated hosting bots. They will also show up as italics. (veqryn)
 
 * Fixed order of firing in ww2v3 and Global 1940, so that defending subs that are not sneak attacking will fire after all attackers have fired. (veqryn)

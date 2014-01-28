@@ -31,15 +31,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -159,21 +166,30 @@ public class LobbyGamePanel extends JPanel
 		
 		m_gameTable.addMouseListener(new MouseListener()
 		{
-			public void mouseClicked(final MouseEvent event)
+			public void mouseClicked(final MouseEvent e)
 			{
-				if (event.getClickCount() == 2)
+				if (e.getClickCount() == 2)
 				{
 					joinGame();
 				}
+				mouseOnGamesList(e);
 			}
 			
 			public void mousePressed(final MouseEvent e)
 			{
-			} // ignore
+				// right clicks do not 'select' a row by default. so force a row selection at the mouse point.
+				final int r = m_gameTable.rowAtPoint(e.getPoint());
+				if (r >= 0 && r < m_gameTable.getRowCount())
+					m_gameTable.setRowSelectionInterval(r, r);
+				else
+					m_gameTable.clearSelection();
+				mouseOnGamesList(e);
+			}
 			
 			public void mouseReleased(final MouseEvent e)
 			{
-			} // ignore
+				mouseOnGamesList(e);
+			}
 			
 			public void mouseEntered(final MouseEvent e)
 			{
@@ -183,6 +199,108 @@ public class LobbyGamePanel extends JPanel
 			{
 			} // ignore
 		});
+	}
+	
+	private void mouseOnGamesList(final MouseEvent e)
+	{
+		if (!e.isPopupTrigger())
+			return;
+		if (!SwingUtilities.isRightMouseButton(e))
+			return;
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final JPopupMenu menu = new JPopupMenu();
+		boolean hasActions = false;
+		for (final Action a : getGamesListRightClickActions(description))
+		{
+			if (a == null)
+				continue;
+			// if (hasActions)
+			// menu.addSeparator();
+			hasActions = true;
+			menu.add(a);
+		}
+		if (hasActions)
+			menu.show(m_gameTable, e.getX(), e.getY());
+	}
+	
+	private List<Action> getGamesListRightClickActions(final GameDescription description)
+	{
+		final List<Action> rVal = new ArrayList<Action>();
+		rVal.add(getJoinGameAction());
+		rVal.add(getHostGameAction());
+		if (isAdmin())
+		{
+			rVal.add(getHostSupportInfoAction(description));
+			rVal.add(getBootGameAction());
+		}
+		return rVal;
+	}
+	
+	private Action getHostSupportInfoAction(final GameDescription description)
+	{
+		final String supportEmail = description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+		if (supportEmail.length() == 0)
+			return null;
+		final String text = "Support Email for this Host is as follows. "
+					+ "\n(Please copy the email address below and manually email them ONLY if something is seriously "
+					+ "\nwrong with the host, like it needs to be restarted because it is down and not working at all.) "
+					+ "\n\nEmail: \n" + supportEmail;
+		return new AbstractAction("Show Host Support Information/Email")
+		{
+			private static final long serialVersionUID = -8291828709227364205L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final JTextPane textPane = new JTextPane();
+				textPane.setEditable(false);
+				textPane.setText(text);
+				JOptionPane.showMessageDialog(null, textPane, "Host Support Info", JOptionPane.INFORMATION_MESSAGE);
+			}
+		};
+	}
+	
+	private Action getJoinGameAction()
+	{
+		return new AbstractAction("Join Game")
+		{
+			private static final long serialVersionUID = 1238500960279152158L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				joinGame();
+			}
+		};
+	}
+	
+	private Action getHostGameAction()
+	{
+		return new AbstractAction("Host Game")
+		{
+			private static final long serialVersionUID = 2256758711590833222L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				hostGame();
+			}
+		};
+	}
+	
+	private Action getBootGameAction()
+	{
+		return new AbstractAction("Boot Game")
+		{
+			private static final long serialVersionUID = 2256758711590833222L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				bootGame();
+			}
+		};
 	}
 	
 	private void joinGame()
@@ -211,11 +329,11 @@ public class LobbyGamePanel extends JPanel
 	
 	private void bootGame()
 	{
-		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disconnect the selected game?", "Remove Game From Lobby", JOptionPane.OK_CANCEL_OPTION);
-		if (result != JOptionPane.OK_OPTION)
-			return;
 		final int selectedIndex = m_gameTable.getSelectedRow();
 		if (selectedIndex == -1)
+			return;
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disconnect the selected game?", "Remove Game From Lobby", JOptionPane.OK_CANCEL_OPTION);
+		if (result != JOptionPane.OK_OPTION)
 			return;
 		// we sort the table, so get the correct index
 		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);

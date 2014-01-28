@@ -156,7 +156,8 @@ public class HeadlessGameServer
 					+ "\n"
 					+ "   You must start the Name and HostedBy with \"Bot\".\n"
 					+ "   Game Comments must have this string in it: \"automated_host\".\n"
-					+ "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error.\n");
+					+ "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error."
+					+ " (For example they may email you when your host is down and needs to be restarted.)\n");
 	}
 	
 	public static synchronized HeadlessGameServer getInstance()
@@ -708,6 +709,7 @@ public class HeadlessGameServer
 				System.out.println("Invalide argument: " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
 				printUsage = true;
 			}
+			// no passwords allowed for bots
 		}
 		if (printUsage)
 		{
