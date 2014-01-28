@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
@@ -106,12 +107,33 @@ public class GameDataManager
 								+ "<br>However, this TripleA can not open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
 								+ "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
 								+ "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
-								+ "<br>Your current instance will not be closed (you may choose to close it). Please report any bugs or issues."
+								+ "<br><b>You may choose to either Close or Keep the current instance of TripleA!</b> (If hosting, you must close it). Please report any bugs or issues."
 								+ "<br><br>Do you wish to continue?</html>";
-					final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to open old Save Game?", JOptionPane.YES_NO_OPTION);
-					if (answer != JOptionPane.YES_OPTION)
+					
+					final String yesClose = "Yes & Close Current";
+					final String yesOpen = "Yes & Do Not Close";
+					final String cancel = "Cancel";
+					final Object[] options = new Object[] { yesClose, yesOpen, cancel };
+					final JOptionPane pane = new JOptionPane(messageString, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, yesClose);
+					final JDialog window = pane.createDialog(null, "Run old jar to open old Save Game?");
+					window.setVisible(true);
+					final Object buttonPressed = pane.getValue();
+					if (buttonPressed == null || buttonPressed.equals(cancel))
+					{
 						return null;
+					}
+					final boolean closeCurrentInstance = buttonPressed.equals(yesClose);
 					TripleAProcessRunner.startGame(savegamePath, newClassPath, null);
+					if (closeCurrentInstance)
+					{
+						try
+						{
+							Thread.sleep(1000);
+						} catch (final InterruptedException e)
+						{
+						}
+						System.exit(0);
+					}
 				} catch (final IOException e)
 				{
 					if (GameRunner2.areWeOldExtraJar())
