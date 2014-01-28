@@ -21,10 +21,20 @@ package games.strategy.engine.data.properties;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Properties of the current game. <br>
@@ -63,9 +73,9 @@ public class GameProperties extends GameDataComponent
 	 * @param value
 	 *            property
 	 */
-	// todo should only accept serializable, not object
 	public void set(final String key, final Object value)
 	{
+		// TODO should only accept serializable, not object
 		if (value == null)
 		{
 			m_constantProperties.remove(key);
@@ -147,5 +157,140 @@ public class GameProperties extends GameDataComponent
 			}
 		}
 		return properties;
+	}
+	
+	/*public Map<String, Object> getEditablePropertiesMap()
+	{
+		final LinkedHashMap<String, Object> currentPropertiesMap = new LinkedHashMap<String, Object>();
+		for (final IEditableProperty property : getEditableProperties())
+		{
+			currentPropertiesMap.put(property.getName(), property.getValue());
+		}
+		return currentPropertiesMap;
+	}*/
+	
+	public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties) throws IOException
+	{
+		// write internally first in case of error
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream(5000);
+		ObjectOutputStream outStream = null;
+		GZIPOutputStream zippedOut = null;
+		try
+		{
+			outStream = new ObjectOutputStream(bos);
+			outStream.writeObject(editableProperties);
+			// final byte[] byteArray = bos.toByteArray();
+			zippedOut = new GZIPOutputStream(sink);
+			zippedOut.write(bos.toByteArray());// now write to file
+			zippedOut.flush();
+		} finally
+		{
+			try
+			{
+				if (outStream != null)
+					outStream.close();
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+			try
+			{
+				bos.close();
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+			try
+			{
+				zippedOut.close();
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<IEditableProperty> streamToIEditablePropertiesList(final byte[] byteArray) throws IOException, ClassNotFoundException, ClassCastException
+	{
+		ByteArrayInputStream byteStream = null;
+		InputStream inputStream = null;
+		ObjectInputStream objectStream = null;
+		List<IEditableProperty> editableProperties = null;
+		try
+		{
+			byteStream = new ByteArrayInputStream(byteArray);
+			inputStream = new BufferedInputStream(byteStream);
+			objectStream = new ObjectInputStream(new GZIPInputStream(inputStream));
+			editableProperties = (List<IEditableProperty>) objectStream.readObject();
+		} finally
+		{
+			if (byteStream != null)
+			{
+				try
+				{
+					byteStream.close();
+				} catch (final IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if (inputStream != null)
+			{
+				try
+				{
+					inputStream.close();
+				} catch (final IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if (objectStream != null)
+			{
+				try
+				{
+					objectStream.close();
+				} catch (final IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return editableProperties;
+	}
+	
+	public static void applyByteMapToChangeProperties(final byte[] byteArray, final GameProperties gamePropertiesToBeChanged)
+	{
+		List<IEditableProperty> editableProperties = null;
+		try
+		{
+			editableProperties = streamToIEditablePropertiesList(byteArray);
+		} catch (final ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		} catch (final ClassCastException e)
+		{
+			e.printStackTrace();
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+		applyListToChangeProperties(editableProperties, gamePropertiesToBeChanged);
+	}
+	
+	public static void applyListToChangeProperties(final List<IEditableProperty> editableProperties, final GameProperties gamePropertiesToBeChanged)
+	{
+		if (editableProperties == null || editableProperties.isEmpty())
+			return;
+		for (final IEditableProperty prop : editableProperties)
+		{
+			if (prop == null || prop.getName() == null)
+				continue;
+			final IEditableProperty p = gamePropertiesToBeChanged.m_editableProperties.get(prop.getName());
+			if (p != null && prop.getName().equals(p.getName()) && p.validate(prop.getValue()))
+			{
+				p.setValue(prop.getValue());
+			}
+		}
 	}
 }

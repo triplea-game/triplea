@@ -23,6 +23,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -157,7 +158,7 @@ public class PlacePanel extends AbstractMovePanel
 			Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
 			if (territory.isWater())
 			{
-				if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers() || isLHTR_Carrier_Production_Rules()))
+				if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers() || isLHTR_Carrier_Production_Rules() || GameStepPropertiesHelper.isBid(getData())))
 					units = Match.getMatches(units, Matches.UnitIsSea);
 				else
 				{

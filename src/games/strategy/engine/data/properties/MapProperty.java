@@ -27,29 +27,35 @@ public class MapProperty<T, U> extends AEditableProperty
 	private Map<T, U> m_map;
 	final List<IEditableProperty> m_properties = new ArrayList<IEditableProperty>();
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public MapProperty(final String name, final String description, final Map<T, U> map)
 	{
 		super(name, description);
 		m_map = map;
+		resetProperties(map, m_properties, name, description);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void resetProperties(final Map<T, U> map, final List<IEditableProperty> properties, final String name, final String description)
+	{
+		properties.clear();
 		for (final Entry<T, U> entry : map.entrySet())
 		{
 			final String key = (String) entry.getKey();
 			final U value = entry.getValue();
 			if (value instanceof Boolean)
-				m_properties.add(new BooleanProperty(key, description, ((Boolean) value)));
+				properties.add(new BooleanProperty(key, description, ((Boolean) value)));
 			else if (value instanceof Color)
-				m_properties.add(new ColorProperty(key, description, ((Color) value)));
+				properties.add(new ColorProperty(key, description, ((Color) value)));
 			else if (value instanceof File)
-				m_properties.add(new FileProperty(key, description, ((File) value)));
+				properties.add(new FileProperty(key, description, ((File) value)));
 			else if (value instanceof String)
-				m_properties.add(new StringProperty(key, description, ((String) value)));
+				properties.add(new StringProperty(key, description, ((String) value)));
 			else if (value instanceof Collection || value instanceof List || value instanceof Set)
-				m_properties.add(new CollectionProperty(name, description, ((Collection) value)));
+				properties.add(new CollectionProperty(name, description, ((Collection) value)));
 			else if (value instanceof Integer)
-				m_properties.add(new NumberProperty(key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
+				properties.add(new NumberProperty(key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
 			else if (value instanceof Double)
-				m_properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
+				properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
 			else
 				throw new IllegalArgumentException("Can not instantiate MapProperty with: " + value.getClass().getCanonicalName());
 		}
@@ -75,11 +81,13 @@ public class MapProperty<T, U> extends AEditableProperty
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_map = (Map<T, U>) value;
+		resetProperties(m_map, m_properties, this.getName(), this.getDescription());
 	}
 	
 	public void setValueT(final Map<T, U> value)
 	{
 		m_map = value;
+		resetProperties(m_map, m_properties, this.getName(), this.getDescription());
 	}
 	
 	public JComponent getEditorComponent()
@@ -95,4 +103,47 @@ public class MapProperty<T, U> extends AEditableProperty
 		return ui;
 	}
 	
+	public boolean validate(final Object value)
+	{
+		if (value == null)
+			return false; // is this ok? no idea, no maps or anything use this
+		if (Map.class.isAssignableFrom(value.getClass()))
+		{
+			try
+			{
+				@SuppressWarnings("unchecked")
+				final Map<T, U> test = (Map<T, U>) value;
+				if (m_map != null && !m_map.isEmpty() && test != null && !test.isEmpty())
+				{
+					T key = null;
+					U val = null;
+					for (final Entry<T, U> entry : m_map.entrySet())
+					{
+						if (entry.getValue() != null && entry.getKey() != null)
+						{
+							key = entry.getKey();
+							val = entry.getValue();
+							break;
+						}
+					}
+					if (key != null && val != null)
+					{
+						for (final Entry<T, U> entry : test.entrySet())
+						{
+							if (entry.getKey() != null && entry.getValue() != null
+										&& (!entry.getKey().getClass().isAssignableFrom(key.getClass()) || !entry.getValue().getClass().isAssignableFrom(val.getClass())))
+								return false;
+						}
+					}
+				}
+				final List<IEditableProperty> testProps = new ArrayList<IEditableProperty>();
+				resetProperties(test, testProps, this.getName(), this.getDescription());
+			} catch (final Exception e)
+			{
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 }

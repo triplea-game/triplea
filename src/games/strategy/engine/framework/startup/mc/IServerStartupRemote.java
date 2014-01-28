@@ -56,4 +56,8 @@ public interface IServerStartupRemote extends IRemote
 	public void changeToGameSave(final byte[] bytes, final String fileName);
 	
 	public byte[] getSaveGame();
+	
+	public byte[] getGameOptions();
+	
+	public void changeToGameOptions(final byte[] bytes);
 }

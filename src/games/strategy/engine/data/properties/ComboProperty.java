@@ -99,4 +99,22 @@ public class ComboProperty<T> extends AEditableProperty
 		});
 		return box;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (m_possibleValues == null || m_possibleValues.isEmpty())
+			return false;
+		try
+		{
+			if (m_possibleValues.contains(value))
+				return true;
+		} catch (final ClassCastException e)
+		{
+			return false;
+		} catch (final NullPointerException e)
+		{
+			return false;
+		}
+		return false;
+	}
 }

@@ -63,9 +63,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 			else
 				return null;
 		}
-		// we can place on territories we own
 		else
 		{
+			// we can place on territories we own
 			if (Match.someMatch(units, Matches.UnitIsSea))
 				return "Cant place sea units on land";
 			else if (!to.getOwner().equals(player))

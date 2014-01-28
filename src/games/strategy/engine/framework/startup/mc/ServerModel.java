@@ -19,6 +19,8 @@ import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner2;
@@ -347,6 +349,33 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			return bytes;
 		}
 		
+		public byte[] getGameOptions()
+		{
+			byte[] bytes = null;
+			if (m_data == null || m_data.getProperties() == null || m_data.getProperties().getEditableProperties() == null || m_data.getProperties().getEditableProperties().isEmpty())
+				return bytes;
+			final List<IEditableProperty> currentEditableProperties = m_data.getProperties().getEditableProperties();
+			final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
+			try
+			{
+				GameProperties.toOutputStream(sink, currentEditableProperties);
+				bytes = sink.toByteArray();
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+				// throw new IllegalStateException(e);
+			} finally
+			{
+				try
+				{
+					sink.close();
+				} catch (final IOException e)
+				{
+				}
+			}
+			return bytes;
+		}
+		
 		public Set<String> getAvailableGames()
 		{
 			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
@@ -425,6 +454,22 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 						e.printStackTrace();
 					}
 				}
+			}
+		}
+		
+		public void changeToGameOptions(final byte[] bytes)
+		{
+			// TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
+			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+			if (headless == null || bytes == null)
+				return;
+			System.out.println("Changing to user game options.");
+			try
+			{
+				headless.loadGameOptions(bytes);
+			} catch (final Exception e)
+			{
+				e.printStackTrace();
 			}
 		}
 	};

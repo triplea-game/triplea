@@ -63,4 +63,11 @@ public class BooleanProperty extends AEditableProperty
 		});
 		return box;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (value instanceof Boolean)
+			return true;
+		return false;
+	}
 }

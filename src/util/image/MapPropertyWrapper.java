@@ -262,6 +262,11 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		return new Tuple<PropertiesUI, List<MapPropertyWrapper>>(ui, properties);
 	}
 	
+	public boolean validate(final Object value)
+	{
+		return m_property.validate(value);
+	}
+	
 	public static void main(final String[] args)
 	{
 		final MapProperties mapProperties = new MapProperties();

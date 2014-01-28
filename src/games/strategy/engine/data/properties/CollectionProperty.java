@@ -85,4 +85,13 @@ public class CollectionProperty<T> extends AEditableProperty
 		});
 		return table;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (value == null)
+			return false;
+		if (List.class.isAssignableFrom(value.getClass()))
+			return true;
+		return false;
+	}
 }

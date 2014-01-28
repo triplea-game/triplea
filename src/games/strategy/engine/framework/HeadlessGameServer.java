@@ -8,6 +8,7 @@ import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -224,6 +225,23 @@ public class HeadlessGameServer
 				return;
 			}
 			m_gameSelectorModel.load(data, fileName);
+		}
+	}
+	
+	public synchronized void loadGameOptions(final byte[] bytes)
+	{
+		// don't change mid-game
+		if (m_setupPanelModel.getPanel() != null && m_iGame == null)
+		{
+			if (bytes == null || bytes.length == 0)
+				return;
+			final GameData data = m_gameSelectorModel.getGameData();
+			if (data == null)
+				return;
+			final GameProperties props = data.getProperties();
+			if (props == null)
+				return;
+			GameProperties.applyByteMapToChangeProperties(bytes, props);
 		}
 	}
 	

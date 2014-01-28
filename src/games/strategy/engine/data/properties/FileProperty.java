@@ -215,4 +215,20 @@ public class FileProperty extends AEditableProperty
 		}
 		return null;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (value == null)
+			return true;
+		if (value instanceof File)
+		{
+			final File file = (File) value;
+			for (final String suff : m_acceptableSuffixes)
+			{
+				if (file.getName() != null && file.getName().endsWith(suff))
+					return true;
+			}
+		}
+		return false;
+	}
 }

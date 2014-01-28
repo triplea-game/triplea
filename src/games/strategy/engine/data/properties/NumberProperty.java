@@ -74,4 +74,15 @@ public class NumberProperty extends AEditableProperty
 		});
 		return field;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (value instanceof Integer)
+		{
+			final int i = ((Integer) value);
+			if (i <= m_max && i >= m_min)
+				return true;
+		}
+		return false;
+	}
 }

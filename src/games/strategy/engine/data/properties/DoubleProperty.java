@@ -75,4 +75,22 @@ public class DoubleProperty extends AEditableProperty
 		});
 		return field;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (value instanceof Double)
+		{
+			double d;
+			try
+			{
+				d = roundToPlace((Double) value, m_places, BigDecimal.ROUND_FLOOR);
+			} catch (final Exception e)
+			{
+				return false;
+			}
+			if (d <= m_max && d >= m_min)
+				return true;
+		}
+		return false;
+	}
 }

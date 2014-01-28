@@ -72,4 +72,13 @@ public class StringProperty extends AEditableProperty
 	{
 		m_value = (String) value;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (value == null)
+			return true;
+		if (value instanceof String)
+			return true;
+		return false;
+	}
 }

@@ -199,7 +199,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			removeAirThatCantLand();
 		// WW2V2/WW2V3, fires at end of combat move
 		// WW2V1, fires at end of non combat move
-		if (GameStepPropertiesHelper.isFireRocketsAfter(data))
+		if (GameStepPropertiesHelper.isFireRockets(data))
 		{
 			if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID()))
 			{

@@ -884,9 +884,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		final Collection<Unit> placeableUnits = new ArrayList<Unit>();
 		// Land units wont do
 		placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsSea));
+		final boolean isBid = GameStepPropertiesHelper.isBid(getData());
 		// if can place new fighters on NEW CVs ---OR--- can place new fighters on OLD CVs
-		if (((canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier))
-					|| ((canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
+		if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier))
+					|| ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
 		{
 			final CompositeMatch<Unit> airThatCanLandOnCarrier = new CompositeMatchAnd<Unit>();
 			airThatCanLandOnCarrier.add(Matches.UnitIsAir);

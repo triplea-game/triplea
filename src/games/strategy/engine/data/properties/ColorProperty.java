@@ -129,4 +129,13 @@ public class ColorProperty extends AEditableProperty
 		});
 		return label;
 	}
+	
+	public boolean validate(final Object value)
+	{
+		if (value == null)
+			return true;
+		if (value instanceof Color)
+			return true;
+		return false;
+	}
 }

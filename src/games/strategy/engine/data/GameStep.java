@@ -48,7 +48,7 @@ public class GameStep extends GameDataComponent
 	public static final String PROPERTY_turnSummaryPlayers = "turnSummaryPlayers";
 	public static final String PROPERTY_combatMove = "combatMove";
 	public static final String PROPERTY_nonCombatMove = "nonCombatMove";
-	public static final String PROPERTY_fireRocketsAfter = "fireRocketsAfter";
+	public static final String PROPERTY_fireRockets = "fireRockets";
 	public static final String PROPERTY_repairUnits = "repairUnits";
 	public static final String PROPERTY_giveBonusMovement = "giveBonusMovement";
 	public static final String PROPERTY_removeAirThatCanNotLand = "removeAirThatCanNotLand";

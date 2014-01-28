@@ -698,7 +698,7 @@
 									For any "Move" delegate (such as MoveDelegate or SpecialMoveDelegate or etc):
 										combatMove 					= true/false do we have combat after this phase? this will affect movement validation and certain unit property recordings such as submerged, amphibious, etc. (default is true if delegate ends with "CombatMove" but not "NonCombatMove")
 										nonCombatMove 				= true/false do we have combat before this phase? this will affect movement validation. (default is true if delegate ends with "NonCombatMove")
-										fireRocketsAfter 			= true/false (default depends on game option [ww2v2 and ww2v3 have this after delegates that end with "CombatMove" but not "NonCombatMove"])
+										fireRockets 				= true/false (default depends on game option [ww2v2 and ww2v3 have this after delegates that end with "CombatMove" but not "NonCombatMove"])
 										giveBonusMovement 			= true/false resets and gives bonus movement (default is true at start of phase if delegate ends with "CombatMove" but not "NonCombatMove")
 										resetUnitState 				= true/false resets movement points and other unit states such as submerged, amphibious, unload/load, etc. (default at end of phase depends if delegate ends with "NonCombatMove")
 										repairUnits 				= true/false will repair own or all damaged units (default depends on game option, but would normally be start of combat move)

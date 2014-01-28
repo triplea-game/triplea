@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.networkMaintenance.ChangeGameOptionsClientAction;
 import games.strategy.engine.framework.networkMaintenance.ChangeGameToSaveGameClientAction;
 import games.strategy.engine.framework.networkMaintenance.ChangeToAutosaveClientAction;
 import games.strategy.engine.framework.networkMaintenance.GetGameSaveClientAction;
@@ -288,6 +289,7 @@ public class ClientSetupPanel extends SetupPanel
 			return null;
 		final List<Action> rVal = new ArrayList<Action>();
 		rVal.add(new SetMapClientAction(this, m_model.getMessenger(), m_model.getAvailableServerGames()));
+		rVal.add(new ChangeGameOptionsClientAction(this, m_model.getServerStartupRemote()));
 		rVal.add(new ChangeGameToSaveGameClientAction(this, m_model.getMessenger()));
 		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
 		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));

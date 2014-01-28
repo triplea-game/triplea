@@ -36,6 +36,12 @@ public interface IEditableProperty
 	public Object getValue();
 	
 	/**
+	 * @param value
+	 * @return is the object a valide object for setting as our value
+	 */
+	public boolean validate(Object value);
+	
+	/**
 	 * Set the value of the property (programmatically), GUI would normally use the editor
 	 * 
 	 * @param value

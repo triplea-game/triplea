@@ -62,7 +62,7 @@ public class PropertiesUI extends JPanel
 		m_properties = properties;
 		for (final IEditableProperty property : m_properties)
 		{
-			// Limit it to 10 rows then start a new column
+			// Limit it to 14 rows then start a new column
 			// Don't know if this is the most elegant solution, but it works.
 			if (m_nextRow >= 15)
 			{
