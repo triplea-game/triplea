@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Changed game setup screen so that the buttons for "Choose Game", "Load Saved Game", and "Game Options", will no longer be greyed out for Clients who have connected to an automated hosting bot. Those buttons will perform the same as if the client used the "Network" menu instead. (veqryn)
+
 * Adding a menu option to change an automated hosting bot's game options, and creating backend to process this request. (veqryn)
 
 * Forcing automated hosting bots have have a "support email address", so that when a bot has hung or stopped responding, a moderator in the lobby can email the bot's owner to notify them of the situation. (veqryn)

@@ -6,6 +6,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
@@ -16,6 +17,7 @@ import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -35,6 +37,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -165,21 +168,61 @@ public class GameSelectorPanel extends JPanel implements Observer
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				selectGameFile(false);
+				if (canSelectLocalGameData())
+				{
+					selectGameFile(false);
+				}
+				else if (canChangeHostBotGameData())
+				{
+					final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+					if (clientModelForHostBots != null)
+					{
+						clientModelForHostBots.getHostBotSetMapClientAction(GameSelectorPanel.this).actionPerformed(e);
+					}
+				}
 			}
 		});
 		m_loadSavedGame.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				selectGameFile(true);
+				if (canSelectLocalGameData())
+				{
+					selectGameFile(true);
+				}
+				else if (canChangeHostBotGameData())
+				{
+					final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+					if (clientModelForHostBots != null)
+					{
+						final JPopupMenu menu = new JPopupMenu();
+						menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction(GameSelectorPanel.this));
+						menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+						menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+						menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+						menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
+						final Point point = m_loadSavedGame.getLocation();
+						menu.show(GameSelectorPanel.this, point.x + m_loadSavedGame.getWidth(), point.y);
+					}
+				}
 			}
 		});
 		m_gameOptions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				selectGameOptions();
+				if (canSelectLocalGameData())
+				{
+					selectGameOptions();
+				}
+				else if (canChangeHostBotGameData())
+				{
+					final ClientModel clientModelForHostBots = m_model.getClientModelForHostBots();
+					if (clientModelForHostBots != null)
+					{
+						clientModelForHostBots.getHostBotChangeGameOptionsClientAction(GameSelectorPanel.this).actionPerformed(e);
+					}
+				}
 			}
 		});
 	}
@@ -268,11 +311,12 @@ public class GameSelectorPanel extends JPanel implements Observer
 			});
 			return;
 		}
-		final boolean canSelectGameData = m_model != null && m_model.canSelect();
-		m_loadSavedGame.setEnabled(canSelectGameData);
-		m_loadNewGame.setEnabled(canSelectGameData);
+		final boolean canSelectGameData = canSelectLocalGameData();
+		final boolean canChangeHostBotGameData = canChangeHostBotGameData();
+		m_loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
+		m_loadNewGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
 		// Disable game options if there are none.
-		if (canSelectGameData && m_model.getGameData() != null && m_model.getGameData().getProperties().getEditableProperties().size() > 0)
+		if (canChangeHostBotGameData || (canSelectGameData && m_model.getGameData() != null && m_model.getGameData().getProperties().getEditableProperties().size() > 0))
 			m_gameOptions.setEnabled(true);
 		else
 			m_gameOptions.setEnabled(false);
@@ -284,6 +328,16 @@ public class GameSelectorPanel extends JPanel implements Observer
 			m_loadNewGame.setToolTipText("This is disabled on older engine jars, please start new games with the latest version of TripleA.");
 			// m_loadSavedGame.setToolTipText("This is disabled on older engine jars, please open savegames from the latest version of TripleA.");
 		}
+	}
+	
+	private boolean canSelectLocalGameData()
+	{
+		return m_model != null && m_model.canSelect();
+	}
+	
+	private boolean canChangeHostBotGameData()
+	{
+		return m_model != null && m_model.isHostHeadlessBot();
 	}
 	
 	public void update(final Observable o, final Object arg)

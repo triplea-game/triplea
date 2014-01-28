@@ -56,6 +56,8 @@ public class GameSelectorModel extends Observable
 	private String m_gameRound = "";
 	private String m_fileName = "";
 	private boolean m_canSelect = true;
+	private boolean m_isHostHeadlessBot = false;
+	private ClientModel m_clientModelForHostBots = null; // just for host bots, so we can get the actions for loading/saving games on the bots from this model
 	
 	public GameSelectorModel()
 	{
@@ -241,6 +243,33 @@ public class GameSelectorModel extends Observable
 	public synchronized boolean canSelect()
 	{
 		return m_canSelect;
+	}
+	
+	public void setIsHostHeadlessBot(final boolean aBool)
+	{
+		synchronized (this)
+		{
+			m_isHostHeadlessBot = aBool;
+		}
+		notifyObs();
+	}
+	
+	public synchronized boolean isHostHeadlessBot()
+	{
+		return m_isHostHeadlessBot;
+	}
+	
+	public void setClientModelForHostBots(final ClientModel clientModel)
+	{
+		synchronized (this)
+		{
+			m_clientModelForHostBots = clientModel;
+		}
+	}
+	
+	public synchronized ClientModel getClientModelForHostBots()
+	{
+		return m_clientModelForHostBots;
 	}
 	
 	/**

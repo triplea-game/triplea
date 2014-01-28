@@ -2,11 +2,6 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.IGameLoader;
-import games.strategy.engine.framework.networkMaintenance.ChangeGameOptionsClientAction;
-import games.strategy.engine.framework.networkMaintenance.ChangeGameToSaveGameClientAction;
-import games.strategy.engine.framework.networkMaintenance.ChangeToAutosaveClientAction;
-import games.strategy.engine.framework.networkMaintenance.GetGameSaveClientAction;
-import games.strategy.engine.framework.networkMaintenance.SetMapClientAction;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -284,17 +279,19 @@ public class ClientSetupPanel extends SetupPanel
 	@Override
 	public List<Action> getUserActions()
 	{
-		final boolean isServerHeadless = m_model.getIsServerHeadless();
+		if (m_model == null)
+			return null;
+		final boolean isServerHeadless = m_model.getIsServerHeadlessCached();
 		if (!isServerHeadless)
 			return null;
 		final List<Action> rVal = new ArrayList<Action>();
-		rVal.add(new SetMapClientAction(this, m_model.getMessenger(), m_model.getAvailableServerGames()));
-		rVal.add(new ChangeGameOptionsClientAction(this, m_model.getServerStartupRemote()));
-		rVal.add(new ChangeGameToSaveGameClientAction(this, m_model.getMessenger()));
-		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
-		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
-		rVal.add(new ChangeToAutosaveClientAction(this, m_model.getMessenger(), SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
-		rVal.add(new GetGameSaveClientAction(this, m_model.getServerStartupRemote()));
+		rVal.add(m_model.getHostBotSetMapClientAction(this));
+		rVal.add(m_model.getHostBotChangeGameOptionsClientAction(this));
+		rVal.add(m_model.getHostBotChangeGameToSaveGameClientAction(this));
+		rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+		rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+		rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+		rVal.add(m_model.getHostBotGetGameSaveClientAction(this));
 		return rVal;
 	}
 }

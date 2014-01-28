@@ -23,11 +23,17 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.framework.networkMaintenance.ChangeGameOptionsClientAction;
+import games.strategy.engine.framework.networkMaintenance.ChangeGameToSaveGameClientAction;
+import games.strategy.engine.framework.networkMaintenance.ChangeToAutosaveClientAction;
+import games.strategy.engine.framework.networkMaintenance.GetGameSaveClientAction;
+import games.strategy.engine.framework.networkMaintenance.SetMapClientAction;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.NewGameChooser;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.ChannelMessenger;
@@ -64,6 +70,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
+import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -81,6 +88,7 @@ public class ClientModel implements IMessengerErrorListener
 	private Component m_ui;
 	private IChatPanel m_chatPanel;
 	private ClientGame m_game;
+	private boolean m_hostIsHeadlessBot = false;
 	private final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
 	// we set the game data to be null, since we
 	// are a client game, and the game data lives on the server
@@ -134,6 +142,7 @@ public class ClientModel implements IMessengerErrorListener
 	public boolean createClientMessenger(Component ui)
 	{
 		m_gameDataOnStartup = m_gameSelectorModel.getGameData();
+		m_gameSelectorModel.setCanSelect(false);
 		ui = JOptionPane.getFrameForComponent(ui);
 		m_ui = ui;
 		// load in the saved name!
@@ -172,8 +181,10 @@ public class ClientModel implements IMessengerErrorListener
 		m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
 		m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
 		m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
-		if (getIsServerHeadless())
+		if (getIsServerHeadlessTest())
 		{
+			m_hostIsHeadlessBot = true;
+			m_gameSelectorModel.setClientModelForHostBots(this);
 			((ChatPanel) m_chatPanel).getChatMessagePanel().addServerMessage("Welcome to an automated dedicated host service (a host bot). "
 						+ "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
 						+ "\nYou can get the current save, or you can load a save (only saves that it has the map for)."
@@ -189,7 +200,7 @@ public class ClientModel implements IMessengerErrorListener
 		{
 			m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
 		}
-		m_gameSelectorModel.setCanSelect(false);
+		m_gameSelectorModel.setIsHostHeadlessBot(m_hostIsHeadlessBot);
 		return true;
 	}
 	
@@ -215,6 +226,9 @@ public class ClientModel implements IMessengerErrorListener
 		m_chatPanel.shutDown();
 		m_gameSelectorModel.setGameData(null);
 		m_gameSelectorModel.setCanSelect(false);
+		m_hostIsHeadlessBot = false;
+		m_gameSelectorModel.setIsHostHeadlessBot(false);
+		m_gameSelectorModel.setClientModelForHostBots(null);
 		m_messenger.removeErrorListener(this);
 	}
 	
@@ -227,6 +241,9 @@ public class ClientModel implements IMessengerErrorListener
 		m_chatPanel.setChat(null);
 		m_gameSelectorModel.setGameData(m_gameDataOnStartup);
 		m_gameSelectorModel.setCanSelect(true);
+		m_hostIsHeadlessBot = false;
+		m_gameSelectorModel.setIsHostHeadlessBot(false);
+		m_gameSelectorModel.setClientModelForHostBots(null);
 		m_messenger.removeErrorListener(this);
 	}
 	
@@ -471,12 +488,42 @@ public class ClientModel implements IMessengerErrorListener
 		return m_chatPanel;
 	}
 	
-	public boolean getIsServerHeadless()
+	public boolean getIsServerHeadlessTest()
 	{
 		final IServerStartupRemote serverRemote = getServerStartup();
 		if (serverRemote != null)
 			return serverRemote.getIsServerHeadless();
 		return false;
+	}
+	
+	public boolean getIsServerHeadlessCached()
+	{
+		return m_hostIsHeadlessBot;
+	}
+	
+	public Action getHostBotSetMapClientAction(final Component parent)
+	{
+		return new SetMapClientAction(parent, getMessenger(), getAvailableServerGames());
+	}
+	
+	public Action getHostBotChangeGameOptionsClientAction(final Component parent)
+	{
+		return new ChangeGameOptionsClientAction(parent, getServerStartupRemote());
+	}
+	
+	public Action getHostBotChangeGameToSaveGameClientAction(final Component parent)
+	{
+		return new ChangeGameToSaveGameClientAction(parent, getMessenger());
+	}
+	
+	public Action getHostBotChangeToAutosaveClientAction(final Component parent, final SaveGameFileChooser.AUTOSAVE_TYPE autosaveType)
+	{
+		return new ChangeToAutosaveClientAction(parent, getMessenger(), autosaveType);
+	}
+	
+	public Action getHostBotGetGameSaveClientAction(final Component parent)
+	{
+		return new GetGameSaveClientAction(parent, getServerStartupRemote());
 	}
 }
 
