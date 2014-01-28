@@ -331,7 +331,10 @@ public class ServerGame extends AbstractGame
 			if (!m_delegateExecutionManager.blockDelegateExecution(4000))
 			{
 				System.err.println("Could not stop delegate execution.");
-				Console.getConsole().dumpStacks();
+				if (HeadlessGameServer.headless())
+					Thread.dumpStack();
+				else
+					Console.getConsole().dumpStacks();
 				System.exit(0);
 			}
 		} catch (final InterruptedException e)
