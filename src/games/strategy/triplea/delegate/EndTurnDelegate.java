@@ -32,6 +32,8 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
+import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -69,14 +71,17 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		// do national objectives
 		if (isNationalObjectives())
 		{
-			endTurnReport.append(determineNationalObjectives(bridge));
+			final String nationalObjectivesText = determineNationalObjectives(bridge);
+			if (nationalObjectivesText.trim().length() > 0)
+				endTurnReport.append(nationalObjectivesText + "<br />");
 		}
-		if (endTurnReport.toString().trim().length() > 0)
-			endTurnReport.append("<br />");
 		// create resources if any owned units have the ability
-		final String createsResourcesText = createResources(bridge);
-		if (createsResourcesText.trim().length() > 0)
-			endTurnReport.append(createsResourcesText + "<br />");
+		final String createsResourcesPositiveText = createResources(bridge, false);
+		if (createsResourcesPositiveText.trim().length() > 0)
+			endTurnReport.append(createsResourcesPositiveText + "<br />");
+		final String createsResourcesNegativeText = createResources(bridge, true);
+		if (createsResourcesNegativeText.trim().length() > 0)
+			endTurnReport.append(createsResourcesNegativeText + "<br />");
 		// create units if any owned units have the ability
 		final String createsUnitsText = createUnits(bridge);
 		if (createsUnitsText.trim().length() > 0)
@@ -165,12 +170,12 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	 * @param data
 	 * @param bridge
 	 */
-	private String createResources(final IDelegateBridge bridge)
+	private String createResources(final IDelegateBridge bridge, final boolean negativeResources)
 	{
 		final StringBuilder endTurnReport = new StringBuilder();
 		final GameData data = getData();
 		final PlayerID player = data.getSequence().getStep().getPlayerID();
-		final Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
+		final Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), negativeResources ? Matches.UnitCreatesResourcesNegative : Matches.UnitCreatesResourcesPositive);
 		for (final Territory t : data.getMap().getTerritories())
 		{
 			final Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
@@ -226,21 +231,21 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		{
 			// add conditions required for triggers
 			final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-						TriggerAttachment.availableUses,
-						TriggerAttachment.whenOrDefaultMatch(null, null),
+						AbstractTriggerAttachment.availableUses,
+						AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
 						new CompositeMatchOr<TriggerAttachment>(
 									TriggerAttachment.resourceMatch()));
 			toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(player)), endTurnDelegateTriggerMatch, bridge));
-			allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), null));
+			allConditionsNeeded.addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), null));
 		}
 		// add conditions required for national objectives (nat objs that have uses left)
 		final List<RulesAttachment> natObjs = Match.getMatches(RulesAttachment.getNationalObjectives(player, data), availableUses);
-		allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(natObjs), null));
+		allConditionsNeeded.addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(natObjs), null));
 		if (allConditionsNeeded.isEmpty())
 			return "";
 		final StringBuilder endTurnReport = new StringBuilder();
 		// now test all the conditions
-		final HashMap<ICondition, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
+		final HashMap<ICondition, Boolean> testedConditions = AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
 		
 		// now that we have all testedConditions, may as well do triggers first.
 		if (useTriggers)
@@ -248,7 +253,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			if (!toFirePossible.isEmpty())
 			{
 				// get all triggers that are satisfied based on the tested conditions.
-				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
 				endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true) + "<br />");
 			}

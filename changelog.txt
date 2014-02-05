@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Changed unit resource creation so that positive resources will be created before negative resources. (veqryn)
+
 * Fixing bug in destroyedTUV condition for allRounds that prevented it from working at all. (veqryn)
 
 * Added an updated engine jar for 1.7.0.5 so that the new engine can play old 1.7.0.x savegames. (veqryn)
