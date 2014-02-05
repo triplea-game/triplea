@@ -18,6 +18,7 @@ package games.strategy.triplea.ui;
  */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.history.Event;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -52,6 +53,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.tree.TreeNode;
 
 /**
  * A Comment logging window.
@@ -134,6 +136,7 @@ public class CommentPanel extends JPanel
 			
 			public void treeNodesInserted(final TreeModelEvent e)
 			{
+				readHistoryTreeEvent(e);
 			}
 			
 			public void treeNodesRemoved(final TreeModelEvent e)
@@ -142,50 +145,56 @@ public class CommentPanel extends JPanel
 			
 			public void treeStructureChanged(final TreeModelEvent e)
 			{
-				final TreeModelEvent tme = e;
-				final Runnable runner = new Runnable()
-				{
-					public void run()
-					{
-						m_data.acquireReadLock();
-						try
-						{
-							final Document doc = m_text.getDocument();
-							final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
-							final String title = node.getTitle();
-							final Pattern p = Pattern.compile("^COMMENT: (.*)");
-							final Matcher m = p.matcher(title);
-							if (m.matches())
-							{
-								final PlayerID playerId = m_data.getSequence().getStep().getPlayerID();
-								final int round = m_data.getSequence().getRound();
-								final String player = playerId.getName();
-								final Icon icon = m_iconMap.get(playerId);
-								try
-								{
-									// insert into ui document
-									final String prefix = " " + player + "(" + round + ") : ";
-									m_text.insertIcon(icon);
-									doc.insertString(doc.getLength(), prefix, bold);
-									doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-								} catch (final BadLocationException ble)
-								{
-									ble.printStackTrace();
-								}
-							}
-						} finally
-						{
-							m_data.releaseReadLock();
-						}
-					}
-				};
-				// invoke in the swing event thread
-				if (SwingUtilities.isEventDispatchThread())
-					runner.run();
-				else
-					SwingUtilities.invokeLater(runner);
+				readHistoryTreeEvent(e);
 			}
 		});
+	}
+	
+	private void readHistoryTreeEvent(final TreeModelEvent e)
+	{
+		final TreeModelEvent tme = e;
+		final Runnable runner = new Runnable()
+		{
+			public void run()
+			{
+				m_data.acquireReadLock();
+				try
+				{
+					final Document doc = m_text.getDocument();
+					final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
+					final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
+					final String title = child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString()) : (node != null ? node.getTitle() : "");
+					final Pattern p = Pattern.compile("^COMMENT: (.*)");
+					final Matcher m = p.matcher(title);
+					if (m.matches())
+					{
+						final PlayerID playerId = m_data.getSequence().getStep().getPlayerID();
+						final int round = m_data.getSequence().getRound();
+						final String player = playerId.getName();
+						final Icon icon = m_iconMap.get(playerId);
+						try
+						{
+							// insert into ui document
+							final String prefix = " " + player + "(" + round + ") : ";
+							m_text.insertIcon(icon);
+							doc.insertString(doc.getLength(), prefix, bold);
+							doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
+						} catch (final BadLocationException ble)
+						{
+							ble.printStackTrace();
+						}
+					}
+				} finally
+				{
+					m_data.releaseReadLock();
+				}
+			}
+		};
+		// invoke in the swing event thread
+		if (SwingUtilities.isEventDispatchThread())
+			runner.run();
+		else
+			SwingUtilities.invokeLater(runner);
 	}
 	
 	private void setupKeyMap()

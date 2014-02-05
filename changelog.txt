@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Fixing Comment Log so that it updates in real time. (veqryn)
+
 * Changed automated hosting bots so that they show up as having 1 less player (ie: the bot itself doesn't count), which means zero players if noone else has joined. (veqryn)
 
 * Changed unit resource creation so that positive resources will be created before negative resources. (veqryn)
