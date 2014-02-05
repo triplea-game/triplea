@@ -177,7 +177,7 @@ public class LobbyGameTableModel extends AbstractTableModel
 			case P:
 				return (description.getPassworded() ? "*" : "");
 			case B:
-				return (description.getBotSupportEmail() != null && description.getBotSupportEmail().length() > 0 ? "*" : "");
+				return (description.getBotSupportEmail() != null && description.getBotSupportEmail().length() > 0 ? "-" : "");
 			case GV:
 				return description.getGameVersion();
 			case EV:

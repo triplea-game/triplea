@@ -104,17 +104,27 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
 		if (currentRoundOnly)
 		{
-			if (brl != null && brl.getCurrentRoundCopy() != null)
-				brs.add(brl.getCurrentRoundCopy());
+			if (brl != null)
+			{
+				final BattleRecords current = brl.getCurrentRoundCopy();
+				if (current != null)
+					brs.add(current);
+			}
 		}
 		else
 		{
-			final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
-			for (int i = beginningRound; i > endRound; i++)
+			if (brl != null)
 			{
-				final BattleRecords currentRecords = currentList.get(i);
-				if (currentRecords != null)
-					brs.add(currentRecords);
+				final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
+				if (currentList != null)
+				{
+					for (int i = beginningRound; i <= endRound; i++)
+					{
+						final BattleRecords currentRecords = currentList.get(i);
+						if (currentRecords != null)
+							brs.add(currentRecords);
+					}
+				}
 			}
 		}
 		for (final BattleRecords br : brs)
