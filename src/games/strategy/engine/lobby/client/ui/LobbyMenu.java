@@ -19,7 +19,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -189,7 +189,7 @@ public class LobbyMenu extends JMenuBar
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banUsername(new Node(name, Inet4Address.getByName("0.0.0.0"), 0), new Date(expire));
+					controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
 				} catch (final UnknownHostException ex)
 				{
 				}
@@ -215,7 +215,7 @@ public class LobbyMenu extends JMenuBar
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banIp(new Node("None (Admin menu originated ban)", Inet4Address.getByName(ip), 0), new Date(expire));
+					controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName(ip), 0), new Date(expire));
 				} catch (final UnknownHostException ex)
 				{
 				}
@@ -247,7 +247,7 @@ public class LobbyMenu extends JMenuBar
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banIp(new Node("None (Admin menu originated ban)", Inet4Address.getByName("0.0.0.0"), 0), new Date(expire));
+					controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
 				} catch (final UnknownHostException ex)
 				{
 				}
@@ -276,7 +276,7 @@ public class LobbyMenu extends JMenuBar
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banUsername(new Node(name, Inet4Address.getByName("0.0.0.0"), 0), new Date(0));
+					controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
 				} catch (final UnknownHostException ex)
 				{
 				}
@@ -301,7 +301,7 @@ public class LobbyMenu extends JMenuBar
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banIp(new Node("None (Admin menu originated unban)", Inet4Address.getByName(ip), 0), new Date(0));
+					controller.banIp(new Node("None (Admin menu originated unban)", InetAddress.getByName(ip), 0), new Date(0));
 				} catch (final UnknownHostException ex)
 				{
 				}
@@ -331,7 +331,7 @@ public class LobbyMenu extends JMenuBar
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banIp(new Node("None (Admin menu originated unban)", Inet4Address.getByName("0.0.0.0"), 0), new Date(0));
+					controller.banIp(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), new Date(0));
 				} catch (final UnknownHostException ex)
 				{
 				}
@@ -429,10 +429,9 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
 				} catch (final Exception e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -443,10 +442,9 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/tracker/?group_id=44492");
+					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/p/triplea/_list/tickets");
 				} catch (final Exception e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -460,7 +458,6 @@ public class LobbyMenu extends JMenuBar
 					DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
 				} catch (final Exception e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -474,7 +471,6 @@ public class LobbyMenu extends JMenuBar
 					DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/");
 				} catch (final Exception e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -488,7 +484,6 @@ public class LobbyMenu extends JMenuBar
 					DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
 				} catch (final Exception e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -502,7 +497,6 @@ public class LobbyMenu extends JMenuBar
 					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
 				} catch (final Exception e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -516,7 +510,6 @@ public class LobbyMenu extends JMenuBar
 					DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
 				} catch (final Exception e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}

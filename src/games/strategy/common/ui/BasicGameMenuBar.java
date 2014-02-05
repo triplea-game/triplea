@@ -379,7 +379,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -393,7 +393,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -407,7 +407,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/tracker/?group_id=44492");
+					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/p/triplea/_list/tickets");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block

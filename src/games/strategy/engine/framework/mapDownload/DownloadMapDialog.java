@@ -150,7 +150,7 @@ public class DownloadMapDialog extends JDialog
 			{
 				try
 				{
-					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
 				} catch (final Exception ex)
 				{
 					Util.notifyError(m_cancelButton, ex.getMessage());
