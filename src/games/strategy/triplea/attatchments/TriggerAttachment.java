@@ -22,11 +22,11 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -175,7 +175,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (toFirePossible.isEmpty())
 			return;
 		final HashMap<ICondition, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, aBridge);
-		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
+		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
 		if (toFireTestedAndSatisfied.isEmpty())
 			return;
 		TriggerAttachment.fireTriggers(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), testedConditions, aBridge, beforeOrAfter, stepName, true, true, true, true);
@@ -200,8 +200,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge,
 				final HashSet<ICondition> allConditionsNeededSoFar, final HashMap<ICondition, Boolean> allConditionsTestedSoFar)
 	{
-		final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), allConditionsNeededSoFar);
-		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, allConditionsTestedSoFar, aBridge);
+		final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), allConditionsNeededSoFar);
+		return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, allConditionsTestedSoFar, aBridge);
 	}
 	
 	/**
@@ -1744,7 +1744,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					messageForRecord = messageForRecord.substring(0, 190) + "....";
 			}
 			aBridge.getHistoryWriter().startEvent("Note to player " + aBridge.getPlayerID().getName() + ": " + messageForRecord);
-			((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), "Notification");
+			((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), NOTIFICATION);
 		}
 	}
 	
@@ -2126,7 +2126,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					aBridge.getHistoryWriter().startEvent(
 								MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "
 											+ currentRelation.getName() + " to " + triggerNewRelation.getName());
-					MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(player1, player2, currentRelation, triggerNewRelation);
+					AbstractMoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(player1, player2, currentRelation, triggerNewRelation);
 					/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 					if (Matches.RelationshipTypeIsAtWar.match(triggerNewRelation))
 						triggerMustFightBattle(player1, player2, aBridge);*/

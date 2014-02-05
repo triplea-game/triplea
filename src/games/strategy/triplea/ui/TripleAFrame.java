@@ -58,6 +58,8 @@ import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
+import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -806,6 +808,16 @@ public class TripleAFrame extends MainGameFrame
 	 */
 	public void notifyMessage(final String message, final String title)
 	{
+		if (message == null || title == null)
+			return;
+		if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1 && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1
+					&& !getUIContext().getShowTriggerChanceFailure())
+			return;
+		if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1 && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1
+					&& !getUIContext().getShowTriggerChanceSuccessful())
+			return;
+		if (title.equals(AbstractTriggerAttachment.NOTIFICATION) && !getUIContext().getShowTriggeredNotifications())
+			return;
 		if (title.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1 && message.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1 && !getUIContext().getShowEndOfTurnReport())
 			return;
 		final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);

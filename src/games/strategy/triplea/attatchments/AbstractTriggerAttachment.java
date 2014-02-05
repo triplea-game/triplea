@@ -26,7 +26,7 @@ import java.util.List;
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition
 {
 	private static final long serialVersionUID = 5866039180681962697L;
-	
+	public static final String NOTIFICATION = "Notification";
 	public static final String AFTER = "after";
 	public static final String BEFORE = "before";
 	
@@ -252,8 +252,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		}
 		final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
 		final boolean testChance = rollResult <= hitTarget;
-		final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (testChance ? "Success!" : "Failure!") + " (for "
-					+ MyFormatter.attachmentNameToText(this.getName()) + ")";
+		final String notificationMessage = (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget + " out of " + diceSides + " Result: " + rollResult
+					+ "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
 		aBridge.getHistoryWriter().startEvent(notificationMessage);
 		changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, testChance, true);
 		((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);

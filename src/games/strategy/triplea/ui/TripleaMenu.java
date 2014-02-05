@@ -98,6 +98,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -206,7 +207,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuGame.addSeparator();
 		addGameOptionsMenu(menuGame);
 		addPoliticsMenu(menuGame);
-		addEndTurnReport(menuGame);
+		addNotificationSettings(menuGame);
 		addFocusOnCasualties(menuGame);
 		addShowEnemyCasualties(menuGame);
 		addShowAIBattles(menuGame);
@@ -629,11 +630,37 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		parentMenu.add(lockMapBox);
 	}
 	
-	private void addEndTurnReport(final JMenu parentMenu)
+	private void addNotificationSettings(final JMenu parentMenu)
 	{
+		final JMenu notificationMenu = new JMenu();
+		notificationMenu.setMnemonic(KeyEvent.VK_U);
+		notificationMenu.setText("User Notifications...");
 		final JCheckBoxMenuItem showEndOfTurnReport = new JCheckBoxMenuItem("Show End of Turn Report");
-		showEndOfTurnReport.setMnemonic(KeyEvent.VK_T);
-		showEndOfTurnReport.setSelected(getUIContext().getShowEndOfTurnReport());
+		showEndOfTurnReport.setMnemonic(KeyEvent.VK_R);
+		final JCheckBoxMenuItem showTriggeredNotifications = new JCheckBoxMenuItem("Show Triggered Notifications");
+		showTriggeredNotifications.setMnemonic(KeyEvent.VK_T);
+		final JCheckBoxMenuItem showTriggerChanceSuccessful = new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Successful");
+		showTriggerChanceSuccessful.setMnemonic(KeyEvent.VK_S);
+		final JCheckBoxMenuItem showTriggerChanceFailure = new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Failure");
+		showTriggerChanceFailure.setMnemonic(KeyEvent.VK_F);
+		notificationMenu.addMenuListener(new MenuListener()
+		{
+			public void menuSelected(final MenuEvent e)
+			{
+				showEndOfTurnReport.setSelected(getUIContext().getShowEndOfTurnReport());
+				showTriggeredNotifications.setSelected(getUIContext().getShowTriggeredNotifications());
+				showTriggerChanceSuccessful.setSelected(getUIContext().getShowTriggerChanceSuccessful());
+				showTriggerChanceFailure.setSelected(getUIContext().getShowTriggerChanceFailure());
+			}
+			
+			public void menuDeselected(final MenuEvent e)
+			{
+			}
+			
+			public void menuCanceled(final MenuEvent e)
+			{
+			}
+		});
 		showEndOfTurnReport.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -641,7 +668,32 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				getUIContext().setShowEndOfTurnReport(showEndOfTurnReport.isSelected());
 			}
 		});
-		parentMenu.add(showEndOfTurnReport);
+		showTriggeredNotifications.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				getUIContext().setShowTriggeredNotifications(showTriggeredNotifications.isSelected());
+			}
+		});
+		showTriggerChanceSuccessful.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				getUIContext().setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected());
+			}
+		});
+		showTriggerChanceFailure.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				getUIContext().setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected());
+			}
+		});
+		notificationMenu.add(showEndOfTurnReport);
+		notificationMenu.add(showTriggeredNotifications);
+		notificationMenu.add(showTriggerChanceSuccessful);
+		notificationMenu.add(showTriggerChanceFailure);
+		parentMenu.add(notificationMenu);
 	}
 	
 	private void addShowAIBattles(final JMenu parentMenu)
@@ -1223,7 +1275,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JFrame frame = new JFrame("Export Setup Files");
-				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				final GameData data = m_frame.getGame().getData();
 				GameData clonedGameData;
 				data.acquireReadLock();

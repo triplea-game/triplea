@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Created a menu option called "User Notifications..." which lets you turn off notifications you would receive from End Turn Reports, Triggered Notifications, Chance rolls that are successful or failed. (veqryn)
+
 * Fixing Comment Log so that it updates in real time. (veqryn)
 
 * Changed automated hosting bots so that they show up as having 1 less player (ie: the bot itself doesn't count), which means zero players if noone else has joined. (veqryn)

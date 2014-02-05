@@ -41,6 +41,9 @@ public abstract class AbstractUIContext implements IUIContext
 	protected static String m_mapDir;
 	protected static final String LOCK_MAP = "LockMap";
 	protected static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
+	protected static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
+	protected static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
+	protected static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
 	protected static final String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
 	protected static final String AI_PAUSE_DURATION = "AIPauseDuration";
 	protected static ResourceLoader m_resourceLoader;
@@ -414,6 +417,63 @@ public abstract class AbstractUIContext implements IUIContext
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		prefs.putBoolean(SHOW_END_OF_TURN_REPORT, value);
+		try
+		{
+			prefs.flush();
+		} catch (final BackingStoreException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	public boolean getShowTriggeredNotifications()
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+		return prefs.getBoolean(SHOW_TRIGGERED_NOTIFICATIONS, true);
+	}
+	
+	public void setShowTriggeredNotifications(final boolean value)
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+		prefs.putBoolean(SHOW_TRIGGERED_NOTIFICATIONS, value);
+		try
+		{
+			prefs.flush();
+		} catch (final BackingStoreException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	public boolean getShowTriggerChanceSuccessful()
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+		return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_SUCCESSFUL, true);
+	}
+	
+	public void setShowTriggerChanceSuccessful(final boolean value)
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+		prefs.putBoolean(SHOW_TRIGGERED_CHANCE_SUCCESSFUL, value);
+		try
+		{
+			prefs.flush();
+		} catch (final BackingStoreException ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	public boolean getShowTriggerChanceFailure()
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+		return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_FAILURE, true);
+	}
+	
+	public void setShowTriggerChanceFailure(final boolean value)
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+		prefs.putBoolean(SHOW_TRIGGERED_CHANCE_FAILURE, value);
 		try
 		{
 			prefs.flush();

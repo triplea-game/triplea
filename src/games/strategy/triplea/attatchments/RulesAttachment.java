@@ -985,8 +985,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			{
 				final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
 				objectiveMet = rollResult <= hitTarget;
-				final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (objectiveMet ? "Success!" : "Failure!") + " (for "
-							+ MyFormatter.attachmentNameToText(this.getName()) + ")";
+				final String notificationMessage = (objectiveMet ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget + " out of " + diceSides + " Result: " + rollResult
+							+ "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
 				aBridge.getHistoryWriter().startEvent(notificationMessage);
 				changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, true);
 				((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);

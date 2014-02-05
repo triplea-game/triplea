@@ -87,6 +87,18 @@ public interface IUIContext
 	
 	public void setShowEndOfTurnReport(boolean value);
 	
+	public boolean getShowTriggeredNotifications();
+	
+	public void setShowTriggeredNotifications(boolean value);
+	
+	public boolean getShowTriggerChanceSuccessful();
+	
+	public void setShowTriggerChanceSuccessful(boolean value);
+	
+	public boolean getShowTriggerChanceFailure();
+	
+	public void setShowTriggerChanceFailure(boolean value);
+	
 	public boolean getShowBattlesBetweenAIs();
 	
 	public void setShowBattlesBetweenAIs(boolean aBool);

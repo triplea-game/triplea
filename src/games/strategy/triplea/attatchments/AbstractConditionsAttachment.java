@@ -27,6 +27,8 @@ import java.util.List;
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition
 {
 	private static final long serialVersionUID = -9008441256118867078L;
+	public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
+	public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
 	protected static final String AND = "AND";
 	protected static final String OR = "OR";
 	protected static final String XOR = "XOR";

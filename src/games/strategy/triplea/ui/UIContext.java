@@ -240,5 +240,4 @@ public class UIContext extends AbstractUIContext implements IUIContext
 			e.printStackTrace();
 		}
 	}
-	
 }
