@@ -209,7 +209,7 @@ public class InGameLobbyWatcher
 		final boolean passworded = password != null && password.length() > 0;
 		final Date startDateTime = (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getStartDateTime() == null) ? new Date() : oldWatcher.m_gameDescription
 					.getStartDateTime();
-		final int playerCount = (oldWatcher == null || oldWatcher.m_gameDescription == null) ? 1 : oldWatcher.m_gameDescription.getPlayerCount();
+		final int playerCount = (oldWatcher == null || oldWatcher.m_gameDescription == null) ? (HeadlessGameServer.headless() ? 0 : 1) : oldWatcher.m_gameDescription.getPlayerCount();
 		final GameStatus gameStatus = (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getStatus() == null) ? GameStatus.WAITING_FOR_PLAYERS
 					: oldWatcher.m_gameDescription.getStatus();
 		final String gameRound = (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getRound() == null) ? "-" : oldWatcher.m_gameDescription.getRound();
@@ -329,7 +329,7 @@ public class InGameLobbyWatcher
 	{
 		synchronized (m_mutex)
 		{
-			m_gameDescription.setPlayerCount(m_gameMessenger.getNodes().size());
+			m_gameDescription.setPlayerCount(m_gameMessenger.getNodes().size() - (HeadlessGameServer.headless() ? 1 : 0));
 			postUpdate();
 		}
 	}

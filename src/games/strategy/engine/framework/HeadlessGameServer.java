@@ -368,7 +368,7 @@ public class HeadlessGameServer
 			{
 				restartLobbyWatcher(m_setupPanelModel, m_iGame);
 			}
-		}, 21600, 21600, TimeUnit.SECONDS);
+		}, 216, 216, TimeUnit.SECONDS);
 		s_logger.info("Game Server initialized");
 	}
 	
