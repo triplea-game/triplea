@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Updating included jar libraries to latest versions. (veqryn)
+
 * Updating embedded JRE to Java 7 update 51 for x86. (veqryn)
 
 * Updated Substance UI to version 7.2.1, and included approximately 14 new Look and Feel skins. (veqryn)
