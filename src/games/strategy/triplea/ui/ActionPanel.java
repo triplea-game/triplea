@@ -99,6 +99,11 @@ public abstract class ActionPanel extends JPanel
 	 */
 	protected void waitForRelease()
 	{
+		if (Thread.currentThread().isInterrupted())
+		{
+			release();
+			return;
+		}
 		synchronized (m_latchLock)
 		{
 			if (m_latch != null)
@@ -111,6 +116,7 @@ public abstract class ActionPanel extends JPanel
 			m_latch.await();
 		} catch (final InterruptedException e)
 		{
+			release();
 		}
 		// cross a memory barrier
 		synchronized (m_latchLock)
