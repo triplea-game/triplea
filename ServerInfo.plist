@@ -27,7 +27,7 @@
 		<key>ClassPath</key>
 		<array>
 			<string>$JAVAROOT/triplea.jar</string>
-			<string>$JAVAROOT/derby_10_1_2.jar</string>
+			<string>$JAVAROOT/derby-10.10.1.1.jar</string>
 		</array>
 		<key>JVMVersion</key>
 		<string>1.5</string>

@@ -395,7 +395,7 @@
 		</exec>
 
 		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"/>
-		<copy file="lib/derby_10_1_2.jar" todir="${app.file}/Contents/Resources/Java/"/>
+		<copy file="lib/derby-10.10.1.1.jar" todir="${app.file}/Contents/Resources/Java/"/>
 
 
 		<copy file="ServerInfo.plist" tofile="${app.file}/Contents/Info.plist" />
@@ -579,7 +579,7 @@
 		description="create a mac os x server application" if="isMacOSX">
 		<property name="dmg.file" value="${release}/${zip.prefix}_server.dmg" />
 		<property name="app.file" value="${release}/TripleaServer.app" />
-		<property name="derby.jar" location="lib/derby_10_1_2.jar" />
+		<property name="derby.jar" location="lib/derby-10.10.1.1.jar" />
 
 		<setupMac app.file="${app.file}" dmg.file="${dmg.file}"
 			dmg.size="500m">
