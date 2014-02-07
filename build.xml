@@ -903,9 +903,9 @@
 		<winInstaller exe.file="windows_installer_with_java.exe">
 			<add-java-elements>
 				<echo message="adding JRE" />
-				<unzip src="installer/jre7_21_x86.zip" dest="@{install.loc}" />
+				<unzip src="installer/jre7_u51_x86.zip" dest="@{install.loc}" />
 				<move todir="@{install.loc}/${zip.prefix}/jre">
-					<fileset dir="@{install.loc}/jre7_21_x86" />
+					<fileset dir="@{install.loc}/jre7_u51_x86.zip" />
 				</move>
 				<copy file="triplea_embeded_jre.exe" tofile="@{install.loc}/${zip.prefix}/triplea.exe" overwrite="true" />
 				<!-- the bat file doesnt work, since it does not point to the jre -->
