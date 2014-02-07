@@ -75,6 +75,7 @@ import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import com.apple.eawt.Application;
@@ -760,18 +761,22 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	
 	public static List<String> getLookAndFeelAvailableList()
 	{
-		final List<String> substanceLooks = new ArrayList<String>(Arrays.asList(new String[] {
-					UIManager.getSystemLookAndFeelClassName(),
-					MetalLookAndFeel.class.getName(),
-					UIManager.getCrossPlatformLookAndFeelClassName()
-		}));
+		final List<String> substanceLooks = new ArrayList<String>();
+		for (final LookAndFeelInfo look : UIManager.getInstalledLookAndFeels())
+		{
+			substanceLooks.add(look.getClassName());
+		}
+		if (!isJavaGreatThan6())
+		{
+			substanceLooks.remove("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		}
 		if (isJavaGreatThan5())
 		{
 			substanceLooks.addAll(new ArrayList<String>(Arrays.asList(new String[] {
-						UIManager.getSystemLookAndFeelClassName(),
-						MetalLookAndFeel.class.getName(),
-						UIManager.getCrossPlatformLookAndFeelClassName(),
-						// Substance 5.x
+						// UIManager.getSystemLookAndFeelClassName(),
+						// MetalLookAndFeel.class.getName(),
+						// UIManager.getCrossPlatformLookAndFeelClassName(),
+						/* Substance 5.x
 						"org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
 						"org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel",
 						"org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
@@ -787,8 +792,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 						"org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
 						"org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
 						"org.jvnet.substance.skin.SubstanceTwilightLookAndFeel"
+						*/
 						
-						/* Substance (insubstantial) 7.x
+						// Substance (insubstantial) 7.x
 						"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
 						"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
 						"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
@@ -816,11 +822,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 						"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
 						"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
 						"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
-						"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"*/
+						"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"
 			})));
 		}
-		if (isJavaGreatThan6())
-			substanceLooks.add("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		return substanceLooks;
 	}
 	

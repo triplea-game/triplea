@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Updated Substance UI to version 7.2.1, and included approximately 14 new Look and Feel skins. (veqryn)
+
 * Created a menu option called "User Notifications..." which lets you turn off notifications you would receive from End Turn Reports, Triggered Notifications, Chance rolls that are successful or failed. (veqryn)
 
 * Fixing Comment Log so that it updates in real time. (veqryn)

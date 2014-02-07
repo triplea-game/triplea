@@ -288,6 +288,9 @@ public class GameRunner2
 					try
 					{
 						UIManager.setLookAndFeel(getDefaultLookAndFeel());
+						// FYI if you are getting a null pointer exception in Substance, like this: org.pushingpixels.substance.internal.utils.SubstanceColorUtilities.getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
+						// Then it is because you included the swingx substance library without including swingx.
+						// You can solve by including both swingx libraries or removing both, or by setting the look and feel twice in a row.
 					} catch (final Throwable t)
 					{
 						if (!GameRunner.isMac())
@@ -323,8 +326,8 @@ public class GameRunner2
 	public static String getDefaultLookAndFeel()
 	{
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		// String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
-		String defaultLookAndFeel = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel";
+		String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel"; // substance 7.x
+		// String defaultLookAndFeel = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel"; // substance 5.x
 		// macs are already beautiful
 		if (GameRunner.isMac())
 		{
