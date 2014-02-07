@@ -132,15 +132,16 @@
 			</condition>
 		</fail>
 		<echo message="${ant.version}" />
-		<!-- we require jdk 1.5 or greater -->
+		<!-- we require jdk 1.6 or greater -->
 		<fail
-			message="jdk 1.5 or greater required, you are currently using: ${ant.java.version}">
+			message="jdk 1.6 or greater required, you are currently using: ${ant.java.version}">
 			<condition>
 				<or>
 					<equals arg1="1.1" arg2="${ant.java.version}" />
 					<equals arg1="1.2" arg2="${ant.java.version}" />
 					<equals arg1="1.3" arg2="${ant.java.version}" />
 					<equals arg1="1.4" arg2="${ant.java.version}" />
+					<equals arg1="1.5" arg2="${ant.java.version}" />
 				</or>
 			</condition>
 		</fail>
@@ -184,7 +185,7 @@
 	<target name="compile" description="Compile the source files"
 		depends="checkBuildEnv,copyResources">
 		<javac srcdir="${src}" destdir="${classes}" debug="true"
-			deprecation="true" classpathref="src.classpath" target="1.5" source="1.5"
+			deprecation="true" classpathref="src.classpath" target="1.6" source="1.6"
 			encoding="utf8" includeantruntime="false" />
 
 		<!-- to check the correct java version, we need to compile the startup 
@@ -194,7 +195,7 @@
 			<fileset dir="${classes}" includes="**/GameRunner.class" />
 		</delete>
 		<javac srcdir="${src}" destdir="${classes}" debug="true"
-			deprecation="true" classpathref="src.classpath" target="1.2" source="1.2"
+			deprecation="true" classpathref="src.classpath" target="1.3" source="1.3"
 			includeantruntime="false" />
 	</target>
 
@@ -827,7 +828,7 @@
 		<mkdir dir="${test-classes}" />
 
 		<javac srcdir="${test-src}" destdir="${test-classes}" debug="true"
-			deprecation="true" target="1.5" source="1.5" includeantruntime="false">
+			deprecation="true" target="1.6" source="1.6" includeantruntime="false">
 			<classpath refid="test.classpath" />
 		</javac>
 

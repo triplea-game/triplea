@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Updating TripleA to require at least Java 6 or greater. (veqryn)
+
 * Updating included jar libraries to latest versions. (veqryn)
 
 * Updating embedded JRE to Java 7 update 51 for x86. (veqryn)

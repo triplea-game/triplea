@@ -30,7 +30,7 @@
 			<string>$JAVAROOT/derby-10.10.1.1.jar</string>
 		</array>
 		<key>JVMVersion</key>
-		<string>1.5</string>
+		<string>1.6</string>
 		<key>MainClass</key>
 		<string>games.strategy.engine.lobby.server.LobbyServer</string>
 		<key>VMOptions</key>
