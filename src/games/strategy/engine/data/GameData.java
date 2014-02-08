@@ -23,6 +23,7 @@ import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.Constants;
@@ -32,9 +33,11 @@ import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -537,5 +540,29 @@ public class GameData implements java.io.Serializable
 	public BattleRecordsList getBattleRecordsList()
 	{
 		return m_battleRecordsList;
+	}
+	
+	/**
+	 * Call this before starting the game, and before the game data has been sent to the clients, in order to make any final modifications to the game data.
+	 * For example, this method will remove player delegates for players who have been disabled.
+	 */
+	public void doPreGameStartDataModifications(final PlayerListing playerListing)
+	{
+		final Set<PlayerID> playersWhoShouldBeRemoved = new HashSet<PlayerID>();
+		for (final PlayerID p : m_playerList.getPlayers())
+		{
+			if (p.getCanBeDisabled() && !playerListing.getPlayersEnabledListing().get(p.getName()))
+			{
+				p.setIsDisabled(true);
+				playersWhoShouldBeRemoved.add(p);
+			}
+		}
+		final Iterator<GameStep> stepIter = m_sequence.iterator();
+		while (stepIter.hasNext())
+		{
+			final GameStep step = stepIter.next();
+			if (playersWhoShouldBeRemoved.contains(step.getPlayerID()))
+				stepIter.remove();
+		}
 	}
 }

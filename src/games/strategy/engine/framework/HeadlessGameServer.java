@@ -834,7 +834,7 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	{
 		if (m_gameSelectorModel.getGameData() == null || m_model == null)
 			return false;
-		final Map<String, String> players = m_model.getPlayers();
+		final Map<String, String> players = m_model.getPlayersToNodeListing();
 		if (players == null || players.isEmpty())
 			return false;
 		for (final String player : players.keySet())
@@ -842,7 +842,14 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 			if (players.get(player) == null)
 				return false;
 		}
-		return true;
+		// make sure at least 1 player is enabled
+		final Map<String, Boolean> someoneEnabled = m_model.getPlayersEnabledListing();
+		for (final Boolean bool : someoneEnabled.values())
+		{
+			if (bool)
+				return true;
+		}
+		return false;
 	}
 	
 	public void playerListChanged()

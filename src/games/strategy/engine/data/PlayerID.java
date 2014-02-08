@@ -33,6 +33,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 {
 	private static final long serialVersionUID = -2284878450555315947L;
 	private final boolean m_optional;
+	private final boolean m_canBeDisabled;
+	private boolean m_isDisabled = false;
 	private final UnitCollection m_unitsHeld;
 	private final ResourceCollection m_resources;
 	private ProductionFrontier m_productionFrontier;
@@ -41,10 +43,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	private String m_whoAmI = "null:no_one";
 	
 	/** Creates new Player */
-	public PlayerID(final String name, final boolean optional, final GameData data)
+	public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final GameData data)
 	{
 		super(name, data);
 		m_optional = optional;
+		m_canBeDisabled = canBeDisabled;
 		m_unitsHeld = new UnitCollection(this, data);
 		m_resources = new ResourceCollection(data);
 		m_technologyFrontiers = new TechnologyFrontierList(data);
@@ -53,6 +56,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public boolean getOptional()
 	{
 		return m_optional;
+	}
+	
+	public boolean getCanBeDisabled()
+	{
+		return m_canBeDisabled;
 	}
 	
 	public UnitCollection getUnits()
@@ -99,7 +107,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return false;
 	}
 	
-	public static final PlayerID NULL_PLAYERID = new PlayerID("Neutral", true, null)
+	public static final PlayerID NULL_PLAYERID = new PlayerID("Neutral", true, false, null)
 	{
 		// compatible with 0.9.0.2 saved games
 		private static final long serialVersionUID = -6596127754502509049L;
@@ -146,6 +154,16 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public boolean isAI()
 	{
 		return m_whoAmI.split(":")[0].equalsIgnoreCase("AI");
+	}
+	
+	public void setIsDisabled(final boolean isDisabled)
+	{
+		m_isDisabled = isDisabled;
+	}
+	
+	public boolean getIsDisabled()
+	{
+		return m_isDisabled;
 	}
 	
 	/**

@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,9 @@ public class ClientModel implements IMessengerErrorListener
 	// are a client game, and the game data lives on the server
 	// however, if we cancel, we want to restore the old game data.
 	private GameData m_gameDataOnStartup;
-	private Map<String, String> m_players = new HashMap<String, String>();
+	private Map<String, String> m_playersToNodes = new HashMap<String, String>();
+	private Map<String, Boolean> m_playersEnabledListing = new HashMap<String, Boolean>();
+	private Collection<String> m_playersAllowedToBeDisabled = new HashSet<String>();
 	private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
 	
 	ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel)
@@ -149,7 +152,11 @@ public class ClientModel implements IMessengerErrorListener
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		final ClientProps props = getProps(ui);
 		if (props == null)
+		{
+			m_gameSelectorModel.setCanSelect(true);
+			cancel();
 			return false;
+		}
 		final String name = props.getName();
 		s_logger.log(Level.FINE, "Client playing as:" + name);
 		// save the name! -- lnxduk
@@ -183,12 +190,10 @@ public class ClientModel implements IMessengerErrorListener
 		m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
 		if (getIsServerHeadlessTest())
 		{
-			m_hostIsHeadlessBot = true;
 			m_gameSelectorModel.setClientModelForHostBots(this);
 			((ChatPanel) m_chatPanel).getChatMessagePanel().addServerMessage("Welcome to an automated dedicated host service (a host bot). "
 						+ "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
-						+ "\nYou can get the current save, or you can load a save (only saves that it has the map for)."
-						+ "\nClick the 'NETWORK' button, and then select 'Change Game To...', then pick the map/game. ");
+						+ "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
 		}
 		m_remoteMessenger.registerRemote(m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
 		// save this, it will be cleared later
@@ -354,9 +359,9 @@ public class ClientModel implements IMessengerErrorListener
 		}
 		m_objectStreamFactory.setData(data);
 		final Map<String, String> playerMapping = new HashMap<String, String>();
-		for (final String player : m_players.keySet())
+		for (final String player : m_playersToNodes.keySet())
 		{
-			final String playedBy = m_players.get(player);
+			final String playedBy = m_playersToNodes.get(player);
 			if (playedBy.equals(m_messenger.getLocalNode().getName()))
 			{
 				playerMapping.put(player, IGameLoader.CLIENT_PLAYER_TYPE);
@@ -418,6 +423,16 @@ public class ClientModel implements IMessengerErrorListener
 		getServerStartup().releasePlayer(m_messenger.getLocalNode(), playerName);
 	}
 	
+	public void disablePlayer(final String playerName)
+	{
+		getServerStartup().disablePlayer(playerName);
+	}
+	
+	public void enablePlayer(final String playerName)
+	{
+		getServerStartup().enablePlayer(playerName);
+	}
+	
 	private void internalePlayerListingChanged(final PlayerListing listing)
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -429,7 +444,9 @@ public class ClientModel implements IMessengerErrorListener
 		});
 		synchronized (this)
 		{
-			m_players = listing.getPlayerListing();
+			m_playersToNodes = listing.getPlayerToNodeListing();
+			m_playersEnabledListing = listing.getPlayersEnabledListing();
+			m_playersAllowedToBeDisabled = listing.getPlayersAllowedToBeDisabled();
 			m_playerNamesAndAlliancesInTurnOrder = listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
 		}
 		SwingUtilities.invokeLater(new Runnable()
@@ -441,11 +458,27 @@ public class ClientModel implements IMessengerErrorListener
 		});
 	}
 	
-	public Map<String, String> getPlayerMapping()
+	public Map<String, String> getPlayerToNodesMapping()
 	{
 		synchronized (this)
 		{
-			return new HashMap<String, String>(m_players);
+			return new HashMap<String, String>(m_playersToNodes);
+		}
+	}
+	
+	public Map<String, Boolean> getPlayersEnabledListing()
+	{
+		synchronized (this)
+		{
+			return new HashMap<String, Boolean>(m_playersEnabledListing);
+		}
+	}
+	
+	public Collection<String> getPlayersAllowedToBeDisabled()
+	{
+		synchronized (this)
+		{
+			return new HashSet<String>(m_playersAllowedToBeDisabled);
 		}
 	}
 	
@@ -492,8 +525,10 @@ public class ClientModel implements IMessengerErrorListener
 	{
 		final IServerStartupRemote serverRemote = getServerStartup();
 		if (serverRemote != null)
-			return serverRemote.getIsServerHeadless();
-		return false;
+			m_hostIsHeadlessBot = serverRemote.getIsServerHeadless();
+		else
+			m_hostIsHeadlessBot = false;
+		return m_hostIsHeadlessBot;
 	}
 	
 	public boolean getIsServerHeadlessCached()

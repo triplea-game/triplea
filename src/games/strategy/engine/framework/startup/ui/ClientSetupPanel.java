@@ -12,6 +12,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,17 +65,19 @@ public class ClientSetupPanel extends SetupPanel
 	
 	private void internalPlayersChanged()
 	{
-		final Map<String, String> m_players = m_model.getPlayerMapping();
-		final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+		final Map<String, String> players = m_model.getPlayerToNodesMapping();
+		final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+		final Map<String, Boolean> enabledPlayers = m_model.getPlayersEnabledListing();
+		final Collection<String> disableable = m_model.getPlayersAllowedToBeDisabled();
+		if (!m_model.getIsServerHeadlessCached())
+			disableable.clear();// clients only get to change bot settings
 		m_playerRows = new ArrayList<PlayerRow>();
-		// List<String> keys = new ArrayList<String>(m_players.keySet());
-		// Collections.sort(keys);//we don't want to sort them alphabetically. let them stay in turn order.
-		final Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
+		final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
 		for (final String name : playerNames)
 		{
-			final PlayerRow playerRow = new PlayerRow(name, m_playerNamesAndAlliancesInTurnOrder.get(name), IGameLoader.CLIENT_PLAYER_TYPE);
+			final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name), IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
 			m_playerRows.add(playerRow);
-			playerRow.setPlayerName(m_players.get(name));
+			playerRow.update(players.get(name), enabledPlayers.get(name), disableable.contains(name));
 		}
 		layoutComponents();
 	}
@@ -93,24 +97,41 @@ public class ClientSetupPanel extends SetupPanel
 		final JPanel players = new JPanel();
 		final GridBagLayout layout = new GridBagLayout();
 		players.setLayout(layout);
-		final Insets spacing = new Insets(3, 23, 0, 0);
-		final Insets lastSpacing = new Insets(3, 23, 0, 23);
+		final Insets spacing = new Insets(3, 16, 0, 0);
+		final Insets lastSpacing = new Insets(3, 16, 0, 16);
+		int gridx = 0;
+		final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
+		final boolean disableable = m_model.getPlayersAllowedToBeDisabled().isEmpty();
+		if (!disableable)
+		{
+			enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
+			enabledPlayerConstraints.gridx = gridx++;
+			enabledPlayerConstraints.insets = new Insets(3, 20, 0, -10);
+		}
 		final GridBagConstraints nameConstraints = new GridBagConstraints();
 		nameConstraints.anchor = GridBagConstraints.WEST;
-		nameConstraints.gridx = 0;
+		nameConstraints.gridx = gridx++;
 		nameConstraints.insets = spacing;
+		gridx++;
 		final GridBagConstraints playerConstraints = new GridBagConstraints();
 		playerConstraints.anchor = GridBagConstraints.WEST;
-		playerConstraints.gridx = 2;
+		playerConstraints.gridx = gridx++;
 		playerConstraints.insets = spacing;
 		final GridBagConstraints playConstraints = new GridBagConstraints();
 		playConstraints.anchor = GridBagConstraints.WEST;
-		playConstraints.gridx = 3;
+		playConstraints.gridx = gridx++;
 		playConstraints.insets = spacing;
 		final GridBagConstraints allianceConstraints = new GridBagConstraints();
 		allianceConstraints.anchor = GridBagConstraints.WEST;
-		allianceConstraints.gridx = 4;
+		allianceConstraints.gridx = gridx++;
 		allianceConstraints.insets = lastSpacing;
+		if (!disableable)
+		{
+			final JLabel enableLabel = new JLabel("Use");
+			enableLabel.setForeground(Color.black);
+			layout.setConstraints(enableLabel, enabledPlayerConstraints);
+			players.add(enableLabel);
+		}
 		final JLabel nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.black);
 		layout.setConstraints(nameLabel, nameConstraints);
@@ -128,6 +149,11 @@ public class ClientSetupPanel extends SetupPanel
 		players.add(allianceLabel);
 		for (final PlayerRow row : m_playerRows)
 		{
+			if (!disableable)
+			{
+				layout.setConstraints(row.getEnabledPlayer(), enabledPlayerConstraints);
+				players.add(row.getEnabledPlayer());
+			}
 			layout.setConstraints(row.getName(), nameConstraints);
 			players.add(row.getName());
 			layout.setConstraints(row.getPlayer(), playerConstraints);
@@ -172,18 +198,22 @@ public class ClientSetupPanel extends SetupPanel
 	
 	class PlayerRow
 	{
+		private final JCheckBox m_enabledCheckBox;
 		private final JLabel m_playerNameLabel;
 		private final JLabel m_playerLabel;
 		private JComponent m_playerComponent;
 		private final String m_localPlayerType;
 		private JLabel m_alliance;
 		
-		PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType)
+		PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType, final boolean enabled)
 		{
 			m_playerNameLabel = new JLabel(playerName);
 			m_playerLabel = new JLabel("");
 			m_playerComponent = new JLabel("");
 			m_localPlayerType = localPlayerType;
+			m_enabledCheckBox = new JCheckBox();
+			m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
+			m_enabledCheckBox.setSelected(enabled);
 			if (playerAlliances.contains(playerName))
 				m_alliance = new JLabel();
 			else
@@ -210,7 +240,12 @@ public class ClientSetupPanel extends SetupPanel
 			return m_alliance;
 		}
 		
-		public void setPlayerName(final String playerName)
+		public JCheckBox getEnabledPlayer()
+		{
+			return m_enabledCheckBox;
+		}
+		
+		public void update(final String playerName, final boolean enabled, final boolean disableable)
 		{
 			if (playerName == null)
 			{
@@ -233,6 +268,16 @@ public class ClientSetupPanel extends SetupPanel
 					m_playerComponent = new JLabel("");
 				}
 			}
+			setWidgetActivation(disableable);
+		}
+		
+		private void setWidgetActivation(final boolean disableable)
+		{
+			m_playerNameLabel.setEnabled(m_enabledCheckBox.isSelected());
+			m_playerLabel.setEnabled(m_enabledCheckBox.isSelected());
+			m_playerComponent.setEnabled(m_enabledCheckBox.isSelected());
+			m_alliance.setEnabled(m_enabledCheckBox.isSelected());
+			m_enabledCheckBox.setEnabled(disableable);
 		}
 		
 		public boolean isPlaying()
@@ -266,6 +311,17 @@ public class ClientSetupPanel extends SetupPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.releasePlayer(m_playerNameLabel.getText());
+			}
+		};
+		private final ActionListener m_disablePlayerActionListener = new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (m_enabledCheckBox.isSelected())
+					m_model.enablePlayer(m_playerNameLabel.getText());
+				else
+					m_model.disablePlayer(m_playerNameLabel.getText());
+				setWidgetActivation(true);
 			}
 		};
 	}

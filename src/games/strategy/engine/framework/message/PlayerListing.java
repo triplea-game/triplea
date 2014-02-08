@@ -18,13 +18,17 @@
  */
 package games.strategy.engine.framework.message;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.util.Version;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -44,28 +48,53 @@ public class PlayerListing implements Serializable
 	 * Maps String player name -> node Name
 	 * if node name is null then the player is available to play.
 	 */
-	private final Map<String, String> m_playerListing;
+	private final Map<String, String> m_playerToNodeListing;
+	private final Map<String, Boolean> m_playersEnabledListing;
+	private final Map<String, String> m_localPlayerTypes;
+	// private final Map<String, String> m_remotePlayerTypes = new HashMap<String, String>();
+	private final Collection<String> m_playersAllowedToBeDisabled;
 	private final Version m_gameVersion;
 	private final String m_gameName;
 	private final String m_gameRound;
-	private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
+	private final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder;
 	
 	/**
 	 * Creates a new instance of PlayerListingMessage
 	 */
-	public PlayerListing(final Map<String, String> map, final Version gameVersion, final String gameName, final String gameRound,
+	public PlayerListing(final Map<String, String> playerToNodeListing, final Map<String, Boolean> playersEnabledListing, final Map<String, String> localPlayerTypes, final Version gameVersion,
+				final String gameName, final String gameRound, final Collection<String> playersAllowedToBeDisabled,
 				final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrderLinkedHashMap)
 	{
-		m_playerListing = new HashMap<String, String>(map);
+		m_playerToNodeListing = playerToNodeListing == null ? new HashMap<String, String>() : new HashMap<String, String>(playerToNodeListing);
+		m_playersEnabledListing = playersEnabledListing == null ? new HashMap<String, Boolean>() : new HashMap<String, Boolean>(playersEnabledListing);
+		m_localPlayerTypes = localPlayerTypes == null ? new HashMap<String, String>() : new HashMap<String, String>(localPlayerTypes);
+		m_playersAllowedToBeDisabled = playersAllowedToBeDisabled == null ? new HashSet<String>() : new HashSet<String>(playersAllowedToBeDisabled);
 		m_gameVersion = gameVersion;
 		m_gameName = gameName;
 		m_gameRound = gameRound;
-		m_playerNamesAndAlliancesInTurnOrder = playerNamesAndAlliancesInTurnOrderLinkedHashMap;
+		m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
+		if (playerNamesAndAlliancesInTurnOrderLinkedHashMap != null)
+		{
+			for (final Entry<String, Collection<String>> entry : playerNamesAndAlliancesInTurnOrderLinkedHashMap.entrySet())
+			{
+				m_playerNamesAndAlliancesInTurnOrder.put(entry.getKey(), new HashSet<String>(entry.getValue()));
+			}
+		}
 	}
 	
-	public Map<String, String> getPlayerListing()
+	public Collection<String> getPlayersAllowedToBeDisabled()
 	{
-		return m_playerListing;
+		return m_playersAllowedToBeDisabled;
+	}
+	
+	public Map<String, String> getPlayerToNodeListing()
+	{
+		return m_playerToNodeListing;
+	}
+	
+	public Map<String, Boolean> getPlayersEnabledListing()
+	{
+		return m_playersEnabledListing;
 	}
 	
 	public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap()
@@ -86,16 +115,32 @@ public class PlayerListing implements Serializable
 	@Override
 	public String toString()
 	{
-		return "PlayerListingMessage:" + m_playerListing;
+		return "PlayerListingMessage:" + m_playerToNodeListing;
 	}
 	
 	public Set<String> getPlayers()
 	{
-		return m_playerListing.keySet();
+		return m_playerToNodeListing.keySet();
 	}
 	
 	public String getGameRound()
 	{
 		return m_gameRound;
+	}
+	
+	public static Map<String, Collection<String>> collectPlayerNamesAndAlliancesInTurnOrder(final GameData data)
+	{
+		
+		final LinkedHashMap<String, Collection<String>> map = new LinkedHashMap<String, Collection<String>>();
+		for (final PlayerID player : data.getPlayerList().getPlayers())
+		{
+			map.put(player.getName(), data.getAllianceTracker().getAlliancesPlayerIsIn(player));
+		}
+		return map;
+	}
+	
+	public Map<String, String> getLocalPlayerTypes()
+	{
+		return m_localPlayerTypes;
 	}
 }

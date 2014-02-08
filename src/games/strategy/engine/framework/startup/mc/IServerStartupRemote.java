@@ -38,6 +38,10 @@ public interface IServerStartupRemote extends IRemote
 	
 	public void releasePlayer(INode who, String playerName);
 	
+	public void disablePlayer(String playerName);
+	
+	public void enablePlayer(String playerName);
+	
 	/**
 	 * Has the game already started?
 	 * If true, the server will call our ObserverWaitingToJoin to start the game.

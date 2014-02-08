@@ -31,7 +31,6 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.IServerMessenger;
-import games.strategy.triplea.TripleA;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -55,6 +54,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
@@ -159,28 +159,44 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		final JPanel players = new JPanel();
 		final GridBagLayout layout = new GridBagLayout();
 		players.setLayout(layout);
-		final Insets spacing = new Insets(3, 23, 0, 0);
-		final Insets lastSpacing = new Insets(3, 23, 0, 23);
+		final Insets spacing = new Insets(3, 16, 0, 0);
+		final Insets lastSpacing = new Insets(3, 16, 0, 16);
+		int gridx = 0;
+		final boolean disableable = m_model.getPlayersAllowedToBeDisabled().isEmpty();
+		final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
+		if (!disableable)
+		{
+			enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
+			enabledPlayerConstraints.gridx = gridx++;
+			enabledPlayerConstraints.insets = new Insets(3, 20, 0, -10);
+		}
 		final GridBagConstraints nameConstraints = new GridBagConstraints();
 		nameConstraints.anchor = GridBagConstraints.WEST;
-		nameConstraints.gridx = 0;
+		nameConstraints.gridx = gridx++;
 		nameConstraints.insets = spacing;
 		final GridBagConstraints playerConstraints = new GridBagConstraints();
 		playerConstraints.anchor = GridBagConstraints.WEST;
-		playerConstraints.gridx = 1;
+		playerConstraints.gridx = gridx++;
 		playerConstraints.insets = spacing;
 		final GridBagConstraints localConstraints = new GridBagConstraints();
 		localConstraints.anchor = GridBagConstraints.WEST;
-		localConstraints.gridx = 2;
+		localConstraints.gridx = gridx++;
 		localConstraints.insets = spacing;
 		final GridBagConstraints typeConstraints = new GridBagConstraints();
 		typeConstraints.anchor = GridBagConstraints.WEST;
-		typeConstraints.gridx = 3;
+		typeConstraints.gridx = gridx++;
 		typeConstraints.insets = spacing;
 		final GridBagConstraints allianceConstraints = new GridBagConstraints();
 		allianceConstraints.anchor = GridBagConstraints.WEST;
-		allianceConstraints.gridx = 4;
+		allianceConstraints.gridx = gridx++;
 		allianceConstraints.insets = lastSpacing;
+		if (!disableable)
+		{
+			final JLabel enableLabel = new JLabel("Use");
+			enableLabel.setForeground(Color.black);
+			layout.setConstraints(enableLabel, enabledPlayerConstraints);
+			players.add(enableLabel);
+		}
 		final JLabel nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.black);
 		layout.setConstraints(nameLabel, nameConstraints);
@@ -211,6 +227,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		while (iter.hasNext())
 		{
 			final PlayerRow row = iter.next();
+			if (!disableable)
+			{
+				layout.setConstraints(row.getEnabledPlayer(), enabledPlayerConstraints);
+				players.add(row.getEnabledPlayer());
+			}
 			layout.setConstraints(row.getName(), nameConstraints);
 			players.add(row.getName());
 			layout.setConstraints(row.getPlayer(), playerConstraints);
@@ -224,7 +245,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		}
 		removeAll();
 		add(m_info, BorderLayout.NORTH);
-		final JScrollPane scroll = new JScrollPane(players, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		final JScrollPane scroll = new JScrollPane(players, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBorder(null);
 		scroll.setViewportBorder(null);
 		add(scroll, BorderLayout.CENTER);
@@ -268,7 +289,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 		if (m_gameSelectorModel.getGameData() == null || m_model == null)
 			return false;
-		final Map<String, String> players = m_model.getPlayers();
+		final Map<String, String> players = m_model.getPlayersToNodeListing();
 		if (players == null || players.isEmpty())
 			return false;
 		for (final String player : players.keySet())
@@ -276,7 +297,14 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			if (players.get(player) == null)
 				return false;
 		}
-		return true;
+		// make sure at least 1 player is enabled
+		final Map<String, Boolean> someoneEnabled = m_model.getPlayersEnabledListing();
+		for (final Boolean bool : someoneEnabled.values())
+		{
+			if (bool)
+				return true;
+		}
+		return false;
 	}
 	
 	public void playerListChanged()
@@ -305,10 +333,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		final Map<String, String> players = m_model.getPlayers();
+		final Map<String, String> playersToNode = m_model.getPlayersToNodeListing();
+		final Map<String, Boolean> playersEnabled = m_model.getPlayersEnabledListing();
 		for (final PlayerRow row : m_playerRows)
 		{
-			row.update(players);
+			row.update(playersToNode, playersEnabled);
 		}
 		super.notifyObservers();
 	}
@@ -318,18 +347,17 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
 		m_playerRows = new ArrayList<PlayerRow>();
-		final Map<String, String> players = m_model.getPlayers();
+		final Map<String, String> players = m_model.getPlayersToNodeListing();
+		final Map<String, Boolean> playersEnabled = m_model.getPlayersEnabledListing();
 		final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
 		final Map<String, String> reloadSelections = PlayerID.currentPlayers(m_gameSelectorModel.getGameData());
-		// List<String> keys = new ArrayList<String>(players.keySet());
-		// Collections.sort(keys);//we don't want to sort them alphabetically. let them stay in turn order.
 		final Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
 		for (final String name : playerNames)
 		{
 			final PlayerRow newPlayerRow = new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name), m_gameSelectorModel.getGameData().getGameLoader()
 						.getServerPlayerTypes());
 			m_playerRows.add(newPlayerRow);
-			newPlayerRow.update(players);
+			newPlayerRow.update(players, playersEnabled);
 		}
 		layoutPlayers();
 		internalPlayersTakenChanged();
@@ -341,20 +369,26 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		private final JLabel m_nameLabel;
 		private final JLabel m_playerLabel;
 		private final JCheckBox m_localCheckBox;
+		private final JCheckBox m_enabledCheckBox;
 		private final JComboBox m_type;
 		private JLabel m_alliance;
+		private final String[] m_types;
 		
 		PlayerRow(final String playerName, final Map<String, String> reloadSelections, final Collection<String> playerAlliances, final String[] types)
 		{
 			m_nameLabel = new JLabel(playerName);
 			m_playerLabel = new JLabel(m_model.getMessenger().getLocalNode().getName());
 			m_localCheckBox = new JCheckBox();
-			m_localCheckBox.addActionListener(m_actionListener);
+			m_localCheckBox.addActionListener(m_localPlayerActionListener);
 			m_localCheckBox.setSelected(true);
+			m_enabledCheckBox = new JCheckBox();
+			m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
+			m_enabledCheckBox.setSelected(true);// this gets updated later
+			m_types = types;
 			m_type = new JComboBox(types);
 			String previousSelection = reloadSelections.get(playerName);
 			if (previousSelection.equalsIgnoreCase("Client"))
-				previousSelection = TripleA.HUMAN_PLAYER_TYPE;
+				previousSelection = types[0];
 			if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection))
 			{
 				m_type.setSelectedItem(previousSelection);
@@ -362,7 +396,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			}
 			else if (playerName.startsWith("Neutral") || playerName.startsWith("AI"))
 			{
-				m_type.setSelectedItem(TripleA.STRONG_COMPUTER_PLAYER_TYPE);
+				m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 2))]); // the 3rd in the list should be Moore N Able
 				m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
 			}
 			if (playerAlliances.contains(playerName))
@@ -403,22 +437,33 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			return m_localCheckBox;
 		}
 		
-		public void update(final Map<String, String> players)
+		public JCheckBox getEnabledPlayer()
 		{
-			String text = players.get(m_nameLabel.getText());
+			return m_enabledCheckBox;
+		}
+		
+		public void update(final Map<String, String> playersToNodes, final Map<String, Boolean> playersEnabled)
+		{
+			String text = playersToNodes.get(m_nameLabel.getText());
 			if (text == null)
 				text = "-";
 			m_playerLabel.setText(text);
 			m_localCheckBox.setSelected(text.equals(m_model.getMessenger().getLocalNode().getName()));
+			m_enabledCheckBox.setSelected(playersEnabled.get(m_nameLabel.getText()));
 			setWidgetActivation();
 		}
 		
 		private void setWidgetActivation()
 		{
 			m_type.setEnabled(m_localCheckBox.isSelected());
+			m_nameLabel.setEnabled(m_enabledCheckBox.isSelected());
+			m_playerLabel.setEnabled(m_enabledCheckBox.isSelected());
+			m_localCheckBox.setEnabled(m_enabledCheckBox.isSelected());
+			m_alliance.setEnabled(m_enabledCheckBox.isSelected());
+			m_enabledCheckBox.setEnabled(m_model.getPlayersAllowedToBeDisabled().contains(m_nameLabel.getText()));
 		}
 		
-		private final ActionListener m_actionListener = new ActionListener()
+		private final ActionListener m_localPlayerActionListener = new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -426,6 +471,24 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 					m_model.takePlayer(m_nameLabel.getText());
 				else
 					m_model.releasePlayer(m_nameLabel.getText());
+				setWidgetActivation();
+			}
+		};
+		
+		private final ActionListener m_disablePlayerActionListener = new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (m_enabledCheckBox.isSelected())
+				{
+					m_model.enablePlayer(m_nameLabel.getText());
+					m_type.setSelectedItem(m_types[0]); // the 1st in the list should be human
+				}
+				else
+				{
+					m_model.disablePlayer(m_nameLabel.getText());
+					m_type.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list should be Weak AI
+				}
 				setWidgetActivation();
 			}
 		};

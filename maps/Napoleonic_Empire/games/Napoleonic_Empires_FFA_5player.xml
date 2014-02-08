@@ -1322,11 +1322,11 @@
         <playerList>
 				
 				<!-- player list in turn order -->
-				<player name="France" optional="false"/>
-				<player name="UnitedKingdom" optional="false"/>
-				<player name="AustrianEmpire" optional="false"/>
-				<player name="OttomanEmpire" optional="false"/>
-				<player name="Russia" optional="false"/>
+				<player name="France" optional="false" canBeDisabled="true"/>
+				<player name="UnitedKingdom" optional="false" canBeDisabled="true"/>
+				<player name="AustrianEmpire" optional="false" canBeDisabled="true"/>
+				<player name="OttomanEmpire" optional="false" canBeDisabled="true"/>
+				<player name="Russia" optional="false" canBeDisabled="true"/>
 
                 <!-- alliance -->
                 <alliance player="UnitedKingdom" alliance="UnitedKingdom"/>

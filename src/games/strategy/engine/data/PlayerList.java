@@ -20,6 +20,8 @@ package games.strategy.engine.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -104,5 +106,26 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 	public Iterator<PlayerID> iterator()
 	{
 		return getPlayers().iterator();
+	}
+	
+	public Collection<String> getPlayersThatMayBeDisabled()
+	{
+		final Collection<String> disableable = new HashSet<String>();
+		for (final PlayerID p : m_players.values())
+		{
+			if (p.getCanBeDisabled())
+				disableable.add(p.getName());
+		}
+		return disableable;
+	}
+	
+	public HashMap<String, Boolean> getPlayersEnabledListing()
+	{
+		final HashMap<String, Boolean> playersEnabledListing = new HashMap<String, Boolean>();
+		for (final PlayerID p : m_players.values())
+		{
+			playersEnabledListing.put(p.getName(), !p.getIsDisabled());
+		}
+		return playersEnabledListing;
 	}
 }

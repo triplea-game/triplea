@@ -80,6 +80,7 @@
 	<!ATTLIST player
 		name ID #REQUIRED
 		optional (true | false) 'false'
+		canBeDisabled (true | false) 'false'
 	>
 	<!ELEMENT alliance EMPTY>
 

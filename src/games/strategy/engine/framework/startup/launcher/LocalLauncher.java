@@ -14,6 +14,7 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.DummyMessenger;
@@ -25,7 +26,6 @@ import games.strategy.net.Messengers;
 
 import java.awt.Component;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -36,13 +36,13 @@ public class LocalLauncher extends AbstractLauncher
 {
 	private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
 	private final IRandomSource m_randomSource;
-	private final Map<String, String> m_playerTypes;
+	private final PlayerListing m_playerListing;
 	
-	public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource, final Map<String, String> playerTypes)
+	public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource, final PlayerListing playerListing)
 	{
 		super(gameSelectorModel);
 		m_randomSource = randomSource;
-		m_playerTypes = playerTypes;
+		m_playerListing = playerListing;
 	}
 	
 	@Override
@@ -56,9 +56,10 @@ public class LocalLauncher extends AbstractLauncher
 		ServerGame game = null;
 		try
 		{
+			m_gameData.doPreGameStartDataModifications(m_playerListing);
 			final IServerMessenger messenger = new DummyMessenger();
 			final Messengers messengers = new Messengers(messenger);
-			final Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
+			final Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
 			game = new ServerGame(m_gameData, gamePlayers, new HashMap<String, INode>(), messengers);
 			game.setRandomSource(m_randomSource);
 			// for debugging, we can use a scripted random source

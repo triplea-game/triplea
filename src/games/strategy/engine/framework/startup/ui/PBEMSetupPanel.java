@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LocalBeanCache;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
@@ -311,7 +312,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		final boolean emailValid = m_emailSenderEditor.isBeanValid();
 		
 		return diceServerValid && summaryValid && emailValid && webSiteValid && m_gameSelectorModel.getGameData() != null;
-		
 	}
 	
 	@Override
@@ -416,13 +416,17 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		final String gameUUID = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
 		final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
 		final Map<String, String> playerTypes = new HashMap<String, String>();
+		final Map<String, Boolean> playersEnabled = new HashMap<String, Boolean>();
 		final String playerType = m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes()[0];
 		for (final String playerName : m_gameSelectorModel.getGameData().getPlayerList().getNames())
 		{
 			playerTypes.put(playerName, playerType);
+			playersEnabled.put(playerName, true);
 		}
 		
-		return new LocalLauncher(m_gameSelectorModel, randomSource, playerTypes);
+		final PlayerListing pl = new PlayerListing(null, playersEnabled, playerTypes, m_gameSelectorModel.getGameData().getGameVersion(), m_gameSelectorModel.getGameName(),
+					m_gameSelectorModel.getGameRound(), null, null); // we don't need the playerToNode list, the disable-able players, or the alliances list, for a local game
+		return new LocalLauncher(m_gameSelectorModel, randomSource, pl);
 	}
 	
 	

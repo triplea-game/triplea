@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-		<info name="Pact of Steel 2" version="3.6"/>
+		<info name="Pact of Steel 2" version="3.7"/>
 		
 				<!-- A MOD of original POS by VEQRYN
 						The purpose is to provide a fun game that shows off all the new features of TripleA since 1.2.5.5
@@ -17,7 +17,7 @@
 		
 		<!-- triplea minimumVersion is the minimum version number of TripleA that can play this game.  Many new xmls require features not present in older versions of TripleA. Should be "xx.xx.xx.xx", "xx.xx.xx", "xx.xx", or "xx".
 				An example would be a map using 'isInfrastructure' unit property would need at least TripleA version "1.2.6", while a map using 'whenCapturedChangesInto' would need at least TripleA version "1.4" -->
-		<triplea minimumVersion="1.7"/>
+		<triplea minimumVersion="1.8"/>
 
 		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.  Setting diceSides to a number other than 6 can result in unexpected behavior. -->
 		<diceSides value="6"/>
@@ -565,14 +565,15 @@
 
 		<playerList>
 				<!-- In turn order (it is important that the players are listed in turn order)-->
-				<player name="Italians" optional="false"/>
-				<player name="Russians" optional="false"/>
-				<player name="Germans" optional="false"/>
-				<player name="British" optional="false"/>
-				<player name="Japanese" optional="false"/>
-				<player name="Americans" optional="false"/>
-				<player name="Chinese" optional="false"/>
-				<!-- optional just means 'does this player require a capital?'.  if a player is optional, some delegates may not work as expected for that player. -->
+				<player name="Italians" optional="false" canBeDisabled="false"/>
+				<player name="Russians" optional="false" canBeDisabled="false"/>
+				<player name="Germans" optional="false" canBeDisabled="false"/>
+				<player name="British" optional="false" canBeDisabled="false"/>
+				<player name="Japanese" optional="false" canBeDisabled="false"/>
+				<player name="Americans" optional="false" canBeDisabled="false"/>
+				<player name="Chinese" optional="false" canBeDisabled="false"/>
+				<!-- optional just means 'does this player require a capital?'.  if optional is false, they require at least 1 capital.  if optional is true, they may have no capitals. -->
+				<!-- canBeDisabled if true means that the player will skip all of their phases. their delegates will be removed from the game (so triggers will not happen during those delegates either) -->
 
 				
 				

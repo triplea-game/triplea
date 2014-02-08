@@ -1,4 +1,12 @@
 Changes for 1.8.0.0
+* Allowing clients to disable and enable players for host bots, but not normal hosts. (veqryn)
+
+* Forcing random start to not allow disabled players to select territories, and also letting savegames keep disabled state, and disabled players switched to an AI. (veqryn)
+
+* Creating new playerlist option for players, "canBeDisabled", which if set to true will force the game to delete all delegates for that player, thereby allowing more customized multiplayer games. (veqryn)
+
+* Forcing hosts and hosting bots to always use Secure Random source when playing online, even when the host is not playing. (veqryn)
+
 * Updating TripleA to require at least Java 6 or greater. (veqryn)
 
 * Updating included jar libraries to latest versions. (veqryn)

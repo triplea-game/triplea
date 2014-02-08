@@ -56,6 +56,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private IRemoteMessenger m_remoteMessenger;
 	private IChannelMessenger m_channelMessenger;
 	private GameData m_data;
-	private Map<String, String> m_players = new HashMap<String, String>();
+	private Map<String, String> m_playersToNodeListing = new HashMap<String, String>();
+	private Map<String, Boolean> m_playersEnabledListing = new HashMap<String, Boolean>();
+	private Collection<String> m_playersAllowedToBeDisabled = new HashSet<String>();
 	private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
 	private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
 	private final GameSelectorModel m_gameSelectorModel;
@@ -160,11 +163,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
-	public String getLocalPlayerType(final String player)
-	{
-		return m_localPlayerTypes.get(player);
-	}
-	
 	private void gameDataChanged()
 	{
 		synchronized (this)
@@ -172,15 +170,18 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			m_data = m_gameSelectorModel.getGameData();
 			if (m_data != null)
 			{
-				m_players = new HashMap<String, String>();
+				m_playersToNodeListing = new HashMap<String, String>();
+				m_playersEnabledListing = new HashMap<String, Boolean>();
+				m_playersAllowedToBeDisabled = new HashSet<String>(m_data.getPlayerList().getPlayersThatMayBeDisabled());
 				m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
 				for (final String name : m_data.getPlayerList().getNames())
 				{
 					if (m_headless)// && !(name.startsWith("Neutral") || name.startsWith("AI"))) // debateable whether we want a headless server doing any AI stuff
-						m_players.put(name, null);
+						m_playersToNodeListing.put(name, null);
 					else
-						m_players.put(name, m_serverMessenger.getLocalNode().getName());
+						m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
 					m_playerNamesAndAlliancesInTurnOrder.put(name, m_data.getAllianceTracker().getAlliancesPlayerIsIn(m_data.getPlayerList().getPlayerID(name)));
+					m_playersEnabledListing.put(name, !m_data.getPlayerList().getPlayerID(name).getIsDisabled());
 				}
 			}
 			m_objectStreamFactory.setData(m_data);
@@ -300,6 +301,20 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		public void releasePlayer(final INode who, final String playerName)
 		{
 			takePlayerInternal(who, false, playerName);
+		}
+		
+		public void disablePlayer(final String playerName)
+		{
+			if (!m_headless)
+				return;
+			setPlayerEnabled(playerName, false);// we don't want the client's changing stuff for anyone but a bot
+		}
+		
+		public void enablePlayer(final String playerName)
+		{
+			if (!m_headless)
+				return;
+			setPlayerEnabled(playerName, true); // we don't want the client's changing stuff for anyone but a bot
 		}
 		
 		public boolean isGameStarted(final INode newNode)
@@ -479,11 +494,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		synchronized (this)
 		{
 			if (m_data == null)
-				return new PlayerListing(new HashMap<String, String>(), new Version(0, 0), m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(),
-							new LinkedHashMap<String, Collection<String>>());
+				return new PlayerListing(new HashMap<String, String>(), new HashMap<String, Boolean>(m_playersEnabledListing), getLocalPlayerTypes(), new Version(0, 0),
+							m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(), new HashSet<String>(m_playersAllowedToBeDisabled), new LinkedHashMap<String, Collection<String>>());
 			else
-				return new PlayerListing(new HashMap<String, String>(m_players), m_data.getGameVersion(), m_data.getGameName(), m_data.getSequence().getRound() + "",
-							m_playerNamesAndAlliancesInTurnOrder);
+				return new PlayerListing(new HashMap<String, String>(m_playersToNodeListing), new HashMap<String, Boolean>(m_playersEnabledListing), getLocalPlayerTypes(), m_data.getGameVersion(),
+							m_data.getGameName(), m_data.getSequence().getRound() + "", new HashSet<String>(m_playersAllowedToBeDisabled), m_playerNamesAndAlliancesInTurnOrder);
 		}
 	}
 	
@@ -492,12 +507,34 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		// synchronize to make sure two adds arent executed at once
 		synchronized (this)
 		{
-			if (!m_players.containsKey(playerName))
+			if (!m_playersToNodeListing.containsKey(playerName))
 				return;
 			if (take)
-				m_players.put(playerName, from.getName());
+				m_playersToNodeListing.put(playerName, from.getName());
 			else
-				m_players.put(playerName, null);
+				m_playersToNodeListing.put(playerName, null);
+		}
+		notifyChanellPlayersChanged();
+		m_listener.playersTakenChanged();
+	}
+	
+	private void setPlayerEnabled(final String playerName, final boolean enabled)
+	{
+		takePlayerInternal(m_serverMessenger.getLocalNode(), true, playerName);
+		// synchronize
+		synchronized (this)
+		{
+			if (!m_playersEnabledListing.containsKey(playerName))
+				return;
+			m_playersEnabledListing.put(playerName, enabled);
+			if (m_headless)
+			{
+				// we do not want the host bot to actually play, so set to null if enabled, and set to weak ai if disabled
+				if (enabled)
+					m_playersToNodeListing.put(playerName, null);
+				else
+					m_localPlayerTypes.put(playerName, m_data.getGameLoader().getServerPlayerTypes()[Math.max(0, Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))]); // the 2nd in the list should be Weak AI
+			}
 		}
 		notifyChanellPlayersChanged();
 		m_listener.playersTakenChanged();
@@ -519,16 +556,42 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		takePlayerInternal(m_serverMessenger.getLocalNode(), false, playerName);
 	}
 	
+	public void disablePlayer(final String playerName)
+	{
+		setPlayerEnabled(playerName, false);
+	}
+	
+	public void enablePlayer(final String playerName)
+	{
+		setPlayerEnabled(playerName, true);
+	}
+	
 	public IServerMessenger getMessenger()
 	{
 		return m_serverMessenger;
 	}
 	
-	public Map<String, String> getPlayers()
+	public Map<String, String> getPlayersToNodeListing()
 	{
 		synchronized (this)
 		{
-			return new HashMap<String, String>(m_players);
+			return new HashMap<String, String>(m_playersToNodeListing);
+		}
+	}
+	
+	public Map<String, Boolean> getPlayersEnabledListing()
+	{
+		synchronized (this)
+		{
+			return new HashMap<String, Boolean>(m_playersEnabledListing);
+		}
+	}
+	
+	public Collection<String> getPlayersAllowedToBeDisabled()
+	{
+		synchronized (this)
+		{
+			return new HashSet<String>(m_playersAllowedToBeDisabled);
 		}
 	}
 	
@@ -580,9 +643,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		final List<String> free = new ArrayList<String>();
 		synchronized (this)
 		{
-			for (final String player : m_players.keySet())
+			for (final String player : m_playersToNodeListing.keySet())
 			{
-				final String playedBy = m_players.get(player);
+				final String playedBy = m_playersToNodeListing.get(player);
 				if (playedBy != null && playedBy.equals(node.getName()))
 				{
 					free.add(player);
@@ -618,6 +681,28 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		m_removeConnectionsLatch = null;
 	}
 	
+	public Map<String, String> getLocalPlayerTypes()
+	{
+		final Map<String, String> localPlayerMappings = new HashMap<String, String>();
+		if (m_data == null)
+			return localPlayerMappings;
+		final String defaultLocalType = m_data.getGameLoader().getServerPlayerTypes()[0];
+		for (final String player : m_playersToNodeListing.keySet())
+		{
+			final String playedBy = m_playersToNodeListing.get(player);
+			if (playedBy == null)
+				continue;
+			if (playedBy.equals(m_serverMessenger.getLocalNode().getName()))
+			{
+				String type = defaultLocalType;
+				if (m_localPlayerTypes.containsKey(player))
+					type = m_localPlayerTypes.get(player);
+				localPlayerMappings.put(player, type);
+			}
+		}
+		return localPlayerMappings;
+	}
+	
 	public ILauncher getLauncher()
 	{
 		synchronized (this)
@@ -625,22 +710,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			disallowRemoveConnections();
 			// -1 since we dont count outselves
 			final int clientCount = m_serverMessenger.getNodes().size() - 1;
-			final Map<String, String> localPlayerMappings = new HashMap<String, String>();
 			final Map<String, INode> remotePlayers = new HashMap<String, INode>();
-			final String defaultLocalType = m_data.getGameLoader().getServerPlayerTypes()[0];
-			for (final String player : m_players.keySet())
+			for (final String player : m_playersToNodeListing.keySet())
 			{
-				final String playedBy = m_players.get(player);
+				final String playedBy = m_playersToNodeListing.get(player);
 				if (playedBy == null)
 					return null;
-				if (playedBy.equals(m_serverMessenger.getLocalNode().getName()))
-				{
-					String type = defaultLocalType;
-					if (m_localPlayerTypes.containsKey(player))
-						type = m_localPlayerTypes.get(player);
-					localPlayerMappings.put(player, type);
-				}
-				else
+				if (!playedBy.equals(m_serverMessenger.getLocalNode().getName()))
 				{
 					final Set<INode> nodes = m_serverMessenger.getNodes();
 					for (final INode node : nodes)
@@ -653,8 +729,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 					}
 				}
 			}
-			final ServerLauncher launcher = new ServerLauncher(clientCount, m_remoteMessenger, m_channelMessenger, m_serverMessenger, m_gameSelectorModel, localPlayerMappings, remotePlayers, this,
-						m_headless);
+			final ServerLauncher launcher = new ServerLauncher(clientCount, m_remoteMessenger, m_channelMessenger, m_serverMessenger, m_gameSelectorModel, getPlayerListingInternal(), remotePlayers,
+						this, m_headless);
 			return launcher;
 		}
 	}

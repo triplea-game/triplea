@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IClientChannel;
@@ -62,7 +63,7 @@ public class ServerLauncher extends AbstractLauncher
 	private final IRemoteMessenger m_remoteMessenger;
 	private final IChannelMessenger m_channelMessenger;
 	private final IMessenger m_messenger;
-	private final Map<String, String> m_localPlayerMapping;
+	private final PlayerListing m_playerListing;
 	private final Map<String, INode> m_remotelPlayers;
 	private final ServerModel m_serverModel;
 	private ServerGame m_serverGame;
@@ -78,14 +79,14 @@ public class ServerLauncher extends AbstractLauncher
 	private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
 	
 	public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger, final IMessenger messenger,
-				final GameSelectorModel gameSelectorModel, final Map<String, String> localPlayerMapping, final Map<String, INode> remotelPlayers, final ServerModel serverModel, final boolean headless)
+				final GameSelectorModel gameSelectorModel, final PlayerListing playerListing, final Map<String, INode> remotelPlayers, final ServerModel serverModel, final boolean headless)
 	{
 		super(gameSelectorModel, headless);
 		m_clientCount = clientCount;
 		m_remoteMessenger = remoteMessenger;
 		m_channelMessenger = channelMessenger;
 		m_messenger = messenger;
-		m_localPlayerMapping = localPlayerMapping;
+		m_playerListing = playerListing;
 		m_remotelPlayers = remotelPlayers;
 		m_serverModel = serverModel;
 	}
@@ -101,7 +102,7 @@ public class ServerLauncher extends AbstractLauncher
 			return true;
 		else
 		{
-			final Map<String, String> players = m_serverModel.getPlayers();
+			final Map<String, String> players = m_serverModel.getPlayersToNodeListing();
 			if (players == null || players.isEmpty())
 				return true;
 			else
@@ -127,6 +128,7 @@ public class ServerLauncher extends AbstractLauncher
 			}
 			if (m_headless)
 				HeadlessGameServer.log("Game Status: Launching");
+			m_gameData.doPreGameStartDataModifications(m_playerListing);
 			m_ui = parent;
 			m_serverReady = new ServerReady(m_clientCount);
 			m_serverModel.setServerLauncher(this);
@@ -143,7 +145,7 @@ public class ServerLauncher extends AbstractLauncher
 				e.printStackTrace();
 				throw new IllegalStateException(e.getMessage());
 			}
-			final Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(m_localPlayerMapping);
+			final Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
 			final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
 			m_serverGame = new ServerGame(m_gameData, localPlayerSet, m_remotelPlayers, messengers);
 			m_serverGame.setInGameLobbyWatcher(m_inGameLobbyWatcher);
@@ -155,7 +157,7 @@ public class ServerLauncher extends AbstractLauncher
 			// later we will wait for them to all
 			// signal that they are ready.
 			((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes, m_serverGame.getPlayerManager().getPlayerMapping());
-			final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty() && !m_localPlayerMapping.isEmpty();
+			final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty();// && !m_localPlayerMapping.isEmpty(); // do we need to have a local player? i don't think we do...
 			if (useSecureRandomSource)
 			{
 				// server game.

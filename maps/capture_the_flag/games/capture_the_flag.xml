@@ -112,10 +112,11 @@
 
 
 		<!-- In turn order -->
-		<player name="Russians" optional="false"/>
-		<player name="Italians" optional="false"/>
-		<player name="Germans" optional="false"/>
-		<player name="Chinese" optional="false"/>
+		<player name="Russians" optional="false" canBeDisabled="true"/>
+		<player name="Italians" optional="false" canBeDisabled="true"/>
+		<player name="Germans" optional="false" canBeDisabled="true"/>
+		<player name="Chinese" optional="false" canBeDisabled="true"/>
+		
         <alliance player="Russians" alliance="Russians"/>
         <alliance player="Italians" alliance="Italians"/>
         <alliance player="Germans" alliance="Germans"/>

@@ -237,6 +237,8 @@ public class RandomStartDelegate extends BaseTripleADelegate
 					return false;
 				if (player.getUnits().isEmpty())
 					return false;
+				if (player.getIsDisabled())
+					return false;
 				return true;
 			}
 		};
