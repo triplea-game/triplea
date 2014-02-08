@@ -900,6 +900,11 @@ public class Properties implements Constants
 		return data.getProperties().get(ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY, false);
 	}
 	
+	public static boolean getDisabledPlayersAssetsDeleted(final GameData data)
+	{
+		return data.getProperties().get(DISABLED_PLAYERS_ASSETS_DELETED, false);
+	}
+	
 	private Properties()
 	{
 	}

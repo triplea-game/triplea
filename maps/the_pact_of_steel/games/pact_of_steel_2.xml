@@ -5028,6 +5028,11 @@
 				<property name="Territories Are Assigned Randomly" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+						<!-- If any players are disabled and unused, then all their units, money, etc, gets deleted at the start of the game during initialization delegate. -->
+				<property name="Disabled Players Assets Deleted" value="false" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Scramble Rules In Effect" value="true" editable="true">
 						<boolean/>

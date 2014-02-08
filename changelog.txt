@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Created new game option property, "Disabled Players Assets Deleted", which will delete all units and resources from a disabled unused player during game startup. (veqryn)
+
 * Allowing clients to disable and enable players for host bots, but not normal hosts. (veqryn)
 
 * Forcing random start to not allow disabled players to select territories, and also letting savegames keep disabled state, and disabled players switched to an AI. (veqryn)

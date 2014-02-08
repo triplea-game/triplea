@@ -236,6 +236,7 @@ public interface Constants
 	public static final String CONTESTED_TERRITORIES_PRODUCE_NO_INCOME = "Contested Territories Produce No Income";
 	public static final String SEA_BATTLES_MAY_BE_IGNORED = "Sea Battles May Be Ignored";
 	public static final String ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY = "Abandoned Territories May Be Taken Over Immediately";
+	public static final String DISABLED_PLAYERS_ASSETS_DELETED = "Disabled Players Assets Deleted";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

@@ -29,6 +29,7 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -38,6 +39,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -107,6 +109,48 @@ public class InitializationDelegate extends BaseTripleADelegate
 		initOriginalOwner(aBridge);
 		initTech(aBridge);
 		initSkipUnusedBids(aBridge.getData());
+		initDeleteAssetsOfDisabledPlayers(aBridge);
+	}
+	
+	private void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge aBridge)
+	{
+		final GameData data = aBridge.getData();
+		if (!games.strategy.triplea.Properties.getDisabledPlayersAssetsDeleted(data))
+			return;
+		for (final PlayerID player : data.getPlayerList().getPlayers())
+		{
+			if (player.isNull() || !player.getIsDisabled())
+				continue;
+			// delete all the stuff they have
+			final CompositeChange change = new CompositeChange();
+			for (final Resource r : player.getResources().getResourcesCopy().keySet())
+			{
+				final int deleted = player.getResources().getQuantity(r);
+				if (deleted != 0)
+				{
+					change.add(ChangeFactory.changeResourcesChange(player, r, -deleted));
+				}
+			}
+			final Collection<Unit> heldUnits = player.getUnits().getUnits();
+			if (!heldUnits.isEmpty())
+			{
+				change.add(ChangeFactory.removeUnits(player, heldUnits));
+			}
+			final Match<Unit> owned = Matches.unitIsOwnedBy(player);
+			for (final Territory t : data.getMap().getTerritories())
+			{
+				final Collection<Unit> terrUnits = t.getUnits().getMatches(owned);
+				if (!terrUnits.isEmpty())
+				{
+					change.add(ChangeFactory.removeUnits(t, terrUnits));
+				}
+			}
+			if (!change.isEmpty())
+			{
+				aBridge.getHistoryWriter().startEvent("Remove all resources and units from: " + player.getName());
+				aBridge.addChange(change);
+			}
+		}
 	}
 	
 	private void initSkipUnusedBids(final GameData data)
