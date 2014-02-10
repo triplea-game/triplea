@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.client;
 import games.strategy.debug.HeartBeat;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.ModeratorController;
+import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
@@ -22,6 +23,8 @@ public class LobbyClient
 		// we only respond to the server
 		final HeartBeat heartBeatServer = new HeartBeat(m_messengers.getMessenger().getServerNode());
 		m_messengers.getRemoteMessenger().registerRemote(heartBeatServer, HeartBeat.getHeartBeatName(m_messengers.getMessenger().getLocalNode()));
+		final RemoteHostUtils remoteHostUtilsServer = new RemoteHostUtils(m_messengers.getMessenger().getServerNode());
+		m_messengers.getRemoteMessenger().registerRemote(remoteHostUtilsServer, RemoteHostUtils.getRemoteHostUtilsName(m_messengers.getMessenger().getLocalNode()));
 	}
 	
 	public boolean isAdmin()

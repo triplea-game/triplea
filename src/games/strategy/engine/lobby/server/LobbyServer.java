@@ -79,7 +79,7 @@ public class LobbyServer
 		server.setLoginValidator(new LobbyLoginValidator());
 		// setup common objects
 		new UserManager().register(m_messengers.getRemoteMessenger());
-		final ModeratorController moderatorController = new ModeratorController(server);
+		final ModeratorController moderatorController = new ModeratorController(server, m_messengers);
 		moderatorController.register(m_messengers.getRemoteMessenger());
 		new ChatController(LOBBY_CHAT, m_messengers, moderatorController);
 		// register the status controller

@@ -25,6 +25,7 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.engine.lobby.server.ILobbyGameController;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
@@ -149,6 +150,8 @@ public class InGameLobbyWatcher
 			final RemoteMessenger rm = new RemoteMessenger(um);
 			final HeartBeat h = new HeartBeat(messenger.getServerNode());
 			rm.registerRemote(h, HeartBeat.getHeartBeatName(um.getLocalNode()));
+			final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode());
+			rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
 			return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
 		} catch (final Exception e)
 		{

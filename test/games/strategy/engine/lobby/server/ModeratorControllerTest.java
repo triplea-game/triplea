@@ -23,7 +23,6 @@ import games.strategy.net.Node;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class ModeratorControllerTest extends TestCase
 	public void setUp() throws UnknownHostException
 	{
 		m_messenger = new DummyMessenger();
-		m_controller = new ModeratorController(m_messenger);
+		m_controller = new ModeratorController(m_messenger, null);
 		m_listener = new ConnectionChangeListener();
 		m_messenger.addConnectionChangeListener(m_listener);
 		final String adminName = Util.createUniqueTimeStamp();
@@ -60,7 +59,7 @@ public class ModeratorControllerTest extends TestCase
 	
 	public void testBan() throws UnknownHostException
 	{
-		final InetAddress bannedAddress = Inet4Address.getByAddress(new byte[] { (byte) 10, (byte) 10, (byte) 10, (byte) 10 });
+		final InetAddress bannedAddress = InetAddress.getByAddress(new byte[] { (byte) 10, (byte) 10, (byte) 10, (byte) 10 });
 		new BannedIpController().removeBannedIp(bannedAddress.getHostAddress());
 		MessageContext.setSenderNodeForThread(m_adminNode);
 		/*ServerMessenger serverMessenger = null;

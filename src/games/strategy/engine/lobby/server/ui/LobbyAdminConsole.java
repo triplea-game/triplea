@@ -19,10 +19,13 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
 import games.strategy.engine.lobby.client.ui.LobbyGamePanel;
+import games.strategy.engine.lobby.server.IRemoteHostUtils;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.lobby.server.userDB.Database;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
+import games.strategy.util.MD5Crypt;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -53,6 +56,7 @@ public class LobbyAdminConsole extends JFrame
 	private JButton m_exit;
 	private JButton m_bootPlayer;
 	private JButton m_debugPlayer;
+	private JButton m_remoteHostActions;
 	private DBExplorerPanel m_executor;
 	private AllUsersPanel m_allUsers;
 	private LobbyGamePanel m_lobbyGamePanel;
@@ -74,6 +78,7 @@ public class LobbyAdminConsole extends JFrame
 		m_backupNow = new JButton("Backup Now");
 		m_bootPlayer = new JButton("Boot Player");
 		m_debugPlayer = new JButton("Debug Player");
+		m_remoteHostActions = new JButton("Remote Host Actions");
 		m_exit = new JButton("Exit");
 		m_executor = new DBExplorerPanel();
 		m_allUsers = new AllUsersPanel(m_server.getMessenger());
@@ -90,6 +95,7 @@ public class LobbyAdminConsole extends JFrame
 		toolBar.add(m_bootPlayer);
 		toolBar.add(m_backupNow);
 		toolBar.add(m_debugPlayer);
+		toolBar.add(m_remoteHostActions);
 		add(toolBar, BorderLayout.NORTH);
 		final JSplitPane leftTopSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		leftTopSplit.setTopComponent(m_executor);
@@ -111,6 +117,13 @@ public class LobbyAdminConsole extends JFrame
 			public void actionPerformed(final ActionEvent e)
 			{
 				debugPlayer();
+			}
+		});
+		m_remoteHostActions.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				remoteHostActions();
 			}
 		});
 		m_exit.addActionListener(new ActionListener()
@@ -172,6 +185,59 @@ public class LobbyAdminConsole extends JFrame
 						final IHeartBeat heartBeat = (IHeartBeat) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
 						s_logger.info("Debug info for:" + node);
 						s_logger.info(heartBeat.getDebugInfo());
+						s_logger.info("Debug info finished");
+					}
+				};
+				final Thread t = new Thread(r, "Debug player called at " + new Date());
+				t.setDaemon(true);
+				t.start();
+				return;
+			}
+		}
+		s_logger.info("No node found named:" + name);
+	}
+	
+	private void remoteHostActions()
+	{
+		final DefaultComboBoxModel model = new DefaultComboBoxModel();
+		final JComboBox combo = new JComboBox(model);
+		model.addElement("");
+		for (final INode node : new TreeSet<INode>(m_server.getMessenger().getNodes()))
+		{
+			if (!node.equals(m_server.getMessenger().getLocalNode()))
+				model.addElement(node.getName());
+		}
+		if (model.getSize() == 1)
+		{
+			JOptionPane.showMessageDialog(this, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		final int rVal = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, combo, "Select player to debug", JOptionPane.OK_CANCEL_OPTION);
+		if (rVal != JOptionPane.OK_OPTION)
+			return;
+		final String name = (String) combo.getSelectedItem();
+		final String password = JOptionPane.showInputDialog(null, "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+		for (final INode node : m_server.getMessenger().getNodes())
+		{
+			if (node.getName().equals(name))
+			{
+				// run in a seperate thread
+				// if it doesnt return because the
+				// remote computer is blocked, we don't want to
+				// kill the swing thread
+				final Runnable r = new Runnable()
+				{
+					public void run()
+					{
+						s_logger.info("Starting Remote Host Action for: " + node);
+						final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
+						final IRemoteHostUtils hostUtils = (IRemoteHostUtils) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
+						s_logger.info("Remote Host Action for:" + node);
+						final String salt = hostUtils.getSalt();
+						final String hashedPassword = MD5Crypt.crypt(password, salt);
+						final String response = hostUtils.shutDownHeadlessHostBot(hashedPassword, salt);
+						s_logger.info(response == null ? "Successfull Remote Action" : "Failed: " + response);
+						s_logger.info("Remote Host Action finished");
 					}
 				};
 				final Thread t = new Thread(r, "Debug player called at " + new Date());

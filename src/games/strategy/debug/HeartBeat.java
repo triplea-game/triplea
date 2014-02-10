@@ -13,6 +13,7 @@
  */
 package games.strategy.debug;
 
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
@@ -34,8 +35,15 @@ public class HeartBeat implements IHeartBeat
 	public String getDebugInfo()
 	{
 		if (MessageContext.getSender().equals(m_serverNode))
-			return DebugUtils.getDebugReportWithFramesAndWindows();
+		{
+			if (HeadlessGameServer.headless())
+				return DebugUtils.getDebugReportWithoutFramesAndWindows();
+			else
+				return DebugUtils.getDebugReportWithFramesAndWindows();
+		}
 		else
+		{
 			return "";
+		}
 	}
 }

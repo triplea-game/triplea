@@ -60,6 +60,26 @@ public interface IModeratorController extends IRemote
 	public void muteMac(INode node, Date muteExpires);
 	
 	/**
+	 * Remote stop game of a headless host bot.
+	 */
+	public String banPlayerHeadlessHostBot(INode node, String playerNameToBeBanned, String hashedPassword, String salt);
+	
+	/**
+	 * Remote stop game of a headless host bot.
+	 */
+	public String stopGameHeadlessHostBot(INode node, String hashedPassword, String salt);
+	
+	/**
+	 * Remote shutdown of a headless host bot.
+	 */
+	public String shutDownHeadlessHostBot(INode node, String hashedPassword, String salt);
+	
+	/**
+	 * For use with a password for the bot.
+	 */
+	public String getHeadlessHostBotSalt(INode node);
+	
+	/**
 	 * Reset the password of the given user. Returns null if the password was updated without error.
 	 * <p>
 	 * 

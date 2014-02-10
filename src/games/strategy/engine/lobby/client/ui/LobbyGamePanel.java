@@ -23,6 +23,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.ui.TableSorter;
+import games.strategy.util.MD5Crypt;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -53,7 +54,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class LobbyGamePanel extends JPanel
 {
-	private static final long serialVersionUID = -7829506356288575574L;
+	private static final long serialVersionUID = -2576314388949606337L;
 	private JButton m_hostGame;
 	private JButton m_joinGame;
 	private JButton m_bootGame;
@@ -236,6 +237,10 @@ public class LobbyGamePanel extends JPanel
 		if (isAdmin())
 		{
 			rVal.add(getHostSupportInfoAction(description));
+			rVal.add(getHostInfoAction());
+			rVal.add(getBanPlayerHeadlessHostBotAction(description));
+			rVal.add(getStopGameHeadlessHostBotAction(description));
+			rVal.add(getShutDownHeadlessHostBotAction(description));
 			rVal.add(getBootGameAction());
 		}
 		return rVal;
@@ -252,7 +257,7 @@ public class LobbyGamePanel extends JPanel
 					+ "\n\nEmail: \n" + supportEmail;
 		return new AbstractAction("Show Host Support Information/Email")
 		{
-			private static final long serialVersionUID = -8291828709227364205L;
+			private static final long serialVersionUID = 8280773721585118064L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -268,7 +273,7 @@ public class LobbyGamePanel extends JPanel
 	{
 		return new AbstractAction("Join Game")
 		{
-			private static final long serialVersionUID = 1238500960279152158L;
+			private static final long serialVersionUID = -8534704904840171733L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -294,11 +299,72 @@ public class LobbyGamePanel extends JPanel
 	{
 		return new AbstractAction("Boot Game")
 		{
-			private static final long serialVersionUID = 2256758711590833222L;
+			private static final long serialVersionUID = 5507232731850561329L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
 				bootGame();
+			}
+		};
+	}
+	
+	private Action getHostInfoAction()
+	{
+		return new AbstractAction("Host Information")
+		{
+			private static final long serialVersionUID = -1653282482807405899L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				getHostInfo();
+			}
+		};
+	}
+	
+	private Action getBanPlayerHeadlessHostBotAction(final GameDescription description)
+	{
+		final String supportEmail = description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+		if (supportEmail.length() == 0)
+			return null;
+		return new AbstractAction("Ban Player In Headless Host Bot")
+		{
+			private static final long serialVersionUID = 7864471330154915855L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				banPlayerInHeadlessHostBot();
+			}
+		};
+	}
+	
+	private Action getShutDownHeadlessHostBotAction(final GameDescription description)
+	{
+		final String supportEmail = description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+		if (supportEmail.length() == 0)
+			return null;
+		return new AbstractAction("Remote Shutdown Headless Host Bot")
+		{
+			private static final long serialVersionUID = 3580808218664367499L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				shutDownHeadlessHostBot();
+			}
+		};
+	}
+	
+	private Action getStopGameHeadlessHostBotAction(final GameDescription description)
+	{
+		final String supportEmail = description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+		if (supportEmail.length() == 0)
+			return null;
+		return new AbstractAction("Remote Stop Game Headless Host Bot")
+		{
+			private static final long serialVersionUID = 4667832053880819979L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				stopGameHeadlessHostBot();
 			}
 		};
 	}
@@ -338,11 +404,108 @@ public class LobbyGamePanel extends JPanel
 		// we sort the table, so get the correct index
 		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
 		final GameDescription description = m_gameTableModel.get(modelIndex);
-		final INode lobbyWatcherNode = new Node(description.getHostedBy().getName() + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME, description.getHostedBy().getAddress(),
-					description.getHostedBy().getPort());
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
 		controller.boot(lobbyWatcherNode);
 		JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
+	}
+	
+	private void getHostInfo()
+	{
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		final String text = controller.getInformationOn(lobbyWatcherNode);
+		final JTextPane textPane = new JTextPane();
+		textPane.setEditable(false);
+		textPane.setText(text);
+		JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void banPlayerInHeadlessHostBot()
+	{
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote ban player (permanently) on this host?", "Remote Player Ban Headless Host Bot",
+					JOptionPane.OK_CANCEL_OPTION);
+		if (result != JOptionPane.OK_OPTION)
+			return;
+		final String playerToBeBanned = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Banned?", "Player Name To Be Banned?", JOptionPane.QUESTION_MESSAGE);
+		if (playerToBeBanned == null)
+			return;
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+		if (password == null)
+			return;
+		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
+		final String hashedPassword = MD5Crypt.crypt(password, salt);
+		final String response = controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hashedPassword, salt);
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully banned player (" + playerToBeBanned + ") on host" : "Failed: " + response));
+	}
+	
+	private void stopGameHeadlessHostBot()
+	{
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote stop game on this host?", "Remote Stopgame Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+		if (result != JOptionPane.OK_OPTION)
+			return;
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+		if (password == null)
+			return;
+		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
+		final String hashedPassword = MD5Crypt.crypt(password, salt);
+		final String response = controller.stopGameHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully stopped current game on host" : "Failed: " + response));
+	}
+	
+	private void shutDownHeadlessHostBot()
+	{
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote shutdown of this host? \n\nYou MUST email the host's owner FIRST!!",
+					"Remote Shutdown Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+		if (result != JOptionPane.OK_OPTION)
+			return;
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+		if (password == null)
+			return;
+		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
+		final String hashedPassword = MD5Crypt.crypt(password, salt);
+		final String response = controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully shut down host" : "Failed: " + response));
 	}
 	
 	private void setWidgetActivation()

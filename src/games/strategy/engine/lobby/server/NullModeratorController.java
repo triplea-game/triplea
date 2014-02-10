@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.server;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.Messengers;
 
 import java.util.Date;
 
@@ -15,14 +16,56 @@ import java.util.Date;
 public class NullModeratorController extends ModeratorController implements IModeratorController
 {
 	@Override
+	protected String getNodeMacAddress(final INode node)
+	{
+		return super.getNodeMacAddress(node);
+	}
+	
+	@Override
+	public String getHeadlessHostBotSalt(final INode node)
+	{
+		return null;
+	}
+	
+	@Override
+	public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final String hashedPassword, final String salt)
+	{
+		return null;
+	}
+	
+	@Override
+	public String stopGameHeadlessHostBot(final INode node, final String hashedPassword, final String salt)
+	{
+		return null;
+	}
+	
+	@Override
+	public String shutDownHeadlessHostBot(final INode node, final String hashedPassword, final String salt)
+	{
+		return null;
+	}
+	
+	@Override
+	protected String getRealName(final INode node)
+	{
+		return super.getRealName(node);
+	}
+	
+	@Override
+	protected String getAliasesFor(final INode node)
+	{
+		return super.getAliasesFor(node);
+	}
+	
+	@Override
 	public void register(final IRemoteMessenger messenger)
 	{
 		messenger.registerRemote(this, getModeratorControllerName());
 	}
 	
-	public NullModeratorController(final IServerMessenger messenger)
+	public NullModeratorController(final IServerMessenger messenger, final Messengers messengers)
 	{
-		super(messenger);
+		super(messenger, messengers);
 	}
 	
 	@Override

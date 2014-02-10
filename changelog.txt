@@ -1,4 +1,14 @@
 Changes for 1.8.0.0
+* Created ability for lobby admins to ban players inside a host bot, remotely. (veqryn)
+
+* Created ability for lobby admins to stop game on a host bot remotely. (veqryn)
+
+* Created ability for lobby admins to shut down a host bot remotely. (veqryn)
+
+* Created new option for host bots, "triplea.lobby.game.supportPassword", which when set will allow remote actions on the host bot from the lobby admins. (veqryn)
+
+* Created new option for host bots, "triplea.lobby.game.reconnection", which will set the time between lobby reconnection refreshes, with the minimum and default being 6 hours. (veqryn)
+
 * Created new game option property, "Disabled Players Assets Deleted", which will delete all units and resources from a disabled unused player during game startup. (veqryn)
 
 * Allowing clients to disable and enable players for host bots, but not normal hosts. (veqryn)

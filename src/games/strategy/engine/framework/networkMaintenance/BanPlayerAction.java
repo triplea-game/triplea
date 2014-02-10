@@ -3,10 +3,14 @@ package games.strategy.engine.framework.networkMaintenance;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.TreeSet;
+
+import javax.swing.AbstractAction;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 public class BanPlayerAction extends AbstractAction
 {
@@ -45,9 +49,11 @@ public class BanPlayerAction extends AbstractAction
 			if (node.getName().equals(name))
 			{
 				final String realName = node.getName().split(" ")[0];
+				final String ip = node.getAddress().getHostAddress();
+				final String mac = m_messenger.GetPlayerMac(node.getName());
 				m_messenger.NotifyUsernameMiniBanningOfPlayer(realName);
-				m_messenger.NotifyIPMiniBanningOfPlayer(node.getAddress().getHostAddress());
-				m_messenger.NotifyMacMiniBanningOfPlayer(m_messenger.GetPlayerMac(node.getName()));
+				m_messenger.NotifyIPMiniBanningOfPlayer(ip);
+				m_messenger.NotifyMacMiniBanningOfPlayer(mac);
 				m_messenger.removeConnection(node);
 				return;
 			}

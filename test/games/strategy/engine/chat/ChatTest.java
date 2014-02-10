@@ -59,7 +59,7 @@ public class ChatTest extends TestCase
 		m_c2um = new UnifiedMessenger(m_client2);
 		m_c2rm = new RemoteMessenger(m_c2um);
 		m_c2cm = new ChannelMessenger(m_c2um);
-		m_smc = new NullModeratorController(m_server);
+		m_smc = new NullModeratorController(m_server, null);
 		m_smc.register(m_srm);
 		m_serverChatListener = new TestChatListener();
 		m_client1ChatListener = new TestChatListener();

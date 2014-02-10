@@ -33,6 +33,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.triplea.util.LoggingPrintStream;
 import games.strategy.util.ClassLoaderUtil;
+import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 import java.awt.BorderLayout;
@@ -133,12 +134,14 @@ public class HeadlessGameServer
 	private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
 	private ServerGame m_iGame = null;
 	private boolean m_shutDown = false;
+	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 21600;
+	private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 	
 	public static String[] getProperties()
 	{
 		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY,
 					GameRunner2.TRIPLEA_PORT_PROPERTY, GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT, GameRunner2.LOBBY_GAME_COMMENTS,
-					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL };
+					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner2.LOBBY_GAME_RECONNECTION };
 	}
 	
 	private static void usage()
@@ -155,11 +158,15 @@ public class HeadlessGameServer
 					+ "   " + GameRunner2.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
+					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
+					+ "   " + GameRunner2.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + "]>\n"
 					+ "\n"
 					+ "   You must start the Name and HostedBy with \"Bot\".\n"
 					+ "   Game Comments must have this string in it: \"automated_host\".\n"
 					+ "   You must include a support email for your host, so that you can be alerted by lobby admins when your host has an error."
-					+ " (For example they may email you when your host is down and needs to be restarted.)\n");
+					+ " (For example they may email you when your host is down and needs to be restarted.)\n"
+					+ "   Support password is a remote access password that will allow lobby admins to remotely take the following actions: ban player, stop game, shutdown server."
+					+ " (Please email this password to one of the lobby moderators, or private message an admin on the TripleaWarClub.org website forum.)\n");
 	}
 	
 	public static synchronized HeadlessGameServer getInstance()
@@ -290,6 +297,143 @@ public class HeadlessGameServer
 			System.out.println(stdout);
 	}
 	
+	public String getSalt()
+	{
+		final String encryptedPassword = MD5Crypt.crypt(System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, ""));
+		final String salt = MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword);
+		return salt;
+	}
+	
+	public String remoteShutdown(final String hashedPassword, final String salt)
+	{
+		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		if (password.equals(NO_REMOTE_REQUESTS_ALLOWED))
+			return "Host not accepting remote requests!";
+		final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+		if (encryptedPassword.equals(hashedPassword))
+		{
+			(new Thread(new Runnable()
+			{
+				public void run()
+				{
+					System.out.println("Remote Shutdown Initiated.");
+					try
+					{
+						Thread.sleep(1000);
+					} catch (final InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+					System.exit(0);
+				}
+			})).start();
+			return null;
+		}
+		System.out.println("Attempted remote shutdown with invalid password.");
+		return "Invalid password!";
+	}
+	
+	public String remoteStopGame(final String hashedPassword, final String salt)
+	{
+		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		if (password.equals(NO_REMOTE_REQUESTS_ALLOWED))
+			return "Host not accepting remote requests!";
+		final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+		if (encryptedPassword.equals(hashedPassword))
+		{
+			(new Thread(new Runnable()
+			{
+				public void run()
+				{
+					System.out.println("Remote Stop Game Initiated.");
+					SaveGameFileChooser.ensureDefaultDirExists();
+					final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+					try
+					{
+						m_iGame.saveGame(f);
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+					m_iGame.stopGame(false);
+				}
+			})).start();
+			return null;
+		}
+		System.out.println("Attempted remote stop game with invalid password.");
+		return "Invalid password!";
+	}
+	
+	public String remoteBanPlayer(final String playerName, final String hashedPassword, final String salt)
+	{
+		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		if (password.equals(NO_REMOTE_REQUESTS_ALLOWED))
+			return "Host not accepting remote requests!";
+		final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+		if (encryptedPassword.equals(hashedPassword))
+		{
+			(new Thread(new Runnable()
+			{
+				public void run()
+				{
+					if (getServerModel() == null)
+						return;
+					final IServerMessenger messenger = getServerModel().getMessenger();
+					if (messenger == null)
+						return;
+					final Set<INode> nodes = messenger.getNodes();
+					if (nodes == null)
+						return;
+					try
+					{
+						for (final INode node : nodes)
+						{
+							final String realName = node.getName().split(" ")[0];
+							final String ip = node.getAddress().getHostAddress();
+							final String mac = messenger.GetPlayerMac(node.getName());
+							if (realName.equals(playerName))
+							{
+								System.out.println("Remote Ban Player: " + playerName);
+								try
+								{
+									messenger.NotifyUsernameMiniBanningOfPlayer(realName);
+								} catch (final Exception e)
+								{
+									e.printStackTrace();
+								}
+								try
+								{
+									messenger.NotifyIPMiniBanningOfPlayer(ip);
+								} catch (final Exception e)
+								{
+									e.printStackTrace();
+								}
+								try
+								{
+									messenger.NotifyMacMiniBanningOfPlayer(mac);
+								} catch (final Exception e)
+								{
+									e.printStackTrace();
+								}
+								messenger.removeConnection(node);
+								return;
+							}
+						}
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			})).start();
+			return null;
+		}
+		System.out.println("Attempted remote ban player with invalid password.");
+		return "Invalid password!";
+	}
+	
 	ServerGame getIGame()
 	{
 		return m_iGame;
@@ -362,13 +506,22 @@ public class HeadlessGameServer
 			final Thread t = new Thread(r, "Initialize Headless Server Setup Model");
 			t.start();
 		}
+		int reconnect;
+		try
+		{
+			final String reconnectionSeconds = System.getProperty(GameRunner2.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+			reconnect = Math.max(Integer.parseInt(reconnectionSeconds), LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+		} catch (final NumberFormatException e)
+		{
+			reconnect = LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
+		}
 		m_lobbyWatcherResetupThread.scheduleAtFixedRate(new Runnable()
 		{
 			public void run()
 			{
 				restartLobbyWatcher(m_setupPanelModel, m_iGame);
 			}
-		}, 216, 216, TimeUnit.SECONDS);
+		}, reconnect, reconnect, TimeUnit.SECONDS);
 		s_logger.info("Game Server initialized");
 	}
 	
@@ -713,20 +866,36 @@ public class HeadlessGameServer
 			final String hostName = System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, "");
 			final String comments = System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS, "");
 			final String email = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, "");
+			final String reconnection = System.getProperty(GameRunner2.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
 			if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName) || !playerName.startsWith("Bot") || !hostName.startsWith("Bot"))
 			{
-				System.out.println("Invalide argument: " + GameRunner2.TRIPLEA_NAME_PROPERTY + " and " + GameRunner2.LOBBY_GAME_HOSTED_BY
+				System.out.println("Invalid argument: " + GameRunner2.TRIPLEA_NAME_PROPERTY + " and " + GameRunner2.LOBBY_GAME_HOSTED_BY
 							+ " must start with \"Bot\" and be at least 7 characters long and be the same.");
 				printUsage = true;
 			}
 			if (comments.indexOf("automated_host") == -1)
 			{
-				System.out.println("Invalide argument: " + GameRunner2.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
+				System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
 				printUsage = true;
 			}
 			if (email.length() < 3 || !Util.isMailValid(email))
 			{
-				System.out.println("Invalide argument: " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
+				System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
+				printUsage = true;
+			}
+			try
+			{
+				final int reconnect = Integer.parseInt(reconnection);
+				if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT)
+				{
+					System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
+								+ " seconds.");
+					printUsage = true;
+				}
+			} catch (final NumberFormatException e)
+			{
+				System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
+							+ " seconds.");
 				printUsage = true;
 			}
 			// no passwords allowed for bots
@@ -734,7 +903,7 @@ public class HeadlessGameServer
 		if (printUsage)
 		{
 			usage();
-			System.exit(1);
+			System.exit(-1);
 		}
 	}
 	
@@ -1968,9 +2137,11 @@ class HeadlessGameServerConsole
 			}
 			for (final INode node : nodes)
 			{
-				if (node.getName().equals(name))
+				final String realName = node.getName().split(" ")[0];
+				final String ip = node.getAddress().getHostAddress();
+				final String mac = messenger.GetPlayerMac(node.getName());
+				if (realName.equals(name))
 				{
-					final String realName = node.getName().split(" ")[0];
 					try
 					{
 						messenger.NotifyUsernameMiniBanningOfPlayer(realName);
@@ -1980,14 +2151,14 @@ class HeadlessGameServerConsole
 					}
 					try
 					{
-						messenger.NotifyIPMiniBanningOfPlayer(node.getAddress().getHostAddress());
+						messenger.NotifyIPMiniBanningOfPlayer(ip);
 					} catch (final Exception e)
 					{
 						e.printStackTrace();
 					}
 					try
 					{
-						messenger.NotifyMacMiniBanningOfPlayer(messenger.GetPlayerMac(node.getName()));
+						messenger.NotifyMacMiniBanningOfPlayer(mac);
 					} catch (final Exception e)
 					{
 						e.printStackTrace();
@@ -2140,9 +2311,18 @@ class HeadlessGameServerConsole
 	
 	private void showHelp()
 	{
-		out.println("Available commands:\n" + "  help - show this message\n" + "  status - show status information\n" + "  connections - show all connected players\n" + "  ban - ban player\n"
-					+ "  send - sends a chat message\n" + "  chatmode - toggles the showing of chat messages as they come in\n" + "  chatlog - shows the chat log\n"
-					+ "  memory - show memory usage\n" + "  threads - get thread dumps\n" + "  save - saves game to filename\n"
-					+ "  stop - saves then stops current game and goes back to waiting\n" + "  quit - quit\n");
+		out.println("Available commands:\n"
+					+ "  help - show this message\n"
+					+ "  status - show status information\n"
+					+ "  connections - show all connected players\n"
+					+ "  ban - ban player\n"
+					+ "  send - sends a chat message\n"
+					+ "  chatmode - toggles the showing of chat messages as they come in\n"
+					+ "  chatlog - shows the chat log\n"
+					+ "  memory - show memory usage\n"
+					+ "  threads - get thread dumps\n"
+					+ "  save - saves game to filename\n"
+					+ "  stop - saves then stops current game and goes back to waiting\n"
+					+ "  quit - quit\n");
 	}
 }

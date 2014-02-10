@@ -74,6 +74,8 @@ public class GameRunner2
 	public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
 	public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
 	public static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
+	public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
+	public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
 	// what is the default version of triplea (the one in the "bin" folder)
 	public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
 	// proxy stuff
