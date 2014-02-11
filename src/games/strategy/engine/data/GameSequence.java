@@ -126,6 +126,13 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		return m_currentIndex;
 	}
 	
+	void setStepIndex(final int newIndex)
+	{
+		if ((newIndex < 0) || (newIndex >= m_steps.size()))
+			throw new IllegalArgumentException("New index out of range: " + newIndex);
+		m_currentIndex = newIndex;
+	}
+	
 	/**
 	 * 
 	 * @return boolean wether the round has changed

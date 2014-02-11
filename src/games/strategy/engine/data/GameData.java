@@ -557,12 +557,24 @@ public class GameData implements java.io.Serializable
 				playersWhoShouldBeRemoved.add(p);
 			}
 		}
-		final Iterator<GameStep> stepIter = m_sequence.iterator();
-		while (stepIter.hasNext())
+		if (!playersWhoShouldBeRemoved.isEmpty())
 		{
-			final GameStep step = stepIter.next();
-			if (playersWhoShouldBeRemoved.contains(step.getPlayerID()))
-				stepIter.remove();
+			final int currentIndex = m_sequence.getStepIndex();
+			int index = 0;
+			int toSubtract = 0;
+			final Iterator<GameStep> stepIter = m_sequence.iterator();
+			while (stepIter.hasNext())
+			{
+				final GameStep step = stepIter.next();
+				if (playersWhoShouldBeRemoved.contains(step.getPlayerID()))
+				{
+					stepIter.remove();
+					if (index < currentIndex)
+						toSubtract++;
+				}
+				index++;
+			}
+			m_sequence.setStepIndex(Math.max(0, Math.min(m_sequence.size() - 1, currentIndex - toSubtract)));
 		}
 	}
 }

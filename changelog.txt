@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Creating an option to select local players and AI's for PBEM games. AI's will not post/email the turn summary and savegame at the ends of their turns however. (veqryn)
+
 * Fixing bug with host bots where disabling players, quitting, then reloading and disabling even more players, resulted in game crash. (veqryn)
 
 * Disallowing previously disabled players from being re-enabled after a game has started. (veqryn)

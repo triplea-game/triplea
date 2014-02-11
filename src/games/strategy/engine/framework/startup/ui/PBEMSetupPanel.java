@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LocalBeanCache;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -26,18 +27,29 @@ import games.strategy.engine.random.PBEMDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
 
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -66,6 +78,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	private final SelectAndViewEditor m_forumPosterEditor;
 	private final SelectAndViewEditor m_emailSenderEditor;
 	private final SelectAndViewEditor m_webPosterEditor;
+	private final List<PBEMLocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<PBEMLocalPlayerComboBoxSelector>();
+	private final JPanel m_localPlayerPanel = new JPanel();
+	private final JButton m_localPlayerSelection = new JButton("Select Local Players and AI's");
 	
 	// -----------------------------------------------------------------------
 	// constructors
@@ -80,17 +95,36 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	public PBEMSetupPanel(final GameSelectorModel model)
 	{
 		m_gameSelectorModel = model;
-		
-		// register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects another game)
-		m_gameSelectorModel.addObserver(this);
-		
-		setLayout(new GridBagLayout());
-		setBorder(new EmptyBorder(10, 10, 10, 10)); // Empty border works as margin
-		
 		m_diceServerEditor = new SelectAndViewEditor("Dice Server", "");
 		m_forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
 		m_emailSenderEditor = new SelectAndViewEditor("Provider", "emailSenders.html");
 		m_webPosterEditor = new SelectAndViewEditor("Send to Website", "websiteSenders.html");
+		createComponents();
+		layoutComponents();
+		setupListeners();
+		if (m_gameSelectorModel.getGameData() != null)
+		{
+			loadAll();
+		}
+		setWidgetActivation();
+	}
+	
+	private void createComponents()
+	{
+		m_localPlayerSelection.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				JOptionPane.showMessageDialog(PBEMSetupPanel.this, m_localPlayerPanel, "Select Local Players and AI's", JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+	}
+	
+	private void layoutComponents()
+	{
+		removeAll();
+		setLayout(new GridBagLayout());
+		setBorder(new EmptyBorder(10, 10, 10, 10)); // Empty border works as margin
 		
 		int row = 0;
 		add(m_diceServerEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(10, 0, 20, 0), 0, 0));
@@ -107,13 +141,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		
 		// the play by micro web site settings
 		m_webPosterEditor.setBorder(new TitledBorder("Play By Web Site"));
-		add(m_webPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 10, 0), 0, 0));
+		add(m_webPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
 		
-		setupListeners();
-		if (m_gameSelectorModel.getGameData() != null)
-		{
-			loadAll();
-		}
+		// add selection of local players
+		add(m_localPlayerSelection, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(10, 0, 10, 0), 0, 0));
+		
+		layoutPlayerPanel(this);
 		setWidgetActivation();
 	}
 	
@@ -128,6 +161,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	
 	private void setupListeners()
 	{
+		// register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects another game)
+		m_gameSelectorModel.addObserver(this);
 		// subscribe to editor changes, so we can notify the MainPanel
 		m_diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
 		m_forumPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
@@ -306,12 +341,24 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	@Override
 	public boolean canGameStart()
 	{
+		if (m_gameSelectorModel.getGameData() == null)
+			return false;
+		
 		final boolean diceServerValid = m_diceServerEditor.isBeanValid();
 		final boolean summaryValid = m_forumPosterEditor.isBeanValid();
 		final boolean webSiteValid = m_webPosterEditor.isBeanValid();
 		final boolean emailValid = m_emailSenderEditor.isBeanValid();
+		final boolean pbemReady = diceServerValid && summaryValid && emailValid && webSiteValid && m_gameSelectorModel.getGameData() != null;
+		if (!pbemReady)
+			return false;
 		
-		return diceServerValid && summaryValid && emailValid && webSiteValid && m_gameSelectorModel.getGameData() != null;
+		// make sure at least 1 player is enabled
+		for (final PBEMLocalPlayerComboBoxSelector player : m_playerTypes)
+		{
+			if (player.isPlayerEnabled())
+				return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -372,20 +419,22 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 				public void run()
 				{
 					loadAll();
+					layoutComponents();
 				}
 			});
-			
+			return;
 		}
 		else
 		{
 			loadAll();
+			layoutComponents();
 		}
 	}
 	
-	@Override
 	/**
 	 * Called when the user hits play
 	 */
+	@Override
 	public ILauncher getLauncher()
 	{
 		// update local cache and write to disk before game starts
@@ -417,11 +466,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
 		final Map<String, String> playerTypes = new HashMap<String, String>();
 		final Map<String, Boolean> playersEnabled = new HashMap<String, Boolean>();
-		final String playerType = m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes()[0];
-		for (final String playerName : m_gameSelectorModel.getGameData().getPlayerList().getNames())
+		for (final PBEMLocalPlayerComboBoxSelector player : m_playerTypes)
 		{
-			playerTypes.put(playerName, playerType);
-			playersEnabled.put(playerName, true);
+			playerTypes.put(player.getPlayerName(), player.getPlayerType());
+			playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
 		}
 		
 		final PlayerListing pl = new PlayerListing(null, playersEnabled, playerTypes, m_gameSelectorModel.getGameData().getGameVersion(), m_gameSelectorModel.getGameName(),
@@ -445,4 +493,159 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		}
 	}
 	
+	public String getPlayerType(final String playerName)
+	{
+		for (final PBEMLocalPlayerComboBoxSelector item : m_playerTypes)
+		{
+			if (item.getPlayerName().equals(playerName))
+				return item.getPlayerType();
+		}
+		throw new IllegalStateException("No player found:" + playerName);
+	}
+	
+	private void layoutPlayerPanel(final SetupPanel parent)
+	{
+		final GameData data = m_gameSelectorModel.getGameData();
+		m_localPlayerPanel.removeAll();
+		m_playerTypes.clear();
+		m_localPlayerPanel.setLayout(new GridBagLayout());
+		if (data == null)
+		{
+			m_localPlayerPanel.add(new JLabel("No game selected!"));
+			return;
+		}
+		final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
+		final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
+		final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
+		final String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
+		final String[] playerNames = data.getPlayerList().getNames();
+		// if the xml was created correctly, this list will be in turn order. we want to keep it that way.
+		int gridx = 0;
+		int gridy = 0;
+		if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE))
+		{
+			final JLabel enableLabel = new JLabel("Use");
+			enableLabel.setForeground(Color.black);
+			m_localPlayerPanel.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+		}
+		final JLabel nameLabel = new JLabel("Name");
+		nameLabel.setForeground(Color.black);
+		m_localPlayerPanel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+		final JLabel typeLabel = new JLabel("Type");
+		typeLabel.setForeground(Color.black);
+		m_localPlayerPanel.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+		final JLabel allianceLabel = new JLabel("Alliance");
+		allianceLabel.setForeground(Color.black);
+		m_localPlayerPanel.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+		for (int i = 0; i < playerNames.length; i++)
+		{
+			final PBEMLocalPlayerComboBoxSelector selector = new PBEMLocalPlayerComboBoxSelector(playerNames[i], reloadSelections, disableable, playersEnablementListing,
+						data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerNames[i])), playerTypes, parent);
+			m_playerTypes.add(selector);
+			selector.layout(++gridy, m_localPlayerPanel);
+		}
+		m_localPlayerPanel.validate();
+		m_localPlayerPanel.invalidate();
+	}
+}
+
+
+class PBEMLocalPlayerComboBoxSelector
+{
+	private final JCheckBox m_enabledCheckBox;
+	private final String m_playerName;
+	private final JComboBox m_playerTypes;
+	private final String m_playerAlliances;
+	private boolean m_enabled = true;
+	private final JLabel m_name;
+	private final JLabel m_alliances;
+	private final Collection<String> m_disableable;
+	private final String[] m_types;
+	private final SetupPanel m_parent;
+	
+	PBEMLocalPlayerComboBoxSelector(final String playerName, final Map<String, String> reloadSelections, final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
+				final Collection<String> playerAlliances, final String[] types, final SetupPanel parent)
+	{
+		m_playerName = playerName;
+		m_name = new JLabel(m_playerName + ":");
+		m_enabledCheckBox = new JCheckBox();
+		m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
+		m_enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
+		m_enabledCheckBox.setEnabled(disableable.contains(playerName));
+		m_disableable = disableable;
+		m_parent = parent;
+		m_types = types;
+		m_playerTypes = new JComboBox(types);
+		String previousSelection = reloadSelections.get(playerName);
+		if (previousSelection.equalsIgnoreCase("Client"))
+			previousSelection = types[0];
+		if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection))
+		{
+			m_playerTypes.setSelectedItem(previousSelection);
+		}
+		else if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI"))
+		{
+			m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 2))]); // the 3rd in the list should be Moore N Able
+		}
+		// we do not set the default for the combobox because the default is the top item, which in this case is human
+		if (playerAlliances.contains(playerName))
+			m_playerAlliances = "";
+		else
+			m_playerAlliances = playerAlliances.toString();
+		m_alliances = new JLabel(m_playerAlliances.toString());
+		setWidgetActivation();
+	}
+	
+	public void layout(final int row, final Container container)
+	{
+		int gridx = 0;
+		if (!m_disableable.isEmpty())
+		{
+			container.add(m_enabledCheckBox, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+		}
+		container.add(m_name, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+		container.add(m_playerTypes, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+		container.add(m_alliances, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+	}
+	
+	public String getPlayerName()
+	{
+		return m_playerName;
+	}
+	
+	public String getPlayerType()
+	{
+		return (String) m_playerTypes.getSelectedItem();
+	}
+	
+	public boolean isPlayerEnabled()
+	{
+		return m_enabledCheckBox.isSelected();
+	}
+	
+	private void setWidgetActivation()
+	{
+		m_name.setEnabled(m_enabled);
+		m_alliances.setEnabled(m_enabled);
+		m_enabledCheckBox.setEnabled(m_disableable.contains(m_playerName));
+		m_parent.notifyObservers();
+	}
+	
+	private final ActionListener m_disablePlayerActionListener = new ActionListener()
+	{
+		public void actionPerformed(final ActionEvent e)
+		{
+			if (m_enabledCheckBox.isSelected())
+			{
+				m_enabled = true;
+				m_playerTypes.setSelectedItem(m_types[0]); // the 1st in the list should be human
+			}
+			else
+			{
+				m_enabled = false;
+				m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list should be Weak AI
+			}
+			setWidgetActivation();
+		}
+	};
 }

@@ -211,9 +211,8 @@ class LocalPlayerComboBoxSelector
 		else if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI"))
 		{
 			m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 2))]); // the 3rd in the list should be Moore N Able
-			// Uncomment to disallow players from changing the default
-			// m_playerTypes.setEnabled(false);
 		}
+		// we do not set the default for the combobox because the default is the top item, which in this case is human
 		if (playerAlliances.contains(playerName))
 			m_playerAlliances = "";
 		else
