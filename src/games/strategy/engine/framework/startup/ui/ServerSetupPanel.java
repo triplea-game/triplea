@@ -162,9 +162,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		final Insets spacing = new Insets(3, 16, 0, 0);
 		final Insets lastSpacing = new Insets(3, 16, 0, 16);
 		int gridx = 0;
-		final boolean disableable = m_model.getPlayersAllowedToBeDisabled().isEmpty();
+		final boolean disableable = !m_model.getPlayersAllowedToBeDisabled().isEmpty() || m_model.getPlayersEnabledListing().containsValue(Boolean.FALSE);
 		final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
-		if (!disableable)
+		if (disableable)
 		{
 			enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
 			enabledPlayerConstraints.gridx = gridx++;
@@ -190,7 +190,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		allianceConstraints.anchor = GridBagConstraints.WEST;
 		allianceConstraints.gridx = gridx++;
 		allianceConstraints.insets = lastSpacing;
-		if (!disableable)
+		if (disableable)
 		{
 			final JLabel enableLabel = new JLabel("Use");
 			enableLabel.setForeground(Color.black);
@@ -227,7 +227,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		while (iter.hasNext())
 		{
 			final PlayerRow row = iter.next();
-			if (!disableable)
+			if (disableable)
 			{
 				layout.setConstraints(row.getEnabledPlayer(), enabledPlayerConstraints);
 				players.add(row.getEnabledPlayer());
@@ -354,8 +354,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		final Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
 		for (final String name : playerNames)
 		{
-			final PlayerRow newPlayerRow = new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name), m_gameSelectorModel.getGameData().getGameLoader()
-						.getServerPlayerTypes());
+			final PlayerRow newPlayerRow = new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name),
+						m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
 			m_playerRows.add(newPlayerRow);
 			newPlayerRow.update(players, playersEnabled);
 		}

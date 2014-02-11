@@ -19,6 +19,7 @@ import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
@@ -174,14 +175,27 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 				m_playersEnabledListing = new HashMap<String, Boolean>();
 				m_playersAllowedToBeDisabled = new HashSet<String>(m_data.getPlayerList().getPlayersThatMayBeDisabled());
 				m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
-				for (final String name : m_data.getPlayerList().getNames())
+				for (final PlayerID player : m_data.getPlayerList().getPlayers())
 				{
-					if (m_headless)// && !(name.startsWith("Neutral") || name.startsWith("AI"))) // debateable whether we want a headless server doing any AI stuff
-						m_playersToNodeListing.put(name, null);
+					final String name = player.getName();
+					if (m_headless)
+					{
+						if (player.getIsDisabled())
+						{
+							m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
+							m_localPlayerTypes.put(name, m_data.getGameLoader().getServerPlayerTypes()[Math.max(0, Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))]); // the 2nd in the list should be Weak AI
+						}
+						else
+						{
+							m_playersToNodeListing.put(name, null); // we generally do not want a headless host bot to be doing any AI turns, since that is taxing on the system
+						}
+					}
 					else
+					{
 						m_playersToNodeListing.put(name, m_serverMessenger.getLocalNode().getName());
-					m_playerNamesAndAlliancesInTurnOrder.put(name, m_data.getAllianceTracker().getAlliancesPlayerIsIn(m_data.getPlayerList().getPlayerID(name)));
-					m_playersEnabledListing.put(name, !m_data.getPlayerList().getPlayerID(name).getIsDisabled());
+					}
+					m_playerNamesAndAlliancesInTurnOrder.put(name, m_data.getAllianceTracker().getAlliancesPlayerIsIn(player));
+					m_playersEnabledListing.put(name, !player.getIsDisabled());
 				}
 			}
 			m_objectStreamFactory.setData(m_data);
@@ -686,7 +700,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		final Map<String, String> localPlayerMappings = new HashMap<String, String>();
 		if (m_data == null)
 			return localPlayerMappings;
-		final String defaultLocalType = m_data.getGameLoader().getServerPlayerTypes()[0];
+		// local player default = humans (for bots = weak ai)
+		final String defaultLocalType = m_headless ? m_data.getGameLoader().getServerPlayerTypes()[Math.max(0, Math.min(m_data.getGameLoader().getServerPlayerTypes().length - 1, 1))] :
+					m_data.getGameLoader().getServerPlayerTypes()[0];
 		for (final String player : m_playersToNodeListing.keySet())
 		{
 			final String playedBy = m_playersToNodeListing.get(player);

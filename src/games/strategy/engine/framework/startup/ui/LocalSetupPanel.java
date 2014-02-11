@@ -68,7 +68,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 		// if the xml was created correctly, this list will be in turn order. we want to keep it that way.
 		int gridx = 0;
 		int gridy = 0;
-		if (!disableable.isEmpty())
+		if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE))
 		{
 			final JLabel enableLabel = new JLabel("Use");
 			enableLabel.setForeground(Color.black);

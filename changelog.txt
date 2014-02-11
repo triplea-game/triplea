@@ -1,4 +1,8 @@
 Changes for 1.8.0.0
+* Fixing bug with host bots where disabling players, quitting, then reloading and disabling even more players, resulted in game crash. (veqryn)
+
+* Disallowing previously disabled players from being re-enabled after a game has started. (veqryn)
+
 * Fixed bug with moderator lobby unbanning utility. (veqryn)
 
 * Created ability for lobby admins to ban players inside a host bot, remotely. (veqryn)

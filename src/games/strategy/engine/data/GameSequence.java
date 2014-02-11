@@ -30,13 +30,13 @@ import java.util.List;
  */
 public class GameSequence extends GameDataComponent implements Iterable<GameStep>
 {
+	private static final long serialVersionUID = 6354618406598578287L;
+	private final List<GameStep> m_allOriginalSteps = new ArrayList<GameStep>(); // meant purely so that we never lose our step objects, and their order, completely
 	private final List<GameStep> m_steps = new ArrayList<GameStep>();
 	private int m_currentIndex;
 	private int m_round = 1;
 	private int m_roundOffset = 0;
 	private transient Object m_currentStepMutex = new Object();
-	// compatible with 0.9.0.2 saved games
-	private static final long serialVersionUID = 8205078386807440137L;
 	
 	public GameSequence(final GameData data)
 	{
@@ -81,6 +81,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	
 	protected void addStep(final GameStep step)
 	{
+		m_allOriginalSteps.add(step);
 		m_steps.add(step);
 	}
 	
@@ -134,7 +135,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		synchronized (m_currentStepMutex)
 		{
 			m_currentIndex++;
-			if (m_currentIndex == m_steps.size())
+			if (m_currentIndex >= m_steps.size())
 			{
 				m_currentIndex = 0;
 				m_round++;
@@ -155,7 +156,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	{
 		synchronized (m_currentStepMutex)
 		{
-			if (m_currentIndex + 1 == m_steps.size())
+			if (m_currentIndex + 1 >= m_steps.size())
 				return true;
 			return false;
 		}
@@ -165,6 +166,11 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	{
 		synchronized (m_currentStepMutex)
 		{
+			// since we can now delete game steps mid game, it is a good idea to test if our index is out of range
+			if (m_currentIndex < 0)
+				m_currentIndex = 0;
+			if (m_currentIndex >= m_steps.size())
+				next();
 			return getStep(m_currentIndex);
 		}
 	}
