@@ -236,9 +236,20 @@ public class LobbyMenu extends JMenuBar
 							"Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
 				if (mac == null || mac.length() < 1)
 					return;
-				if (mac.length() != 28 || !mac.startsWith(MD5Crypt.MAGIC + "MH$") || !mac.matches("[0-9a-zA-Z$./]+"))
+				final String prefix = MD5Crypt.MAGIC + "MH$";
+				final String error;
+				if (mac.length() != 28)
+					error = "Must be 28 characters long";
+				else if (!mac.startsWith(prefix))
+					error = "Must start with: " + prefix;
+				else if (!mac.matches("[0-9a-zA-Z$./]+"))
+					error = "Must use only these characters: 0-9a-zA-Z$./";
+				else
+					error = null;
+				if (error != null)
 				{
-					if (JOptionPane.showConfirmDialog(m_frame, "The hashed Mac Address you entered is invalid. Do you want to ban it anyhow?", "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION)
+					if (JOptionPane.showConfirmDialog(m_frame, "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
+								"Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION)
 						return;
 				}
 				final long ticks = requestTimespanSupplication();
@@ -247,7 +258,7 @@ public class LobbyMenu extends JMenuBar
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
+					controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac, new Date(expire));
 				} catch (final UnknownHostException ex)
 				{
 				}
@@ -322,16 +333,27 @@ public class LobbyMenu extends JMenuBar
 							"Enter the hashed Mac Address that you want to unban from the lobby.\r\n\r\nHashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
 				if (mac == null || mac.length() < 1)
 					return;
-				if (mac.length() != 28 || !mac.startsWith(MD5Crypt.MAGIC + "MH$") || !mac.matches("[0-9a-zA-Z$./]+"))
+				final String prefix = MD5Crypt.MAGIC + "MH$";
+				final String error;
+				if (mac.length() != 28)
+					error = "Must be 28 characters long";
+				else if (!mac.startsWith(prefix))
+					error = "Must start with: " + prefix;
+				else if (!mac.matches("[0-9a-zA-Z$./]+"))
+					error = "Must use only these characters: 0-9a-zA-Z$./";
+				else
+					error = null;
+				if (error != null)
 				{
-					if (JOptionPane.showConfirmDialog(m_frame, "The hashed Mac Address you entered is invalid. Do you want to ban it anyhow?", "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION)
+					if (JOptionPane.showConfirmDialog(m_frame, "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
+								"Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION)
 						return;
 				}
 				final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
 							.getRemote(ModeratorController.getModeratorControllerName());
 				try
 				{
-					controller.banIp(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), new Date(0));
+					controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac, new Date(0));
 				} catch (final UnknownHostException ex)
 				{
 				}

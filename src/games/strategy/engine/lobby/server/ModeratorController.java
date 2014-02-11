@@ -96,6 +96,18 @@ public class ModeratorController implements IModeratorController
 					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
+	public void banMac(final INode node, final String hashedMac, final Date banExpires)
+	{
+		assertUserIsAdmin();
+		if (isPlayerAdmin(node))
+			throw new IllegalStateException("Can't ban an admin");
+		final INode modNode = MessageContext.getSender();
+		new BannedMacController().addBannedMac(hashedMac, banExpires);
+		final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
+		s_logger.info(DUtils.Format("User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node
+					.getAddress().getHostAddress(), hashedMac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+	}
+	
 	public void muteUsername(final INode node, final Date muteExpires)
 	{
 		assertUserIsAdmin();

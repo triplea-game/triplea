@@ -45,6 +45,11 @@ public interface IModeratorController extends IRemote
 	public void banMac(INode node, Date banExpires);
 	
 	/**
+	 * Ban the mac.
+	 */
+	public void banMac(final INode node, final String hashedMac, final Date banExpires);
+	
+	/**
 	 * Mute the username of the given INode.
 	 */
 	public void muteUsername(INode node, Date muteExpires);

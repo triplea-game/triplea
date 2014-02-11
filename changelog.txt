@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Fixed bug with moderator lobby unbanning utility. (veqryn)
+
 * Created ability for lobby admins to ban players inside a host bot, remotely. (veqryn)
 
 * Created ability for lobby admins to stop game on a host bot remotely. (veqryn)
