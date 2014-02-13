@@ -235,7 +235,7 @@ public class MoveValidator
 			if (!Matches.territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(player).match(t))
 				return result.setErrorReturnResult("Can not move into territories owned by " + t.getOwner().getName() + " during Combat Movement Phase");
 		}
-		// we are in a contested territory owned by the enemy, and we want to move to another enemy owned territory. do not allow unless we can blitz the current territory.
+		// we are in a contested territory owned by the enemy, and we want to move to another enemy owned territory. do not allow unless each unit can blitz the current territory.
 		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).match(player)
 					&& (route.someMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).invert(), false)))
 		{
@@ -246,7 +246,7 @@ public class MoveValidator
 				result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
 			}
 		}
-		// we are in a contested territory owned by us, and we want to move to an enemy owned territory. do not allow unless we can blitz the current territory or the enemy territory is also blitzable.
+		// we are in a contested territory owned by us, and we want to move to an enemy owned territory. do not allow unless the territory is blitzable.
 		if (!route.getStart().isWater() && !Matches.isAtWar(route.getStart().getOwner(), data).match(player)
 					&& (route.someMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).invert(), false)))
 		{
