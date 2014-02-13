@@ -248,8 +248,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
-		// we could have a pbem/forum post to do
-		return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData()) || m_player.isAI();
+		return true; // currently we need to call this regardless, because it resets player sounds for the turn.
+		// return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData()) || m_player.isAI(); // we could have a pbem/forum post to do
 	}
 	
 	private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data)

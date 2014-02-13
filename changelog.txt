@@ -1,4 +1,8 @@
 Changes for 1.8.0.0
+* Fixed bug preventing sounds inside a zipped map from playing if the zipped map file path had any spaces or special characters in it. (veqryn)
+
+* Fixed bug preventing phase sounds from playing more than once in a non-pbem game. (veqryn)
+
 * Creating an option to select local players and AI's for PBEM games. AI's will not post/email the turn summary and savegame at the ends of their turns however. (veqryn)
 
 * Fixing bug with host bots where disabling players, quitting, then reloading and disabling even more players, resulted in game crash. (veqryn)

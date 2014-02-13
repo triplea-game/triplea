@@ -5006,7 +5006,9 @@
 				<property name="WW2V2" value="false" editable="false">
 						<boolean/>
 				</property> -->
-
+				
+						<!-- Unlike the WW2V2 option, WW2V3 actually sets very little: If no techs specified then it will create WW2V3 default techs, 
+								and if a game is not WW2V2 and not WW2V3, then it must be 'classic' rules [this is applicable for when rockets fire, and how aa guns may stack, the default win conditions for classic games, and that air units create retreat paths for ground/sea units]-->
 				<property name="WW2V3" value="true" editable="false">
 						<boolean/>
 				</property>
@@ -5218,7 +5220,8 @@
 				<property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
 						<boolean/>
 				</property>
-
+				
+						<!-- Despite what this one says, it means the opposite.  If true, casualties from naval bombard will get to return fire. -->
 				<property name="Naval Bombard Casualties Return Fire Restricted" value="true" editable="false">
 						<boolean/>
 				</property>

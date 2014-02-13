@@ -221,10 +221,10 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		return games.strategy.triplea.Properties.getWW2V2(getData());
 	}
 	
-	protected boolean isWW2V3()
+	/*protected boolean isWW2V3()
 	{
 		return games.strategy.triplea.Properties.getWW2V3(getData());
-	}
+	}*/
 	
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
