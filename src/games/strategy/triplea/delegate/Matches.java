@@ -2366,7 +2366,7 @@ public class Matches
 					return false;
 				
 				// cant blitz on neutrals
-				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && (t.isWater() | !games.strategy.triplea.Properties.getNeutralsBlitzable(data)))
+				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && !games.strategy.triplea.Properties.getNeutralsBlitzable(data))
 					return false;
 				
 				// was conquered but not blitzed

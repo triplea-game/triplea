@@ -318,6 +318,72 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	/**
 	 * @param aMatch
 	 *            referring match
+	 * @return whether all territories in this route match the given match (start territory IS tested)
+	 */
+	public boolean allMatchAllSteps(final Match<Territory> aMatch)
+	{
+		for (final Territory t : getAllTerritories())
+		{
+			if (!aMatch.match(t))
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * @param aMatch
+	 *            referring match
+	 * @return whether some territories in this route match the given match (start territory IS tested)
+	 */
+	public boolean someMatchAllSteps(final Match<Territory> aMatch)
+	{
+		for (final Territory t : getAllTerritories())
+		{
+			if (aMatch.match(t))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param aMatch
+	 *            referring match
+	 * @return whether all territories in this route match the given match (start and end territories are not tested)
+	 */
+	public boolean allMatchMiddleSteps(final Match<Territory> aMatch, final boolean defaultWhenNoMiddleSteps)
+	{
+		final List<Territory> middle = getMiddleSteps();
+		if (middle.isEmpty())
+			return defaultWhenNoMiddleSteps;
+		for (final Territory t : middle)
+		{
+			if (!aMatch.match(t))
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * @param aMatch
+	 *            referring match
+	 * @return whether some territories in this route match the given match (start and end territories are not tested)
+	 */
+	public boolean someMatchMiddleSteps(final Match<Territory> aMatch, final boolean defaultWhenNoMiddleSteps)
+	{
+		final List<Territory> middle = getMiddleSteps();
+		if (middle.isEmpty())
+			return defaultWhenNoMiddleSteps;
+		for (final Territory t : middle)
+		{
+			if (aMatch.match(t))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param aMatch
+	 *            referring match
 	 * @return all territories in this route match the given match (start territory is not tested)
 	 */
 	public Collection<Territory> getMatches(final Match<Territory> aMatch)

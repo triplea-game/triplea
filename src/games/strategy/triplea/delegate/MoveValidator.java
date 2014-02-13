@@ -235,14 +235,23 @@ public class MoveValidator
 			if (!Matches.territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(player).match(t))
 				return result.setErrorReturnResult("Can not move into territories owned by " + t.getOwner().getName() + " during Combat Movement Phase");
 		}
-		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).match(player) && Matches.isAtWar(route.getEnd().getOwner(), data).match(player))
+		// we are in a contested territory owned by the enemy, and we want to move to another enemy owned territory. do not allow unless we can blitz the current territory.
+		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).match(player)
+					&& (route.someMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).invert(), false)))
 		{
 			if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart()) && !Match.allMatch(units, Matches.UnitIsAir))
-				return result.setErrorReturnResult("Can not blitz out of a battle into enemy territory");
+				return result.setErrorReturnResult("Can not blitz out of a battle further into enemy territory");
 			for (final Unit u : Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz.invert(), Matches.UnitIsNotAir)))
 			{
 				result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
 			}
+		}
+		// we are in a contested territory owned by us, and we want to move to an enemy owned territory. do not allow unless we can blitz the current territory or the enemy territory is also blitzable.
+		if (!route.getStart().isWater() && !Matches.isAtWar(route.getStart().getOwner(), data).match(player)
+					&& (route.someMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).invert(), false)))
+		{
+			if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart()) && !Match.allMatch(units, Matches.UnitIsAir))
+				return result.setErrorReturnResult("Can not blitz out of a battle into enemy territory");
 		}
 		// Don't allow aa guns (and other disallowed units) to move in combat unless they are in a transport
 		if (Match.someMatch(units, Matches.UnitCanNotMoveDuringCombatMove) && (!route.getStart().isWater() || !route.getEnd().isWater()))
