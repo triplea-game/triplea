@@ -3025,7 +3025,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// do we need to change ownership
 		if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
 		{
-			m_battleTracker.addToConquered(m_battleSite);
+			if (Matches.isTerritoryEnemyAndNotUnownedWater(m_attacker, m_data).match(m_battleSite))
+				m_battleTracker.addToConquered(m_battleSite);
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, m_attackingUnits);
 			m_battleResultDescription = BattleRecord.BattleResultDescription.CONQUERED;
 		}

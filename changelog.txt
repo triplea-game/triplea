@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Fixed bug with a territory owned by one player but having enemy units in it, if the owned reconquers the territory it is no longer marked as newly-conquered. (veqryn)
+
 * Fixed bug preventing sounds inside a zipped map from playing if the zipped map file path had any spaces or special characters in it. (veqryn)
 
 * Fixed bug preventing phase sounds from playing more than once in a non-pbem game. (veqryn)
