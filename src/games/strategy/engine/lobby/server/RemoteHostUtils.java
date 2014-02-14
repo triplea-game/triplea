@@ -31,6 +31,8 @@ public class RemoteHostUtils implements IRemoteHostUtils
 	
 	public String getConnections()
 	{
+		if (!MessageContext.getSender().equals(m_serverNode))
+			return "Not accepted!";
 		if (m_serverMessenger != null)
 		{
 			final StringBuilder sb = new StringBuilder("Connected: " + m_serverMessenger.isConnected() + "\n" + "Nodes: \n");
@@ -79,14 +81,14 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return instance.remoteBootPlayer(playerNameToBeBooted, hashedPassword, salt);
 	}
 	
-	public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final String hashedPassword, final String salt)
+	public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
 			return "Not accepted!";
 		final HeadlessGameServer instance = HeadlessGameServer.getInstance();
 		if (instance == null)
 			return "Not a headless host bot!";
-		return instance.remoteBanPlayer(playerNameToBeBanned, hashedPassword, salt);
+		return instance.remoteBanPlayer(playerNameToBeBanned, hours, hashedPassword, salt);
 	}
 	
 	public String stopGameHeadlessHostBot(final String hashedPassword, final String salt)

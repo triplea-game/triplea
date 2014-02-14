@@ -1,7 +1,7 @@
 Changes for 1.8.0.0
 * Added logfile "dump" command for host bots, that will from the command line print out all status, connection, memory, and thread information to the log. (veqryn)
 
-* Created ability for lobby admins to mute players in a host bot, remotely. (veqryn)
+* Created ability for lobby admins to mute and/or boot players in a host bot, remotely. (veqryn)
 
 * Created ability for lobby admins to see the player connections in any host game. (veqryn)
 

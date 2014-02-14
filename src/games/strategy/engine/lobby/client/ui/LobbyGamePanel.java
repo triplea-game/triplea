@@ -531,7 +531,8 @@ public class LobbyGamePanel extends JPanel
 		final String playerToBeMuted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Muted?", "Player Name To Be Muted?", JOptionPane.QUESTION_MESSAGE);
 		if (playerToBeMuted == null)
 			return;
-		final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(), "Minutes to Mute for?  (between 0 and 2880)", "Minutes to Mute for?", JOptionPane.QUESTION_MESSAGE, null, null, 10);
+		final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(), "Minutes to Mute for?  (between 0 and 2880, choose zero to unmute)", "Minutes to Mute for?",
+					JOptionPane.QUESTION_MESSAGE, null, null, 10);
 		if (minutes == null)
 			return;
 		int min;
@@ -567,7 +568,7 @@ public class LobbyGamePanel extends JPanel
 					JOptionPane.OK_CANCEL_OPTION);
 		if (result != JOptionPane.OK_OPTION)
 			return;
-		final String playerToBeBooted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Booted?", "Player Name To Be Banned?", JOptionPane.QUESTION_MESSAGE);
+		final String playerToBeBooted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Booted?", "Player Name To Be Booted?", JOptionPane.QUESTION_MESSAGE);
 		if (playerToBeBooted == null)
 			return;
 		// we sort the table, so get the correct index
@@ -591,13 +592,25 @@ public class LobbyGamePanel extends JPanel
 		final int selectedIndex = m_gameTable.getSelectedRow();
 		if (selectedIndex == -1)
 			return;
-		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote ban player (permanently) on this host?", "Remote Player Ban Headless Host Bot",
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a (permanent) remote ban player on this host?", "Remote Player Ban Headless Host Bot",
 					JOptionPane.OK_CANCEL_OPTION);
 		if (result != JOptionPane.OK_OPTION)
 			return;
 		final String playerToBeBanned = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Banned?", "Player Name To Be Banned?", JOptionPane.QUESTION_MESSAGE);
 		if (playerToBeBanned == null)
 			return;
+		final Object hours = JOptionPane.showInputDialog(getTopLevelAncestor(), "Hours to Ban for?  (between 0 and 720, this is permanent and can not be undone!)", "Hours to Ban for?",
+					JOptionPane.QUESTION_MESSAGE, null, null, 24);
+		if (hours == null)
+			return;
+		int hrs;
+		try
+		{
+			hrs = Math.max(0, Math.min(60 * 24 * 2, Integer.parseInt((String) hours)));
+		} catch (final NumberFormatException e)
+		{
+			return;
+		}
 		// we sort the table, so get the correct index
 		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
 		final GameDescription description = m_gameTableModel.get(modelIndex);
@@ -610,7 +623,7 @@ public class LobbyGamePanel extends JPanel
 			return;
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
-		final String response = controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hashedPassword, salt);
+		final String response = controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
 		JOptionPane.showMessageDialog(null, (response == null ? "Successfully banned player (" + playerToBeBanned + ") on host" : "Failed: " + response));
 	}
 	

@@ -458,12 +458,27 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyUsernameMiniBanningOfPlayer(final String username)
+	public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_miniBannedUsernames.contains(username))
 				m_miniBannedUsernames.add(username);
+			if (expires != null)
+			{
+				final Timer unbanUsernameTimer = new Timer("Username unban timer");
+				unbanUsernameTimer.schedule(new TimerTask()
+				{
+					@Override
+					public void run()
+					{
+						synchronized (m_cachedListLock)
+						{
+							m_miniBannedUsernames.remove(username);
+						}
+					}
+				}, new Date(expires.getTime()));
+			}
 		}
 	}
 	
@@ -477,12 +492,27 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyIPMiniBanningOfPlayer(final String ip)
+	public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_miniBannedIpAddresses.contains(ip))
 				m_miniBannedIpAddresses.add(ip);
+			if (expires != null)
+			{
+				final Timer unbanIpTimer = new Timer("IP unban timer");
+				unbanIpTimer.schedule(new TimerTask()
+				{
+					@Override
+					public void run()
+					{
+						synchronized (m_cachedListLock)
+						{
+							m_miniBannedIpAddresses.remove(ip);
+						}
+					}
+				}, new Date(expires.getTime()));
+			}
 		}
 	}
 	
@@ -496,12 +526,27 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyMacMiniBanningOfPlayer(final String mac)
+	public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_miniBannedMacAddresses.contains(mac))
 				m_miniBannedMacAddresses.add(mac);
+			if (expires != null)
+			{
+				final Timer unbanMacTimer = new Timer("Mac unban timer");
+				unbanMacTimer.schedule(new TimerTask()
+				{
+					@Override
+					public void run()
+					{
+						synchronized (m_cachedListLock)
+						{
+							m_miniBannedMacAddresses.remove(mac);
+						}
+					}
+				}, new Date(expires.getTime()));
+			}
 		}
 	}
 	

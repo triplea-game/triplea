@@ -194,17 +194,17 @@ public class DummyMessenger implements IServerMessenger
 		return m_node.getSocketAddress();
 	}
 	
-	public void NotifyIPMiniBanningOfPlayer(final String ip)
+	public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires)
 	{
 		
 	}
 	
-	public void NotifyMacMiniBanningOfPlayer(final String mac)
+	public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires)
 	{
 		
 	}
 	
-	public void NotifyUsernameMiniBanningOfPlayer(final String username)
+	public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires)
 	{
 		
 	}

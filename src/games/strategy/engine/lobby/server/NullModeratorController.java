@@ -58,7 +58,7 @@ public class NullModeratorController extends ModeratorController implements IMod
 	}
 	
 	@Override
-	public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final String hashedPassword, final String salt)
+	public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final int hours, final String hashedPassword, final String salt)
 	{
 		return null;
 	}

@@ -57,11 +57,11 @@ public interface IServerMessenger extends IMessenger
 	 */
 	public Set<INode> getNodes();
 	
-	void NotifyIPMiniBanningOfPlayer(String ip);
+	void NotifyIPMiniBanningOfPlayer(String ip, Date expires);
 	
-	void NotifyMacMiniBanningOfPlayer(String mac);
+	void NotifyMacMiniBanningOfPlayer(String mac, Date expires);
 	
-	void NotifyUsernameMiniBanningOfPlayer(String username);
+	void NotifyUsernameMiniBanningOfPlayer(String username, Date expires);
 	
 	String GetPlayerMac(String name);
 	

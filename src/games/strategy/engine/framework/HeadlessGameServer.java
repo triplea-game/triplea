@@ -484,13 +484,14 @@ public class HeadlessGameServer
 		return "Invalid password!";
 	}
 	
-	public String remoteBanPlayer(final String playerName, final String hashedPassword, final String salt)
+	public String remoteBanPlayer(final String playerName, final int hours, final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
 		if (password.equals(NO_REMOTE_REQUESTS_ALLOWED))
 			return "Host not accepting remote requests!";
 		final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
 		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+		final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(24 * 30, hours)) * 1000 * 60 * 60); // milliseconds (30 days max)
 		if (encryptedPassword.equals(hashedPassword))
 		{
 			(new Thread(new Runnable()
@@ -517,21 +518,21 @@ public class HeadlessGameServer
 								System.out.println("Remote Ban of Player: " + playerName);
 								try
 								{
-									messenger.NotifyUsernameMiniBanningOfPlayer(realName);
+									messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));
 								} catch (final Exception e)
 								{
 									e.printStackTrace();
 								}
 								try
 								{
-									messenger.NotifyIPMiniBanningOfPlayer(ip);
+									messenger.NotifyIPMiniBanningOfPlayer(ip, new Date(expire));
 								} catch (final Exception e)
 								{
 									e.printStackTrace();
 								}
 								try
 								{
-									messenger.NotifyMacMiniBanningOfPlayer(mac);
+									messenger.NotifyMacMiniBanningOfPlayer(mac, new Date(expire));
 								} catch (final Exception e)
 								{
 									e.printStackTrace();
@@ -2335,9 +2336,9 @@ class HeadlessGameServerConsole
 		try
 		{
 			final String name;
-			if (command.length() > 4)
+			if (command.length() > 4 && command.split(" ").length > 1)
 			{
-				name = command.substring(4, command.length());
+				name = command.split(" ")[1];
 			}
 			else
 			{
@@ -2379,13 +2380,13 @@ class HeadlessGameServerConsole
 		try
 		{
 			final String name;
-			if (command.length() > 4)
+			if (command.length() > 4 && command.split(" ").length > 1)
 			{
-				name = command.substring(4, command.length());
+				name = command.split(" ")[1];
 			}
 			else
 			{
-				out.println("Input player name to mini-ban: ");
+				out.println("Input player name to ban: ");
 				name = in.readLine();
 			}
 			if (name == null || name.length() < 1)
@@ -2393,6 +2394,26 @@ class HeadlessGameServerConsole
 				out.println("Invalid name");
 				return;
 			}
+			final String hours;
+			if (command.length() > 4 && command.split(" ").length > 2)
+			{
+				hours = command.split(" ")[2];
+			}
+			else
+			{
+				out.println("Input hours to ban: ");
+				hours = in.readLine();
+			}
+			final long hrs;
+			try
+			{
+				hrs = Math.max(0, Math.min(24 * 30, Long.parseLong(hours))); // max out at 30 days
+			} catch (final NumberFormatException nfe)
+			{
+				out.println("Invalid minutes");
+				return;
+			}
+			final long expire = System.currentTimeMillis() + (hrs * 1000 * 60 * 60); // milliseconds
 			for (final INode node : nodes)
 			{
 				final String realName = node.getName().split(" ")[0];
@@ -2402,21 +2423,21 @@ class HeadlessGameServerConsole
 				{
 					try
 					{
-						messenger.NotifyUsernameMiniBanningOfPlayer(realName);
+						messenger.NotifyUsernameMiniBanningOfPlayer(realName, new Date(expire));
 					} catch (final Exception e)
 					{
 						e.printStackTrace();
 					}
 					try
 					{
-						messenger.NotifyIPMiniBanningOfPlayer(ip);
+						messenger.NotifyIPMiniBanningOfPlayer(ip, new Date(expire));
 					} catch (final Exception e)
 					{
 						e.printStackTrace();
 					}
 					try
 					{
-						messenger.NotifyMacMiniBanningOfPlayer(mac);
+						messenger.NotifyMacMiniBanningOfPlayer(mac, new Date(expire));
 					} catch (final Exception e)
 					{
 						e.printStackTrace();

@@ -87,7 +87,7 @@ public interface IModeratorController extends IRemote
 	/**
 	 * Remote ban player in a headless host bot.
 	 */
-	public String banPlayerHeadlessHostBot(INode node, String playerNameToBeBanned, String hashedPassword, String salt);
+	public String banPlayerHeadlessHostBot(INode node, String playerNameToBeBanned, int hours, String hashedPassword, String salt);
 	
 	/**
 	 * Remote stop game of a headless host bot.
