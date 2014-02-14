@@ -531,8 +531,8 @@ public class LobbyGamePanel extends JPanel
 		final String playerToBeMuted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Muted?", "Player Name To Be Muted?", JOptionPane.QUESTION_MESSAGE);
 		if (playerToBeMuted == null)
 			return;
-		final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(), "Minutes to Mute for?  (between 0 and 2880, choose zero to unmute)", "Minutes to Mute for?",
-					JOptionPane.QUESTION_MESSAGE, null, null, 10);
+		final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(), "Minutes to Mute for?  (between 0 and 2880, choose zero to unmute [works only if players is in the host])",
+					"Minutes to Mute for?", JOptionPane.QUESTION_MESSAGE, null, null, 10);
 		if (minutes == null)
 			return;
 		int min;
@@ -599,14 +599,14 @@ public class LobbyGamePanel extends JPanel
 		final String playerToBeBanned = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Banned?", "Player Name To Be Banned?", JOptionPane.QUESTION_MESSAGE);
 		if (playerToBeBanned == null)
 			return;
-		final Object hours = JOptionPane.showInputDialog(getTopLevelAncestor(), "Hours to Ban for?  (between 0 and 720, this is permanent and can not be undone!)", "Hours to Ban for?",
-					JOptionPane.QUESTION_MESSAGE, null, null, 24);
+		final Object hours = JOptionPane.showInputDialog(getTopLevelAncestor(), "Hours to Ban for?  (between 0 and 720, this is permanent and only a restart of the host will undo it!)",
+					"Hours to Ban for?", JOptionPane.QUESTION_MESSAGE, null, null, 24);
 		if (hours == null)
 			return;
 		int hrs;
 		try
 		{
-			hrs = Math.max(0, Math.min(60 * 24 * 2, Integer.parseInt((String) hours)));
+			hrs = Math.max(0, Math.min(24 * 30, Integer.parseInt((String) hours)));
 		} catch (final NumberFormatException e)
 		{
 			return;
