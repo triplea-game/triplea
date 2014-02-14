@@ -24,6 +24,16 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		m_serverNode = serverNode;
 	}
 	
+	public String getChatLogHeadlessHostBot(final String hashedPassword, final String salt)
+	{
+		if (!MessageContext.getSender().equals(m_serverNode))
+			return "Not accepted!";
+		final HeadlessGameServer instance = HeadlessGameServer.getInstance();
+		if (instance == null)
+			return "Not a headless host bot!";
+		return instance.remoteGetChatLog(hashedPassword, salt);
+	}
+	
 	public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))

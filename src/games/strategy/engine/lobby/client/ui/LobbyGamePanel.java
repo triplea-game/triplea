@@ -27,6 +27,8 @@ import games.strategy.util.MD5Crypt;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -238,6 +240,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			rVal.add(getHostSupportInfoAction(description));
 			rVal.add(getHostInfoAction());
+			rVal.add(getChatLogOfHeadlessHostBotAction(description));
 			rVal.add(getBanPlayerHeadlessHostBotAction(description));
 			rVal.add(getStopGameHeadlessHostBotAction(description));
 			rVal.add(getShutDownHeadlessHostBotAction(description));
@@ -317,6 +320,22 @@ public class LobbyGamePanel extends JPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				getHostInfo();
+			}
+		};
+	}
+	
+	private Action getChatLogOfHeadlessHostBotAction(final GameDescription description)
+	{
+		final String supportEmail = description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+		if (supportEmail.length() == 0)
+			return null;
+		return new AbstractAction("Get Chat Log Of Headless Host Bot")
+		{
+			private static final long serialVersionUID = -2927005305224530547L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				getChatLogOfHeadlessHostBot();
 			}
 		};
 	}
@@ -429,6 +448,39 @@ public class LobbyGamePanel extends JPanel
 		textPane.setEditable(false);
 		textPane.setText(text);
 		JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void getChatLogOfHeadlessHostBot()
+	{
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote get chat log this host?", "Remote Get Chat Log Headless Host Bot",
+					JOptionPane.OK_CANCEL_OPTION);
+		if (result != JOptionPane.OK_OPTION)
+			return;
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+		if (password == null)
+			return;
+		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
+		final String hashedPassword = MD5Crypt.crypt(password, salt);
+		final String response = controller.getChatLogHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
+		final JTextPane textPane = new JTextPane();
+		textPane.setEditable(false);
+		textPane.setText(response == null ? "Failed to get chat log!" : response);
+		final JScrollPane scroll = new JScrollPane(textPane);
+		final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+		final int availWidth = screenResolution.width - 100;
+		final int availHeight = screenResolution.height - 140;
+		scroll.setPreferredSize(new Dimension(Math.min(availWidth, scroll.getPreferredSize().width), Math.min(availHeight, scroll.getPreferredSize().height)));
+		JOptionPane.showMessageDialog(null, scroll, "Bot Chat Log", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private void banPlayerInHeadlessHostBot()

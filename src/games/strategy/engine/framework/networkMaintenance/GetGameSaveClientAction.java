@@ -26,7 +26,7 @@ public class GetGameSaveClientAction extends AbstractAction
 	
 	public GetGameSaveClientAction(final Component parent, final IServerStartupRemote serverRemote)
 	{
-		super("Get Gamesave (Save Game)...");
+		super("Download Gamesave (Save Game)...");
 		m_parent = JOptionPane.getFrameForComponent(parent);
 		m_serverRemote = serverRemote;
 	}

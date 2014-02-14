@@ -372,6 +372,24 @@ public class HeadlessGameServer
 		return "Invalid password!";
 	}
 	
+	public String remoteGetChatLog(final String hashedPassword, final String salt)
+	{
+		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		if (password.equals(NO_REMOTE_REQUESTS_ALLOWED))
+			return "Host not accepting remote requests!";
+		final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+		if (encryptedPassword.equals(hashedPassword))
+		{
+			final IChatPanel chat = getServerModel().getChatPanel();
+			if (chat == null || chat.getAllText() == null)
+				return "Empty or null chat";
+			return chat.getAllText();
+		}
+		System.out.println("Attempted remote get chat log with invalid password.");
+		return "Invalid password!";
+	}
+	
 	public String remoteBanPlayer(final String playerName, final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");

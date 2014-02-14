@@ -184,6 +184,22 @@ public class ModeratorController implements IModeratorController
 		return remoteHostUtils.getSalt();
 	}
 	
+	public String getChatLogHeadlessHostBot(final INode node, final String hashedPassword, final String salt)
+	{
+		assertUserIsAdmin();
+		if (m_serverMessenger.getServerNode().equals(node))
+			throw new IllegalStateException("Can not do this for server node");
+		final INode modNode = MessageContext.getSender();
+		final String mac = getNodeMacAddress(node);
+		final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
+		final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+		final String response = remoteHostUtils.getChatLogHeadlessHostBot(hashedPassword, salt);
+		s_logger.info(DUtils.Format(((response == null || response.equals("Invalid password!")) ? "Failed" : "Successful")
+					+ " get Chat Log of Headless HostBot. Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}", node.getName(),
+					node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+		return response;
+	}
+	
 	public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final String hashedPassword, final String salt)
 	{
 		assertUserIsAdmin();

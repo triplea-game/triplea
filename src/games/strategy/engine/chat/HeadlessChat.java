@@ -29,7 +29,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 {
 	private static final int MAX_LENGTH = 1000 * 200; // roughly 1000 chat messages
 	private Chat m_chat;
-	private boolean m_showTime = false;
+	private boolean m_showTime = true;
 	private StringBuffer m_allText = new StringBuffer();
 	private String m_lastText = "";
 	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'('HH:mm:ss')'");
