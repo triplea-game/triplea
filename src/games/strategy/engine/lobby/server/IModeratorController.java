@@ -65,9 +65,24 @@ public interface IModeratorController extends IRemote
 	public void muteMac(INode node, Date muteExpires);
 	
 	/**
+	 * Get list of people in the game.
+	 */
+	public String getHostConnections(INode node);
+	
+	/**
 	 * Remote get chat log of a headless host bot.
 	 */
 	public String getChatLogHeadlessHostBot(INode node, String hashedPassword, String salt);
+	
+	/**
+	 * Remote mute player in a headless host bot.
+	 */
+	public String mutePlayerHeadlessHostBot(INode node, String playerNameToBeBooted, int minutes, String hashedPassword, String salt);
+	
+	/**
+	 * Remote boot player in a headless host bot.
+	 */
+	public String bootPlayerHeadlessHostBot(INode node, String playerNameToBeBooted, String hashedPassword, String salt);
 	
 	/**
 	 * Remote ban player in a headless host bot.

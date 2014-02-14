@@ -72,6 +72,8 @@ public class LobbyLoginValidator implements ILoginValidator
 	private String verifyConnectionInternal(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient, final String clientName, final String hashedMac,
 				final SocketAddress remoteAddress)
 	{
+		if (propertiesReadFromClient == null)
+			return "No Client Properties";
 		final String clientVersionString = propertiesReadFromClient.get(LOBBY_VERSION);
 		if (clientVersionString == null)
 			return "No Client Version";

@@ -9,7 +9,13 @@ import games.strategy.engine.message.IRemote;
  */
 public interface IRemoteHostUtils extends IRemote
 {
+	public String getConnections();
+	
 	public String getChatLogHeadlessHostBot(String hashedPassword, String salt);
+	
+	public String mutePlayerHeadlessHostBot(String playerNameToBeMuted, int minutes, String hashedPassword, String salt);
+	
+	public String bootPlayerHeadlessHostBot(String playerNameToBeBooted, String hashedPassword, String salt);
 	
 	public String banPlayerHeadlessHostBot(String playerNameToBeBanned, String hashedPassword, String salt);
 	

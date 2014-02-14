@@ -16,6 +16,30 @@ import java.util.Date;
 public class NullModeratorController extends ModeratorController implements IModeratorController
 {
 	@Override
+	public void banMac(final INode node, final String hashedMac, final Date banExpires)
+	{
+		// nothing
+	}
+	
+	@Override
+	public String mutePlayerHeadlessHostBot(final INode node, final String playerNameToBeMuted, final int minutes, final String hashedPassword, final String salt)
+	{
+		return null;
+	}
+	
+	@Override
+	public String bootPlayerHeadlessHostBot(final INode node, final String playerNameToBeBooted, final String hashedPassword, final String salt)
+	{
+		return null;
+	}
+	
+	@Override
+	public String getHostConnections(final INode node)
+	{
+		return null;
+	}
+	
+	@Override
 	protected String getNodeMacAddress(final INode node)
 	{
 		return super.getNodeMacAddress(node);

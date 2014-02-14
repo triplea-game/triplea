@@ -49,7 +49,6 @@ public class BootPlayerAction extends AbstractAction
 			if (node.getName().equals(name))
 			{
 				m_messenger.removeConnection(node);
-				return;
 			}
 		}
 	}

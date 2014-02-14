@@ -150,7 +150,7 @@ public class InGameLobbyWatcher
 			final RemoteMessenger rm = new RemoteMessenger(um);
 			final HeartBeat h = new HeartBeat(messenger.getServerNode());
 			rm.registerRemote(h, HeartBeat.getHeartBeatName(um.getLocalNode()));
-			final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode());
+			final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
 			rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
 			return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
 		} catch (final Exception e)

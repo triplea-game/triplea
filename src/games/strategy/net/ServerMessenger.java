@@ -243,7 +243,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			if (!m_liveMutedUsernames.contains(username))
 				m_liveMutedUsernames.add(username);
-			if (isLobby() && muteExpires != null)
+			if (muteExpires != null)
 				ScheduleUsernameUnmuteAt(username, muteExpires.getTime());
 		}
 	}
@@ -264,7 +264,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			if (!m_liveMutedIpAddresses.contains(ip))
 				m_liveMutedIpAddresses.add(ip);
-			if (isLobby() && muteExpires != null)
+			if (muteExpires != null)
 				ScheduleIpUnmuteAt(ip, muteExpires.getTime());
 		}
 	}
@@ -285,7 +285,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			if (!m_liveMutedMacAddresses.contains(mac))
 				m_liveMutedMacAddresses.add(mac);
-			if (isLobby() && muteExpires != null)
+			if (muteExpires != null)
 				ScheduleMacUnmuteAt(mac, muteExpires.getTime());
 		}
 	}
@@ -724,8 +724,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			@Override
 			public void run()
-			{
-				if (new MutedUsernameController().getUsernameUnmuteTime(username) == -1) // If the mute has expired
+			{ // lobby has a database we need to check, normal hosted games do not
+				if ((isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame())) // If the mute has expired
 				{
 					synchronized (m_cachedListLock)
 					{
@@ -742,8 +742,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			@Override
 			public void run()
-			{
-				if (new MutedIpController().getIpUnmuteTime(ip) == -1) // If the mute has expired
+			{ // lobby has a database we need to check, normal hosted games do not
+				if ((isLobby() && new MutedIpController().getIpUnmuteTime(ip) == -1) || (isGame())) // If the mute has expired
 				{
 					synchronized (m_cachedListLock)
 					{
@@ -760,8 +760,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			@Override
 			public void run()
-			{
-				if (new MutedMacController().getMacUnmuteTime(mac) == -1) // If the mute has expired
+			{ // lobby has a database we need to check, normal hosted games do not
+				if ((isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame())) // If the mute has expired
 				{
 					synchronized (m_cachedListLock)
 					{

@@ -241,6 +241,8 @@ public class LobbyGamePanel extends JPanel
 			rVal.add(getHostSupportInfoAction(description));
 			rVal.add(getHostInfoAction());
 			rVal.add(getChatLogOfHeadlessHostBotAction(description));
+			rVal.add(getMutePlayerHeadlessHostBotAction(description));
+			rVal.add(getBootPlayerHeadlessHostBotAction(description));
 			rVal.add(getBanPlayerHeadlessHostBotAction(description));
 			rVal.add(getStopGameHeadlessHostBotAction(description));
 			rVal.add(getShutDownHeadlessHostBotAction(description));
@@ -336,6 +338,38 @@ public class LobbyGamePanel extends JPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				getChatLogOfHeadlessHostBot();
+			}
+		};
+	}
+	
+	private Action getMutePlayerHeadlessHostBotAction(final GameDescription description)
+	{
+		final String supportEmail = description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+		if (supportEmail.length() == 0)
+			return null;
+		return new AbstractAction("Mute Player In Headless Host Bot")
+		{
+			private static final long serialVersionUID = 877617773610239979L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				mutePlayerInHeadlessHostBot();
+			}
+		};
+	}
+	
+	private Action getBootPlayerHeadlessHostBotAction(final GameDescription description)
+	{
+		final String supportEmail = description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+		if (supportEmail.length() == 0)
+			return null;
+		return new AbstractAction("Boot Player In Headless Host Bot")
+		{
+			private static final long serialVersionUID = -2364912813781036326L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				bootPlayerInHeadlessHostBot();
 			}
 		};
 	}
@@ -444,9 +478,10 @@ public class LobbyGamePanel extends JPanel
 					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
 		final String text = controller.getInformationOn(lobbyWatcherNode);
+		final String connections = controller.getHostConnections(lobbyWatcherNode);
 		final JTextPane textPane = new JTextPane();
 		textPane.setEditable(false);
-		textPane.setText(text);
+		textPane.setText(text + "\n\n" + connections);
 		JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
@@ -475,12 +510,80 @@ public class LobbyGamePanel extends JPanel
 		final JTextPane textPane = new JTextPane();
 		textPane.setEditable(false);
 		textPane.setText(response == null ? "Failed to get chat log!" : response);
+		textPane.setCaretPosition(textPane.getText().length());
 		final JScrollPane scroll = new JScrollPane(textPane);
 		final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
 		final int availWidth = screenResolution.width - 100;
 		final int availHeight = screenResolution.height - 140;
 		scroll.setPreferredSize(new Dimension(Math.min(availWidth, scroll.getPreferredSize().width), Math.min(availHeight, scroll.getPreferredSize().height)));
 		JOptionPane.showMessageDialog(null, scroll, "Bot Chat Log", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void mutePlayerInHeadlessHostBot()
+	{
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote mute player on this host?", "Remote Player Mute Headless Host Bot",
+					JOptionPane.OK_CANCEL_OPTION);
+		if (result != JOptionPane.OK_OPTION)
+			return;
+		final String playerToBeMuted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Muted?", "Player Name To Be Muted?", JOptionPane.QUESTION_MESSAGE);
+		if (playerToBeMuted == null)
+			return;
+		final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(), "Minutes to Mute for?  (between 0 and 2880)", "Minutes to Mute for?", JOptionPane.QUESTION_MESSAGE, null, null, 10);
+		if (minutes == null)
+			return;
+		int min;
+		try
+		{
+			min = Math.max(0, Math.min(60 * 24 * 2, Integer.parseInt((String) minutes)));
+		} catch (final NumberFormatException e)
+		{
+			return;
+		}
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+		if (password == null)
+			return;
+		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
+		final String hashedPassword = MD5Crypt.crypt(password, salt);
+		final String response = controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully muted player (" + playerToBeMuted + ") on host" : "Failed: " + response));
+	}
+	
+	private void bootPlayerInHeadlessHostBot()
+	{
+		final int selectedIndex = m_gameTable.getSelectedRow();
+		if (selectedIndex == -1)
+			return;
+		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote boot player on this host?", "Remote Player Boot Headless Host Bot",
+					JOptionPane.OK_CANCEL_OPTION);
+		if (result != JOptionPane.OK_OPTION)
+			return;
+		final String playerToBeBooted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Booted?", "Player Name To Be Banned?", JOptionPane.QUESTION_MESSAGE);
+		if (playerToBeBooted == null)
+			return;
+		// we sort the table, so get the correct index
+		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
+		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final String hostedByName = description.getHostedBy().getName();
+		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+		if (password == null)
+			return;
+		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
+		final String hashedPassword = MD5Crypt.crypt(password, salt);
+		final String response = controller.bootPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully booted player (" + playerToBeBooted + ") on host" : "Failed: " + response));
 	}
 	
 	private void banPlayerInHeadlessHostBot()

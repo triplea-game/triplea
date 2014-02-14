@@ -390,6 +390,100 @@ public class HeadlessGameServer
 		return "Invalid password!";
 	}
 	
+	public String remoteMutePlayer(final String playerName, final int minutes, final String hashedPassword, final String salt)
+	{
+		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		if (password.equals(NO_REMOTE_REQUESTS_ALLOWED))
+			return "Host not accepting remote requests!";
+		final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+		final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(60 * 24 * 2, minutes)) * 1000 * 60); // milliseconds (48 hours max)
+		if (encryptedPassword.equals(hashedPassword))
+		{
+			(new Thread(new Runnable()
+			{
+				public void run()
+				{
+					if (getServerModel() == null)
+						return;
+					final IServerMessenger messenger = getServerModel().getMessenger();
+					if (messenger == null)
+						return;
+					final Set<INode> nodes = messenger.getNodes();
+					if (nodes == null)
+						return;
+					try
+					{
+						for (final INode node : nodes)
+						{
+							final String realName = node.getName().split(" ")[0];
+							final String ip = node.getAddress().getHostAddress();
+							final String mac = messenger.GetPlayerMac(node.getName());
+							if (realName.equals(playerName))
+							{
+								System.out.println("Remote Mute of Player: " + playerName);
+								messenger.NotifyUsernameMutingOfPlayer(realName, new Date(expire));
+								messenger.NotifyIPMutingOfPlayer(ip, new Date(expire));
+								messenger.NotifyMacMutingOfPlayer(mac, new Date(expire));
+								return;
+							}
+						}
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			})).start();
+			return null;
+		}
+		System.out.println("Attempted remote mute player with invalid password.");
+		return "Invalid password!";
+	}
+	
+	public String remoteBootPlayer(final String playerName, final String hashedPassword, final String salt)
+	{
+		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		if (password.equals(NO_REMOTE_REQUESTS_ALLOWED))
+			return "Host not accepting remote requests!";
+		final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
+		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+		if (encryptedPassword.equals(hashedPassword))
+		{
+			(new Thread(new Runnable()
+			{
+				public void run()
+				{
+					if (getServerModel() == null)
+						return;
+					final IServerMessenger messenger = getServerModel().getMessenger();
+					if (messenger == null)
+						return;
+					final Set<INode> nodes = messenger.getNodes();
+					if (nodes == null)
+						return;
+					try
+					{
+						for (final INode node : nodes)
+						{
+							final String realName = node.getName().split(" ")[0];
+							if (realName.equals(playerName))
+							{
+								System.out.println("Remote Boot of Player: " + playerName);
+								messenger.removeConnection(node);
+							}
+						}
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			})).start();
+			return null;
+		}
+		System.out.println("Attempted remote boot player with invalid password.");
+		return "Invalid password!";
+	}
+	
 	public String remoteBanPlayer(final String playerName, final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -420,7 +514,7 @@ public class HeadlessGameServer
 							final String mac = messenger.GetPlayerMac(node.getName());
 							if (realName.equals(playerName))
 							{
-								System.out.println("Remote Ban Player: " + playerName);
+								System.out.println("Remote Ban of Player: " + playerName);
 								try
 								{
 									messenger.NotifyUsernameMiniBanningOfPlayer(realName);
@@ -443,7 +537,6 @@ public class HeadlessGameServer
 									e.printStackTrace();
 								}
 								messenger.removeConnection(node);
-								return;
 							}
 						}
 					} catch (final Exception e)
@@ -2047,6 +2140,14 @@ class HeadlessGameServerConsole
 		{
 			chatmode();
 		}
+		else if (noun.equalsIgnoreCase("mute"))
+		{
+			mute(command);
+		}
+		else if (noun.equalsIgnoreCase("boot"))
+		{
+			boot(command);
+		}
 		else if (noun.equalsIgnoreCase("ban"))
 		{
 			ban(command);
@@ -2058,6 +2159,10 @@ class HeadlessGameServerConsole
 		else if (noun.equalsIgnoreCase("threads"))
 		{
 			threads();
+		}
+		else if (noun.equalsIgnoreCase("dump"))
+		{
+			dump();
 		}
 		else
 		{
@@ -2117,6 +2222,22 @@ class HeadlessGameServerConsole
 		headlessChat.setPrintStream(m_chatMode ? out : null);
 	}
 	
+	private void dump()
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Dump to Log:");
+		sb.append("\n\nStatus:\n");
+		sb.append(getStatus());
+		sb.append("\n\nConnections:\n");
+		sb.append(getConnections());
+		sb.append("\n\n");
+		sb.append(DebugUtils.getThreadDumps());
+		sb.append("\n\n");
+		sb.append(DebugUtils.getMemory());
+		sb.append("\n\nDump finished.\n");
+		HeadlessGameServer.log(sb.toString());
+	}
+	
 	private void threads()
 	{
 		out.println(DebugUtils.getThreadDumps());
@@ -2130,6 +2251,119 @@ class HeadlessGameServerConsole
 	public void println(final String string)
 	{
 		out.println(string);
+	}
+	
+	private void mute(final String command)
+	{
+		if (server == null || server.getServerModel() == null)
+			return;
+		final IServerMessenger messenger = server.getServerModel().getMessenger();
+		if (messenger == null)
+			return;
+		final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
+		if (nodes == null)
+			return;
+		try
+		{
+			final String name;
+			if (command.length() > 4 && command.split(" ").length > 1)
+			{
+				name = command.split(" ")[1];
+			}
+			else
+			{
+				out.println("Input player name to mute: ");
+				name = in.readLine();
+			}
+			if (name == null || name.length() < 1)
+			{
+				out.println("Invalid name");
+				return;
+			}
+			final String minutes;
+			if (command.length() > 4 && command.split(" ").length > 2)
+			{
+				minutes = command.split(" ")[2];
+			}
+			else
+			{
+				out.println("Input minutes to mute: ");
+				minutes = in.readLine();
+			}
+			final long min;
+			try
+			{
+				min = Math.max(0, Math.min(60 * 24 * 2, Long.parseLong(minutes))); // max out at 48 hours
+			} catch (final NumberFormatException nfe)
+			{
+				out.println("Invalid minutes");
+				return;
+			}
+			final long expire = System.currentTimeMillis() + (min * 1000 * 60); // milliseconds
+			for (final INode node : nodes)
+			{
+				final String realName = node.getName().split(" ")[0];
+				final String ip = node.getAddress().getHostAddress();
+				final String mac = messenger.GetPlayerMac(node.getName());
+				if (realName.equals(name))
+				{
+					messenger.NotifyUsernameMutingOfPlayer(realName, new Date(expire));
+					messenger.NotifyIPMutingOfPlayer(ip, new Date(expire));
+					messenger.NotifyMacMutingOfPlayer(mac, new Date(expire));
+					return;
+				}
+			}
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void boot(final String command)
+	{
+		if (server == null || server.getServerModel() == null)
+			return;
+		final IServerMessenger messenger = server.getServerModel().getMessenger();
+		if (messenger == null)
+			return;
+		final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
+		if (nodes == null)
+			return;
+		try
+		{
+			final String name;
+			if (command.length() > 4)
+			{
+				name = command.substring(4, command.length());
+			}
+			else
+			{
+				out.println("Input player name to boot: ");
+				name = in.readLine();
+			}
+			if (name == null || name.length() < 1)
+			{
+				out.println("Invalid name");
+				return;
+			}
+			for (final INode node : nodes)
+			{
+				final String realName = node.getName().split(" ")[0];
+				if (realName.equals(name))
+				{
+					messenger.removeConnection(node);
+				}
+			}
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	private void ban(final String command)
@@ -2188,7 +2422,6 @@ class HeadlessGameServerConsole
 						e.printStackTrace();
 					}
 					messenger.removeConnection(node);
-					return;
 				}
 			}
 		} catch (final IOException e)
@@ -2302,9 +2535,15 @@ class HeadlessGameServerConsole
 	
 	private void showConnections()
 	{
+		out.println(getConnections());
+	}
+	
+	private String getConnections()
+	{
+		final StringBuilder sb = new StringBuilder();
 		if (server != null && server.getServerModel() != null && server.getServerModel().getMessenger() != null)
 		{
-			final StringBuilder sb = new StringBuilder("Connected: " + server.getServerModel().getMessenger().isConnected() + "\n" + "Nodes: \n");
+			sb.append("Connected: " + server.getServerModel().getMessenger().isConnected() + "\n" + "Nodes: \n");
 			final Set<INode> nodes = server.getServerModel().getMessenger().getNodes();
 			if (nodes == null)
 				sb.append("  null\n");
@@ -2315,11 +2554,18 @@ class HeadlessGameServerConsole
 					sb.append("  " + node + "\n");
 				}
 			}
-			out.println(sb.toString());
 		}
+		else
+			sb.append("Not Connected to Anything");
+		return sb.toString();
 	}
 	
 	private void showStatus()
+	{
+		out.println(getStatus());
+	}
+	
+	private String getStatus()
 	{
 		String message = "Server Start Date: " + startDate;
 		if (server != null)
@@ -2336,7 +2582,7 @@ class HeadlessGameServerConsole
 				message += "\nCurrently Waiting To Start A Game";
 			}
 		}
-		out.println(message);
+		return message;
 	}
 	
 	private void showHelp()
@@ -2344,7 +2590,10 @@ class HeadlessGameServerConsole
 		out.println("Available commands:\n"
 					+ "  help - show this message\n"
 					+ "  status - show status information\n"
+					+ "  dump - prints threads, memory, status, connections, to the log file\n"
 					+ "  connections - show all connected players\n"
+					+ "  mute - mute player\n"
+					+ "  boot - boot player\n"
 					+ "  ban - ban player\n"
 					+ "  send - sends a chat message\n"
 					+ "  chatmode - toggles the showing of chat messages as they come in\n"
