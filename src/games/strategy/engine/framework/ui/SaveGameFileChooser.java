@@ -29,6 +29,7 @@ public class SaveGameFileChooser extends JFileChooser
 {
 	private static final long serialVersionUID = 1548668790891292106L;
 	private static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
+	private static final String AUTOSAVE_2_FILE_NAME = "autosave2.tsvg";
 	private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
 	private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
 	public static final File DEFAULT_DIRECTORY = new File(GameRunner2.getUserRootFolder(), "savedGames");
@@ -37,7 +38,7 @@ public class SaveGameFileChooser extends JFileChooser
 	
 	public enum AUTOSAVE_TYPE
 	{
-		AUTOSAVE, AUTOSAVE_ODD, AUTOSAVE_EVEN
+		AUTOSAVE, AUTOSAVE2, AUTOSAVE_ODD, AUTOSAVE_EVEN
 	}
 	
 	public static String getAutoSaveFileName()
@@ -49,6 +50,17 @@ public class SaveGameFileChooser extends JFileChooser
 				return saveSuffix + "_" + AUTOSAVE_FILE_NAME;
 		}
 		return AUTOSAVE_FILE_NAME;
+	}
+	
+	public static String getAutoSave2FileName()
+	{
+		if (HeadlessGameServer.headless())
+		{
+			final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+			if (saveSuffix.length() > 0)
+				return saveSuffix + "_" + AUTOSAVE_2_FILE_NAME;
+		}
+		return AUTOSAVE_2_FILE_NAME;
 	}
 	
 	public static String getAutoSaveOddFileName()

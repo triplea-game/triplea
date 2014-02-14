@@ -386,8 +386,14 @@ public class ServerGame extends AbstractGame
 		try
 		{
 			SaveGameFileChooser.ensureDefaultDirExists();
-			final File autosaveFile = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-			out = new FileOutputStream(autosaveFile);
+			final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+			final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+			final File f;
+			if (f1.lastModified() > f2.lastModified())
+				f = f2;
+			else
+				f = f1;
+			out = new FileOutputStream(f);
 			saveGame(out);
 		} catch (final Exception e)
 		{

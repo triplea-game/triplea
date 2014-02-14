@@ -345,6 +345,7 @@ public class ClientSetupPanel extends SetupPanel
 		rVal.add(m_model.getHostBotChangeGameOptionsClientAction(this));
 		rVal.add(m_model.getHostBotChangeGameToSaveGameClientAction(this));
 		rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+		rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
 		rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
 		rVal.add(m_model.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
 		rVal.add(m_model.getHostBotGetGameSaveClientAction(this));

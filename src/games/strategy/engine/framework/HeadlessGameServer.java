@@ -349,7 +349,13 @@ public class HeadlessGameServer
 				{
 					System.out.println("Remote Stop Game Initiated.");
 					SaveGameFileChooser.ensureDefaultDirExists();
-					final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+					final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+					final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+					final File f;
+					if (f1.lastModified() > f2.lastModified())
+						f = f2;
+					else
+						f = f1;
 					try
 					{
 						m_iGame.saveGame(f);
@@ -2238,7 +2244,13 @@ class HeadlessGameServerConsole
 			if (stop || forceStop)
 			{
 				SaveGameFileChooser.ensureDefaultDirExists();
-				final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+				final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+				final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+				final File f;
+				if (f1.lastModified() > f2.lastModified())
+					f = f2;
+				else
+					f = f1;
 				try
 				{
 					game.saveGame(f);

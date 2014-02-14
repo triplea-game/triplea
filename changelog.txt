@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Adding a new autosave, 'autosave2', which will take turns being saved to with 'autosave'. (veqyrn)
+
 * Changing movement validation to disallow moving from a contested battle territory into an enemy territory. (veqryn)
 
 * Fixed bug with a territory owned by one player but having enemy units in it, if the owned reconquers the territory it is no longer marked as newly-conquered. (veqryn)
