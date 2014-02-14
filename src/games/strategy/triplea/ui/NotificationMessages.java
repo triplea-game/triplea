@@ -29,6 +29,7 @@ public class NotificationMessages
 {
 	// Filename
 	private static final String PROPERTY_FILE = "notifications.properties";
+	private static final String SOUND_CLIP_SUFFIX = "_sounds";
 	private static NotificationMessages s_nm = null;
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
@@ -63,8 +64,19 @@ public class NotificationMessages
 		return s_nm;
 	}
 	
+	/**
+	 * Can be null if none exist.
+	 */
 	public String getMessage(final String notificationMessageKey)
 	{
-		return m_properties.getProperty(notificationMessageKey, notificationMessageKey);
+		return m_properties.getProperty(notificationMessageKey);
+	}
+	
+	/**
+	 * Can be null if none exist.
+	 */
+	public String getSoundsKey(final String notificationMessageKey)
+	{
+		return m_properties.getProperty(notificationMessageKey + SOUND_CLIP_SUFFIX);
 	}
 }

@@ -556,7 +556,7 @@ public class LobbyGamePanel extends JPanel
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
-		JOptionPane.showMessageDialog(null, (response == null ? "Successfully muted player (" + playerToBeMuted + ") on host" : "Failed: " + response));
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully attempted to mute player (" + playerToBeMuted + ") on host" : "Failed: " + response));
 	}
 	
 	private void bootPlayerInHeadlessHostBot()
@@ -584,7 +584,7 @@ public class LobbyGamePanel extends JPanel
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.bootPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
-		JOptionPane.showMessageDialog(null, (response == null ? "Successfully booted player (" + playerToBeBooted + ") on host" : "Failed: " + response));
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully attempted to boot player (" + playerToBeBooted + ") on host" : "Failed: " + response));
 	}
 	
 	private void banPlayerInHeadlessHostBot()
@@ -624,7 +624,7 @@ public class LobbyGamePanel extends JPanel
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
-		JOptionPane.showMessageDialog(null, (response == null ? "Successfully banned player (" + playerToBeBanned + ") on host" : "Failed: " + response));
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully attempted banned player (" + playerToBeBanned + ") on host" : "Failed: " + response));
 	}
 	
 	private void stopGameHeadlessHostBot()
@@ -648,7 +648,7 @@ public class LobbyGamePanel extends JPanel
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.stopGameHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
-		JOptionPane.showMessageDialog(null, (response == null ? "Successfully stopped current game on host" : "Failed: " + response));
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully attempted stop of current game on host" : "Failed: " + response));
 	}
 	
 	private void shutDownHeadlessHostBot()
@@ -673,7 +673,7 @@ public class LobbyGamePanel extends JPanel
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
-		JOptionPane.showMessageDialog(null, (response == null ? "Successfully shut down host" : "Failed: " + response));
+		JOptionPane.showMessageDialog(null, (response == null ? "Successfully attempted to shut down host" : "Failed: " + response));
 	}
 	
 	private void setWidgetActivation()

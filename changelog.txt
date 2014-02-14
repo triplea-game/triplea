@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Allowing sounds to be played by trigger, by putting "_sounds" after a duplicate of the Notification message key, with the value equal to the sound key found in the sounds.properties file. (veqryn)
+
 * Added logfile "dump" command for host bots, that will from the command line print out all status, connection, memory, and thread information to the log. (veqryn)
 
 * Created ability for lobby admins to mute and/or boot players in a host bot, remotely. (veqryn)

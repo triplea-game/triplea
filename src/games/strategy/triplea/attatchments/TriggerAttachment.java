@@ -1732,19 +1732,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Iterator<String> notificationMessages = notifications.iterator();
 		while (notificationMessages.hasNext())
 		{
-			final String notificationMessageKey = notificationMessages.next();
-			final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey).trim();
-			String messageForRecord = message;
-			if (messageForRecord.length() > 190)
+			final String notificationMessageKey = notificationMessages.next().trim();
+			final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
+			if (sounds != null)
+				aBridge.getSoundChannelBroadcaster().playSoundToPlayer(sounds.trim(), null, aBridge.getPlayerID());
+			final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+			if (message != null)
 			{
-				// We don't want to record a giant string in the history panel, so just put a shortened version in instead.
-				messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
-				messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
-				if (messageForRecord.length() > 195)
-					messageForRecord = messageForRecord.substring(0, 190) + "....";
+				String messageForRecord = message.trim();
+				if (messageForRecord.length() > 190)
+				{
+					// We don't want to record a giant string in the history panel, so just put a shortened version in instead.
+					messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
+					messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
+					if (messageForRecord.length() > 195)
+						messageForRecord = messageForRecord.substring(0, 190) + "....";
+				}
+				aBridge.getHistoryWriter().startEvent("Note to player " + aBridge.getPlayerID().getName() + ": " + messageForRecord);
+				((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(("<html>" + message.trim() + "</html>"), NOTIFICATION);
 			}
-			aBridge.getHistoryWriter().startEvent("Note to player " + aBridge.getPlayerID().getName() + ": " + messageForRecord);
-			((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), NOTIFICATION);
 		}
 	}
 	
@@ -2606,23 +2612,29 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				t.use(aBridge);
 			if (t.getVictory() == null || t.getPlayers() == null)
 				continue;
-			final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory());
-			String messageForRecord = victoryMessage;
-			if (messageForRecord.length() > 150)
+			final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory().trim());
+			final String sounds = NotificationMessages.getInstance().getSoundsKey(t.getVictory().trim());
+			if (victoryMessage != null)
 			{
-				messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
-				messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
-				if (messageForRecord.length() > 155)
-					messageForRecord = messageForRecord.substring(0, 150) + "....";
-			}
-			try
-			{
-				aBridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToTextList(t.getPlayers()) + " have just won the game, with this victory: " + messageForRecord);
-				final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
-				((EndRoundDelegate) delegateEndRound).signalGameOver(("<html>" + victoryMessage + "</html>"), t.getPlayers(), aBridge);
-			} catch (final Exception e)
-			{
-				e.printStackTrace();
+				if (sounds != null)
+					aBridge.getSoundChannelBroadcaster().playSoundForAll(sounds.trim(), null); // only play the sound if we are also notifying everyone
+				String messageForRecord = victoryMessage.trim();
+				if (messageForRecord.length() > 150)
+				{
+					messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
+					messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
+					if (messageForRecord.length() > 155)
+						messageForRecord = messageForRecord.substring(0, 150) + "....";
+				}
+				try
+				{
+					aBridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToTextList(t.getPlayers()) + " have just won the game, with this victory: " + messageForRecord);
+					final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
+					((EndRoundDelegate) delegateEndRound).signalGameOver(("<html>" + victoryMessage.trim() + "</html>"), t.getPlayers(), aBridge);
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}

@@ -140,8 +140,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		emailPanel.add(m_emailSenderEditor, new GridBagConstraints(0, panelRow++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
 		
 		// the play by micro web site settings
-		m_webPosterEditor.setBorder(new TitledBorder("Play By Web Site"));
-		add(m_webPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
+		// m_webPosterEditor.setBorder(new TitledBorder("Play By Web Site"));
+		// add(m_webPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
 		
 		// add selection of local players
 		add(m_localPlayerSelection, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(10, 0, 10, 0), 0, 0));
