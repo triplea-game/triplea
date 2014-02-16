@@ -64,7 +64,7 @@ public class UnitChooser extends JPanel
 	private int m_total = -1;
 	private final JLabel m_leftToSelect = new JLabel();
 	private final GameData m_data;
-	private boolean m_allowTwoHit = false;
+	private boolean m_allowMultipleHits = false;
 	private JButton m_autoSelectButton;
 	private JButton m_selectNoneButton;
 	private final IUIContext m_uiContext;
@@ -104,26 +104,26 @@ public class UnitChooser extends JPanel
 		this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
 	}
 	
-	public UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
+	public UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowMultipleHits,
 				final IUIContext uiContext)
 	{
 		m_dependents = dependent;
 		m_data = data;
-		m_allowTwoHit = allowTwoHit;
+		m_allowMultipleHits = allowMultipleHits;
 		m_uiContext = uiContext;
 		m_match = null;
 		final List<Unit> combinedList = defaultSelections.getDamaged();
-		combinedList.addAll(defaultSelections.getKilled());
+		combinedList.addAll(defaultSelections.getKilled());// TODO: this adds it to the default selections list, is this intended?
 		createEntries(units, dependent, false, false, combinedList);
 		layoutEntries();
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final IUIContext uiContext)
+				final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits, final IUIContext uiContext)
 	{
 		m_dependents = dependent;
 		m_data = data;
-		m_allowTwoHit = allowTwoHit;
+		m_allowMultipleHits = allowMultipleHits;
 		m_uiContext = uiContext;
 		m_match = null;
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
@@ -131,11 +131,11 @@ public class UnitChooser extends JPanel
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final IUIContext uiContext, final Match<Collection<Unit>> match)
+				final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits, final IUIContext uiContext, final Match<Collection<Unit>> match)
 	{
 		m_dependents = dependent;
 		m_data = data;
-		m_allowTwoHit = allowTwoHit;
+		m_allowMultipleHits = allowMultipleHits;
 		m_uiContext = uiContext;
 		m_match = match;
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
@@ -143,12 +143,12 @@ public class UnitChooser extends JPanel
 	}
 	
 	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-				final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data, final boolean allowTwoHit, final IUIContext uiContext,
+				final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data, final boolean allowMultipleHits, final IUIContext uiContext,
 				final Match<Collection<Unit>> match)
 	{
 		m_dependents = dependent;
 		m_data = data;
-		m_allowTwoHit = allowTwoHit;
+		m_allowMultipleHits = allowMultipleHits;
 		m_uiContext = uiContext;
 		m_match = match;
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories, defaultSelections);
@@ -271,7 +271,7 @@ public class UnitChooser extends JPanel
 	
 	private void addCategory(final UnitCategory category, final int defaultValue)
 	{
-		final ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit, defaultValue, m_uiContext);
+		final ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowMultipleHits, defaultValue, m_uiContext);
 		m_entries.add(entry);
 	}
 	
@@ -328,33 +328,30 @@ public class UnitChooser extends JPanel
 	
 	/**
 	 * get the units selected.
-	 * If units are two hit enabled, returns those with two hits.
+	 * If units are two hit enabled, returns those with two hits (ie: those killed).
 	 */
 	public List<Unit> getSelected(final boolean selectDependents)
 	{
 		final List<Unit> selectedUnits = new ArrayList<Unit>();
 		for (final ChooserEntry entry : m_entries)
 		{
-			if (entry.isTwoHit())
-				addToCollection(selectedUnits, entry, entry.getSecondHits(), selectDependents);
-			else
-				addToCollection(selectedUnits, entry, entry.getFirstHits(), selectDependents);
+			addToCollection(selectedUnits, entry, entry.getFinalHit(), selectDependents);
 		}
 		return selectedUnits;
 	}
 	
 	/**
-	 * Only applicable if this dialog was constructed using twoHits
+	 * Only applicable if this dialog was constructed using multiple hit points
 	 */
-	public List<Unit> getSelectedFirstHit()
+	public List<Unit> getSelectedDamagedMultipleHitPointUnits()
 	{
 		final List<Unit> selectedUnits = new ArrayList<Unit>();
 		final Iterator<ChooserEntry> entries = m_entries.iterator();
 		while (entries.hasNext())
 		{
 			final ChooserEntry chooserEntry = entries.next();
-			if (chooserEntry.isTwoHit())
-				addToCollection(selectedUnits, chooserEntry, chooserEntry.getFirstHits(), false);
+			if (chooserEntry.hasMultipleHitPoints())
+				addToCollection(selectedUnits, chooserEntry, chooserEntry.getAllButFinalHit(), false);
 		}
 		return selectedUnits;
 	}
@@ -367,6 +364,7 @@ public class UnitChooser extends JPanel
 		}
 	}
 	
+	// does not take into account multiple hit points
 	private void autoSelect()
 	{
 		if (m_total == -1)
@@ -381,7 +379,7 @@ public class UnitChooser extends JPanel
 			int leftToSelect = m_total - getSelectedCount();
 			for (final ChooserEntry entry : m_entries)
 			{
-				final int canSelect = entry.getMax() - entry.getFirstHits();
+				final int canSelect = entry.getMax() - entry.getHits(0);
 				if (leftToSelect >= canSelect)
 				{
 					entry.selectAll();
@@ -389,7 +387,7 @@ public class UnitChooser extends JPanel
 				}
 				else
 				{
-					entry.set(entry.getFirstHits() + canSelect);
+					entry.set(entry.getHits(0) + canSelect);
 					leftToSelect = 0;
 					break;
 				}
@@ -432,14 +430,12 @@ public class UnitChooser extends JPanel
 class ChooserEntry
 {
 	private final UnitCategory m_category;
-	private ScrollableTextField m_hitText;
 	private final ScrollableTextFieldListener m_hitTextFieldListener;
 	private final GameData m_data;
-	private final boolean m_hasSecondHit;
-	private final int m_defaultValueFirstHits;
-	private final int m_defaultValueSecondHits;
-	private ScrollableTextField m_secondHitText;
-	private JLabel m_secondHitLabel;
+	private final boolean m_hasMultipleHits;
+	private final List<Integer> m_defaultHits;
+	private final List<ScrollableTextField> m_hitTexts;
+	private final List<JLabel> m_hitLabel = new ArrayList<JLabel>();
 	private int m_leftToSelect = 0;
 	private static Insets nullInsets = new Insets(0, 0, 0, 0);
 	private final IUIContext m_uiContext;
@@ -449,57 +445,65 @@ class ChooserEntry
 		m_hitTextFieldListener = listener;
 		m_data = data;
 		m_category = category;
-		m_hasSecondHit = allowTwoHit && category.isTwoHit() && !category.getDamaged();
+		m_hasMultipleHits = allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
+		m_hitTexts = new ArrayList<ScrollableTextField>(Math.max(1, category.getHitPoints()));
+		m_defaultHits = new ArrayList<Integer>(Math.max(1, category.getHitPoints()));
 		final int numUnits = category.getUnits().size();
-		m_defaultValueFirstHits = numUnits < defaultValue ? numUnits : defaultValue;
-		m_defaultValueSecondHits = numUnits < defaultValue ? defaultValue - numUnits : 0;
+		int hitsUsedSoFar = 0;
+		for (int i = 0; i < Math.max(1, category.getHitPoints()); i++)
+		{
+			final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar)); // TODO: check if default value includes damaged points or not
+			hitsUsedSoFar += hitsToUse;
+			m_defaultHits.add(hitsToUse);
+		}
 		m_uiContext = uiContext;
 		// System.out.println("Default hits: " + m_defaultValueFirstHits + " " + m_defaultValueSecondHits);
 	}
 	
 	public void createComponents(final JPanel panel, final int yIndex)
 	{
-		panel.add(new UnitChooserEntryIcon(false, m_uiContext), new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-		if (m_category.getMovement() != -1)
-			panel.add(new JLabel("mvt " + m_category.getMovement()),
-						new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
-		if (m_category.getTransportCost() != -1)
-			panel.add(new JLabel("cst " + m_category.getTransportCost()), new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4),
-						0, 0));
-		panel.add(new JLabel("x" + m_category.getUnits().size()), new GridBagConstraints(2, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-		m_hitText = new ScrollableTextField(0, m_category.getUnits().size());
-		m_hitText.setValue(m_defaultValueFirstHits);
-		m_hitText.addChangeListener(m_hitTextFieldListener);
-		panel.add(m_hitText, new GridBagConstraints(3, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
-		if (m_hasSecondHit)
+		int gridx = 0;
+		for (int i = 0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints()) : 1); i++)
 		{
-			panel.add(new UnitChooserEntryIcon(true, m_uiContext), new GridBagConstraints(4, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 8, 0, 0), 0, 0));
-			m_secondHitLabel = new JLabel("x0");
-			m_secondHitText = new ScrollableTextField(0, 0);
-			m_secondHitText.setValue(m_defaultValueSecondHits);
-			updateLeftToSelect();
-			panel.add(m_secondHitLabel, new GridBagConstraints(5, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 4), 0, 0));
-			panel.add(m_secondHitText, new GridBagConstraints(6, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-			m_hitText.addChangeListener(new ScrollableTextFieldListener()
+			final ScrollableTextField scroll = new ScrollableTextField(0, m_category.getUnits().size());
+			m_hitTexts.add(scroll);
+			scroll.setValue(m_defaultHits.get(i));
+			scroll.addChangeListener(m_hitTextFieldListener);
+			final JLabel label = new JLabel("x" + m_category.getUnits().size());
+			m_hitLabel.add(label);
+			panel.add(new UnitChooserEntryIcon(i > 0, m_uiContext), new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,
+						(i == 0 ? 0 : 8), 0, 0), 0, 0));
+			if (i == 0)
+			{
+				if (m_category.getMovement() != -1)
+					panel.add(new JLabel("mvt " + m_category.getMovement()), new GridBagConstraints(gridx, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4,
+								0, 4), 0, 0));
+				if (m_category.getTransportCost() != -1)
+					panel.add(new JLabel("cst " + m_category.getTransportCost()), new GridBagConstraints(gridx, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(
+								0, 4, 0, 4), 0, 0));
+				gridx++;
+			}
+			panel.add(label, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+			panel.add(scroll, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
+			scroll.addChangeListener(new ScrollableTextFieldListener()
 			{
 				public void changedValue(final ScrollableTextField field)
 				{
-					m_secondHitLabel.setText("x" + field.getValue());
 					updateLeftToSelect();
 				}
 			});
-			m_secondHitText.addChangeListener(m_hitTextFieldListener);
 		}
+		updateLeftToSelect();
 	}
 	
 	public int getMax()
 	{
-		return m_hitText.getMax();
+		return m_hitTexts.get(0).getMax();
 	}
 	
 	public void set(final int value)
 	{
-		m_hitText.setValue(value);
+		m_hitTexts.get(0).setValue(value);
 	}
 	
 	public UnitCategory getCategory()
@@ -509,12 +513,20 @@ class ChooserEntry
 	
 	public void selectAll()
 	{
-		m_hitText.setValue(m_hitText.getMax());
+		m_hitTexts.get(0).setValue(m_hitTexts.get(0).getMax());
+	}
+	
+	public void selectAllMultipleHitPoints()
+	{
+		for (final ScrollableTextField t : m_hitTexts)
+		{
+			t.setValue(t.getMax());
+		}
 	}
 	
 	public void selectNone()
 	{
-		m_hitText.setValue(0);
+		m_hitTexts.get(0).setValue(0);
 	}
 	
 	public void setLeftToSelect(final int leftToSelect)
@@ -525,35 +537,59 @@ class ChooserEntry
 	
 	private void updateLeftToSelect()
 	{
-		final int newMax = m_leftToSelect + m_hitText.getValue();
-		m_hitText.setMax(Math.min(newMax, m_category.getUnits().size()));
-		if (m_hasSecondHit)
+		int previousMax = m_category.getUnits().size();
+		for (int i = 0; i < m_hitTexts.size(); i++)
 		{
-			final int newSecondHitMax = m_leftToSelect + m_secondHitText.getValue();
-			m_secondHitText.setMax(Math.min(newSecondHitMax, m_hitText.getValue()));
+			final int newMax = m_leftToSelect + getHits(i);
+			final ScrollableTextField text = m_hitTexts.get(i);
+			if (i > 0 && !m_hasMultipleHits)
+				text.setMax(0);
+			else
+				text.setMax(Math.min(newMax, previousMax));
+			if (text.getValue() < 0 || text.getValue() > text.getMax())
+				text.setValue(Math.max(0, Math.min(text.getMax(), text.getValue())));
+			m_hitLabel.get(i).setText("x" + (i == 0 ? m_category.getUnits().size() : text.getMax()));
+			previousMax = text.getValue();
 		}
 	}
 	
 	public int getTotalHits()
 	{
-		return getFirstHits() + getSecondHits();
+		int hits = 0;
+		for (int i = 0; i < m_hitTexts.size(); i++)
+		{
+			hits += getHits(i);
+		}
+		return hits;
 	}
 	
-	public int getFirstHits()
+	public int getHits(final int zeroBasedHitsPosition)
 	{
-		return m_hitText.getValue();
-	}
-	
-	public int getSecondHits()
-	{
-		if (!m_hasSecondHit)
+		if (zeroBasedHitsPosition < 0 || zeroBasedHitsPosition > m_hitTexts.size() - 1)
+			throw new IllegalArgumentException("Index out of range");
+		if (!m_hasMultipleHits && zeroBasedHitsPosition > 0)
 			return 0;
-		return m_secondHitText.getValue();
+		return m_hitTexts.get(zeroBasedHitsPosition).getValue();
 	}
 	
-	public boolean isTwoHit()
+	public int getFinalHit()
 	{
-		return m_hasSecondHit;
+		return getHits(m_hitTexts.size() - 1);
+	}
+	
+	public int getAllButFinalHit()
+	{
+		int hits = 0;
+		for (int i = 0; i < m_hitTexts.size() - 1; i++)
+		{
+			hits += getHits(i);
+		}
+		return hits;
+	}
+	
+	public boolean hasMultipleHitPoints()
+	{
+		return m_hasMultipleHits;
 	}
 	
 	
@@ -573,7 +609,7 @@ class ChooserEntry
 		public void paint(final Graphics g)
 		{
 			super.paint(g);
-			g.drawImage(m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged(), m_category.getDisabled()), 0, 0,
+			g.drawImage(m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged() > 0, m_category.getDisabled()), 0, 0,
 						this);
 			final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
 			int index = 1;

@@ -176,7 +176,7 @@ public class UnitAttachment extends DefaultAttachment
 	private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
 	
 	// damage related
-	private boolean m_isTwoHit = false;
+	private int m_hitPoints = 1;
 	private boolean m_canBeDamaged = false;
 	private int m_maxDamage = 2; // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the territory value they are in, of damage.
 	private int m_maxOperationalDamage = -1; // -1 if can't be disabled
@@ -1345,26 +1345,35 @@ public class UnitAttachment extends DefaultAttachment
 		m_transportCapacity = -1;
 	}
 	
+	/**
+	 * DO NOT REMOVE
+	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsTwoHit(final String s)
 	{
-		m_isTwoHit = getBool(s);
+		m_hitPoints = getBool(s) ? 2 : 1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setIsTwoHit(final Boolean s)
+	public void setHitPoints(final String s)
 	{
-		m_isTwoHit = s;
+		m_hitPoints = getInt(s);
 	}
 	
-	public boolean getIsTwoHit()
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setHitPoints(final Integer value)
 	{
-		return m_isTwoHit;
+		m_hitPoints = value;
 	}
 	
-	public void resetIsTwoHit()
+	public int getHitPoints()
 	{
-		m_isTwoHit = false;
+		return m_hitPoints;
+	}
+	
+	public void resetHitPoints()
+	{
+		m_hitPoints = 1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2951,6 +2960,8 @@ public class UnitAttachment extends DefaultAttachment
 						|| m_isCombatTransport || m_isKamikaze)
 				throw new GameParseException("land units can not have certain properties, " + thisErrorMsg());
 		}
+		if (m_hitPoints < 1)
+			throw new GameParseException("hitPoints can not be zero or negative, " + thisErrorMsg());
 		if (m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200 || m_offensiveAttackAA < 0 || m_offensiveAttackAAmaxDieSides < -1 || m_offensiveAttackAAmaxDieSides > 200)
 		{
 			throw new GameParseException("attackAA or attackAAmaxDieSides or offensiveAttackAA or offensiveAttackAAmaxDieSides is wrong, " + thisErrorMsg());
@@ -3123,7 +3134,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  movement:" + m_movement
 					+ "  attack:" + m_attack
 					+ "  defense:" + m_defense
-					+ "  isTwoHit:" + m_isTwoHit
+					+ "  hitPoints:" + m_hitPoints
 					// + "  isFactory:" + m_isFactory
 					+ "  canBlitz:" + m_canBlitz
 					+ "  artillerySupportable:" + m_artillerySupportable
@@ -3239,8 +3250,8 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append((defenseRolls > 1 ? (defenseRolls + "x ") : "") + getDefense(player) + " Defense, ");
 		if (getMovement(player) > 0)
 			stats.append(getMovement(player) + " Movement, ");
-		if (getIsTwoHit())
-			stats.append("Two Hitpoints, ");
+		if (getHitPoints() > 1)
+			stats.append(getHitPoints() + " Hitpoints, ");
 		if (getCanProduceUnits() && getCanProduceXUnits() < 0)
 			stats.append("can Produce Units Up To Territory Value, ");
 		else if (getCanProduceUnits() && getCanProduceXUnits() > 0)

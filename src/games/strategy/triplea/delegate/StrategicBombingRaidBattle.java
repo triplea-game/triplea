@@ -813,12 +813,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 					// Record production lost
 					DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, currentUnitCost);
 					// apply the hits to the targets
-					final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 					final CompositeChange change = new CompositeChange();
-					hits.put(current, 1);
 					change.add(ChangeFactory.unitPropertyChange(current, totalDamage, TripleAUnit.UNIT_DAMAGE));
 					// taUnit.setUnitDamage(totalDamage);
-					bridge.addChange(ChangeFactory.unitsHit(hits));
 					bridge.addChange(change);
 					bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " rolls: " + MyFormatter.asDice(targetToDiceMap.get(current)) + " and causes: "
 								+ currentUnitCost + " damage to unit: " + current.getType().getName());
@@ -847,7 +844,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 				final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 				for (final Unit factory : damagedFactory)
 				{
-					hits.put(factory, 1);
+					hits.put(factory, 1); // TODO: remove this stuff
 				}
 				// add a hit to the factory
 				bridge.addChange(ChangeFactory.unitsHit(hits));

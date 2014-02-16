@@ -323,15 +323,8 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		int count = 0;
 		for (final Unit unit : units)
 		{
-			if (UnitAttachment.get(unit.getUnitType()).getIsTwoHit())
-			{
-				count += 2;
-				count -= unit.getHits();
-			}
-			else
-			{
-				count++;
-			}
+			count += UnitAttachment.get(unit.getUnitType()).getHitPoints();
+			count -= unit.getHits();
 		}
 		return count;
 	}

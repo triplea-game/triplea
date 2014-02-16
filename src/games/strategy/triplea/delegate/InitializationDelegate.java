@@ -287,7 +287,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		if (battleShipUnit == null)
 			return;
 		final UnitAttachment battleShipAttachment = UnitAttachment.get(battleShipUnit);
-		final boolean defaultEnabled = battleShipAttachment.getIsTwoHit();
+		final boolean defaultEnabled = battleShipAttachment.getHitPoints() > 1;
 		if (userEnabled != defaultEnabled)
 		{
 			aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);

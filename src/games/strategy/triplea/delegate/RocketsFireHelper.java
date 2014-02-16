@@ -157,7 +157,7 @@ public class RocketsFireHelper
 	{
 		final Set<Territory> territories = new HashSet<Territory>();
 		final CompositeMatch<Unit> ownedRockets = rocketMatch(player, data);
-		final BattleTracker tracker = MoveDelegate.getBattleTracker(data);
+		final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
 		for (final Territory current : data.getMap())
 		{
 			// if (current.isWater())
@@ -393,7 +393,7 @@ public class RocketsFireHelper
 			final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 			for (final Unit factory : damagedFactory)
 			{
-				hits.put(factory, 1);
+				hits.put(factory, 1); // TODO: remove this stuff
 			}
 			bridge.addChange(ChangeFactory.unitsHit(hits));
 			/* Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
@@ -412,12 +412,9 @@ public class RocketsFireHelper
 			// Record production lost
 			// DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
 			// apply the hits to the targets
-			final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 			final CompositeChange change = new CompositeChange();
-			hits.put(target, 1);
 			change.add(ChangeFactory.unitPropertyChange(target, totalDamage, TripleAUnit.UNIT_DAMAGE));
 			// taUnit.setUnitDamage(totalDamage);
-			bridge.addChange(ChangeFactory.unitsHit(hits));
 			bridge.addChange(change);
 			attackedTerritory.notifyChanged();
 		}

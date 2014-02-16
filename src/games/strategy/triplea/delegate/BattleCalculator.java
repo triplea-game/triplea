@@ -96,14 +96,9 @@ public class BattleCalculator
 		int rVal = 0;
 		for (final Unit u : units)
 		{
-			// and everyone has at least one hitpoint...
-			rVal++;
 			final UnitAttachment ua = UnitAttachment.get(u.getType());
-			if (ua.getIsTwoHit() && (u.getHits() == 0))
-			{
-				// extra one because we have an undamaged two hitpoint unit.
-				rVal++;
-			}
+			rVal += ua.getHitPoints();
+			rVal -= u.getHits();
 		}
 		return rVal;
 	}
@@ -208,7 +203,7 @@ public class BattleCalculator
 			return new CasualtyDetails();
 		// if we can damage units, do it now
 		final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-		final Match<Unit> canBeDamaged = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged.invert());
+		final Match<Unit> canBeDamaged = Matches.UnitHasMoreThanOneHitPointLeft;
 		
 		final GameData data = bridge.getData();
 		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, data, !defending);
@@ -343,7 +338,7 @@ public class BattleCalculator
 		if (hitsLeft <= 0)
 			return new CasualtyDetails();
 		final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-		final Match<Unit> canBeDamaged = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged.invert());
+		final Match<Unit> canBeDamaged = Matches.UnitHasMoreThanOneHitPointLeft;
 		final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpoints(planes) : planes.size()); // normal behavior is instant kill, which means planes.size()
 		final List<Unit> planesList = new ArrayList<Unit>();
 		for (final Unit plane : planes)
@@ -397,7 +392,7 @@ public class BattleCalculator
 		final int highestAttack = attackThenDiceSides.getFirst();
 		// int chosenDiceSize = attackThenDiceSides[1];
 		final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-		final Match<Unit> canBeDamaged = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged.invert());
+		final Match<Unit> canBeDamaged = Matches.UnitHasMoreThanOneHitPointLeft;
 		final int hits = dice.getHits();
 		final List<Unit> planesList = new ArrayList<Unit>(planes);
 		// We need to choose which planes die based on their position in the list and the individual AA rolls
@@ -479,7 +474,7 @@ public class BattleCalculator
 		{
 			hitsRemaining = extraHits;
 		}
-		if (!isEditMode && allTargetsOneTypeNotTwoHit(targets, dependents))
+		if (!isEditMode && allTargetsOneTypeOneHitPoint(targets, dependents))
 		{
 			final List<Unit> killed = new ArrayList<Unit>();
 			final Iterator<Unit> iter = targets.iterator();
@@ -511,15 +506,20 @@ public class BattleCalculator
 			killed = killAmphibiousFirst(killed, targets);
 		final List<Unit> damaged = casualtySelection.getDamaged();
 		int numhits = killed.size();
-		if (allowMultipleHitsPerUnit)
+		if (!allowMultipleHitsPerUnit)
+			damaged.clear();
+		else
 		{
 			for (final Unit unit : killed)
 			{
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
-				if (ua.getIsTwoHit() && (unit.getHits() == 0))
+				final int damageToUnit = Collections.frequency(damaged, unit);
+				numhits += Math.max(0, Math.min(damageToUnit, (ua.getHitPoints() - (1 + unit.getHits())))); // allowed damage
+				final Iterator<Unit> iter = damaged.iterator();
+				while (iter.hasNext())
 				{
-					numhits++;
-					damaged.remove(unit);
+					if (unit.equals(iter.next()))
+						iter.remove(); // remove from damaged list, since they will die
 				}
 			}
 		}
@@ -629,11 +629,13 @@ public class BattleCalculator
 				final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit)
 	{
 		final CasualtyList defaultCasualtySelection = new CasualtyList();
+		// Sort units by power and cost in ascending order
+		final List<Unit> sorted = new ArrayList<Unit>(sortUnitsForCasualtiesWithSupport(targets, defending, player, costs, territoryEffects, data, false));
 		// Remove two hit bb's selecting them first for default casualties
 		int numSelectedCasualties = 0;
 		if (allowMultipleHitsPerUnit)
 		{
-			for (final Unit unit : targets)
+			for (final Unit unit : sorted)
 			{
 				// Stop if we have already selected as many hits as there are targets
 				if (numSelectedCasualties >= hits)
@@ -641,15 +643,14 @@ public class BattleCalculator
 					return defaultCasualtySelection;
 				}
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
-				if (ua.getIsTwoHit() && (unit.getHits() == 0))
+				final int extraHP = Math.min((hits - numSelectedCasualties), (ua.getHitPoints() - (1 + unit.getHits())));
+				for (int i = 0; i < extraHP; i++)
 				{
 					numSelectedCasualties++;
 					defaultCasualtySelection.addToDamaged(unit);
 				}
 			}
 		}
-		// Sort units by power and cost in ascending order
-		final List<Unit> sorted = new ArrayList<Unit>(sortUnitsForCasualtiesWithSupport(targets, defending, player, costs, territoryEffects, data, false));
 		// Select units
 		for (final Unit unit : sorted)
 		{
@@ -1063,16 +1064,14 @@ public class BattleCalculator
 	 * @param dependents
 	 *            map of depend units for target units
 	 */
-	private static boolean allTargetsOneTypeNotTwoHit(final Collection<Unit> targets, final Map<Unit, Collection<Unit>> dependents)
+	private static boolean allTargetsOneTypeOneHitPoint(final Collection<Unit> targets, final Map<Unit, Collection<Unit>> dependents)
 	{
 		final Set<UnitCategory> categorized = UnitSeperator.categorize(targets, dependents, false, false);
 		if (categorized.size() == 1)
 		{
 			final UnitCategory unitCategory = categorized.iterator().next();
-			if (!unitCategory.isTwoHit() || unitCategory.getDamaged())
-			{
+			if (unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1)
 				return true;
-			}
 		}
 		return false;
 	}

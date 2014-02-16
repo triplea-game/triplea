@@ -6213,7 +6213,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					continue;
 				final int flightDistance = MoveValidator.getMaxMovement(fighterGroup);
 				final Set<Territory> allTerr = data.getMap().getNeighbors(tFight, flightDistance);
-				final List<Territory> landingZones = CompositeMatch.getMatches(allTerr, canLand);
+				final List<Territory> landingZones = Match.getMatches(allTerr, canLand);
 				SUtils.reorder(landingZones, rankMap, false);
 				final Iterator<Territory> lzIter = landingZones.iterator();
 				for (final Territory t : landingZones)
@@ -8658,7 +8658,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					final ProductionRule checkRule = BBRule.next();
 					final UnitType x = (UnitType) checkRule.getResults().keySet().iterator().next();
-					if (Matches.UnitTypeIsBB.match(x))
+					if (Matches.UnitTypeHasMoreThanOneHitPointTotal.match(x))
 						BBRule.remove();
 				}
 			}
@@ -8725,7 +8725,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					for (final ProductionRule BBRule : seaProductionRules)
 					{
 						final UnitType results = (UnitType) BBRule.getResults().keySet().iterator().next();
-						if (Matches.UnitTypeIsBB.match(results))
+						if (Matches.UnitTypeHasMoreThanOneHitPointTotal.match(results))
 						{
 							final int BBcost = BBRule.getCosts().getInt(pus);
 							if (leftToSpend >= BBcost)

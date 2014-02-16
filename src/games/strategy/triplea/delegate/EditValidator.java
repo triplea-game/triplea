@@ -24,6 +24,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -224,14 +225,13 @@ public class EditValidator
 		// all units should be same owner
 		if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
 			return "Not all units have the same owner";
-		if (!Match.allMatch(units, Matches.UnitIsTwoHit))
+		if (!Match.allMatch(units, Matches.UnitHasMoreThanOneHitPointTotal))
 			return "Not all units have more than one total hitpoints";
 		for (final Unit u : units)
 		{
 			final int dmg = unitDamageMap.getInt(u);
-			// TODO: if we ever implement hitpoints, this will have to change
-			if (dmg < 0 || dmg > 1)
-				return "Damage can not be less than zero or greater than one (if you want to kill the unit, use remove unit)";
+			if (dmg < 0 || dmg >= UnitAttachment.get(u.getType()).getHitPoints())
+				return "Damage can not be less than zero or equal to or greater than unit hitpoints (if you want to kill the unit, use remove unit)";
 		}
 		return result;
 	}

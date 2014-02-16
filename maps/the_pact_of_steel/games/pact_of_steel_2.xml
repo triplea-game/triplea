@@ -1771,7 +1771,7 @@
 			movement							values: the allowed movement of a unit, defaults to zero
 			attack								values: the attack value, where a rolled dice must be equal or less than to hit the enemy
 			defense								values: the defense value, where a rolled dice must be equal or less than to hit the enemy
-			isTwoHit							values: does the unit have 2 hitpoints. default is false, which means 1 hitpoint
+			hitPoints							values: how many hit points this unit has (default is 1)
 			
 			artillerySupportable				values: with the 'artillery' and 'unitSupportCount' ability, these three create a set of support attachments at the start of the game, 
 															allows the unit to receive support from an "artillery" unit (land, sea, or air are allowed)
@@ -2073,7 +2073,7 @@
 						<option name="isSea" value="true"/>
 						<option name="attack" value="4"/>
 						<option name="defense" value="4"/>
-						<option name="isTwoHit" value="true"/>
+						<option name="hitPoints" value="2"/>
 						<option name="canBombard" value="true"/>
 						<!-- bombard defaults to the attack value of the unit if missing -->
 						<option name="bombard" value="4"/>
@@ -2088,7 +2088,6 @@
 						<option name="attack" value="3"/>
 						<option name="defense" value="3"/>
 						<option name="canBombard" value="true"/>
-						<option name="isTwoHit" value="false"/>
 						<option name="bombard" value="3"/>
 						<option name="blockade" value="1"/>
 				</attatchment>

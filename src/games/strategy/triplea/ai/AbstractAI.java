@@ -326,7 +326,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 					continue;
 				final IntegerMap<Resource> rMap = new IntegerMap<Resource>();
 				final Resource r = attackTokens.keySet().iterator().next();
-				final int num = Math.min(attackTokens.getInt(r), ((UnitAttachment.get(u.getType()).getIsTwoHit() ? 2 : 1)
+				final int num = Math.min(attackTokens.getInt(r), (UnitAttachment.get(u.getType()).getHitPoints()
 							* (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
 				rMap.put(r, num);
 				HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);

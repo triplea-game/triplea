@@ -230,9 +230,9 @@ public class UnitsDrawer implements IDrawable
 		selectedUnits.add(Matches.unitIsOfType(type));
 		selectedUnits.add(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(m_playerName)));
 		if (m_damaged)
-			selectedUnits.add(Matches.UnitIsDamaged);
+			selectedUnits.add(Matches.UnitHasTakenSomeDamage);
 		else
-			selectedUnits.add(Matches.UnitIsNotDamaged);
+			selectedUnits.add(Matches.UnitHasNotTakenAnyDamage);
 		final List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
 		return new Tuple<Territory, List<Unit>>(t, rVal);
 	}

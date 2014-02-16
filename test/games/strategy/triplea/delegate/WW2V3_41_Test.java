@@ -774,7 +774,7 @@ public class WW2V3_41_Test extends TestCase
 		final Territory sz12 = territory("12 Sea Zone", m_data);
 		final Route r = new Route(sz14, sz13, sz12);
 		// move the battleship
-		move(sz14.getUnits().getMatches(Matches.UnitIsTwoHit), r);
+		move(sz14.getUnits().getMatches(Matches.UnitHasMoreThanOneHitPointTotal), r);
 		// move everything
 		move(sz14.getUnits().getMatches(Matches.UnitIsNotTransport), r);
 		// undo it

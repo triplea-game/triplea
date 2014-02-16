@@ -113,7 +113,7 @@ public class SimpleUnitPanel extends JPanel
 		for (final UnitCategory category : categories)
 		{
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
-			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged(), category.getDisabled());
+			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged() > 0, category.getDisabled());
 		}
 	}
 	

@@ -646,7 +646,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			return;
 		final PlayerID player = aBridge.getPlayerID();
 		final TransportTracker transportTracker = new TransportTracker();
-		final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(player, data))
+		final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(),
+					Matches.territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(player, data))
 					.iterator();
 		// all territories that contain enemy units, where the territory is owned by an enemy of these units
 		while (battleTerritories.hasNext())
@@ -1517,17 +1518,17 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		{
 			final UnitAttachment ua = UnitAttachment.get(unitUnderFire.getType());
 			final int currentHits = unitUnderFire.getHits();
-			if (ua.getIsTwoHit() && currentHits < 1 && hits == 1)
+			if (ua.getHitPoints() <= currentHits + hits)
+			{
+				// TODO: kill dependents
+				change.add(ChangeFactory.removeUnits(location, Collections.singleton(unitUnderFire)));
+			}
+			else
 			{
 				final IntegerMap<Unit> hitMap = new IntegerMap<Unit>();
 				hitMap.put(unitUnderFire, hits);
 				change.add(ChangeFactory.unitsHit(hitMap));
 				markDamaged(Collections.singleton(unitUnderFire), m_bridge);
-			}
-			else
-			{
-				// TODO: kill dependents
-				change.add(ChangeFactory.removeUnits(location, Collections.singleton(unitUnderFire)));
 			}
 		}
 		if (!change.isEmpty())
@@ -1549,7 +1550,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			return;
 		Change damagedChange = null;
 		final IntegerMap<Unit> damagedMap = new IntegerMap<Unit>();
-		damagedMap.putAll(damaged, 1);
+		for (final Unit u : damaged)
+		{
+			damagedMap.add(u, 1);
+		}
 		damagedChange = ChangeFactory.unitsHit(damagedMap);
 		bridge.getHistoryWriter().addChildToEvent("Units damaged: " + MyFormatter.unitsToText(damaged), damaged);
 		bridge.addChange(damagedChange);

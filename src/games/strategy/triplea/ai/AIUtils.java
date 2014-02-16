@@ -127,8 +127,7 @@ public class AIUtils
 				// 2 points since we can absorb a hit
 				strength += 2;
 				// two hit
-				if (unitAttachment.getIsTwoHit())
-					strength += 1.5;
+				strength += 1.5 * unitAttachment.getHitPoints();
 				// the number of pips on the dice
 				if (attacking)
 					strength += unitAttachment.getAttack(u.getOwner());

@@ -1063,7 +1063,7 @@ class UnitPanel extends JPanel
 		m_textField = new ScrollableTextField(0, 512);
 		m_textField.setShowMaxAndMin(false);
 		m_textField.addChangeListener(m_listenerTextField);
-		final Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_category.getDamaged(), m_category.getDisabled());
+		final Image img = m_context.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_category.getDamaged() > 0, m_category.getDisabled());
 		final String toolTipText = "<html>" + m_category.getType().getName() + ":  " + costs.getInt(m_category.getType()) + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; "
 					+ m_category.getType().getTooltip(m_category.getOwner(), true) + "</html>";
 		setCount(m_category.getUnits().size());
@@ -1080,12 +1080,12 @@ class UnitPanel extends JPanel
 		if (!units.isEmpty())
 		{
 			// creating the unit just makes it, we want to make sure it is damaged if the category says it is damaged
-			if (m_category.isTwoHit() && m_category.getDamaged())
+			if (m_category.getHitPoints() > 1 && m_category.getDamaged() > 0)
 			{
 				// we do not need to use bridge and change factory here because this is not sent over the network. these are just some temporary units for the battle calc.
 				for (final Unit u : units)
 				{
-					u.setHits(1);
+					u.setHits(m_category.getDamaged());
 				}
 			}
 			if (m_category.getDisabled() && Matches.UnitTypeCanBeDamaged.match(m_category.getType()))
@@ -1279,7 +1279,7 @@ class OrderOfLossesInputPanel extends JPanel
 				if (typesUsed.contains(category.getType()) || Matches.UnitTypeIsInfrastructure.match(category.getType()) || (m_land && Matches.UnitTypeIsSea.match(category.getType()))
 							|| (!m_land && Matches.UnitTypeIsLand.match(category.getType())))
 					continue;
-				final Image img = m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data, category.getDamaged(), category.getDisabled());
+				final Image img = m_context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), m_data, category.getDamaged() > 0, category.getDisabled());
 				final String unitName = OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
 				final String toolTipText = "<html>" + category.getType().getName() + ":  " + category.getType().getTooltip(category.getOwner(), true) + "</html>";
 				final JButton button = new JButton(new ImageIcon(img));

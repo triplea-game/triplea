@@ -296,7 +296,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			for (final Unit u : units)
 			{
 				if (damageToPut == 0 && currentDamage > 0)
-					unitHitDamageMap.put(u, 0);
+					unitHitDamageMap.put(u, 0); // TODO: get rid of this
 				else if (currentDamage == 0 && damageToPut > 0)
 					unitHitDamageMap.put(u, 1); // mark as damaged so we get the _hit picture
 				// else both must be greater than zero, so we are already marked
@@ -311,14 +311,6 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 				final int currentDamage = ((TripleAUnit) u).getUnitDamage();
 				if (currentDamage == dmg)
 					unitDamageMap.removeKey(u);
-				else
-				{
-					if (dmg == 0 && currentDamage > 0)
-						unitHitDamageMap.put(u, 0);
-					else if (currentDamage == 0 && dmg > 0)
-						unitHitDamageMap.put(u, 1); // mark as damaged so we get the _hit picture
-					// else both must be greater than zero, so we are already marked
-				}
 			}
 		}
 		if (unitDamageMap.isEmpty())
@@ -356,7 +348,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			return result;
 		if (null != (result = EditValidator.validateChangePoliticalRelationships(getData(), relationshipChanges)))
 			return result;
-		final BattleTracker battleTracker = MoveDelegate.getBattleTracker(getData());
+		final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(getData());
 		for (final Triple<PlayerID, PlayerID, RelationshipType> relationshipChange : relationshipChanges)
 		{
 			final RelationshipType currentRelation = getData().getRelationshipTracker().getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());

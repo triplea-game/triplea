@@ -39,7 +39,7 @@ public class UnitCategory implements Comparable
 	private final PlayerID m_owner;
 	// the units in the category, may be duplicates.
 	private final List<Unit> m_units = new ArrayList<Unit>();
-	private boolean m_damaged = false;
+	private int m_damaged = 0;
 	private boolean m_disabled = false;
 	
 	public UnitCategory(final Unit unit, final boolean categorizeDependents, final boolean categorizeMovement, final boolean categorizeTransportcost, final boolean categorizeTerritory)
@@ -50,7 +50,7 @@ public class UnitCategory implements Comparable
 		m_movement = categorizeMovement ? taUnit.getMovementLeft() : -1;
 		m_transportCost = categorizeTransportcost ? UnitAttachment.get((unit).getUnitType()).getTransportCost() : -1;
 		// m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
-		m_damaged = (taUnit.getHits() > 0);
+		m_damaged = taUnit.getHits();
 		m_disabled = Matches.UnitIsDisabled().match(unit);
 		if (categorizeDependents)
 			createDependents(taUnit.getDependents());
@@ -60,7 +60,7 @@ public class UnitCategory implements Comparable
 	
 	public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost)
 	{
-		this(unit, dependents, movement, false, false, transportCost, null);
+		this(unit, dependents, movement, 0, false, transportCost, null);
 	}
 	
 	public UnitCategory(final UnitType type, final PlayerID owner)
@@ -73,7 +73,7 @@ public class UnitCategory implements Comparable
 		// m_originatingTerr = null;
 	}
 	
-	public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final boolean damaged, final boolean disabled, final int transportCost, final Territory t)
+	public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int damaged, final boolean disabled, final int transportCost, final Territory t)
 	{
 		m_type = unit.getType();
 		m_movement = movement;
@@ -86,7 +86,7 @@ public class UnitCategory implements Comparable
 		createDependents(dependents);
 	}
 	
-	public boolean getDamaged()
+	public int getDamaged()
 	{
 		return m_damaged;
 	}
@@ -96,9 +96,9 @@ public class UnitCategory implements Comparable
 		return m_disabled;
 	}
 	
-	public boolean isTwoHit()
+	public int getHitPoints()
 	{
-		return UnitAttachment.get(m_type).getIsTwoHit();
+		return UnitAttachment.get(m_type).getHitPoints();
 	}
 	
 	private void createDependents(final Collection<Unit> dependents)
@@ -233,9 +233,7 @@ public class UnitCategory implements Comparable
 		}
 		if (this.m_damaged != other.m_damaged)
 		{
-			if (m_damaged)
-				return 1;
-			return -1;
+			return this.m_damaged - other.m_damaged;
 		}
 		if (this.m_disabled != other.m_disabled)
 		{

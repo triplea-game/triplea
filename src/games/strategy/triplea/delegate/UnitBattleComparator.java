@@ -43,9 +43,9 @@ public class UnitBattleComparator implements Comparator<Unit>
 				return -1;
 			return 0;
 		}
-		final boolean airOrCarrierOrTwoHitOrTransport1 = Matches.UnitIsAir.match(u1) || Matches.UnitIsTwoHit.match(u1) || Matches.UnitIsCarrier.match(u1)
+		final boolean airOrCarrierOrTwoHitOrTransport1 = Matches.UnitIsAir.match(u1) || Matches.UnitHasMoreThanOneHitPointTotal.match(u1) || Matches.UnitIsCarrier.match(u1)
 					|| (transporting1 ? false : Matches.UnitIsTransport.match(u1));
-		final boolean airOrCarrierOrTwoHitOrTransport2 = Matches.UnitIsAir.match(u2) || Matches.UnitIsTwoHit.match(u2) || Matches.UnitIsCarrier.match(u2)
+		final boolean airOrCarrierOrTwoHitOrTransport2 = Matches.UnitIsAir.match(u2) || Matches.UnitHasMoreThanOneHitPointTotal.match(u2) || Matches.UnitIsCarrier.match(u2)
 					|| (transporting2 ? false : Matches.UnitIsTransport.match(u2));
 		final boolean subDestroyer1 = Matches.UnitIsSub.match(u1) || Matches.UnitIsDestroyer.match(u1);
 		final boolean subDestroyer2 = Matches.UnitIsSub.match(u2) || Matches.UnitIsDestroyer.match(u2);

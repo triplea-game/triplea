@@ -400,7 +400,7 @@ public class EditPanel extends ActionPanel
 			{
 				m_currentAction = this;
 				setWidgetActivation();
-				final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitIsTwoHit);
+				final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitHasMoreThanOneHitPointTotal);
 				if (units == null || units.isEmpty() || !m_selectedTerritory.getUnits().getUnits().containsAll(units))
 				{
 					CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -420,7 +420,7 @@ public class EditPanel extends ActionPanel
 				final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<Unit, Triple<Integer, Integer, Integer>>();
 				for (final Unit u : units)
 				{
-					currentDamageMap.put(u, new Triple<Integer, Integer, Integer>(1, 0, u.getHits()));
+					currentDamageMap.put(u, new Triple<Integer, Integer, Integer>(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
 				}
 				final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage", getData(), getMap().getUIContext(), -1, true, true, null);
 				final JScrollPane scroll = new JScrollPane(unitPanel);
@@ -563,7 +563,7 @@ public class EditPanel extends ActionPanel
 		try
 		{
 			final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
-			if (Match.someMatch(allUnitTypes, Matches.UnitTypeIsTwoHit))
+			if (Match.someMatch(allUnitTypes, Matches.UnitTypeHasMoreThanOneHitPointTotal))
 				add(new JButton(m_changeUnitHitDamageAction));
 			if ((games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data) || games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
 						&& Match.someMatch(allUnitTypes, Matches.UnitTypeCanBeDamaged))

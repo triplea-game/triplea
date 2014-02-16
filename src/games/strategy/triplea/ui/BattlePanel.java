@@ -501,7 +501,7 @@ public class BattlePanel extends ActionPanel
 				EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null, getMap()
 							.getUIContext().getCountDownLatchHandler());
 				final List<Unit> killed = chooser.getSelected(false);
-				final CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
+				final CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
 				return response;
 			}
 		};

@@ -95,17 +95,11 @@ public class UnitSeperator
 			{
 				currentDependents = dependent.get(current);
 			}
-			final boolean damaged = current.getHits() >= 1;
-			if (damaged)
-			{
-				// TODO: implement me
-				// final String kev = "here";
-			}
 			final boolean disabled = Matches.UnitIsDisabled().match(current);
 			Territory originatingTerr = null;
 			if (categorizeTerritories)
 				originatingTerr = TripleAUnit.get(current).getOriginatedFrom();
-			final UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, damaged, disabled, unitTransportCost, originatingTerr);
+			final UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, current.getHits(), disabled, unitTransportCost, originatingTerr);
 			// we test to see if we have the key using equals, then since
 			// key maps to key, we retrieve it to add the unit to the correct
 			// category

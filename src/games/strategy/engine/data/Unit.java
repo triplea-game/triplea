@@ -29,11 +29,10 @@ import java.io.Serializable;
  */
 public class Unit extends GameDataComponent implements Serializable
 {
-	private static final long serialVersionUID = -7906193079642776282L;
+	private static final long serialVersionUID = 813504025880028015L;
 	private PlayerID m_owner;
 	private final GUID m_uid;
 	private int m_hits = 0;
-	private final int m_hitPoints = 1; // TODO: we need to work on this (veqryn)
 	private final UnitType m_type;
 	
 	/**

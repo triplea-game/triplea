@@ -459,7 +459,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		final GameData data = aBridge.getData();
 		final boolean repairOnlyOwn = games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(aBridge.getData());
-		final Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+		final Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
 		final Match<Unit> damagedBattleshipOwned = new CompositeMatchAnd<Unit>(damagedBattleship, Matches.unitIsOwnedBy(player));
 		final Collection<Unit> damaged = new ArrayList<Unit>();
 		final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
@@ -485,7 +485,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		while (iterUnits.hasNext())
 		{
 			final Unit unit = iterUnits.next();
-			hits.put(unit, 0);
+			hits.put(unit, 0); // TODO: change to repair by some amount each turn or make options for the amount, instead of instant full repair
 		}
 		aBridge.addChange(ChangeFactory.unitsHit(hits));
 		aBridge.getHistoryWriter().startEvent(damaged.size() + " " + MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
@@ -505,7 +505,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final GameData data = getData();
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
 		final PlayerID player = getUnitsOwner(units);
-		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data), m_movesToUndo, data);
+		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data), m_movesToUndo,
+					data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";

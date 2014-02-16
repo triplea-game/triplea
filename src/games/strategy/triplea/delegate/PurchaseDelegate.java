@@ -34,6 +34,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -94,8 +95,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 				// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 				// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
 				final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-							TriggerAttachment.availableUses,
-							TriggerAttachment.whenOrDefaultMatch(null, null),
+							AbstractTriggerAttachment.availableUses,
+							AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
 							new CompositeMatchOr<TriggerAttachment>(
 										TriggerAttachment.prodMatch(),
 										TriggerAttachment.prodFrontierEditMatch(),
@@ -108,7 +109,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 					// get all conditions possibly needed by these triggers, and then test them.
 					final HashMap<ICondition, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
 					// get all triggers that are satisfied based on the tested conditions.
-					final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+					final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible,
+								AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 					// now list out individual types to fire, once for each of the matches above.
 					TriggerAttachment.triggerProductionChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
 					TriggerAttachment.triggerProductionFrontierEditChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
@@ -321,7 +323,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 					{
 						return "You cannot repair more than a territory has been hit";
 					}
-					hits.put(u, newDamageTotal);
+					hits.put(u, newDamageTotal); // TODO: remove this junk!
 					changes.add(ChangeFactory.unitsHit(hits));
 					changes.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(currentDamage + repairCount), "unitProduction"));
 				}

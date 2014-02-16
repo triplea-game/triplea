@@ -105,24 +105,24 @@ public class Matches
 			return o != null && o instanceof Territory;
 		}
 	};
-	public static final Match<Unit> UnitIsTwoHit = new Match<Unit>()
+	public static final Match<Unit> UnitHasMoreThanOneHitPointTotal = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit unit)
 		{
-			return UnitTypeIsTwoHit.match(unit.getType());
+			return UnitTypeHasMoreThanOneHitPointTotal.match(unit.getType());
 		}
 	};
-	public static final Match<UnitType> UnitTypeIsTwoHit = new Match<UnitType>()
+	public static final Match<UnitType> UnitTypeHasMoreThanOneHitPointTotal = new Match<UnitType>()
 	{
 		@Override
 		public boolean match(final UnitType ut)
 		{
 			final UnitAttachment ua = UnitAttachment.get(ut);
-			return ua.getIsTwoHit();
+			return ua.getHitPoints() > 1;
 		}
 	};
-	public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
+	public static final Match<Unit> UnitHasTakenSomeDamage = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit unit)
@@ -130,7 +130,25 @@ public class Matches
 			return unit.getHits() > 0;
 		}
 	};
-	public static final Match<Unit> UnitIsNotDamaged = new InverseMatch<Unit>(UnitIsDamaged);
+	public static final Match<Unit> UnitHasNotTakenAnyDamage = new InverseMatch<Unit>(UnitHasTakenSomeDamage);
+	public static final Match<Unit> UnitHasOnlyOneHitPointLeft = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit unit)
+		{
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
+			return ua.getHitPoints() - unit.getHits() <= 1;
+		}
+	};
+	public static final Match<Unit> UnitHasMoreThanOneHitPointLeft = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit unit)
+		{
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
+			return ua.getHitPoints() - unit.getHits() > 1;
+		}
+	};
 	public static final Match<Unit> UnitIsSea = new Match<Unit>()
 	{
 		@Override
@@ -199,17 +217,6 @@ public class Matches
 		{
 			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsDestroyer();
-		}
-	};
-	public static final Match<Unit> UnitIsBB = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit unit)
-		{
-			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (!ua.getIsSea())
-				return false;
-			return (ua.getIsTwoHit());
 		}
 	};
 	public static final Match<Unit> UnitIsTransport = new Match<Unit>()
@@ -2910,19 +2917,6 @@ public class Matches
 			return ua.getIsSub();
 		}
 	};
-	/**
-	 * Will match any unit that is 2 hit points
-	 */
-	public static final Match<UnitType> UnitTypeIsBB = new Match<UnitType>()
-	{
-		@Override
-		public boolean match(final UnitType obj)
-		{
-			final UnitType type = obj;
-			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getIsTwoHit();
-		}
-	};
 	
 	public static Match<Unit> unitOwnerHasImprovedArtillerySupportTech()
 	{
@@ -3031,7 +3025,7 @@ public class Matches
 			@Override
 			public boolean match(final Unit damagedUnit)
 			{
-				final Match<Unit> damaged = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+				final Match<Unit> damaged = new CompositeMatchAnd<Unit>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
 				if (!damaged.match(damagedUnit))
 					return false;
 				final Match<Unit> repairUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanRepairOthers, Matches.UnitCanRepairThisUnit(damagedUnit));
@@ -3223,7 +3217,8 @@ public class Matches
 				for (final UnitType ut : requiredUnits)
 				{
 					final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsOfType(ut), Matches
-								.UnitHasSomeUnitDamage().invert(), Matches.UnitIsNotDamaged, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(territory).invert());
+								.UnitHasSomeUnitDamage().invert(), Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(territory)
+								.invert());
 					final int requiredNumber = requiredUnitsMap.getInt(ut);
 					final int numberInTerritory = Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
 					if (numberInTerritory < requiredNumber)
