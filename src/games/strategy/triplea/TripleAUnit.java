@@ -428,15 +428,7 @@ public class TripleAUnit extends Unit
 		if (!Matches.UnitCanBeDamaged.match(u))
 			return 0;
 		final TripleAUnit taUnit = (TripleAUnit) u;
-		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getData()))
-		{
-			final TerritoryAttachment ta = TerritoryAttachment.get(t);
-			if (ta == null)
-				return 0;
-			final int currentDamage = ta.getProduction() - ta.getUnitProduction();
-			return (2 * ta.getProduction()) - currentDamage;
-		}
-		else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
+		if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
 		{
 			return Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(u, t) - taUnit.getUnitDamage());
 		}
@@ -454,16 +446,12 @@ public class TripleAUnit extends Unit
 			return -1;
 		final UnitAttachment ua = UnitAttachment.get(u.getType());
 		final TerritoryAttachment ta = TerritoryAttachment.get(t);
-		int territoryProduction = 0;
 		int territoryUnitProduction = 0;
 		if (ta != null)
 		{
-			territoryProduction = ta.getProduction();
 			territoryUnitProduction = ta.getUnitProduction();
 		}
-		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getData()))
-			return territoryProduction * 2;
-		else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
+		if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
 		{
 			if (ua.getMaxDamage() <= 0)
 			{
@@ -561,14 +549,7 @@ public class TripleAUnit extends Unit
 		}
 		if (accountForDamage)
 		{
-			if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
-			{
-				if (ua.getCanProduceXUnits() < 0)
-					productionCapacity = territoryUnitProduction;
-				else
-					productionCapacity = ua.getCanProduceXUnits() - (territoryProduction - territoryUnitProduction);
-			}
-			else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+			if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 			{
 				if (ua.getCanProduceXUnits() < 0)
 					productionCapacity = territoryUnitProduction - taUnit.getUnitDamage(); // we could use territoryUnitProduction OR territoryProduction if we wanted to, however we should change damage to be based on whichever we choose.
@@ -590,8 +571,7 @@ public class TripleAUnit extends Unit
 				productionCapacity = territoryUnitProduction;
 			else
 				productionCapacity = ua.getCanProduceXUnits();
-			if (productionCapacity < 1 && !games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data)
-						&& !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+			if (productionCapacity < 1 && !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 				productionCapacity = 1;
 		}
 		// Increase production if have industrial technology

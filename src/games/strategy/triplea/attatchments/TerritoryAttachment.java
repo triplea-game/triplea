@@ -905,13 +905,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		}
 		sb.append(br);
 		
-		if (!t.isWater() && m_production > 0 && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
-		{
-			sb.append("Unit Production: ");
-			sb.append(m_unitProduction);
-			sb.append(br);
-		}
-		else if (!t.isWater() && m_unitProduction > 0 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		if (!t.isWater() && m_unitProduction > 0 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 		{
 			sb.append("Base Unit Production: ");
 			sb.append(m_unitProduction);

@@ -278,32 +278,9 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		if (null != (result = EditValidator.validateChangeBombingDamage(getData(), unitDamageMap, territory)))
 			return result;
 		final CompositeChange changes = new CompositeChange();
-		final IntegerMap<Unit> unitHitDamageMap = new IntegerMap<Unit>();
-		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		// remove anyone who is the same
 		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
-		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
-		{
-			// we are damaging the territory, not the unit
-			if (ta == null)
-				return null;
-			final int production = ta.getProduction();
-			final int unitProduction = ta.getUnitProduction();
-			final int currentDamage = production - unitProduction;
-			final int damageToPut = unitDamageMap.highestValue();
-			if (currentDamage == damageToPut)
-				return null;
-			for (final Unit u : units)
-			{
-				if (damageToPut == 0 && currentDamage > 0)
-					unitHitDamageMap.put(u, 0); // TODO: get rid of this
-				else if (currentDamage == 0 && damageToPut > 0)
-					unitHitDamageMap.put(u, 1); // mark as damaged so we get the _hit picture
-				// else both must be greater than zero, so we are already marked
-			}
-		}
-		else
-		// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 		{
 			for (final Unit u : units)
 			{
@@ -315,15 +292,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		}
 		if (unitDamageMap.isEmpty())
 			return null;
-		changes.add(ChangeFactory.unitsHit(unitHitDamageMap));
-		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
-		{
-			// we do damage to the territory (use the largest value)
-			// remember to subtract it from the current production value (not the current unit production value) because we are setting the total damage, not adding more damage.
-			changes.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(ta.getProduction() - unitDamageMap.highestValue()), "unitProduction"));
-		}
-		else
-		// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 		{
 			// we do damage to the unit
 			for (final Entry<Unit, Integer> entry : unitDamageMap.entrySet())

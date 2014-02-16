@@ -561,13 +561,7 @@ public class Matches
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				if (!ua.getCanBeDamaged())
 					return true;
-				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getData()))
-				{
-					final TerritoryAttachment ta = TerritoryAttachment.get(t);
-					final int currentDamage = ta.getProduction() - ta.getUnitProduction();
-					return currentDamage >= 2 * ta.getProduction();
-				}
-				else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData()))
+				if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData()))
 				{
 					final TripleAUnit taUnit = (TripleAUnit) unit;
 					return taUnit.getUnitDamage() >= taUnit.getHowMuchDamageCanThisUnitTakeTotal(unit, t);
@@ -616,8 +610,7 @@ public class Matches
 			{
 				if (!UnitCanBeDamaged.match(unit))
 					return false;
-				if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())
-							|| games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getData()))
+				if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData()))
 					return false;
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				final TripleAUnit taUnit = (TripleAUnit) unit;
@@ -4095,8 +4088,6 @@ public class Matches
 						final CompositeMatch<UnitType> defenseMatchOR = new CompositeMatchOr<UnitType>();// OR match
 						if (!doNotIncludeAA)
 						{
-							final boolean match2 = Matches.UnitTypeIsAAthatCanFireOnRound(battleRound).match(ut);
-							final boolean match = (new CompositeMatchAnd<UnitType>(Matches.UnitTypeIsAAforCombatOnly, Matches.UnitTypeIsAAthatCanFireOnRound(battleRound))).match(ut);
 							defenseMatchOR.add(new CompositeMatchAnd<UnitType>(Matches.UnitTypeIsAAforCombatOnly, Matches.UnitTypeIsAAthatCanFireOnRound(battleRound)));
 						}
 						defenseMatchOR.add(supporterOrNotInfrastructure);

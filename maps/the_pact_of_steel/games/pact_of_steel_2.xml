@@ -2335,12 +2335,10 @@
 	<!-- the following options are allowed for "territoryAttatchment"
 			production								values: the PU production of the territory. also sets unitProduction to the same value.
 			productionOnly							values: this sets "production" without setting "unitProduction"
-			unitProduction							values: unitProduction is complex and has 2 uses, depending on how you plan on dealing with damage. Defaults to whatever "production" is, so please set it after you set "production"
-																1. 	First use is used only with ww2v3 factory damage rules ("SBR Affects Unit Production"), which have damage done to a Territory, not to a Unit.
-																		This decides the damage the territory starts at.  If unitProduction is less than production, then the territory starts damaged.  If they are equal, then the territory is not damaged. 
-																2. 	Second use is used with newer maps which are using the new damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to an individual Unit instead of a Territory.
-																		When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
-																		(The damage potential of these units will normally be 2x the unitProduction, but this can be set individually by creative use of maxDamage and canProduceXUnits)
+			unitProduction							values: unitProduction defaults to whatever "production" is, so please set it after you set "production"
+																If using property, "Damage From Bombing Done To Units Instead Of Territories", damage will be done to an individual Unit instead of a Territory.
+																"unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
+																(The damage potential of these units will normally be 2x the unitProduction, but this can be set individually by creative use of maxDamage and canProduceXUnits)
 			resources								values: the amount we will get, then the name of the resource. example: value="2:steel"
 			isImpassible							values: true or false, is this territory not passible?
 			capital									values: the capital of a player, and player's can have multiple capitals.  all players except for optional players require a capital. 
@@ -5422,12 +5420,12 @@
 						<boolean/>
 				</property>
 
-						<!-- SBR Affects Unit Production has Strategic Bombing and Rockets do damage to a territory rather than directly to the player's PUs (the bank) -->
+						<!-- SBR Affects Unit Production no longer does anything at all.  Instead it just sets to true: "Damage From Bombing Done To Units Instead Of Territories"
 				<property name="SBR Affects Unit Production" value="false" editable="false">
 						<boolean/>
-				</property>
+				</property>-->
 
-						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory.  You must have "SBR Affects Unit Production" false for this to work -->
+						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory. -->
 				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
 						<boolean/>
 				</property>

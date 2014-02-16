@@ -243,7 +243,7 @@ public class EditValidator
 			return "Damage map is empty";
 		if ((result = validateTerritoryBasic(data, territory)) != null)
 			return result;
-		if (!(games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data) || games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data)))
+		if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 			return "Game does not allow bombing damage";
 		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
 		if (!territory.getUnits().getUnits().containsAll(units))
@@ -259,13 +259,6 @@ public class EditValidator
 			final int dmg = unitDamageMap.getInt(u);
 			if (dmg < 0 || dmg > ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, territory))
 				return "Damage can not be less than zero or greater than the max damage of the unit";
-		}
-		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
-		{
-			if (TerritoryAttachment.get(territory) == null)
-				return "Territory does not have attachment, can not damage this territory.";
-			if (!unitDamageMap.allValuesAreSame())
-				return "For this map damage is done to the territory not the unit, therefore all units in this territory must have same damage.";
 		}
 		return result;
 	}

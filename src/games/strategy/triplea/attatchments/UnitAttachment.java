@@ -3340,13 +3340,7 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append("can be Captured, ");
 		if (getIsConstruction())
 			stats.append("can be Placed Without Factory, ");
-		if ((getCanBeDamaged()) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
-		{
-			stats.append("can be Damaged By Raids, ");
-			if (getCanDieFromReachingMaxDamage())
-				stats.append("will Die If Max Damage Reached, ");
-		}
-		else if ((getCanBeDamaged()) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		if ((getCanBeDamaged()) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 		{
 			stats.append("can be Damaged By Raids, ");
 			if (getMaxOperationalDamage() > -1)

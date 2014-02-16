@@ -29,7 +29,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
@@ -168,32 +167,7 @@ public class ProductionRepairPanel extends JPanel
 			{
 				for (final Territory terr : terrsWithPotentiallyDamagedUnits)
 				{
-					if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
-					{
-						final TerritoryAttachment ta = TerritoryAttachment.get(terr);
-						final int unitProduction = ta.getUnitProduction();
-						final int PUProduction = ta.getProduction();
-						if (unitProduction < PUProduction)
-						{
-							for (final Unit u : Match.getMatches(terr.getUnits().getUnits(), myPotentiallyDamagedUnits))
-							{
-								if (!repairRule.getResults().keySet().iterator().next().equals(u.getType()))
-									continue;
-								final Rule rule = new Rule(repairRule, player, m_uiContext, u);
-								// int initialQuantity = initialPurchase.getInt(repairRule);
-								int initialQuantity = 0;
-								if (initialPurchase.get(u) != null)
-									initialQuantity = initialPurchase.get(u).getInt(repairRule);
-								// initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
-								rule.setQuantity(initialQuantity);
-								rule.setMax(PUProduction - unitProduction);
-								rule.setName(u.toString());
-								m_rules.add(rule);
-							}
-						}
-					}
-					else
-					// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+					if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 					{
 						for (final Unit u : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits))
 						{
@@ -340,11 +314,7 @@ public class ProductionRepairPanel extends JPanel
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
 			final TripleAUnit taUnit = (TripleAUnit) repairUnit;
-			Icon icon;
-			if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
-				icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, true, false);
-			else
-				icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasSomeUnitDamage().match(repairUnit), Matches.UnitIsDisabled().match(repairUnit));
+			final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasSomeUnitDamage().match(repairUnit), Matches.UnitIsDisabled().match(repairUnit));
 			final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 			final JLabel info = new JLabel(territoryUnitIsIn.getName());

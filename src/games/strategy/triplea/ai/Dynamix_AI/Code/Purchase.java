@@ -235,7 +235,6 @@ public class Purchase
 			int totalRepairCosts = 0;
 			boolean madeRepairs = false;
 			final int maxPUsWeWantToSpendOnRepairs = origPUs / 2;
-			final boolean bombingDoneOnTerritories = Properties.getSBRAffectsUnitProduction(data);
 			final boolean bombingDoneOnUnitsDirectly = Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 			for (final RepairRule rrule : rrules)
 			{
@@ -243,25 +242,7 @@ public class Purchase
 				{
 					if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixTerr))
 						continue;
-					final TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
-					if (bombingDoneOnTerritories)
-					{
-						int repairAmount = ta.getProduction() - ta.getUnitProduction(); // Don't repair more of the factory than was damaged!
-						repairAmount = Math.min(repairAmount, origPUs / 4); // Never spend more than one-fourth of all the player's money on a factory repair
-						repairAmount = Math.min(repairAmount, maxPUsWeWantToSpendOnRepairs - totalRepairCosts); // Don't let the total repair costs equal more than the 'total max spend' amount that was set earlier to half of total PUs
-						repairAmount = Math.min(repairAmount, PUsToSpend); // Don't spend more PUs than we have!
-						if (repairAmount > 0)
-						{
-							DUtils.Log(Level.FINER, "    Purchasing repairs for a territory. Territory: {0} Repair Amount: {1}", fixTerr.getName(), repairAmount);
-							final IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
-							repairMap.add(rrule, repairAmount);
-							factoryRepairs.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairMap);
-							madeRepairs = true;
-							PUsToSpend -= repairAmount;
-							totalRepairCosts += repairAmount;
-						}
-					}
-					else if (bombingDoneOnUnitsDirectly) // If bombing in this map is done to units instead of territories, we figure repair amount based on [max - current] unit production capacity
+					if (bombingDoneOnUnitsDirectly) // If bombing in this map is done to units instead of territories, we figure repair amount based on [max - current] unit production capacity
 					{
 						for (final Unit unitToFix : Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitCanBeDamaged))
 						{

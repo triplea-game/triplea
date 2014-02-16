@@ -87,12 +87,7 @@ public class SimpleUnitPanel extends JPanel
 			for (final RepairRule repairRule : repairRules)
 			{
 				final int quantity = rules.getInt(repairRule);
-				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
-				{
-					addUnits(player, data, quantity, unit.getType(), true, false);
-				}
-				else
-				// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+				if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 				{
 					// check to see if the repair rule matches the damaged unit
 					if (unit.getType().equals((repairRule.getResults().keySet().iterator().next())))

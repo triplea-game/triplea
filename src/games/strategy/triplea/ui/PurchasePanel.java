@@ -200,7 +200,7 @@ public class PurchasePanel extends ActionPanel
 			}
 			// give a warning if the
 			// player tries to produce too much
-			if (isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction())
+			if (isWW2V2() || isRestrictedPurchase())
 			{
 				int totalProd = 0;
 				getData().acquireReadLock();

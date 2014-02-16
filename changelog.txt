@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Deleting game option property, "SBR Affects Unit Production", and simplifying the engine to only use direct unit damage. (veqryn)
+
 * Getting "hitPoints" to work on the back end inside the engine. (veqryn)
 
 * Created new unit attachment property, "hitPoints", which sets the number of hitpoints a unit has, and also deleted property "isTwoHit". (veqryn)

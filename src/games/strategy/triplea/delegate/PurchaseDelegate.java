@@ -303,33 +303,11 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		if (repairMap.isEmpty())
 			return null;
 		
-		final boolean SBRaffectsUnitProduction = games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData());
 		final boolean damageFromBombingDoneToUnitsInsteadOfTerritories = games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData());
 		final Collection<Unit> repairUnits = new ArrayList<Unit>(repairMap.keySet());
 		for (final Unit u : repairUnits)
 		{
-			if (SBRaffectsUnitProduction)
-			{
-				final int repairCount = repairMap.get(u);
-				// Display appropriate damaged/repaired factory and factory damage totals
-				if (repairCount > 0)
-				{
-					final Territory terr = u.getTerritoryUnitIsIn();
-					final TerritoryAttachment ta = TerritoryAttachment.get(terr);
-					final int currentDamage = ta.getUnitProduction();
-					final IntegerMap<Unit> hits = new IntegerMap<Unit>();
-					final int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
-					if (newDamageTotal < 0)
-					{
-						return "You cannot repair more than a territory has been hit";
-					}
-					hits.put(u, newDamageTotal); // TODO: remove this junk!
-					changes.add(ChangeFactory.unitsHit(hits));
-					changes.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(currentDamage + repairCount), "unitProduction"));
-				}
-			}
-			else
-			// if (damageFromBombingDoneToUnitsInsteadOfTerritories)
+			if (damageFromBombingDoneToUnitsInsteadOfTerritories)
 			{
 				final int repairCount = repairMap.get(u);
 				// Display appropriate damaged/repaired factory and factory damage totals

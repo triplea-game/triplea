@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -102,23 +101,12 @@ public class UnitsDrawer implements IDrawable
 				img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 			}
 		}
-		if (!m_damaged && Matches.UnitTypeCanBeDamaged.match(type)
-					&& (isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
+		if (!m_damaged && Matches.UnitTypeCanBeDamaged.match(type) && isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 		{
 			// checks to see if this is being carried with a mouse over, or is in a territory.
 			if (m_territoryName.length() != 0)
 			{
-				if (isSBRAffectsUnitProduction(data))
-				{
-					final TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
-					final int prod = ta.getProduction();
-					final int unitProd = ta.getUnitProduction();
-					if (unitProd < prod)
-					{
-						img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, true, m_disabled);
-					}
-				}
-				else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+				if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 				{
 					// kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least that was my understanding
 					final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
@@ -179,7 +167,7 @@ public class UnitsDrawer implements IDrawable
 			}
 		}
 		// Display Factory Damage
-		if ((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && Matches.UnitTypeCanBeDamaged.match(type))
+		if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.UnitTypeCanBeDamaged.match(type))
 		{
 			displayFactoryDamage(bounds, data, graphics, type, img);
 		}
@@ -192,17 +180,7 @@ public class UnitsDrawer implements IDrawable
 		{
 			graphics.setColor(MapImage.getPropertyUnitFactoryDamageColor());
 			graphics.setFont(font);
-			if (isSBRAffectsUnitProduction(data))
-			{
-				final TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
-				final int damageCount = ta.getProduction() - ta.getUnitProduction();
-				if (damageCount > 0)
-				{
-					graphics.drawString(String.valueOf(damageCount), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4), m_placementPoint.y - bounds.y
-								+ m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
-				}
-			}
-			else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+			if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 			{
 				// kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least that was my understanding
 				final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
@@ -246,11 +224,6 @@ public class UnitsDrawer implements IDrawable
 	public String toString()
 	{
 		return "UnitsDrawer for " + m_count + " " + MyFormatter.pluralize(m_unitType) + " in  " + m_territoryName;
-	}
-	
-	private boolean isSBRAffectsUnitProduction(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
 	}
 	
 	private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data)

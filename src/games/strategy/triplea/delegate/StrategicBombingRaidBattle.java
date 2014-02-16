@@ -216,9 +216,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
-				if (isSBRAffectsUnitProduction())
-					bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + m_bombingRaidTotal + " " + " production in " + m_battleSite.getName());
-				else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+				if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
 					bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidTotal + " damage total. " +
 								(m_bombingRaidDamage.size() > 1 ? (" Damaged units is as follows: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false)) : ""));
 				else
@@ -289,9 +287,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 	
 	private void end(final IDelegateBridge bridge)
 	{
-		if (isSBRAffectsUnitProduction())
-			getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " production.");
-		else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+		if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
 			getDisplay(bridge).battleEnd(m_battleID, "Raid causes " + m_bombingRaidTotal + " damage total." +
 						(m_bombingRaidDamage.size() > 1 ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false)) : ""));
 		else
@@ -415,11 +411,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 					stack.push(roll);
 			}
 		}
-	}
-	
-	private boolean isSBRAffectsUnitProduction()
-	{
-		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
 	}
 	
 	private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()
@@ -784,7 +775,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 				}
 			}
 			// If we damage units instead of territories
-			if (isDamageFromBombingDoneToUnitsInsteadOfTerritories() && !isSBRAffectsUnitProduction())
+			if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
 			{
 				// at this point, m_bombingRaidDamage should contain all units that m_targets contains
 				if (!m_targets.keySet().containsAll(m_bombingRaidDamage.keySet()))
@@ -822,39 +813,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 					getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " rolls: " + MyFormatter.asDice(targetToDiceMap.get(current)) + " and causes: " + currentUnitCost
 								+ " damage to unit: " + current.getType().getName(), "Bombing raid causes " + currentUnitCost + " damage to " + current.getType().getName());
 				}
-			}
-			else if (isSBRAffectsUnitProduction())
-			{
-				// the old way of doing it, based on doing damage to the territory rather than the unit
-				// get current production
-				final int unitProduction = ta.getUnitProduction();
-				// Determine the max that can be taken as losses
-				final int alreadyLost = damageLimit - unitProduction;
-				final int limit = 2 * damageLimit - alreadyLost;
-				cost = Math.min(cost, limit);
-				getDisplay(bridge).bombingResults(m_battleID, dice, cost);
-				if (cost > 0)
-				{
-					// play a sound
-					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
-				}
-				// Record production lost
-				DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
-				final Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitCanBeDamaged);
-				final IntegerMap<Unit> hits = new IntegerMap<Unit>();
-				for (final Unit factory : damagedFactory)
-				{
-					hits.put(factory, 1); // TODO: remove this stuff
-				}
-				// add a hit to the factory
-				bridge.addChange(ChangeFactory.unitsHit(hits));
-				final Integer newProduction = unitProduction - cost;
-				// decrease the unitProduction capacity of the territory
-				final Change change = ChangeFactory.attachmentPropertyChange(ta, newProduction.toString(), "unitProduction");
-				bridge.addChange(change);
-				bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " rolls: " + MyFormatter.asDice(m_dice) + " and costs: " + cost + " production.");
-				getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " rolls: " + MyFormatter.asDice(m_dice) + " and costs: " + cost + " production.",
-							"Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
 			}
 			else
 			{

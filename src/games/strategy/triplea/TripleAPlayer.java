@@ -442,51 +442,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null && !id.getRepairFrontier().getRules().isEmpty())
 		{
 			final GameData data = getGameData();
-			if (isSBRAffectsUnitProduction(data))
-			{
-				final Collection<Territory> bombedTerrs = new ArrayList<Territory>();
-				for (final Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, id)))
-				{
-					final TerritoryAttachment ta = TerritoryAttachment.get(t);
-					// changed this to > from !=
-					if (ta.getProduction() > ta.getUnitProduction())
-					{
-						bombedTerrs.add(t);
-					}
-				}
-				final Collection<Unit> damagedUnits = new ArrayList<Unit>();
-				final Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitCanBeDamaged);
-				for (final Territory t : bombedTerrs)
-				{
-					damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));
-				}
-				if (bombedTerrs.size() > 0 && damagedUnits.size() > 0)
-				{
-					final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(id, bid);
-					if (repair != null)
-					{
-						final IPurchaseDelegate purchaseDel;
-						try
-						{
-							purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-						} catch (final ClassCastException e)
-						{
-							final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: " + getPlayerBridge().getRemoteDelegate().getClass();
-							System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
-							e.printStackTrace();
-							throw new IllegalStateException(errorContext, e);
-						}
-						error = purchaseDel.purchaseRepair(repair);
-						if (error != null)
-						{
-							m_ui.notifyError(error);
-							// dont give up, keep going
-							purchase(bid);
-						}
-					}
-				}
-			}
-			else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+			if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 			{
 				final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitHasSomeUnitDamage());
 				final Collection<Unit> damagedUnits = new ArrayList<Unit>();
@@ -812,11 +768,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	public void confirmOwnCasualties(final GUID battleId, final String message)
 	{
 		m_ui.getBattlePanel().confirmCasualties(battleId, message);
-	}
-	
-	public final boolean isSBRAffectsUnitProduction(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
 	}
 	
 	public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data)

@@ -34,7 +34,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -62,11 +61,6 @@ public class RocketsFireHelper
 	private boolean isRocketsCanFlyOverImpassables(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
-	}
-	
-	private boolean isSBRAffectsUnitProduction(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
 	}
 	
 	private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data)
@@ -208,7 +202,6 @@ public class RocketsFireHelper
 		final GameData data = bridge.getData();
 		final PlayerID attacked = attackedTerritory.getOwner();
 		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-		final boolean SBRAffectsUnitProd = isSBRAffectsUnitProduction(data);
 		final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 		// unit damage vs territory damage
 		final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
@@ -224,7 +217,7 @@ public class RocketsFireHelper
 		if (numberOfAttacks <= 0)
 			return;
 		final String transcript;
-		if (!SBRAffectsUnitProd && DamageFromBombingDoneToUnits)
+		if (DamageFromBombingDoneToUnits)
 		{
 			// TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc etc.
 			final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<UnitType>();
@@ -377,30 +370,7 @@ public class RocketsFireHelper
 		}
 		final TerritoryAttachment ta = TerritoryAttachment.get(attackedTerritory);
 		int territoryProduction = ta.getProduction();
-		int unitProduction = 0;
-		if (SBRAffectsUnitProd)
-		{
-			// get current production
-			unitProduction = ta.getUnitProduction();
-			// Detemine the min that can be taken as losses
-			// int alreadyLost = DelegateFinder.moveDelegate(data).PUsAlreadyLost(attackedTerritory);
-			final int alreadyLost = territoryProduction - unitProduction;
-			final int limit = 2 * territoryProduction - alreadyLost;
-			cost = Math.min(cost, limit);
-			// Record production lost
-			// DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
-			final Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitCanBeDamaged);
-			final IntegerMap<Unit> hits = new IntegerMap<Unit>();
-			for (final Unit factory : damagedFactory)
-			{
-				hits.put(factory, 1); // TODO: remove this stuff
-			}
-			bridge.addChange(ChangeFactory.unitsHit(hits));
-			/* Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
-			 bridge.addChange(change);
-			 bridge.getHistoryWriter().addChildToEvent("Rocket attack costs " + cost + " production.");*/
-		}
-		else if (DamageFromBombingDoneToUnits && !targets.isEmpty())
+		if (DamageFromBombingDoneToUnits && !targets.isEmpty())
 		{
 			// we are doing damage to 'target', not to the territory
 			final Unit target = targets.iterator().next();
@@ -435,16 +405,7 @@ public class RocketsFireHelper
 		}
 		// Record the PUs lost
 		DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
-		if (SBRAffectsUnitProd)
-		{
-			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.",
-						"Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
-			bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
-			final Change change = ChangeFactory.attachmentPropertyChange(ta, Integer.toString(unitProduction - cost), "unitProduction");
-			bridge.addChange(change);
-			attackedTerritory.notifyChanged();
-		}
-		else if (DamageFromBombingDoneToUnits && !targets.isEmpty())
+		if (DamageFromBombingDoneToUnits && !targets.isEmpty())
 		{
 			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next(),
 						"Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
