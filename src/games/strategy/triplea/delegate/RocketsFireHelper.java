@@ -13,7 +13,6 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -34,6 +33,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -382,11 +382,10 @@ public class RocketsFireHelper
 			// Record production lost
 			// DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
 			// apply the hits to the targets
-			final CompositeChange change = new CompositeChange();
-			change.add(ChangeFactory.unitPropertyChange(target, totalDamage, TripleAUnit.UNIT_DAMAGE));
-			// taUnit.setUnitDamage(totalDamage);
-			bridge.addChange(change);
-			attackedTerritory.notifyChanged();
+			final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
+			damageMap.put(target, totalDamage);
+			bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
+			// attackedTerritory.notifyChanged();
 		}
 		// in WW2V2, limit rocket attack cost to production value of factory.
 		else if (isWW2V2(data) || isLimitRocketDamageToProduction(data))

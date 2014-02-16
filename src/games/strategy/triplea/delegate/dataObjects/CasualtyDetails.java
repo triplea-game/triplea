@@ -40,27 +40,19 @@ public class CasualtyDetails extends CasualtyList implements Serializable
 	 * @param killed
 	 *            killed units
 	 * @param damaged
-	 *            damaged units
+	 *            damaged units (Can have multiple of the same unit, to show multiple hits to that unit.)
 	 * @param autoCalculated
 	 *            whether casualties should be selected automatically
 	 */
 	public CasualtyDetails(final List<Unit> killed, final List<Unit> damaged, final boolean autoCalculated)
 	{
-		if (killed == null)
-			throw new IllegalArgumentException("null killed");
-		if (damaged == null)
-			throw new IllegalArgumentException("null damaged");
-		m_killed = killed;
-		m_damaged = damaged;
+		super(killed, damaged);
 		m_autoCalculated = autoCalculated;
 	}
 	
 	public CasualtyDetails(final CasualtyList casualties, final boolean autoCalculated)
 	{
-		if (casualties == null)
-			throw new IllegalArgumentException("null casualties");
-		m_killed = casualties.getKilled();
-		m_damaged = casualties.getDamaged();
+		super((casualties == null ? null : casualties.getKilled()), (casualties == null ? null : casualties.getDamaged()));// since null for the lists is illegal, we will throw an error in super, as intended
 		m_autoCalculated = autoCalculated;
 	}
 	

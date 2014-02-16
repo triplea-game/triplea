@@ -329,9 +329,9 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		return count;
 	}
 	
-	void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
+	void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge, final boolean addPreviousHits)
 	{
-		BattleDelegate.markDamaged(damaged, bridge);
+		BattleDelegate.markDamaged(damaged, bridge, addPreviousHits);
 	}
 	
 	protected static TransportTracker getTransportTracker()

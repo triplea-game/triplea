@@ -67,7 +67,6 @@ public class TripleAUnit extends Unit
 	public static final String WAS_SCRAMBLED = "wasScrambled";
 	public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
 	public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
-	public static final String UNIT_DAMAGE = "unitDamage";
 	public static final String DISABLED = "disabled";
 	public static final String LAUNCHED = "launched";
 	public static final String AIRBORNE = "airborne";
@@ -608,6 +607,7 @@ public class TripleAUnit extends Unit
 		if (hits.size() > 0)
 			changes.add(ChangeFactory.unitsHit(hits));
 		final int unitDamage = taUnit.getUnitDamage();
+		final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
 		if (unitDamage > 0)
 		{
 			for (final Unit u : unitsThatWillGetAttributes)
@@ -617,9 +617,10 @@ public class TripleAUnit extends Unit
 				final int transferDamage = Math.max(0, Math.min(unitDamage, maxDamage));
 				if (transferDamage <= 0)
 					continue;
-				changes.add(ChangeFactory.unitPropertyChange(u, transferDamage, TripleAUnit.UNIT_DAMAGE));
+				damageMap.put(u, transferDamage);
 			}
 		}
+		changes.add(ChangeFactory.bombingUnitDamage(damageMap));
 		return changes;
 	}
 }

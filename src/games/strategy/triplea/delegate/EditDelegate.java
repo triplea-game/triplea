@@ -13,7 +13,6 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -266,7 +265,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: "
 					+ MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
 		m_bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
-		territory.notifyChanged();
+		// territory.notifyChanged();
 		return null;
 	}
 	
@@ -277,34 +276,23 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			return result;
 		if (null != (result = EditValidator.validateChangeBombingDamage(getData(), unitDamageMap, territory)))
 			return result;
-		final CompositeChange changes = new CompositeChange();
 		// remove anyone who is the same
 		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
-		if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		for (final Unit u : units)
 		{
-			for (final Unit u : units)
-			{
-				final int dmg = unitDamageMap.getInt(u);
-				final int currentDamage = ((TripleAUnit) u).getUnitDamage();
-				if (currentDamage == dmg)
-					unitDamageMap.removeKey(u);
-			}
+			final int dmg = unitDamageMap.getInt(u);
+			final int currentDamage = ((TripleAUnit) u).getUnitDamage();
+			if (currentDamage == dmg)
+				unitDamageMap.removeKey(u);
 		}
 		if (unitDamageMap.isEmpty())
 			return null;
-		if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
-		{
-			// we do damage to the unit
-			for (final Entry<Unit, Integer> entry : unitDamageMap.entrySet())
-			{
-				changes.add(ChangeFactory.unitPropertyChange(entry.getKey(), entry.getValue(), TripleAUnit.UNIT_DAMAGE));
-			}
-		}
+		// we do damage to the unit
 		final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
 		logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: "
 					+ MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
-		m_bridge.addChange(changes);
-		territory.notifyChanged();
+		m_bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap));
+		// territory.notifyChanged();
 		return null;
 	}
 	

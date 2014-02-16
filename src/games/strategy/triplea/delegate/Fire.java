@@ -87,14 +87,14 @@ public class Fire implements IExecutable
 	private void selectCasualties(final IDelegateBridge bridge)
 	{
 		final int hitCount = m_dice.getHits();
-		MustFightBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
+		AbstractBattle.getDisplay(bridge).notifyDice(m_battle.getBattleID(), m_dice, m_stepName);
 		final int countTransports = Match.countMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.UnitIsSea));
 		if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData()))
 		{
 			CasualtyDetails message;
 			final Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits, new CompositeMatchOr<Unit>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
 			final Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
-			final int numPossibleHits = MustFightBattle.getMaxHits(nonTransports);
+			final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
 			// more hits than combat units
 			if (hitCount > numPossibleHits)
 			{
@@ -152,7 +152,7 @@ public class Fire implements IExecutable
 		// not isTransportCasualtiesRestricted
 		{
 			// they all die
-			if (hitCount >= MustFightBattle.getMaxHits(m_attackableUnits))
+			if (hitCount >= AbstractBattle.getMaxHits(m_attackableUnits))
 			{
 				m_killed = m_attackableUnits;
 				m_damaged = Collections.emptyList();
@@ -176,14 +176,14 @@ public class Fire implements IExecutable
 	{
 		if (m_isHeadless)
 			return;
-		MustFightBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
+		AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
 		final Runnable r = new Runnable()
 		{
 			public void run()
 			{
 				try
 				{
-					MustFightBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue", m_hitPlayer);
+					AbstractBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue", m_hitPlayer);
 				} catch (final ConnectionLostException cle)
 				{
 					// somone else will deal with this
@@ -202,7 +202,7 @@ public class Fire implements IExecutable
 		final Thread t = new Thread(r, "Click to continue waiter");
 		t.start();
 		if (m_confirmOwnCasualties)
-			MustFightBattle.getRemote(m_hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
+			AbstractBattle.getRemote(m_hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
 		try
 		{
 			bridge.leaveDelegateExecution();
@@ -251,7 +251,7 @@ public class Fire implements IExecutable
 			{
 				notifyCasualties(bridge);
 				if (m_damaged != null)
-					m_battle.markDamaged(m_damaged, bridge);
+					m_battle.markDamaged(m_damaged, bridge, true);
 				m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge, false);
 			}
 		};

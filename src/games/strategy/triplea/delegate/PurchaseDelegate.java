@@ -48,7 +48,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-import games.strategy.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -304,7 +303,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 			return null;
 		
 		final boolean damageFromBombingDoneToUnitsInsteadOfTerritories = games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData());
-		final Collection<Unit> repairUnits = new ArrayList<Unit>(repairMap.keySet());
+		final Set<Unit> repairUnits = new HashSet<Unit>(repairMap.keySet());
+		final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
 		for (final Unit u : repairUnits)
 		{
 			if (damageFromBombingDoneToUnitsInsteadOfTerritories)
@@ -313,35 +313,23 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 				// Display appropriate damaged/repaired factory and factory damage totals
 				if (repairCount > 0)
 				{
-					final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 					final TripleAUnit taUnit = (TripleAUnit) u;
 					final int newDamageTotal = taUnit.getUnitDamage() - repairCount;
 					if (newDamageTotal < 0)
 					{
 						return "You cannot repair more than a unit has been hit";
 					}
-					hits.put(u, newDamageTotal);
-					changes.add(ChangeFactory.unitsHit(hits));
-					changes.add(ChangeFactory.unitPropertyChange(u, newDamageTotal, TripleAUnit.UNIT_DAMAGE));
+					damageMap.put(u, newDamageTotal);
 				}
 			}
 		}
+		changes.add(ChangeFactory.bombingUnitDamage(damageMap));
 		
 		// add changes for spent resources
 		final String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 		addHistoryEvent(totalUnits, remaining, true);
 		// commit changes
 		m_bridge.addChange(changes);
-		if (damageFromBombingDoneToUnitsInsteadOfTerritories)
-		{
-			for (final Territory element : getData().getMap().getTerritories())
-			{
-				if (Util.someIntersect(element.getUnits().getUnits(), repairUnits))
-				{
-					element.notifyChanged();
-				}
-			}
-		}
 		return null;
 	}
 	

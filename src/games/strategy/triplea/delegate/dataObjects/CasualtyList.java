@@ -41,6 +41,7 @@ public class CasualtyList implements Serializable
 	 * 
 	 * @param killed
 	 * @param damaged
+	 *            (can have multiple of the same unit, to show multiple hits to that unit)
 	 */
 	public CasualtyList(final List<Unit> killed, final List<Unit> damaged)
 	{
@@ -48,8 +49,8 @@ public class CasualtyList implements Serializable
 			throw new IllegalArgumentException("null killed");
 		if (damaged == null)
 			throw new IllegalArgumentException("null damaged");
-		m_killed = killed;
-		m_damaged = damaged;
+		m_killed = new ArrayList<Unit>(killed);
+		m_damaged = new ArrayList<Unit>(damaged);
 	}
 	
 	/**
@@ -69,11 +70,17 @@ public class CasualtyList implements Serializable
 		return m_killed;
 	}
 	
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
 	public List<Unit> getDamaged()
 	{
 		return m_damaged;
 	}
 	
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
 	public List<Unit> getKilledAndDamaged()
 	{
 		final List<Unit> all = new ArrayList<Unit>(m_killed);
@@ -91,11 +98,17 @@ public class CasualtyList implements Serializable
 		m_killed.addAll(deadUnits);
 	}
 	
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
 	public void addToDamaged(final Unit damagedUnit)
 	{
 		m_damaged.add(damagedUnit);
 	}
 	
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
 	public void addToDamaged(final Collection<Unit> damagedUnits)
 	{
 		m_damaged.addAll(damagedUnits);
@@ -111,16 +124,50 @@ public class CasualtyList implements Serializable
 		m_killed.removeAll(deadUnits);
 	}
 	
-	public void removeFromDamaged(final Unit damagedUnit)
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
+	public void removeOnceFromDamaged(final Unit damagedUnit)
 	{
 		m_damaged.remove(damagedUnit);
 	}
 	
-	public void removeFromDamaged(final Collection<Unit> damagedUnits)
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
+	public void removeOnceFromDamaged(final Collection<Unit> damagedUnits)
 	{
 		m_damaged.removeAll(damagedUnits);
 	}
 	
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
+	public void removeAllFromDamaged(final Unit damagedUnit)
+	{
+		while (m_damaged.contains(damagedUnit))
+		{
+			m_damaged.remove(damagedUnit);
+		}
+	}
+	
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
+	public void removeAllFromDamaged(final Collection<Unit> damagedUnits)
+	{
+		for (final Unit u : damagedUnits)
+		{
+			while (m_damaged.contains(u))
+			{
+				m_damaged.remove(u);
+			}
+		}
+	}
+	
+	/**
+	 * Can have multiple of the same unit, to show multiple hits to that unit.
+	 */
 	public void addAll(final CasualtyList casualtyList)
 	{
 		m_damaged.addAll(casualtyList.getDamaged());

@@ -602,7 +602,7 @@ public class AirBattle extends AbstractBattle
 		}
 	}
 	
-
+	
 	class AttackersFire implements IExecutable
 	{
 		private static final long serialVersionUID = -5289634214875797408L;
@@ -636,7 +636,7 @@ public class AirBattle extends AbstractBattle
 				{
 					m_details = BattleCalculator.selectCasualties(m_defender, m_defendingUnits, m_battleSite, null, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID, true);
 					m_defendingWaitingToDie.addAll(m_details.getKilled());
-					markDamaged(m_details.getDamaged(), bridge);
+					markDamaged(m_details.getDamaged(), bridge, true);
 				}
 			};
 			final IExecutable notifyCasualties = new IExecutable()
@@ -655,7 +655,7 @@ public class AirBattle extends AbstractBattle
 		}
 	}
 	
-
+	
 	class DefendersFire implements IExecutable
 	{
 		private static final long serialVersionUID = -7277182945495744003L;
@@ -689,7 +689,7 @@ public class AirBattle extends AbstractBattle
 				{
 					m_details = BattleCalculator.selectCasualties(m_attacker, m_attackingUnits, m_battleSite, null, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID, true);
 					m_attackingWaitingToDie.addAll(m_details.getKilled());
-					markDamaged(m_details.getDamaged(), bridge);
+					markDamaged(m_details.getDamaged(), bridge, true);
 				}
 			};
 			final IExecutable notifyCasualties = new IExecutable()

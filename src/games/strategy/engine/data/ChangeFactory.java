@@ -177,9 +177,20 @@ public class ChangeFactory
 		return new SetPropertyChange(property, value, data.getProperties());
 	}
 	
+	/**
+	 * Must already include existing damage to the unit. This does not add damage, it sets damage.
+	 */
 	public static Change unitsHit(final IntegerMap<Unit> newHits)
 	{
 		return new UnitHitsChange(newHits);
+	}
+	
+	/**
+	 * Must already include existing damage to the unit. This does not add damage, it sets damage.
+	 */
+	public static Change bombingUnitDamage(final IntegerMap<Unit> newDamage)
+	{
+		return new BombingUnitDamageChange(newDamage);
 	}
 	
 	public static Change addProductionRule(final ProductionRule rule, final ProductionFrontier frontier)

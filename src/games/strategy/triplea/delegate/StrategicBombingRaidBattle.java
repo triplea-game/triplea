@@ -20,7 +20,6 @@ import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -373,7 +372,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
 							final CasualtyDetails details = calculateCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_dice, currentTypeAA);
-							markDamaged(details.getDamaged(), bridge);
+							markDamaged(details.getDamaged(), bridge, true);
 							m_casualties = details;
 							m_casualtiesSoFar.addAll(details.getKilled());
 						}
@@ -804,10 +803,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 					// Record production lost
 					DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, currentUnitCost);
 					// apply the hits to the targets
-					final CompositeChange change = new CompositeChange();
-					change.add(ChangeFactory.unitPropertyChange(current, totalDamage, TripleAUnit.UNIT_DAMAGE));
-					// taUnit.setUnitDamage(totalDamage);
-					bridge.addChange(change);
+					final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
+					damageMap.put(current, totalDamage);
+					bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
 					bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " rolls: " + MyFormatter.asDice(targetToDiceMap.get(current)) + " and causes: "
 								+ currentUnitCost + " damage to unit: " + current.getType().getName());
 					getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " rolls: " + MyFormatter.asDice(targetToDiceMap.get(current)) + " and causes: " + currentUnitCost

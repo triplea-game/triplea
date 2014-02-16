@@ -2512,7 +2512,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						if (!validAttackingUnitsForThisRoll.isEmpty())
 						{
 							final CasualtyDetails details = selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, currentTypeAA);
-							markDamaged(details.getDamaged(), bridge);
+							markDamaged(details.getDamaged(), bridge, true);
 							m_casualties = details;
 							m_casualtiesSoFar.addAll(details.getKilled());
 						}

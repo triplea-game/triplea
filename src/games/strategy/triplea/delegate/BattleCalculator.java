@@ -429,8 +429,7 @@ public class BattleCalculator
 	}
 	
 	public static CasualtyDetails selectCasualties(final PlayerID player, final Collection<Unit> targets, final Territory battlesite, final Collection<TerritoryEffect> territoryEffects,
-				final IDelegateBridge bridge,
-				final String text, final DiceRoll dice, final boolean defending, final GUID battleID, final boolean allowMultipleHitsPerUnit)
+				final IDelegateBridge bridge, final String text, final DiceRoll dice, final boolean defending, final GUID battleID, final boolean allowMultipleHitsPerUnit)
 	{
 		return selectCasualties(null, player, targets, battlesite, territoryEffects, bridge, text, dice, defending, battleID, false, dice.getHits(), allowMultipleHitsPerUnit);
 	}
