@@ -41,8 +41,10 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -501,9 +503,16 @@ public class LobbyGamePanel extends JPanel
 		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
 					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
-		if (password == null)
+		final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+		final JPasswordField passwordField = new JPasswordField();
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(label, BorderLayout.NORTH);
+		panel.add(passwordField, BorderLayout.CENTER);
+		final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null)
 			return;
+		final String password = new String(passwordField.getPassword());
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.getChatLogHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
@@ -550,9 +559,16 @@ public class LobbyGamePanel extends JPanel
 		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
 					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
-		if (password == null)
+		final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+		final JPasswordField passwordField = new JPasswordField();
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(label, BorderLayout.NORTH);
+		panel.add(passwordField, BorderLayout.CENTER);
+		final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null)
 			return;
+		final String password = new String(passwordField.getPassword());
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
@@ -578,9 +594,16 @@ public class LobbyGamePanel extends JPanel
 		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
 					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
-		if (password == null)
+		final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+		final JPasswordField passwordField = new JPasswordField();
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(label, BorderLayout.NORTH);
+		panel.add(passwordField, BorderLayout.CENTER);
+		final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null)
 			return;
+		final String password = new String(passwordField.getPassword());
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.bootPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
@@ -618,9 +641,16 @@ public class LobbyGamePanel extends JPanel
 		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
 					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
-		if (password == null)
+		final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+		final JPasswordField passwordField = new JPasswordField();
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(label, BorderLayout.NORTH);
+		panel.add(passwordField, BorderLayout.CENTER);
+		final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null)
 			return;
+		final String password = new String(passwordField.getPassword());
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
@@ -642,9 +672,16 @@ public class LobbyGamePanel extends JPanel
 		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
 					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
-		if (password == null)
+		final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+		final JPasswordField passwordField = new JPasswordField();
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(label, BorderLayout.NORTH);
+		panel.add(passwordField, BorderLayout.CENTER);
+		final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null)
 			return;
+		final String password = new String(passwordField.getPassword());
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.stopGameHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
@@ -667,9 +704,16 @@ public class LobbyGamePanel extends JPanel
 		final INode lobbyWatcherNode = new Node((hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
 					description.getHostedBy().getAddress(), description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-		final String password = JOptionPane.showInputDialog(getTopLevelAncestor(), "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
-		if (password == null)
+		final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+		final JPasswordField passwordField = new JPasswordField();
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(label, BorderLayout.NORTH);
+		panel.add(passwordField, BorderLayout.CENTER);
+		final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null)
 			return;
+		final String password = new String(passwordField.getPassword());
 		final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
 		final String hashedPassword = MD5Crypt.crypt(password, salt);
 		final String response = controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);

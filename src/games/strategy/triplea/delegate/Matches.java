@@ -2976,7 +2976,7 @@ public class Matches
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.getRepairsUnits() == null)
 				return false;
-			return ua.getRepairsUnits().length > 0;
+			return !ua.getRepairsUnits().isEmpty();
 		}
 	};
 	
@@ -2990,7 +2990,7 @@ public class Matches
 				final UnitType type = unitCanRepair.getUnitType();
 				final UnitAttachment ua = UnitAttachment.get(type);
 				// TODO: make sure the unit is operational
-				if (ua.getRepairsUnits() != null && ua.getListedUnits(ua.getRepairsUnits()).contains(damagedUnit.getType()))
+				if (ua.getRepairsUnits() != null && ua.getRepairsUnits().keySet().contains(damagedUnit.getType()))
 					return true;
 				return false;
 			}

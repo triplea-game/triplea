@@ -203,7 +203,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	// special abilities
 	private int m_blockade = 0;
-	private String[] m_repairsUnits = null; // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
+	private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<UnitType>(); // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
 	private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 	private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
 	// also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a specific list
@@ -908,31 +908,50 @@ public class UnitAttachment extends DefaultAttachment
 		}
 	}
 	
-	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRepairsUnits(final String value)
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setRepairsUnits(final String value) throws GameParseException
 	{
-		if (value == null)
+		final String[] s = value.split(":");
+		if (s.length <= 0)
+			throw new GameParseException("repairsUnits can not be empty" + thisErrorMsg());
+		int amount = 1;
+		int i = 0;
+		try
 		{
-			m_repairsUnits = null;
-			return;
+			amount = Integer.parseInt(s[0]);
+			i++;
+		} catch (final NumberFormatException nfe)
+		{
+			amount = 1;
 		}
-		m_repairsUnits = value.split(":");
+		for (; i < s.length; i++)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
+			if (ut == null)
+				throw new GameParseException("No unit called:" + s[i] + thisErrorMsg());
+			m_repairsUnits.put(ut, amount);
+		}
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRepairsUnits(final String[] value)
+	public void setRepairsUnits(final IntegerMap<UnitType> value)
 	{
 		m_repairsUnits = value;
 	}
 	
-	public String[] getRepairsUnits()
+	public IntegerMap<UnitType> getRepairsUnits()
 	{
 		return m_repairsUnits;
 	}
 	
+	public void clearRepairsUnits()
+	{
+		m_repairsUnits.clear();
+	}
+	
 	public void resetRepairsUnits()
 	{
-		m_repairsUnits = null;
+		m_repairsUnits = new IntegerMap<UnitType>();
 	}
 	
 	/**
@@ -3007,8 +3026,6 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		if (m_unitPlacementRestrictions != null)
 			getListedTerritories(m_unitPlacementRestrictions);
-		if (m_repairsUnits != null)
-			getListedUnits(m_repairsUnits);
 		if (m_requiresUnits != null)
 		{
 			for (final String[] combo : m_requiresUnits)
@@ -3209,7 +3226,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  bombingBonus:" + m_bombingBonus
 					+ "  bombingTargets:" + m_bombingTargets
 					+ "  givesMovement:" + (m_givesMovement != null ? (m_givesMovement.size() == 0 ? "empty" : m_givesMovement.toString()) : "null")
-					+ "  repairsUnits:" + (m_repairsUnits != null ? (m_repairsUnits.length == 0 ? "empty" : Arrays.toString(m_repairsUnits)) : "null")
+					+ "  repairsUnits:" + (m_repairsUnits != null ? (m_repairsUnits.isEmpty() ? "empty" : m_repairsUnits.toString()) : "null")
 					+ "  canScramble:" + m_canScramble
 					+ "  maxScrambleDistance:" + m_maxScrambleDistance
 					+ "  isAirBase:" + m_isAirBase
@@ -3464,11 +3481,11 @@ public class UnitAttachment extends DefaultAttachment
 		
 		if (getMaxBuiltPerPlayer() > -1)
 			stats.append(getMaxBuiltPerPlayer() + " Max Built Allowed, ");
-		if (getRepairsUnits() != null && getRepairsUnits().length > 0 && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
+		if (getRepairsUnits() != null && !getRepairsUnits().isEmpty() && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
 					&& (games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(getData()) || games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData())))
 		{
-			if (getRepairsUnits().length <= 4)
-				stats.append("can Repair: " + Arrays.toString(getRepairsUnits()) + ", ");
+			if (getRepairsUnits().size() <= 4)
+				stats.append("can Repair: " + MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false) + ", ");
 			else
 				stats.append("can Repair Some Units, ");
 		}

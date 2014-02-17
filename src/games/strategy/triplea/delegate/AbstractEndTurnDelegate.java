@@ -194,7 +194,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		
 		if (GameStepPropertiesHelper.isRepairUnits(data))
 		{
-			MoveDelegate.repairBattleShips(m_bridge, m_bridge.getPlayerID());
+			MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_bridge.getPlayerID());
 		}
 		if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
 		{

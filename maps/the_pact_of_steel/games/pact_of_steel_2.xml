@@ -1836,9 +1836,9 @@
 			isAirBase							values: allows units with canScramble to scramble from a territory with this unit
 			maxScrambleCount					values: max number of units which can scramble from this air base. defaults to infinite.
 			givesMovement						values: allows a unit to give movement to other units.  must be an integer, followed by a colon ":", followed by the name of the unit
-			repairsUnits						values: is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
-															unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit 
-															example: option name="repairsUnits" value="battleship:super_carrier"
+			repairsUnits						values: is a colon delimited list of all the units this unit can repair. it should start with the amount to be repaired (or use 'count' for the amount to be repaired) each turn. if not used, defaults to 1.
+															units to be repaired must be in the same territory as this unit. unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit 
+															example: option name="repairsUnits" value="1:battleship:super_carrier"
 			whenCombatDamaged					values: this property lets you set certain behaviors for when this unit is damaged. the value is the effect, while the count is the damage from where to where. (example: <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>)
 															units start at zero combat damage, and usually die at 1 damage. some units have 2 hp, so you can use this with 1:1 to say that when a unit has 1 damage they have this effect.
 															currently only allows: unitsMayNotLandOnCarrier, unitsMayNotLeaveAlliedCarrier
@@ -2236,10 +2236,10 @@
 						<option name="canBeDamaged" value="true"/>
 						<option name="maxDamage" value="6"/>
 						<option name="maxOperationalDamage" value="2"/>
-						<!-- repairsUnits is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
-								unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit 
-								example: option name="repairsUnits" value="battleship:super_carrier" -->
-						<option name="repairsUnits" value="battleship"/>
+						<!-- repairsUnits is a colon delimited list of all the units this unit can repair. it should start with the amount to be repaired (or use 'count' for the amount to be repaired) each turn. if not used, defaults to 1.
+								units to be repaired must be in the same territory as this unit. unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit 
+								example: option name="repairsUnits" value="1:battleship:super_carrier" -->
+						<option name="repairsUnits" value="1:battleship"/>
 						<option name="isConstruction" value="true"/>
 						<option name="constructionType" value="harbour_structure"/>
 						<option name="constructionsPerTerrPerTypePerTurn" value="1"/>

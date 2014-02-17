@@ -52,6 +52,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -154,7 +155,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
 			if (GameStepPropertiesHelper.isRepairUnits(data))
 			{
-				MoveDelegate.repairBattleShips(m_bridge, m_player);
+				MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_player);
 			}
 			
 			// reset any bonus of units, and give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
@@ -455,48 +456,91 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		}
 	}
 	
-	public static void repairBattleShips(final IDelegateBridge aBridge, final PlayerID player)
+	public static void repairMultipleHitPointUnits(final IDelegateBridge aBridge, final PlayerID player)
 	{
 		final GameData data = aBridge.getData();
 		final boolean repairOnlyOwn = games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(aBridge.getData());
-		final Match<Unit> damagedBattleship = new CompositeMatchAnd<Unit>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
-		final Match<Unit> damagedBattleshipOwned = new CompositeMatchAnd<Unit>(damagedBattleship, Matches.unitIsOwnedBy(player));
-		final Collection<Unit> damaged = new ArrayList<Unit>();
+		final Match<Unit> damagedUnits = new CompositeMatchAnd<Unit>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
+		final Match<Unit> damagedUnitsOwned = new CompositeMatchAnd<Unit>(damagedUnits, Matches.unitIsOwnedBy(player));
+		final Map<Territory, Set<Unit>> damagedMap = new HashMap<Territory, Set<Unit>>();
 		final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
 		while (iterTerritories.hasNext())
 		{
 			final Territory current = iterTerritories.next();
+			final Set<Unit> damaged;
 			if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data))
 			{
 				if (repairOnlyOwn)
-					damaged.addAll(current.getUnits().getMatches(damagedBattleshipOwned)); // we only repair ours
+					damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnitsOwned));// we only repair ours
 				else
-					damaged.addAll(current.getUnits().getMatches(damagedBattleship)); // we repair everyone's
+					damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnits));// we repair everyone's
 			}
 			else
-				damaged.addAll(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedBattleshipOwned, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
+				damaged = new HashSet<Unit>(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedUnitsOwned, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
+			if (!damaged.isEmpty())
+				damagedMap.put(current, damaged);
 		}
-		if (damaged.size() == 0)
+		if (damagedMap.isEmpty())
 			return;
-		// now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air units to leave while damaged, we need to remove those air units now
-		final Collection<Unit> damagedCarriers = Match.getMatches(damaged, Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
-		final IntegerMap<Unit> hits = new IntegerMap<Unit>();
-		final Iterator<Unit> iterUnits = damaged.iterator();
-		while (iterUnits.hasNext())
+		final Set<Unit> fullyRepaired = new HashSet<Unit>();
+		final IntegerMap<Unit> newHitsMap = new IntegerMap<Unit>();
+		for (final Entry<Territory, Set<Unit>> entry : damagedMap.entrySet())
 		{
-			final Unit unit = iterUnits.next();
-			hits.put(unit, 0); // TODO: change to repair by some amount each turn or make options for the amount, instead of instant full repair
+			for (final Unit u : entry.getValue())
+			{
+				final int repairAmount = getLargestRepairRateForThisUnit(u, entry.getKey(), data);
+				final int currentHits = u.getHits();
+				final int newHits = Math.max(0, Math.min(currentHits, (currentHits - repairAmount)));
+				if (newHits != currentHits)
+					newHitsMap.put(u, newHits);
+				if (newHits <= 0)
+					fullyRepaired.add(u);
+			}
 		}
-		aBridge.addChange(ChangeFactory.unitsHit(hits));
-		aBridge.getHistoryWriter().startEvent(damaged.size() + " " + MyFormatter.pluralize("unit", damaged.size()) + " repaired.");
+		aBridge.getHistoryWriter().startEvent(newHitsMap.size() + " " + MyFormatter.pluralize("unit", newHitsMap.size()) + " repaired.", new HashSet<Unit>(newHitsMap.keySet()));
+		aBridge.addChange(ChangeFactory.unitsHit(newHitsMap));
+		// now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air units to leave while damaged, we need to remove those air units now
+		final Collection<Unit> damagedCarriers = Match.getMatches(fullyRepaired, Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
 		// now cycle through those now-repaired carriers, and remove allied air from being dependant
 		final CompositeChange clearAlliedAir = new CompositeChange();
 		for (final Unit carrier : damagedCarriers)
 		{
-			clearAlliedAir.add(MustFightBattle.clearTransportedByForAlliedAirOnCarrier(Collections.singleton(carrier), carrier.getTerritoryUnitIsIn(), carrier.getOwner(), data));
+			final CompositeChange change = MustFightBattle.clearTransportedByForAlliedAirOnCarrier(Collections.singleton(carrier), carrier.getTerritoryUnitIsIn(), carrier.getOwner(), data);
+			if (!change.isEmpty())
+				clearAlliedAir.add(change);
 		}
 		if (!clearAlliedAir.isEmpty())
 			aBridge.addChange(clearAlliedAir);
+	}
+	
+	/**
+	 * This has to be the exact same as Matches.UnitCanBeRepairedByFacilitiesInItsTerritory()
+	 */
+	public static int getLargestRepairRateForThisUnit(final Unit unitToBeRepaired, final Territory territoryUnitIsIn, final GameData data)
+	{
+		if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data))
+			return 1;
+		final Set<Unit> repairUnitsForThisUnit = new HashSet<Unit>();
+		final PlayerID owner = unitToBeRepaired.getOwner();
+		final Match<Unit> repairUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(owner, data), Matches.UnitCanRepairOthers, Matches.UnitCanRepairThisUnit(unitToBeRepaired));
+		repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
+		if (Matches.UnitIsSea.match(unitToBeRepaired))
+		{
+			final Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
+			final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsLand));
+			for (final Territory current : neighbors)
+			{
+				repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
+			}
+		}
+		int largest = 0;
+		for (final Unit u : repairUnitsForThisUnit)
+		{
+			final int repair = UnitAttachment.get(u.getType()).getRepairsUnits().getInt(unitToBeRepaired.getType());
+			if (largest < repair)
+				largest = repair;
+		}
+		return largest;
 	}
 	
 	@Override
