@@ -52,6 +52,10 @@ public class SoundPath
 	public static final String CLIP_BATTLE_X_PREFIX = "battle_";
 	public static final String CLIP_BATTLE_X_HIT = "_hit";
 	public static final String CLIP_BATTLE_X_MISS = "_miss";
+	// custom triggered notification sounds:
+	public static final String CLIP_TRIGGERED_NOTIFICATION_SOUND = "notification_";
+	public static final String CLIP_TRIGGERED_DEFEAT_SOUND = "defeat_";
+	public static final String CLIP_TRIGGERED_VICTORY_SOUND = "victory_";
 	// normal sounds:
 	public static final String CLIP_BATTLE_AA_HIT = "battle_aa_hit";
 	public static final String CLIP_BATTLE_AA_MISS = "battle_aa_miss";
@@ -93,6 +97,62 @@ public class SoundPath
 	public static final String CLIP_TERRITORY_CAPTURE_SEA = "territory_capture_sea";
 	public static final String CLIP_USER_ACTION_FAILURE = "user_action_failure";
 	public static final String CLIP_USER_ACTION_SUCCESSFUL = "user_action_successful";
+	
+	public static HashSet<String> getAllSoundOptions()
+	{
+		final HashSet<String> rVal = new HashSet<String>();
+		rVal.add(CLIP_CHAT_MESSAGE);
+		rVal.add(CLIP_CHAT_SLAP);
+		rVal.add(CLIP_CHAT_JOIN_GAME);
+		rVal.add(CLIP_CLICK_BUTTON);
+		rVal.add(CLIP_CLICK_PLOT);
+		rVal.add(CLIP_GAME_START);
+		rVal.add(CLIP_GAME_WON);
+		rVal.add(CLIP_REQUIRED_ACTION);
+		rVal.add(CLIP_REQUIRED_YOUR_TURN_SERIES);
+		
+		rVal.add(CLIP_BATTLE_AA_HIT);
+		rVal.add(CLIP_BATTLE_AA_MISS);
+		rVal.add(CLIP_BATTLE_AIR);
+		rVal.add(CLIP_BATTLE_AIR_SUCCESSFUL);
+		rVal.add(CLIP_BATTLE_BOMBARD);
+		rVal.add(CLIP_BATTLE_FAILURE);
+		rVal.add(CLIP_BATTLE_LAND);
+		rVal.add(CLIP_BATTLE_RETREAT_AIR);
+		rVal.add(CLIP_BATTLE_RETREAT_LAND);
+		rVal.add(CLIP_BATTLE_RETREAT_SEA);
+		rVal.add(CLIP_BATTLE_RETREAT_SUBMERGE);
+		rVal.add(CLIP_BATTLE_SEA_NORMAL);
+		rVal.add(CLIP_BATTLE_SEA_SUBS);
+		rVal.add(CLIP_BATTLE_SEA_SUCCESSFUL);
+		rVal.add(CLIP_BATTLE_STALEMATE);
+		rVal.add(CLIP_BOMBING_ROCKET);
+		rVal.add(CLIP_BOMBING_STRATEGIC);
+		rVal.add(CLIP_PHASE_BATTLE);
+		rVal.add(CLIP_PHASE_END_TURN);
+		rVal.add(CLIP_PHASE_MOVE_COMBAT);
+		rVal.add(CLIP_PHASE_MOVE_NONCOMBAT);
+		rVal.add(CLIP_PHASE_PLACEMENT);
+		rVal.add(CLIP_PHASE_POLITICS);
+		rVal.add(CLIP_PHASE_PURCHASE);
+		rVal.add(CLIP_PHASE_TECHNOLOGY);
+		rVal.add(CLIP_PHASE_USER_ACTIONS);
+		rVal.add(CLIP_PLACED_AIR);
+		rVal.add(CLIP_PLACED_INFRASTRUCTURE);
+		rVal.add(CLIP_PLACED_LAND);
+		rVal.add(CLIP_PLACED_SEA);
+		rVal.add(CLIP_POLITICAL_ACTION_FAILURE);
+		rVal.add(CLIP_POLITICAL_ACTION_SUCCESSFUL);
+		rVal.add(CLIP_TECHNOLOGY_FAILURE);
+		rVal.add(CLIP_TECHNOLOGY_SUCCESSFUL);
+		rVal.add(CLIP_TERRITORY_CAPTURE_BLITZ);
+		rVal.add(CLIP_TERRITORY_CAPTURE_CAPITAL);
+		rVal.add(CLIP_TERRITORY_CAPTURE_LAND);
+		rVal.add(CLIP_TERRITORY_CAPTURE_SEA);
+		rVal.add(CLIP_USER_ACTION_FAILURE);
+		rVal.add(CLIP_USER_ACTION_SUCCESSFUL);
+		return rVal;
+	}
 	
 	public static void preLoadSounds(final SoundType sounds)
 	{
@@ -155,62 +215,6 @@ public class SoundPath
 		}
 	}
 	
-	public static HashSet<String> getAllSoundOptions()
-	{
-		final HashSet<String> rVal = new HashSet<String>();
-		rVal.add(CLIP_CHAT_MESSAGE);
-		rVal.add(CLIP_CHAT_SLAP);
-		rVal.add(CLIP_CHAT_JOIN_GAME);
-		rVal.add(CLIP_CLICK_BUTTON);
-		rVal.add(CLIP_CLICK_PLOT);
-		rVal.add(CLIP_GAME_START);
-		rVal.add(CLIP_GAME_WON);
-		rVal.add(CLIP_REQUIRED_ACTION);
-		rVal.add(CLIP_REQUIRED_YOUR_TURN_SERIES);
-		
-		rVal.add(CLIP_BATTLE_AA_HIT);
-		rVal.add(CLIP_BATTLE_AA_MISS);
-		rVal.add(CLIP_BATTLE_AIR);
-		rVal.add(CLIP_BATTLE_AIR_SUCCESSFUL);
-		rVal.add(CLIP_BATTLE_BOMBARD);
-		rVal.add(CLIP_BATTLE_FAILURE);
-		rVal.add(CLIP_BATTLE_LAND);
-		rVal.add(CLIP_BATTLE_RETREAT_AIR);
-		rVal.add(CLIP_BATTLE_RETREAT_LAND);
-		rVal.add(CLIP_BATTLE_RETREAT_SEA);
-		rVal.add(CLIP_BATTLE_RETREAT_SUBMERGE);
-		rVal.add(CLIP_BATTLE_SEA_NORMAL);
-		rVal.add(CLIP_BATTLE_SEA_SUBS);
-		rVal.add(CLIP_BATTLE_SEA_SUCCESSFUL);
-		rVal.add(CLIP_BATTLE_STALEMATE);
-		rVal.add(CLIP_BOMBING_ROCKET);
-		rVal.add(CLIP_BOMBING_STRATEGIC);
-		rVal.add(CLIP_PHASE_BATTLE);
-		rVal.add(CLIP_PHASE_END_TURN);
-		rVal.add(CLIP_PHASE_MOVE_COMBAT);
-		rVal.add(CLIP_PHASE_MOVE_NONCOMBAT);
-		rVal.add(CLIP_PHASE_PLACEMENT);
-		rVal.add(CLIP_PHASE_POLITICS);
-		rVal.add(CLIP_PHASE_PURCHASE);
-		rVal.add(CLIP_PHASE_TECHNOLOGY);
-		rVal.add(CLIP_PHASE_USER_ACTIONS);
-		rVal.add(CLIP_PLACED_AIR);
-		rVal.add(CLIP_PLACED_INFRASTRUCTURE);
-		rVal.add(CLIP_PLACED_LAND);
-		rVal.add(CLIP_PLACED_SEA);
-		rVal.add(CLIP_POLITICAL_ACTION_FAILURE);
-		rVal.add(CLIP_POLITICAL_ACTION_SUCCESSFUL);
-		rVal.add(CLIP_TECHNOLOGY_FAILURE);
-		rVal.add(CLIP_TECHNOLOGY_SUCCESSFUL);
-		rVal.add(CLIP_TERRITORY_CAPTURE_BLITZ);
-		rVal.add(CLIP_TERRITORY_CAPTURE_CAPITAL);
-		rVal.add(CLIP_TERRITORY_CAPTURE_LAND);
-		rVal.add(CLIP_TERRITORY_CAPTURE_SEA);
-		rVal.add(CLIP_USER_ACTION_FAILURE);
-		rVal.add(CLIP_USER_ACTION_SUCCESSFUL);
-		return rVal;
-	}
-	
 	public static ArrayList<IEditableProperty> getSoundOptions(final SoundType sounds)
 	{
 		final ArrayList<IEditableProperty> rVal = new ArrayList<IEditableProperty>();
@@ -264,8 +268,13 @@ public class SoundPath
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, "Captured Capital"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, "Captured Land Territory"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, "Captured Sea Zone"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND, "Triggered Notification Sound"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND, "Triggered Defeat Sound"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TRIGGERED_VICTORY_SOUND, "Triggered Victory Sound"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_USER_ACTION_FAILURE, "Action Operation Failed"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, "Action Operation Successful"));
+				break;
+			default:
 				break;
 		}
 		return rVal;

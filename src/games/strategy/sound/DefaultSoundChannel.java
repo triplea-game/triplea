@@ -7,7 +7,7 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.TripleAPlayer;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 
 /**
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move delegate) to also be played on clients.
@@ -88,7 +88,8 @@ public class DefaultSoundChannel implements ISound
 		playSoundOnLocalMachine(clipName, subFolder);
 	}
 	
-	public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers)
+	public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
+				final boolean includeObservers)
 	{
 		if (playersToSendTo == null || playersToSendTo.isEmpty())
 			return;
@@ -111,14 +112,14 @@ public class DefaultSoundChannel implements ISound
 				break;
 			}
 		}
+		if (includeObservers && m_localPlayers.getLocalPlayers().isEmpty())
+			isPlaying = true;
 		if (isPlaying)
 			playSoundOnLocalMachine(clipName, subFolder);
 	}
 	
-	public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo)
+	public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo, final boolean includeObservers)
 	{
-		final Collection<PlayerID> players = new HashSet<PlayerID>();
-		players.add(playerToSendTo);
-		playSoundToPlayers(clipName, subFolder, players, null);
+		playSoundToPlayers(clipName, subFolder, Collections.singleton(playerToSendTo), null, includeObservers);
 	}
 }

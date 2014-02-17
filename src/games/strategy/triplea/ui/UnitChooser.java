@@ -271,7 +271,7 @@ public class UnitChooser extends JPanel
 	
 	private void addCategory(final UnitCategory category, final int defaultValue)
 	{
-		final ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowMultipleHits, defaultValue, m_uiContext);
+		final ChooserEntry entry = new ChooserEntry(category, m_total, m_textFieldListener, m_data, m_allowMultipleHits, defaultValue, m_uiContext);
 		m_entries.add(entry);
 	}
 	
@@ -448,11 +448,13 @@ class ChooserEntry
 	private static Insets nullInsets = new Insets(0, 0, 0, 0);
 	private final IUIContext m_uiContext;
 	
-	ChooserEntry(final UnitCategory category, final ScrollableTextFieldListener listener, final GameData data, final boolean allowTwoHit, final int defaultValue, final IUIContext uiContext)
+	ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener, final GameData data, final boolean allowTwoHit, final int defaultValue,
+				final IUIContext uiContext)
 	{
 		m_hitTextFieldListener = listener;
 		m_data = data;
 		m_category = category;
+		m_leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
 		m_hasMultipleHits = allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
 		m_hitTexts = new ArrayList<ScrollableTextField>(Math.max(1, category.getHitPoints() - category.getDamaged()));
 		m_defaultHits = new ArrayList<Integer>(Math.max(1, category.getHitPoints() - category.getDamaged()));
@@ -539,7 +541,7 @@ class ChooserEntry
 	
 	public void setLeftToSelect(final int leftToSelect)
 	{
-		m_leftToSelect = leftToSelect;
+		m_leftToSelect = leftToSelect < 0 ? m_category.getUnits().size() : leftToSelect;
 		updateLeftToSelect();
 	}
 	

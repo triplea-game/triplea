@@ -265,11 +265,12 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 					{
 					}
 					
-					public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers)
+					public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
+								final boolean includeObservers)
 					{
 					}
 					
-					public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo)
+					public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo, final boolean includeObservers)
 					{
 					}
 				};

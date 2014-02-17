@@ -217,10 +217,52 @@ public class ClipPlayer
 		return clipPlayer.m_beSilent;
 	}
 	
+	public static boolean isSilencedClip(final String clipName)
+	{
+		final ClipPlayer clipPlayer = getInstance();
+		if (clipPlayer == null || clipPlayer.m_beSilent || clipPlayer.isMuted(clipName))
+			return true;
+		return false;
+	}
+	
+	public boolean isMuted(final String clipName)
+	{
+		if (m_mutedClips.contains(clipName))
+			return true;
+		if (!SoundPath.getAllSoundOptions().contains(clipName))
+		{
+			// for custom sound clips, with custom paths, silence based on more similar sound clip settings
+			if (clipName.startsWith(SoundPath.CLIP_BATTLE_X_PREFIX) && clipName.endsWith(SoundPath.CLIP_BATTLE_X_HIT))
+				return m_mutedClips.contains(SoundPath.CLIP_BATTLE_AA_HIT);
+			if (clipName.startsWith(SoundPath.CLIP_BATTLE_X_PREFIX) && clipName.endsWith(SoundPath.CLIP_BATTLE_X_MISS))
+				return m_mutedClips.contains(SoundPath.CLIP_BATTLE_AA_MISS);
+			if (clipName.startsWith(SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND))
+				return m_mutedClips.contains(SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND);
+			if (clipName.startsWith(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND))
+				return m_mutedClips.contains(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND);
+			if (clipName.startsWith(SoundPath.CLIP_TRIGGERED_VICTORY_SOUND))
+				return m_mutedClips.contains(SoundPath.CLIP_TRIGGERED_VICTORY_SOUND);
+		}
+		return false;
+	}
+	
+	public void setMute(final String clipName, final boolean value)
+	{
+		// we want to avoid unnecessary calls to preferences
+		final boolean isCurrentCorrect = m_mutedClips.contains(clipName) == value;
+		if (isCurrentCorrect)
+			return;
+		if (value == true)
+			m_mutedClips.add(clipName);
+		else
+			m_mutedClips.remove(clipName);
+		putSoundInPreferences(clipName, value);
+	}
+	
 	// please avoid unnecessary calls of this
 	private void putSoundInPreferences(final String clip, final boolean isMuted)
 	{
-		final ClipPlayer clipPlayer = getInstance();
+		// final ClipPlayer clipPlayer = getInstance();
 		final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
 		prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clip, isMuted);
 		try
@@ -235,24 +277,6 @@ public class ClipPlayer
 	public ArrayList<IEditableProperty> getSoundOptions(final SoundPath.SoundType sounds)
 	{
 		return SoundPath.getSoundOptions(sounds);
-	}
-	
-	public boolean isMuted(final String clipName)
-	{
-		return m_mutedClips.contains(clipName);
-	}
-	
-	public void setMute(final String clipName, final boolean value)
-	{
-		// we want to avoid unnecessary calls to preferences
-		final boolean isCurrentCorrect = m_mutedClips.contains(clipName) == value;
-		if (isCurrentCorrect)
-			return;
-		if (value == true)
-			m_mutedClips.add(clipName);
-		else
-			m_mutedClips.remove(clipName);
-		putSoundInPreferences(clipName, value);
 	}
 	
 	/**
@@ -274,6 +298,8 @@ public class ClipPlayer
 	 */
 	private void playClip(final String clipName, final String subFolder)
 	{
+		if (m_beSilent || isMuted(clipName))
+			return;
 		// run in a new thread, so that we do not delay the game
 		final Runnable loadSounds = new Runnable()
 		{

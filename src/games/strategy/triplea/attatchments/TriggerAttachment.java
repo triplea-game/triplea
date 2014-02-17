@@ -20,6 +20,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
@@ -1715,6 +1716,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
+		final GameData data = aBridge.getData();
 		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, notificationMatch());
 		if (testWhen)
 			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -1733,7 +1735,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				final String notificationMessageKey = t.getNotification().trim();
 				final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
 				if (sounds != null)
-					aBridge.getSoundChannelBroadcaster().playSoundToPlayers(sounds.trim(), null, t.getPlayers(), null);
+				{
+					aBridge.getSoundChannelBroadcaster().playSoundToPlayers(SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), null, t.getPlayers(), null,
+								t.getPlayers().containsAll(data.getPlayerList().getPlayers())); // play to observers if we are playing to everyone
+				}
 				final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
 				if (message != null)
 				{
@@ -2616,7 +2621,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			if (victoryMessage != null)
 			{
 				if (sounds != null)
-					aBridge.getSoundChannelBroadcaster().playSoundForAll(sounds.trim(), null); // only play the sound if we are also notifying everyone
+				{ // only play the sound if we are also notifying everyone
+					aBridge.getSoundChannelBroadcaster().playSoundToPlayers(SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(), null, t.getPlayers(), null, true);
+					aBridge.getSoundChannelBroadcaster().playSoundToPlayers(SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(), null, data.getPlayerList().getPlayers(), t.getPlayers(), false);
+				}
 				String messageForRecord = victoryMessage.trim();
 				if (messageForRecord.length() > 150)
 				{
