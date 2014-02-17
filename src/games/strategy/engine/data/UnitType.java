@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.util.LocalizeHTML;
@@ -49,22 +50,37 @@ public class UnitType extends NamedAttachable implements Serializable
 	
 	public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp)
 	{
+		return create(quantity, owner, false, 0, 0);
+	}
+	
+	public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp, final int hitsTaken, final int bombingUnitDamage)
+	{
 		final List<Unit> collection = new ArrayList<Unit>();
 		for (int i = 0; i < quantity; i++)
 		{
-			collection.add(create(owner, isTemp));
+			collection.add(create(owner, isTemp, hitsTaken, bombingUnitDamage));
 		}
 		return collection;
 	}
 	
-	private Unit create(final PlayerID owner, final boolean isTemp)
+	private Unit create(final PlayerID owner, final boolean isTemp, final int hitsTaken, final int bombingUnitDamage)
 	{
 		final Unit u = getData().getGameLoader().getUnitFactory().createUnit(this, owner, getData());
+		u.setHits(hitsTaken);
+		if (u instanceof TripleAUnit)
+		{
+			((TripleAUnit) u).setUnitDamage(bombingUnitDamage);
+		}
 		if (!isTemp)
 		{
 			getData().getUnits().put(u);
 		}
 		return u;
+	}
+	
+	private Unit create(final PlayerID owner, final boolean isTemp)
+	{
+		return create(owner, isTemp, 0, 0);
 	}
 	
 	public Unit create(final PlayerID owner)

@@ -1631,13 +1631,29 @@ public class GameParser
 			final Territory territory = getTerritory(current, "territory", true);
 			final UnitType type = getUnitType(current, "unitType", true);
 			final String ownerString = current.getAttribute("owner");
-			PlayerID owner;
+			final String hitsTakenString = current.getAttribute("hitsTaken");
+			final String unitDamageString = current.getAttribute("unitDamage");
+			final PlayerID owner;
 			if (ownerString == null || ownerString.trim().length() == 0)
 				owner = PlayerID.NULL_PLAYERID;
 			else
 				owner = getPlayerID(current, "owner", false);
+			final int hits;
+			if (hitsTakenString != null && hitsTakenString.trim().length() > 0)
+				hits = Integer.parseInt(hitsTakenString);
+			else
+				hits = 0;
+			if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1)
+				throw new GameParseException("hitsTaken can not be less than zero or greater than one less than total hitpPoints");
+			final int unitDamage;
+			if (unitDamageString != null && unitDamageString.trim().length() > 0)
+				unitDamage = Integer.parseInt(unitDamageString);
+			else
+				unitDamage = 0;
+			if (unitDamage < 0)
+				throw new GameParseException("unitDamage can not be less than zero");
 			final int quantity = Integer.parseInt(current.getAttribute("quantity"));
-			territory.getUnits().addAllUnits(type.create(quantity, owner));
+			territory.getUnits().addAllUnits(type.create(quantity, owner, false, hits, unitDamage));
 		}
 	}
 	

@@ -2073,7 +2073,7 @@
 						<option name="isSea" value="true"/>
 						<option name="attack" value="4"/>
 						<option name="defense" value="4"/>
-						<option name="hitPoints" value="4"/>
+						<option name="hitPoints" value="2"/>
 						<option name="canBombard" value="true"/>
 						<!-- bombard defaults to the attack value of the unit if missing -->
 						<option name="bombard" value="4"/>
@@ -4549,6 +4549,8 @@
 						<unitPlacement unitType="fighter" territory="Western Europe" quantity="1" owner="Germans"/>
 						<unitPlacement unitType="infantry" territory="Algeria" quantity="2" owner="Germans"/>
 						<unitPlacement unitType="armour" territory="Algeria" quantity="2" owner="Germans"/>
+						<!-- attribute "unitDamage" will let a unit start with bombing factory damage:
+						<unitPlacement unitType="factory" territory="Germany" quantity="1" owner="Germans" unitDamage="5"/>-->
 						<unitPlacement unitType="factory" territory="Germany" quantity="1" owner="Germans"/>
 						<unitPlacement unitType="aaGun" territory="Germany" quantity="1" owner="Germans"/>
 						<unitPlacement unitType="infantry" territory="Germany" quantity="4" owner="Germans"/>
@@ -4575,6 +4577,8 @@
 						<unitPlacement unitType="artillery" territory="West Russia" quantity="1" owner="Germans"/>
 						<unitPlacement unitType="armour" territory="West Russia" quantity="1" owner="Germans"/>
 						<unitPlacement unitType="transport" territory="5 Sea Zone" quantity="1" owner="Germans"/>
+						<!-- attribute "hitsTaken" will let a unit start already hit:
+						<unitPlacement unitType="battleship" territory="5 Sea Zone" quantity="1" owner="Germans" hitsTaken="1"/>-->
 						<unitPlacement unitType="battleship" territory="5 Sea Zone" quantity="1" owner="Germans"/>
 						<unitPlacement unitType="destroyer" territory="5 Sea Zone" quantity="1" owner="Germans"/>
 						<unitPlacement unitType="submarine" territory="5 Sea Zone" quantity="2" owner="Germans"/>
@@ -4685,12 +4689,16 @@
 						<unitPlacement unitType="artillery" territory="Central China" quantity="1" owner="Chinese"/>
 						<unitPlacement unitType="infantry" territory="Sinkiang" quantity="1" owner="Chinese"/>
 						<unitPlacement unitType="infantry" territory="Central China" quantity="1" owner="Chinese"/>
+						
+						
+						<!-- units held, to be placed -->
+						<heldUnits unitType="factory" quantity="1" player="British"/>
 				</unitInitialize>
 
 				<resourceInitialize>
 						<!-- these do not have to match the production of the game starting out, they can be any number -->
 						<resourceGiven player="Japanese" resource="PUs" quantity="30"/>
-						<resourceGiven player="British" resource="PUs" quantity="33"/>
+						<resourceGiven player="British" resource="PUs" quantity="24"/>
 						<resourceGiven player="Americans" resource="PUs" quantity="37"/>
 						<resourceGiven player="Russians" resource="PUs" quantity="26"/>
 						<resourceGiven player="Germans" resource="PUs" quantity="40"/>

@@ -230,6 +230,8 @@
 			territory CDATA #REQUIRED
 			quantity CDATA #REQUIRED
 			owner IDREF #IMPLIED
+			hitsTaken CDATA #IMPLIED
+			unitDamage CDATA #IMPLIED
 		>
 		<!-- units that have not been placed yet -->
 		<!ELEMENT heldUnits EMPTY>

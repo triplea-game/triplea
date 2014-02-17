@@ -1,4 +1,8 @@
 Changes for 1.8.0.0
+* Created new unitPlacement attribute, "unitDamage", which will let a unit start with bombing factory damage. (veqryn)
+
+* Created new unitPlacement attribute, "hitsTaken", which will let a unit start damaged. (veqryn)
+
 * Deleting game option property, "SBR Affects Unit Production", and simplifying the engine to only use direct unit damage. (veqryn)
 
 * Getting units with different bombing unit damage to not stack. (veqryn)
