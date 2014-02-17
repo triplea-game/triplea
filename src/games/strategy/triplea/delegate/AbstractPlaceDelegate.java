@@ -1020,8 +1020,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 			for (final UnitType ut : requiredUnits)
 			{
 				final int requiredNumber = requiredUnitsMap.getInt(ut);
-				final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut), Matches.UnitHasSomeUnitDamage()
-							.invert(), Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(to).invert());
+				final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut),
+							Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsNotDisabled,
+							Matches.unitIsInTerritoryThatHasTerritoryDamage(to).invert());
 				final Collection<Unit> unitsBeingRemoved = Match.getNMatches(unitsAtStartOfTurnInTO, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
 				unitsAtStartOfTurnInTO.removeAll(unitsBeingRemoved);
 				// if we should actually do it, not just test, then add to bridge

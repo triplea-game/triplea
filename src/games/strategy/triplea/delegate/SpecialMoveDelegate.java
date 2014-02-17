@@ -123,7 +123,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
 		final PlayerID player = getUnitsOwner(units);
 		// here we have our own new validation method....
-		final MoveValidationResult result = SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data), m_movesToUndo,
+		final MoveValidationResult result = SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data),
+					m_movesToUndo,
 					data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
@@ -237,7 +238,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 				result.addDisallowedUnit("Must Own All Airborne Forces", u);
 			else if (!Matches.unitIsOfTypes(airborneTypes).match(u))
 				result.addDisallowedUnit("Can Only Launch Airborne Forces", u);
-			else if (Matches.UnitIsDisabled().match(u))
+			else if (Matches.UnitIsDisabled.match(u))
 				result.addDisallowedUnit("Must Not Be Disabled", u);
 			else if (!Matches.unitHasNotMoved.match(u))
 				result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
@@ -303,7 +304,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	
 	public static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types)
 	{
-		return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(types), Matches.UnitIsDisabled().invert(), Matches.unitHasNotMoved, Matches.UnitIsAirborne.invert());
+		return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved, Matches.UnitIsAirborne.invert());
 	}
 	
 	private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases, final PlayerID player, final GameData data)

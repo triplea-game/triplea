@@ -311,7 +311,7 @@ class SingleUnitPanel extends JPanel
 		setMin(min);
 		m_textField.setShowMaxAndMin(showMaxAndMin);
 		final TripleAUnit taUnit = TripleAUnit.get(unit);
-		final Image img = m_context.getUnitImageFactory().getImage(m_unit.getType(), m_unit.getOwner(), m_data, taUnit.getUnitDamage() > 0, taUnit.getDisabled());
+		final Image img = m_context.getUnitImageFactory().getImage(m_unit.getType(), m_unit.getOwner(), m_data, taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0, taUnit.getDisabled());
 		setCount(currentValue);
 		setLayout(new GridBagLayout());
 		final JLabel label = new JLabel(new ImageIcon(img));

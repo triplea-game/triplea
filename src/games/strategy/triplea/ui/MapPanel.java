@@ -708,8 +708,8 @@ public class MapPanel extends ImageScrollerLargeView
 					final Rectangle r = m_tileManager.getUnitRect(territoryUnitsOfSameCategory, m_data);
 					if (r == null)
 						continue;
-					final BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(category.getType(), category.getOwner(), m_data, category.getDamaged() > 0,
-								category.getDisabled());
+					final BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(category.getType(), category.getOwner(), m_data,
+								category.hasDamageOrBombingUnitDamage(), category.getDisabled());
 					final AffineTransform t = new AffineTransform();
 					t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
 					t.scale(m_scale, m_scale);
@@ -933,8 +933,8 @@ public class MapPanel extends ImageScrollerLargeView
 			for (final UnitCategory category : categories)
 			{
 				final Point place = new Point(i * (icon_width + xSpace), 0);
-				final UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), place, category.getDamaged() > 0,
-							category.getDisabled(), false, "", m_uiContext);
+				final UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), place, category.getDamaged(),
+							category.getBombingDamage(), category.getDisabled(), false, "", m_uiContext);
 				drawer.draw(bounds, m_data, g, m_uiContext.getMapData(), null, null);
 				i++;
 			}

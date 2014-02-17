@@ -1223,7 +1223,7 @@ class BattleModel extends DefaultTableModel
 			for (int i = 0; i <= m_data.getDiceSides(); i++)
 			{
 				if (shift[i] > 0)
-					columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.getDamaged() > 0, category.getDisabled(), m_uiContext));
+					columns[i].add(new TableData(category.getOwner(), shift[i], category.getType(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled(), m_uiContext));
 			}
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
 		}
@@ -1343,10 +1343,8 @@ class CasualtyNotificationPanel extends JPanel
 		{
 			m_damaged.add(new JLabel("Damaged"));
 		}
-		// TODO Kev determine if we need to identify if the unit is hit/disabled
-		final boolean disabled = false;
 		final Iterator<UnitCategory> damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
-		categorizeUnits(damagedIter, true, disabled);
+		categorizeUnits(damagedIter, true, true);
 		invalidate();
 		validate();
 	}
@@ -1371,7 +1369,8 @@ class CasualtyNotificationPanel extends JPanel
 			final UnitCategory category = categoryIter.next();
 			final JPanel panel = new JPanel();
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
-			final JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged() > 0, category.getDisabled()));
+			final JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data,
+						damaged ? category.hasDamageOrBombingUnitDamage() : false, disabled ? category.getDisabled() : false));
 			panel.add(unit);
 			for (final UnitOwner owner : category.getDependents())
 			{

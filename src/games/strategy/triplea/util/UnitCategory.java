@@ -53,7 +53,7 @@ public class UnitCategory implements Comparable
 		// m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
 		m_damaged = taUnit.getHits();
 		m_bombingDamage = taUnit.getUnitDamage();
-		m_disabled = Matches.UnitIsDisabled().match(unit);
+		m_disabled = Matches.UnitIsDisabled.match(unit);
 		if (categorizeDependents)
 			createDependents(taUnit.getDependents());
 		else
@@ -98,6 +98,11 @@ public class UnitCategory implements Comparable
 	public int getBombingDamage()
 	{
 		return m_bombingDamage;
+	}
+	
+	public boolean hasDamageOrBombingUnitDamage()
+	{
+		return m_damaged > 0 || m_bombingDamage > 0;
 	}
 	
 	public boolean getDisabled()
@@ -167,8 +172,8 @@ public class UnitCategory implements Comparable
 	public String toString()
 	{
 		final StringBuilder sb = new StringBuilder();
-		sb.append("Entry type:").append(m_type.getName()).append(" owner:").append(m_owner.getName()).append(" damaged:").append(m_damaged).append(m_bombingDamage).append(" disabled:")
-					.append(m_disabled).append(" dependents:").append(m_dependents).append(" movement:").append(m_movement);
+		sb.append("Entry type:").append(m_type.getName()).append(" owner:").append(m_owner.getName()).append(" damaged:").append(m_damaged).append(" bombingUnitDamage:").append(m_bombingDamage)
+					.append(" disabled:").append(m_disabled).append(" dependents:").append(m_dependents).append(" movement:").append(m_movement);
 		return sb.toString();
 	}
 	

@@ -91,7 +91,7 @@ public class SimpleUnitPanel extends JPanel
 				{
 					// check to see if the repair rule matches the damaged unit
 					if (unit.getType().equals((repairRule.getResults().keySet().iterator().next())))
-						addUnits(player, data, quantity, unit.getType(), Matches.UnitHasSomeUnitDamage().match(unit), Matches.UnitIsDisabled().match(unit));
+						addUnits(player, data, quantity, unit.getType(), Matches.UnitHasTakenSomeBombingUnitDamage.match(unit), Matches.UnitIsDisabled.match(unit));
 				}
 			}
 		}
@@ -108,7 +108,7 @@ public class SimpleUnitPanel extends JPanel
 		for (final UnitCategory category : categories)
 		{
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
-			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged() > 0, category.getDisabled());
+			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.hasDamageOrBombingUnitDamage(), category.getDisabled());
 		}
 	}
 	

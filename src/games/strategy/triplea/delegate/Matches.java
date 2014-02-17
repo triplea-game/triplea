@@ -588,44 +588,40 @@ public class Matches
 		};
 	}
 	
-	public static Match<Unit> UnitHasSomeUnitDamage()
+	public static Match<Unit> UnitHasTakenSomeBombingUnitDamage = new Match<Unit>()
 	{
-		return new Match<Unit>()
+		@Override
+		public boolean match(final Unit unit)
 		{
-			@Override
-			public boolean match(final Unit unit)
-			{
-				final TripleAUnit taUnit = (TripleAUnit) unit;
-				return taUnit.getUnitDamage() > 0;
-			}
-		};
-	}
+			final TripleAUnit taUnit = (TripleAUnit) unit;
+			return taUnit.getUnitDamage() > 0;
+		}
+	};
+	public static Match<Unit> UnitHasNotTakenAnyBombingUnitDamage = new InverseMatch<Unit>(UnitHasTakenSomeBombingUnitDamage);
 	
-	public static Match<Unit> UnitIsDisabled()
+	public static Match<Unit> UnitIsDisabled = new Match<Unit>()
 	{
-		return new Match<Unit>()
+		@Override
+		public boolean match(final Unit unit)
 		{
-			@Override
-			public boolean match(final Unit unit)
+			if (!UnitCanBeDamaged.match(unit))
+				return false;
+			if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData()))
+				return false;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final TripleAUnit taUnit = (TripleAUnit) unit;
+			if (ua.getMaxOperationalDamage() < 0)
 			{
-				if (!UnitCanBeDamaged.match(unit))
-					return false;
-				if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData()))
-					return false;
-				final UnitAttachment ua = UnitAttachment.get(unit.getType());
-				final TripleAUnit taUnit = (TripleAUnit) unit;
-				if (ua.getMaxOperationalDamage() < 0)
-				{
-					// factories may or may not have max operational damage set, so we must still determine here
-					// assume that if maxOperationalDamage < 0, then the max damage must be based on the territory value (if the damage >= production of territory, then we are disabled)
-					// TerritoryAttachment ta = TerritoryAttachment.get(t);
-					// return taUnit.getUnitDamage() >= ta.getProduction();
-					return false;
-				}
-				return taUnit.getUnitDamage() > ua.getMaxOperationalDamage(); // only greater than. if == then we can still operate
+				// factories may or may not have max operational damage set, so we must still determine here
+				// assume that if maxOperationalDamage < 0, then the max damage must be based on the territory value (if the damage >= production of territory, then we are disabled)
+				// TerritoryAttachment ta = TerritoryAttachment.get(t);
+				// return taUnit.getUnitDamage() >= ta.getProduction();
+				return false;
 			}
-		};
-	}
+			return taUnit.getUnitDamage() > ua.getMaxOperationalDamage(); // only greater than. if == then we can still operate
+		}
+	};
+	public static Match<Unit> UnitIsNotDisabled = new InverseMatch<Unit>(UnitIsDisabled);
 	
 	public static final Match<Unit> UnitCanDieFromReachingMaxDamage = new Match<Unit>()
 	{
@@ -2975,7 +2971,7 @@ public class Matches
 		@Override
 		public boolean match(final Unit unit)
 		{
-			if (UnitIsDisabled().match(unit))
+			if (UnitIsDisabled.match(unit))
 				return false;
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.getRepairsUnits() == null)
@@ -3059,7 +3055,7 @@ public class Matches
 			@Override
 			public boolean match(final Unit unitCanGiveBonusMovement)
 			{
-				if (UnitIsDisabled().match(unitCanGiveBonusMovement))
+				if (UnitIsDisabled.match(unitCanGiveBonusMovement))
 					return false;
 				final UnitType type = unitCanGiveBonusMovement.getUnitType();
 				final UnitAttachment ua = UnitAttachment.get(type);
@@ -3209,9 +3205,9 @@ public class Matches
 				boolean canBuild = true;
 				for (final UnitType ut : requiredUnits)
 				{
-					final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsOfType(ut), Matches
-								.UnitHasSomeUnitDamage().invert(), Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(territory)
-								.invert());
+					final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsOfType(ut),
+								Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsNotDisabled,
+								Matches.unitIsInTerritoryThatHasTerritoryDamage(territory).invert());
 					final int requiredNumber = requiredUnitsMap.getInt(ut);
 					final int numberInTerritory = Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
 					if (numberInTerritory < requiredNumber)
@@ -3246,7 +3242,7 @@ public class Matches
 			{
 				if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
 					return true;
-				final Match<Unit> unitIsOwnedByAndNotDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.UnitIsDisabled().invert());
+				final Match<Unit> unitIsOwnedByAndNotDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.UnitIsNotDisabled);
 				unitsInTerritoryAtStartOfTurn.retainAll(Match.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
 				boolean canBuild = false;
 				final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());

@@ -75,10 +75,12 @@ public class MapImage
 	private static Color PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR = null;
 	private static Color PROPERTY_UNIT_COUNT_COLOR = null;
 	private static Color PROPERTY_UNIT_FACTORY_DAMAGE_COLOR = null;
+	private static Color PROPERTY_UNIT_HIT_DAMAGE_COLOR = null;
 	private static final String PROPERTY_MAP_FONT_SIZE_STRING = "PROPERTY_MAP_FONT_SIZE";
 	private static final String PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING = "PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR";
 	private static final String PROPERTY_UNIT_COUNT_COLOR_STRING = "PROPERTY_UNIT_COUNT_COLOR";
 	private static final String PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING = "PROPERTY_UNIT_FACTORY_DAMAGE_COLOR";
+	private static final String PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING = "PROPERTY_UNIT_HIT_DAMAGE_COLOR";
 	
 	public static Font getPropertyMapFont()
 	{
@@ -120,6 +122,16 @@ public class MapImage
 		return PROPERTY_UNIT_FACTORY_DAMAGE_COLOR;
 	}
 	
+	public static Color getPropertyUnitHitDamageColor()
+	{
+		if (PROPERTY_UNIT_HIT_DAMAGE_COLOR == null)
+		{
+			final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
+			PROPERTY_UNIT_HIT_DAMAGE_COLOR = new Color(pref.getInt(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING, Color.black.getRGB()));
+		}
+		return PROPERTY_UNIT_HIT_DAMAGE_COLOR;
+	}
+	
 	public static void setPropertyMapFont(final Font font)
 	{
 		final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
@@ -148,6 +160,13 @@ public class MapImage
 		PROPERTY_UNIT_FACTORY_DAMAGE_COLOR = color;
 	}
 	
+	public static void setPropertyUnitHitDamageColor(final Color color)
+	{
+		final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
+		pref.putInt(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING, color.getRGB());
+		PROPERTY_UNIT_HIT_DAMAGE_COLOR = color;
+	}
+	
 	public static void resetPropertyMapFont()
 	{
 		final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
@@ -174,6 +193,13 @@ public class MapImage
 		final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
 		pref.remove(PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING);
 		PROPERTY_UNIT_FACTORY_DAMAGE_COLOR = Color.black;
+	}
+	
+	public static void resetPropertyUnitHitDamageColor()
+	{
+		final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
+		pref.remove(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING);
+		PROPERTY_UNIT_HIT_DAMAGE_COLOR = Color.black;
 	}
 	
 	/** Creates a new instance of CountryImage */

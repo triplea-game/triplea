@@ -161,7 +161,7 @@ public class ProductionRepairPanel extends JPanel
 		{
 			m_id = player;
 			final CompositeMatchAnd<Unit> myPotentiallyDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeDamaged);
-			final CompositeMatchAnd<Unit> myDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitHasSomeUnitDamage());
+			final CompositeMatchAnd<Unit> myDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitHasTakenSomeBombingUnitDamage);
 			final Collection<Territory> terrsWithPotentiallyDamagedUnits = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myPotentiallyDamagedUnits));
 			for (final RepairRule repairRule : player.getRepairFrontier())
 			{
@@ -314,7 +314,7 @@ public class ProductionRepairPanel extends JPanel
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
 			final TripleAUnit taUnit = (TripleAUnit) repairUnit;
-			final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasSomeUnitDamage().match(repairUnit), Matches.UnitIsDisabled().match(repairUnit));
+			final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasTakenSomeBombingUnitDamage.match(repairUnit), Matches.UnitIsDisabled.match(repairUnit));
 			final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 			final JLabel info = new JLabel(territoryUnitIsIn.getName());

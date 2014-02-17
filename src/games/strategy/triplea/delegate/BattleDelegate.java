@@ -741,9 +741,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance())
 				maxScrambleDistance = ua.getMaxScrambleDistance();
 		}
-		final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert());
+		final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsNotDisabled);
 		final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<Territory>(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
-					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitCanScramble, Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsDisabled().invert())),
+					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitCanScramble, Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsNotDisabled)),
 					Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
 		if (fromIslandOnly)
 			canScramble.add(Matches.TerritoryIsIsland);
@@ -834,7 +834,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				final int maxCanScramble = getMaxScrambleCount(airbases);
 				final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
 				final Collection<Unit> canScrambleAir = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitCanScramble,
-							Matches.UnitIsDisabled().invert(), Matches.UnitWasScrambled.invert(), Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
+							Matches.UnitIsNotDisabled, Matches.UnitWasScrambled.invert(), Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
 				if (maxCanScramble > 0 && !canScrambleAir.isEmpty())
 					scramblers.put(from, new Tuple<Collection<Unit>, Collection<Unit>>(airbases, canScrambleAir));
 			}
@@ -1041,7 +1041,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	
 	public static int getMaxScrambleCount(final Collection<Unit> airbases)
 	{
-		if (!Match.allMatch(airbases, new CompositeMatchAnd<Unit>(Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert())))
+		if (!Match.allMatch(airbases, new CompositeMatchAnd<Unit>(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled)))
 			throw new IllegalStateException("All units must be viable airbases");
 		// find how many is the max this territory can scramble
 		int maxScrambled = 0;

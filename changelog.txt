@@ -1,6 +1,10 @@
 Changes for 1.8.0.0
 * Deleting game option property, "SBR Affects Unit Production", and simplifying the engine to only use direct unit damage. (veqryn)
 
+* Getting units with different bombing unit damage to not stack. (veqryn)
+
+* Allowing selection of casualties for multiple hit units to allow damage points past one. (veqryn)
+
 * Getting "hitPoints" to work in the graphical user interface. (veqryn)
 
 * Getting "hitPoints" to work on the back end inside the engine. (veqryn)

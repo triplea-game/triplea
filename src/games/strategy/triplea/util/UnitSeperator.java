@@ -95,7 +95,7 @@ public class UnitSeperator
 			{
 				currentDependents = dependent.get(current);
 			}
-			final boolean disabled = Matches.UnitIsDisabled().match(current);
+			final boolean disabled = Matches.UnitIsDisabled.match(current);
 			Territory originatingTerr = null;
 			if (categorizeTerritories)
 				originatingTerr = TripleAUnit.get(current).getOriginatedFrom();

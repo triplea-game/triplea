@@ -136,7 +136,6 @@ public interface Constants
 	public static final String WW2V3 = "WW2V3";
 	public static final String ECONOMIC_VICTORY = "Economic Victory";
 	public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
-	public static final String TWO_HIT = "isTwoHit";
 	public static final String ORIGINAL_OWNER = "originalOwner";
 	public static final String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
 	public static final String USE_SHIPYARDS = "Use Shipyards";

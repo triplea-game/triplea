@@ -198,7 +198,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel
 				panel.add(Box.createVerticalStrut(15));
 			}
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
-			final ImageIcon unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data, item.getDamaged() > 0, item.getDisabled());
+			final ImageIcon unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data, item.hasDamageOrBombingUnitDamage(), item.getDisabled());
 			final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
 			// overlay flag onto upper-right of icon
 			final Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2), 0);

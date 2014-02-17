@@ -826,7 +826,7 @@ public class BattleTracker implements java.io.Serializable
 		// destroy any disabled units owned by the enemy that are NOT infrastructure or factories
 		if (true)
 		{
-			final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsDisabled(), Matches.UnitIsInfrastructure.invert());
+			final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
 			final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
 			if (!destroyed.isEmpty())
 			{

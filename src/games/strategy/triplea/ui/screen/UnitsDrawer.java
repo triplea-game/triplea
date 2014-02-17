@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -13,7 +12,6 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.awt.Color;
@@ -23,7 +21,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-import java.util.Collection;
 import java.util.List;
 
 public class UnitsDrawer implements IDrawable
@@ -32,20 +29,22 @@ public class UnitsDrawer implements IDrawable
 	private final String m_unitType;
 	private final String m_playerName;
 	private final Point m_placementPoint;
-	private final boolean m_damaged;
+	private final int m_damaged;
+	private final int m_bombingUnitDamage;
 	private final boolean m_disabled;
 	private final boolean m_overflow;
 	private final String m_territoryName;
 	private final IUIContext m_uiContext;
 	
-	public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, final boolean disabled, final boolean overflow,
-				final String territoryName, final IUIContext uiContext2)
+	public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final int damaged, final int bombingUnitDamage, final boolean disabled,
+				final boolean overflow, final String territoryName, final IUIContext uiContext2)
 	{
 		m_count = count;
 		m_unitType = unitType;
 		m_playerName = playerName;
 		m_placementPoint = placementPoint;
 		m_damaged = damaged;
+		m_bombingUnitDamage = bombingUnitDamage;
 		m_disabled = disabled;
 		m_overflow = overflow;
 		m_territoryName = territoryName;
@@ -78,7 +77,8 @@ public class UnitsDrawer implements IDrawable
 		if (type == null)
 			throw new IllegalStateException("Type not found:" + m_unitType);
 		final PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
-		Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
+		final Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged > 0 || m_bombingUnitDamage > 0, m_disabled);
+		/* VEQRYN: I can not figure out why we have the below code.  It appears to duplicate the call above.
 		// figure the unitDamage here, for disabled or not
 		if (Matches.UnitTypeCanBeDamaged.match(type) && (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
 		{
@@ -130,6 +130,7 @@ public class UnitsDrawer implements IDrawable
 			// needed, don't delete please. if it is a mouse over, we need to carry the unit on our mouse
 			img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 		}
+		*/
 		graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
 		// more then 1 unit of this category
 		if (m_count != 1)
@@ -166,6 +167,7 @@ public class UnitsDrawer implements IDrawable
 				}
 			}
 		}
+		displayHitDamage(bounds, data, graphics, type, img);
 		// Display Factory Damage
 		if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.UnitTypeCanBeDamaged.match(type))
 		{
@@ -176,24 +178,24 @@ public class UnitsDrawer implements IDrawable
 	private void displayFactoryDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type, final Image img)
 	{
 		final Font font = MapImage.getPropertyMapFont();
-		if (m_territoryName.length() != 0 && font.getSize() > 0)
+		if (m_territoryName.length() != 0 && font.getSize() > 0 && m_bombingUnitDamage > 0)
 		{
 			graphics.setColor(MapImage.getPropertyUnitFactoryDamageColor());
 			graphics.setFont(font);
-			if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
-			{
-				// kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least that was my understanding
-				final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
-				for (final Unit current : units)
-				{
-					final TripleAUnit taUnit = (TripleAUnit) current;
-					if (taUnit.getUnitDamage() > 0)
-					{
-						graphics.drawString(String.valueOf(taUnit.getUnitDamage()), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4), m_placementPoint.y
-									- bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
-					}
-				}
-			}
+			graphics.drawString("" + m_bombingUnitDamage, m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
+						m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
+		}
+	}
+	
+	private void displayHitDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type, final Image img)
+	{
+		final Font font = MapImage.getPropertyMapFont();
+		if (m_territoryName.length() != 0 && font.getSize() > 0 && m_damaged > 1)
+		{
+			graphics.setColor(MapImage.getPropertyUnitHitDamageColor());
+			graphics.setFont(font);
+			graphics.drawString("" + m_damaged, m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4),
+						m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
 		}
 	}
 	
@@ -207,10 +209,14 @@ public class UnitsDrawer implements IDrawable
 		final CompositeMatch<Unit> selectedUnits = new CompositeMatchAnd<Unit>();
 		selectedUnits.add(Matches.unitIsOfType(type));
 		selectedUnits.add(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(m_playerName)));
-		if (m_damaged)
+		if (m_damaged > 0)
 			selectedUnits.add(Matches.UnitHasTakenSomeDamage);
 		else
 			selectedUnits.add(Matches.UnitHasNotTakenAnyDamage);
+		if (m_bombingUnitDamage > 0)
+			selectedUnits.add(Matches.UnitHasTakenSomeBombingUnitDamage);
+		else
+			selectedUnits.add(Matches.UnitHasNotTakenAnyBombingUnitDamage);
 		final List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
 		return new Tuple<Territory, List<Unit>>(t, rVal);
 	}

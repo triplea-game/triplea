@@ -2073,7 +2073,7 @@
 						<option name="isSea" value="true"/>
 						<option name="attack" value="4"/>
 						<option name="defense" value="4"/>
-						<option name="hitPoints" value="2"/>
+						<option name="hitPoints" value="4"/>
 						<option name="canBombard" value="true"/>
 						<!-- bombard defaults to the attack value of the unit if missing -->
 						<option name="bombard" value="4"/>

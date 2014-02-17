@@ -426,8 +426,8 @@ public class TileManager
 				lastPlace.x += m_uiContext.getUnitImageFactory().getUnitImageWidth();
 				overflow = true;
 			}
-			final UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), lastPlace, category.getDamaged() > 0,
-						category.getDisabled(), overflow, territory.getName(), m_uiContext);
+			final UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(), category.getOwner().getName(), lastPlace, category.getDamaged(),
+						category.getBombingDamage(), category.getDisabled(), overflow, territory.getName(), m_uiContext);
 			drawing.add(drawable);
 			m_allUnitDrawables.add(drawable);
 			final Iterator<Tile> tiles = getTiles(

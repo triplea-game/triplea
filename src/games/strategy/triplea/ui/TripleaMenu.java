@@ -560,10 +560,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null, MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
 				final ColorProperty unitCountColor = new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
 				final ColorProperty factoryDamageColor = new ColorProperty("Factory Damage Color", null, MapImage.getPropertyUnitFactoryDamageColor());
+				final ColorProperty hitDamageColor = new ColorProperty("Hit Damage Color", null, MapImage.getPropertyUnitHitDamageColor());
 				properties.add(fontsize);
 				properties.add(territoryNameColor);
 				properties.add(unitCountColor);
 				properties.add(factoryDamageColor);
+				properties.add(hitDamageColor);
 				final PropertiesUI pui = new PropertiesUI(properties, true);
 				final JPanel ui = new JPanel();
 				ui.setLayout(new BorderLayout());
@@ -583,6 +585,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					MapImage.resetPropertyTerritoryNameAndPUAndCommentcolor();
 					MapImage.resetPropertyUnitCountColor();
 					MapImage.resetPropertyUnitFactoryDamageColor();
+					MapImage.resetPropertyUnitHitDamageColor();
 					m_frame.getMapPanel().resetMap();
 				}
 				else if (result == 0)
@@ -591,6 +594,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					MapImage.setPropertyTerritoryNameAndPUAndCommentcolor((Color) territoryNameColor.getValue());
 					MapImage.setPropertyUnitCountColor((Color) unitCountColor.getValue());
 					MapImage.setPropertyUnitFactoryDamageColor((Color) factoryDamageColor.getValue());
+					MapImage.setPropertyUnitHitDamageColor((Color) hitDamageColor.getValue());
 					m_frame.getMapPanel().resetMap();
 				}
 			}

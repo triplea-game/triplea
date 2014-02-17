@@ -444,7 +444,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			final GameData data = getGameData();
 			if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 			{
-				final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitHasSomeUnitDamage());
+				final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
 				final Collection<Unit> damagedUnits = new ArrayList<Unit>();
 				for (final Territory t : data.getMap().getTerritories())
 				{

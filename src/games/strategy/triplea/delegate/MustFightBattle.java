@@ -2621,7 +2621,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		unitList.removeAll(Match.getMatches(unitList,
 					Matches.UnitCanBeInBattle(attacking, !m_battleSite.isWater(), m_data, (removeForNextRound ? m_round + 1 : m_round), true, doNotIncludeAA, doNotIncludeSeaBombardmentUnits).invert()));
 		// remove any disabled units from combat
-		unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled()));
+		unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled));
 		// remove capturableOnEntering units (veqryn)
 		unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
 		// remove any allied air units that are stuck on damaged carriers (veqryn)

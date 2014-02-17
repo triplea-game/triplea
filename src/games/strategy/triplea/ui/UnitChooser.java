@@ -351,7 +351,15 @@ public class UnitChooser extends JPanel
 		{
 			final ChooserEntry chooserEntry = entries.next();
 			if (chooserEntry.hasMultipleHitPoints())
-				addToCollection(selectedUnits, chooserEntry, chooserEntry.getAllButFinalHit(), false);
+			{
+				// there may be some units being given multiple hits, while others get a single or no hits
+				for (int i = 0; i < chooserEntry.size() - 1; i++)
+				{
+					// here we are counting on the fact that unit category stores the units in a list, so the order is the same every time we access it.
+					// this means that in the loop we may select the first 2 units in the list to receive 1 hit, then select the first unit the list to receive 1 more hit
+					addToCollection(selectedUnits, chooserEntry, chooserEntry.getHits(i), false);
+				}
+			}
 		}
 		return selectedUnits;
 	}
@@ -446,11 +454,11 @@ class ChooserEntry
 		m_data = data;
 		m_category = category;
 		m_hasMultipleHits = allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
-		m_hitTexts = new ArrayList<ScrollableTextField>(Math.max(1, category.getHitPoints()));
-		m_defaultHits = new ArrayList<Integer>(Math.max(1, category.getHitPoints()));
+		m_hitTexts = new ArrayList<ScrollableTextField>(Math.max(1, category.getHitPoints() - category.getDamaged()));
+		m_defaultHits = new ArrayList<Integer>(Math.max(1, category.getHitPoints() - category.getDamaged()));
 		final int numUnits = category.getUnits().size();
 		int hitsUsedSoFar = 0;
-		for (int i = 0; i < Math.max(1, category.getHitPoints()); i++)
+		for (int i = 0; i < Math.max(1, category.getHitPoints() - category.getDamaged()); i++)
 		{
 			final int hitsToUse = Math.min(numUnits, (defaultValue - hitsUsedSoFar)); // TODO: check if default value includes damaged points or not
 			hitsUsedSoFar += hitsToUse;
@@ -463,7 +471,7 @@ class ChooserEntry
 	public void createComponents(final JPanel panel, final int yIndex)
 	{
 		int gridx = 0;
-		for (int i = 0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints()) : 1); i++)
+		for (int i = 0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints() - m_category.getDamaged()) : 1); i++)
 		{
 			final ScrollableTextField scroll = new ScrollableTextField(0, m_category.getUnits().size());
 			m_hitTexts.add(scroll);
@@ -587,6 +595,11 @@ class ChooserEntry
 		return hits;
 	}
 	
+	public int size()
+	{
+		return m_hitTexts.size();
+	}
+	
 	public boolean hasMultipleHitPoints()
 	{
 		return m_hasMultipleHits;
@@ -609,8 +622,8 @@ class ChooserEntry
 		public void paint(final Graphics g)
 		{
 			super.paint(g);
-			g.drawImage(m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged() > 0, m_category.getDisabled()), 0, 0,
-						this);
+			g.drawImage(m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(),
+						m_category.getDisabled()), 0, 0, this);
 			final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
 			int index = 1;
 			while (iter.hasNext())

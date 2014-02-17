@@ -166,7 +166,7 @@ public class RocketsFireHelper
 	
 	CompositeMatch<Unit> rocketMatch(final PlayerID player, final GameData data)
 	{
-		return new CompositeMatchAnd<Unit>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled().invert(),
+		return new CompositeMatchAnd<Unit>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
 					Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged(data).invert(), Matches.unitHasNotMoved);
 	}
 	

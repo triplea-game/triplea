@@ -291,7 +291,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		if (userEnabled != defaultEnabled)
 		{
 			aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
-			aBridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttachment, "" + userEnabled, Constants.TWO_HIT));
+			aBridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttachment, userEnabled ? 2 : 1, "hitPoints"));
 		}
 	}
 	

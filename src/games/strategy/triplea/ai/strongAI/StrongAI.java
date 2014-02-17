@@ -8008,7 +8008,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<Unit, IntegerMap<RepairRule>>();
 			final Collection<Unit> unitsThatCanProduceNeedingRepair = new ArrayList<Unit>();
 			final Collection<Unit> unitsThatAreDisabledNeedingRepair = new ArrayList<Unit>();
-			final CompositeMatchAnd<Unit> ourDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled());
+			final CompositeMatchAnd<Unit> ourDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled);
 			final int minimumUnitPrice = 3;
 			int diff = 0;
 			int totalDamage = 0;
@@ -8024,7 +8024,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixTerr))
 					continue;
 				final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(Match.getMatches(fixTerr.getUnits().getUnits(), ourFactoriesThatCanBeDamaged), fixTerr, player, data, false);
-				if (Matches.UnitHasSomeUnitDamage().match(possibleFactoryNeedingRepair))
+				if (Matches.UnitHasTakenSomeBombingUnitDamage.match(possibleFactoryNeedingRepair))
 					unitsThatCanProduceNeedingRepair.add(possibleFactoryNeedingRepair);
 				unitsThatAreDisabledNeedingRepair.addAll(Match.getMatches(fixTerr.getUnits().getUnits(), ourDisabled));
 				final TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
