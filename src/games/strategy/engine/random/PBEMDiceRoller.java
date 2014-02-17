@@ -13,8 +13,9 @@
  */
 package games.strategy.engine.random;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -23,6 +24,14 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * 

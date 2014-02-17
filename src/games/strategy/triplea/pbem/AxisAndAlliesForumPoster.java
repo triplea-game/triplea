@@ -60,10 +60,10 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 	public static final Pattern NUM_REPLIES_PATTERN = Pattern.compile(".*name=\"num_replies\" value=\"(\\d+)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	public static final Pattern SEQ_NUM_PATTERN = Pattern.compile(".*name=\"seqnum\"\\svalue=\"(\\d+)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	public static final Pattern SC_PATTERN = Pattern.compile(".*name=\"sc\"\\svalue=\"(\\w+)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-
+	
 	// Pattern that matches if the "Notify me of replies" checkbox is checked
 	public static final Pattern NOTIFY_PATTERN = Pattern.compile(".*id=\"check_notify\"\\schecked=\"checked\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-
+	
 	// 3 patterns used for error handling
 	public static final Pattern AN_ERROR_OCCURRED_PATTERN = Pattern.compile(".*An Error Has Occurred.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 	public static final Pattern ERROR_TEXT_PATTERN = Pattern.compile(".*<tr\\s+class=\"windowbg\">\\s*<td[^>]*>([^<]*)</td>.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
@@ -219,7 +219,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 					parts.add(createStringPart("subject", subject));
 					parts.add(createStringPart("icon", "xx"));
 					parts.add(createStringPart("message", message));
-
+					
 					// If the user has chosen to receive notifications, ensure this setting is passed on
 					parts.add(createStringPart("notify", NOTIFY_PATTERN.matcher(body).matches() ? "1" : "0"));
 					

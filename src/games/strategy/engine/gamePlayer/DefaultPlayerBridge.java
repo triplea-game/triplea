@@ -70,7 +70,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	{
 		return m_currentDelegate;
 	}*/
-
+	
 	/* TODO: add this into next release
 	public void printErrorStatus()
 	{
@@ -96,7 +96,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 			System.err.println(error);
 		}
 	}*/
-
+	
 	public boolean isGameOver()
 	{
 		return m_game.isGameOver();

@@ -3700,6 +3700,10 @@
 				<property name="Submersible Subs" value="true" editable="false">
                         <boolean/>
                 </property>
+				
+				<property name="Subs Can End NonCombat Move With Enemies" value="true" editable="false">
+						<boolean/>
+				</property>
                 
 				<property name="Sub Control Sea Zone Restricted" value="true" editable="false">
                 	<boolean/>

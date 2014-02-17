@@ -15,6 +15,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.chat.IChatPanel;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
@@ -30,6 +31,7 @@ import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.IServerMessenger;
 
 import java.awt.BorderLayout;
@@ -282,6 +284,13 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		{
 			m_lobbyWatcher.shutDown();
 		}
+	}
+	
+	@Override
+	public void postStartGame()
+	{
+		final GameData data = m_gameSelectorModel.getGameData();
+		data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
 	}
 	
 	@Override

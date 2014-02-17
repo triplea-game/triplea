@@ -250,6 +250,14 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, false, false);
 			return false;
 		}
+		// there is an issue with maps using thousands of chance triggers: they are causing the cypted random source (ie: live and pbem games) to lock up or error out
+		// so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances together, then getting a ton of random numbers at once instead of one at a time)
+		try
+		{
+			Thread.sleep(100);
+		} catch (final InterruptedException e)
+		{
+		}
 		final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
 		final boolean testChance = rollResult <= hitTarget;
 		final String notificationMessage = (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget + " out of " + diceSides + " Result: " + rollResult

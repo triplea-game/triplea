@@ -4,11 +4,15 @@ import games.strategy.engine.framework.startup.ui.editors.validators.EmailValida
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
 
-import javax.swing.*;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentListener;
 
 /**
  * An class for editing a Dice Server bean

@@ -35,6 +35,7 @@ public class PBEMMessagePoster implements Serializable
 	public static final String FORUM_POSTER_PROP_NAME = "games.strategy.engine.pbem.IForumPoster";
 	public static final String EMAIL_SENDER_PROP_NAME = "games.strategy.engine.pbem.IEmailSender";
 	public static final String WEB_POSTER_PROP_NAME = "games.strategy.engine.pbem.IWebPoster";
+	public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PBEMMessagePoster";
 	private static final long serialVersionUID = 2256265436928530566L;
 	
 	// -----------------------------------------------------------------------
@@ -79,10 +80,13 @@ public class PBEMMessagePoster implements Serializable
 	
 	public static boolean GameDataHasPlayByEmailOrForumMessengers(final GameData gameData)
 	{
+		if (gameData == null)
+			return false;
 		final IForumPoster forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
 		final IEmailSender emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
 		final IWebPoster webPoster = (IWebPoster) gameData.getProperties().get(WEB_POSTER_PROP_NAME);
-		return (forumPoster != null || emailSender != null || webPoster != null);
+		final boolean isPBEM = gameData.getProperties().get(PBEM_GAME_PROP_NAME, false);
+		return (isPBEM && (forumPoster != null || emailSender != null || webPoster != null));
 	}
 	
 	/* public void setForumPoster(final IForumPoster msgr)
@@ -304,7 +308,8 @@ public class PBEMMessagePoster implements Serializable
 		}
 		else
 		{
-			postButton.setEnabled(false);
+			if (postButton != null)
+				postButton.setEnabled(false);
 			final ProgressWindow progressWindow = new ProgressWindow(mainGameFrame, "Posting " + title + "...");
 			progressWindow.setVisible(true);
 			final Runnable t = new Runnable()
@@ -314,7 +319,8 @@ public class PBEMMessagePoster implements Serializable
 					boolean postOk = true;
 					
 					File saveGameFile = null;
-					postingDelegate.setHasPostedTurnSummary(true);
+					if (postingDelegate != null)
+						postingDelegate.setHasPostedTurnSummary(true);
 					
 					try
 					{
@@ -335,14 +341,23 @@ public class PBEMMessagePoster implements Serializable
 					try
 					{
 						// forward the poster to the delegate which invokes post() on the poster
-						if (!postingDelegate.postTurnSummary(posterPBEM, title, includeSaveGame))
-							postOk = false;
+						if (postingDelegate != null)
+						{
+							if (!postingDelegate.postTurnSummary(posterPBEM, title, includeSaveGame))
+								postOk = false;
+						}
+						else
+						{
+							if (!posterPBEM.post(null, title, includeSaveGame))
+								postOk = false;
+						}
 					} catch (final Exception e)
 					{
 						postOk = false;
 						e.printStackTrace();
 					}
-					postingDelegate.setHasPostedTurnSummary(postOk);
+					if (postingDelegate != null)
+						postingDelegate.setHasPostedTurnSummary(postOk);
 					
 					final StringBuilder sb = new StringBuilder();
 					if (posterPBEM.getForumPoster() != null)
@@ -386,7 +401,8 @@ public class PBEMMessagePoster implements Serializable
 					{
 						public void run()
 						{
-							postButton.setEnabled(!finalPostOk);
+							if (postButton != null)
+								postButton.setEnabled(!finalPostOk);
 							if (finalPostOk)
 								JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted", JOptionPane.INFORMATION_MESSAGE);
 							else

@@ -399,6 +399,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 			webPoster.clearSensitiveInfo();
 			data.getProperties().set(PBEMMessagePoster.WEB_POSTER_PROP_NAME, webPoster);
 		}
+		
+		// store whether we are a pbem game or not, whether we are capable of posting a game save
+		if (poster != null || sender != null || webPoster != null)
+		{
+			data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, true);
+		}
 	}
 	
 	/**

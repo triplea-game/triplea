@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Creating a menu option in the "File" menu called "Post PBEM/PBF Gamesave...", which will for pbem games post/email the savegame to the forum, without having to wait for the end turn phase. (veqryn)
+
 * Changing trigger "notification" to use "players". (veqryn)
 
 * Changing unit attachment property, "repairsUnits", to allow multiple and to have repair values associated with each unit, thereby allowing units to be repaired by X amount each turn. (veqryn)

@@ -6,11 +6,12 @@ import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
-import junit.framework.TestCase;
 
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+
+import junit.framework.TestCase;
 
 public class MessengerLoginTest extends TestCase
 {

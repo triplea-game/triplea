@@ -63,7 +63,7 @@ public class RemoteRandom implements IRemoteRandom
 	public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultID)
 	{
 		if (m_waitingForUnlock)
-			throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation");
+			throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation");// TODO: maybe we should wait instead of crashing the game?
 		m_waitingForUnlock = true;
 		// clean up here, we know these keys arent needed anymore so release them
 		// we cant do this earlier without synchronizing between the server and the client

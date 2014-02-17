@@ -5299,7 +5299,7 @@
 				</property>
 
 						<!-- Subs Can End NonCombat Move With Enemies allows submarines to end their noncombat movement in a sea zone containing any enemy units, including enemy subs -->
-				<property name="Subs Can End NonCombat Move With Enemies" value="false" editable="false">
+				<property name="Subs Can End NonCombat Move With Enemies" value="true" editable="false">
 						<boolean/>
 				</property>
 				

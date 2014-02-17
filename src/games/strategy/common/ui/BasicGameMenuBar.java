@@ -2,6 +2,8 @@ package games.strategy.common.ui;
 
 import games.strategy.debug.Console;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
@@ -18,9 +20,12 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.IServerMessenger;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -582,6 +587,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(fileMenu);
 		addSaveMenu(fileMenu);
+		addPostPBEM(fileMenu);
+		fileMenu.addSeparator();
 		addExitMenu(fileMenu);
 	}
 	
@@ -697,6 +704,41 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		menuFileSave.setMnemonic(KeyEvent.VK_S);
 		menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		parent.add(menuFileSave);
+	}
+	
+	protected void addPostPBEM(final JMenu parent)
+	{
+		if (!PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getGame().getData()))
+			return;
+		final JMenuItem menuPBEM = new JMenuItem(new AbstractAction("Post PBEM/PBF Gamesave...")
+		{
+			private static final long serialVersionUID = 5197939183318847906L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final GameData data = getGame().getData();
+				if (data == null || !PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(data))
+					return;
+				final String title = "Manual Gamesave Post";
+				try
+				{
+					data.acquireReadLock();
+					final GameStep step = data.getSequence().getStep();
+					final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
+					final int round = data.getSequence().getRound();
+					final HistoryLog historyLog = new HistoryLog();
+					historyLog.printFullTurn(data, false, GameStepPropertiesHelper.getTurnSummaryPlayers(data));
+					final PBEMMessagePoster poster = new PBEMMessagePoster(getData(), currentPlayer, round, title);
+					PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, m_frame, null);
+				} finally
+				{
+					data.releaseReadLock();
+				}
+			}
+		});
+		menuPBEM.setMnemonic(KeyEvent.VK_P);
+		menuPBEM.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		parent.add(menuPBEM);
 	}
 	
 	/**
@@ -946,7 +988,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				final IntTextField text = new IntTextField(0, 10000);
+				final IntTextField text = new IntTextField(50, 10000);
 				text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
 				final JPanel panel = new JPanel();
 				panel.setLayout(new GridBagLayout());
@@ -1055,4 +1097,5 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 		return m_frame.getGame().getData();
 	}
+	
 }

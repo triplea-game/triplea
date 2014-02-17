@@ -1,7 +1,9 @@
 package games.strategy.engine.framework.startup.ui.editors;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
 /**
  * Render to render IBeans in a combo box

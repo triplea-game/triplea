@@ -1,7 +1,10 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Frame;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  * A Dialog window which has a single component, and a number of buttons.

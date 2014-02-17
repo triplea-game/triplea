@@ -26,6 +26,7 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
@@ -1207,6 +1208,8 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	
 	public void postStartGame()
 	{
+		final GameData data = m_gameSelectorModel.getGameData();
+		data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
 	}
 }
 

@@ -6,6 +6,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
 
@@ -117,6 +118,13 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 				return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void postStartGame()
+	{
+		final GameData data = m_gameSelectorModel.getGameData();
+		data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
 	}
 	
 	public void shutDown()
