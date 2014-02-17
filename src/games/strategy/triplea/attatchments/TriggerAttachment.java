@@ -31,8 +31,8 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.NotificationMessages;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -1727,29 +1727,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				continue;
 			if (useUses)
 				t.use(aBridge);
-			notifications.add(t.getNotification());
-		}
-		final Iterator<String> notificationMessages = notifications.iterator();
-		while (notificationMessages.hasNext())
-		{
-			final String notificationMessageKey = notificationMessages.next().trim();
-			final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
-			if (sounds != null)
-				aBridge.getSoundChannelBroadcaster().playSoundToPlayer(sounds.trim(), null, aBridge.getPlayerID());
-			final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-			if (message != null)
+			if (!notifications.contains(t.getNotification()))
 			{
-				String messageForRecord = message.trim();
-				if (messageForRecord.length() > 190)
+				notifications.add(t.getNotification());
+				final String notificationMessageKey = t.getNotification().trim();
+				final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
+				if (sounds != null)
+					aBridge.getSoundChannelBroadcaster().playSoundToPlayers(sounds.trim(), null, t.getPlayers(), null);
+				final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+				if (message != null)
 				{
-					// We don't want to record a giant string in the history panel, so just put a shortened version in instead.
-					messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
-					messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
-					if (messageForRecord.length() > 195)
-						messageForRecord = messageForRecord.substring(0, 190) + "....";
+					String messageForRecord = message.trim();
+					if (messageForRecord.length() > 190)
+					{
+						// We don't want to record a giant string in the history panel, so just put a shortened version in instead.
+						messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
+						messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
+						if (messageForRecord.length() > 195)
+							messageForRecord = messageForRecord.substring(0, 190) + "....";
+					}
+					aBridge.getHistoryWriter().startEvent("Note to players " + MyFormatter.defaultNamedToTextList(t.getPlayers()) + ": " + messageForRecord);
+					((ITripleaDisplay) aBridge.getDisplayChannelBroadcaster()).reportMessageToPlayers(t.getPlayers(), null, ("<html>" + message.trim() + "</html>"), NOTIFICATION);
 				}
-				aBridge.getHistoryWriter().startEvent("Note to player " + aBridge.getPlayerID().getName() + ": " + messageForRecord);
-				((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(("<html>" + message.trim() + "</html>"), NOTIFICATION);
 			}
 		}
 	}

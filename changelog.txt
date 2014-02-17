@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Changing trigger "notification" to use "players". (veqryn)
+
 * Created new unitPlacement attribute, "unitDamage", which will let a unit start with bombing factory damage. (veqryn)
 
 * Created new unitPlacement attribute, "hitsTaken", which will let a unit start damaged. (veqryn)

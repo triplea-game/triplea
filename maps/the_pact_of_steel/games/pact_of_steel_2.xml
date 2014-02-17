@@ -3493,7 +3493,8 @@
 		You may prefix the property count portion with "-reset-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-reset-factory:hangar"/> )
 		To further explain, certain options replace/overwrite when you set them.  For example, "attack", or "invert", will overwrite when you set it with something new. Other properties, like "requiresUnits", or "productionRule", will add more items to a list every time you set it.
 		Unless otherwise specified, all options overwrite when set.
-			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). Also used as list of players affected by a playerProperty change.
+			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). For example, if used with placement, it will do all the places for each of the players listed.
+															Also used as list of players affected by a playerProperty change.
 			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, PoliticalActionAttachment, UserActionAttachment) and the exact full name of the attachment to be changed. 
 															(example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
 			playerProperty						values: the name of any actual attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)

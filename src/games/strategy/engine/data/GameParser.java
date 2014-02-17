@@ -1640,18 +1640,22 @@ public class GameParser
 				owner = getPlayerID(current, "owner", false);
 			final int hits;
 			if (hitsTakenString != null && hitsTakenString.trim().length() > 0)
+			{
 				hits = Integer.parseInt(hitsTakenString);
+				if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1)
+					throw new GameParseException("hitsTaken can not be less than zero or greater than one less than total hitpPoints");
+			}
 			else
 				hits = 0;
-			if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1)
-				throw new GameParseException("hitsTaken can not be less than zero or greater than one less than total hitpPoints");
 			final int unitDamage;
 			if (unitDamageString != null && unitDamageString.trim().length() > 0)
+			{
 				unitDamage = Integer.parseInt(unitDamageString);
+				if (unitDamage < 0)
+					throw new GameParseException("unitDamage can not be less than zero");
+			}
 			else
 				unitDamage = 0;
-			if (unitDamage < 0)
-				throw new GameParseException("unitDamage can not be less than zero");
 			final int quantity = Integer.parseInt(current.getAttribute("quantity"));
 			territory.getUnits().addAllUnits(type.create(quantity, owner, false, hits, unitDamage));
 		}
