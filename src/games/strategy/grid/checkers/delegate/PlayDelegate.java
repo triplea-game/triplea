@@ -448,6 +448,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	public static Set<Territory> getAllTerritoriesOnMapWhichCanHaveUnits(final Territory start, final GameData data)
 	{
 		final Set<Territory> allTerritories = new HashSet<Territory>();
+		if (start == null || data == null)
+			return allTerritories;
 		final int even = (start.getX() + start.getY()) % 2;
 		for (final Territory t : data.getMap().getTerritories())
 		{

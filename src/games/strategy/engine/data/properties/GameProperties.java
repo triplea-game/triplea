@@ -202,7 +202,8 @@ public class GameProperties extends GameDataComponent
 			}
 			try
 			{
-				zippedOut.close();
+				if (zippedOut != null)
+					zippedOut.close();
 			} catch (final IOException e)
 			{
 				e.printStackTrace();

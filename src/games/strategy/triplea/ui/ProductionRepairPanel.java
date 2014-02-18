@@ -70,7 +70,7 @@ import javax.swing.border.EtchedBorder;
 public class ProductionRepairPanel extends JPanel
 {
 	private static final long serialVersionUID = -6344711064699083729L;
-	private JFrame m_owner;
+	private final JFrame m_owner = null;
 	private JDialog m_dialog;
 	private final IUIContext m_uiContext;
 	private final List<Rule> m_rules = new ArrayList<Rule>();

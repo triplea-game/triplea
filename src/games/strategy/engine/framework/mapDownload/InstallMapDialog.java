@@ -126,6 +126,8 @@ public class InstallMapDialog extends JDialog
 		m_outOfDateMaps.clear();
 		for (final DownloadFileDescription d : m_games)
 		{
+			if (d == null)
+				continue;
 			gameMap.put(d.getMapName(), d);
 			gameNames.add(d.getMapName());
 			if (d != null && !d.isDummyUrl())

@@ -167,7 +167,7 @@ public class ConnectionFinder
 		final Map<String, Collection<String>> connections = new HashMap<String, Collection<String>>();
 		System.out.println("Now Scanning for Connections");
 		// sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
-		final List<String> allTerritories = new ArrayList<String>(mapOfPolygons.keySet());
+		final List<String> allTerritories = mapOfPolygons == null ? new ArrayList<String>() : new ArrayList<String>(mapOfPolygons.keySet());
 		Collections.sort(allTerritories, new AlphanumComparator());
 		final List<String> allAreas = new ArrayList<String>(territoryAreas.keySet());
 		Collections.sort(allAreas, new AlphanumComparator());

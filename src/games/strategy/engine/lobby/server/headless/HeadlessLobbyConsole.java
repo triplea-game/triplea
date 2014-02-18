@@ -167,7 +167,8 @@ public class HeadlessLobbyConsole
 		out.println("Are you sure? (y/n)");
 		try
 		{
-			if (in.readLine().toLowerCase().startsWith("y"))
+			final String readin = in.readLine();
+			if (readin != null && readin.toLowerCase().startsWith("y"))
 			{
 				System.exit(0);
 			}

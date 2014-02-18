@@ -32,6 +32,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -107,8 +108,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
 			final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-						TriggerAttachment.availableUses,
-						TriggerAttachment.whenOrDefaultMatch(null, null),
+						AbstractTriggerAttachment.availableUses,
+						AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
 						new CompositeMatchOr<TriggerAttachment>(
 									TriggerAttachment.techAvailableMatch()));
 			// get all possible triggers based on this match.
@@ -119,7 +120,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 				// get all conditions possibly needed by these triggers, and then test them.
 				final HashMap<ICondition, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
 				// get all triggers that are satisfied based on the tested conditions.
-				final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
+				final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
 				// now list out individual types to fire, once for each of the matches above.
 				TriggerAttachment.triggerAvailableTechChange(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), m_bridge, null, null, true, true, true, true);
 			}
@@ -276,7 +277,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
 		final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
 		final DiceRoll renderDice = (isLL_TECH_ONLY() ? new DiceRoll(random, techHits, remainder, false) : new DiceRoll(random, techHits, diceSides - 1, true));
-		m_bridge.getHistoryWriter().startEvent(m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + MyFormatter.asDice(random) + directedTechInfo
+		m_bridge.getHistoryWriter().startEvent(m_player.getName() + (random.length > 1 ? " roll " : " rolls : ") + MyFormatter.asDice(random) + directedTechInfo
 					+ " and gets " + techHits + " " + MyFormatter.pluralize("hit", techHits), renderDice);
 		if (isWW2V3TechModel() && (techHits > 0 || games.strategy.triplea.Properties.getRemoveAllTechTokensAtEndOfTurn(data)))
 		{

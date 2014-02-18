@@ -693,7 +693,7 @@ public class HeadlessGameServer
 			if (m_lobbyWatcherResetupThread != null)
 			{
 				m_lobbyWatcherResetupThread.shutdown();
-				Thread.sleep(250);
+				Thread.sleep(100);
 			}
 		} catch (final Exception e)
 		{
@@ -703,7 +703,7 @@ public class HeadlessGameServer
 			if (m_iGame != null)
 			{
 				m_iGame.stopGame();
-				Thread.sleep(500);
+				Thread.sleep(200);
 			}
 		} catch (final Exception e)
 		{
@@ -721,7 +721,7 @@ public class HeadlessGameServer
 				{
 					((HeadlessServerSetup) setup).shutDown();
 				}
-				Thread.sleep(250);
+				Thread.sleep(100);
 			}
 		} catch (final Exception e)
 		{
@@ -731,7 +731,7 @@ public class HeadlessGameServer
 			if (m_gameSelectorModel != null && m_gameSelectorModel.getGameData() != null)
 			{
 				m_gameSelectorModel.getGameData().clearAllListeners();
-				Thread.sleep(250);
+				Thread.sleep(100);
 			}
 		} catch (final Exception e)
 		{
@@ -1057,9 +1057,9 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	
 	public void createLobbyWatcher()
 	{
-		m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null, m_lobbyWatcher.getInGameLobbyWatcher()));
 		if (m_lobbyWatcher != null)
 		{
+			m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null, m_lobbyWatcher.getInGameLobbyWatcher()));
 			m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
 		}
 	}
@@ -2092,7 +2092,8 @@ class HeadlessGameServerConsole
 				final String command = in.readLine();
 				// if (m_shutDown)
 				// break;
-				process(command.trim());
+				if (command != null)
+					process(command.trim());
 			} catch (final Throwable t)
 			{
 				t.printStackTrace();
@@ -2514,6 +2515,8 @@ class HeadlessGameServerConsole
 		try
 		{
 			final String readin = in.readLine();
+			if (readin == null)
+				return;
 			final boolean stop = readin.toLowerCase().startsWith("y");
 			final boolean forceStop = readin.toLowerCase().startsWith("f");
 			if (stop || forceStop)
@@ -2546,7 +2549,8 @@ class HeadlessGameServerConsole
 		out.println("Are you sure? (y/n)");
 		try
 		{
-			if (in.readLine().toLowerCase().startsWith("y"))
+			final String readin = in.readLine();
+			if (readin != null && readin.toLowerCase().startsWith("y"))
 			{
 				m_shutDown = true;
 				System.exit(0);

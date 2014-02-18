@@ -91,7 +91,8 @@ public class GoPlayer extends GridGamePlayer
 		
 		m_ui.changeActivePlayer(getPlayerID());
 		final GoMapPanel mapPanel = ((GoMapPanel) m_ui.getMainPanel());
-		mapPanel.changePhase(GO_DELEGATE_PHASE.ENDGAME);
+		if (mapPanel != null)
+			mapPanel.changePhase(GO_DELEGATE_PHASE.ENDGAME);
 		
 		// Get the relevant delegate
 		// final PlayerID me = getPlayerID();

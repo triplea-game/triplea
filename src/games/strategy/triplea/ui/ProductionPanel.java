@@ -71,7 +71,7 @@ import javax.swing.border.EtchedBorder;
 public class ProductionPanel extends JPanel
 {
 	private static final long serialVersionUID = -1539053979479586609L;
-	private JFrame m_owner;
+	private final JFrame m_owner = null;
 	private JDialog m_dialog;
 	// Edwin: made these protected so the class can be extended
 	protected final IUIContext m_uiContext;
