@@ -14,6 +14,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
@@ -880,7 +881,10 @@ public class EditPanel extends ActionPanel
 					for (final ProductionRule productionRule : production.keySet())
 					{
 						final int quantity = production.getInt(productionRule);
-						final UnitType type = (UnitType) productionRule.getResults().keySet().iterator().next();
+						final NamedAttachable resourceOrUnit = productionRule.getResults().keySet().iterator().next();
+						if (!(resourceOrUnit instanceof UnitType))
+							continue;
+						final UnitType type = (UnitType) resourceOrUnit;
 						units.addAll(type.create(quantity, player));
 					}
 					final String result = m_frame.getEditDelegate().addUnits(territory, units);

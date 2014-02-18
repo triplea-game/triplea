@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.strongAI;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -4314,7 +4315,10 @@ public class SUtils
 			bestDefense.put(rule, 0);
 			bestMaxUnits.put(rule, 0);
 			bestTransport.put(rule, 0);
-			final UnitType x = (UnitType) rule.getResults().keySet().iterator().next();
+			final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+			if (!(resourceOrUnit instanceof UnitType))
+				continue;
+			final UnitType x = (UnitType) resourceOrUnit;
 			supportableInfMap.put(rule, UnitAttachment.get(x).getArtillerySupportable());
 			transportMap.put(rule, Matches.UnitTypeCanBeTransported.match(x));
 			infMap.put(rule, Matches.UnitTypeIsInfantry.match(x));
@@ -4402,7 +4406,10 @@ public class SUtils
 		Integer infCount = parameters.getInt("infantry");
 		Integer nonInfCount = parameters.getInt("nonInfantry");
 		int parametersChanged = 0, thisParametersChanged = 0;
-		final UnitType x = (UnitType) rule.getResults().keySet().iterator().next();
+		final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+		if (!(resourceOrUnit instanceof UnitType))
+			return 0;
+		final UnitType x = (UnitType) resourceOrUnit;
 		final UnitAttachment u = UnitAttachment.get(x);
 		final boolean thisIsSupportableInf = supportableInfMap.get(rule);
 		final boolean thisIsInf = infMap.get(rule);

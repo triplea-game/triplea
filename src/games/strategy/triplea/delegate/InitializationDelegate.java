@@ -256,8 +256,10 @@ public class InitializationDelegate extends BaseTripleADelegate
 			{
 				final String ruleName = rule.getName();
 				final IntegerMap<NamedAttachable> ruleResults = rule.getResults();
-				final String unitName = ruleResults.keySet().iterator().next().getName();
-				final UnitType unit = data.getUnitTypeList().getUnitType(unitName);
+				final NamedAttachable named = ruleResults.keySet().iterator().next();
+				if (!(named instanceof UnitType))
+					continue;
+				final UnitType unit = data.getUnitTypeList().getUnitType(named.getName());
 				final boolean isSea = UnitAttachment.get(unit).getIsSea();
 				if (!isSea)
 				{

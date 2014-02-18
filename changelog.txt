@@ -1,6 +1,14 @@
 Changes for 1.8.0.0
 * Allowed muting of custom aa gun sounds and custom notification, victory, and defeat sounds. (veqryn)
 
+* Created resource image factory for making images and icons of resources. (veqryn)
+
+* Fixed user interface to allow purchasing resources. (veqryn)
+
+* Fixing engine to allow purchase rules for purchasing resources. (veqryn)
+
+* Fixed memory leak in repair rules for repairing factories. (veqryn)
+
 * Creating a menu option in the "File" menu called "Post PBEM/PBF Gamesave...", which will for pbem games post/email the savegame to the forum, without having to wait for the end turn phase. (veqryn)
 
 * Changing trigger "notification" to use "players". (veqryn)

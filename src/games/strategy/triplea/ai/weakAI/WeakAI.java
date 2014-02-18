@@ -14,6 +14,7 @@ package games.strategy.triplea.ai.weakAI;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -840,7 +841,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				i++;
 				for (final ProductionRule rule : rules)
 				{
-					final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
+					final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					final UnitType results = (UnitType) resourceOrUnit;
 					if (Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results)
 								|| Matches.UnitTypeIsAAforAnything.match(results)
 								|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.UnitTypeIsStatic(player).match(results))
@@ -1019,7 +1023,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			i++;
 			for (final ProductionRule rule : rules)
 			{
-				final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
+				final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+				if (!(resourceOrUnit instanceof UnitType))
+					continue;
+				final UnitType results = (UnitType) resourceOrUnit;
 				if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results) || Matches.UnitTypeIsAAforAnything.match(results)
 							|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.UnitTypeIsStatic(player).match(results))
 				{

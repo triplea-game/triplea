@@ -19,6 +19,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -40,6 +41,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -317,12 +319,48 @@ public class ProductionPanel extends JPanel
 			final ScrollableTextField i_text = new ScrollableTextField(0, Integer.MAX_VALUE);
 			i_text.setValue(m_quantity);
 			panel.setLayout(new GridBagLayout());
-			final UnitType type = (UnitType) m_rule.getResults().keySet().iterator().next();
-			final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, m_id, m_data, false, false);
-			final UnitAttachment attach = UnitAttachment.get(type);
-			final int attack = attach.getAttack(m_id);
-			final int movement = attach.getMovement(m_id);
-			final int defense = attach.getDefense(m_id);
+			final JLabel info = new JLabel("  ");
+			final JLabel name = new JLabel("  ");
+			final Color defaultForegroundLabelColor = name.getForeground();
+			Icon icon = null;
+			final StringBuilder tooltip = new StringBuilder();
+			final Set<NamedAttachable> results = new HashSet<NamedAttachable>(m_rule.getResults().keySet());
+			final Iterator<NamedAttachable> iter = results.iterator();
+			while (iter.hasNext())
+			{
+				final NamedAttachable resourceOrUnit = iter.next();
+				if (resourceOrUnit instanceof UnitType)
+				{
+					final UnitType type = (UnitType) resourceOrUnit;
+					icon = m_uiContext.getUnitImageFactory().getIcon(type, m_id, m_data, false, false);
+					final UnitAttachment attach = UnitAttachment.get(type);
+					final int attack = attach.getAttack(m_id);
+					final int movement = attach.getMovement(m_id);
+					final int defense = attach.getDefense(m_id);
+					info.setText(attack + "/" + defense + "/" + movement);
+					tooltip.append(type.getName() + ": " + type.getTooltip(m_id, true));
+					name.setText(type.getName());
+					if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1)
+						name.setForeground(Color.CYAN);
+					else if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() > 1)
+						name.setForeground(Color.BLUE);
+					else
+						name.setForeground(defaultForegroundLabelColor);
+				}
+				else if (resourceOrUnit instanceof Resource)
+				{
+					final Resource resource = (Resource) resourceOrUnit;
+					icon = m_uiContext.getResourceImageFactory().getIcon(resource, m_data, true);
+					info.setText("resource");
+					tooltip.append(resource.getName() + ": resource");
+					name.setText(resource.getName());
+					name.setForeground(Color.GREEN);
+				}
+				if (iter.hasNext())
+				{
+					tooltip.append("<br /><br /><br /><br />");
+				}
+			}
 			final int numberOfUnitsGiven = m_rule.getResults().totalValues();
 			String text;
 			if (numberOfUnitsGiven > 1)
@@ -330,18 +368,11 @@ public class ProductionPanel extends JPanel
 			else
 				text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
-			final JLabel info = new JLabel(attack + "/" + defense + "/" + movement);
-			// info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
-			final String toolTipText = "<html>" + type.getName() + ": " + type.getTooltip(m_id, true) + "</html>";
+			final String toolTipText = "<html>" + tooltip.toString() + "</html>";
 			info.setToolTipText(toolTipText);
 			label.setToolTipText(toolTipText);
 			final int space = 8;
-			final JLabel name = new JLabel(type.getName());
 			// change name color for 'upgrades and consumes' unit types
-			if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1)
-				name.setForeground(Color.CYAN);
-			else if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() > 1)
-				name.setForeground(Color.BLUE);
 			panel.add(name, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
 			panel.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space, space), 0, 0));
 			panel.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space, space), 0, 0));

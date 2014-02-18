@@ -20,6 +20,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -936,7 +937,10 @@ public class BattleCalculator
 		for (final ProductionRule rule : frontier.getRules())
 		{
 			final int costPerGroup = rule.getCosts().getInt(PUS);
-			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
+			final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+			if (!(resourceOrUnit instanceof UnitType))
+				continue;
+			final UnitType type = (UnitType) resourceOrUnit;
 			final int numberProduced = rule.getResults().getInt(type);
 			// we average the cost for a single unit, rounding up
 			final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
@@ -988,7 +992,10 @@ public class BattleCalculator
 		for (final ProductionRule rule : data.getProductionRuleList().getProductionRules())
 		{
 			// only works for the first result, so we are assuming each purchase frontier only gives one type of unit
-			final UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
+			final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+			if (!(resourceOrUnit instanceof UnitType))
+				continue;
+			final UnitType ut = (UnitType) resourceOrUnit;
 			final int numberProduced = rule.getResults().getInt(ut);
 			final int costPerGroup = rule.getCosts().getInt(PUS);
 			// we round up the cost

@@ -712,7 +712,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	 */
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
-		final String question = "Your units will be fired on in: " + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ") + ".  Do you still want to move?";
+		final String question = "Your units will be fired on in: " + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false) + ".  Do you still want to move?";
 		return m_ui.getOK(question);
 	}
 	

@@ -14,9 +14,11 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attatchments.UnitTypeComparator;
@@ -64,8 +66,10 @@ public class SimpleUnitPanel extends JPanel
 		for (final ProductionRule productionRule : productionRules)
 		{
 			final int quantity = units.getInt(productionRule);
-			final UnitType unit = (UnitType) productionRule.getResults().keySet().iterator().next();
-			addUnits(player, data, quantity, unit, false, false);
+			for (final NamedAttachable resourceOrUnit : productionRule.getResults().keySet())
+			{
+				addUnits(player, data, quantity * productionRule.getResults().getInt(resourceOrUnit), resourceOrUnit, false, false);
+			}
 		}
 	}
 	
@@ -107,17 +111,18 @@ public class SimpleUnitPanel extends JPanel
 		removeAll();
 		for (final UnitCategory category : categories)
 		{
-			// TODO Kev determine if we need to identify if the unit is hit/disabled
 			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.hasDamageOrBombingUnitDamage(), category.getDisabled());
 		}
 	}
 	
-	private void addUnits(final PlayerID player, final GameData data, final int quantity, final UnitType unit, final boolean damaged, final boolean disabled)
+	private void addUnits(final PlayerID player, final GameData data, final int quantity, final NamedAttachable unit, final boolean damaged, final boolean disabled)
 	{
-		// TODO Kev determine if we need to identify if the unit is hit/disabled
 		final JLabel label = new JLabel();
 		label.setText(" x " + quantity);
-		label.setIcon(m_uiContext.getUnitImageFactory().getIcon(unit, player, data, damaged, disabled));
+		if (unit instanceof UnitType)
+			label.setIcon(m_uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled));
+		else if (unit instanceof Resource)
+			label.setIcon(m_uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
 		add(label);
 	}
 	
@@ -127,9 +132,48 @@ public class SimpleUnitPanel extends JPanel
 		
 		public int compare(final ProductionRule o1, final ProductionRule o2)
 		{
-			final UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
-			final UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
-			return utc.compare(u1, u2);
+			if (o1.getResults().size() == 1 && o2.getResults().size() == 1)
+			{
+				final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
+				final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
+				if (n1 instanceof UnitType)
+				{
+					final UnitType u1 = (UnitType) n1;
+					if (n2 instanceof UnitType)
+					{
+						final UnitType u2 = (UnitType) n2;
+						return utc.compare(u1, u2);
+					}
+					else if (n2 instanceof Resource)
+					{
+						// final Resource r2 = (Resource) n2;
+						return -1;
+					}
+					return n1.getName().compareTo(n2.getName());
+				}
+				else if (n1 instanceof Resource)
+				{
+					final Resource r1 = (Resource) n1;
+					if (n2 instanceof UnitType)
+					{
+						// final UnitType u2 = (UnitType) n2;
+						return 1;
+					}
+					else if (n2 instanceof Resource)
+					{
+						final Resource r2 = (Resource) n2;
+						return r1.getName().compareTo(r2.getName());
+					}
+					else
+						return n1.getName().compareTo(n2.getName());
+				}
+				return n1.getName().compareTo(n2.getName());
+			}
+			if (o1.getResults().size() > o2.getResults().size())
+				return -1;
+			else if (o1.getResults().size() < o2.getResults().size())
+				return 1;
+			return o1.getName().compareTo(o2.getName());
 		}
 	};
 	Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>()
@@ -138,9 +182,48 @@ public class SimpleUnitPanel extends JPanel
 		
 		public int compare(final RepairRule o1, final RepairRule o2)
 		{
-			final UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
-			final UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
-			return utc.compare(u1, u2);
+			if (o1.getResults().size() == 1 && o2.getResults().size() == 1)
+			{
+				final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
+				final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
+				if (n1 instanceof UnitType)
+				{
+					final UnitType u1 = (UnitType) n1;
+					if (n2 instanceof UnitType)
+					{
+						final UnitType u2 = (UnitType) n2;
+						return utc.compare(u1, u2);
+					}
+					else if (n2 instanceof Resource)
+					{
+						// final Resource r2 = (Resource) n2;
+						return -1;
+					}
+					return n1.getName().compareTo(n2.getName());
+				}
+				else if (n1 instanceof Resource)
+				{
+					final Resource r1 = (Resource) n1;
+					if (n2 instanceof UnitType)
+					{
+						// final UnitType u2 = (UnitType) n2;
+						return 1;
+					}
+					else if (n2 instanceof Resource)
+					{
+						final Resource r2 = (Resource) n2;
+						return r1.getName().compareTo(r2.getName());
+					}
+					else
+						return n1.getName().compareTo(n2.getName());
+				}
+				return n1.getName().compareTo(n2.getName());
+			}
+			if (o1.getResults().size() > o2.getResults().size())
+				return -1;
+			else if (o1.getResults().size() < o2.getResults().size())
+				return 1;
+			return o1.getName().compareTo(o2.getName());
 		}
 	};
 }

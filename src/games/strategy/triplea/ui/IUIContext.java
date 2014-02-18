@@ -6,6 +6,7 @@ import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.PUImageFactory;
+import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
@@ -32,6 +33,8 @@ public interface IUIContext
 	public TileImageFactory getTileImageFactory();
 	
 	public UnitImageFactory getUnitImageFactory();
+	
+	public ResourceImageFactory getResourceImageFactory();
 	
 	public MapImage getMapImage();
 	

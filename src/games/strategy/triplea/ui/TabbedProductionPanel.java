@@ -19,8 +19,10 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -181,28 +183,39 @@ public class TabbedProductionPanel extends ProductionPanel
 		final ArrayList<Rule> seaRules = new ArrayList<Rule>();
 		final ArrayList<Rule> constructRules = new ArrayList<Rule>();
 		final ArrayList<Rule> upgradeConsumesRules = new ArrayList<Rule>();
+		final ArrayList<Rule> resourceRules = new ArrayList<Rule>();
 		for (final Rule rule : m_rules)
 		{
-			final UnitType type = (UnitType) rule.getProductionRule().getResults().keySet().iterator().next();
-			final UnitAttachment attach = UnitAttachment.get(type);
 			allRules.add(rule);
-			if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1)
-				upgradeConsumesRules.add(rule);
-			if (attach.getIsConstruction())
-			{ // canproduceUnits isn't checked on purpose, since this category is for units that can be placed anywhere (placed without needing a factory).
-				constructRules.add(rule);
-			}
-			else if (attach.getIsSea())
+			final NamedAttachable resourceOrUnit = rule.getProductionRule().getResults().keySet().iterator().next();
+			if (resourceOrUnit instanceof UnitType)
 			{
-				seaRules.add(rule);
+				final UnitType type = (UnitType) resourceOrUnit;
+				final UnitAttachment attach = UnitAttachment.get(type);
+				if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1)
+					upgradeConsumesRules.add(rule);
+				if (attach.getIsConstruction())
+				{ // canproduceUnits isn't checked on purpose, since this category is for units that can be placed anywhere (placed without needing a factory).
+					constructRules.add(rule);
+				}
+				else if (attach.getIsSea())
+				{
+					seaRules.add(rule);
+				}
+				else if (attach.getIsAir())
+				{
+					airRules.add(rule);
+				}
+				else
+				{
+					landRules.add(rule);
+				}
 			}
-			else if (attach.getIsAir())
+			else if (resourceOrUnit instanceof Resource)
 			{
-				airRules.add(rule);
-			}
-			else
-			{
-				landRules.add(rule);
+				@SuppressWarnings("unused")
+				final Resource type = (Resource) resourceOrUnit;
+				resourceRules.add(rule);
 			}
 		}
 		ruleLists.add(new Tuple<String, List<Rule>>("All", allRules));
@@ -211,6 +224,7 @@ public class TabbedProductionPanel extends ProductionPanel
 		ruleLists.add(new Tuple<String, List<Rule>>("Sea", seaRules));
 		ruleLists.add(new Tuple<String, List<Rule>>("Construction", constructRules));
 		ruleLists.add(new Tuple<String, List<Rule>>("Upgrades/Consumes", upgradeConsumesRules));
+		ruleLists.add(new Tuple<String, List<Rule>>("Resources", resourceRules));
 		return ruleLists;
 	}
 	

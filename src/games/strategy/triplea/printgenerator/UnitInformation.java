@@ -14,6 +14,7 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
@@ -116,7 +117,7 @@ class UnitInformation
 			while (productionIterator.hasNext())
 			{
 				final ProductionRule currentRule = productionIterator.next();
-				final UnitType currentType = (UnitType) currentRule.getResults().keySet().iterator().next();
+				final NamedAttachable currentType = currentRule.getResults().keySet().iterator().next();
 				if (currentType.equals(type))
 				{
 					final int cost = currentRule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));

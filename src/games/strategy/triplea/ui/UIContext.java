@@ -21,6 +21,7 @@ import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.PUImageFactory;
+import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
@@ -47,6 +48,7 @@ public class UIContext extends AbstractUIContext implements IUIContext
 	protected MapData m_mapData;
 	protected final TileImageFactory m_tileImageFactory = new TileImageFactory();
 	protected final UnitImageFactory m_unitImageFactory = new UnitImageFactory();
+	protected final ResourceImageFactory m_resourceImageFactory = new ResourceImageFactory();
 	protected final MapImage m_mapImage;
 	protected final FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
 	protected DiceImageFactory m_diceImageFactory;
@@ -94,6 +96,7 @@ public class UIContext extends AbstractUIContext implements IUIContext
 			setDrawTerritoryBordersAgainToMedium();
 		m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale, m_mapData.getDefaultUnitWidth(), m_mapData.getDefaultUnitHeight(), m_mapData.getDefaultUnitCounterOffsetWidth(),
 					m_mapData.getDefaultUnitCounterOffsetHeight());
+		m_resourceImageFactory.setResourceLoader(m_resourceLoader, 1);// TODO: separate scale for resources
 		m_flagIconImageFactory.setResourceLoader(m_resourceLoader);
 		m_PUImageFactory.setResourceLoader(m_resourceLoader);
 		m_tileImageFactory.setMapDir(m_resourceLoader);
@@ -148,6 +151,11 @@ public class UIContext extends AbstractUIContext implements IUIContext
 	public UnitImageFactory getUnitImageFactory()
 	{
 		return m_unitImageFactory;
+	}
+	
+	public ResourceImageFactory getResourceImageFactory()
+	{
+		return m_resourceImageFactory;
 	}
 	
 	public MapImage getMapImage()

@@ -16,6 +16,7 @@ package games.strategy.triplea.ai.Dynamix_AI.Code;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
@@ -84,7 +85,8 @@ public class Place
 		Unit aa = null;
 		for (final ProductionRule rule : player.getProductionFrontier().getRules())
 		{
-			if (Matches.UnitTypeIsAAforAnything.match((UnitType) rule.getResults().keySet().toArray()[0]))
+			final NamedAttachable unit = rule.getResults().keySet().iterator().next();
+			if (unit instanceof UnitType && Matches.UnitTypeIsAAforAnything.match((UnitType) unit))
 			{
 				aa = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
 				break;

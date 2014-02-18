@@ -229,6 +229,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		// remove first, since add logs PUs remaining
 		final Iterator<NamedAttachable> iter = results.keySet().iterator();
 		final Collection<Unit> totalUnits = new ArrayList<Unit>();
+		final Collection<UnitType> totalUnitTypes = new ArrayList<UnitType>();
+		final Collection<Resource> totalResources = new ArrayList<Resource>();
+		final Collection<NamedAttachable> totalAll = new ArrayList<NamedAttachable>();
 		final CompositeChange changes = new CompositeChange();
 		// add changes for added resources
 		// and find all added units
@@ -241,6 +244,10 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 				final int quantity = results.getInt(resource);
 				final Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
 				changes.add(change);
+				for (int i = 0; i < quantity; i++)
+				{
+					totalResources.add(resource);
+				}
 			}
 			else
 			{
@@ -248,8 +255,14 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 				final int quantity = results.getInt(type);
 				final Collection<Unit> units = type.create(quantity, m_player);
 				totalUnits.addAll(units);
+				for (int i = 0; i < quantity; i++)
+				{
+					totalUnitTypes.add(type);
+				}
 			}
 		}
+		totalAll.addAll(totalUnitTypes);
+		totalAll.addAll(totalResources);
 		// add changes for added units
 		if (!totalUnits.isEmpty())
 		{
@@ -257,8 +270,14 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 			changes.add(change);
 		}
 		// add changes for spent resources
-		final String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
-		addHistoryEvent(totalUnits, remaining, false);
+		final String remaining = removeFromPlayer(m_player, costs, changes);
+		// add history event
+		String transcriptText;
+		if (!totalUnits.isEmpty())
+			transcriptText = m_player.getName() + " buy " + MyFormatter.defaultNamedToTextList(totalAll, ", ", true) + "; " + remaining;
+		else
+			transcriptText = m_player.getName() + " buy nothing; " + remaining;
+		m_bridge.getHistoryWriter().startEvent(transcriptText, totalUnits);
 		// commit changes
 		m_bridge.addChange(changes);
 		return null;
@@ -270,66 +289,45 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 	public String purchaseRepair(final Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
 		final IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);
-		final IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
 		if (!(canAfford(costs, m_player)))
 			return NOT_ENOUGH_RESOURCES;
-		// remove first, since add logs PUs remaining
-		final CompositeChange changes = new CompositeChange();
-		final Collection<Unit> totalUnits = new ArrayList<Unit>();
-		final Iterator<NamedAttachable> iter = results.keySet().iterator();
-		// add changes for added resources
-		// and find all added units
-		while (iter.hasNext())
-		{
-			final Object next = iter.next();
-			if (next instanceof Resource)
-			{
-				final Resource resource = (Resource) next;
-				final int quantity = results.getInt(resource);
-				final Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
-				changes.add(change);
-			}
-			else
-			{
-				final UnitType type = (UnitType) next;
-				final int quantity = results.getInt(type);
-				final Collection<Unit> units = type.create(quantity, m_player);
-				totalUnits.addAll(units);
-			}
-		}
+		if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+			return null;
 		// Get the map of the factories that were repaired and how much for each
 		final Map<Unit, Integer> repairMap = getTerritoryRepairs(repairRules);
 		if (repairMap.isEmpty())
 			return null;
-		
-		final boolean damageFromBombingDoneToUnitsInsteadOfTerritories = games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData());
+		// remove first, since add logs PUs remaining
+		final CompositeChange changes = new CompositeChange();
 		final Set<Unit> repairUnits = new HashSet<Unit>(repairMap.keySet());
 		final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
 		for (final Unit u : repairUnits)
 		{
-			if (damageFromBombingDoneToUnitsInsteadOfTerritories)
+			final int repairCount = repairMap.get(u);
+			// Display appropriate damaged/repaired factory and factory damage totals
+			if (repairCount > 0)
 			{
-				final int repairCount = repairMap.get(u);
-				// Display appropriate damaged/repaired factory and factory damage totals
-				if (repairCount > 0)
-				{
-					final TripleAUnit taUnit = (TripleAUnit) u;
-					final int newDamageTotal = taUnit.getUnitDamage() - repairCount;
-					if (newDamageTotal < 0)
-					{
-						return "You cannot repair more than a unit has been hit";
-					}
+				final TripleAUnit taUnit = (TripleAUnit) u;
+				final int newDamageTotal = Math.max(0, taUnit.getUnitDamage() - repairCount);
+				if (newDamageTotal != taUnit.getUnitDamage())
 					damageMap.put(u, newDamageTotal);
-				}
 			}
 		}
-		changes.add(ChangeFactory.bombingUnitDamage(damageMap));
+		if (!damageMap.isEmpty())
+			changes.add(ChangeFactory.bombingUnitDamage(damageMap));
 		
 		// add changes for spent resources
-		final String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
-		addHistoryEvent(totalUnits, remaining, true);
+		final String remaining = removeFromPlayer(m_player, costs, changes);
+		// add history event
+		String transcriptText;
+		if (!damageMap.isEmpty())
+			transcriptText = m_player.getName() + " repair " + damageMap.totalValues() + " damage on " + MyFormatter.unitsToTextNoOwner(damageMap.keySet()) + "; " + remaining;
+		else
+			transcriptText = m_player.getName() + " repair nothing; " + remaining;
+		m_bridge.getHistoryWriter().startEvent(transcriptText, new HashSet<Unit>(damageMap.keySet()));
 		// commit changes
-		m_bridge.addChange(changes);
+		if (!changes.isEmpty())
+			m_bridge.addChange(changes);
 		return null;
 	}
 	
@@ -343,7 +341,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 			repRules.addAll(rules.keySet());
 			for (final RepairRule repairRule : repRules)
 			{
-				final int quantity = rules.getInt(repairRule);
+				final int quantity = rules.getInt(repairRule) * repairRule.getResults().getInt(u.getType());
 				repairMap.put(u, quantity);
 			}
 		}
@@ -361,27 +359,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 			return utc.compare(u1, u2);
 		}
 	};
-	
-	private void addHistoryEvent(final Collection<Unit> totalUnits, final String remainingText, final boolean repair)
-	{
-		// add history event
-		String transcriptText;
-		if (!repair)
-		{
-			if (!totalUnits.isEmpty())
-				transcriptText = m_player.getName() + " buy " + MyFormatter.unitsToTextNoOwner(totalUnits) + "; " + remainingText;
-			else
-				transcriptText = m_player.getName() + " buy nothing; " + remainingText;
-		}
-		else
-		{
-			if (!totalUnits.isEmpty())
-				transcriptText = m_player.getName() + " repair " + totalUnits.size() + " damage on " + MyFormatter.unitsToTextNoOwner(totalUnits) + "; " + remainingText;
-			else
-				transcriptText = m_player.getName() + " buy nothing; " + remainingText;
-		}
-		m_bridge.getHistoryWriter().startEvent(transcriptText, totalUnits);
-	}
 	
 	private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules, final PlayerID player)
 	{
@@ -428,6 +405,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		return costs;
 	}
 	
+	/*
 	private IntegerMap<NamedAttachable> getRepairResults(final Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
 		final Collection<Unit> units = repairRules.keySet();
@@ -443,16 +421,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 				costs.addMultiple(rule.getResults(), repairRules.get(u).getInt(rule));
 			}
 		}
-		/*IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
-
-		Iterator<RepairRule> rules = repairRules.keySet().iterator();
-		while(rules.hasNext() )
-		{
-		    RepairRule rule = rules.next();
-		    costs.addMultiple(rule.getResults(), repairRules.getInt(rule));
-		}*/
 		return costs;
-	}
+	}*/
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
@@ -463,7 +433,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		return IPurchaseDelegate.class;
 	}
 	
-	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs, final CompositeChange changes, final Collection<Unit> totalUnits)
+	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs, final CompositeChange changes)
 	{
 		final StringBuffer returnString = new StringBuffer("Remaining resources: ");
 		final IntegerMap<Resource> left = m_player.getResources().getResourcesCopy();

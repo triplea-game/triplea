@@ -14,6 +14,7 @@ package games.strategy.triplea.ai.strongAI;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -7461,7 +7462,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		for (final ProductionRule ruleCheck : rules)
 		{
 			final int costCheck = ruleCheck.getCosts().getInt(pus);
-			final UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
+			final NamedAttachable resourceOrUnit = ruleCheck.getResults().keySet().iterator().next();
+			if (!(resourceOrUnit instanceof UnitType))
+				continue;
+			final UnitType x = (UnitType) resourceOrUnit;
 			// Remove from consideration any unit with Zero Movement
 			if (UnitAttachment.get(x).getMovement(player) < 1 && !(UnitAttachment.get(x).getCanProduceUnits()))
 				continue;
@@ -7533,7 +7537,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final List<ProductionRule> seaProductionRulesCopy = new ArrayList<ProductionRule>(seaProductionRules);
 			for (final ProductionRule seaRule : seaProductionRulesCopy)
 			{
-				final UnitType x = (UnitType) seaRule.getResults().keySet().iterator().next();
+				final NamedAttachable resourceOrUnit = seaRule.getResults().keySet().iterator().next();
+				if (!(resourceOrUnit instanceof UnitType))
+					continue;
+				final UnitType x = (UnitType) resourceOrUnit;
 				if (UnitAttachment.get(x).getMovement(player) < 2)
 					seaProductionRules.remove(seaRule);
 			}
@@ -7783,8 +7790,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				waterProduction += TerritoryAttachment.get(waterFact).getProduction();// might want to buy 2
 				for (final ProductionRule factoryRule : rules)
 				{
+					final NamedAttachable resourceOrUnit = factoryRule.getResults().keySet().iterator().next();
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					final UnitType factoryType = (UnitType) resourceOrUnit;
 					final int cost = factoryRule.getCosts().getInt(pus);
-					final UnitType factoryType = (UnitType) factoryRule.getResults().keySet().iterator().next();
 					if (Matches.UnitTypeCanProduceUnitsAndIsConstruction.match(factoryType))
 					{
 						if (PUsToSpend >= cost && !factPurchased)
@@ -7819,7 +7829,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						if (buyThese <= 0)
 							continue;
 						purchase.add(rule1, buyThese);
-						final UnitType rule1UT = (UnitType) rule1.getResults().keySet().iterator().next();
+						final NamedAttachable resourceOrUnit = rule1.getResults().keySet().iterator().next();
+						if (!(resourceOrUnit instanceof UnitType))
+							continue;
+						final UnitType rule1UT = (UnitType) resourceOrUnit;
 						if (Matches.UnitTypeCanTransport.match(rule1UT) && buyThese > 0)
 							setDidPurchaseTransports(true);
 					}
@@ -8543,7 +8556,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				while (subRule.hasNext())
 				{
 					final ProductionRule checkRule = subRule.next();
-					final UnitType x = (UnitType) checkRule.getResults().keySet().iterator().next();
+					final NamedAttachable resourceOrUnit = checkRule.getResults().keySet().iterator().next();
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					final UnitType x = (UnitType) resourceOrUnit;
 					if (Matches.UnitTypeIsSub.match(x))
 						subRule.remove();
 					else if (Matches.UnitTypeIsSea.match(x) && Matches.unitTypeCanAttack(player).invert().match(x))
@@ -8558,7 +8574,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				while (BBRule.hasNext())
 				{
 					final ProductionRule checkRule = BBRule.next();
-					final UnitType x = (UnitType) checkRule.getResults().keySet().iterator().next();
+					final NamedAttachable resourceOrUnit = checkRule.getResults().keySet().iterator().next();
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					final UnitType x = (UnitType) resourceOrUnit;
 					if (Matches.UnitTypeHasMoreThanOneHitPointTotal.match(x))
 						BBRule.remove();
 				}
@@ -8592,9 +8611,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					purchase.add(maxRule, buyThese);
 					unitCount += buyThese;
-					final UnitType maxRuleUT = (UnitType) maxRule.getResults().keySet().iterator().next();
-					if (Matches.UnitTypeCanTransport.match(maxRuleUT) && buyThese > 0)
-						setDidPurchaseTransports(true);
+					final NamedAttachable resourceOrUnit = maxRule.getResults().keySet().iterator().next();
+					if (resourceOrUnit instanceof UnitType)
+					{
+						final UnitType maxRuleUT = (UnitType) resourceOrUnit;
+						if (Matches.UnitTypeCanTransport.match(maxRuleUT) && buyThese > 0)
+							setDidPurchaseTransports(true);
+					}
 				}
 			}
 		}
@@ -8625,7 +8648,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					for (final ProductionRule BBRule : seaProductionRules)
 					{
-						final UnitType results = (UnitType) BBRule.getResults().keySet().iterator().next();
+						final NamedAttachable resourceOrUnit = BBRule.getResults().keySet().iterator().next();
+						if (!(resourceOrUnit instanceof UnitType))
+							continue;
+						final UnitType results = (UnitType) resourceOrUnit;
 						if (Matches.UnitTypeHasMoreThanOneHitPointTotal.match(results))
 						{
 							final int BBcost = BBRule.getCosts().getInt(pus);
@@ -8645,7 +8671,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					boolean carrierBought = false;
 					for (final ProductionRule CarrierRule : seaProductionRules)
 					{
-						final UnitType results = (UnitType) CarrierRule.getResults().keySet().iterator().next();
+						final NamedAttachable resourceOrUnit = CarrierRule.getResults().keySet().iterator().next();
+						if (!(resourceOrUnit instanceof UnitType))
+							continue;
+						final UnitType results = (UnitType) resourceOrUnit;
 						if (Matches.UnitTypeIsCarrier.match(results))
 						{
 							final int Carriercost = CarrierRule.getCosts().getInt(pus);
@@ -8687,7 +8716,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						while (sPIter.hasNext())
 						{
 							final ProductionRule shipRule = sPIter.next();
-							final UnitType subUnit = (UnitType) shipRule.getResults().keySet().iterator().next();
+							final NamedAttachable resourceOrUnit = shipRule.getResults().keySet().iterator().next();
+							if (!(resourceOrUnit instanceof UnitType))
+								continue;
+							final UnitType subUnit = (UnitType) resourceOrUnit;
 							if (Matches.UnitTypeIsSub.match(subUnit))
 								sPIter.remove();
 						}
@@ -8712,7 +8744,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						}
 						final int cost = rule1.getCosts().getInt(pus);
 						int numToBuy = 0;
-						final UnitType results = (UnitType) rule1.getResults().keySet().iterator().next();
+						final NamedAttachable resourceOrUnit = rule1.getResults().keySet().iterator().next();
+						if (!(resourceOrUnit instanceof UnitType))
+							continue;
+						final UnitType results = (UnitType) resourceOrUnit;
 						while (unitCount < totProd && leftToSpend >= cost && PUSea >= cost && numToBuy < buyThese)
 						{
 							unitCount++;
@@ -8793,8 +8828,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				for (final ProductionRule factoryRule : rules)
 				{
+					final NamedAttachable resourceOrUnit = factoryRule.getResults().keySet().iterator().next();
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					final UnitType factoryType = (UnitType) resourceOrUnit;
 					final int cost = factoryRule.getCosts().getInt(pus);
-					final UnitType factoryType = (UnitType) factoryRule.getResults().keySet().iterator().next();
 					if (Matches.UnitTypeCanProduceUnitsAndIsConstruction.match(factoryType))
 					{
 						if (leftToSpend >= cost && !factPurchased)
@@ -8844,7 +8882,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				unitCount--;
 				for (final ProductionRule destroyerRule : seaProductionRules)
 				{
-					final UnitType d = (UnitType) destroyerRule.getResults().keySet().iterator().next();
+					final NamedAttachable resourceOrUnit = destroyerRule.getResults().keySet().iterator().next();
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					final UnitType d = (UnitType) resourceOrUnit;
 					if (Matches.UnitTypeIsDestroyer.match(d))
 					{
 						cost = destroyerRule.getCosts().getInt(pus);
@@ -8859,9 +8900,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 			purchase.add(tRule, numToBuy);
-			final UnitType tRuleUT = (UnitType) tRule.getResults().keySet().iterator().next();
-			if (Matches.UnitTypeCanTransport.match(tRuleUT) && numToBuy > 0)
-				setDidPurchaseTransports(true);
+			final NamedAttachable resourceOrUnit = tRule.getResults().keySet().iterator().next();
+			if (resourceOrUnit instanceof UnitType)
+			{
+				final UnitType tRuleUT = (UnitType) resourceOrUnit;
+				if (Matches.UnitTypeCanTransport.match(tRuleUT) && numToBuy > 0)
+					setDidPurchaseTransports(true);
+			}
 		}
 		maxBuy = totProd - unitCount;
 		maxBuy = buyOnePlane ? (maxBuy - 1) : maxBuy;
@@ -8985,9 +9030,13 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					purchase.add(transRule, maxBuy);
 					leftToSpend -= cost * maxBuy;
-					final UnitType transRuleUT = (UnitType) transRule.getResults().keySet().iterator().next();
-					if (Matches.UnitTypeCanTransport.match(transRuleUT) && maxBuy > 0)
-						setDidPurchaseTransports(true);
+					final NamedAttachable resourceOrUnit = transRule.getResults().keySet().iterator().next();
+					if (resourceOrUnit instanceof UnitType)
+					{
+						final UnitType transRuleUT = (UnitType) resourceOrUnit;
+						if (Matches.UnitTypeCanTransport.match(transRuleUT) && maxBuy > 0)
+							setDidPurchaseTransports(true);
+					}
 				}
 			}
 		}
@@ -9003,7 +9052,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				final int planeCost = planeProd.getCosts().getInt(pus);
 				if (leftToSpend < planeCost || unitCount >= totProd)
 					continue;
-				final UnitType plane = (UnitType) planeProd.getResults().keySet().iterator().next();
+				final NamedAttachable resourceOrUnit = planeProd.getResults().keySet().iterator().next();
+				if (!(resourceOrUnit instanceof UnitType))
+					continue;
+				final UnitType plane = (UnitType) resourceOrUnit;
 				if (Matches.UnitTypeIsAir.match(plane))
 				{
 					if (capDanger && !Matches.unitTypeCanBombard(player).match(plane)) // buy best defensive plane
@@ -9096,7 +9148,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				final int quickCost = quickProd.getCosts().getInt(pus);
 				if (leftToSpend < quickCost || unitCount >= totProd || quickCost < 1)
 					continue;
-				final UnitType intResults = (UnitType) quickProd.getResults().keySet().iterator().next();
+				final NamedAttachable resourceOrUnit = quickProd.getResults().keySet().iterator().next();
+				if (!(resourceOrUnit instanceof UnitType))
+					continue;
+				final UnitType intResults = (UnitType) resourceOrUnit;
 				if (Matches.UnitTypeIsSeaOrAir.match(intResults) || Matches.UnitTypeIsInfrastructure.match(intResults) || Matches.UnitTypeIsAAforAnything.match(intResults))
 					continue;
 				if (quickCost <= leftToSpend && unitCount < totProd)

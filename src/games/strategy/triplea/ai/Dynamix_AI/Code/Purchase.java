@@ -16,6 +16,7 @@ package games.strategy.triplea.ai.Dynamix_AI.Code;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -186,9 +187,13 @@ public class Purchase
 				int factoryCost = 0;
 				for (final ProductionRule rule : player.getProductionFrontier().getRules())
 				{
-					if (Matches.UnitTypeCanProduceUnitsAndIsConstruction.match((UnitType) rule.getResults().keySet().iterator().next()))
+					final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					final UnitType ut = (UnitType) resourceOrUnit;
+					if (Matches.UnitTypeCanProduceUnitsAndIsConstruction.match(ut))
 					{
-						factory = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
+						factory = ut.create(player);
 						factoryCost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
 						break;
 					}
@@ -298,9 +303,13 @@ public class Purchase
 			Unit aa = null;
 			for (final ProductionRule rule : player.getProductionFrontier().getRules())
 			{
-				if (Matches.UnitTypeIsAAforBombingThisUnitOnly.match((UnitType) rule.getResults().keySet().toArray()[0]))
+				final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+				if (!(resourceOrUnit instanceof UnitType))
+					continue;
+				final UnitType ut = (UnitType) resourceOrUnit;
+				if (Matches.UnitTypeIsAAforBombingThisUnitOnly.match(ut))
 				{
-					aa = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
+					aa = ut.create(player);
 					break;
 				}
 			}
@@ -384,7 +393,10 @@ public class Purchase
 		// TODO: why on earth are we "creating" these units here? Doesn't wisconsin know that they stick around in memory forever?
 		for (final ProductionRule rule : rules)
 		{
-			final UnitType ut = ((UnitType) rule.getResults().keySet().toArray()[0]);
+			final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+			if (!(resourceOrUnit instanceof UnitType))
+				continue;
+			final UnitType ut = (UnitType) resourceOrUnit;
 			final Unit unit = ut.create(player);
 			allUnits.add(unit);
 		}

@@ -302,6 +302,7 @@ public class ProductionRepairPanel extends JPanel
 		private final RepairRule m_rule;
 		private final Unit m_unit;
 		private final int m_maxRepairAmount;
+		private final int m_repairResults;
 		
 		Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit)
 		{
@@ -313,13 +314,14 @@ public class ProductionRepairPanel extends JPanel
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
+			m_repairResults = rule.getResults().getInt(type);
 			final TripleAUnit taUnit = (TripleAUnit) repairUnit;
 			final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasTakenSomeBombingUnitDamage.match(repairUnit), Matches.UnitIsDisabled.match(repairUnit));
 			final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 			final JLabel info = new JLabel(territoryUnitIsIn.getName());
 			m_maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);
-			final JLabel remaining = new JLabel("Production left to repair: " + m_maxRepairAmount);
+			final JLabel remaining = new JLabel("Damage left to repair: " + m_maxRepairAmount);
 			final int space = 8;
 			this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
 			this.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space, space), 0, 0));
@@ -328,6 +330,11 @@ public class ProductionRepairPanel extends JPanel
 			this.add(m_text, new GridBagConstraints(0, 4, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, space, space, space), 0, 0));
 			m_text.addChangeListener(m_listener);
 			setBorder(new EtchedBorder());
+		}
+		
+		public int getRepairResults()
+		{
+			return m_repairResults;
 		}
 		
 		IntegerMap<Resource> getCost()
@@ -352,7 +359,7 @@ public class ProductionRepairPanel extends JPanel
 		
 		void setMax(final int max)
 		{
-			m_text.setMax(Math.min(max, m_maxRepairAmount));
+			m_text.setMax((int) (Math.ceil(((double) Math.min(max, m_maxRepairAmount) / (double) m_repairResults))));
 		}
 		
 		public Unit getUnit()

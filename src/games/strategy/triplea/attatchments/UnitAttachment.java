@@ -3395,7 +3395,7 @@ public class UnitAttachment extends DefaultAttachment
 						stats.append("gives " + support.getBonus() + (support.getOffence() && support.getDefence() ? " Att/Def " : (support.getOffence() ? " Attack " : " Defense "))
 									+ (support.getStrength() && support.getRoll() ? "Power&Rolls " : (support.getStrength() ? "Power " : "Rolls "))
 									+ " to " + support.getNumber() + (support.getAllied() && support.getEnemy() ? " Allied&Enemy " : (support.getAllied() ? " Allied " : " Enemy "))
-									+ (support.getUnitType().size() > 4 ? "Units" : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/")) + ", ");
+									+ (support.getUnitType().size() > 4 ? "Units" : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false)) + ", ");
 					}
 				}
 			}

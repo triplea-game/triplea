@@ -15,6 +15,7 @@ package games.strategy.triplea.ai.Dynamix_AI;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -177,7 +178,7 @@ public class DUtils
 		int result = 0;
 		for (final ProductionRule rule : frontier.getRules())
 		{
-			if (((UnitType) rule.getResults().keySet().toArray()[0]).getName().equals(unit.getUnitType().getName()))
+			if ((rule.getResults().keySet().toArray()[0]).equals(unit.getUnitType()))
 				result += (rule.getCosts().getInt(resource) / rule.getResults().keySet().size()); // We divide the cost by how many units we get from the purchase
 		}
 		return result;
@@ -475,8 +476,12 @@ public class DUtils
 		Collections.shuffle(rules);
 		for (final ProductionRule rule : rules)
 		{
+			
 			final Object[] unitTypes = rule.getResults().keySet().toArray();
-			final Unit unit = ((UnitType) PickRandom(unitTypes)).create(player);
+			final NamedAttachable resourceOrUnit = ((NamedAttachable) PickRandom(unitTypes));
+			if (!(resourceOrUnit instanceof UnitType))
+				continue;
+			final Unit unit = ((UnitType) resourceOrUnit).create(player);
 			if (match.match(unit))
 				return unit;
 		}
@@ -495,7 +500,10 @@ public class DUtils
 		Collections.shuffle(rules);
 		for (final ProductionRule rule : rules)
 		{
-			final Unit unit = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
+			final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+			if (!(resourceOrUnit instanceof UnitType))
+				continue;
+			final Unit unit = ((UnitType) resourceOrUnit).create(player);
 			if (match.match(unit))
 				result.add(unit.getUnitType());
 		}
@@ -2105,7 +2113,12 @@ public class DUtils
 	public static UnitType GetRandomUnitType()
 	{
 		final List<ProductionRule> rules = GlobalCenter.GetMergedAndAveragedProductionFrontier().getRules();
-		return (UnitType) ((ProductionRule) PickRandom(rules)).getResults().keySet().iterator().next();
+		NamedAttachable resourceOrUnit = null;
+		while (!rules.isEmpty() && (resourceOrUnit == null || !(resourceOrUnit instanceof UnitType)))
+		{
+			resourceOrUnit = ((ProductionRule) PickRandom(rules)).getResults().keySet().iterator().next();
+		}
+		return (UnitType) resourceOrUnit;
 	}
 	
 	/**

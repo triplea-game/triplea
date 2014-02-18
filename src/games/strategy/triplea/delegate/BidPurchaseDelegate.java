@@ -7,12 +7,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * <p>
@@ -83,7 +81,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	}
 	
 	@Override
-	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> resources, final CompositeChange change, final Collection<Unit> units)
+	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> resources, final CompositeChange change)
 	{
 		m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.PUS));
 		return (m_bid - m_spent) + " PU unused";

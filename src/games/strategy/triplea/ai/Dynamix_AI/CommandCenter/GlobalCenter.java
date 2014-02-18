@@ -120,7 +120,10 @@ public class GlobalCenter
 				continue;
 			for (final ProductionRule rule : player.getProductionFrontier())
 			{
-				final UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
+				final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+				if (!(resourceOrUnit instanceof UnitType))
+					continue;
+				final UnitType ut = (UnitType) resourceOrUnit;
 				final UnitAttachment ua = UnitAttachment.get(ut);
 				DUtils.AddObjToListValueForKeyInMap(differentCosts, ut, rule.getCosts().getInt(PUResource));
 				purchaseCountsForUnit.put(ut, rule.getResults().keySet().size());

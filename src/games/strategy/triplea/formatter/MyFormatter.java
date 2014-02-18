@@ -133,7 +133,7 @@ public class MyFormatter
 			buf.append(owner.owner.getName());
 			count--;
 			if (count > 1)
-				buf.append(" , ");
+				buf.append(", ");
 			if (count == 1)
 				buf.append(" and ");
 		}
@@ -256,24 +256,60 @@ public class MyFormatter
 	
 	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list)
 	{
-		final Iterator<? extends DefaultNamed> iter = list.iterator();
-		final StringBuilder buffer = new StringBuilder();
-		while (iter.hasNext())
-		{
-			final DefaultNamed named = iter.next();
-			if (named != null)
-			{
-				buffer.append(named.getName());
-				if (iter.hasNext())
-					buffer.append(", ");
-			}
-		}
-		return buffer.toString();
+		return defaultNamedToTextList(list, ", ", false);
 	}
 	
-	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator)
+	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final boolean showQuantity)
+	{
+		return defaultNamedToTextList(list, ", ", showQuantity);
+	}
+	
+	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator, final boolean showQuantity)
 	{
 		final Iterator<? extends DefaultNamed> iter = list.iterator();
+		final IntegerMap<DefaultNamed> map = new IntegerMap<DefaultNamed>();
+		while (iter.hasNext())
+		{
+			final DefaultNamed unit = iter.next();
+			if (unit == null || unit.getName() == null)
+				throw new IllegalStateException("Unit or Resource no longer exists?!?");
+			map.add(unit, 1);
+		}
+		final StringBuilder buf = new StringBuilder();
+		// sort on unit name
+		final List<DefaultNamed> sortedList = new ArrayList<DefaultNamed>(map.keySet());
+		final Comparator<DefaultNamed> comp = new Comparator<DefaultNamed>()
+		{
+			public int compare(final DefaultNamed u1, final DefaultNamed u2)
+			{
+				return u1.getName().compareTo(u2.getName());
+			}
+		};
+		Collections.sort(sortedList, comp);
+		final Iterator<? extends DefaultNamed> typeIter = sortedList.iterator();
+		int count = map.keySet().size();
+		while (typeIter.hasNext())
+		{
+			final DefaultNamed type = typeIter.next();
+			if (showQuantity)
+			{
+				final int quantity = map.getInt(type);
+				buf.append(quantity);
+				buf.append(" ");
+				buf.append(quantity > 1 ? pluralize(type.getName()) : type.getName());
+			}
+			else
+			{
+				buf.append(type.getName());
+			}
+			count--;
+			if (count > 1)
+				buf.append(seperator);
+			if (count == 1)
+				buf.append(" and ");
+		}
+		return buf.toString();
+		/*final Iterator<? extends DefaultNamed> iter = list.iterator();
 		final StringBuilder buffer = new StringBuilder();
 		while (iter.hasNext())
 		{
@@ -285,7 +321,7 @@ public class MyFormatter
 					buffer.append(seperator);
 			}
 		}
-		return buffer.toString();
+		return buffer.toString();*/
 	}
 	
 	public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map, final String separator, final String assignment, final boolean valueBeforeKey)

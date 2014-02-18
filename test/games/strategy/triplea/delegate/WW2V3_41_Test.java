@@ -1568,15 +1568,14 @@ public class WW2V3_41_Test extends TestCase
 		// damage a factory
 		IntegerMap<Unit> startHits = new IntegerMap<Unit>();
 		startHits.put(factory, 1);
-		new ChangePerformer(m_data).perform(ChangeFactory.unitsHit(startHits));
-		new ChangePerformer(m_data).perform(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(germany), "9", "unitProduction"));
-		assertEquals(factory.getHits(), 1);
+		new ChangePerformer(m_data).perform(ChangeFactory.bombingUnitDamage(startHits));
+		assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
 		RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
 		IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
 		repairs.put(repair, 1);
 		String error = del.purchaseRepair(Collections.singletonMap(Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
 		assertValid(error);
-		assertEquals(factory.getHits(), 0);
+		assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
 		// Find cost
 		final int midPUs = germans.getResources().getQuantity("PUs");
 		assertEquals(initPUs, midPUs + 1);
@@ -1589,15 +1588,14 @@ public class WW2V3_41_Test extends TestCase
 		// damage a factory
 		startHits = new IntegerMap<Unit>();
 		startHits.put(factory, 2);
-		new ChangePerformer(m_data).perform(ChangeFactory.unitsHit(startHits));
-		new ChangePerformer(m_data).perform(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(germany), "8", "unitProduction"));
-		assertEquals(factory.getHits(), 2);
+		new ChangePerformer(m_data).perform(ChangeFactory.bombingUnitDamage(startHits));
+		assertEquals(((TripleAUnit) factory).getUnitDamage(), 2);
 		repair = germans(m_data).getRepairFrontier().getRules().get(0);
 		repairs = new IntegerMap<RepairRule>();
 		repairs.put(repair, 2);
 		error = del.purchaseRepair(Collections.singletonMap(Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
 		assertValid(error);
-		assertEquals(factory.getHits(), 0);
+		assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
 		// Find cost
 		final int finalPUs = germans.getResources().getQuantity("PUs");
 		assertEquals(midPUs, finalPUs + 1);
@@ -1613,15 +1611,15 @@ public class WW2V3_41_Test extends TestCase
 		// dame a factory
 		final IntegerMap<Unit> startHits = new IntegerMap<Unit>();
 		startHits.put(factory, 1);
-		new ChangePerformer(m_data).perform(ChangeFactory.unitsHit(startHits));
-		new ChangePerformer(m_data).perform(ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(germany), "9", "unitProduction"));
-		assertEquals(factory.getHits(), 1);
+		new ChangePerformer(m_data).perform(ChangeFactory.bombingUnitDamage(startHits));
+		assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
 		final RepairRule repair = germans(m_data).getRepairFrontier().getRules().get(0);
 		final IntegerMap<RepairRule> repairs = new IntegerMap<RepairRule>();
 		// we have 1 damaged marker, but trying to repair 2
 		repairs.put(repair, 2);
 		final String error = del.purchaseRepair(Collections.singletonMap(Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
-		assertError(error);
+		assertValid(error); // it is no longer an error, we just math max 0 it
+		assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
 	}
 	
 	public void testOccupiedTerrOfAttachment()

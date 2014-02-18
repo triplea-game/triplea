@@ -19,6 +19,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
@@ -218,9 +219,14 @@ public class PurchasePanel extends ActionPanel
 				int totalProduced = 0;
 				for (final ProductionRule rule : m_purchase.keySet())
 				{
-					if (!Matches.UnitTypeIsConstruction.match((UnitType) rule.getResults().keySet().iterator().next()))
+					final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+					if (resourceOrUnit instanceof UnitType)
 					{
-						totalProduced += m_purchase.getInt(rule) * rule.getResults().totalValues();
+						final UnitType type = (UnitType) resourceOrUnit;
+						if (!Matches.UnitTypeIsConstruction.match(type))
+						{
+							totalProduced += m_purchase.getInt(rule) * rule.getResults().totalValues();
+						}
 					}
 				}
 				final PlayerID player = getCurrentPlayer();
