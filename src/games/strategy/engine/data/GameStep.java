@@ -46,6 +46,7 @@ public class GameStep extends GameDataComponent
 	
 	public static final String PROPERTY_skipPosting = "skipPosting";
 	public static final String PROPERTY_turnSummaryPlayers = "turnSummaryPlayers";
+	public static final String PROPERTY_airborneMove = "airborneMove";
 	public static final String PROPERTY_combatMove = "combatMove";
 	public static final String PROPERTY_nonCombatMove = "nonCombatMove";
 	public static final String PROPERTY_fireRockets = "fireRockets";
@@ -155,6 +156,7 @@ public class GameStep extends GameDataComponent
 	 * Allowed Properties so far:<br>
 	 * EndTurn delegates -> skipPosting = true/false<br>
 	 * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary<br>
+	 * Move delegates -> airborneMove = true/false<br>
 	 * Move delegates -> combatMove = true/false<br>
 	 * Move delegates -> nonCombatMove = true/false<br>
 	 * Move delegates -> fireRocketsAfter = true/false<br>

@@ -26,6 +26,7 @@ import games.strategy.util.Match;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,8 +125,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		final PlayerID player = getUnitsOwner(units);
 		// here we have our own new validation method....
 		final MoveValidationResult result = SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data),
-					m_movesToUndo,
-					data);
+					m_movesToUndo, data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
@@ -211,7 +211,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 			return result.setErrorReturnResult("Require Airborne Forces And Launch Capacity Tech");
 		if (route.numberOfSteps() > airborneDistance)
 			return result.setErrorReturnResult("Destination Is Out Of Range");
-		final Match<Unit> airborneBaseMatch = getAirborneMatch(player, airborneBases);
+		final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
+		final Match<Unit> airborneBaseMatch = getAirborneMatch(player, airborneBases, alliesForBases);
 		final Territory start = route.getStart();
 		final Territory end = route.getEnd();
 		final Collection<Unit> basesAtStart = start.getUnits().getMatches(airborneBaseMatch);
@@ -276,13 +277,16 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		}
 		if (onlyWhereUnderAttackAlready)
 		{
-			final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
-			if (battle == null)
-				return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
-			else if (land && someLand && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsLand))
-				return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
-			else if (sea && someSea && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsSea))
-				return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
+			if (!battleTracker.getConquered().contains(end))
+			{
+				final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
+				if (battle == null)
+					return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
+				else if (land && someLand && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsLand))
+					return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
+				else if (sea && someSea && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsSea))
+					return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
+			}
 		}
 		else if (onlyEnemyTerritories)
 		{
@@ -294,17 +298,18 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	
 	public static Match<Unit> getAirborneTypesMatch(final PlayerID player, final GameData data)
 	{
-		return getAirborneMatch(player, TechAbilityAttachment.getAirborneTypes(player, data));
+		return getAirborneMatch(player, TechAbilityAttachment.getAirborneTypes(player, data), Collections.singleton(player));
 	}
 	
 	public static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data)
 	{
-		return getAirborneMatch(player, TechAbilityAttachment.getAirborneBases(player, data));
+		return getAirborneMatch(player, TechAbilityAttachment.getAirborneBases(player, data), data.getRelationshipTracker().getAllies(player, true));
 	}
 	
-	public static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types)
+	public static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types, final Collection<PlayerID> unitOwners)
 	{
-		return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved, Matches.UnitIsAirborne.invert());
+		return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners), Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
+					Matches.UnitIsAirborne.invert());
 	}
 	
 	private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases, final PlayerID player, final GameData data)
@@ -352,7 +357,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 			return false;
 		}
 		final GameMap map = data.getMap();
-		final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(), Matches.territoryHasUnitsThatMatch(getAirborneMatch(player, airborneBases)));
+		final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
+		final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(), Matches.territoryHasUnitsThatMatch(getAirborneMatch(player, airborneBases, alliesForBases)));
 		// territoriesWeCanLaunchFrom.retainAll(Match.getMatches(territoriesWeCanLaunchFrom, Matches.territoryHasUnitsThatMatch(airborneTypesMatch)));
 		if (territoriesWeCanLaunchFrom.isEmpty())
 		{

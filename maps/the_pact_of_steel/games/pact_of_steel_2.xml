@@ -644,7 +644,7 @@
 				<!-- this currently is all the delegates triplea has.  not all are needed for a regular game though -->
 					<!-- purchaseNoPU buys 1 infantry for X number of territories controlled, rounding down. set X in player rules attachments -->
 					<!-- endTurnNoPU ends player's turn without giving them any PUs -->
-					<!-- placeNoAirCheck does everything normal 'place' does, except it does not kill any aircraft at the end of the turn -->
+					<!-- placeNoAirCheck does everything normal 'place' does, except it does not kill any aircraft at the end of the turn (you can also use step properties to do this with the normal delegate) -->
 				<delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
 				<delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
 				<delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
@@ -666,7 +666,10 @@
 				GamePlay Delegate:
 				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
 				Sequence Step Example:
-				<step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians" display="Airborne Attack Move"/>-->
+				<step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians" display="Airborne Attack Move">
+						<stepProperty name="airborneMove" value="true"/>
+				</step>
+				-->
 				
 				<!-- RandomStartDelegate delegate is for randomly assigning territories, or letting users pick territories (like Risk) in turn order. 
 						Any "neutral" (non-owned), non-impassible, land territories are up for grabs.  Any players with "units held" are able to participate in the picking until their held units run out.
@@ -674,7 +677,8 @@
 				GamePlay Delegate:
 				<delegate name="randomStartDelegate" javaClass="games.strategy.triplea.delegate.RandomStartDelegate" display="Assign Territories"/>
 				Sequence Step Example:
-				<step name="setupRandomStartDelegate" delegate="randomStartDelegate" maxRunCount="1"/>-->
+				<step name="setupRandomStartDelegate" delegate="randomStartDelegate" maxRunCount="1"/> 
+				-->
 				
 
 				<sequence>
@@ -697,6 +701,7 @@
 										bid 						= true/false (default to true if step ends with Bid)
 									
 									For any "Move" delegate (such as MoveDelegate or SpecialMoveDelegate or etc):
+										airborneMove 				= true/false is this an AirborneCombatMove for 1940 'paratroopers' move phase? (default is true if delegate ends with "AirborneCombatMove")
 										combatMove 					= true/false do we have combat after this phase? this will affect movement validation and certain unit property recordings such as submerged, amphibious, etc. (default is true if delegate ends with "CombatMove" but not "NonCombatMove")
 										nonCombatMove 				= true/false do we have combat before this phase? this will affect movement validation. (default is true if delegate ends with "NonCombatMove")
 										fireRockets 				= true/false (default depends on game option [ww2v2 and ww2v3 have this after delegates that end with "CombatMove" but not "NonCombatMove"])

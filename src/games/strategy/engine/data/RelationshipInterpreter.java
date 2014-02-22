@@ -3,6 +3,8 @@ package games.strategy.engine.data;
 import games.strategy.triplea.delegate.Matches;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RelationshipInterpreter extends GameDataComponent
 {
@@ -35,6 +37,21 @@ public class RelationshipInterpreter extends GameDataComponent
 		return false;
 	}
 	
+	public Set<PlayerID> getAllies(final PlayerID p1, final boolean includeSelf)
+	{
+		final Set<PlayerID> allies = new HashSet<PlayerID>();
+		for (final PlayerID player : getData().getPlayerList().getPlayers())
+		{
+			if (Matches.RelationshipTypeIsAllied.match(getRelationshipType(p1, player)))
+				allies.add(player);
+		}
+		if (includeSelf)
+			allies.add(p1);
+		else
+			allies.remove(p1);
+		return allies;
+	}
+	
 	/**
 	 * returns true if p1 is at war with p2
 	 * 
@@ -59,6 +76,18 @@ public class RelationshipInterpreter extends GameDataComponent
 		return false;
 	}
 	
+	public Set<PlayerID> getEnemies(final PlayerID p1)
+	{
+		final Set<PlayerID> enemies = new HashSet<PlayerID>();
+		for (final PlayerID player : getData().getPlayerList().getPlayers())
+		{
+			if (Matches.RelationshipTypeIsAtWar.match(getRelationshipType(p1, player)))
+				enemies.add(player);
+		}
+		enemies.remove(p1);
+		return enemies;
+	}
+	
 	/**
 	 * 
 	 * @param p1
@@ -80,6 +109,18 @@ public class RelationshipInterpreter extends GameDataComponent
 				return true;
 		}
 		return false;
+	}
+	
+	public Set<PlayerID> getNeutralities(final PlayerID p1)
+	{
+		final Set<PlayerID> neutrals = new HashSet<PlayerID>();
+		for (final PlayerID player : getData().getPlayerList().getPlayers())
+		{
+			if (Matches.RelationshipTypeIsNeutral.match(getRelationshipType(p1, player)))
+				neutrals.add(player);
+		}
+		neutrals.remove(p1);
+		return neutrals;
 	}
 	
 	/*

@@ -71,6 +71,29 @@ public class GameStepPropertiesHelper
 	/**
 	 * For various things related to movement validation.
 	 */
+	public static boolean isAirborneMove(final GameData data)
+	{
+		final boolean isAirborneMove;
+		data.acquireReadLock();
+		try
+		{
+			final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_airborneMove);
+			if (prop != null)
+				isAirborneMove = Boolean.parseBoolean(prop);
+			else if (isAirborneDelegate(data))
+				isAirborneMove = true;
+			else
+				isAirborneMove = false;
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		return isAirborneMove;
+	}
+	
+	/**
+	 * For various things related to movement validation.
+	 */
 	public static boolean isCombatMove(final GameData data)
 	{
 		final boolean isCombatMove;
@@ -328,6 +351,13 @@ public class GameStepPropertiesHelper
 		if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) // we have to do this check, because otherwise all NonCombatMove delegates become CombatMove delegates too
 			return false;
 		else if (data.getSequence().getStep().getName().endsWith("CombatMove"))
+			return true;
+		return false;
+	}
+	
+	private static boolean isAirborneDelegate(final GameData data)
+	{
+		if (data.getSequence().getStep().getName().endsWith("AirborneCombatMove")) // AirborneCombatMove is ALSO a combat move, it is just a special combat move
 			return true;
 		return false;
 	}

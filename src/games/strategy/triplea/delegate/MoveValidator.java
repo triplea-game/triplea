@@ -1661,7 +1661,7 @@ public class MoveValidator
 	 * Get the route ignoring forced territories
 	 */
 	@SuppressWarnings("unchecked")
-	public static Route getBestRoute(final Territory start, final Territory end, final GameData data, final PlayerID player, final Collection<Unit> units)
+	public static Route getBestRoute(final Territory start, final Territory end, final GameData data, final PlayerID player, final Collection<Unit> units, final boolean forceLandOrSeaRoute)
 	{
 		final boolean hasLand = Match.someMatch(units, Matches.UnitIsLand);
 		final boolean hasAir = Match.someMatch(units, Matches.UnitIsAir);
@@ -1715,7 +1715,9 @@ public class MoveValidator
 				landRoute = data.getMap().getRoute_IgnoreEnd(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral, noImpassible));
 			else
 				landRoute = data.getMap().getRoute_IgnoreEnd(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noImpassible));
-			if (landRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))
+			if (landRoute != null &&
+						((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent)) ||
+						(forceLandOrSeaRoute && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand))))
 			{
 				defaultRoute = landRoute;
 				mustGoLand = true;
@@ -1726,7 +1728,9 @@ public class MoveValidator
 		if (start.isWater() && end.isWater())
 		{
 			final Route waterRoute = data.getMap().getRoute_IgnoreEnd(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, noImpassible));
-			if (waterRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))
+			if (waterRoute != null &&
+						((waterRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent)) ||
+						(forceLandOrSeaRoute && Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea))))
 			{
 				defaultRoute = waterRoute;
 				mustGoSea = true;

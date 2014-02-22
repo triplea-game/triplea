@@ -31,6 +31,7 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.MoveValidator;
@@ -479,7 +480,7 @@ public class MovePanel extends AbstractMovePanel
 		// can't rely on current player being the unit owner in Edit Mode
 		// look at the units being moved to determine allies and enemies
 		final PlayerID owner = getUnitOwner(selectedUnits);
-		return MoveValidator.getBestRoute(start, end, getData(), owner, selectedUnits);
+		return MoveValidator.getBestRoute(start, end, getData(), owner, selectedUnits, !GameStepPropertiesHelper.isAirborneMove(getData()));
 	}
 	
 	private void updateUnitsThatCanMoveOnRoute(final Collection<Unit> units, final Route route)
