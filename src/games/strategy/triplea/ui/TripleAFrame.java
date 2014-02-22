@@ -1810,7 +1810,7 @@ public class TripleAFrame extends MainGameFrame
 				getMapPanel().setTopLeft(x, y - diffPixel);
 			
 			// I for info
-			if (keyCode == KeyEvent.VK_I)
+			if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V)
 			{
 				String unitInfo = "";
 				if (m_unitsBeingMousedOver != null && !m_unitsBeingMousedOver.isEmpty())

@@ -170,7 +170,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 							+ "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have skins).<br>"
 							+ "<br><b> Other Things</b><br>" + "Press 'N' to cycle through units with movement left (move phases only).<br>"
 							+ "Press 'F' to highlight all units you own that have movement left (move phases only).<br>"
-							+ "Press 'I' to popup info on whatever territory and unit your mouse is currently over.<br>";
+							+ "Press 'I' or 'V' to popup info on whatever territory and unit your mouse is currently over.<br>";
 				final JEditorPane editorPane = new JEditorPane();
 				editorPane.setEditable(false);
 				editorPane.setContentType("text/html");

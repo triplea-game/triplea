@@ -1,4 +1,6 @@
 Changes for 1.8.0.0
+* Adding some more pre-industrial sounds. (pulicat)
+
 * Allowed muting of custom aa gun sounds and custom notification, victory, and defeat sounds. (veqryn)
 
 * Created resource image factory for making images and icons of resources. (veqryn)
