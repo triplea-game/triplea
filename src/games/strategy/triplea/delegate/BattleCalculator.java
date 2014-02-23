@@ -895,11 +895,10 @@ public class BattleCalculator
 	public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets, final GameData data)
 	{
 		// just worry about transports
-		final TransportTracker tracker = new TransportTracker();
 		final Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
 		for (final Unit target : targets)
 		{
-			dependents.put(target, tracker.transportingAndUnloaded(target));
+			dependents.put(target, TransportTracker.transportingAndUnloaded(target));
 		}
 		return dependents;
 	}

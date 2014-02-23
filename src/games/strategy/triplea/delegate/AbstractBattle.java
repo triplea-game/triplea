@@ -334,11 +334,6 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		BattleDelegate.markDamaged(damaged, bridge, addPreviousHits);
 	}
 	
-	protected static TransportTracker getTransportTracker()
-	{
-		return new TransportTracker();
-	}
-	
 	protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge)
 	{
 		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();

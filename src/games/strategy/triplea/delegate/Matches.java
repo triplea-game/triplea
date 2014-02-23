@@ -2714,17 +2714,16 @@ public class Matches
 	
 	public static Match<Unit> transportCannotUnload(final Territory territory)
 	{
-		final TransportTracker transportTracker = new TransportTracker();
 		return new Match<Unit>()
 		{
 			@Override
 			public boolean match(final Unit transport)
 			{
-				if (transportTracker.hasTransportUnloadedInPreviousPhase(transport))
+				if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport))
 					return true;
-				if (transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, territory))
+				if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, territory))
 					return true;
-				if (transportTracker.isTransportUnloadRestrictedInNonCombat(transport))
+				if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport))
 					return true;
 				return false;
 			}
@@ -2733,13 +2732,12 @@ public class Matches
 	
 	public static Match<Unit> transportIsNotTransporting()
 	{
-		final TransportTracker transportTracker = new TransportTracker();
 		return new Match<Unit>()
 		{
 			@Override
 			public boolean match(final Unit transport)
 			{
-				if (transportTracker.isTransporting(transport))
+				if (TransportTracker.isTransporting(transport))
 					return false;
 				return true;
 			}
@@ -2748,13 +2746,12 @@ public class Matches
 	
 	public static Match<Unit> transportIsTransporting()
 	{
-		final TransportTracker transportTracker = new TransportTracker();
 		return new Match<Unit>()
 		{
 			@Override
 			public boolean match(final Unit transport)
 			{
-				if (transportTracker.isTransporting(transport))
+				if (TransportTracker.isTransporting(transport))
 					return true;
 				return false;
 			}

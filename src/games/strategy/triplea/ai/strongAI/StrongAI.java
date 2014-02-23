@@ -1181,7 +1181,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private void populateTransportLoad(final boolean nonCombat, final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
 				final List<Collection<Unit>> transportsToLoad, final PlayerID player)
 	{
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final CompositeMatch<Unit> owned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
 		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitCanBeTransported, Matches.UnitCanMove, Matches.UnitIsNotInfrastructure);
 		final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitIsTransport);
@@ -1325,7 +1324,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				for (int j = transCount - 1; j >= 0; j--)
 				{
 					transport = transportUnits.get(j);
-					int free = tracker.getAvailableCapacity(transport);
+					int free = TransportTracker.getAvailableCapacity(transport);
 					if (free <= 0)
 					{
 						transportUnits.remove(j);
@@ -1366,7 +1365,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private void populateNonComTransportMove(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
 		final boolean tFirst = transportsMayDieFirst();
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		// CompositeMatch<Unit> enemyUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
 		// CompositeMatch<Unit> landAndEnemy = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, enemyUnit);
 		// CompositeMatch<Unit> airEnemyUnit = new CompositeMatchAnd<Unit>(enemyUnit, Matches.UnitIsAir);
@@ -1422,7 +1420,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						if (MoveValidator.hasEnoughMovement(transport, dockSeaRoute))
 						{
 							addUnits.add(transport);
-							addUnits.addAll(tracker.transporting(transport));
+							addUnits.addAll(TransportTracker.transporting(transport));
 						}
 					}
 					s_logger.fine("pnct " + addUnits);
@@ -1449,8 +1447,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			while (mytransIter.hasNext())
 			{
 				final Unit thisTrans = mytransIter.next();
-				if (tracker.isTransporting(thisTrans))
-					ourLandingUnits.addAll(tracker.transporting(thisTrans));
+				if (TransportTracker.isTransporting(thisTrans))
+					ourLandingUnits.addAll(TransportTracker.transporting(thisTrans));
 				else
 				{
 					mytransIter.remove();
@@ -1668,7 +1666,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		// setImpassableTerrs(player);
 		// Collection<Territory> impassableTerrs = getImpassableTerrs();
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final HashMap<Territory, Territory> amphibMap = new HashMap<Territory, Territory>();
 		final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.transportIsTransporting());
 		final CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player, data));
@@ -1748,12 +1745,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					unitsToMove.addAll(transports);
 					for (final Unit transport : transports)
-						unitsToMove.addAll(tracker.transporting(transport));
+						unitsToMove.addAll(TransportTracker.transporting(transport));
 				}
 				else
 				{
 					final Unit oneTransport = transports.get(0);
-					unitsToMove.addAll(tracker.transporting(oneTransport));
+					unitsToMove.addAll(TransportTracker.transporting(oneTransport));
 					unitsToMove.add(oneTransport);
 				}
 				landTerrConquered.add(landTerr);
@@ -1825,7 +1822,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	private void firstTransportMove(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
 		final CompositeMatch<Unit> transportingUnit = new CompositeMatchAnd<Unit>(transUnit, Matches.unitIsOwnedBy(player), Matches.transportIsTransporting());
 		// CompositeMatch<Unit> escortUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsNotTransport, Matches.UnitIsCarrier.invert());
@@ -1891,7 +1887,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				continue;
 			final List<Unit> transportedUnits = new ArrayList<Unit>();
 			for (final Unit transport : transUnits)
-				transportedUnits.addAll(tracker.transporting(transport));
+				transportedUnits.addAll(TransportTracker.transporting(transport));
 			transUnits.addAll(transportedUnits);
 			moveUnits.add(transUnits);
 			moveRoutes.add(seaRoute);
@@ -2135,7 +2131,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// boolean isAmphib = isAmphibAttack(player, false);
 		final Route amphibRoute = getAmphibRoute(player, false);
 		// boolean aggressive = SUtils.determineAggressiveAttack(data, player, 1.4F);
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
 		final CompositeMatch<Unit> transportingUnit = new CompositeMatchAnd<Unit>(transUnit, Matches.unitIsOwnedBy(player), Matches.transportIsTransporting());
 		// CompositeMatch<Unit> escortUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsNotTransport, Matches.UnitIsCarrier.invert(), HasntMoved);
@@ -2484,7 +2479,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					// adds _all_ loaded units, check this is valid
 					final Unit transport = transIter.next();
 					// if (tracker.isTransporting(transport))
-					landUnits.addAll(tracker.transporting(transport));
+					landUnits.addAll(TransportTracker.transporting(transport));
 					// else
 					// transIter.remove();
 				}
@@ -2610,7 +2605,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	private void amphibMapUnload(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final CompositeMatch<Unit> transportingUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport, Matches.transportIsTransporting());
 		final HashMap<Territory, Territory> amphibMap = getAmphibMap();
 		final Set<Territory> invadeFrom = amphibMap.keySet();
@@ -2620,7 +2614,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final List<Unit> transports = transTerr.getUnits().getMatches(transportingUnit);
 			final List<Unit> tUnits = new ArrayList<Unit>();
 			for (final Unit transport : transports)
-				tUnits.addAll(tracker.transporting(transport));
+				tUnits.addAll(TransportTracker.transporting(transport));
 			final Route tRoute = data.getMap().getRoute(transTerr, targetTerr);
 			if (tRoute != null && tRoute.getLength() == 1)
 			{
@@ -2644,7 +2638,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 */
 	private void populateTransportUnloadNonCom(final boolean onlyMoved, final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
 		if (onlyMoved)
 			transUnit = new CompositeMatchAnd<Unit>(transUnit, Matches.unitHasMoved);
@@ -2686,8 +2679,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			while (tIter.hasNext())
 			{
 				final Unit transport = tIter.next();
-				if (tracker.transporting(transport) != null)
-					landingUnits.addAll(tracker.transporting(transport));
+				if (TransportTracker.transporting(transport) != null)
+					landingUnits.addAll(TransportTracker.transporting(transport));
 			}
 			if (landingUnits.isEmpty())
 				continue;
@@ -2744,7 +2737,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// setImpassableTerrs(player);
 		// Collection<Territory> impassableTerrs = getImpassableTerrs();
 		final boolean tFirst = transportsMayDieFirst();
-		final TransportTracker tTracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final int size = data.getMap().getTerritories().size();
 		final Territory eTerr[] = new Territory[size]; // revised game has 79 territories and 64 sea zones
 		final float eStrength[] = new float[size];
@@ -2809,7 +2801,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					while (nFIter.hasNext())
 					{
 						final Unit transport = nFIter.next();
-						quickLandingUnits.addAll(tTracker.transporting(transport));
+						quickLandingUnits.addAll(TransportTracker.transporting(transport));
 					}
 					final Route quickLandRoute = new Route();
 					quickLandRoute.setStart(nF);
@@ -2895,7 +2887,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final List<Territory> enemyCopy = new ArrayList<Territory>(enemy);
 			// List<Unit> alreadyOut = new ArrayList<Unit>();
 			// quick check for empty territories
-			final Map<Unit, Collection<Unit>> transMap = tTracker.transporting(transUnits);
+			final Map<Unit, Collection<Unit>> transMap = TransportTracker.transporting(transUnits);
 			int i = 0;
 			for (final Territory t2 : enemy) // find strength of all enemy terr (defensive)
 			{
@@ -2942,7 +2934,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					while (transIter.hasNext() && !gotOne)
 					{
 						final Unit transport = transIter.next();
-						if (!tTracker.isTransporting(transport) || transport == null)
+						if (!TransportTracker.isTransporting(transport) || transport == null)
 							continue;
 						final Collection<Unit> transportUnits = transMap.get(transport);
 						if (transportUnits == null)
@@ -7111,7 +7103,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		setImpassableTerrs(player);
 		// Collection<Territory> impassableTerrs = getImpassableTerrs();
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final boolean tFirst = transportsMayDieFirst();
 		final Match<Unit> myTransport = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
 		final Match<Unit> transports = new CompositeMatchAnd<Unit>(Matches.transportIsTransporting(), myTransport);
@@ -7129,10 +7120,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			while (tIter.hasNext())
 			{
 				final Unit transport = tIter.next();
-				if (!tracker.isTransporting(transport))
+				if (!TransportTracker.isTransporting(transport))
 					tIter.remove();
 				else
-					loadedUnits.addAll(tracker.transporting(transport));
+					loadedUnits.addAll(TransportTracker.transporting(transport));
 			}
 			if (myTransports.isEmpty() || loadedUnits.isEmpty())
 				continue;

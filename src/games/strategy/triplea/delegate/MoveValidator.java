@@ -688,13 +688,12 @@ public class MoveValidator
 	public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units, final GameData data)
 	{
 		// just worry about transports
-		final TransportTracker tracker = new TransportTracker();
 		final Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
 		final Iterator<Unit> iter = units.iterator();
 		while (iter.hasNext())
 		{
 			final Unit unit = iter.next();
-			dependents.put(unit, tracker.transporting(unit));
+			dependents.put(unit, TransportTracker.transporting(unit));
 		}
 		return dependents;
 	}
@@ -1027,7 +1026,7 @@ public class MoveValidator
 		while (iter.hasNext())
 		{
 			final Unit transport = iter.next();
-			sum += tracker.getAvailableCapacity(transport);
+			sum += TransportTracker.getAvailableCapacity(transport);
 		}
 		return sum;
 	}
@@ -1071,7 +1070,6 @@ public class MoveValidator
 			return result;
 		/*if(!MoveValidator.isLoad(units, route, data, player) && !MoveValidator.isUnload(route))
 			return result;*/
-		final TransportTracker transportTracker = new TransportTracker();
 		final Territory routeEnd = route.getEnd();
 		final Territory routeStart = route.getStart();
 		// if unloading make sure length of route is only 1
@@ -1079,7 +1077,7 @@ public class MoveValidator
 		{
 			if (route.hasMoreThenOneStep())
 				return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
-			for (final Unit unit : transportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units))
+			for (final Unit unit : TransportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units))
 				result.addDisallowedUnit(CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, unit);
 			final Collection<Unit> transports = MoveDelegate.mapTransports(route, units, null).values();
 			final boolean isScramblingOrKamikazeAttacksEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data)
@@ -1098,7 +1096,7 @@ public class MoveValidator
 									Matches.territoryHasUnitsThatMatch(enemySubmarineMatch).match(routeStart))
 						{
 							// we must have at least one warship (non-transport) unit, otherwise the enemy sub stops our unloading for amphibious assault
-							for (final Unit unit : transportTracker.transporting(transport))
+							for (final Unit unit : TransportTracker.transporting(transport))
 							{
 								result.addDisallowedUnit(ENEMY_SUBMARINE_PREVENTING_UNESCORTED_AMPHIBIOUS_ASSAULT_LANDING, unit);
 							}
@@ -1112,7 +1110,7 @@ public class MoveValidator
 							// Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move phase, is illegal
 							// and in addition to being illegal, it is also causing problems if the sea transports get killed (the land units are not dying)
 							// TODO: should we use the battle tracker for this instead?
-							for (final Unit unit : transportTracker.transporting(transport))
+							for (final Unit unit : TransportTracker.transporting(transport))
 							{
 								result.addDisallowedUnit(TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED, unit);
 							}
@@ -1122,22 +1120,22 @@ public class MoveValidator
 				// TODO This is very sensitive to the order of the transport collection. The users may
 				// need to modify the order in which they perform their actions.
 				// check whether transport has already unloaded
-				if (transportTracker.hasTransportUnloadedInPreviousPhase(transport))
+				if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport))
 				{
-					for (final Unit unit : transportTracker.transporting(transport))
+					for (final Unit unit : TransportTracker.transporting(transport))
 						result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
 				}
 				// check whether transport is restricted to another territory
-				else if (transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
+				else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
 				{
 					final Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-					for (final Unit unit : transportTracker.transporting(transport))
+					for (final Unit unit : TransportTracker.transporting(transport))
 						result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
 				}
 				// Check if the transport has already loaded after being in combat
-				else if (transportTracker.isTransportUnloadRestrictedInNonCombat(transport))
+				else if (TransportTracker.isTransportUnloadRestrictedInNonCombat(transport))
 				{
-					for (final Unit unit : transportTracker.transporting(transport))
+					for (final Unit unit : TransportTracker.transporting(transport))
 						result.addDisallowedUnit(TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT, unit);
 				}
 			}
@@ -1177,14 +1175,14 @@ public class MoveValidator
 				// make sure transports dont leave their units behind
 				if (ua.getTransportCapacity() != -1)
 				{
-					final Collection<Unit> holding = transportTracker.transporting(unit);
+					final Collection<Unit> holding = TransportTracker.transporting(unit);
 					if (holding != null && !units.containsAll(holding))
 						result.addDisallowedUnit("Transports cannot leave their units", unit);
 				}
 				// make sure units dont leave their transports behind
 				if (ua.getTransportCost() != -1)
 				{
-					final Unit transport = transportTracker.transportedBy(unit);
+					final Unit transport = TransportTracker.transportedBy(unit);
 					if (transport != null && !units.contains(transport))
 						result.addDisallowedUnit("Unit must stay with its transport while moving", unit);
 				}
@@ -1214,22 +1212,22 @@ public class MoveValidator
 				final Unit transport = unitsToTransports.get(unit);
 				if (transport == null)
 					continue;
-				if (transportTracker.hasTransportUnloadedInPreviousPhase(transport))
+				if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport))
 				{
 					result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
 				}
-				else if (transportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
+				else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd()))
 				{
 					Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
 					final Iterator<Unit> trnIter = transportsToLoad.iterator();
 					while (trnIter.hasNext())
 					{
 						final TripleAUnit trn = (TripleAUnit) trnIter.next();
-						if (!transportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd()))
+						if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd()))
 						{
 							final UnitAttachment ua = UnitAttachment.get(unit.getType());
 							// UnitAttachment trna = UnitAttachment.get(trn.getType());
-							if (transportTracker.getAvailableCapacity(trn) >= ua.getTransportCost())
+							if (TransportTracker.getAvailableCapacity(trn) >= ua.getTransportCost())
 							{
 								alreadyUnloadedTo = null;
 								break;
@@ -1538,7 +1536,6 @@ public class MoveValidator
 	
 	private static Map<Unit, Collection<Unit>> transportsMustMoveWith(final Collection<Unit> units)
 	{
-		final TransportTracker transportTracker = new TransportTracker();
 		final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
 		// map transports
 		final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
@@ -1546,7 +1543,7 @@ public class MoveValidator
 		while (iter.hasNext())
 		{
 			final Unit transport = iter.next();
-			final Collection<Unit> transporting = transportTracker.transporting(transport);
+			final Collection<Unit> transporting = TransportTracker.transporting(transport);
 			mustMoveWith.put(transport, transporting);
 		}
 		return mustMoveWith;
@@ -1554,7 +1551,6 @@ public class MoveValidator
 	
 	private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents)
 	{
-		final TransportTracker transportTracker = new TransportTracker();
 		final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
 		final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
 		/*Map<Unit, Collection<Unit>> selectedDependents = new HashMap<Unit, Collection<Unit>>();
@@ -1572,7 +1568,7 @@ public class MoveValidator
 		{
 			if (!mustMoveWith.containsKey(airTransport))
 			{
-				Collection<Unit> transporting = transportTracker.transporting(airTransport);
+				Collection<Unit> transporting = TransportTracker.transporting(airTransport);
 				if (transporting == null || transporting.isEmpty())
 				{
 					if (!newDependents.isEmpty())
@@ -1660,7 +1656,6 @@ public class MoveValidator
 	/**
 	 * Get the route ignoring forced territories
 	 */
-	@SuppressWarnings("unchecked")
 	public static Route getBestRoute(final Territory start, final Territory end, final GameData data, final PlayerID player, final Collection<Unit> units, final boolean forceLandOrSeaRoute)
 	{
 		final boolean hasLand = Match.someMatch(units, Matches.UnitIsLand);

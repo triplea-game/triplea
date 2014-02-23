@@ -1387,7 +1387,6 @@ public class SUtils
 	public static float getStrengthOfPotentialAttackers(final Territory location, final GameData data, final PlayerID player, final boolean tFirst, final boolean ignoreOnlyPlanes,
 				final List<Territory> ignoreTerr)
 	{
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		PlayerID ePlayer = null;
 		final List<PlayerID> qID = getEnemyPlayers(data, player);
 		final HashMap<PlayerID, Float> ePAttackMap = new HashMap<PlayerID, Float>();
@@ -1517,7 +1516,7 @@ public class SUtils
 						int availInf = 0, availOther = 0;
 						for (final Unit xTrans : transports)
 						{
-							final Collection<Unit> thisTransUnits = tracker.transporting(xTrans);
+							final Collection<Unit> thisTransUnits = TransportTracker.transporting(xTrans);
 							if (thisTransUnits == null)
 							{
 								availInf += 2;
@@ -2982,7 +2981,6 @@ public class SUtils
 				final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final GameData data, final PlayerID player, final boolean tFirst, final boolean allowEnemy,
 				final List<Territory> seaTerrAttacked)
 	{ // needs a check for remainingStrength
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player), Matches.UnitCanMove, Matches.unitHasMovementLeft);
 		final CompositeMatch<Unit> escortShip = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport, Matches.unitIsOwnedBy(player), Matches.UnitCanMove,
 					Matches.unitHasMovementLeft);
@@ -3046,7 +3044,7 @@ public class SUtils
 				{
 					if (remainingStrengthNeeded > unitStrength)
 					{
-						final Collection<Unit> loadOne = tracker.transporting(xTran);
+						final Collection<Unit> loadOne = TransportTracker.transporting(xTran);
 						unitStrength += strength(loadOne, true, false, false);
 						tUnits.add(xTran);
 					}
@@ -3093,7 +3091,7 @@ public class SUtils
 					final TripleAUnit ta = TripleAUnit.get(thisTran);
 					if (ta.getMovementLeft() < newDist)
 						tranIter.remove();
-					else if (!tracker.isTransporting(thisTran))
+					else if (!TransportTracker.isTransporting(thisTran))
 						tranIter.remove();
 				}
 				final List<Unit> escorts = otherSource.getUnits().getMatches(escortUnit);
@@ -3110,7 +3108,7 @@ public class SUtils
 				{
 					if (remainingStrengthNeeded > unitStrength)
 					{
-						final Collection<Unit> loadOne = tracker.transporting(xTran);
+						final Collection<Unit> loadOne = TransportTracker.transporting(xTran);
 						unitStrength += strength(loadOne, true, false, false);
 						allUnits.add(xTran);
 						allUnits.addAll(loadOne);

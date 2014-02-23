@@ -36,6 +36,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
@@ -46,6 +47,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
+ * This delegate is only supposed to be run once, per game, at the start of the game.
  * 
  * @author Sean Bridges
  */
@@ -110,6 +112,67 @@ public class InitializationDelegate extends BaseTripleADelegate
 		initTech(aBridge);
 		initSkipUnusedBids(aBridge.getData());
 		initDeleteAssetsOfDisabledPlayers(aBridge);
+		initTransportedLandUnits(aBridge);
+	}
+	
+	/**
+	 * Want to make sure that all units in the sea that can be transported are
+	 * marked as being transported by something.
+	 * 
+	 * We assume that all transportable units in the sea are in a transport, no
+	 * exceptions.
+	 * 
+	 */
+	private void initTransportedLandUnits(final IDelegateBridge aBridge)
+	{
+		// m_firstRun = false;
+		final GameData data = aBridge.getData();
+		// check every territory
+		final Iterator<Territory> allTerritories = data.getMap().getTerritories().iterator();
+		while (allTerritories.hasNext())
+		{
+			final Territory current = allTerritories.next();
+			// only care about water
+			if (!current.isWater())
+				continue;
+			final Collection<Unit> units = current.getUnits().getUnits();
+			if (units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
+				continue;
+			// map transports, try to fill
+			final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
+			final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
+			for (final Unit toLoad : land)
+			{
+				final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
+				final int cost = ua.getTransportCost();
+				if (cost == -1)
+					throw new IllegalStateException("Non transportable unit in sea");
+				// find the next transport that can hold it
+				final Iterator<Unit> transportIter = transports.iterator();
+				boolean found = false;
+				while (transportIter.hasNext())
+				{
+					final Unit transport = transportIter.next();
+					final int capacity = TransportTracker.getAvailableCapacity(transport);
+					if (capacity >= cost)
+					{
+						try
+						{
+							aBridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
+						} catch (final IllegalStateException e)
+						{
+							System.err.println("You can only edit add transports+units after the initialization delegate of the game is finished.  "
+										+ "If this error came up and you have not used Edit Mode to add units + transports, then please report this as a bug:  \r\n" + e.getMessage());
+						}
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					throw new IllegalStateException("Cannot load all land units in sea transports. " + "Please make sure you have enough transports. "
+								+ "You may need to re-order the xml's placement of transports and land units, " + "as the engine will try to fill them in the order they are given.");
+			}
+		}
 	}
 	
 	private void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge aBridge)

@@ -64,7 +64,7 @@ public class TransportTracker
 	/**
 	 * Constructor.
 	 */
-	public TransportTracker()
+	private TransportTracker()
 	{
 	}
 	
@@ -72,7 +72,7 @@ public class TransportTracker
 	 * Returns the collection of units that the given transport is transporting.
 	 * Could be null.
 	 */
-	public Collection<Unit> transporting(final Unit transport)
+	public static Collection<Unit> transporting(final Unit transport)
 	{
 		return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting());
 	}
@@ -81,12 +81,12 @@ public class TransportTracker
 	 * Returns the collection of units that the given transport is transporting.
 	 * Could be null.
 	 */
-	public Collection<Unit> transporting(final Unit transport, final Collection<Unit> transportedUnitsPossible)
+	public static Collection<Unit> transporting(final Unit transport, final Collection<Unit> transportedUnitsPossible)
 	{
 		return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
 	}
 	
-	public boolean isTransporting(final Unit transport)
+	public static boolean isTransporting(final Unit transport)
 	{
 		return !((TripleAUnit) transport).getTransporting().isEmpty();
 	}
@@ -95,12 +95,12 @@ public class TransportTracker
 	 * Returns the collection of units that the given transport has unloaded
 	 * this turn. Could be empty.
 	 */
-	public Collection<Unit> unloaded(final Unit transport)
+	public static Collection<Unit> unloaded(final Unit transport)
 	{
 		return ((TripleAUnit) transport).getUnloaded();
 	}
 	
-	public Collection<Unit> transportingAndUnloaded(final Unit transport)
+	public static Collection<Unit> transportingAndUnloaded(final Unit transport)
 	{
 		Collection<Unit> rVal = transporting(transport);
 		if (rVal == null)
@@ -112,7 +112,7 @@ public class TransportTracker
 	/**
 	 * Returns a map of transport -> collection of transported units.
 	 */
-	public Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units)
+	public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units)
 	{
 		final Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
 		for (final Unit transported : units)
@@ -132,7 +132,7 @@ public class TransportTracker
 	/**
 	 * Returns a map of transport -> collection of transported units.
 	 */
-	public Map<Unit, Collection<Unit>> transporting(final Collection<Unit> transports, final Collection<Unit> transportedUnits)
+	public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> transports, final Collection<Unit> transportedUnits)
 	{
 		final Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
 		for (final Unit transported : transportedUnits)
@@ -152,12 +152,12 @@ public class TransportTracker
 	/**
 	 * Return the transport that holds the given unit. Could be null.
 	 */
-	public Unit transportedBy(final Unit unit)
+	public static Unit transportedBy(final Unit unit)
 	{
 		return ((TripleAUnit) unit).getTransportedBy();
 	}
 	
-	public Change unloadTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id, final boolean dependentBattle)
+	public static Change unloadTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id, final boolean dependentBattle)
 	{
 		final CompositeChange change = new CompositeChange();
 		final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
@@ -187,7 +187,7 @@ public class TransportTracker
 		return change;
 	}
 	
-	public Change unloadAirTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id, final boolean dependentBattle)
+	public static Change unloadAirTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id, final boolean dependentBattle)
 	{
 		final CompositeChange change = new CompositeChange();
 		final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
@@ -219,7 +219,7 @@ public class TransportTracker
 		return change;
 	}
 	
-	public Change loadTransportChange(final TripleAUnit transport, final Unit unit, final PlayerID id)
+	public static Change loadTransportChange(final TripleAUnit transport, final Unit unit)
 	{
 		assertTransport(transport);
 		final CompositeChange change = new CompositeChange();
@@ -241,7 +241,7 @@ public class TransportTracker
 		return change;
 	}
 	
-	public Change combatTransportChange(final TripleAUnit transport, final PlayerID id)
+	public static Change combatTransportChange(final TripleAUnit transport, final PlayerID id)
 	{
 		assertTransport(transport);
 		final CompositeChange change = new CompositeChange();
@@ -249,7 +249,7 @@ public class TransportTracker
 		return change;
 	}
 	
-	public int getAvailableCapacity(final Unit unit)
+	public static int getAvailableCapacity(final Unit unit)
 	{
 		final UnitAttachment ua = UnitAttachment.get(unit.getType());
 		// Check if there are transports available, also check for destroyer capacity (Tokyo Express)
@@ -261,7 +261,7 @@ public class TransportTracker
 		return capacity - used - unloaded;
 	}
 	
-	public Change endOfRoundClearStateChange(final GameData data)
+	public static Change endOfRoundClearStateChange(final GameData data)
 	{
 		final CompositeChange change = new CompositeChange();
 		for (final Unit unit : data.getUnits().getUnits())
@@ -295,7 +295,7 @@ public class TransportTracker
 		return change;
 	}
 	
-	public Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units)
+	public static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units)
 	{
 		final Collection<Unit> rVal = new ArrayList<Unit>();
 		for (final Unit u : units)
@@ -318,7 +318,7 @@ public class TransportTracker
 		return rVal;
 	}
 	
-	public boolean hasTransportUnloadedInPreviousPhase(final Unit transport)
+	public static boolean hasTransportUnloadedInPreviousPhase(final Unit transport)
 	{
 		final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
 		// See if transport has unloaded anywhere yet
@@ -332,13 +332,13 @@ public class TransportTracker
 		return false;
 	}
 	
-	private boolean isWW2V2(final GameData data)
+	private static boolean isWW2V2(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getWW2V2(data);
 	}
 	
 	// TODO here's a bug COMCO
-	private boolean isTransportUnloadRestricted(final GameData data)
+	private static boolean isTransportUnloadRestricted(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getTransportUnloadRestricted(data);
 	}
@@ -347,7 +347,7 @@ public class TransportTracker
 	// multiple territories in a given turn.
 	// In WW2V1 a transport can unload to multiple territories in
 	// non-combat phase, provided they are both adjacent to the sea zone.
-	public boolean isTransportUnloadRestrictedToAnotherTerritory(final Unit transport, final Territory territory)
+	public static boolean isTransportUnloadRestrictedToAnotherTerritory(final Unit transport, final Territory territory)
 	{
 		final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
 		if (unloaded.isEmpty())
@@ -378,7 +378,7 @@ public class TransportTracker
 	// However, we only need to call this method to determine why we can't
 	// unload an additional unit. Since transports only hold up to two units,
 	// we only need to return one territory, not multiple territories.
-	public Territory getTerritoryTransportHasUnloadedTo(final Unit transport)
+	public static Territory getTerritoryTransportHasUnloadedTo(final Unit transport)
 	{
 		final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
 		if (unloaded.isEmpty())
@@ -388,7 +388,7 @@ public class TransportTracker
 	}
 	
 	// If a transport has been in combat, it cannot load AND unload in non-combat
-	public boolean isTransportUnloadRestrictedInNonCombat(final Unit transport)
+	public static boolean isTransportUnloadRestrictedInNonCombat(final Unit transport)
 	{
 		final TripleAUnit taUnit = (TripleAUnit) transport;
 		if (GameStepPropertiesHelper.isNonCombatMove(transport.getData()) && taUnit.getWasInCombat() && taUnit.getWasLoadedAfterCombat())

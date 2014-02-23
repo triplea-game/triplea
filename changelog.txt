@@ -1,4 +1,8 @@
 Changes for 1.8.0.1
+* Making TransportTracker a static implementation to clean up the engine a little bit. (veqryn)
+
+* Fixing various bugs in Global 1940, ww2v3, v4, v5, and v6. (veqryn)
+
 * Created new Player Rule Attachment, "immuneToBlockade", which will prevent blockade production loss for that player. (veqryn)
 
 * Allowed 1940's paratroopers tech (ariborne combat) to move to / attack territories that have been blitz or already conquered this turn. (veqryn)

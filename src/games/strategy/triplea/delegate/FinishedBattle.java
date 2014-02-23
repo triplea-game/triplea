@@ -71,7 +71,7 @@ public class FinishedBattle extends AbstractBattle
 	@Override
 	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
 	{
-		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
+		final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
 		for (final Unit unit : addedTransporting.keySet())
 		{
 			if (m_dependentUnits.get(unit) != null)

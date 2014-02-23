@@ -198,7 +198,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private void populateTransportLoad(final boolean nonCombat, final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
 				final List<Collection<Unit>> transportsToLoad, final PlayerID player)
 	{
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		if (!isAmphibAttack(player, data))
 			return;
 		final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
@@ -213,7 +212,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final List<Unit> units = new ArrayList<Unit>();
 			for (final Unit transport : neighbor.getUnits().getMatches(Matches.unitIsOwnedBy(player)))
 			{
-				int free = tracker.getAvailableCapacity(transport);
+				int free = TransportTracker.getAvailableCapacity(transport);
 				if (free <= 0)
 					continue;
 				final Iterator<Unit> iter = unitsToLoad.iterator();
@@ -265,11 +264,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	private List<Unit> load2Transports(final boolean reload, final GameData data, final List<Unit> transportsToLoad, final Territory loadFrom, final PlayerID player)
 	{
-		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final List<Unit> units = new ArrayList<Unit>();
 		for (final Unit transport : transportsToLoad)
 		{
-			final Collection<Unit> landunits = tracker.transporting(transport);
+			final Collection<Unit> landunits = TransportTracker.transporting(transport);
 			for (final Unit u : landunits)
 			{
 				units.add(u);

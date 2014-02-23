@@ -68,7 +68,6 @@ import java.util.Set;
 public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 {
 	public static String CLEANING_UP_AFTER_MOVEMENT_PHASES = "Cleaning up after movement phases";
-	private boolean m_firstRun = true; // firstRun means when the game is loaded the first time, not when the game is loaded from a save.
 	private boolean m_needToInitialize = true; // needToInitialize means we only do certain things once, so that if a game is saved then loaded, they aren't done again
 	private boolean m_needToDoRockets = true;
 	private IntegerMap<Territory> m_PUsLost = new IntegerMap<Territory>();
@@ -95,8 +94,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		super.start();
 		final GameData data = getData();
-		if (m_firstRun)
-			firstRun();
 		if (m_needToInitialize)
 		{
 			// territory property changes triggered at beginning of combat move // TODO create new delegate called "start of turn" and move them there.
@@ -236,7 +233,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.LAUNCHED));
 				}
 			}
-			change.add(m_transportTracker.endOfRoundClearStateChange(data));
+			change.add(TransportTracker.endOfRoundClearStateChange(data));
 			m_PUsLost.clear();
 		}
 		if (!change.isEmpty())
@@ -267,7 +264,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final MoveExtendedDelegateState state = new MoveExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
-		state.m_firstRun = m_firstRun;
 		state.m_needToInitialize = m_needToInitialize;
 		state.m_needToDoRockets = m_needToDoRockets;
 		state.m_PUsLost = m_PUsLost;
@@ -280,7 +276,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final MoveExtendedDelegateState s = (MoveExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
-		m_firstRun = s.m_firstRun;
 		m_needToInitialize = s.m_needToInitialize;
 		m_needToDoRockets = s.m_needToDoRockets;
 		m_PUsLost = s.m_PUsLost;
@@ -302,65 +297,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			}
 		}
 		return false;
-	}
-	
-	/**
-	 * Want to make sure that all units in the sea that can be transported are
-	 * marked as being transported by something.
-	 * 
-	 * We assume that all transportable units in the sea are in a transport, no
-	 * exceptions.
-	 * 
-	 */
-	private void firstRun()
-	{
-		m_firstRun = false;
-		// check every territory
-		final Iterator<Territory> allTerritories = getData().getMap().getTerritories().iterator();
-		while (allTerritories.hasNext())
-		{
-			final Territory current = allTerritories.next();
-			// only care about water
-			if (!current.isWater())
-				continue;
-			final Collection<Unit> units = current.getUnits().getUnits();
-			if (units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
-				continue;
-			// map transports, try to fill
-			final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
-			final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
-			for (final Unit toLoad : land)
-			{
-				final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
-				final int cost = ua.getTransportCost();
-				if (cost == -1)
-					throw new IllegalStateException("Non transportable unit in sea");
-				// find the next transport that can hold it
-				final Iterator<Unit> transportIter = transports.iterator();
-				boolean found = false;
-				while (transportIter.hasNext())
-				{
-					final Unit transport = transportIter.next();
-					final int capacity = m_transportTracker.getAvailableCapacity(transport);
-					if (capacity >= cost)
-					{
-						try
-						{
-							m_bridge.addChange(m_transportTracker.loadTransportChange((TripleAUnit) transport, toLoad, m_player));
-						} catch (final IllegalStateException e)
-						{
-							System.err.println("You can only edit add transports+units after the first combat move of the game is finished.  "
-										+ "If this error came up and you have not used Edit Mode to add units + transports, then please report this as a bug:  \r\n" + e.getMessage());
-						}
-						found = true;
-						break;
-					}
-				}
-				if (!found)
-					throw new IllegalStateException("Cannot load all land units in sea transports. " + "Please make sure you have enough transports. "
-								+ "You may need to re-order the xml's placement of transports and land units, " + "as the engine will try to fill them in the order they are given.");
-			}
-		}
 	}
 	
 	private void resetBonusMovement()
@@ -752,13 +688,12 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
 		final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
-		final TransportTracker transportTracker = new TransportTracker();
 		final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
 		final Iterator<Unit> land = canBeTransported.iterator();
 		while (land.hasNext())
 		{
 			final Unit currentTransported = land.next();
-			final Unit transport = transportTracker.transportedBy(currentTransported);
+			final Unit transport = TransportTracker.transportedBy(currentTransported);
 			// already being transported, make sure it is in transports
 			if (transport == null)
 				continue;
@@ -778,7 +713,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
 		int transportIndex = 0;
-		final TransportTracker transportTracker = new TransportTracker();
 		final Comparator<Unit> transportCostComparator = new Comparator<Unit>()
 		{
 			public int compare(final Unit o1, final Unit o2)
@@ -797,8 +731,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		{
 			public int compare(final Unit o1, final Unit o2)
 			{
-				final int capacityLeft1 = transportTracker.getAvailableCapacity(o1);
-				final int capacityLeft2 = transportTracker.getAvailableCapacity(o1);
+				final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
+				final int capacityLeft2 = TransportTracker.getAvailableCapacity(o1);
 				if (capacityLeft1 != capacityLeft2)
 					return capacityLeft1 - capacityLeft2;
 				final int capacity1 = UnitAttachment.get((o1).getUnitType()).getTransportCapacity();
@@ -832,7 +766,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				if (transportIndex >= canTransport.size())
 					transportIndex = 0;
 				final Unit transport = transportIter.next();
-				int capacity = transportTracker.getAvailableCapacity(transport);
+				int capacity = TransportTracker.getAvailableCapacity(transport);
 				capacity -= addedLoad.getInt(transport);
 				if (capacity >= cost)
 				{
@@ -849,14 +783,12 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		return new Comparator<Unit>()
 		{
-			private final TransportTracker m_tracker = new TransportTracker();
-			
 			public int compare(final Unit t1, final Unit t2)
 			{
 				if (t1 == t2 || t1.equals(t2))
 					return 0;
-				final boolean t1previous = m_tracker.hasTransportUnloadedInPreviousPhase(t1);
-				final boolean t2previous = m_tracker.hasTransportUnloadedInPreviousPhase(t2);
+				final boolean t1previous = TransportTracker.hasTransportUnloadedInPreviousPhase(t1);
+				final boolean t2previous = TransportTracker.hasTransportUnloadedInPreviousPhase(t2);
 				if (t1previous == t2previous)
 					return 0;
 				if (t1previous == false)

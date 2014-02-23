@@ -465,7 +465,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 					final Unit transport = taUnit.getTransportedBy();
 					if (transport == null || !airTransports.contains(transport))
 						continue;
-					change.add(DelegateFinder.moveDelegate(data).getTransportTracker().unloadAirTransportChange(taUnit, battleSite, player, false));
+					change.add(TransportTracker.unloadAirTransportChange(taUnit, battleSite, player, false));
 				}
 				if (!change.isEmpty())
 				{
@@ -486,7 +486,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	{
 		final PlayerID player = aBridge.getPlayerID();
 		final GameData data = aBridge.getData();
-		final TransportTracker transportTracker = new TransportTracker();
 		final boolean ignoreTransports = isIgnoreTransportInMovement(data);
 		final boolean ignoreSubs = isIgnoreSubInMovement(data);
 		final CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
@@ -502,7 +501,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			final Territory territory = battleTerritories.next();
 			final List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
 			// now make sure to add any units that must move with these attacking units, so that they get included as dependencies
-			final Map<Unit, Collection<Unit>> transportMap = transportTracker.transporting(territory.getUnits().getUnits());
+			final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits().getUnits());
 			final HashSet<Unit> dependants = new HashSet<Unit>();
 			for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet())
 			{
@@ -645,7 +644,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		if (!games.strategy.triplea.Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data))
 			return;
 		final PlayerID player = aBridge.getPlayerID();
-		final TransportTracker transportTracker = new TransportTracker();
 		final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(),
 					Matches.territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(player, data))
 					.iterator();
@@ -657,7 +655,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(abandonedToUnits);
 			{
 				// now make sure to add any units that must move with these units, so that they get included as dependencies
-				final Map<Unit, Collection<Unit>> transportMap = transportTracker.transporting(territory.getUnits().getUnits());
+				final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits().getUnits());
 				final HashSet<Unit> dependants = new HashSet<Unit>();
 				for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet())
 				{
@@ -963,9 +961,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 						if (!change1.isEmpty())
 							m_bridge.addChange(change1);
 						// after that is applied, we have to make a map of all dependencies
-						final TransportTracker tt = new TransportTracker();
 						final Map<Territory, Map<Unit, Collection<Unit>>> dependencies = new HashMap<Territory, Map<Unit, Collection<Unit>>>();
-						final Map<Unit, Collection<Unit>> dependenciesForMFB = tt.transporting(attackingUnits, attackingUnits);
+						final Map<Unit, Collection<Unit>> dependenciesForMFB = TransportTracker.transporting(attackingUnits, attackingUnits);
 						for (final Unit transport : Match.getMatches(attackingUnits, Matches.UnitIsTransport))
 						{
 							// however, the map we add to the newly created battle, can not hold any units that are NOT in this territory.
@@ -979,7 +976,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 							// All other maps, must hold only the transported units that in their territory
 							final Collection<Unit> allNeighborUnits = new ArrayList<Unit>(Match.getMatches(attackingUnits, Matches.UnitIsTransport));
 							allNeighborUnits.addAll(t.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(m_player)));
-							final Map<Unit, Collection<Unit>> dependenciesForNeighbors = tt.transporting(
+							final Map<Unit, Collection<Unit>> dependenciesForNeighbors = TransportTracker.transporting(
 										Match.getMatches(allNeighborUnits, Matches.UnitIsTransport), Match.getMatches(allNeighborUnits, Matches.UnitIsTransport.invert()));
 							dependencies.put(t, dependenciesForNeighbors);
 						}

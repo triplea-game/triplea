@@ -346,7 +346,7 @@ public class WW2V3_41_Test extends TestCase
 		final BattleDelegate battleDelegate = battleDelegate(m_data);
 		battleDelegate.setDelegateBridgeAndPlayer(bridge);
 		battleDelegate.start();
-		assertEquals(2, new TransportTracker().transporting(transports.get(0)).size());
+		assertEquals(2, TransportTracker.transporting(transports.get(0)).size());
 		// fight the battle
 		assertValid(fight(battleDelegate, sz7, false));
 		// make sure the infantry die with the transport
@@ -1365,12 +1365,11 @@ public class WW2V3_41_Test extends TestCase
 		bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
 		final Route route = new Route(germany, poland, eastPoland);
 		final List<Unit> airTransports = germany.getUnits().getMatches(Matches.UnitIsAirTransport);
-		final TransportTracker tracker = new TransportTracker();
 		for (final Unit airTransport : airTransports)
 		{
 			for (final Unit unit : paratroopers)
 			{
-				final Change change = tracker.loadTransportChange((TripleAUnit) airTransport, unit, germans);
+				final Change change = TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
 				bridge.addChange(change);
 			}
 		}
@@ -1404,13 +1403,12 @@ public class WW2V3_41_Test extends TestCase
 		bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.UnitIsAirTransport));
 		final List<Unit> tanks = poland.getUnits().getMatches(Matches.UnitCanBlitz);
 		move(tanks, new Route(poland, eastPoland, beloRussia));
-		final TransportTracker tracker = new TransportTracker();
 		final List<Unit> airTransports = Match.getMatches(bomberAndParatroop, Matches.UnitIsAirTransport);
 		for (final Unit airTransport : airTransports)
 		{
 			for (final Unit unit : paratrooper)
 			{
-				final Change change = tracker.loadTransportChange((TripleAUnit) airTransport, unit, germans);
+				final Change change = TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
 				bridge.addChange(change);
 			}
 		}

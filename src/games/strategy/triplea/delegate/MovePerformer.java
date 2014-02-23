@@ -139,7 +139,7 @@ public class MovePerformer implements Serializable
 				if (aaCasualties != null)
 				{
 					aaCasualtiesWithDependents.addAll(aaCasualties);
-					final Map<Unit, Collection<Unit>> dependencies = new TransportTracker().transporting(units, units);
+					final Map<Unit, Collection<Unit>> dependencies = TransportTracker.transporting(units, units);
 					for (final Unit u : aaCasualties)
 					{
 						final Collection<Unit> dependents = dependencies.get(u);
@@ -393,9 +393,9 @@ public class MovePerformer implements Serializable
 			{
 				final Unit load = units.next();
 				final Unit transport = transporting.get(load);
-				if (!m_moveDelegate.getTransportTracker().transporting(transport).contains(load))
+				if (!TransportTracker.transporting(transport).contains(load))
 				{
-					final Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_player);
+					final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
 					m_currentMove.addChange(change);
 					m_currentMove.load(transport);
 					m_bridge.addChange(change);
@@ -407,7 +407,7 @@ public class MovePerformer implements Serializable
 				{
 					for (final Unit unit : dependentAirTransportableUnits.get(airTransport))
 					{
-						final Change change = m_moveDelegate.getTransportTracker().loadTransportChange((TripleAUnit) airTransport, unit, m_player);
+						final Change change = TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
 						m_currentMove.addChange(change);
 						m_currentMove.load(airTransport);
 						m_bridge.addChange(change);
@@ -444,7 +444,7 @@ public class MovePerformer implements Serializable
 							&& Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).match(route.getEnd()))
 					continue;
 				// unload the transports
-				Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
+				Change change = TransportTracker.unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
 				m_currentMove.addChange(change);
 				m_currentMove.unload(unit);
 				m_bridge.addChange(change);

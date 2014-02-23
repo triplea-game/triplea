@@ -124,10 +124,9 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		m_bridge.addChange(ChangeFactory.addUnits(territory, units));
 		if (mapLoading != null && !mapLoading.isEmpty())
 		{
-			final TransportTracker transportTracker = new TransportTracker();
 			for (final Entry<Unit, Unit> entry : mapLoading.entrySet())
 			{
-				m_bridge.addChange(transportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey(), m_player));
+				m_bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));
 			}
 		}
 		return null;

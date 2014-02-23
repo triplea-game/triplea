@@ -1720,7 +1720,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			Territory retreatedFrom = null;
 			for (final Unit unit : units)
 			{
-				retreatedFrom = getTransportTracker().getTerritoryTransportHasUnloadedTo(unit);
+				retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
 				if (retreatedFrom != null)
 				{
 					reLoadTransports(units, change);
@@ -1737,10 +1737,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// Put units back on their transports
 		for (final Unit transport : transports)
 		{
-			final Collection<Unit> unloaded = getTransportTracker().unloaded(transport);
+			final Collection<Unit> unloaded = TransportTracker.unloaded(transport);
 			for (final Unit load : unloaded)
 			{
-				final Change loadChange = getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_attacker);
+				final Change loadChange = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
 				change.add(loadChange);
 			}
 		}
@@ -2665,7 +2665,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					while (dependentsIter.hasNext())
 					{
 						final Unit unit = dependentsIter.next();
-						change.add(DelegateFinder.moveDelegate(m_data).getTransportTracker().unloadAirTransportChange((TripleAUnit) unit, m_battleSite, m_attacker, false));
+						change.add(TransportTracker.unloadAirTransportChange((TripleAUnit) unit, m_battleSite, m_attacker, false));
 					}
 					/*while (dependentsIter.hasNext())
 					{
@@ -2705,10 +2705,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (Match.someMatch(targets, Matches.UnitCanTransport))
 		{
 			// just worry about transports
-			final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 			for (final Unit target : targets)
 			{
-				dependents.addAll(tracker.transportingAndUnloaded(target));
+				dependents.addAll(TransportTracker.transportingAndUnloaded(target));
 			}
 		}
 		return dependents;
@@ -2757,7 +2756,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				continue;
 			}
-			final Territory landedTerritory = getTransportTracker().getTerritoryTransportHasUnloadedTo(transport);
+			final Territory landedTerritory = TransportTracker.getTerritoryTransportHasUnloadedTo(transport);
 			if (landedTerritory == null)
 			{
 				throw new IllegalStateException("not unloaded?:" + units);
@@ -3226,6 +3225,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 */
 	private Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units)
 	{
-		return getTransportTracker().transporting(units);
+		return TransportTracker.transporting(units);
 	}
 }

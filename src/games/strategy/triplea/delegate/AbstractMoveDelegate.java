@@ -29,7 +29,7 @@ import java.util.Map;
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate
 {
 	protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();// A collection of UndoableMoves
-	protected final TransportTracker m_transportTracker = new TransportTracker();
+	// protected final TransportTracker m_transportTracker = new TransportTracker();
 	protected MovePerformer m_tempMovePerformer;// if we are in the process of doing a move. this instance will allow us to resume the move
 	
 	
@@ -90,10 +90,11 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		m_tempMovePerformer = s.m_tempMovePerformer;
 	}
 	
+	/*
 	public TransportTracker getTransportTracker()
 	{
 		return m_transportTracker;
-	}
+	}*/
 	
 	public List<UndoableMove> getMovesMade()
 	{

@@ -148,17 +148,16 @@ public class EditValidator
 		*/
 		if ((result = validateTerritoryBasic(data, territory, player)) != null)
 			return result;
-		final TransportTracker transportTracker = new TransportTracker();
 		// if transport selected, all transported units must be deleted too
 		for (final Unit unit : Match.getMatches(units, Matches.UnitCanTransport))
 		{
-			if (!units.containsAll(transportTracker.transporting(unit)))
+			if (!units.containsAll(TransportTracker.transporting(unit)))
 				return "Can't remove transport without removing transported units";
 		}
 		// if transported units selected, transport must be deleted too
 		for (final Unit unit : Match.getMatches(units, Matches.UnitCanBeTransported))
 		{
-			final Unit transport = transportTracker.transportedBy(unit);
+			final Unit transport = TransportTracker.transportedBy(unit);
 			if (transport != null && !units.contains(transport))
 				return "Can't remove transported units without removing transport";
 		}

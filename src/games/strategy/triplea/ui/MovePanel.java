@@ -105,7 +105,6 @@ public class MovePanel extends AbstractMovePanel
 	// cache this so we can update it only when territory/units change
 	private List<Unit> m_unitsThatCanMoveOnRoute;
 	private Image m_currentCursorImage;
-	private TransportTracker m_transportTracker = null;
 	private Route m_routeCached = null;
 	private String m_displayText = "Combat Move";
 	private MoveType m_moveType = MoveType.DEFAULT;
@@ -649,7 +648,7 @@ public class MovePanel extends AbstractMovePanel
 		while (transportIter.hasNext())
 		{
 			final Unit transport = transportIter.next();
-			final int capacity = getTransportTracker().getAvailableCapacity(transport);
+			final int capacity = TransportTracker.getAvailableCapacity(transport);
 			if (capacity < minTransportCost)
 				transportIter.remove();
 		}
@@ -662,7 +661,7 @@ public class MovePanel extends AbstractMovePanel
 		final IntegerMap<Unit> availableCapacityMap = new IntegerMap<Unit>();
 		for (final Unit transport : candidateTransports)
 		{
-			final int capacity = getTransportTracker().getAvailableCapacity(transport);
+			final int capacity = TransportTracker.getAvailableCapacity(transport);
 			availableCapacityMap.put(transport, capacity);
 		}
 		final Set<Unit> defaultSelections = new HashSet<Unit>();
@@ -787,11 +786,6 @@ public class MovePanel extends AbstractMovePanel
 		if (option != JOptionPane.OK_OPTION)
 			return Collections.emptyList();
 		return chooser.getSelected(false);
-	}
-	
-	private TransportTracker getTransportTracker()
-	{
-		return m_transportTracker;
 	}
 	
 	private final UnitSelectionListener m_UNIT_SELECTION_LISTENER = new UnitSelectionListener()
@@ -1039,7 +1033,7 @@ public class MovePanel extends AbstractMovePanel
 			int ttlCapacity = 0;
 			for (final Unit bomber : capableTransportsToLoad)
 			{
-				final int capacity = getTransportTracker().getAvailableCapacity(bomber);
+				final int capacity = TransportTracker.getAvailableCapacity(bomber);
 				if (capacity >= minTransportCost)
 				{
 					airTransportsToLoad.add(bomber);
@@ -1590,7 +1584,6 @@ public class MovePanel extends AbstractMovePanel
 	@Override
 	public final void display(final PlayerID id)
 	{
-		m_transportTracker = new TransportTracker();
 		super.display(id, m_displayText);
 	}
 	
