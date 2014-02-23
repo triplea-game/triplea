@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-		<info name="World War II v5 1942 Second Edition Test" version="1.8"/>
+		<info name="World War II v5 1942 Second Edition Test" version="1.9"/>
 		<loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6.1"/>
 		<map>
@@ -292,10 +292,10 @@
 				<connection t1="28 Sea Zone" t2="Mozambique"/>
 				<connection t1="28 Sea Zone" t2="Union of South Africa"/>
 				<connection t1="29 Sea Zone" t2="30 Sea Zone"/>
+				<connection t1="29 Sea Zone" t2="31 Sea Zone"/>
 				<connection t1="29 Sea Zone" t2="32 Sea Zone"/>
 				<connection t1="29 Sea Zone" t2="French Madagascar"/>
 				<connection t1="30 Sea Zone" t2="31 Sea Zone"/>
-				<connection t1="30 Sea Zone" t2="32 Sea Zone"/>
 				<connection t1="30 Sea Zone" t2="37 Sea Zone"/>
 				<connection t1="30 Sea Zone" t2="38 Sea Zone"/>
 				<connection t1="31 Sea Zone" t2="32 Sea Zone"/>

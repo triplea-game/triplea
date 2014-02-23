@@ -3,7 +3,9 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="World War II v3 1942 Test" version="1.6"/>
+        <info name="World War II v3 1942 Test" version="1.7"/>
+		
+		<triplea minimumVersion="1.7"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 
@@ -2409,7 +2411,11 @@
 				</property>
 
 				<!-- Sub Control Sea Zone Restricted should be FALSE if there are any convoy zones! -->
-				<property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+				<property name="Sub Control Sea Zone Restricted" value="false" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Subs Can End NonCombat Move With Enemies" value="true" editable="false">
 						<boolean/>
 				</property>
 
