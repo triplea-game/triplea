@@ -333,15 +333,20 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		return launchedChange;
 	}
 	
-	/*public static int getNumberOfAirborneAlreadyLaunchedBy(final Collection<Unit> bases, final GameData data)
+	public static int getNumberOfAirborneAlreadyLaunchedBy(final Collection<Unit> bases, final GameData data)
 	{
 		int rVal = 0;
 		for (final Unit u : bases)
 		{
-			rVal += Math.max(0, ((TripleAUnit) u).getLaunched());
+			rVal += getNumberOfAirborneAlreadyLaunchedBy(u, data);
 		}
 		return rVal;
-	}*/
+	}
+	
+	public static int getNumberOfAirborneAlreadyLaunchedBy(final Unit base, final GameData data)
+	{
+		return Math.max(0, (((TripleAUnit) base).getLaunched()));
+	}
 	
 	public static boolean allowAirborne(final PlayerID player, final GameData data)
 	{

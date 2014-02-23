@@ -75,6 +75,7 @@ public class PlayerAttachment extends DefaultAttachment
 	private ArrayList<PlayerID> m_shareTechnology = new ArrayList<PlayerID>(); // gives any technology researched to this player automatically
 	private ArrayList<PlayerID> m_helpPayTechCost = new ArrayList<PlayerID>(); // allows these players to help pay for technology
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
+	private boolean m_immuneToBlockade = false; // are we immune to being blockaded?
 	private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and at what attack power
 	private HashSet<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
 	private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // placement limits on a flexible per player basis
@@ -662,6 +663,28 @@ public class PlayerAttachment extends DefaultAttachment
 	public void resetDestroysPUs()
 	{
 		m_destroysPUs = false;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setImmuneToBlockade(final String value)
+	{
+		m_immuneToBlockade = getBool(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setImmuneToBlockade(final Boolean value)
+	{
+		m_immuneToBlockade = value;
+	}
+	
+	public boolean getImmuneToBlockade()
+	{
+		return m_immuneToBlockade;
+	}
+	
+	public void resetImmuneToBlockade()
+	{
+		m_immuneToBlockade = false;
 	}
 	
 	@Override

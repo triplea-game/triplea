@@ -110,7 +110,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			// just collect resources
 			final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 			int toAdd = getProduction(territories);
-			final int blockadeLoss = getProductionLoss(m_player, data, m_bridge, endTurnReport);
+			final int blockadeLoss = getBlockadeProductionLoss(m_player, data, m_bridge, endTurnReport);
 			toAdd -= blockadeLoss;
 			toAdd *= Properties.getPU_Multiplier(data);
 			int total = m_player.getResources().getQuantity(PUs) + toAdd;
@@ -392,9 +392,12 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		return value;
 	}
 	
-	// finds losses due to blockades etc, positive value returned.
-	protected int getProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge aBridge, final StringBuilder endTurnReport)
+	// finds losses due to blockades, positive value returned.
+	protected int getBlockadeProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge aBridge, final StringBuilder endTurnReport)
 	{
+		final PlayerAttachment playerRules = PlayerAttachment.get(player);
+		if (playerRules != null && playerRules.getImmuneToBlockade())
+			return 0;
 		final GameMap map = data.getMap();
 		final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone);
 		if (blockable.isEmpty())
