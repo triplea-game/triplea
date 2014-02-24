@@ -61,6 +61,10 @@ public class MoveDelegateTest extends DelegateTest
 		super.setUp();
 		m_bridge = super.getDelegateBridge(british);
 		m_bridge.setStepName("britishCombatMove");
+		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+		initDel.setDelegateBridgeAndPlayer(m_bridge);
+		initDel.start();
+		initDel.end();
 		m_delegate = new MoveDelegate();
 		m_delegate.initialize("MoveDelegate", "MoveDelegate");
 		m_delegate.setDelegateBridgeAndPlayer(m_bridge);

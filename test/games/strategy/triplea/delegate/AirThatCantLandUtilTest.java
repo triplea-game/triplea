@@ -270,11 +270,6 @@ public class AirThatCantLandUtilTest extends TestCase
 		final PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
 		final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
 		final ITestDelegateBridge bridge = getDelegateBridge(japanese);
-		// we need to initialize the original owner
-		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-		initDel.setDelegateBridgeAndPlayer(bridge);
-		initDel.start();
-		initDel.end();
 		// Get necessary sea zones and unit types for this test
 		final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");
 		final Territory eastCanada = m_data.getMap().getTerritory("Eastern Canada");
@@ -290,6 +285,11 @@ public class AirThatCantLandUtilTest extends TestCase
 		new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_11, infantryType.create(1, japanese)));
 		new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
 		new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, fighterType.create(2, americans)));
+		// we need to initialize the original owner
+		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+		initDel.setDelegateBridgeAndPlayer(bridge);
+		initDel.start();
+		initDel.end();
 		// Get total number of defending units before the battle
 		final Integer preCountCanada = eastCanada.getUnits().size();
 		final Integer preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();

@@ -417,7 +417,7 @@ public class MovePerformer implements Serializable
 		}
 		if (route.isUnload() || paratroopsLanding)
 		{
-			final Collection<Unit> units = new ArrayList<Unit>();
+			final Set<Unit> units = new HashSet<Unit>();
 			units.addAll(transporting.values());
 			units.addAll(transporting.keySet());
 			// if there are multiple units on a single transport, the transport will be in units list multiple times
@@ -444,14 +444,14 @@ public class MovePerformer implements Serializable
 							&& Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).match(route.getEnd()))
 					continue;
 				// unload the transports
-				Change change = TransportTracker.unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
-				m_currentMove.addChange(change);
+				final Change change1 = TransportTracker.unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
+				m_currentMove.addChange(change1);
 				m_currentMove.unload(unit);
-				m_bridge.addChange(change);
+				m_bridge.addChange(change1);
 				// set noMovement
-				change = ChangeFactory.markNoMovementChange(Collections.singleton(unit));
-				m_currentMove.addChange(change);
-				m_bridge.addChange(change);
+				final Change change2 = ChangeFactory.markNoMovementChange(Collections.singleton(unit));
+				m_currentMove.addChange(change2);
+				m_bridge.addChange(change2);
 			}
 		}
 	}
