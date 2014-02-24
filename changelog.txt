@@ -1,4 +1,6 @@
 Changes for 1.8.0.1
+* Adding new sci-fi sound for "future" era. (pulicat, cernel, veqryn)
+
 * Allowing "NONE" as a valid option value in sounds.properties file. (veqryn)
 
 * Fixed null pointer exception in Moore AI for water based factories. (veqryn)
