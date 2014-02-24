@@ -138,6 +138,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 			final Collection<Unit> units = current.getUnits().getUnits();
 			if (units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
 				continue;
+			boolean historyItemCreated = false;
 			// map transports, try to fill
 			final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
 			final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
@@ -156,6 +157,11 @@ public class InitializationDelegate extends BaseTripleADelegate
 					final int capacity = TransportTracker.getAvailableCapacity(transport);
 					if (capacity >= cost)
 					{
+						if (!historyItemCreated)
+						{
+							aBridge.getHistoryWriter().startEvent("Initializing Units in Transports");
+							historyItemCreated = true;
+						}
 						try
 						{
 							aBridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
