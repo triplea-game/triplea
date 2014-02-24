@@ -29,6 +29,7 @@ import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -136,8 +137,8 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
 			final Match<TriggerAttachment> endRoundDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-						TriggerAttachment.availableUses,
-						TriggerAttachment.whenOrDefaultMatch(null, null),
+						AbstractTriggerAttachment.availableUses,
+						AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
 						new CompositeMatchOr<TriggerAttachment>(
 									TriggerAttachment.activateTriggerMatch(),
 									TriggerAttachment.victoryMatch()));
@@ -149,7 +150,7 @@ public class EndRoundDelegate extends BaseTripleADelegate
 				// get all conditions possibly needed by these triggers, and then test them.
 				final HashMap<ICondition, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
 				// get all triggers that are satisfied based on the tested conditions.
-				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
 				TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
 				TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true); // will call signalGameOver itself
@@ -205,7 +206,7 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			final CompositeChange change = new CompositeChange();
 			for (final PlayerID player : data.getPlayerList().getPlayers())
 			{
-				change.add(TriggerAttachment.triggerSetUsedForThisRound(player, m_bridge));
+				change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player, m_bridge));
 			}
 			if (!change.isEmpty())
 			{
@@ -310,13 +311,14 @@ public class EndRoundDelegate extends BaseTripleADelegate
 	 */
 	public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge aBridge)
 	{
+		// TO NOT USE m_bridge, because it might be null here! use aBridge instead.
 		// If the game is over, we need to be able to alert all UIs to that fact.
 		// The display object can send a message to all UIs.
 		if (!m_gameOver)
 		{
 			m_gameOver = true;
 			m_winners = winners;
-			m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
+			aBridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
 						((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
 			// send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
 			getDisplay(aBridge).reportMessageToAll(status, status, true, false, true); // we send the bridge, because we can call this method from outside this delegate, which means our local copy of m_bridge could be null.

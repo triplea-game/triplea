@@ -401,7 +401,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			for (final Territory checkFactory : allFactories)
 			{
 				final boolean isLandRoute = SUtils.hasLandRouteToEnemyOwnedCapitol(checkFactory, player, data);
-				final int factProduction = TerritoryAttachment.get(checkFactory).getProduction();
+				final int factProduction = TripleAUnit.getProductionPotentialOfTerritory(checkFactory.getUnits().getUnits(), checkFactory, player, data, false, true);
 				allProduction += factProduction;
 				if (isLandRoute)
 					totProduction += factProduction;
@@ -1719,7 +1719,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			// float eAttackPotential = SUtils.getStrengthOfPotentialAttackers(landTerr, data, player, tFirst, true, landTerrConquered);
 			final PlayerID ePlayer = landTerr.getOwner();
 			float myAttackPotential = SUtils.getStrengthOfPotentialAttackers(landTerr, data, ePlayer, tFirst, true, null);
-			myAttackPotential += TerritoryAttachment.get(landTerr).getProduction() * 2;
+			myAttackPotential += TerritoryAttachment.get(landTerr) == null ? 0 : TerritoryAttachment.get(landTerr).getProduction() * 2;
 			// if (myAttackPotential < (0.75F*eAttackPotential - 3.0F))
 			// continue;
 			for (final Territory sourceTerr : transTerr)
@@ -7767,7 +7767,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		while (wIter.hasNext())
 		{
 			final Territory wFact = wIter.next();
-			waterProduction += TerritoryAttachment.get(wFact).getProduction();
+			waterProduction += TripleAUnit.getProductionPotentialOfTerritory(wFact.getUnits().getUnits(), wFact, player, data, false, true);
 		}
 		// we don't have enough factories through which to launch attack
 		if (isAmphib
@@ -7778,7 +7778,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final Territory waterFact = SUtils.findFactoryTerritory(data, player, risk, true, true);
 			if (waterFact != null)
 			{
-				waterProduction += TerritoryAttachment.get(waterFact).getProduction();// might want to buy 2
+				waterProduction += TripleAUnit.getProductionPotentialOfTerritory(waterFact.getUnits().getUnits(), waterFact, player, data, false, true);// might want to buy 2
 				for (final ProductionRule factoryRule : rules)
 				{
 					final NamedAttachable resourceOrUnit = factoryRule.getResults().keySet().iterator().next();
@@ -7909,7 +7909,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			while (wFIter.hasNext() && factTerr == null)
 			{
 				newFactTerr = wFIter.next();
-				if (TerritoryAttachment.get(newFactTerr).getProduction() > 2)
+				if (TripleAUnit.getProductionPotentialOfTerritory(newFactTerr.getUnits().getUnits(), newFactTerr, player, data, false, true) > 2)
 				{
 					lastGoodFactTerr = newFactTerr;
 					if ((wFIter.hasNext() && Math.random() >= 0.50) || !wFIter.hasNext())
@@ -7945,9 +7945,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final boolean seaAdvantageEnemy = ((tFirst ? totTransports : 0) * 10 + totAttackSeaUnits * 10) < (totEAttackSeaUnits * 9 + (tFirst ? ETTCount * 5 : 0));
 		for (final Territory fT : factories)
 		{
-			final int thisFactProduction = TerritoryAttachment.get(fT).getProduction();
+			final int thisFactProduction = TripleAUnit.getProductionPotentialOfTerritory(fT.getUnits().getUnits(), fT, player, data, false, true);
 			totPU += thisFactProduction;
-			totProd += TerritoryAttachment.get(fT).getUnitProduction();
+			totProd += TripleAUnit.getProductionPotentialOfTerritory(fT.getUnits().getUnits(), fT, player, data, true, true);
 			if (!useProductionData())
 				totProd = totPU;
 			if (isAmphib)

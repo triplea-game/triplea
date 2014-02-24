@@ -149,7 +149,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 	
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
-		if (m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty())
+		if ((m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty()) &&
+					(m_player.getRepairFrontier() == null || m_player.getRepairFrontier().getRules().isEmpty()))
 			return false;
 		if (!canWePurchaseOrRepair())
 			return false;

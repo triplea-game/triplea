@@ -100,32 +100,42 @@ public class ValidateAttachmentsTest extends TestCase
 		assertTrue(errors.contains("is not a Collection or Map or IntegerMap"));
 	}
 	
+	@SuppressWarnings("unchecked")
+	private static Class<? extends IAttachment>[] getKnownAttachmentClasses()
+	{
+		return new Class[] {
+					games.strategy.engine.data.DefaultAttachment.class,
+					games.puzzle.slidingtiles.attachments.Tile.class,
+					games.strategy.grid.kingstable.attachments.PlayerAttachment.class,
+					games.strategy.grid.kingstable.attachments.TerritoryAttachment.class,
+					games.strategy.triplea.attatchments.CanalAttachment.class,
+					games.strategy.triplea.attatchments.PlayerAttachment.class,
+					games.strategy.triplea.attatchments.PoliticalActionAttachment.class,
+					games.strategy.triplea.attatchments.RelationshipTypeAttachment.class,
+					games.strategy.triplea.attatchments.RulesAttachment.class,
+					games.strategy.triplea.attatchments.TechAttachment.class,
+					games.strategy.triplea.attatchments.TerritoryAttachment.class,
+					games.strategy.triplea.attatchments.TerritoryEffectAttachment.class,
+					games.strategy.triplea.attatchments.TriggerAttachment.class,
+					games.strategy.triplea.attatchments.UnitAttachment.class,
+					games.strategy.triplea.attatchments.UnitSupportAttachment.class,
+					games.strategy.triplea.attatchments.TechAbilityAttachment.class };
+		// games.strategy.triplea.attatchments.AbstractConditionsAttachment.class
+		// games.strategy.triplea.attatchments.AbstractPlayerRulesAttachment.class
+		// games.strategy.triplea.attatchments.AbstractRulesAttachment.class
+		// games.strategy.triplea.attatchments.AbstractTriggerAttachment.class
+	}
+	
 	/**
 	 * When testAllAttachments doesn't work, we can test specific attachments here.
 	 */
 	public void testSpecificAttachments()
 	{
 		final StringBuilder sb = new StringBuilder("");
-		sb.append(validateAttachment(games.strategy.engine.data.DefaultAttachment.class));
-		sb.append(validateAttachment(games.puzzle.slidingtiles.attachments.Tile.class));
-		sb.append(validateAttachment(games.strategy.grid.kingstable.attachments.PlayerAttachment.class));
-		sb.append(validateAttachment(games.strategy.grid.kingstable.attachments.TerritoryAttachment.class));
-		// sb.append(validateAttachment(games.strategy.triplea.attatchments.AbstractConditionsAttachment.class));
-		// sb.append(validateAttachment(games.strategy.triplea.attatchments.AbstractPlayerRulesAttachment.class));
-		// sb.append(validateAttachment(games.strategy.triplea.attatchments.AbstractRulesAttachment.class));
-		// sb.append(validateAttachment(games.strategy.triplea.attatchments.AbstractTriggerAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.CanalAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.PlayerAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.PoliticalActionAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.RelationshipTypeAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.RulesAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.TechAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.TerritoryAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.TerritoryEffectAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.TriggerAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.UnitAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.UnitSupportAttachment.class));
-		sb.append(validateAttachment(games.strategy.triplea.attatchments.TechAbilityAttachment.class));
+		for (final Class<? extends IAttachment> clazz : getKnownAttachmentClasses())
+		{
+			sb.append(validateAttachment(clazz));
+		}
 		if (sb.toString().length() > 0)
 		{
 			System.out.println(sb.toString());
@@ -160,7 +170,7 @@ public class ValidateAttachmentsTest extends TestCase
 	}
 	
 	// file to find classes or directory
-	FileFilter classOrDirectory = new FileFilter()
+	static FileFilter s_classOrDirectory = new FileFilter()
 	{
 		public boolean accept(final File file)
 		{
@@ -175,12 +185,12 @@ public class ValidateAttachmentsTest extends TestCase
 	 * @param file
 	 *            the file or directory
 	 */
-	private String findAttachmentsAndValidate(final File file)
+	private static String findAttachmentsAndValidate(final File file)
 	{
 		final StringBuilder sb = new StringBuilder("");
 		if (file.isDirectory())
 		{
-			final File[] files = file.listFiles(classOrDirectory);
+			final File[] files = file.listFiles(s_classOrDirectory);
 			for (final File aFile : files)
 			{
 				sb.append(findAttachmentsAndValidate(aFile));
@@ -238,7 +248,7 @@ public class ValidateAttachmentsTest extends TestCase
 	 *            the class name
 	 * @return true if this class has a static initializer
 	 */
-	private boolean isSkipClass(final String className)
+	private static boolean isSkipClass(final String className)
 	{
 		for (final String staticInitClass : SKIPCLASSES)
 		{
@@ -250,7 +260,7 @@ public class ValidateAttachmentsTest extends TestCase
 		return false;
 	}
 	
-	private String validateAttachment(final Class<? extends IAttachment> clazz)
+	private static String validateAttachment(final Class<? extends IAttachment> clazz)
 	{
 		final StringBuilder sb = new StringBuilder("");
 		for (final Method setter : clazz.getMethods())
@@ -285,15 +295,18 @@ public class ValidateAttachmentsTest extends TestCase
 			}
 			Method getter;
 			final GameProperty annotation = setter.getAnnotation(GameProperty.class);
-			String propertyName = null;
+			if (annotation == null)
+			{
+				sb.append("Class " + clazz.getCanonicalName() + " has " + setter.getName() + " and it doesn't have the GameProperty annotation on it\n");
+			}
 			
 			if (!setter.getReturnType().equals(void.class))
 			{
-				sb.append("Class " + clazz.getCanonicalName() + " has " + setter.getName() + " ant it doesn't return void\n");
+				sb.append("Class " + clazz.getCanonicalName() + " has " + setter.getName() + " and it doesn't return void\n");
 			}
 			
 			// the property name must be derived from the method name
-			propertyName = getPropertyName(setter);
+			final String propertyName = getPropertyName(setter);
 			
 			// For debug purposes only
 			// sb.append("TESTING: Class " + clazz.getCanonicalName() + ", setter property " + propertyName + "\n");
@@ -448,7 +461,7 @@ public class ValidateAttachmentsTest extends TestCase
 		return sb.toString();
 	}
 	
-	private String getPropertyName(final Method method)
+	private static String getPropertyName(final Method method)
 	{
 		final String propertyName = method.getName().substring("set".length());
 		char first = propertyName.charAt(0);
@@ -456,11 +469,46 @@ public class ValidateAttachmentsTest extends TestCase
 		return first + propertyName.substring(1);
 	}
 	
-	private String capitalizeFirstLetter(final String aString)
+	private static String capitalizeFirstLetter(final String aString)
 	{
 		char first = aString.charAt(0);
 		first = Character.toUpperCase(first);
 		return first + aString.substring(1);
 	}
 	
+	public static void main(final String[] args)
+	{
+		System.out.println("All attachment property options which 'add' when set:\n\n");
+		for (final Class<? extends IAttachment> clazz : getKnownAttachmentClasses())
+		{
+			for (final Method setter : clazz.getMethods())
+			{
+				final boolean internalDoNotExportAnnotation = setter.isAnnotationPresent(InternalDoNotExport.class);
+				final boolean startsWithSet = setter.getName().startsWith("set");
+				final boolean gamePropertyAnnotation = setter.isAnnotationPresent(GameProperty.class);
+				if (internalDoNotExportAnnotation && gamePropertyAnnotation)
+					continue;
+				else if (startsWithSet && !(internalDoNotExportAnnotation || gamePropertyAnnotation))
+					continue;
+				else if (!startsWithSet && gamePropertyAnnotation)
+					continue;
+				else if (!startsWithSet || internalDoNotExportAnnotation)
+					continue;
+				else if (!startsWithSet && !gamePropertyAnnotation)
+					continue;
+				final GameProperty annotation = setter.getAnnotation(GameProperty.class);
+				final String propertyName = getPropertyName(setter);
+				if (annotation == null)
+					continue;
+				// if this is a deprecated setter, we skip it now
+				if (setter.getAnnotation(Deprecated.class) != null)
+					continue;
+				if (annotation.adds())
+				{
+					System.out.println("Class " + clazz.getCanonicalName() + ", setter: " + propertyName);
+				}
+			}
+			System.out.println("");
+		}
+	}
 }

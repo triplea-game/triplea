@@ -184,7 +184,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
 					// this should directly add the new tests to testConditionsToFire...
 					TriggerAttachment.collectTestsForAllTriggers(toFireSet, aBridge, new HashSet<ICondition>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
 				}
-				if (!TriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).match(toFire))
+				if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).match(toFire))
 					continue;
 			}
 			for (int i = 0; i < numberOfTimesToFire; ++i)
@@ -210,8 +210,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
 	 */
 	public static Collection<UserActionAttachment> getValidActions(final PlayerID player, final HashMap<ICondition, Boolean> testedConditions, final GameData data)
 	{
-		if (!player.amNotDeadYet(data))
-			return new ArrayList<UserActionAttachment>();
+		// if (!player.amNotDeadYet(data))
+		// return new ArrayList<UserActionAttachment>();
 		return Match.getMatches(getUserActionAttachments(player), new CompositeMatchAnd<UserActionAttachment>(Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions)));
 	}
 	

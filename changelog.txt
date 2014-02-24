@@ -1,4 +1,10 @@
 Changes for 1.8.0.1
+* Fixed null pointer exception in Moore AI for water based factories. (veqryn)
+
+* Fixed bid delegate so that it will still run even if the player has no resources other than the bid amount. (veqryn)
+
+* Fixed possible null pointer exception in Triggered Victory which is triggered from outside of the end round delegate. (veqryn)
+
 * Making TransportTracker a static implementation to clean up the engine a little bit. (veqryn)
 
 * Fixing various bugs in Global 1940, ww2v3, v4, v5, and v6. (veqryn)

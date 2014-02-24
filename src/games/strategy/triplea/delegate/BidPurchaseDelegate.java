@@ -5,6 +5,8 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.Constants;
@@ -52,11 +54,36 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	{
 		if (!doesPlayerHaveBid(getData(), m_player))
 			return false;
-		if (m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty())
+		if ((m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty()) &&
+					(m_player.getRepairFrontier() == null || m_player.getRepairFrontier().getRules().isEmpty()))
 			return false;
 		if (!canWePurchaseOrRepair())
 			return false;
 		return true;
+	}
+	
+	@Override
+	protected boolean canWePurchaseOrRepair()
+	{
+		final ResourceCollection bidCollection = new ResourceCollection(getData());
+		bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to have more than just PUs
+		if (m_player.getProductionFrontier() != null && m_player.getProductionFrontier().getRules() != null)
+		{
+			for (final ProductionRule rule : m_player.getProductionFrontier().getRules())
+			{
+				if (bidCollection.has(rule.getCosts()))
+					return true;
+			}
+		}
+		if (m_player.getRepairFrontier() != null && m_player.getRepairFrontier().getRules() != null)
+		{
+			for (final RepairRule rule : m_player.getRepairFrontier().getRules())
+			{
+				if (bidCollection.has(rule.getCosts()))
+					return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

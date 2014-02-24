@@ -9,8 +9,8 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
 import games.strategy.triplea.attatchments.ICondition;
-import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -65,8 +65,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
-		if (!m_player.amNotDeadYet(getData()))
-			return false;
+		// if (!m_player.amNotDeadYet(getData()))
+		// return false;
 		if (getValidActions().isEmpty())
 			return false;
 		return true;
@@ -74,8 +74,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	
 	public HashMap<ICondition, Boolean> getTestedConditions()
 	{
-		final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(UserActionAttachment.getUserActionAttachments(m_player)), null);
-		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
+		final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(UserActionAttachment.getUserActionAttachments(m_player)), null);
+		return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
 	
 	public Collection<UserActionAttachment> getValidActions()

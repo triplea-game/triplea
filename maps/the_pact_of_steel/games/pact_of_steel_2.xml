@@ -3546,7 +3546,9 @@
 					canBeGivenByTerritoryTo
 					canBeCapturedOnEnteringBy
 					destroyedWhenCapturedBy
+					destroyedWhenCapturedFrom
 					requiresUnits
+					repairsUnits
 					givesMovement
 					consumesUnits
 					createsUnitsList
@@ -3558,6 +3560,7 @@
 					targetsAA
 					willNotFireIfPresent
 					bombingTargets
+					whenCombatDamaged
 					
 				Unit Support Attachments:
 					players
@@ -3568,10 +3571,13 @@
 					territoryEffect
 					whenCapturedByGoesTo
 					convoyAttached
+					resources
 					
 				Territory Effect Attachments:
 					combatDefenseEffect
 					combatOffenseEffect
+					unitsNotAllowed
+					noBlitz
 					
 				Player Attachments:
 					giveUnitControl
@@ -3593,6 +3599,11 @@
 				
 				Rules Attachments:
 					productionPerXTerritories
+					battle
+					relationship
+					unitPresence
+					players
+					conditions
 					
 				Trigger Attachments:
 					conditions
@@ -3601,6 +3612,7 @@
 					tech
 					availableTech
 					placement
+					removeUnits
 					purchase
 					support
 					relationshipChange
