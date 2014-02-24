@@ -3771,13 +3771,13 @@
 				<!-- Victory Triggers -->
 				 <attatchment name="triggerAttachmentAxisVictory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="trigger" value="conditionAttachmentAxisVictory0:conditionAttachmentAxisVictory3"/>
-					<option name="victory" value="The Axis achieve victory by controlling 14 VCs and keeping control of one of their own capitals!"/>
+					<option name="victory" value="Axis_Win_Original"/>
 					<option name="players" value="Germans:Italians:Japanese"/>
 				</attatchment>
 				
 				 <attatchment name="triggerAttachmentAlliedVictory1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="trigger" value="conditionAttachmentAlliedVictory1:conditionAttachmentAlliedVictory2"/>
-					<option name="victory" value="The Allies achieve victory by controlling Rome, Berlin, and Japan and keeping control of one of their own capitals!"/>
+					<option name="victory" value="Allies_Win"/>
 					<option name="players" value="Russians:British:UK_Pacific:ANZAC:Americans:Chinese:French:Dutch"/>
 				</attatchment>
 				
