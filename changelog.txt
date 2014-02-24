@@ -1,4 +1,6 @@
 Changes for 1.8.0.1
+* Allowing "NONE" as a valid option value in sounds.properties file. (veqryn)
+
 * Fixed null pointer exception in Moore AI for water based factories. (veqryn)
 
 * Fixed bid delegate so that it will still run even if the player has no resources other than the bid amount. (veqryn)

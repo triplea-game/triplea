@@ -403,6 +403,11 @@ public class ClipPlayer
 		// resourcePath = resourcePath.replace('\\', File.separatorChar);
 		resourcePath = resourcePath.replace('\\', '/');
 		final List<URL> availableSounds = new ArrayList<URL>();
+		if ("NONE".equals(resourcePath))
+		{
+			m_sounds.put(pathName, availableSounds);
+			return;
+		}
 		for (final String path : resourcePath.split(";"))
 		{
 			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + "/" + path));
