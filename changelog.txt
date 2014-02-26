@@ -1,3 +1,7 @@
+Changes for 1.8.0.3
+* Possibly final fix for a game hang / frozen bot on game launch. (veqryn)
+
+
 Changes for 1.8.0.1
 * Adding new sci-fi sound for "future" era. (pulicat, cernel, veqryn)
 

@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
@@ -68,10 +69,11 @@ public class ServerLauncher extends AbstractLauncher
 	private final ServerModel m_serverModel;
 	private ServerGame m_serverGame;
 	private Component m_ui;
-	private final CountDownLatch m_erroLatch = new CountDownLatch(1);
-	private volatile boolean m_isLaunching = true;
 	private ServerReady m_serverReady;
+	private final CountDownLatch m_errorLatch = new CountDownLatch(1);
+	private volatile boolean m_isLaunching = true;
 	private volatile boolean m_abortLaunch = false;
+	private volatile boolean m_gameStopped = false;
 	// a list of observers that tried to join the game during starup
 	// we need to track these, because when we loose connections to them
 	// we can ignore the connection lost
@@ -98,6 +100,8 @@ public class ServerLauncher extends AbstractLauncher
 	
 	private boolean testShouldWeAbort()
 	{
+		if (m_abortLaunch)
+			return true;
 		if (m_gameData == null || m_serverModel == null)
 			return true;
 		else
@@ -122,19 +126,20 @@ public class ServerLauncher extends AbstractLauncher
 	{
 		try
 		{
+			// the order of this stuff does matter
+			m_serverModel.setServerLauncher(this);
+			m_serverReady = new ServerReady(m_clientCount);
 			if (m_inGameLobbyWatcher != null)
 			{
 				m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
 			}
+			m_serverModel.allowRemoveConnections();
+			m_ui = parent;
 			if (m_headless)
 				HeadlessGameServer.log("Game Status: Launching");
-			m_gameData.doPreGameStartDataModifications(m_playerListing);
-			m_ui = parent;
-			m_serverReady = new ServerReady(m_clientCount);
-			m_serverModel.setServerLauncher(this);
-			m_serverModel.allowRemoveConnections();
-			s_logger.fine("Starting server");
 			m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
+			m_gameData.doPreGameStartDataModifications(m_playerListing);
+			s_logger.fine("Starting server");
 			m_abortLaunch = testShouldWeAbort();
 			byte[] gameDataAsBytes;
 			try
@@ -169,7 +174,7 @@ public class ServerLauncher extends AbstractLauncher
 			try
 			{
 				m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet, m_headless);
-			} catch (final IllegalStateException e)
+			} catch (final Exception e)
 			{
 				m_abortLaunch = true;
 				Throwable error = e;
@@ -191,14 +196,12 @@ public class ServerLauncher extends AbstractLauncher
 				else
 					System.out.println(message);
 				
-			} catch (final Exception e)
-			{
-				e.printStackTrace();
-				m_abortLaunch = true;
 			}
 			if (m_headless)
 				HeadlessGameServer.log("Game Successfully Loaded. " + (m_abortLaunch ? "Aborting Launch." : "Starting Game."));
-			m_serverReady.await();
+			if (m_abortLaunch)
+				m_serverReady.countDownAll();
+			m_serverReady.await(120, TimeUnit.SECONDS);
 			m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
 			final Thread t = new Thread("Triplea, start server game")
 			{
@@ -223,7 +226,7 @@ public class ServerLauncher extends AbstractLauncher
 						}
 						else
 						{
-							m_serverGame.stopGame();
+							stopGame();
 							if (!m_headless)
 							{
 								SwingUtilities.invokeLater(new Runnable()
@@ -250,18 +253,18 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							// we are already aborting the launch
 							if (!m_abortLaunch)
-								m_erroLatch.await();
+								m_errorLatch.await(120, TimeUnit.SECONDS);
 						} catch (final InterruptedException e)
 						{
 							e.printStackTrace();
 						}
+						stopGame();
 					} catch (final Exception e)
 					{
-						// TODO: figure out why we are getting any errors that make us end up here! We should NEVER end up here.
 						e.printStackTrace(System.err);
 						if (m_headless)
 							System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
-						m_serverGame.stopGame();
+						stopGame();
 					}
 					// either game ended, or aborted, or a player left or disconnected
 					if (m_headless)
@@ -335,7 +338,7 @@ public class ServerLauncher extends AbstractLauncher
 			{
 				try
 				{
-					m_serverGame.getRandomSource().getRandom(m_gameData.getDiceSides(), 2, "Warming up crpyto random source");
+					m_serverGame.getRandomSource().getRandom(m_gameData.getDiceSides(), 2, "Warming up crypto random source");
 				} catch (final RuntimeException re)
 				{
 					re.printStackTrace(System.out);
@@ -375,8 +378,8 @@ public class ServerLauncher extends AbstractLauncher
 			if (m_observersThatTriedToJoinDuringStartup.remove(node))
 				return;
 			// a player has dropped out, abort
-			m_serverReady.clientReady();
 			m_abortLaunch = true;
+			m_serverReady.countDownAll();
 			return;
 		}
 		// if we loose a connection to a player, shut down
@@ -386,16 +389,26 @@ public class ServerLauncher extends AbstractLauncher
 			if (m_serverGame.isGameSequenceRunning())
 				saveAndEndGame(node);
 			else
-				m_serverGame.stopGame();
+				stopGame();
 			// if the game already exited do to a networking error
 			// we need to let them continue
-			m_erroLatch.countDown();
+			m_errorLatch.countDown();
 		}
 		else
 		{
 			// nothing to do
 			// we just lost a connection to an observer
 			// which is ok.
+		}
+	}
+	
+	private void stopGame()
+	{
+		if (!m_gameStopped)
+		{
+			m_gameStopped = true;
+			if (m_serverGame != null)
+				m_serverGame.stopGame();
 		}
 	}
 	
@@ -422,11 +435,13 @@ public class ServerLauncher extends AbstractLauncher
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
+			if (m_headless)
+				System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
 			// TODO: Veqryn: we seem to be occassionally getting this in our headless game server hostbots, and I have no idea why.
 			// Symptoms and/or causes include the client not having any buttons in their action tab, followed by them leaving (connection lost) the game out of frustration,
 			// followed by a "Could not lock delegate execution" error, followed by a "IllegalMonitorStateException" error in savegame.
 		}
-		m_serverGame.stopGame();
+		stopGame();
 		if (!m_headless)
 		{
 			SwingUtilities.invokeLater(new Runnable()
@@ -449,10 +464,12 @@ public class ServerLauncher extends AbstractLauncher
 class ServerReady implements IServerReady
 {
 	private final CountDownLatch m_latch;
+	private final int m_clients;
 	
 	ServerReady(final int waitCount)
 	{
-		m_latch = new CountDownLatch(waitCount);
+		m_clients = waitCount;
+		m_latch = new CountDownLatch(m_clients);
 	}
 	
 	public void clientReady()
@@ -460,11 +477,30 @@ class ServerReady implements IServerReady
 		m_latch.countDown();
 	}
 	
+	public void countDownAll()
+	{
+		for (int i = 0; i < m_clients; i++)
+		{
+			m_latch.countDown();
+		}
+	}
+	
 	public void await()
 	{
 		try
 		{
 			m_latch.await();
+		} catch (final InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void await(final long timeout, final TimeUnit timeUnit)
+	{
+		try
+		{
+			m_latch.await(timeout, timeUnit);
 		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
