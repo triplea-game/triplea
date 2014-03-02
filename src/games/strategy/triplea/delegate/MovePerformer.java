@@ -201,7 +201,7 @@ public class MovePerformer implements Serializable
 					final boolean targetsOrEscort = !enemyTargets.isEmpty() || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle && Match.allMatch(arrived, Matches.unitCanEscort));
 					boolean targetedAttack = false;
 					// if it's all bombers and there's something to bomb
-					if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data))
+					if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data, false))
 					{
 						bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
 						// if bombing and there's something to target- ask what to bomb
@@ -240,12 +240,12 @@ public class MovePerformer implements Serializable
 						if (allOwnedTransports && allEnemyTransports)
 							ignoreBattle = true;
 					}
-					if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data) && !targetedAttack)
+					if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data, false) && !targetedAttack)
 					{
 						createdBattle = true;
 						getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, dependentOnSomethingTilTheEndOfRoute);
 					}
-					if (!ignoreBattle && GameStepPropertiesHelper.isNonCombatMove(data) && !targetedAttack)
+					if (!ignoreBattle && GameStepPropertiesHelper.isNonCombatMove(data, false) && !targetedAttack)
 					{
 						// We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This could get really difficult if we want these recorded in battle records).
 						for (final Territory t : route.getMatches(new CompositeMatchAnd<Territory>(Matches
@@ -331,14 +331,14 @@ public class MovePerformer implements Serializable
 		}
 		// if neutrals were taken over mark land units with 0 movement
 		// if entered a non blitzed conquered territory, mark with 0 movement
-		if (GameStepPropertiesHelper.isCombatMove(data) && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
+		if (GameStepPropertiesHelper.isCombatMove(data, false) && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
 		{
 			for (final Unit unit : Match.getMatches(units, Matches.UnitIsLand))
 			{
 				change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
 			}
 		}
-		if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data) && GameStepPropertiesHelper.isNonCombatMove(data)
+		if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data) && GameStepPropertiesHelper.isNonCombatMove(data, false)
 					&& routeEnd.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer)))
 		{
 			// if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we can't keep moving them if there is an enemy destroyer there
@@ -440,7 +440,7 @@ public class MovePerformer implements Serializable
 					continue;
 				final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
 				// we will unload our paratroopers after they land in battle (after aa guns fire)
-				if (paratroopsLanding && transportedBy != null && Matches.UnitIsAirTransport.match(transportedBy) && GameStepPropertiesHelper.isCombatMove(data)
+				if (paratroopsLanding && transportedBy != null && Matches.UnitIsAirTransport.match(transportedBy) && GameStepPropertiesHelper.isCombatMove(data, false)
 							&& Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).match(route.getEnd()))
 					continue;
 				// unload the transports

@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Fixed illegal state exception error in landing paratroopers during a battle. (veqryn)
+
 * Possibly final fix for a game hang / frozen bot on game launch. (veqryn)
 
 

@@ -139,7 +139,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 		else if (name.endsWith("Move"))
 		{
-			final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData());
+			final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
 			move(nonCombat, name);
 			if (!nonCombat)
 				m_ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());

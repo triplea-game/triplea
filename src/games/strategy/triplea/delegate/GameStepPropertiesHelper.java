@@ -94,7 +94,7 @@ public class GameStepPropertiesHelper
 	/**
 	 * For various things related to movement validation.
 	 */
-	public static boolean isCombatMove(final GameData data)
+	public static boolean isCombatMove(final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate)
 	{
 		final boolean isCombatMove;
 		data.acquireReadLock();
@@ -107,8 +107,10 @@ public class GameStepPropertiesHelper
 				isCombatMove = true;
 			else if (isNonCombatDelegate(data))
 				isCombatMove = false;
+			else if (doNotThrowErrorIfNotMoveDelegate)
+				isCombatMove = false;
 			else
-				throw new IllegalStateException("Cannot determine combat or not");
+				throw new IllegalStateException("Cannot determine combat or not: " + data.getSequence().getStep().getName());
 		} finally
 		{
 			data.releaseReadLock();
@@ -119,7 +121,7 @@ public class GameStepPropertiesHelper
 	/**
 	 * For various things related to movement validation.
 	 */
-	public static boolean isNonCombatMove(final GameData data)
+	public static boolean isNonCombatMove(final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate)
 	{
 		final boolean isNonCombatMove;
 		data.acquireReadLock();
@@ -132,8 +134,10 @@ public class GameStepPropertiesHelper
 				isNonCombatMove = true;
 			else if (isCombatDelegate(data))
 				isNonCombatMove = false;
+			else if (doNotThrowErrorIfNotMoveDelegate)
+				isNonCombatMove = false;
 			else
-				throw new IllegalStateException("Cannot determine combat or not");
+				throw new IllegalStateException("Cannot determine combat or not: " + data.getSequence().getStep().getName());
 		} finally
 		{
 			data.releaseReadLock();

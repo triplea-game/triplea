@@ -122,7 +122,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 						moveCombatDelegateBeforeBonusTriggerMatch,
 						moveCombatDelegateAfterBonusTriggerMatch);
 			
-			if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data))
+			if (GameStepPropertiesHelper.isCombatMove(data, false) && games.strategy.triplea.Properties.getTriggers(data))
 			{
 				final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
 							moveCombatDelegateAllTriggerMatch, m_bridge);
@@ -167,7 +167,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
 			
 			// placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
-			if (GameStepPropertiesHelper.isCombatMove(data) && games.strategy.triplea.Properties.getTriggers(data))
+			if (GameStepPropertiesHelper.isCombatMove(data, false) && games.strategy.triplea.Properties.getTriggers(data))
 			{
 				final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
 							moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
@@ -287,7 +287,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));
 		moveableUnitOwnedByMe.add(Matches.unitHasMovementLeft);
 		// if not non combat, can not move aa units
-		if (GameStepPropertiesHelper.isCombatMove(getData()))
+		if (GameStepPropertiesHelper.isCombatMove(getData(), false))
 			moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
 		for (final Territory item : getData().getMap().getTerritories())
 		{
@@ -485,8 +485,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final GameData data = getData();
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
 		final PlayerID player = getUnitsOwner(units);
-		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data), m_movesToUndo,
-					data);
+		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, GameStepPropertiesHelper.isNonCombatMove(data, false),
+					m_movesToUndo, data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
