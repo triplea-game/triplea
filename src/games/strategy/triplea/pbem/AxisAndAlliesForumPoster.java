@@ -301,8 +301,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 								throw new Exception("The summary was posted but was flagged as spam");
 							}
 						}
-						
-						throw new Exception("Unknown error, post a bug to the tripleA development team");
+						throw new Exception("Unknown error, please contact the forum owner and also post a bug to the tripleA development team");
 					}
 				} finally
 				{

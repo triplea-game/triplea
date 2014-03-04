@@ -25,10 +25,11 @@ public class NewGameChooserEntry
 	public NewGameChooserEntry(final URI uri) throws IOException, GameParseException, SAXException, EngineVersionException
 	{
 		m_url = uri;
-		final InputStream input = uri.toURL().openStream();
-		final boolean delayParsing = GameRunner2.getDelayedParsing();
+		InputStream input = null;
 		try
 		{
+			input = uri.toURL().openStream();
+			final boolean delayParsing = GameRunner2.getDelayedParsing();
 			m_data = new GameParser().parse(input, delayParsing);
 			m_gameDataFullyLoaded = !delayParsing;
 			m_gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
@@ -36,7 +37,8 @@ public class NewGameChooserEntry
 		{
 			try
 			{
-				input.close();
+				if (input != null)
+					input.close();
 			} catch (final IOException e)
 			{// ignore
 			}
@@ -46,7 +48,7 @@ public class NewGameChooserEntry
 	public void fullyParseGameData() throws GameParseException
 	{
 		m_data = null;
-		InputStream input;
+		InputStream input = null;
 		String error = null;
 		try
 		{
@@ -69,14 +71,6 @@ public class NewGameChooserEntry
 				System.err.println("Could not parse:" + m_url);
 				e.printStackTrace();
 				error = e.getMessage();
-			} finally
-			{
-				try
-				{
-					input.close();
-				} catch (final IOException e)
-				{// ignore
-				}
 			}
 		} catch (final MalformedURLException e1)
 		{
@@ -86,6 +80,15 @@ public class NewGameChooserEntry
 		{
 			e1.printStackTrace();
 			error = e1.getMessage();
+		} finally
+		{
+			try
+			{
+				if (input != null)
+					input.close();
+			} catch (final IOException e)
+			{// ignore
+			}
 		}
 		if (error != null)
 			throw new GameParseException(error);
@@ -98,7 +101,7 @@ public class NewGameChooserEntry
 	public void delayParseGameData()
 	{
 		m_data = null;
-		InputStream input;
+		InputStream input = null;
 		try
 		{
 			input = m_url.toURL().openStream();
@@ -117,14 +120,6 @@ public class NewGameChooserEntry
 			{
 				System.err.println("Could not parse:" + m_url);
 				e.printStackTrace();
-			} finally
-			{
-				try
-				{
-					input.close();
-				} catch (final IOException e)
-				{// ignore
-				}
 			}
 		} catch (final MalformedURLException e1)
 		{
@@ -132,6 +127,15 @@ public class NewGameChooserEntry
 		} catch (final IOException e1)
 		{
 			e1.printStackTrace();
+		} finally
+		{
+			try
+			{
+				if (input != null)
+					input.close();
+			} catch (final IOException e)
+			{// ignore
+			}
 		}
 	}
 	

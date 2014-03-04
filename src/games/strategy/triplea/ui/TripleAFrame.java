@@ -2001,6 +2001,10 @@ public class TripleAFrame extends MainGameFrame
 			
 			public void actionPerformed(final ActionEvent ae)
 			{
+				JOptionPane.showMessageDialog(TripleAFrame.this, "Please first left click on the spot you want to save from, Then right click and select 'Save Game From History'"
+							+ "\n\nIt is recommended that when saving the game from the History panel, that you ONLY save at the beginning of a player's turn, or the beginning of a round."
+							+ "\nSaving at any other point, could potentially create errors.\nFor example, saving during the middle of the Battle Phase will always create errors in the savegame.",
+							"Save Game from History", JOptionPane.INFORMATION_MESSAGE);
 				m_data.acquireReadLock();
 				// m_data.acquireWriteLock();
 				try

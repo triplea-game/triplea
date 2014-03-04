@@ -40,7 +40,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
-import games.strategy.net.UniversalPlugAndPlanHelper;
+import games.strategy.net.UniversalPlugAndPlayHelper;
 
 import java.awt.Frame;
 import java.util.Date;
@@ -295,7 +295,7 @@ public class InGameLobbyWatcher
 								final int answer = JOptionPane.showConfirmDialog(parentComponent, question, "Try Setting Port Forwarding with UPnP?", JOptionPane.YES_NO_OPTION);
 								if (answer != JOptionPane.YES_OPTION)
 									System.exit(-1);
-								UniversalPlugAndPlanHelper.attemptAddingPortForwarding(parentComponent, port);
+								UniversalPlugAndPlayHelper.attemptAddingPortForwarding(parentComponent, port);
 								if (JOptionPane.showConfirmDialog(parentComponent, "Do you want to view the tutorial on how to host?  This will open in your internet browser.", "View Help Website?",
 											JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 									DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");

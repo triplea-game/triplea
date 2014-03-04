@@ -34,10 +34,12 @@ import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.LocalizeHTML;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
@@ -321,7 +323,8 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			aBridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
 						((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
 			// send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
-			getDisplay(aBridge).reportMessageToAll(status, status, true, false, true); // we send the bridge, because we can call this method from outside this delegate, which means our local copy of m_bridge could be null.
+			final String title = "Victory Achieved" + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
+			getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true); // we send the bridge, because we can call this method from outside this delegate, which means our local copy of m_bridge could be null.
 			final boolean stopGame;
 			if (HeadlessGameServer.headless())
 			{
@@ -331,8 +334,14 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			else
 			{
 				// now tell the HOST, and see if they want to continue the game.
-				stopGame = (JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION,
-							new CountDownLatchHandler(true)));
+				String displayMessage = LocalizeHTML.localizeImgLinksInHTML(status);
+				if (displayMessage.endsWith("</body>"))
+					displayMessage = displayMessage.substring(0, displayMessage.length() - "</body>".length()) + "</br><p>Do you want to continue?</p></body>";
+				else
+					displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
+				// this is currently the ONLY instance of JOptionPane that is allowed outside of the UI classes. maybe there is a better way?
+				stopGame = (JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null, ("<html>" + displayMessage + "</html>"), "Continue Game?  ("
+							+ title + ")", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true)));
 			}
 			if (stopGame)
 				aBridge.stopGameSequence();

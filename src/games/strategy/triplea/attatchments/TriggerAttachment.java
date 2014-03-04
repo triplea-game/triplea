@@ -2637,7 +2637,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				{
 					aBridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToTextList(t.getPlayers()) + " have just won the game, with this victory: " + messageForRecord);
 					final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
-					((EndRoundDelegate) delegateEndRound).signalGameOver(("<html>" + victoryMessage.trim() + "</html>"), t.getPlayers(), aBridge);
+					((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage.trim(), t.getPlayers(), aBridge);
 				} catch (final Exception e)
 				{
 					e.printStackTrace();

@@ -103,6 +103,12 @@ public class LocalLauncher extends AbstractLauncher
 		} finally
 		{
 			// todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
+			try
+			{
+				Thread.sleep(100); // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by closing of stream while unloading map resources.
+			} catch (final InterruptedException e)
+			{
+			}
 			m_gameSelectorModel.loadDefaultGame(parent);
 			SwingUtilities.invokeLater(new Runnable()
 			{

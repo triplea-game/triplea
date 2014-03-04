@@ -1637,7 +1637,7 @@ class AvailableGames
 	{
 		if (uri == null)
 			return false;
-		InputStream input;
+		InputStream input = null;
 		try
 		{
 			input = uri.toURL().openStream();
@@ -1655,18 +1655,18 @@ class AvailableGames
 				}
 			} catch (final Exception e2)
 			{// ignore
-			} finally
-			{
-				try
-				{
-					if (input != null)
-						input.close();
-				} catch (final IOException e3)
-				{// ignore
-				}
 			}
 		} catch (final Exception e1)
 		{// ignore
+		} finally
+		{
+			try
+			{
+				if (input != null)
+					input.close();
+			} catch (final IOException e3)
+			{// ignore
+			}
 		}
 		return false;
 	}
@@ -1693,7 +1693,7 @@ class AvailableGames
 		if (uri == null)
 			return null;
 		GameData data = null;
-		InputStream input;
+		InputStream input = null;
 		boolean error = false;
 		try
 		{
@@ -1704,18 +1704,19 @@ class AvailableGames
 			} catch (final Exception e)
 			{
 				error = true;
-			} finally
-			{
-				try
-				{
-					input.close();
-				} catch (final IOException e2)
-				{// ignore
-				}
 			}
 		} catch (final Exception e1)
 		{
 			error = true;
+		} finally
+		{
+			try
+			{
+				if (input != null)
+					input.close();
+			} catch (final IOException e2)
+			{// ignore
+			}
 		}
 		if (error)
 			return null;

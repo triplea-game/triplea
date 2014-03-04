@@ -24,31 +24,31 @@ import net.sbbi.upnp.messages.UPNPResponseException;
  * @author veqryn
  * 
  */
-public class UniversalPlugAndPlanHelper
+public class UniversalPlugAndPlayHelper
 {
 	private int m_port = 3300;
 	private InetAddress m_local = null;
 	private InternetGatewayDevice m_device = null;
-	private static UniversalPlugAndPlanHelper s_lastInstance = null;
+	private static UniversalPlugAndPlayHelper s_lastInstance = null;
 	
 	public static void main(final String[] args)
 	{
-		UniversalPlugAndPlanHelper.attemptAddingPortForwarding(null, 3300);
+		UniversalPlugAndPlayHelper.attemptAddingPortForwarding(null, 3300);
 	}
 	
-	public UniversalPlugAndPlanHelper(final int port)
+	public UniversalPlugAndPlayHelper(final int port)
 	{
 		m_port = port;
 	}
 	
-	public static UniversalPlugAndPlanHelper getLastInstance()
+	public static UniversalPlugAndPlayHelper getLastInstance()
 	{
 		return s_lastInstance;
 	}
 	
 	public static boolean attemptAddingPortForwarding(final Component parent, final int port)
 	{
-		final UniversalPlugAndPlanHelper upnpHelper = new UniversalPlugAndPlanHelper(port);
+		final UniversalPlugAndPlayHelper upnpHelper = new UniversalPlugAndPlayHelper(port);
 		final JTextArea textArea = new JTextArea();
 		textArea.setEditable(false);
 		final String error = upnpHelper.attemptAddingPortForwarding(textArea);

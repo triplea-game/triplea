@@ -266,16 +266,16 @@ public class ServerLauncher extends AbstractLauncher
 							System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
 						stopGame();
 					}
+					try
+					{
+						Thread.sleep(200); // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by closing of stream while unloading map resources.
+					} catch (final InterruptedException e)
+					{
+					}
 					// either game ended, or aborted, or a player left or disconnected
 					if (m_headless)
 					{
 						System.out.println("Game ended, going back to waiting.");
-						try
-						{
-							Thread.sleep(250);
-						} catch (final InterruptedException e)
-						{
-						}
 						final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
 						final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
 						final File f;
