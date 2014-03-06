@@ -605,6 +605,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			steps.add(m_attacker.getName() + SELECT_SUB_CASUALTIES);
 			steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
 		}
+		final boolean onlyAttackerSneakAttack = !defenderSubsFireFirst && returnFireAgainstAttackingSubs() == ReturnFire.NONE && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
 		// attacker subs sneak attack
 		// Attacking subs have no sneak attack if Destroyers are present
 		if (m_battleSite.isWater())
@@ -614,11 +615,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				steps.add(m_attacker.getName() + SUBS_FIRE);
 				steps.add(m_defender.getName() + SELECT_SUB_CASUALTIES);
 			}
-		}
-		final boolean onlyAttackerSneakAttack = !defenderSubsFireFirst && returnFireAgainstAttackingSubs() == ReturnFire.NONE && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
-		if (onlyAttackerSneakAttack)
-		{
-			steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+			if (onlyAttackerSneakAttack)
+			{
+				steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
+			}
 		}
 		// ww2v2 rules, all subs fire FIRST in combat, regardless of presence of destroyers.
 		final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst && !games.strategy.triplea.Properties.getWW2V2(m_data) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
