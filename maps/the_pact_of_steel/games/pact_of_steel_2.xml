@@ -1859,7 +1859,7 @@
 															isFactory is no longer its own variable. Instead isFactory just sets the above variables. setting is factory will possibly overwrite those variables, so do not use it if you are planning to set those variables to something else.
 															allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
 			canProduceXUnits					values: allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  
-															if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing
+															if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing.  this option will only work if "Damage From Bombing Done To Units Instead Of Territories" game property is turned on.
 			canProduceUnits						values: allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors.
 			createsUnitsList					values: is a list of units that this unit will create every turn at the end of the turn. can have multiple instances
 			createsResourcesList				values: is a list of resources that this unit will create every turn at the end of the turn. can have multiple instances

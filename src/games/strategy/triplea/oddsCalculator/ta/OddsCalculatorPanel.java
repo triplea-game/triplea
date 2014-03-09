@@ -805,9 +805,9 @@ public class OddsCalculatorPanel extends JPanel
 			m_attackerUnitsTotalPower.setText("Power: " + attackPower);
 			m_defenderUnitsTotalPower.setText("Power: " + defensePower);
 			m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP, m_data.getDiceSides())
-						+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+						+ "<br /> (is equal to  (2 * Hitpoints) + (Power * 6 / DiceSides))</html>");
 			m_defenderUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP, m_data.getDiceSides())
-						+ "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
+						+ "<br /> (is equal to  (2 * Hitpoints) + (Power * 6 / DiceSides))</html>");
 		} finally
 		{
 			m_data.releaseReadLock();

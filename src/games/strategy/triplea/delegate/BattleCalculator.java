@@ -106,11 +106,11 @@ public class BattleCalculator
 	
 	/**
 	 * Useful for fast approximations of strength.
-	 * Returns a number equal to: Power + (2 * HitPoints * DiceSides / 6)
+	 * Returns a number equal to: (2 * Hitpoints) + (Power * 6 / DiceSides)
 	 */
 	public static int getNormalizedMetaPower(final int power, final int hitpoints, final int diceSides)
 	{
-		return power + (2 * hitpoints * diceSides / 6);
+		return (2 * hitpoints) + (power * 6 / diceSides);
 	}
 	
 	public static int getAAHits(final Collection<Unit> units, final IDelegateBridge bridge, final int[] dice)
