@@ -118,6 +118,11 @@ public class ServerLauncher extends AbstractLauncher
 				}
 			}
 		}
+		if (m_serverGame != null && m_serverGame.getPlayerManager() != null)
+		{
+			if (m_serverGame.getPlayerManager().isEmpty())
+				return true;
+		}
 		return false;
 	}
 	
@@ -201,7 +206,11 @@ public class ServerLauncher extends AbstractLauncher
 				HeadlessGameServer.log("Game Successfully Loaded. " + (m_abortLaunch ? "Aborting Launch." : "Starting Game."));
 			if (m_abortLaunch)
 				m_serverReady.countDownAll();
-			m_serverReady.await(120, TimeUnit.SECONDS);
+			if (!m_serverReady.await(120, TimeUnit.SECONDS))
+			{
+				System.out.println("Waiting for clients to be ready timed out!");
+				m_abortLaunch = true;
+			}
 			m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
 			final Thread t = new Thread("Triplea, start server game")
 			{
@@ -253,7 +262,8 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							// we are already aborting the launch
 							if (!m_abortLaunch)
-								m_errorLatch.await(120, TimeUnit.SECONDS);
+								if (!m_errorLatch.await(120, TimeUnit.SECONDS))
+									System.err.println("Waiting on error latch timed out!");
 						} catch (final InterruptedException e)
 						{
 							e.printStackTrace();
@@ -275,15 +285,23 @@ public class ServerLauncher extends AbstractLauncher
 					// either game ended, or aborted, or a player left or disconnected
 					if (m_headless)
 					{
-						System.out.println("Game ended, going back to waiting.");
-						final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-						final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
-						final File f;
-						if (f1.lastModified() < f2.lastModified())
-							f = f2;
-						else
-							f = f1;
-						m_gameSelectorModel.load(f, null);
+						try
+						{
+							System.out.println("Game ended, going back to waiting.");
+							if (m_serverModel != null)
+								m_serverModel.setAllPlayersToNullNodes();
+							final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+							final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+							final File f;
+							if (f1.lastModified() < f2.lastModified())
+								f = f2;
+							else
+								f = f1;
+							m_gameSelectorModel.load(f, null);
+						} catch (final Exception e)
+						{
+							m_gameSelectorModel.resetGameDataToNull();
+						}
 					}
 					else
 					{
@@ -496,14 +514,16 @@ class ServerReady implements IServerReady
 		}
 	}
 	
-	public void await(final long timeout, final TimeUnit timeUnit)
+	public boolean await(final long timeout, final TimeUnit timeUnit)
 	{
+		boolean didNotTimeOut = false;
 		try
 		{
-			m_latch.await(timeout, timeUnit);
+			didNotTimeOut = m_latch.await(timeout, timeUnit);
 		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
 		}
+		return didNotTimeOut;
 	}
 }

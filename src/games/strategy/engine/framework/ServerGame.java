@@ -328,7 +328,7 @@ public class ServerGame extends AbstractGame
 		// while we shut down.
 		try
 		{
-			if (!m_delegateExecutionManager.blockDelegateExecution(4000))
+			if (!m_delegateExecutionManager.blockDelegateExecution(6000))
 			{
 				System.err.println("Could not stop delegate execution.");
 				if (HeadlessGameServer.headless())
@@ -469,7 +469,7 @@ public class ServerGame extends AbstractGame
 	{
 		try
 		{
-			if (!m_delegateExecutionManager.blockDelegateExecution(4000))
+			if (!m_delegateExecutionManager.blockDelegateExecution(6000))
 			{
 				new IOException("Could not lock delegate execution").printStackTrace();
 			}

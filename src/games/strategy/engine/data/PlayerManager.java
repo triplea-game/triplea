@@ -40,6 +40,11 @@ public class PlayerManager
 		return new HashMap<String, INode>(m_playerMapping);
 	}
 	
+	public boolean isEmpty()
+	{
+		return m_playerMapping == null || m_playerMapping.isEmpty();
+	}
+	
 	@Override
 	public String toString()
 	{

@@ -583,8 +583,14 @@ public class HeadlessGameServer
 		final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
 		if (fileName.length() > 0)
 		{
-			final File file = new File(fileName);
-			m_gameSelectorModel.load(file, null);
+			try
+			{
+				final File file = new File(fileName);
+				m_gameSelectorModel.load(file, null);
+			} catch (final Exception e)
+			{
+				m_gameSelectorModel.resetGameDataToNull();
+			}
 		}
 		if (m_useUI)
 		{
@@ -693,7 +699,6 @@ public class HeadlessGameServer
 			if (m_lobbyWatcherResetupThread != null)
 			{
 				m_lobbyWatcherResetupThread.shutdown();
-				Thread.sleep(100);
 			}
 		} catch (final Exception e)
 		{
@@ -703,7 +708,6 @@ public class HeadlessGameServer
 			if (m_iGame != null)
 			{
 				m_iGame.stopGame();
-				Thread.sleep(200);
 			}
 		} catch (final Exception e)
 		{
@@ -721,7 +725,6 @@ public class HeadlessGameServer
 				{
 					((HeadlessServerSetup) setup).shutDown();
 				}
-				Thread.sleep(100);
 			}
 		} catch (final Exception e)
 		{
@@ -731,7 +734,6 @@ public class HeadlessGameServer
 			if (m_gameSelectorModel != null && m_gameSelectorModel.getGameData() != null)
 			{
 				m_gameSelectorModel.getGameData().clearAllListeners();
-				Thread.sleep(100);
 			}
 		} catch (final Exception e)
 		{
@@ -809,6 +811,9 @@ public class HeadlessGameServer
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
+			final ServerModel model = getServerModel(setupPanelModel);
+			if (model != null)
+				model.setAllPlayersToNullNodes();
 		}
 		return false;
 	}
@@ -835,14 +840,21 @@ public class HeadlessGameServer
 	
 	ServerModel getServerModel()
 	{
-		if (m_setupPanelModel == null)
+		return getServerModel(m_setupPanelModel);
+	}
+	
+	static ServerModel getServerModel(final SetupPanelModel setupPanelModel)
+	{
+		if (setupPanelModel == null)
 			return null;
-		final ISetupPanel setup = m_setupPanelModel.getPanel();
-		if (setup != null && setup instanceof ServerSetupPanel)
+		final ISetupPanel setup = setupPanelModel.getPanel();
+		if (setup == null)
+			return null;
+		if (setup instanceof ServerSetupPanel)
 		{
 			return ((ServerSetupPanel) setup).getModel();
 		}
-		else if (setup != null && setup instanceof HeadlessServerSetup)
+		else if (setup instanceof HeadlessServerSetup)
 		{
 			return ((HeadlessServerSetup) setup).getModel();
 		}
@@ -1074,7 +1086,7 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		shutDownLobbyWatcher();
 		try
 		{
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		} catch (final InterruptedException e)
 		{
 		}

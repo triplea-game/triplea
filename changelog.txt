@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Fix for infinite crash-reload loop on loading a corrupt autosave on a host bot. (veqryn)
+
 * Fixed issue with Victory trigger not being able to use html properly. (veqryn)
 
 * Fixed illegal state exception error in landing paratroopers during a battle. (veqryn)

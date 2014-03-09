@@ -62,6 +62,13 @@ public class GameSelectorModel extends Observable
 	public GameSelectorModel()
 	{
 		setGameData(null);
+		m_fileName = "";
+	}
+	
+	public void resetGameDataToNull()
+	{
+		setGameData(null);
+		m_fileName = "";
 	}
 	
 	public void load(final GameData data, final String fileName)

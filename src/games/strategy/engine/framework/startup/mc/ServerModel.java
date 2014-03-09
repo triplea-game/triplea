@@ -556,6 +556,17 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		m_listener.playersTakenChanged();
 	}
 	
+	public void setAllPlayersToNullNodes()
+	{
+		if (m_playersToNodeListing != null)
+		{
+			for (final String p : m_playersToNodeListing.keySet())
+			{
+				m_playersToNodeListing.put(p, null);
+			}
+		}
+	}
+	
 	private void notifyChanellPlayersChanged()
 	{
 		final IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
