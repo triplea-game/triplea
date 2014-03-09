@@ -300,6 +300,7 @@ public class ServerLauncher extends AbstractLauncher
 							m_gameSelectorModel.load(f, null);
 						} catch (final Exception e)
 						{
+							e.printStackTrace();
 							m_gameSelectorModel.resetGameDataToNull();
 						}
 					}
