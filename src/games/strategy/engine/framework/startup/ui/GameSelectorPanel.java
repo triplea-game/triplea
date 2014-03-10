@@ -104,26 +104,48 @@ public class GameSelectorPanel extends JPanel implements Observer
 			{// ignore
 			}
 		}
-		m_fileNameText.setText(getLimitedFileNameText(fileName));
+		m_fileNameText.setText(getFormattedFileNameText(fileName, Math.max(22, 3 + m_nameText.getText().length() + m_nameLabel.getText().length())));
 		m_fileNameText.setToolTipText(fileName);
 	}
 	
-	private String getLimitedFileNameText(final String fileName)
+	/**
+	 * Formats the file name text to two lines.
+	 * The separation focuses on the second line being at least the filename while the first line
+	 * should show the the path including '...' in case it does not fit
+	 * 
+	 * @param fileName
+	 *            full file name
+	 * @param maxLength
+	 *            maximum number of characters per line
+	 * @return filename formatted file name - in case it is too long (> maxLength) to two lines
+	 */
+	private String getFormattedFileNameText(final String fileName, final int maxLength)
 	{
-		final int maxLength = 25;
 		if (fileName.length() <= maxLength)
 		{
 			return fileName;
 		}
-		int cuttoff = 18;
-		// /games will be in most paths,
-		// try to ignore it
-		if (fileName.indexOf("games") > 0)
+		int cutoff = fileName.length() - maxLength;
+		String secondLine = fileName.substring(cutoff);
+		if (secondLine.contains("/"))
 		{
-			cuttoff = Math.min(18, fileName.indexOf("games"));
+			cutoff += secondLine.indexOf("/") + 1;
 		}
-		final int length = fileName.length();
-		return fileName.substring(0, cuttoff) + "..." + fileName.substring(length - (maxLength - cuttoff) - 2, length);
+		secondLine = fileName.substring(cutoff);
+		String firstLine = fileName.substring(0, cutoff);
+		
+		if (firstLine.length() > maxLength)
+		{
+			firstLine = firstLine.substring(0, maxLength - 4);
+			if (firstLine.contains("/"))
+			{
+				cutoff = firstLine.lastIndexOf("/") + 1;
+				firstLine = firstLine.substring(0, cutoff) + ".../";
+			}
+			else
+				firstLine = firstLine + "...";
+		}
+		return "<html><p>" + firstLine + "<br/>" + secondLine + "</p></html>";
 	}
 	
 	private void createComponents()
