@@ -289,15 +289,20 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							System.out.println("Game ended, going back to waiting.");
 							if (m_serverModel != null)
-								m_serverModel.setAllPlayersToNullNodes();
+								m_serverModel.setAllPlayersToNullNodes(); // if we do not do this, we can get into an infinite loop of launching a game, then crashing out, then launching, etc.
 							final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
 							final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
 							final File f;
-							if (f1.lastModified() < f2.lastModified())
-								f = f2;
+							if (!f1.exists() && !f2.exists())
+								m_gameSelectorModel.resetGameDataToNull();
 							else
-								f = f1;
-							m_gameSelectorModel.load(f, null);
+							{
+								if (!f1.exists() || f1.lastModified() < f2.lastModified())
+									f = f2;
+								else
+									f = f1;
+								m_gameSelectorModel.load(f, null);
+							}
 						} catch (final Exception e)
 						{
 							e.printStackTrace();

@@ -813,7 +813,7 @@ public class HeadlessGameServer
 			e.printStackTrace();
 			final ServerModel model = getServerModel(setupPanelModel);
 			if (model != null)
-				model.setAllPlayersToNullNodes();
+				model.setAllPlayersToNullNodes();// if we do not do this, we can get into an infinite loop of launching a game, then crashing out, then launching, etc.
 		}
 		return false;
 	}
