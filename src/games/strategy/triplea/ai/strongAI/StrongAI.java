@@ -452,7 +452,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		pause();
 	}
 	
-	private void doNonCombatMove(final IMoveDelegate moveDel, final PlayerID player)
+	protected void doNonCombatMove(final IMoveDelegate moveDel, final PlayerID player)
 	{
 		final GameData data = getPlayerBridge().getGameData();
 		Long last, now;
