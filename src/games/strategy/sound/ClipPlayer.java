@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -128,6 +129,7 @@ public class ClipPlayer
 	private static final String ASSETS_SOUNDS_FOLDER = "sounds";
 	private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
 	private static final String SOUND_PREFERENCE_PREFIX = "sound_";
+	private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
 	
 	public static synchronized ClipPlayer getInstance()
 	{
@@ -158,7 +160,7 @@ public class ClipPlayer
 	{
 		m_resourceLoader = resourceLoader;
 		final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-		m_beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false")) || prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, false);
+		m_beSilent = Boolean.parseBoolean(System.getProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "false")) || prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
 		final HashSet<String> choices = SoundPath.getAllSoundOptions();
 		/* until we get better sounds, all sounds start as muted, except for Slapping
 		choices.remove(SoundPath.CLIP_CHAT_SLAP);
@@ -198,16 +200,31 @@ public class ClipPlayer
 		setBeSilentInPreferencesWithoutAffectingCurrent(aBool);
 	}
 	
-	public static void setBeSilentInPreferencesWithoutAffectingCurrent(final boolean aBool)
+	public static void setBeSilentInPreferencesWithoutAffectingCurrent(final boolean silentBool)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-		prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, aBool);
-		try
+		final boolean current = prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
+		boolean setPref = silentBool != current;
+		if (!setPref)
 		{
-			prefs.flush();
-		} catch (final BackingStoreException ex)
+			try
+			{
+				setPref = !Arrays.asList(prefs.keys()).contains(SOUND_PREFERENCE_GLOBAL_SWITCH);
+			} catch (final BackingStoreException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		if (setPref)
 		{
-			ex.printStackTrace();
+			prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, silentBool);
+			try
+			{
+				prefs.flush();
+			} catch (final BackingStoreException ex)
+			{
+				ex.printStackTrace();
+			}
 		}
 	}
 	

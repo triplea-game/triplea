@@ -53,6 +53,8 @@ import java.util.Iterator;
  */
 public class InitializationDelegate extends BaseTripleADelegate
 {
+	private boolean m_needToInitialize = true;
+	
 	/** Creates a new instance of InitializationDelegate */
 	public InitializationDelegate()
 	{
@@ -72,7 +74,11 @@ public class InitializationDelegate extends BaseTripleADelegate
 	public void start()
 	{
 		super.start();
-		init(m_bridge);
+		if (m_needToInitialize)
+		{
+			init(m_bridge);
+			m_needToInitialize = false;
+		}
 	}
 	
 	@Override
@@ -87,6 +93,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		final InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
+		state.m_needToInitialize = m_needToInitialize;
 		return state;
 	}
 	
@@ -96,6 +103,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+		m_needToInitialize = s.m_needToInitialize;
 	}
 	
 	public boolean delegateCurrentlyRequiresUserInput()
@@ -274,15 +282,22 @@ public class InitializationDelegate extends BaseTripleADelegate
 			final ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
 			final ProductionRule destroyer = data.getProductionRuleList().getProductionRule("buyDestroyer");
 			final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier("production");
-			change.add(ChangeFactory.addProductionRule(artillery, frontier));
-			change.add(ChangeFactory.addProductionRule(destroyer, frontier));
+			if (!frontier.getRules().contains(artillery))
+				change.add(ChangeFactory.addProductionRule(artillery, frontier));
+			if (!frontier.getRules().contains(destroyer))
+				change.add(ChangeFactory.addProductionRule(destroyer, frontier));
 			final ProductionRule artilleryIT = data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
 			final ProductionRule destroyerIT = data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
 			final ProductionFrontier frontierIT = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
-			change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
-			change.add(ChangeFactory.addProductionRule(destroyerIT, frontierIT));
-			aBridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
-			aBridge.addChange(change);
+			if (!frontier.getRules().contains(artilleryIT))
+				change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
+			if (!frontier.getRules().contains(destroyerIT))
+				change.add(ChangeFactory.addProductionRule(destroyerIT, frontierIT));
+			if (!change.isEmpty())
+			{
+				aBridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
+				aBridge.addChange(change);
+			}
 		}
 	}
 	
@@ -412,4 +427,5 @@ class InitializationExtendedDelegateState implements Serializable
 	private static final long serialVersionUID = -9000446777655823735L;
 	Serializable superState;
 	// add other variables here:
+	public boolean m_needToInitialize;
 }

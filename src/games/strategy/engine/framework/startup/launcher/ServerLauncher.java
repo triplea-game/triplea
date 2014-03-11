@@ -242,12 +242,12 @@ public class ServerLauncher extends AbstractLauncher
 								{
 									public void run()
 									{
-										JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
+										JOptionPane.showMessageDialog(m_ui, "Problem during startup, game aborted.");
 									}
 								});
 							}
 							else
-								System.out.println("Error during startup, game aborted.");
+								System.out.println("Problem during startup, game aborted.");
 						}
 					} catch (final MessengerException me)
 					{
