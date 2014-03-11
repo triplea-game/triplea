@@ -282,16 +282,16 @@ public class InitializationDelegate extends BaseTripleADelegate
 			final ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
 			final ProductionRule destroyer = data.getProductionRuleList().getProductionRule("buyDestroyer");
 			final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier("production");
-			if (!frontier.getRules().contains(artillery))
+			if (artillery != null && !frontier.getRules().contains(artillery))
 				change.add(ChangeFactory.addProductionRule(artillery, frontier));
-			if (!frontier.getRules().contains(destroyer))
+			if (destroyer != null && !frontier.getRules().contains(destroyer))
 				change.add(ChangeFactory.addProductionRule(destroyer, frontier));
 			final ProductionRule artilleryIT = data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
 			final ProductionRule destroyerIT = data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
 			final ProductionFrontier frontierIT = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
-			if (!frontier.getRules().contains(artilleryIT))
+			if (artilleryIT != null && !frontierIT.getRules().contains(artilleryIT))
 				change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
-			if (!frontier.getRules().contains(destroyerIT))
+			if (destroyerIT != null && !frontierIT.getRules().contains(destroyerIT))
 				change.add(ChangeFactory.addProductionRule(destroyerIT, frontierIT));
 			if (!change.isEmpty())
 			{
