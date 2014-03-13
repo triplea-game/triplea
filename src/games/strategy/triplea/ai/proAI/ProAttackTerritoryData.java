@@ -36,7 +36,7 @@ public class ProAttackTerritoryData
 	private Map<Unit, List<Unit>> amphibAttackMap;
 	private List<Unit> navalAttackTransports;
 	
-	public ProAttackTerritoryData(Territory territory)
+	public ProAttackTerritoryData(final Territory territory)
 	{
 		this.territory = territory;
 		maxUnits = new ArrayList<Unit>();
@@ -49,32 +49,32 @@ public class ProAttackTerritoryData
 		navalAttackTransports = new ArrayList<Unit>();
 	}
 	
-	public void addUnit(Unit unit)
+	public void addUnit(final Unit unit)
 	{
 		this.units.add(unit);
 	}
 	
-	public void addUnits(List<Unit> units)
+	public void addUnits(final List<Unit> units)
 	{
 		this.units.addAll(units);
 	}
 	
-	public void addMaxUnits(List<Unit> units)
+	public void addMaxUnits(final List<Unit> units)
 	{
 		this.maxUnits.addAll(units);
 	}
 	
-	public void addMaxAmphibUnits(List<Unit> amphibUnits)
+	public void addMaxAmphibUnits(final List<Unit> amphibUnits)
 	{
 		this.maxAmphibUnits.addAll(amphibUnits);
 	}
 	
-	public void addMaxUnit(Unit unit)
+	public void addMaxUnit(final Unit unit)
 	{
 		this.maxUnits.add(unit);
 	}
 	
-	public void setTerritory(Territory territory)
+	public void setTerritory(final Territory territory)
 	{
 		this.territory = territory;
 	}
@@ -84,7 +84,7 @@ public class ProAttackTerritoryData
 		return territory;
 	}
 	
-	public void setMaxUnits(List<Unit> units)
+	public void setMaxUnits(final List<Unit> units)
 	{
 		this.maxUnits = units;
 	}
@@ -99,12 +99,12 @@ public class ProAttackTerritoryData
 		return TUVSwing;
 	}
 	
-	public void setTUVSwing(double tUVSwing)
+	public void setTUVSwing(final double tUVSwing)
 	{
 		TUVSwing = tUVSwing;
 	}
 	
-	public void setAttackValue(double attackValue)
+	public void setAttackValue(final double attackValue)
 	{
 		this.attackValue = attackValue;
 	}
@@ -114,7 +114,7 @@ public class ProAttackTerritoryData
 		return attackValue;
 	}
 	
-	public void setUnits(List<Unit> units)
+	public void setUnits(final List<Unit> units)
 	{
 		this.units = units;
 	}
@@ -124,7 +124,7 @@ public class ProAttackTerritoryData
 		return units;
 	}
 	
-	public void setCanHold(boolean canHold)
+	public void setCanHold(final boolean canHold)
 	{
 		this.canHold = canHold;
 	}
@@ -134,7 +134,7 @@ public class ProAttackTerritoryData
 		return canHold;
 	}
 	
-	public void setMaxAmphibUnits(List<Unit> maxAmphibUnits)
+	public void setMaxAmphibUnits(final List<Unit> maxAmphibUnits)
 	{
 		this.maxAmphibUnits = maxAmphibUnits;
 	}
@@ -144,7 +144,7 @@ public class ProAttackTerritoryData
 		return maxAmphibUnits;
 	}
 	
-	public void setNeedAmphibUnits(boolean needAmphibUnits)
+	public void setNeedAmphibUnits(final boolean needAmphibUnits)
 	{
 		this.needAmphibUnits = needAmphibUnits;
 	}
@@ -159,12 +159,12 @@ public class ProAttackTerritoryData
 		return amphibAttackMap;
 	}
 	
-	public void setAmphibAttackMap(Map<Unit, List<Unit>> amphibAttackMap)
+	public void setAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap)
 	{
 		this.amphibAttackMap = amphibAttackMap;
 	}
 	
-	public void putAmphibAttackMap(Unit transport, List<Unit> amphibUnits)
+	public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits)
 	{
 		this.amphibAttackMap.put(transport, amphibUnits);
 	}
@@ -174,12 +174,12 @@ public class ProAttackTerritoryData
 		return navalAttackTransports;
 	}
 	
-	public void setNavalAttackTransports(List<Unit> navalAttackTransports)
+	public void setNavalAttackTransports(final List<Unit> navalAttackTransports)
 	{
 		this.navalAttackTransports = navalAttackTransports;
 	}
 	
-	public void addNavelAttackTransport(Unit transport)
+	public void addNavelAttackTransport(final Unit transport)
 	{
 		this.navalAttackTransports.add(transport);
 	}

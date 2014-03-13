@@ -26,15 +26,15 @@ public class ProAmphibData
 	private Unit transport;
 	private Map<Territory, Set<Territory>> transportMap;
 	
-	public ProAmphibData(Unit transport)
+	public ProAmphibData(final Unit transport)
 	{
 		this.transport = transport;
 		transportMap = new HashMap<Territory, Set<Territory>>();
 	}
 	
-	public void addTerritories(Set<Territory> attackTerritories, Set<Territory> myUnitsToLoadTerritories)
+	public void addTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories)
 	{
-		for (Territory attackTerritory : attackTerritories)
+		for (final Territory attackTerritory : attackTerritories)
 		{
 			// Populate enemy territories with sea unit
 			if (transportMap.containsKey(attackTerritory))
@@ -43,14 +43,14 @@ public class ProAmphibData
 			}
 			else
 			{
-				Set<Territory> territories = new HashSet<Territory>();
+				final Set<Territory> territories = new HashSet<Territory>();
 				territories.addAll(myUnitsToLoadTerritories);
 				transportMap.put(attackTerritory, territories);
 			}
 		}
 	}
 	
-	public void setTransportMap(Map<Territory, Set<Territory>> transportMap)
+	public void setTransportMap(final Map<Territory, Set<Territory>> transportMap)
 	{
 		this.transportMap = transportMap;
 	}
@@ -60,7 +60,7 @@ public class ProAmphibData
 		return transportMap;
 	}
 	
-	public void setTransport(Unit transport)
+	public void setTransport(final Unit transport)
 	{
 		this.transport = transport;
 	}

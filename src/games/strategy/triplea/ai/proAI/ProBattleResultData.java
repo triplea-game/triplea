@@ -33,7 +33,7 @@ public class ProBattleResultData
 		averageUnitsRemaining = new ArrayList<Unit>();
 	}
 	
-	public ProBattleResultData(double winPercentage, double TUVSwing, boolean hasLandUnitRemaining, List<Unit> averageUnitsRemaining)
+	public ProBattleResultData(final double winPercentage, final double TUVSwing, final boolean hasLandUnitRemaining, final List<Unit> averageUnitsRemaining)
 	{
 		this.winPercentage = winPercentage;
 		this.TUVSwing = TUVSwing;
@@ -46,7 +46,7 @@ public class ProBattleResultData
 		return winPercentage;
 	}
 	
-	public void setWinPercentage(double winPercentage)
+	public void setWinPercentage(final double winPercentage)
 	{
 		this.winPercentage = winPercentage;
 	}
@@ -56,7 +56,7 @@ public class ProBattleResultData
 		return TUVSwing;
 	}
 	
-	public void setTUVSwing(double tUVSwing)
+	public void setTUVSwing(final double tUVSwing)
 	{
 		TUVSwing = tUVSwing;
 	}
@@ -66,12 +66,12 @@ public class ProBattleResultData
 		return hasLandUnitRemaining;
 	}
 	
-	public void setHasLandUnitRemaining(boolean hasLandUnitRemaining)
+	public void setHasLandUnitRemaining(final boolean hasLandUnitRemaining)
 	{
 		this.hasLandUnitRemaining = hasLandUnitRemaining;
 	}
 	
-	public void setAverageUnitsRemaining(List<Unit> averageUnitsRemaining)
+	public void setAverageUnitsRemaining(final List<Unit> averageUnitsRemaining)
 	{
 		this.averageUnitsRemaining = averageUnitsRemaining;
 	}
