@@ -21,12 +21,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ProTransportData
+public class ProAmphibData
 {
 	private Unit transport;
 	private Map<Territory, Set<Territory>> transportMap;
 	
-	public ProTransportData(Unit transport)
+	public ProAmphibData(Unit transport)
 	{
 		this.transport = transport;
 		transportMap = new HashMap<Territory, Set<Territory>>();

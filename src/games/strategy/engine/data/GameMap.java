@@ -542,6 +542,22 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	}
 	
 	/**
+	 * 
+	 * @param t1
+	 *            start territory of the route
+	 * @param t2
+	 *            end territory of the route
+	 * @param cond
+	 *            condition that covered territories of the route must match EXCEPT FOR THE END
+	 * @return the distance between two territories where the covered territories of the route (except the end) satisfy the condition
+	 *         or -1 if they are not connected. (Distance includes to the end)
+	 */
+	public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Match<Territory> cond)
+	{
+		return getDistance(t1, t2, new CompositeMatchOr<Territory>(Matches.territoryIs(t2), cond));
+	}
+	
+	/**
 	 * Guaranteed that frontier doesn't contain target.
 	 * Territories on the frontier are not target. They represent the extent of paths already searched.
 	 * Territories in searched have already been on the frontier.

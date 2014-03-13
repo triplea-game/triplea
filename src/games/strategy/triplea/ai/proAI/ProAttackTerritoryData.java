@@ -17,7 +17,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProAttackTerritoryData
 {
@@ -28,6 +30,12 @@ public class ProAttackTerritoryData
 	private Double attackValue;
 	private boolean canHold;
 	
+	// Amphib variables
+	private List<Unit> maxAmphibUnits;
+	private boolean needAmphibUnits;
+	private Map<Unit, List<Unit>> amphibAttackMap;
+	private List<Unit> navalAttackTransports;
+	
 	public ProAttackTerritoryData(Territory territory)
 	{
 		this.territory = territory;
@@ -35,6 +43,10 @@ public class ProAttackTerritoryData
 		units = new ArrayList<Unit>();
 		TUVSwing = 0;
 		canHold = false;
+		maxAmphibUnits = new ArrayList<Unit>();
+		needAmphibUnits = false;
+		amphibAttackMap = new HashMap<Unit, List<Unit>>();
+		navalAttackTransports = new ArrayList<Unit>();
 	}
 	
 	public void addUnit(Unit unit)
@@ -42,9 +54,19 @@ public class ProAttackTerritoryData
 		this.units.add(unit);
 	}
 	
+	public void addUnits(List<Unit> units)
+	{
+		this.units.addAll(units);
+	}
+	
 	public void addMaxUnits(List<Unit> units)
 	{
 		this.maxUnits.addAll(units);
+	}
+	
+	public void addMaxAmphibUnits(List<Unit> amphibUnits)
+	{
+		this.maxAmphibUnits.addAll(amphibUnits);
 	}
 	
 	public void addMaxUnit(Unit unit)
@@ -110,6 +132,56 @@ public class ProAttackTerritoryData
 	public boolean isCanHold()
 	{
 		return canHold;
+	}
+	
+	public void setMaxAmphibUnits(List<Unit> maxAmphibUnits)
+	{
+		this.maxAmphibUnits = maxAmphibUnits;
+	}
+	
+	public List<Unit> getMaxAmphibUnits()
+	{
+		return maxAmphibUnits;
+	}
+	
+	public void setNeedAmphibUnits(boolean needAmphibUnits)
+	{
+		this.needAmphibUnits = needAmphibUnits;
+	}
+	
+	public boolean isNeedAmphibUnits()
+	{
+		return needAmphibUnits;
+	}
+	
+	public Map<Unit, List<Unit>> getAmphibAttackMap()
+	{
+		return amphibAttackMap;
+	}
+	
+	public void setAmphibAttackMap(Map<Unit, List<Unit>> amphibAttackMap)
+	{
+		this.amphibAttackMap = amphibAttackMap;
+	}
+	
+	public void putAmphibAttackMap(Unit transport, List<Unit> amphibUnits)
+	{
+		this.amphibAttackMap.put(transport, amphibUnits);
+	}
+	
+	public List<Unit> getNavalAttackTransports()
+	{
+		return navalAttackTransports;
+	}
+	
+	public void setNavalAttackTransports(List<Unit> navalAttackTransports)
+	{
+		this.navalAttackTransports = navalAttackTransports;
+	}
+	
+	public void addNavelAttackTransport(Unit transport)
+	{
+		this.navalAttackTransports.add(transport);
 	}
 	
 }
