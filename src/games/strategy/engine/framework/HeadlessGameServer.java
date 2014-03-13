@@ -200,6 +200,7 @@ public class HeadlessGameServer
 			if (!m_availableGames.getGameNames().contains(gameName))
 				return;
 			m_gameSelectorModel.load(m_availableGames.getGameData(gameName), m_availableGames.getGameFilePath(gameName));
+			System.out.println("Changed to game map: " + gameName);
 		}
 	}
 	
@@ -211,6 +212,7 @@ public class HeadlessGameServer
 			if (file == null || !file.exists())
 				return;
 			m_gameSelectorModel.load(file, null);
+			System.out.println("Changed to save: " + file.getName());
 		}
 	}
 	
@@ -234,23 +236,7 @@ public class HeadlessGameServer
 				return;
 			}
 			m_gameSelectorModel.load(data, fileName);
-		}
-	}
-	
-	public synchronized void loadGameOptions(final byte[] bytes)
-	{
-		// don't change mid-game
-		if (m_setupPanelModel.getPanel() != null && m_iGame == null)
-		{
-			if (bytes == null || bytes.length == 0)
-				return;
-			final GameData data = m_gameSelectorModel.getGameData();
-			if (data == null)
-				return;
-			final GameProperties props = data.getProperties();
-			if (props == null)
-				return;
-			GameProperties.applyByteMapToChangeProperties(bytes, props);
+			System.out.println("Changed to user savegame: " + fileName);
 		}
 	}
 	
@@ -274,6 +260,25 @@ public class HeadlessGameServer
 				return;
 			}
 			m_gameSelectorModel.load(data, fileName);
+			System.out.println("Changed to user savegame: " + fileName);
+		}
+	}
+	
+	public synchronized void loadGameOptions(final byte[] bytes)
+	{
+		// don't change mid-game
+		if (m_setupPanelModel.getPanel() != null && m_iGame == null)
+		{
+			if (bytes == null || bytes.length == 0)
+				return;
+			final GameData data = m_gameSelectorModel.getGameData();
+			if (data == null)
+				return;
+			final GameProperties props = data.getProperties();
+			if (props == null)
+				return;
+			GameProperties.applyByteMapToChangeProperties(bytes, props);
+			System.out.println("Changed to user game options.");
 		}
 	}
 	

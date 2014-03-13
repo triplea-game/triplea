@@ -4,7 +4,7 @@
 
 <game>
 
-        <info name="Great War" version="4.3"/>
+        <info name="Great War" version="4.4"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -3661,7 +3661,9 @@
                         <unitPlacement unitType="transport" territory="SZ 47 Strait of Gibraltar" quantity="1" owner="British"/>
 				<unitPlacement unitType="cruiser" territory="SZ 47 Strait of Gibraltar" quantity="1" owner="British"/>
 				<unitPlacement unitType="battlecruiser" territory="SZ 47 Strait of Gibraltar" quantity="1" owner="British"/>
-				<unitPlacement unitType="destroyer" territory="SZ 47 Strait of Gibraltar" quantity="3" owner="British"/>
+				<unitPlacement unitType="destroyer" territory="SZ 47 Strait of Gibraltar" quantity="2" owner="British"/>
+				
+				<unitPlacement unitType="destroyer" territory="SZ 46 Mid Atlantic" quantity="1" owner="British"/>
 
                         <unitPlacement unitType="factory" territory="Greece" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="Greece" quantity="7" owner="British"/>
@@ -4048,8 +4050,9 @@
                         <unitPlacement unitType="factory" territory="Hanover" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="infantry" territory="Hanover" quantity="5" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Hanover" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="zeppelin" territory="Hanover" quantity="2" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Hanover" quantity="1" owner="Germans"/>
+						
+                        <unitPlacement unitType="zeppelin" territory="Alsace" quantity="3" owner="Germans"/>
 
                         <unitPlacement unitType="infantry" territory="Saxony" quantity="6" owner="Germans"/>
                         <unitPlacement unitType="cavalry" territory="Saxony" quantity="2" owner="Germans"/>
@@ -4061,7 +4064,6 @@
                         <unitPlacement unitType="cavalry" territory="Berlin" quantity="3" owner="Germans"/>
                         <unitPlacement unitType="artillery" territory="Berlin" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="fighter" territory="Berlin" quantity="1" owner="Germans"/>
-                        <unitPlacement unitType="zeppelin" territory="Berlin" quantity="1" owner="Germans"/>
                         <unitPlacement unitType="aaGun" territory="Berlin" quantity="1" owner="Germans"/>
 
                         <unitPlacement unitType="factory" territory="East Prussia" quantity="1" owner="Germans"/>
