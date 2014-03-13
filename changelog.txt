@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Possible fix for "Could not stop delegate execution" bug. (veqryn)
+
 * Fixed possible bug where a corrupted game save had the initialization delegate get called more than once. (veqryn)
 
 * Adding a new AI called "Hard AI". Also renamed AI's: EZ Fodder -> Easy AI, Moore N Able -> Medium AI, Dynamix -> Land Only AI. (redrum)

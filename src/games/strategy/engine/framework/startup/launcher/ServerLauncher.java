@@ -380,7 +380,7 @@ public class ServerLauncher extends AbstractLauncher
 			observer.cannotJoinGame("Game is launching, try again soon");
 			return;
 		}
-		m_serverGame.addObserver(observer);
+		m_serverGame.addObserver(observer, newNode);
 	}
 	
 	public static byte[] gameDataToBytes(final GameData data) throws IOException
@@ -461,9 +461,7 @@ public class ServerLauncher extends AbstractLauncher
 			e.printStackTrace();
 			if (m_headless)
 				System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
-			// TODO: Veqryn: we seem to be occassionally getting this in our headless game server hostbots, and I have no idea why.
-			// Symptoms and/or causes include the client not having any buttons in their action tab, followed by them leaving (connection lost) the game out of frustration,
-			// followed by a "Could not lock delegate execution" error, followed by a "IllegalMonitorStateException" error in savegame.
+			// TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3, need to see if it works.
 		}
 		stopGame();
 		if (!m_headless)

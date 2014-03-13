@@ -42,6 +42,7 @@ import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
+import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
@@ -65,6 +66,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -185,7 +187,7 @@ public class ServerGame extends AbstractGame
 		m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
 	}
 	
-	public void addObserver(final IObserverWaitingToJoin observer)
+	public void addObserver(final IObserverWaitingToJoin observer, final INode newNode)
 	{
 		try
 		{
@@ -201,12 +203,47 @@ public class ServerGame extends AbstractGame
 		}
 		try
 		{
+			final CountDownLatch waitOnObserver = new CountDownLatch(1);
 			final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
 			saveGame(sink);
-			observer.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
+			(new Thread(new Runnable()
+			{
+				public void run()
+				{
+					try
+					{
+						observer.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
+						waitOnObserver.countDown();
+					} catch (final ConnectionLostException cle)
+					{
+						System.out.println("Connection lost to observer while joining: " + newNode.getName());
+					} catch (final Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}, "Waiting on observer to finish joining: " + newNode.getName())).start();
+			try
+			{
+				if (!waitOnObserver.await(13, TimeUnit.SECONDS))
+				{
+					observer.cannotJoinGame("Taking too long to connect");
+					return;
+				}
+			} catch (final InterruptedException ie)
+			{
+				ie.printStackTrace();
+				observer.cannotJoinGame(ie.getMessage());
+				return;
+			}
 		} catch (final IOException ioe)
 		{
+			ioe.printStackTrace();
 			observer.cannotJoinGame(ioe.getMessage());
+			return;
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
 			return;
 		} finally
 		{
@@ -328,14 +365,14 @@ public class ServerGame extends AbstractGame
 		// while we shut down.
 		try
 		{
-			if (!m_delegateExecutionManager.blockDelegateExecution(6000))
+			if (!m_delegateExecutionManager.blockDelegateExecution(16000))
 			{
 				System.err.println("Could not stop delegate execution.");
 				if (HeadlessGameServer.headless())
 					System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
 				else
 					Console.getConsole().dumpStacks();
-				System.exit(0);
+				System.exit(-1);
 			}
 		} catch (final InterruptedException e)
 		{
@@ -471,7 +508,7 @@ public class ServerGame extends AbstractGame
 		{
 			if (!m_delegateExecutionManager.blockDelegateExecution(6000))
 			{
-				new IOException("Could not lock delegate execution").printStackTrace();
+				throw new IOException("Could not lock delegate execution");
 			}
 		} catch (final InterruptedException ie)
 		{

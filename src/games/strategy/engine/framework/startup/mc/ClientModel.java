@@ -307,7 +307,7 @@ public class ClientModel implements IMessengerErrorListener
 				public void run()
 				{
 					m_typePanelModel.showSelectType();
-					EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game:" + reason, new CountDownLatchHandler(true));
+					EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason, new CountDownLatchHandler(true));
 				}
 			});
 		}

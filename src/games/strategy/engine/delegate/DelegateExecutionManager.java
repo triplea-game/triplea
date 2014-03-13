@@ -1,6 +1,7 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.GameOverException;
+import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.triplea.util.WrappedInvocationHandler;
 
@@ -64,12 +65,21 @@ public class DelegateExecutionManager
 		final boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);
 		if (!rVal)
 		{
-			// System.out.println(m_readWriteLock.getReadLockCount());
+			if (sm_logger.isLoggable(Level.FINE))
+			{
+				sm_logger.fine("Could not block delegate execution. Lock count: " + m_readWriteLock.getReadLockCount());
+			}
+			else
+			{
+				HeadlessGameServer.log("Could not block delegate execution. Lock count: " + m_readWriteLock.getReadLockCount());
+			}
 		}
 		else
 		{
 			if (sm_logger.isLoggable(Level.FINE))
+			{
 				sm_logger.fine(Thread.currentThread().getName() + " block delegate execution.");
+			}
 		}
 		return rVal;
 	}
@@ -81,7 +91,9 @@ public class DelegateExecutionManager
 	public void resumeDelegateExecution()
 	{
 		if (sm_logger.isLoggable(Level.FINE))
+		{
 			sm_logger.fine(Thread.currentThread().getName() + " resumes delegate execution.");
+		}
 		m_readWriteLock.writeLock().unlock();
 	}
 	
