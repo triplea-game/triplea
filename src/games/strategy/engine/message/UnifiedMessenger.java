@@ -424,6 +424,12 @@ public class UnifiedMessenger
 	{
 		m_threadPool.waitForAll();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Server:" + m_messenger.isServer() + " EndPoints:" + m_localEndPoints;
+	}
 }
 
 

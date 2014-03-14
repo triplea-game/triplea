@@ -67,4 +67,10 @@ public class RemoteMessenger implements IRemoteMessenger
 	{
 		return m_unifiedMessenger.getLocalEndPointCount(descriptor) == 1;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "RemoteMessenger: " + m_unifiedMessenger.toString();
+	}
 }

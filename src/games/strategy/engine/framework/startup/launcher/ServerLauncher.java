@@ -206,7 +206,7 @@ public class ServerLauncher extends AbstractLauncher
 				HeadlessGameServer.log("Game Successfully Loaded. " + (m_abortLaunch ? "Aborting Launch." : "Starting Game."));
 			if (m_abortLaunch)
 				m_serverReady.countDownAll();
-			if (!m_serverReady.await(120, TimeUnit.SECONDS))
+			if (!m_serverReady.await(30, TimeUnit.SECONDS))
 			{
 				System.out.println("Waiting for clients to be ready timed out!");
 				m_abortLaunch = true;
@@ -262,7 +262,7 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							// we are already aborting the launch
 							if (!m_abortLaunch)
-								if (!m_errorLatch.await(120, TimeUnit.SECONDS))
+								if (!m_errorLatch.await(30, TimeUnit.SECONDS))
 									System.err.println("Waiting on error latch timed out!");
 						} catch (final InterruptedException e)
 						{
@@ -372,15 +372,15 @@ public class ServerLauncher extends AbstractLauncher
 		t.start();
 	}
 	
-	public void addObserver(final IObserverWaitingToJoin observer, final INode newNode)
+	public void addObserver(final IObserverWaitingToJoin blockingObserver, final IObserverWaitingToJoin nonBlockingObserver, final INode newNode)
 	{
 		if (m_isLaunching)
 		{
 			m_observersThatTriedToJoinDuringStartup.add(newNode);
-			observer.cannotJoinGame("Game is launching, try again soon");
+			nonBlockingObserver.cannotJoinGame("Game is launching, try again soon");
 			return;
 		}
-		m_serverGame.addObserver(observer, newNode);
+		m_serverGame.addObserver(blockingObserver, nonBlockingObserver, newNode);
 	}
 	
 	public static byte[] gameDataToBytes(final GameData data) throws IOException

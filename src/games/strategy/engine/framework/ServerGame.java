@@ -187,18 +187,18 @@ public class ServerGame extends AbstractGame
 		m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
 	}
 	
-	public void addObserver(final IObserverWaitingToJoin observer, final INode newNode)
+	public void addObserver(final IObserverWaitingToJoin blockingObserver, final IObserverWaitingToJoin nonBlockingObserver, final INode newNode)
 	{
 		try
 		{
 			if (!m_delegateExecutionManager.blockDelegateExecution(2000))
 			{
-				observer.cannotJoinGame("Could not block delegate execution");
+				nonBlockingObserver.cannotJoinGame("Could not block delegate execution");
 				return;
 			}
 		} catch (final InterruptedException e)
 		{
-			observer.cannotJoinGame(e.getMessage());
+			nonBlockingObserver.cannotJoinGame(e.getMessage());
 			return;
 		}
 		try
@@ -212,7 +212,7 @@ public class ServerGame extends AbstractGame
 				{
 					try
 					{
-						observer.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
+						blockingObserver.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
 						waitOnObserver.countDown();
 					} catch (final ConnectionLostException cle)
 					{
@@ -227,23 +227,24 @@ public class ServerGame extends AbstractGame
 			{
 				if (!waitOnObserver.await(13, TimeUnit.SECONDS))
 				{
-					observer.cannotJoinGame("Taking too long to connect");
+					nonBlockingObserver.cannotJoinGame("Taking too long to join.");
 					return;
 				}
 			} catch (final InterruptedException ie)
 			{
 				ie.printStackTrace();
-				observer.cannotJoinGame(ie.getMessage());
+				nonBlockingObserver.cannotJoinGame(ie.getMessage());
 				return;
 			}
 		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
-			observer.cannotJoinGame(ioe.getMessage());
+			nonBlockingObserver.cannotJoinGame(ioe.getMessage());
 			return;
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
+			nonBlockingObserver.cannotJoinGame(e.getMessage());
 			return;
 		} finally
 		{

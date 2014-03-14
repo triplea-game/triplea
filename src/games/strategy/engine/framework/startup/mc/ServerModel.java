@@ -335,8 +335,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		{
 			if (m_serverLauncher != null)
 			{
-				final IObserverWaitingToJoin observerWaitingToJoin = (IObserverWaitingToJoin) m_remoteMessenger.getRemote(getObserverWaitingToStartName(newNode));
-				m_serverLauncher.addObserver(observerWaitingToJoin, newNode);
+				final RemoteName remoteName = getObserverWaitingToStartName(newNode);
+				final IObserverWaitingToJoin observerWaitingToJoinBlocking = (IObserverWaitingToJoin) m_remoteMessenger.getRemote(remoteName);
+				final IObserverWaitingToJoin observerWaitingToJoinNonBlocking = (IObserverWaitingToJoin) m_remoteMessenger.getRemote(remoteName, true);
+				m_serverLauncher.addObserver(observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
 				return true;
 			}
 			else
@@ -775,6 +777,20 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	public void setServerLauncher(final ServerLauncher launcher)
 	{
 		m_serverLauncher = launcher;
+	}
+	
+	@Override
+	public String toString()
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("ServerModel GameData:" + (m_data == null ? "null" : m_data.getGameName()) + "\n");
+		sb.append("Connected:" + (m_serverMessenger == null ? "null" : m_serverMessenger.isConnected()) + "\n");
+		sb.append(m_serverMessenger);
+		sb.append("\n");
+		sb.append(m_remoteMessenger);
+		sb.append("\n");
+		sb.append(m_channelMessenger);
+		return sb.toString();
 	}
 }
 

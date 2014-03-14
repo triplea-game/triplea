@@ -77,4 +77,10 @@ public class ChannelMessenger implements IChannelMessenger
 	{
 		return m_unifiedMessenger.isServer();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "ChannelMessenger: " + m_unifiedMessenger.toString();
+	}
 }

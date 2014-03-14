@@ -560,6 +560,20 @@ public class ClientModel implements IMessengerErrorListener
 	{
 		return new GetGameSaveClientAction(parent, getServerStartupRemote());
 	}
+	
+	@Override
+	public String toString()
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("ClientModel GameData:" + (m_gameDataOnStartup == null ? "null" : m_gameDataOnStartup.getGameName()) + "\n");
+		sb.append("Connected:" + (m_messenger == null ? "null" : m_messenger.isConnected()) + "\n");
+		sb.append(m_messenger);
+		sb.append("\n");
+		sb.append(m_remoteMessenger);
+		sb.append("\n");
+		sb.append(m_channelMessenger);
+		return sb.toString();
+	}
 }
 
 

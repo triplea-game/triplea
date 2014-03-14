@@ -58,4 +58,10 @@ public class Messengers
 	{
 		return m_remoteMessenger;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return m_messenger + "\n" + m_remoteMessenger + "\n" + m_channelMessenger;
+	}
 }

@@ -378,4 +378,10 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener
 		}
 		return bytes;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "ClientMessenger LocalNode:" + m_node + " ServerNodes:" + m_serverNode;
+	}
 }

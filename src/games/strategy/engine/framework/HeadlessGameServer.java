@@ -135,6 +135,7 @@ public class HeadlessGameServer
 	private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
 	private ServerGame m_iGame = null;
 	private boolean m_shutDown = false;
+	private final String m_startDate = new Date().toGMTString();
 	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 21600;
 	private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 	
@@ -696,9 +697,43 @@ public class HeadlessGameServer
 		}
 	}
 	
+	public String getStatus()
+	{
+		String message = "Server Start Date: " + m_startDate;
+		final ServerGame game = getIGame();
+		if (game != null)
+		{
+			message += "\nIs currently running: " + game.isGameSequenceRunning() + "\nIs GameOver: " + game.isGameOver()
+						+ "\nGame: " + game.getData().getGameName() + "\nRound: " + game.getData().getSequence().getRound()
+						+ "\nPlayers: " + game.getPlayerManager().toString();
+		}
+		else
+		{
+			message += "\nCurrently Waiting To Start A Game";
+		}
+		return message;
+	}
+	
+	private void dump()
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Dump to Log:");
+		sb.append("\n\nStatus:\n");
+		sb.append(getStatus());
+		sb.append("\n\nServer:\n");
+		sb.append(getServerModel());
+		sb.append("\n\n");
+		sb.append(DebugUtils.getThreadDumps());
+		sb.append("\n\n");
+		sb.append(DebugUtils.getMemory());
+		sb.append("\n\nDump finished.\n");
+		System.out.println(sb.toString());
+	}
+	
 	public synchronized void shutdown()
 	{
 		m_shutDown = true;
+		dump();
 		try
 		{
 			if (m_lobbyWatcherResetupThread != null)
@@ -2066,7 +2101,6 @@ class HeadlessGameServerConsole
 	private final PrintStream out;
 	private final BufferedReader in;
 	@SuppressWarnings("deprecation")
-	private final String startDate = new Date().toGMTString();
 	private boolean m_shutDown = false;
 	private boolean m_chatMode = false;
 	
@@ -2251,8 +2285,8 @@ class HeadlessGameServerConsole
 		sb.append("Dump to Log:");
 		sb.append("\n\nStatus:\n");
 		sb.append(getStatus());
-		sb.append("\n\nConnections:\n");
-		sb.append(getConnections());
+		sb.append("\n\nServer:\n");
+		sb.append(server == null ? "null" : server.getServerModel());
 		sb.append("\n\n");
 		sb.append(DebugUtils.getThreadDumps());
 		sb.append("\n\n");
@@ -2613,22 +2647,7 @@ class HeadlessGameServerConsole
 	
 	private String getStatus()
 	{
-		String message = "Server Start Date: " + startDate;
-		if (server != null)
-		{
-			final ServerGame game = server.getIGame();
-			if (game != null)
-			{
-				message += "\nIs currently running: " + game.isGameSequenceRunning() + "\nIs GameOver: " + game.isGameOver()
-							+ "\nGame: " + game.getData().getGameName() + "\nRound: " + game.getData().getSequence().getRound()
-							+ "\nPlayers: " + game.getPlayerManager().toString();
-			}
-			else
-			{
-				message += "\nCurrently Waiting To Start A Game";
-			}
-		}
-		return message;
+		return server == null ? "null" : server.getStatus();
 	}
 	
 	private void showHelp()

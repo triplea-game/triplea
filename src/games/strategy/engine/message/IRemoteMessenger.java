@@ -86,6 +86,16 @@ public interface IRemoteMessenger
 	public IRemote getRemote(RemoteName name);
 	
 	/**
+	 * 
+	 * @param name
+	 *            the name the remote is registered under.
+	 * @param ignoreResults
+	 *            whether we need to wait for the results or not
+	 * @return a remote reference to the registered remote.
+	 */
+	public IRemote getRemote(RemoteName name, boolean ignoreResults);
+	
+	/**
 	 * @param remoteInterface
 	 *            - the remote interface that implementor implements,
 	 *            must be a subclass of IRemote
