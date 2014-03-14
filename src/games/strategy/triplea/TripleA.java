@@ -22,22 +22,20 @@ package games.strategy.triplea;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.engine.framework.AbstractGameLoader;
-import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.ui.HeadlessGameServerUI;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServerUI;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.net.GUID;
 import games.strategy.sound.DefaultSoundChannel;
+import games.strategy.sound.DummySound;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
@@ -45,23 +43,19 @@ import games.strategy.triplea.ai.proAI.ProCombatMoveAI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.ai.weakAI.DoesNothingAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
-import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.EditDelegate;
-import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.HeadlessUIContext;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 
 import java.awt.Frame;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -176,103 +170,8 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 					headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
 				else
 					headlessFrameUI = null;
-				m_display = new ITripleaDisplay()
-				{
-					public void initialize(final IDisplayBridge bridge)
-					{
-					}
-					
-					public void shutDown()
-					{
-						// make sure to shut down the ui if there is one
-						if (headlessFrameUI != null)
-							headlessFrameUI.stopGame();
-					}
-					
-					public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
-					{
-					}
-					
-					public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers, final String message, final String title)
-					{
-					}
-					
-					public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
-								final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-								final Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker, final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
-								final Collection<Unit> amphibiousLandAttackers)
-					{
-					}
-					
-					public void listBattleSteps(final GUID battleID, final List<String> steps)
-					{
-					}
-					
-					public void battleEnd(final GUID battleID, final String message)
-					{
-					}
-					
-					public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed, final Collection<Unit> damaged,
-								final Map<Unit, Collection<Unit>> dependents)
-					{
-					}
-					
-					public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> dead, final Map<Unit, Collection<Unit>> dependents)
-					{
-					}
-					
-					public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits, final Collection<Unit> addedUnits,
-								final Map<Unit, Collection<Unit>> dependents)
-					{
-					}
-					
-					public void bombingResults(final GUID battleID, final List<Die> dice, final int cost)
-					{
-					}
-					
-					public void notifyRetreat(final String shortMessage, final String message, final String step, final PlayerID retreatingPlayer)
-					{
-					}
-					
-					public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating)
-					{
-					}
-					
-					public void notifyDice(final GUID battleId, final DiceRoll dice, final String stepName)
-					{
-					}
-					
-					public void gotoBattleStep(final GUID battleId, final String step)
-					{
-					}
-				};
-				m_soundChannel = new ISound()
-				{
-					public void initialize()
-					{
-					}
-					
-					public void shutDown()
-					{
-					}
-					
-					public void playSoundForAll(final String clipName, final String subFolder)
-					{
-					}
-					
-					public void playSoundForAll(final String clipName, final String subFolder, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
-					{
-					}
-					
-					public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
-								final boolean includeObservers)
-					{
-					}
-					
-					public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo, final boolean includeObservers)
-					{
-					}
-				};
+				m_display = new DummyTripleaDisplay(headlessFrameUI);
+				m_soundChannel = new DummySound();
 				game.addDisplay(m_display);
 				game.addSoundChannel(m_soundChannel);
 				initializeGame();

@@ -78,7 +78,7 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.triplea.util.DummyTripleAPlayer;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
@@ -1441,7 +1441,7 @@ public class WW2V3_41_Test extends TestCase
 				return null;
 			}
 		});
-		bridge.setDisplay(new DummyDisplay()
+		bridge.setDisplay(new DummyTripleaDisplay()
 		{
 			@Override
 			public void listBattleSteps(final GUID battleID, final List<String> steps)

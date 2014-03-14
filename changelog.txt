@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Cleanup of HeadlessGameServer classes. (veqryn)
+
 * Fixed bugs in Placement, which were allowing infinite placement of sea units which were constructions. (veqryn)
 
 * Some updates for 'Great War' world war 1 map, and Pact of Steel 2. (veqryn)

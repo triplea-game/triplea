@@ -63,7 +63,7 @@ public abstract class AbstractUIContext implements IUIContext
 	public static int getAIPauseDuration()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-		return prefs.getInt(AI_PAUSE_DURATION, 800);
+		return prefs.getInt(AI_PAUSE_DURATION, 700);
 	}
 	
 	public static void setAIPauseDuration(final int value)

@@ -27,7 +27,7 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAttachment;
-import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 
 import java.util.Collection;
 import java.util.List;
@@ -192,7 +192,7 @@ public class GameDataTestUtil
 	
 	public static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data)
 	{
-		return new TestDelegateBridge(data, player, new DummyDisplay());
+		return new TestDelegateBridge(data, player, new DummyTripleaDisplay());
 	}
 	
 	public static void load(final Collection<Unit> units, final Route route)

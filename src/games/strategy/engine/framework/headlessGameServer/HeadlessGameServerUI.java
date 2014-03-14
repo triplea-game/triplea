@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.ui;
+package games.strategy.engine.framework.headlessGameServer;
 
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
@@ -10,7 +10,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;

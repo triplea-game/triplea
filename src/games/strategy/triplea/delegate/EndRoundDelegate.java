@@ -25,7 +25,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.framework.HeadlessGameServer;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;

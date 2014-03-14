@@ -21,6 +21,8 @@ import games.strategy.sound.ISound;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ai.AbstractAI;
+import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
+import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
@@ -32,7 +34,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.DummyDisplay;
+import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.Tuple;
 
@@ -368,7 +370,7 @@ public class ObjectivePanel extends AbstractStatPanel
 				if (entry.getKey() instanceof TriggerAttachment)
 				{
 					final TriggerAttachment ta = (TriggerAttachment) entry.getKey();
-					final int each = TriggerAttachment.getEachMultiple(ta);
+					final int each = AbstractTriggerAttachment.getEachMultiple(ta);
 					final int uses = ta.getUses();
 					if (uses < 0)
 					{
@@ -424,8 +426,8 @@ public class ObjectivePanel extends AbstractStatPanel
 			{
 				myConditions.addAll(map.keySet());
 			}
-			final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(myConditions, null);
-			return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_dummyDelegate);
+			final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(myConditions, null);
+			return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_dummyDelegate);
 		}
 		
 		public void gameDataChanged(final Change aChange)
@@ -602,7 +604,7 @@ class ObjectiveProperties
 
 class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 {
-	private final DummyDisplay m_display = new DummyDisplay();
+	private final DummyTripleaDisplay m_display = new DummyTripleaDisplay();
 	private final DummySoundChannel m_soundChannel = new DummySoundChannel();
 	private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
 	private final GameData m_data;

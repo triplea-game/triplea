@@ -1,7 +1,7 @@
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.GameOverException;
-import games.strategy.engine.framework.HeadlessGameServer;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.triplea.util.WrappedInvocationHandler;
 

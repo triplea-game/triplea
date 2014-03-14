@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui.display;
 
+import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -13,14 +14,43 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class DummyDisplay implements ITripleaDisplay
+/**
+ * 
+ * @author veqryn
+ * 
+ */
+public class DummyTripleaDisplay implements ITripleaDisplay
 {
+	private final MainGameFrame m_ui;
+	
+	/**
+	 * A display which does absolutely nothing
+	 */
+	public DummyTripleaDisplay()
+	{
+		m_ui = null;
+	}
+	
+	/**
+	 * A display which does absolutely nothing, except for stopping the game on shutdown.
+	 * 
+	 * @param ui
+	 *            MainGameFrame which we will call .stopGame() on if this DummyTripleaDisplay has .shutDown() called.
+	 */
+	public DummyTripleaDisplay(final MainGameFrame ui)
+	{
+		m_ui = ui;
+	}
+	
 	public void initialize(final IDisplayBridge bridge)
 	{
 	}
 	
 	public void shutDown()
 	{
+		// make sure to shut down the ui if there is one
+		if (m_ui != null)
+			m_ui.stopGame();
 	}
 	
 	public void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)

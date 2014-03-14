@@ -14,7 +14,7 @@
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.HeadlessGameServer;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 
 import java.io.File;
 

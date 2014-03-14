@@ -34,6 +34,7 @@ import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -342,18 +343,11 @@ public class ServerGame extends AbstractGame
 	
 	public void stopGame()
 	{
-		stopGame(false);
-	}
-	
-	public void stopGame(final boolean forceRetry)
-	{
 		// we have already shut down
 		if (m_isGameOver)
 		{
-			if (HeadlessGameServer.headless())
-				System.out.println("Game previously stopped." + (forceRetry ? " Forcing re-try re-stop." : " Can not stop again."));
-			if (!forceRetry)
-				return;
+			System.out.println("Game previously stopped, can not stop again.");
+			return;
 		}
 		else if (HeadlessGameServer.headless())
 		{

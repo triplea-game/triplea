@@ -13,7 +13,7 @@
  */
 package games.strategy.debug;
 
-import games.strategy.engine.framework.HeadlessGameServer;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;

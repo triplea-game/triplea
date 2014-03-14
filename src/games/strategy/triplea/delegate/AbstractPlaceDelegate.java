@@ -887,7 +887,28 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return null;
 	}
 	
-	protected Collection<Unit> getUnitsToBePlaced(final Territory to, final Collection<Unit> allUnits, final PlayerID player)
+	// Separate it out so we can Override it in sub classes.
+	protected Collection<Unit> getUnitsToBePlaced(final Territory to, final Collection<Unit> units, final PlayerID player)
+	{
+		if (to.isWater())
+		{
+			return getUnitsToBePlacedSea(to, units, player);
+		}
+		// if land
+		return getUnitsToBePlacedLand(to, units, player);
+	}
+	
+	protected Collection<Unit> getUnitsToBePlacedSea(final Territory to, final Collection<Unit> units, final PlayerID player)
+	{
+		return getUnitsToBePlacedAllDefault(to, units, player);
+	}
+	
+	protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units, final PlayerID player)
+	{
+		return getUnitsToBePlacedAllDefault(to, units, player);
+	}
+	
+	protected Collection<Unit> getUnitsToBePlacedAllDefault(final Territory to, final Collection<Unit> allUnits, final PlayerID player)
 	{
 		final boolean water = to.isWater();
 		if (water && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, getData())))

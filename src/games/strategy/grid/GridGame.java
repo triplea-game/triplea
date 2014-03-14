@@ -2,19 +2,15 @@ package games.strategy.grid;
 
 import games.strategy.engine.data.DefaultUnitFactory;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.IUnitFactory;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.engine.framework.AbstractGameLoader;
-import games.strategy.engine.framework.HeadlessGameServer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.ui.HeadlessGameServerUI;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServerUI;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
@@ -25,18 +21,17 @@ import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridGameMenu;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
-import games.strategy.grid.ui.IGridEndTurnData;
-import games.strategy.grid.ui.IGridPlayData;
+import games.strategy.grid.ui.display.DummyGridGameDisplay;
 import games.strategy.grid.ui.display.GridGameDisplay;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.sound.DefaultSoundChannel;
+import games.strategy.sound.DummySound;
 import games.strategy.sound.ISound;
 
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -121,75 +116,8 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 					headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, null);
 				else
 					headlessFrameUI = null;
-				m_display = new IGridGameDisplay()
-				{
-					public void initialize(final IDisplayBridge bridge)
-					{
-					}
-					
-					public void shutDown()
-					{
-						// make sure to shut down the ui if there is one
-						if (headlessFrameUI != null)
-							headlessFrameUI.stopGame();
-					}
-					
-					public void setStatus(final String status)
-					{
-					}
-					
-					public void setGameOver()
-					{
-					}
-					
-					public void refreshTerritories(final Collection<Territory> territories)
-					{
-					}
-					
-					public void showGridPlayDataMove(final IGridPlayData move)
-					{
-					}
-					
-					public void showGridEndTurnData(final IGridEndTurnData endTurnData)
-					{
-					}
-					
-					public void initializeGridMapData(final GameMap map)
-					{
-					}
-					
-					public GridGameFrame getGridGameFrame()
-					{
-						return null;
-					}
-				};
-				m_soundChannel = new ISound()
-				{
-					public void initialize()
-					{
-					}
-					
-					public void shutDown()
-					{
-					}
-					
-					public void playSoundForAll(final String clipName, final String subFolder)
-					{
-					}
-					
-					public void playSoundForAll(final String clipName, final String subFolder, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
-					{
-					}
-					
-					public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
-								final boolean includeObservers)
-					{
-					}
-					
-					public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo, final boolean includeObservers)
-					{
-					}
-				};
+				m_display = new DummyGridGameDisplay(headlessFrameUI);
+				m_soundChannel = new DummySound();
 				m_game.addDisplay(m_display);
 				m_game.addSoundChannel(m_soundChannel);
 				initializeGame();

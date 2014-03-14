@@ -14,7 +14,7 @@
 package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.engine.framework.HeadlessGameServer;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 

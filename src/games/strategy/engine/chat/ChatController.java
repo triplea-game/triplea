@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -27,7 +28,7 @@ public class ChatController implements IChatController
 	private static final String CHAT_CHANNEL = "_ChatCtrl";
 	private final IMessenger m_messenger;
 	private final IRemoteMessenger m_remoteMessenger;
-	private final ModeratorController m_moderatorController;
+	private final IModeratorController m_moderatorController;
 	private final IChannelMessenger m_channelMessenger;
 	private final String m_chatName;
 	private final Map<INode, Tag> m_chatters = new HashMap<INode, Tag>();
@@ -65,7 +66,8 @@ public class ChatController implements IChatController
 		return CHAT_CHANNEL + chatName;
 	}
 	
-	public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger, final ModeratorController moderatorController)
+	public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger,
+				final IModeratorController moderatorController)
 	{
 		m_chatName = name;
 		m_messenger = messenger;

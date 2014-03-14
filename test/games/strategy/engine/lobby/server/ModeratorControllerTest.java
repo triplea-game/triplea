@@ -109,7 +109,6 @@ public class ModeratorControllerTest extends TestCase
 	{
 		MessageContext.setSenderNodeForThread(m_adminNode);
 		assertTrue(m_controller.isAdmin());
-		m_controller.assertUserIsAdmin();
 	}
 }
 

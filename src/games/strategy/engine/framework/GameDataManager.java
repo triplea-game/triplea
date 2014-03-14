@@ -3,6 +3,7 @@ package games.strategy.engine.framework;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.util.Version;
 
 import java.io.BufferedInputStream;
@@ -84,7 +85,7 @@ public class GameDataManager
 			final boolean headless = HeadlessGameServer.headless();
 			if (!readVersion.equals(EngineVersion.VERSION, true))
 			{
-				// a hack for now, but a headless server should not try to open any savegame that in its version
+				// a hack for now, but a headless server should not try to open any savegame that is not its version
 				if (headless)
 				{
 					System.out.println("Incompatible game save, we are: " + EngineVersion.VERSION + "  Trying to load game created with: " + readVersion);

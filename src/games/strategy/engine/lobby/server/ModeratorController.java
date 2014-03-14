@@ -21,7 +21,6 @@ import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.engine.lobby.server.userDB.MutedIpController;
 import games.strategy.engine.lobby.server.userDB.MutedMacController;
 import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
@@ -33,28 +32,12 @@ import games.strategy.util.MD5Crypt;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
-public class ModeratorController implements IModeratorController
+public class ModeratorController extends AbstractModeratorController implements IModeratorController
 {
-	protected final static Logger s_logger = Logger.getLogger(ModeratorController.class.getName());
-	protected final IServerMessenger m_serverMessenger;
-	protected final Messengers m_allMessengers;
-	
-	public static final RemoteName getModeratorControllerName()
-	{
-		return new RemoteName(IModeratorController.class, "games.strategy.engine.lobby.server.ModeratorController:Global");
-	}
-	
-	public void register(final IRemoteMessenger messenger)
-	{
-		messenger.registerRemote(this, getModeratorControllerName());
-	}
-	
 	public ModeratorController(final IServerMessenger serverMessenger, final Messengers messengers)
 	{
-		m_serverMessenger = serverMessenger;
-		m_allMessengers = messengers;
+		super(serverMessenger, messengers);
 	}
 	
 	public void banUsername(final INode node, final Date banExpires)
@@ -148,11 +131,6 @@ public class ModeratorController implements IModeratorController
 		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(Mac mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node.getAddress()
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
-	}
-	
-	protected String getNodeMacAddress(final INode node)
-	{
-		return m_serverMessenger.GetPlayerMac(node.getName());
 	}
 	
 	public void boot(final INode node)
@@ -282,7 +260,7 @@ public class ModeratorController implements IModeratorController
 		return response;
 	}
 	
-	void assertUserIsAdmin()
+	private void assertUserIsAdmin()
 	{
 		if (!isAdmin())
 		{
@@ -306,13 +284,6 @@ public class ModeratorController implements IModeratorController
 		return user.isAdmin();
 	}
 	
-	protected String getRealName(final INode node)
-	{
-		// Remove any (n) that is added to distinguish duplicate names
-		final String name = node.getName().split(" ")[0];
-		return name;
-	}
-	
 	public String getInformationOn(final INode node)
 	{
 		assertUserIsAdmin();
@@ -330,26 +301,6 @@ public class ModeratorController implements IModeratorController
 		builder.append("\r\nPort: ").append(node.getPort());
 		builder.append("\r\nHashed Mac: ").append((mac != null && mac.startsWith(MD5Crypt.MAGIC + "MH$") ? mac.substring(6) : mac + " (Invalid)"));
 		builder.append("\r\nAliases: ").append(getAliasesFor(node));
-		return builder.toString();
-	}
-	
-	protected String getAliasesFor(final INode node)
-	{
-		final StringBuilder builder = new StringBuilder();
-		final String nodeMac = getNodeMacAddress(node);
-		for (final INode cur : m_serverMessenger.getNodes())
-		{
-			if (cur.equals(node) || cur.getName().equals("Admin"))
-				continue;
-			if (cur.getAddress().equals(node.getAddress()) || getNodeMacAddress(cur).equals(nodeMac))
-			{
-				if (builder.length() > 0)
-					builder.append(", ");
-				builder.append(cur.getName());
-			}
-		}
-		if (builder.length() > 100) // This player seems to have an unusually long list of aliases
-			return builder.toString().replace(", ", "\r\n"); // So replace comma's to keep names within screen
 		return builder.toString();
 	}
 	

@@ -41,6 +41,8 @@ public abstract class MainGameFrame extends JFrame
 	
 	public abstract void leaveGame();
 	
+	public abstract void stopGame();
+	
 	public abstract void shutdown();
 	
 	public abstract void notifyError(String error);

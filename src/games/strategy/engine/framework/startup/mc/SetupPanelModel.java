@@ -27,7 +27,7 @@ import java.util.Observable;
 public class SetupPanelModel extends Observable
 {
 	protected final GameSelectorModel m_gameSelectorModel;
-	protected ISetupPanel m_panel;
+	protected ISetupPanel m_panel = null;
 	
 	public SetupPanelModel(final GameSelectorModel gameSelectorModel)
 	{
