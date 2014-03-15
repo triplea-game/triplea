@@ -85,6 +85,6 @@ public class DoesNothingAI extends AbstractAI
 			return true;
 		// if (Math.random() < .5)
 		// return true;
-		return false;
+		return true;
 	}
 }

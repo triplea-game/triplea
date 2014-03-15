@@ -486,6 +486,7 @@ public class TripleAFrame extends MainGameFrame
 		return getMapPanel().getScale() * 100;
 	}
 	
+	@Override
 	public void stopGame()
 	{
 		// we have already shut down

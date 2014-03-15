@@ -258,6 +258,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 			throw new IllegalStateException("Should be leaving a server game.");
 	}
 	
+	@Override
 	public void stopGame()
 	{
 		// we have already shut down

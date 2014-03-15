@@ -947,6 +947,7 @@ public class GridGameFrame extends MainGameFrame
 	 * 
 	 * This method is responsible for de-activating this frame.
 	 */
+	@Override
 	public void stopGame()
 	{
 		if (GameRunner.isMac())
