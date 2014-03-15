@@ -157,7 +157,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	}
 	
 	/**
-	 * Convenience method. can return null.
+	 * Convenience method. Can return null.
 	 */
 	public static TerritoryAttachment get(final Territory t)
 	{
@@ -178,6 +178,28 @@ public class TerritoryAttachment extends DefaultAttachment
 		if (rVal == null && !t.isWater())
 			throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
 		return rVal;
+	}
+	
+	/**
+	 * Convenience method since TerritoryAttachment.get could return null.
+	 */
+	public static int getProduction(final Territory t)
+	{
+		final TerritoryAttachment ta = TerritoryAttachment.get(t);
+		if (ta == null)
+			return 0;
+		return ta.getProduction();
+	}
+	
+	/**
+	 * Convenience method since TerritoryAttachment.get could return null.
+	 */
+	public static int getUnitProduction(final Territory t)
+	{
+		final TerritoryAttachment ta = TerritoryAttachment.get(t);
+		if (ta == null)
+			return 0;
+		return ta.getUnitProduction();
 	}
 	
 	private String m_capital = null;
@@ -412,6 +434,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	
 	/**
 	 * Use getProduction() instead.
+	 * DO NOT DELETE THIS!
 	 * 
 	 * @return
 	 */

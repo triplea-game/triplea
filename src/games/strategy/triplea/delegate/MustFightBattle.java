@@ -2821,6 +2821,65 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						new BattleResults(this, m_data), 0);
 			bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, m_attacker.getName());
 		}
+		checkDefendingPlanesCanLand(bridge, m_defender);
+	}
+	
+	private void attackerWins(final IDelegateBridge bridge)
+	{
+		m_whoWon = WhoWon.ATTACKER;
+		getDisplay(bridge).battleEnd(m_battleID, m_attacker.getName() + " win");
+		if (m_headless)
+			return;
+		// do we need to change ownership
+		if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
+		{
+			if (Matches.isTerritoryEnemyAndNotUnownedWater(m_attacker, m_data).match(m_battleSite))
+				m_battleTracker.addToConquered(m_battleSite);
+			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, m_attackingUnits);
+			m_battleResultDescription = BattleRecord.BattleResultDescription.CONQUERED;
+		}
+		else
+		{
+			m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
+		}
+		// Clear the transported_by for successfully offloaded units
+		final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
+		if (!transports.isEmpty())
+		{
+			final CompositeChange change = new CompositeChange();
+			final Collection<Unit> dependents = getTransportDependents(transports, m_data);
+			if (!dependents.isEmpty())
+			{
+				for (final Unit unit : dependents)
+				{
+					// clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
+					if (Matches.UnitWasUnloadedThisTurn.match(unit))
+						change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+				}
+				bridge.addChange(change);
+			}
+		}
+		bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
+		showCasualties(bridge);
+		if (!m_headless)
+			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+						new BattleResults(this, m_data), 0);
+		if (!m_headless)
+		{
+			if (Matches.TerritoryIsWater.match(m_battleSite))
+			{
+				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+				else
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, m_attacker.getName()); // assume some naval
+			}
+			else
+			{
+				// no sounds for a successful land battle, because land battle means we are going to capture a territory, and we have capture sounds for that
+				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+			}
+		}
 	}
 	
 	/*
@@ -3014,64 +3073,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// remove those that landed in case it was a carrier
 		m_defendingAir.removeAll(defendingAir);
 	}*/
-	
-	private void attackerWins(final IDelegateBridge bridge)
-	{
-		m_whoWon = WhoWon.ATTACKER;
-		getDisplay(bridge).battleEnd(m_battleID, m_attacker.getName() + " win");
-		if (m_headless)
-			return;
-		// do we need to change ownership
-		if (Match.someMatch(m_attackingUnits, Matches.UnitIsNotAir))
-		{
-			if (Matches.isTerritoryEnemyAndNotUnownedWater(m_attacker, m_data).match(m_battleSite))
-				m_battleTracker.addToConquered(m_battleSite);
-			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, m_attackingUnits);
-			m_battleResultDescription = BattleRecord.BattleResultDescription.CONQUERED;
-		}
-		else
-		{
-			m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
-		}
-		// Clear the transported_by for successfully offloaded units
-		final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
-		if (!transports.isEmpty())
-		{
-			final CompositeChange change = new CompositeChange();
-			final Collection<Unit> dependents = getTransportDependents(transports, m_data);
-			if (!dependents.isEmpty())
-			{
-				for (final Unit unit : dependents)
-				{
-					// clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
-					if (Matches.UnitWasUnloadedThisTurn.match(unit))
-						change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
-				}
-				bridge.addChange(change);
-			}
-		}
-		bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
-		showCasualties(bridge);
-		if (!m_headless)
-			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
-						new BattleResults(this, m_data), 0);
-		if (!m_headless)
-		{
-			if (Matches.TerritoryIsWater.match(m_battleSite))
-			{
-				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
-					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
-				else
-					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, m_attacker.getName()); // assume some naval
-			}
-			else
-			{
-				// no sounds for a successful land battle, because land battle means we are going to capture a territory, and we have capture sounds for that
-				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
-					bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
-			}
-		}
-	}
 	
 	public static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits, final Territory battleSite, final PlayerID attacker, final GameData data)
 	{

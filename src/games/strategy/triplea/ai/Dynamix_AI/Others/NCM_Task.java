@@ -360,8 +360,8 @@ public class NCM_Task
 			if (m_recruitedUnits.isEmpty())
 				return false;
 			final int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
-			final TerritoryAttachment ta = TerritoryAttachment.get(m_target);
-			if (ta.getProduction() < unitCost - 1 && attackers.size() > 0)
+			final int production = TerritoryAttachment.getProduction(m_target);
+			if (production < unitCost - 1 && attackers.size() > 0)
 				return false;
 			return true;
 		}

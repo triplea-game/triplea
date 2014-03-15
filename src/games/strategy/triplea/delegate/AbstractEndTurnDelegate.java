@@ -470,7 +470,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 			while (damageForZone > 0 && iter.hasNext())
 			{
 				final Territory t = iter.next();
-				final int maxProductionLessPreviousDamage = TerritoryAttachment.get(t).getProduction() - totalDamageTracker.getInt(t);
+				final int maxProductionLessPreviousDamage = TerritoryAttachment.getProduction(t) - totalDamageTracker.getInt(t);
 				final int damageToTerr = Math.min(damageForZone, maxProductionLessPreviousDamage);
 				damageForZone -= damageToTerr;
 				totalDamageTracker.put(t, damageToTerr + totalDamageTracker.getInt(t));

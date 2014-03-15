@@ -368,8 +368,7 @@ public class RocketsFireHelper
 				}
 			}
 		}
-		final TerritoryAttachment ta = TerritoryAttachment.get(attackedTerritory);
-		int territoryProduction = ta.getProduction();
+		int territoryProduction = TerritoryAttachment.getProduction(attackedTerritory);
 		if (DamageFromBombingDoneToUnits && !targets.isEmpty())
 		{
 			// we are doing damage to 'target', not to the territory

@@ -5294,10 +5294,6 @@
 			<boolean/>
 		</property>
 
-		<property name="Unescorted Transport Dies" value="true" editable="false">
-			<boolean/>
-		</property>
-
 		<!-- If enabled, transports can capture convoy zones. -->
 		<property name="Transport Control Sea Zone" value="false" editable="false">
 			<boolean/>

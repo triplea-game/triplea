@@ -330,7 +330,7 @@ public class Place
 				continue;
 			int score = 0;
 			score -= DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), 250) * 1000; // TODO: 250 run count should be in the user menu for this...
-			score += TerritoryAttachment.get(ter).getProduction() * 10;
+			score += TerritoryAttachment.getProduction(ter) * 10;
 			if (!ourCapitals.isEmpty())
 				score -= DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapitals.iterator().next());
 			if (DMatches.territoryIsOnSmallIsland(data).match(ter))

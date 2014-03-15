@@ -409,8 +409,7 @@ public class EndRoundDelegate extends BaseTripleADelegate
 			final Territory current = territories.next();
 			if (current.getOwner().equals(id))
 			{
-				final TerritoryAttachment ta = TerritoryAttachment.get(current);
-				sum += ta.getProduction();
+				sum += TerritoryAttachment.getProduction(current);
 			}
 		}
 		return sum;

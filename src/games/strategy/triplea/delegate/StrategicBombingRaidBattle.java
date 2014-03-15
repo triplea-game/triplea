@@ -693,10 +693,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 			{
 				return;
 			}
-			final TerritoryAttachment ta = TerritoryAttachment.get(m_battleSite);
+			int damageLimit = TerritoryAttachment.getProduction(m_battleSite);
 			int cost = 0;
 			final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
-			int damageLimit = ta.getProduction();
 			int index = 0;
 			final Boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
 			final List<Die> dice = new ArrayList<Die>();

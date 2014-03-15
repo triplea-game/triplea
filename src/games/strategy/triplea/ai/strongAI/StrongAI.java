@@ -1719,7 +1719,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			// float eAttackPotential = SUtils.getStrengthOfPotentialAttackers(landTerr, data, player, tFirst, true, landTerrConquered);
 			final PlayerID ePlayer = landTerr.getOwner();
 			float myAttackPotential = SUtils.getStrengthOfPotentialAttackers(landTerr, data, ePlayer, tFirst, true, null);
-			myAttackPotential += TerritoryAttachment.get(landTerr) == null ? 0 : TerritoryAttachment.get(landTerr).getProduction() * 2;
+			myAttackPotential += TerritoryAttachment.getProduction(landTerr) * 2;
 			// if (myAttackPotential < (0.75F*eAttackPotential - 3.0F))
 			// continue;
 			for (final Territory sourceTerr : transTerr)
@@ -5438,7 +5438,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				final Territory endTerr = goRoute.getEnd();
 				if (Matches.TerritoryIsNeutralButNotWater.match(endTerr))
 				{
-					float pValue = TerritoryAttachment.get(endTerr).getProduction();
+					float pValue = TerritoryAttachment.getProduction(endTerr);
 					final float enemyStrength = SUtils.strength(endTerr.getUnits().getUnits(), false, false, tFirst);
 					final Route xRoute = SUtils.findNearest(t, enemyPassableNotWaterNotNeutral, routeCondition, data);
 					if (enemyStrength > pValue * 9) // why bother...focus on enemies
@@ -5451,12 +5451,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						if (xRoute != null && xRoute.getEnd() != null)
 						{
 							final Territory realEnemy = xRoute.getEnd();
-							float eValue = TerritoryAttachment.get(realEnemy).getProduction();
+							float eValue = TerritoryAttachment.getProduction(realEnemy);
 							// int enemyDist = xRoute.getLength();
 							final Set<Territory> neutralNeighbors = data.getMap().getNeighbors(endTerr, enemyPassableNotWater);
 							for (final Territory nTerr : neutralNeighbors)
 							{
-								int xValue = TerritoryAttachment.get(nTerr).getProduction();
+								int xValue = TerritoryAttachment.getProduction(nTerr);
 								if (Matches.TerritoryIsNeutralButNotWater.match(nTerr))
 								{
 									final float testStrength = SUtils.strength(endTerr.getUnits().getUnits(), false, false, tFirst);
@@ -5468,9 +5468,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							final Set<Territory> enemyNeighbors = data.getMap().getNeighbors(realEnemy, enemyPassableNotWater);
 							for (final Territory nTerr : enemyNeighbors)
 							{
-								final TerritoryAttachment ta = TerritoryAttachment.get(nTerr);
-								if (ta != null)
-									eValue += ta.getProduction();
+								eValue += TerritoryAttachment.getProduction(nTerr);
 							}
 							if (pValue < eValue)
 								goRoute = xRoute;
@@ -5682,7 +5680,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							    continue;
 			           		if (Matches.TerritoryIsNeutral.match(badFactTerr))
 			        		{
-			                	float pValue = TerritoryAttachment.get(badFactTerr).getProduction();
+			                	float pValue = TerritoryAttachment.getProduction(badFactTerr);
 			                	float enemyStrength = SUtils.strength(badFactTerr.getUnits().getUnits(), false, false, tFirst);
 			                    if (enemyStrength > pValue*9) //why bother...focus on enemies
 			                    	continue;
@@ -5709,7 +5707,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			            		Territory endTerr = newRoute.getEnd();
 			            		if (Matches.TerritoryIsNeutral.match(endTerr))
 			            		{
-			                    	float pValue = TerritoryAttachment.get(endTerr).getProduction();
+			                    	float pValue = TerritoryAttachment.getProduction(endTerr);
 			                    	float enemyStrength = SUtils.strength(endTerr.getUnits().getUnits(), false, false, tFirst);
 			                        if (enemyStrength > pValue*9) //why bother...focus on enemies
 			                        	newRoute = SUtils.findNearest(t, endCondition2, routeCondition, data);
@@ -5985,7 +5983,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							else
 								territoryValue -= 115;
 						}
-						territoryValue += 4 * TerritoryAttachment.get(moveFactToTerr).getProduction();
+						territoryValue += 4 * TerritoryAttachment.getProduction(moveFactToTerr);
 						final List<Territory> weOwnAll = SUtils.getNeighboringEnemyLandTerritories(data, player, moveFactToTerr);
 						final List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
 						weOwnAll.removeAll(isWater);
@@ -5997,9 +5995,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 								weOwnAllIter.remove();
 						}
 						territoryValue -= 15 * weOwnAll.size();
-						if (TerritoryAttachment.get(moveFactToTerr).getProduction() < 2)
+						if (TerritoryAttachment.getProduction(moveFactToTerr) < 2)
 							territoryValue -= 100;
-						if (TerritoryAttachment.get(moveFactToTerr).getProduction() < 1)
+						if (TerritoryAttachment.getProduction(moveFactToTerr) < 1)
 							territoryValue -= 100;
 						terrValue.put(moveFactToTerr, territoryValue);
 					}
@@ -6655,7 +6653,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							else
 								territoryValue -= 115;
 						}
-						territoryValue += 4 * TerritoryAttachment.get(moveFactToTerr).getProduction();
+						territoryValue += 4 * TerritoryAttachment.getProduction(moveFactToTerr);
 						final List<Territory> weOwnAll = SUtils.getNeighboringEnemyLandTerritories(data, player, moveFactToTerr);
 						final List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
 						weOwnAll.removeAll(isWater);
@@ -6667,9 +6665,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 								weOwnAllIter.remove();
 						}
 						territoryValue -= 15 * weOwnAll.size();
-						if (TerritoryAttachment.get(moveFactToTerr).getProduction() < 2)
+						if (TerritoryAttachment.getProduction(moveFactToTerr) < 2)
 							territoryValue -= 100;
-						if (TerritoryAttachment.get(moveFactToTerr).getProduction() < 1)
+						if (TerritoryAttachment.getProduction(moveFactToTerr) < 1)
 							territoryValue -= 100;
 						terrValue.put(moveFactToTerr, territoryValue);
 					}
@@ -6981,8 +6979,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			xAlreadyMoved.clear();
 			final Collection<Unit> eUnits = enemy.getUnits().getUnits();
 			final float enemyStrength = SUtils.strength(eUnits, false, false, tFirst);
-			final TerritoryAttachment ta = TerritoryAttachment.get(enemy);
-			final float pValue = ta.getProduction();
+			final float pValue = TerritoryAttachment.getProduction(enemy);
 			if (Matches.TerritoryIsNeutralButNotWater.match(enemy) && enemyStrength > pValue * 9 && Math.random() < 0.9) // why bother...focus on enemies
 				continue; // TODO: Strengthen this determination
 			if (enemyStrength > 0.0F)
@@ -7008,7 +7005,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						final List<Unit> ourFactUnits = checkTerr2.getUnits().getMatches(Matches.UnitIsNotSea);
 						ourFactUnits.removeAll(unitsAlreadyMoved);
 						final float factStrength = SUtils.strength(ourFactUnits, false, false, tFirst);
-						if (strengthLimit * 0.5F > (factStrength + TerritoryAttachment.get(checkTerr2).getProduction() * 3.0F))
+						if (strengthLimit * 0.5F > (factStrength + TerritoryAttachment.getProduction(checkTerr2) * 3.0F))
 							strengthLimit = 0.0F; // won't matter if we stay here
 					}
 					final List<Unit> goodUnits = checkTerr2.getUnits().getMatches(attackable);
@@ -7338,8 +7335,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		int factProduction = 0;
 		for (final Territory eFact : enemyFactories)
 		{
-			factProduction = unitProduction ? TripleAUnit.getProductionPotentialOfTerritory(eFact.getUnits().getUnits(), eFact, eFact.getOwner(), data, true, true) : TerritoryAttachment.get(eFact)
-						.getProduction();
+			factProduction = unitProduction ? TripleAUnit.getProductionPotentialOfTerritory(eFact.getUnits().getUnits(), eFact, eFact.getOwner(), data, true, true) :
+						TerritoryAttachment.getProduction(eFact);
 			bomberImpactMap.put(eFact, factProduction);
 		}
 		SUtils.reorder(enemyFactories, bomberImpactMap, true);
@@ -9279,7 +9276,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				for (final Territory noRouteTerr : ourTerrs)
 				{
 					// do not place bids on areas that have no direct land access to an enemy, unless the value is 3 or greater
-					if (SUtils.distanceToEnemy(noRouteTerr, data, player, false) < 1 && TerritoryAttachment.get(noRouteTerr).getProduction() < 3)
+					if (SUtils.distanceToEnemy(noRouteTerr, data, player, false) < 1 && TerritoryAttachment.getProduction(noRouteTerr) < 3)
 					{
 						ourSemiRankedBidTerrs.remove(noRouteTerr);
 					}

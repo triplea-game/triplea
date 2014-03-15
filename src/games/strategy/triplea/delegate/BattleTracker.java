@@ -544,6 +544,9 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits)
 	{
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		if (ta == null)
+			return;
 		final GameData data = bridge.getData();
 		final Collection<Unit> arrivedUnits = (arrivingUnits == null ? null : new ArrayList<Unit>(arrivingUnits));
 		// final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
@@ -553,10 +556,6 @@ public class BattleTracker implements java.io.Serializable
 		if (territory.isWater() && arrivedUnits != null)
 		{
 			int totalMatches = 0;
-			// 0 production waters aren't to be taken over
-			final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-			if (ta == null)
-				return;
 			// Total Attacking Sea units = all units - land units - air units - submerged subs
 			// Also subtract transports & subs (if they can't control sea zones)
 			totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.UnitIsLand) - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
@@ -575,7 +574,6 @@ public class BattleTracker implements java.io.Serializable
 				return;
 		}
 		// If it was a Convoy Route- check ownership of the associated neighboring territory and set message
-		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		if (ta.getConvoyRoute())
 		{
 			// we could be part of a convoy route for another territory

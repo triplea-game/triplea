@@ -55,6 +55,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -127,7 +128,7 @@ public class StatPanel extends AbstractStatPanel
 			final TableColumn column = m_techTable.getColumnModel().getColumn(i);
 			column.setHeaderRenderer(componentRenderer);
 			final String player = m_techTable.getColumnName(i);
-			final JLabel value = new JLabel("", getIcon(player), JLabel.CENTER);
+			final JLabel value = new JLabel("", getIcon(player), SwingConstants.CENTER);
 			value.setToolTipText(player);
 			column.setHeaderValue(value);
 		}
@@ -604,11 +605,10 @@ public class StatPanel extends AbstractStatPanel
 			int rVal = 0;
 			for (final Territory place : data.getMap().getTerritories())
 			{
-				final TerritoryAttachment ta = TerritoryAttachment.get(place);
 				/* Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested */
 				if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
 				{
-					rVal += ta.getProduction();
+					rVal += TerritoryAttachment.getProduction(place);
 				}
 			}
 			rVal *= Properties.getPU_Multiplier(data);

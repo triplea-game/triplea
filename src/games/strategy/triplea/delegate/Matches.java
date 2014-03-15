@@ -1444,29 +1444,6 @@ public class Matches
 			return false;
 		}
 	};
-	public static final Match<Territory> TerritoryHasSomeDamage = new Match<Territory>()
-	{
-		@Override
-		public boolean match(final Territory t)
-		{
-			final TerritoryAttachment ta = TerritoryAttachment.get(t);
-			if (ta == null)
-				return false;
-			return ta.getUnitProduction() < ta.getProduction();
-		}
-	};
-	
-	public static Match<Unit> unitIsInTerritoryThatHasTerritoryDamage(final Territory t)
-	{
-		return new Match<Unit>()
-		{
-			@Override
-			public boolean match(final Unit u)
-			{
-				return TerritoryHasSomeDamage.match(t);
-			}
-		};
-	}
 	
 	public static final Match<Territory> TerritoryIsLand = new InverseMatch<Territory>(TerritoryIsWater);
 	public static final Match<Territory> TerritoryIsEmpty = new Match<Territory>()
@@ -1843,7 +1820,10 @@ public class Matches
 		};
 	}
 	
-	public static Match<Territory> TerritoryHasProductionValueAtLeast(final int prodVal)
+	/**
+	 * If water, returns false.
+	 */
+	public static Match<Territory> TerritoryIsLandAndHasProductionValueAtLeast(final int prodVal)
 	{
 		return new Match<Territory>()
 		{
@@ -1852,7 +1832,7 @@ public class Matches
 			{
 				if (t.isWater())
 					return false;
-				final int terrProd = TerritoryAttachment.get(t).getProduction();
+				final int terrProd = TerritoryAttachment.getProduction(t);
 				if (terrProd >= prodVal)
 					return true;
 				return false;
@@ -1880,7 +1860,8 @@ public class Matches
 			{
 				return false;
 			}
-			return TerritoryAttachment.get(t).getIsImpassible();
+			final TerritoryAttachment ta = TerritoryAttachment.get(t);
+			return ta != null && ta.getIsImpassible();
 		}
 	};
 	public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<Territory>(TerritoryIsImpassable);
@@ -3203,8 +3184,7 @@ public class Matches
 				for (final UnitType ut : requiredUnits)
 				{
 					final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsOfType(ut),
-								Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsNotDisabled,
-								Matches.unitIsInTerritoryThatHasTerritoryDamage(territory).invert());
+								Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsNotDisabled);
 					final int requiredNumber = requiredUnitsMap.getInt(ut);
 					final int numberInTerritory = Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
 					if (numberInTerritory < requiredNumber)

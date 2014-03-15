@@ -784,7 +784,8 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		Color territoryColor;
-		if (TerritoryAttachment.get(territory).getIsImpassible())
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		if (ta != null && ta.getIsImpassible())
 		{
 			territoryColor = mapData.impassibleColor();
 		}

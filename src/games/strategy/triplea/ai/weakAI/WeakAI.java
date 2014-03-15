@@ -504,7 +504,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			if (t.isWater())
 				continue;
-			if (TerritoryAttachment.get(t).isCapital())
+			if (TerritoryAttachment.get(t) != null && TerritoryAttachment.get(t).isCapital())
 			{
 				// if they are a threat to take our capitol, dont move
 				// compare the strength of units we can place

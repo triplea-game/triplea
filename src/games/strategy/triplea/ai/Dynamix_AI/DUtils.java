@@ -728,7 +728,7 @@ public class DUtils
 		if (ter == null)
 			return 0;
 		final GameData data = ter.getData();
-		int result = TerritoryAttachment.get(ter).getProduction();
+		int result = TerritoryAttachment.getProduction(ter);
 		if (DMatches.territoryIsCapitalAndOwnedByEnemy(data, GlobalCenter.CurrentPlayer).match(ter))
 		{
 			int puGainIfWeConquer = 0;
@@ -746,9 +746,9 @@ public class DUtils
 	public static int GetCheckedUnitProduction(final Territory ter)
 	{
 		if (ter.getOwner().getRepairFrontier() != null)
-			return TerritoryAttachment.get(ter).getUnitProduction();
+			return TerritoryAttachment.getUnitProduction(ter);
 		else
-			return TerritoryAttachment.get(ter).getProduction();
+			return TerritoryAttachment.getProduction(ter);
 	}
 	
 	public static List<Territory> SortTerritoriesByNNEnemyNeighbors_A(final List<Territory> list, final GameData data, final PlayerID player)
@@ -1153,11 +1153,9 @@ public class DUtils
 		{
 			if (ter.isWater())
 				continue;
-			final TerritoryAttachment ta = TerritoryAttachment.get(ter);
-			if (ta == null)
-				continue;
-			if (ta.getProduction() > result)
-				result = ta.getProduction();
+			final int production = TerritoryAttachment.getProduction(ter);
+			if (production > result)
+				result = production;
 		}
 		return result;
 	}
@@ -1183,7 +1181,7 @@ public class DUtils
 			result += 100; // Give enemy factory ters a boost
 		if (target.getUnits().someMatch(Matches.UnitIsInfrastructure))
 			result += 20; // Give enemy infrastructure a boost
-		result += TerritoryAttachment.get(target).getProduction() * 10;
+		result += TerritoryAttachment.getProduction(target) * 10;
 		result += data.getMap().getNeighbors(target, Matches.TerritoryIsLand).size() * 2;
 		result += data.getMap().getNeighbors(target, DMatches.territoryIsOwnedByNNEnemy(data, player)).size();
 		return result;
@@ -1351,7 +1349,7 @@ public class DUtils
 			// 3) Are we moving towards the closest enemy factory?
 			if (DUtils.GetJumpsFromXToY_PassableLand(data, ter, closestFactToOurTer) < DUtils.GetJumpsFromXToY_PassableLand(data, neighborWeAreInThatsClosestToOurCap, closestFactToOurTer))
 			{
-				final float productionPercentOfHighest = (float) TerritoryAttachment.get(closestFactToOurTer).getProduction() / (float) GlobalCenter.HighestTerProduction;
+				final float productionPercentOfHighest = (float) TerritoryAttachment.getProduction(closestFactToOurTer) / (float) GlobalCenter.HighestTerProduction;
 				priority += productionPercentOfHighest * 5; // If so, add 2 to 5 points, depending on value of factory and territory.
 			}
 		}
@@ -2471,10 +2469,7 @@ public class DUtils
 		int result = 0;
 		for (final Territory ter : territories)
 		{
-			final TerritoryAttachment ta = TerritoryAttachment.get(ter);
-			if (ta == null)
-				continue;
-			result += ta.getProduction();
+			result += TerritoryAttachment.getProduction(ter);
 		}
 		return result;
 	}

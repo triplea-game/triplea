@@ -1,4 +1,10 @@
 Changes for 1.8.0.3
+* Fixing bugs in AI's where factories were on water zones that had no territory attachment. (veqryn)
+
+* Fixed bug where a stalemate battle with carriers that can be damaged and when damaged don't let planes land, were not letting defending planes move to land. (veqryn)
+
+* Deleting game option property "Unescorted Transport Dies", as it no longer does anything. (veqryn)
+
 * Cleanup of HeadlessGameServer classes. (veqryn)
 
 * Fixed bugs in Placement, which were allowing infinite placement of sea units which were constructions. (veqryn)

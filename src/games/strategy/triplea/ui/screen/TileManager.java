@@ -333,29 +333,30 @@ public class TileManager
 			drawUnits(territory, data, mapData, drawnOn, drawing);
 		}
 		drawing.add(new BattleDrawable(territory.getName()));
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		if (!territory.isWater())
 			drawing.add(new LandTerritoryDrawable(territory.getName()));
 		else
 		{
-			if (TerritoryAttachment.get(territory) != null)
+			if (ta != null)
 			{
 				// Kamikaze Zones
-				if (TerritoryAttachment.get(territory).getKamikazeZone())
+				if (ta.getKamikazeZone())
 				{
 					drawing.add(new KamikazeZoneDrawable(territory.getOwner(), territory, m_uiContext));
 				}
 				// Blockades
-				if (TerritoryAttachment.get(territory).getBlockadeZone())
+				if (ta.getBlockadeZone())
 				{
 					drawing.add(new BlockadeZoneDrawable(territory, m_uiContext));
 				}
 				// Convoy Routes
-				if (TerritoryAttachment.get(territory).getConvoyRoute())
+				if (ta.getConvoyRoute())
 				{
 					drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, m_uiContext));
 				}
 				// Convoy Centers
-				if (TerritoryAttachment.get(territory).getProduction() > 0)
+				if (ta.getProduction() > 0)
 				{
 					drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, m_uiContext));
 				}
@@ -368,7 +369,6 @@ public class TileManager
 			drawing.add(new OptionalExtraTerritoryBordersDrawable(territory.getName(), optionalBorderLevel));
 		}
 		drawing.add(new TerritoryNameDrawable(territory.getName(), m_uiContext));
-		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers())
 		{
 			final PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());

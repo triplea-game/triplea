@@ -94,8 +94,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 					terrCount++;
 				else
 				{
-					final TerritoryAttachment ta = TerritoryAttachment.get(current);
-					if (ta.getProduction() > 0)
+					if (TerritoryAttachment.getProduction(current) > 0)
 						terrCount++;
 				}
 			}

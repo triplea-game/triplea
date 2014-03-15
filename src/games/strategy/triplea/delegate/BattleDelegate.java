@@ -1074,7 +1074,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 					final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
 								m_battleTracker, carrierCostOfCurrentTerr, 1, true, !mustReturnToBase, true);
 					if (possible.size() > 1)
-						landingTerr = getRemotePlayer(u.getOwner()).selectTerritoryForAirToLand(possible, t, MyFormatter.unitsToText(Collections.singletonList(u)));
+						landingTerr = getRemotePlayer(u.getOwner()).selectTerritoryForAirToLand(possible, t,
+									"Select territory for air units to land. (Current territory is " + t.getName() + "): " + MyFormatter.unitsToText(Collections.singletonList(u)));
 					else if (possible.size() == 1)
 						landingTerr = possible.iterator().next();
 					if (landingTerr == null || landingTerr.equals(t))
@@ -1199,7 +1200,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 				Territory territory = null;
 				while (canLandHere.size() > 1 && defendingAir.size() > 0)
 				{
-					territory = getRemotePlayer(defender).selectTerritoryForAirToLand(canLandHere, battleSite, MyFormatter.unitsToText(defendingAir));
+					territory = getRemotePlayer(defender).selectTerritoryForAirToLand(canLandHere, battleSite,
+								"Select territory for air units to land. (Current territory is " + battleSite.getName() + "): " + MyFormatter.unitsToText(defendingAir));
 					// added for test script
 					if (territory == null)
 					{

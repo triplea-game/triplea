@@ -334,7 +334,7 @@ public class SUtils
 					final int cDist = data.getMap().getDistance(mT, checkTerr);
 					if (cDist < checkDist || (cDist >= checkDist && !SUtils.doesLandExistAt(checkTerr, data, false)))
 					{
-						final int terrProduction = TerritoryAttachment.get(checkTerr).getProduction();
+						final int terrProduction = TerritoryAttachment.getProduction(checkTerr);
 						targetMap.put(checkTerr, terrProduction);
 					}
 				}
@@ -485,7 +485,7 @@ public class SUtils
 		final IntegerMap<Territory> productionMap = new IntegerMap<Territory>();
 		for (final Territory enemy : allEnemyTerr)
 		{
-			int prodValue = TerritoryAttachment.get(enemy).getProduction();
+			int prodValue = TerritoryAttachment.getProduction(enemy);
 			if (enemyCaps.contains(enemy))
 				prodValue++;
 			if (enemyFactories.contains(enemy))
@@ -683,7 +683,7 @@ public class SUtils
 		final int myNewTUV = determineTUV(myAttackUnits, myCostMap);
 		final IntegerMap<UnitType> eCostMap = costMap.get(ePlayer);
 		final int eNewTUV = (Matches.TerritoryIsNeutralButNotWater.match(eTerr)) ? 0 : determineTUV(defenseUnits, eCostMap);
-		int production = TerritoryAttachment.get(eTerr).getProduction();
+		int production = TerritoryAttachment.getProduction(eTerr);
 		if (Matches.TerritoryIsNeutralButNotWater.match(eTerr))
 			production *= 3;
 		final int myTUVLost = (myTUV - myNewTUV) - (weWin ? production : 0);
@@ -1305,7 +1305,7 @@ public class SUtils
 		nearNeighbors.remove(t);
 		for (final Territory t2 : nearNeighbors)
 		{
-			if (t2.isWater() || TerritoryAttachment.get(t2).getIsImpassible())
+			if (t2.isWater() || TerritoryAttachment.get(t2) == null || TerritoryAttachment.get(t2).getIsImpassible())
 				continue;
 			if (friendly)
 			{
@@ -2489,7 +2489,7 @@ public class SUtils
 					else
 						territoryValue -= 115;
 				}
-				territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
+				territoryValue += 4 * TerritoryAttachment.getProduction(prodTerr);
 				final List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, prodTerr);
 				final List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
 				weOwnAll.removeAll(isWater);
@@ -2501,9 +2501,9 @@ public class SUtils
 						weOwnAllIter.remove();
 				}
 				territoryValue -= 15 * weOwnAll.size();
-				if (TerritoryAttachment.get(prodTerr).getProduction() < 2 || Matches.TerritoryIsImpassable.match(prodTerr))
+				if (TerritoryAttachment.getProduction(prodTerr) < 2 || Matches.TerritoryIsImpassable.match(prodTerr))
 					territoryValue -= 100;
-				if (TerritoryAttachment.get(prodTerr).getProduction() < 1 || Matches.TerritoryIsImpassable.match(prodTerr))
+				if (TerritoryAttachment.getProduction(prodTerr) < 1 || Matches.TerritoryIsImpassable.match(prodTerr))
 					territoryValue -= 100;
 				terrProd.put(prodTerr, territoryValue);
 			}
@@ -2530,7 +2530,7 @@ public class SUtils
 				dist = distanceToEnemy(prodTerr, data, player, true);
 				territoryValue += 5 - dist;
 			}
-			territoryValue += 4 * TerritoryAttachment.get(prodTerr).getProduction();
+			territoryValue += 4 * TerritoryAttachment.getProduction(prodTerr);
 			terrProd.put(prodTerr, territoryValue);
 		}
 		SUtils.reorder(owned, terrProd, true);
@@ -2539,10 +2539,10 @@ public class SUtils
 		// risk = 1.0F;
 		final IntegerMap<Territory> prodMap = new IntegerMap<Territory>();
 		for (final Territory factTerr : existingFactories)
-			prodMap.put(factTerr, TerritoryAttachment.get(factTerr).getProduction());
+			prodMap.put(factTerr, TerritoryAttachment.getProduction(factTerr));
 		for (final Territory t : owned)
 		{
-			final int puValue = TerritoryAttachment.get(t).getProduction();
+			final int puValue = TerritoryAttachment.getProduction(t);
 			if (puValue < 2 || Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(t))
 				continue;
 			final List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, t);
@@ -4990,6 +4990,8 @@ public class SUtils
 			final float alliedPotential = getStrengthOfPotentialAttackers(eTerr, data, ePlayer, tFirst, true, null);
 			final float rankStrength = getStrengthOfPotentialAttackers(eTerr, data, player, tFirst, true, ignoreTerr);
 			final TerritoryAttachment ta = TerritoryAttachment.get(eTerr);
+			if (ta == null)
+				continue;
 			final float productionValue = ta.getProduction();
 			float eTerrValue = 0.0F;
 			final boolean island = !SUtils.doesLandExistAt(eTerr, data, false);
@@ -5202,6 +5204,8 @@ public class SUtils
 			final float localStrength = SUtils.strength(aTerr.getUnits().getUnits(), false, false, tFirst);
 			final float rankStrength = getStrengthOfPotentialAttackers(aTerr, data, player, tFirst, true, ignoreTerr);
 			final TerritoryAttachment ta = TerritoryAttachment.get(aTerr);
+			if (ta == null)
+				continue;
 			final float productionValue = ta.getProduction();
 			float aTerrValue = 0.0F;
 			aTerrValue += ta.getVictoryCity() > 0 ? 2.0F : 0.0F;

@@ -460,7 +460,7 @@ public class DoNonCombatMove
 					return false;
 				if (data.getRelationshipTracker().isAllied(ter.getOwner(), player))
 					return false;
-				if (TerritoryAttachment.get(ter).getProduction() < 1)
+				if (TerritoryAttachment.getProduction(ter) < 1)
 					return false;
 				if (ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotAA)).size() > 0)
 					return false;

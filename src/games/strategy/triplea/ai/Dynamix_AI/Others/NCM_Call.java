@@ -362,9 +362,9 @@ public class NCM_Call
 			if (canUnitsGetBack) // If the user said "Only grab land with blitz attacks", there wouldn't be any non-blitz units here (not counted as possibles earlier)
 				return true;
 			final int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
-			final TerritoryAttachment ta = TerritoryAttachment.get(m_target);
+			final int production = TerritoryAttachment.getProduction(m_target);
 			final List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
-			if (unitCost - 1 <= ta.getProduction() || landAttackers.isEmpty())
+			if (unitCost - 1 <= production || landAttackers.isEmpty())
 				return true;
 			return false;
 		}

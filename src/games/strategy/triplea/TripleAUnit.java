@@ -444,12 +444,7 @@ public class TripleAUnit extends Unit
 		if (!Matches.UnitCanBeDamaged.match(u))
 			return -1;
 		final UnitAttachment ua = UnitAttachment.get(u.getType());
-		final TerritoryAttachment ta = TerritoryAttachment.get(t);
-		int territoryUnitProduction = 0;
-		if (ta != null)
-		{
-			territoryUnitProduction = ta.getUnitProduction();
-		}
+		final int territoryUnitProduction = TerritoryAttachment.getUnitProduction(t);
 		if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
 		{
 			if (ua.getMaxDamage() <= 0)

@@ -317,7 +317,7 @@ public class DoCombatMove
 						score -= 10000000; // We really want to land on a continent where we can actually help
 					score -= CachedCalculationCenter.GetSeaRoute(data, ourUnitGroup.get(0).getTerritoryUnitIsIn(), openPort).getLength() * 100000; // And having the unload ter closeby is good too
 					score -= ter2.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)).size() * 100; // We prefer to not be greeted by a huge army
-					score += TerritoryAttachment.get(ter2).getProduction(); // And we like ters we get money from... :)
+					score += TerritoryAttachment.getProduction(ter2); // And we like ters we get money from... :)
 					if (score > highestUnloadingTerScore)
 					{
 						highestUnloadingTerScore = score;
@@ -374,9 +374,7 @@ public class DoCombatMove
 					return false;
 				if (data.getRelationshipTracker().isAllied(ter.getOwner(), player))
 					return false;
-				if (TerritoryAttachment.get(ter) == null)
-					return false;
-				if (TerritoryAttachment.get(ter).getProduction() < 1)
+				if (TerritoryAttachment.getProduction(ter) < 1)
 					return false;
 				if (ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotAA)).size() > 0)
 					return false;

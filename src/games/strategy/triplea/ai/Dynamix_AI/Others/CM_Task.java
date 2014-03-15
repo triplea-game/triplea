@@ -532,12 +532,12 @@ public class CM_Task
 					return false;
 				// Atm, don't attack neutrals if the neutral attack charge is more than the territory production, 75% of the time
 				if (TerritoryAttachment.get(m_target) == null
-							|| games.strategy.triplea.Properties.getNeutralCharge(m_data) > TerritoryAttachment.get(m_target).getProduction()
+							|| games.strategy.triplea.Properties.getNeutralCharge(m_data) > TerritoryAttachment.getProduction(m_target)
 							&& Math.random() < .75F)
 					return false;
 				// Never attack if neutral charge is over three times the ter value
 				if (TerritoryAttachment.get(m_target) == null
-							|| games.strategy.triplea.Properties.getNeutralCharge(m_data) > TerritoryAttachment.get(m_target).getProduction() * 3)
+							|| games.strategy.triplea.Properties.getNeutralCharge(m_data) > TerritoryAttachment.getProduction(m_target) * 3)
 					return false;
 			}
 		}
@@ -742,7 +742,7 @@ public class CM_Task
 			if (canUnitsGetBack) // If the user said "Only grab land with blitz attacks", there wouldn't be any non-blitz units here (not counted as possibles earlier)
 				return true;
 			final int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
-			final TerritoryAttachment ta = TerritoryAttachment.get(m_target);
+			final int production = TerritoryAttachment.getProduction(m_target);
 			final List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
 			int cheapestLAttacker = 0;
 			if (landAttackers.size() > 0)
@@ -753,7 +753,7 @@ public class CM_Task
 			if (landAttackers.isEmpty())
 				tuvSwing = 0; // If no one's going to attack, there is no TUV swing
 			// If the tuv swing + ter production is in our favor, or there are no land attackers
-			if (tuvSwing + ta.getProduction() > 0.0F)
+			if (tuvSwing + production > 0.0F)
 				return true;
 			return false;
 		}
