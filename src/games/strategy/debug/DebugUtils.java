@@ -103,30 +103,27 @@ public class DebugUtils
 		return buf.toString();
 	}
 	
-	public static String getDebugReportWithoutFramesAndWindows()
+	public static String getDebugReportHeadless()
 	{
 		final StringBuilder result = new StringBuilder(500);
-		result.append("CONSOLE_OUTPUT");
-		result.append(Console.getConsole().getText());
-		result.append("\n");
 		result.append(getThreadDumps());
 		result.append(getProperties());
 		result.append(getMemory());
-		result.append("ENGINE VERSION").append(EngineVersion.VERSION).append("\n");
+		result.append("ENGINE VERSION: ").append(EngineVersion.VERSION).append("\n");
 		return result.toString();
 	}
 	
 	public static String getDebugReportWithFramesAndWindows()
 	{
 		final StringBuilder result = new StringBuilder(500);
-		result.append("CONSOLE_OUTPUT");
+		result.append("CONSOLE_OUTPUT:\n");
 		result.append(Console.getConsole().getText());
 		result.append("\n");
 		result.append(getThreadDumps());
 		result.append(getProperties());
 		result.append(getMemory());
 		result.append(getOpenAppWindows());
-		result.append("ENGINE VERSION").append(EngineVersion.VERSION).append("\n");
+		result.append("ENGINE VERSION: ").append(EngineVersion.VERSION).append("\n");
 		return result.toString();
 	}
 	

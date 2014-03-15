@@ -651,7 +651,7 @@ public class HeadlessGameServer
 		return message;
 	}
 	
-	private void dump()
+	public void printThreadDumpsAndStatus()
 	{
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Dump to Log:");
@@ -670,7 +670,7 @@ public class HeadlessGameServer
 	public synchronized void shutdown()
 	{
 		m_shutDown = true;
-		dump();
+		printThreadDumpsAndStatus();
 		try
 		{
 			if (m_lobbyWatcherResetupThread != null)

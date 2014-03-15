@@ -363,8 +363,8 @@ public class ServerGame extends AbstractGame
 			if (!m_delegateExecutionManager.blockDelegateExecution(16000))
 			{
 				System.err.println("Could not stop delegate execution.");
-				if (HeadlessGameServer.headless())
-					System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
+				if (HeadlessGameServer.getInstance() != null)
+					HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
 				else
 					Console.getConsole().dumpStacks();
 				System.exit(-1);

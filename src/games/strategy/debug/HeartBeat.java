@@ -37,7 +37,7 @@ public class HeartBeat implements IHeartBeat
 		if (MessageContext.getSender().equals(m_serverNode))
 		{
 			if (HeadlessGameServer.headless())
-				return DebugUtils.getDebugReportWithoutFramesAndWindows();
+				return DebugUtils.getDebugReportHeadless();
 			else
 				return DebugUtils.getDebugReportWithFramesAndWindows();
 		}

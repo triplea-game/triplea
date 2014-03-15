@@ -148,7 +148,7 @@ public class HeadlessGameServerConsole
 		}
 		else if (noun.equalsIgnoreCase("dump"))
 		{
-			dump();
+			printThreadDumpsAndStatus();
 		}
 		else
 		{
@@ -208,7 +208,7 @@ public class HeadlessGameServerConsole
 		headlessChat.setPrintStream(m_chatMode ? out : null);
 	}
 	
-	private void dump()
+	private void printThreadDumpsAndStatus()
 	{
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Dump to Log:");

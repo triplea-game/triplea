@@ -459,8 +459,8 @@ public class ServerLauncher extends AbstractLauncher
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
-			if (m_headless)
-				System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
+			if (m_headless && HeadlessGameServer.getInstance() != null)
+				HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
 			// TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3, need to see if it works.
 		}
 		stopGame();
