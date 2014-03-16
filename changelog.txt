@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Fixed bug in relationship attachment property change by trigger. (veqryn)
+
 * Making createsUnitsList ability choose a random territory when producing to a neighboring territory. (veqryn)
 
 * Fixing bugs in AI's where factories were on water zones that had no territory attachment. (veqryn)

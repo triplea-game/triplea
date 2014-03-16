@@ -1900,7 +1900,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						clearFirst = true;
 					}
 					// covers RelationshipTypeAttachment
-					if (t.getTerritoryAttachmentName().getFirst().equals("RelationshipTypeAttachment"))
+					if (t.getRelationshipTypeAttachmentName().getFirst().equals("RelationshipTypeAttachment"))
 					{
 						final RelationshipTypeAttachment attachment = RelationshipTypeAttachment.get(aRelationshipType, t.getRelationshipTypeAttachmentName().getSecond());
 						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
