@@ -8,8 +8,9 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import java.awt.Component;
 
 /**
+ * Setup panel model for headless server.
  * 
- * @author veqryn
+ * @author veqryn (Mark Christopher Duncan)
  * 
  */
 public class HeadlessServerSetupPanelModel extends SetupPanelModel

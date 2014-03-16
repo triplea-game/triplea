@@ -30,6 +30,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
@@ -136,7 +137,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 					final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
 					if (waterNeighbors != null && !waterNeighbors.isEmpty())
 					{
-						final Territory tw = waterNeighbors.iterator().next();
+						final Territory tw = getRandomTerritory(waterNeighbors, bridge);
 						final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddSea) + " in " + tw.getName();
 						bridge.getHistoryWriter().startEvent(transcriptText, toAddSea);
 						endTurnReport.append(transcriptText + "<br />");
@@ -150,7 +151,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 					final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
 					if (landNeighbors != null && !landNeighbors.isEmpty())
 					{
-						final Territory tl = landNeighbors.iterator().next();
+						final Territory tl = getRandomTerritory(landNeighbors, bridge);
 						final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddLand) + " in " + tl.getName();
 						bridge.getHistoryWriter().startEvent(transcriptText, toAddLand);
 						endTurnReport.append(transcriptText + "<br />");
@@ -163,6 +164,25 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		if (!change.isEmpty())
 			bridge.addChange(change);
 		return endTurnReport.toString();
+	}
+	
+	private static Territory getRandomTerritory(final Collection<Territory> territories, final IDelegateBridge bridge)
+	{
+		if (territories == null || territories.isEmpty())
+			return null;
+		if (territories.size() == 1)
+			return territories.iterator().next();
+		// there is an issue with maps that have lots of rolls without any pause between them: they are causing the cypted random source (ie: live and pbem games) to lock up or error out
+		// so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances together, then getting a ton of random numbers at once instead of one at a time)
+		try
+		{
+			Thread.sleep(100);
+		} catch (final InterruptedException e)
+		{
+		}
+		final List<Territory> list = new ArrayList<Territory>(territories);
+		final int random = bridge.getRandom(list.size(), null, DiceType.ENGINE, "Random territory selection for creating units");// ZERO BASED
+		return list.get(random);
 	}
 	
 	/**

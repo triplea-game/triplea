@@ -21,8 +21,9 @@ import java.util.Date;
 import java.util.Set;
 
 /**
+ * Terminal line console.
  * 
- * @author veqryn
+ * @author veqryn (Mark Christopher Duncan)
  * 
  */
 public class HeadlessGameServerConsole

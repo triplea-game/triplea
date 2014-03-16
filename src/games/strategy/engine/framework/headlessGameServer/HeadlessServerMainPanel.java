@@ -33,8 +33,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 /**
+ * Main panel for headless server.
  * 
- * @author veqryn
+ * @author veqryn (Mark Christopher Duncan)
  * 
  */
 public class HeadlessServerMainPanel extends JPanel implements Observer

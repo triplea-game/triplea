@@ -21,8 +21,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Action;
 
 /**
+ * Server setup model.
  * 
- * @author veqryn
+ * @author veqryn (Mark Christopher Duncan)
  * 
  */
 public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel

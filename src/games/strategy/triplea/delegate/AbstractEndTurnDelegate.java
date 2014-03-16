@@ -429,6 +429,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 				}
 				if (numberOfDice > 0)
 				{
+					// there is an issue with maps that have lots of rolls without any pause between them: they are causing the cypted random source (ie: live and pbem games) to lock up or error out
+					// so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances together, then getting a ton of random numbers at once instead of one at a time)
+					try
+					{
+						Thread.sleep(100);
+					} catch (final InterruptedException e)
+					{
+					}
 					final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
 					final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice, enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);
 					transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));

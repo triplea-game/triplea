@@ -37,8 +37,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 /**
+ * The game frame for a headless server.
  * 
- * @author veqryn
+ * @author veqryn (Mark Christopher Duncan)
  * 
  */
 public class HeadlessGameServerUI extends MainGameFrame

@@ -44,7 +44,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 /**
- * Ideally a way of hosting a game, but headless.
+ * A way of hosting a game, but headless.
  * 
  * @author veqryn (Mark Christopher Duncan)
  * 

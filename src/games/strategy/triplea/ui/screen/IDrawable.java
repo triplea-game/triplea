@@ -131,17 +131,17 @@ class TerritoryNameDrawable implements IDrawable
 					drawComments = true;
 					if (ta.getConvoyAttached().isEmpty())
 						commentText = MyFormatter.defaultNamedToTextList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data)) + " " + ta.getOriginalOwner().getName()
-									+ " Convoy Route";
+									+ " Blockade Route";
 					else
-						commentText = MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " " + ta.getOriginalOwner().getName() + " Convoy Dependent Route";
+						commentText = MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " " + ta.getOriginalOwner().getName() + " Convoy Route";
 				}
 				else if (ta.getConvoyRoute())
 				{
 					drawComments = true;
 					if (ta.getConvoyAttached().isEmpty())
-						commentText = MyFormatter.defaultNamedToTextList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data)) + " Convoy Route";
+						commentText = MyFormatter.defaultNamedToTextList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data)) + " Blockade Route";
 					else
-						commentText = MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " Convoy Dependent Route";
+						commentText = MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " Convoy Route";
 				}
 				else if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{

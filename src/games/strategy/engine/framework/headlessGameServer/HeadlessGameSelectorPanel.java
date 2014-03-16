@@ -37,8 +37,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 /**
+ * Simple selector panel for the headless game ui.
  * 
- * @author veqryn
+ * @author veqryn (Mark Christopher Duncan)
  * 
  */
 public class HeadlessGameSelectorPanel extends JPanel implements Observer
