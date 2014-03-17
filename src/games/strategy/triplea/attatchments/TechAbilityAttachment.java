@@ -525,8 +525,8 @@ public class TechAbilityAttachment extends DefaultAttachment
 	public void setRocketDiceNumber(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
-		if (s.length <= 0 || s.length > 2)
-			throw new GameParseException("rocketDiceNumber can not be empty or have more than two fields" + thisErrorMsg());
+		if (s.length != 2)
+			throw new GameParseException("rocketDiceNumber must have two fields" + thisErrorMsg());
 		String unitType;
 		unitType = s[1];
 		// validate that this unit exists in the xml

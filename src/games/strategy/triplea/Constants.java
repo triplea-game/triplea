@@ -96,7 +96,7 @@ public interface Constants
 	public static final String ROCKET_ATTACKS_PER_FACTORY_INFINITE = "Rocket Attacks Per Factory Infinite";
 	public static final String LIMIT_SBR_DAMAGE_PER_TURN = "Limit SBR Damage Per Turn";
 	public static final String LIMIT_ROCKET_DAMAGE_PER_TURN = "Limit Rocket Damage Per Turn";
-	public static final String ALLIED_AIR_DEPENDENTS = "Allied Air Dependents";
+	public static final String ALLIED_AIR_INDEPENDENT = "Allied Air Independent";
 	public static final String DEFENDING_SUBS_SNEAK_ATTACK = "Defending Subs Sneak Attack";
 	public static final String ATTACKER_RETREAT_PLANES = "Attacker Retreat Planes";
 	public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED = "Naval Bombard Casualties Return Fire Restricted";

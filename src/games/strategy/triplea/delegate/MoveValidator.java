@@ -568,7 +568,7 @@ public class MoveValidator
 						mechanizedSupportAvailable--;
 					}
 					else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit) && Matches.UnitTypeCanLandOnCarrier.match(unit.getType())
-								&& isAlliedAirDependents(data) && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data)))
+								&& !isAlliedAirIndependent(data) && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data)))
 					{ // this is so that if the unit is owned by any ally and it is cargo, then it will not count. (shouldn't it be a dependant in this case??)
 						continue;
 					}
@@ -1838,9 +1838,9 @@ public class MoveValidator
 		return games.strategy.triplea.Properties.getSubmersible_Subs(data);
 	}
 	
-	private static boolean isAlliedAirDependents(final GameData data)
+	private static boolean isAlliedAirIndependent(final GameData data)
 	{
-		return games.strategy.triplea.Properties.getAlliedAirDependents(data);
+		return games.strategy.triplea.Properties.getAlliedAirIndependent(data);
 	}
 	
 	private static boolean isIgnoreTransportInMovement(final GameData data)

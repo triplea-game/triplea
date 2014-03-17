@@ -2056,8 +2056,8 @@ public class UnitAttachment extends DefaultAttachment
 	public void setConsumesUnits(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
-		if (s.length <= 0 || s.length > 2)
-			throw new GameParseException("consumesUnits can not be empty or have more than two fields" + thisErrorMsg());
+		if (s.length != 2)
+			throw new GameParseException("consumesUnits must have two fields" + thisErrorMsg());
 		String unitTypeToProduce;
 		unitTypeToProduce = s[1];
 		// validate that this unit exists in the xml

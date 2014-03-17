@@ -244,7 +244,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			m_isAmphibious = true;
 		}
 		final Map<Unit, Collection<Unit>> dependencies = transporting(units);
-		if (isAlliedAirDependents())
+		if (!isAlliedAirIndependent())
 		{
 			dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
 			for (final Unit carrier : dependencies.keySet())
@@ -2067,7 +2067,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		units.addAll(m_attackingUnits);
 		units.addAll(m_attackingWaitingToDie);
 		// See if allied air can participate in combat
-		if (isAlliedAirDependents())
+		if (!isAlliedAirIndependent())
 			units = Match.getMatches(units, Matches.unitIsOwnedBy(m_attacker));
 		if (!canAirAttackSubs(m_defendingUnits, units))
 		{
@@ -2118,7 +2118,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		Collection<Unit> units = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
 		units.addAll(Match.getMatches(m_attackingWaitingToDie, Matches.UnitIsNotSub));
 		// See if allied air can participate in combat
-		if (isAlliedAirDependents())
+		if (!isAlliedAirIndependent())
 			units = Match.getMatches(units, Matches.unitIsOwnedBy(m_attacker));
 		// if restricted, remove aircraft from attackers
 		if (isAirAttackSubRestricted() && !canAirAttackSubs(m_defendingUnits, units))
@@ -2350,9 +2350,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	/**
 	 * @return
 	 */
-	private boolean isAlliedAirDependents()
+	private boolean isAlliedAirIndependent()
 	{
-		return games.strategy.triplea.Properties.getAlliedAirDependents(m_data);
+		return games.strategy.triplea.Properties.getAlliedAirIndependent(m_data);
 	}
 	
 	/**
@@ -3079,7 +3079,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final CompositeChange change = new CompositeChange();
 		// Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an carrier unit
 		final Collection<Unit> carriers = Match.getMatches(attackingUnits, Matches.UnitIsCarrier);
-		if (!carriers.isEmpty() && games.strategy.triplea.Properties.getAlliedAirDependents(data))
+		if (!carriers.isEmpty() && !games.strategy.triplea.Properties.getAlliedAirIndependent(data))
 		{
 			final Match<Unit> alliedFighters = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(attacker, data), Matches.unitIsOwnedBy(attacker).invert(), Matches.UnitIsAir,
 						Matches.UnitCanLandOnCarrier);

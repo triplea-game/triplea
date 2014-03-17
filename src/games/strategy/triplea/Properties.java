@@ -237,9 +237,9 @@ public class Properties implements Constants
 	/*
 	 * Are allied aircraft dependents of CVs
 	 */
-	public static boolean getAlliedAirDependents(final GameData data)
+	public static boolean getAlliedAirIndependent(final GameData data)
 	{
-		return data.getProperties().get(ALLIED_AIR_DEPENDENTS, false);
+		return data.getProperties().get(ALLIED_AIR_INDEPENDENT, false);
 	}
 	
 	/*

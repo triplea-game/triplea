@@ -5269,8 +5269,8 @@
 			<boolean/>
 		</property>
 
-		<!-- required for all maps, ensures allied aircraft on carriers that are attacking don't attack also -->
-		<property name="Allied Air Dependents" value="true" editable="false">
+		<!-- if true, allied air on your carriers will participate in an attack -->
+		<property name="Allied Air Independent" value="false" editable="false">
 			<boolean/>
 		</property>
 
