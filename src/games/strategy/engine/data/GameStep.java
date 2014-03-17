@@ -53,7 +53,8 @@ public class GameStep extends GameDataComponent
 	public static final String PROPERTY_repairUnits = "repairUnits";
 	public static final String PROPERTY_giveBonusMovement = "giveBonusMovement";
 	public static final String PROPERTY_removeAirThatCanNotLand = "removeAirThatCanNotLand";
-	public static final String PROPERTY_resetUnitState = "resetUnitState";
+	public static final String PROPERTY_resetUnitStateAtStart = "resetUnitStateAtStart";
+	public static final String PROPERTY_resetUnitStateAtEnd = "resetUnitStateAtEnd";
 	public static final String PROPERTY_bid = "bid";
 	public static final String PROPERTY_combinedTurns = "combinedTurns";
 	
@@ -163,7 +164,8 @@ public class GameStep extends GameDataComponent
 	 * Move & EndTurn delegates -> repairUnits = true/false<br>
 	 * Move delegates -> giveBonusMovement = true/false<br>
 	 * Move & Place delegates -> removeAirThatCanNotLand = true/false<br>
-	 * Move delegates -> resetUnitState = true/false<br>
+	 * Move delegates -> resetUnitStateAtStart = true/false<br>
+	 * Move delegates -> resetUnitStateAtEnd = true/false<br>
 	 * Purchase & Place delegates -> bid = true/false<br>
 	 * Move delegates -> combinedTurns = colon separated list of players which have intermeshed phases<br>
 	 */

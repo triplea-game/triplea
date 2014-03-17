@@ -296,15 +296,36 @@ public class GameStepPropertiesHelper
 	}
 	
 	/**
-	 * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of noncombat move phase.
+	 * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally does not occur.
 	 */
-	public static boolean isResetUnitState(final GameData data)
+	public static boolean isResetUnitStateAtStart(final GameData data)
 	{
 		final boolean isReset;
 		data.acquireReadLock();
 		try
 		{
-			final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitState);
+			final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
+			if (prop != null)
+				isReset = Boolean.parseBoolean(prop);
+			else
+				isReset = false;
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		return isReset;
+	}
+
+	/**
+	 * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of noncombat move phase.
+	 */
+	public static boolean isResetUnitStateAtEnd(final GameData data)
+	{
+		final boolean isReset;
+		data.acquireReadLock();
+		try
+		{
+			final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtEnd);
 			if (prop != null)
 				isReset = Boolean.parseBoolean(prop);
 			else if (isNonCombatDelegate(data))

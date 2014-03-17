@@ -678,7 +678,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			}
 			for (final PlayerID p : enemyPlayers)
 			{
-				enemyUnitsOfAbandonedToUnits.addAll(territory.getUnits().getMatches(Matches.unitIsEnemyOf(data, p)));
+				final CompositeMatchAnd<Unit> canPreventCapture = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, p), Matches.UnitIsNotAir, Matches.UnitIsNotInfrastructure);
+				enemyUnitsOfAbandonedToUnits.addAll(territory.getUnits().getMatches(canPreventCapture));
 			}
 			// only look at bombing battles, because otherwise the normal attack will determine the ownership of the territory
 			final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true, null);

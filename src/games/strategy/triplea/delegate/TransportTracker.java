@@ -33,7 +33,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -259,40 +258,6 @@ public class TransportTracker
 		final int used = getCost(transporting(unit));
 		final int unloaded = getCost(unloaded(unit));
 		return capacity - used - unloaded;
-	}
-	
-	public static Change endOfRoundClearStateChange(final GameData data)
-	{
-		final CompositeChange change = new CompositeChange();
-		for (final Unit unit : data.getUnits().getUnits())
-		{
-			final TripleAUnit taUnit = (TripleAUnit) unit;
-			if (!taUnit.getUnloaded().isEmpty())
-			{
-				change.add(ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
-			}
-			if (taUnit.getWasLoadedThisTurn())
-			{
-				change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
-			}
-			if (taUnit.getUnloadedTo() != null)
-			{
-				change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.UNLOADED_TO));
-			}
-			if (taUnit.getWasUnloadedInCombatPhase())
-			{
-				change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
-			}
-			if (taUnit.getWasInCombat())
-			{
-				change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.WAS_IN_COMBAT));
-			}
-			if (taUnit.getWasAmphibious())
-			{
-				change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
-			}
-		}
-		return change;
 	}
 	
 	public static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units)

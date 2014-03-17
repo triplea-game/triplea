@@ -2669,7 +2669,7 @@ public class Matches
 				if (t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull())
 					return false;
 				final Set<PlayerID> enemies = new HashSet<PlayerID>();
-				for (final Unit u : t.getUnits().getMatches(new CompositeMatchAnd<Unit>(enemyUnit(player, data), UnitIsNotAir)))
+				for (final Unit u : t.getUnits().getMatches(new CompositeMatchAnd<Unit>(enemyUnit(player, data), UnitIsNotAir, UnitIsNotInfrastructure)))
 				{
 					enemies.add(u.getOwner());
 				}

@@ -705,7 +705,8 @@
 							nonCombatMove 				= true/false do we have combat before this phase? this will affect movement validation. (default is true if delegate ends with "NonCombatMove")
 							fireRockets 				= true/false (default depends on game option [ww2v2 and ww2v3 have this after delegates that end with "CombatMove" but not "NonCombatMove"])
 							giveBonusMovement 			= true/false resets and gives bonus movement (default is true at start of phase if delegate ends with "CombatMove" but not "NonCombatMove")
-							resetUnitState 				= true/false resets movement points and other unit states such as submerged, amphibious, unload/load, etc. (default at end of phase depends if delegate ends with "NonCombatMove")
+							resetUnitStateAtEnd 		= true/false at end of phase will resets movement points and other unit states such as submerged, amphibious, unload/load, wasInCombat, etc. (default at end of phase depends if delegate ends with "NonCombatMove")
+							resetUnitStateAtStart 		= true/false at start of phase will resets movement points and other unit states such as submerged, amphibious, unload/load, wasInCombat, etc. (default is false)
 							repairUnits 				= true/false will repair own or all damaged units (default depends on game option, but would normally be start of combat move)
 							removeAirThatCanNotLand 	= true/false will kill all air units that can not land, but will make an exception for air by factories if a carrier was purchased for maps using v3/lhtr rules (default is true at end of phase)
 							skipPosting 				= true/false (default is false). Do we skip the Play-by-Email/Play-by-Forum turn summary and savegame Posting?

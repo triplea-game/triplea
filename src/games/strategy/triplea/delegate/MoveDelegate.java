@@ -67,7 +67,7 @@ import java.util.Set;
  */
 public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 {
-	public static String CLEANING_UP_AFTER_MOVEMENT_PHASES = "Cleaning up after movement phases";
+	public static String CLEANING_UP_DURING_MOVEMENT_PHASE = "Cleaning up during movement phase";
 	private boolean m_needToInitialize = true; // needToInitialize means we only do certain things once, so that if a game is saved then loaded, they aren't done again
 	private boolean m_needToDoRockets = true;
 	private IntegerMap<Territory> m_PUsLost = new IntegerMap<Territory>();
@@ -181,6 +181,11 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				}
 			}
 			
+			if (GameStepPropertiesHelper.isResetUnitStateAtStart(data))
+			{
+				resetUnitState();
+			}
+			
 			m_needToInitialize = false;
 		}
 	}
@@ -206,42 +211,10 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				m_needToDoRockets = false;
 			}
 		}
-		final CompositeChange change = new CompositeChange();
 		// do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round, while loading.
-		if (GameStepPropertiesHelper.isResetUnitState(data))
+		if (GameStepPropertiesHelper.isResetUnitStateAtEnd(data))
 		{
-			for (final Unit u : data.getUnits())
-			{
-				if (TripleAUnit.get(u).getAlreadyMoved() != 0)
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
-				}
-				if (TripleAUnit.get(u).getBonusMovement() != 0)
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
-				}
-				if (TripleAUnit.get(u).getSubmerged())
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
-				}
-				if (TripleAUnit.get(u).getAirborne())
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.AIRBORNE));
-				}
-				if (TripleAUnit.get(u).getLaunched() != 0)
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.LAUNCHED));
-				}
-			}
-			change.add(TransportTracker.endOfRoundClearStateChange(data));
-			m_PUsLost.clear();
-		}
-		if (!change.isEmpty())
-		{
-			// if no non-combat occurred, we may have cleanup left from combat
-			// that we need to spawn an event for
-			m_bridge.getHistoryWriter().startEvent(CLEANING_UP_AFTER_MOVEMENT_PHASES);
-			m_bridge.addChange(change);
+			resetUnitState();
 		}
 		m_needToInitialize = true;
 		m_needToDoRockets = true;
@@ -313,6 +286,70 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		if (!change.isEmpty())
 		{
 			m_bridge.getHistoryWriter().startEvent("Reseting Bonus Movement of Units");
+			m_bridge.addChange(change);
+		}
+	}
+	
+	private void resetUnitState()
+	{
+		m_PUsLost.clear(); // while not a 'unit state', this is fine here for now. since we only have one instance of this delegate, as long as it gets cleared once per player's turn block, we are fine.
+		final GameData data = getData();
+		final CompositeChange change = new CompositeChange();
+		for (final Unit u : data.getUnits())
+		{
+			final TripleAUnit taUnit = TripleAUnit.get(u);
+			if (taUnit.getAlreadyMoved() != 0)
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
+			}
+			if (taUnit.getWasInCombat())
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_COMBAT));
+			}
+			/* we now do this at the start of the combat delegate, and have a phase step property option for it too:
+			if (taUnit.getBonusMovement() != 0)
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
+			}*/
+			if (taUnit.getSubmerged())
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
+			}
+			if (taUnit.getAirborne())
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.AIRBORNE));
+			}
+			if (taUnit.getLaunched() != 0)
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.LAUNCHED));
+			}
+			if (!taUnit.getUnloaded().isEmpty())
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
+			}
+			if (taUnit.getWasLoadedThisTurn())
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.LOADED_THIS_TURN));
+			}
+			if (taUnit.getUnloadedTo() != null)
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.UNLOADED_TO));
+			}
+			if (taUnit.getWasUnloadedInCombatPhase())
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+			}
+			if (taUnit.getWasAmphibious())
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
+			}
+		}
+		
+		if (!change.isEmpty())
+		{
+			// if no non-combat occurred, we may have cleanup left from combat
+			// that we need to spawn an event for
+			m_bridge.getHistoryWriter().startEvent(CLEANING_UP_DURING_MOVEMENT_PHASE);
 			m_bridge.addChange(change);
 		}
 	}

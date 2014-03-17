@@ -375,7 +375,7 @@ public class HistoryLog extends JFrame
 						if (title.equals("Adding original owners"))
 						{
 						}
-						else if (title.equals(MoveDelegate.CLEANING_UP_AFTER_MOVEMENT_PHASES))
+						else if (title.equals(MoveDelegate.CLEANING_UP_DURING_MOVEMENT_PHASE))
 						{
 						}
 						else if (title.equals("Game Loaded"))
