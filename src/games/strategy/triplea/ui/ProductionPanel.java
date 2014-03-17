@@ -364,9 +364,9 @@ public class ProductionPanel extends JPanel
 			final int numberOfUnitsGiven = m_rule.getResults().totalValues();
 			String text;
 			if (numberOfUnitsGiven > 1)
-				text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "<br>" + "for " + numberOfUnitsGiven + "<br>" + " units</html>";
+				text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "<br>" + "for " + numberOfUnitsGiven + "<br>" + " units</html>";
 			else
-				text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
+				text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 			final String toolTipText = "<html>" + tooltip.toString() + "</html>";
 			info.setToolTipText(toolTipText);

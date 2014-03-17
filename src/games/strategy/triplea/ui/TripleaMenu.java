@@ -18,6 +18,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -36,15 +37,18 @@ import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.util.LocalizeHTML;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -54,9 +58,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -72,6 +80,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -82,6 +91,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -131,6 +141,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
 	{
 		addMoveHelpMenu(helpMenu);
+		addUnitHelpMenu(helpMenu);
 	}
 	
 	/**
@@ -179,6 +190,113 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				JOptionPane.showMessageDialog(m_frame, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
 			}
 		}).setMnemonic(KeyEvent.VK_M);
+	}
+	
+	private void addUnitHelpMenu(final JMenu parentMenu)
+	{
+		parentMenu.add(new AbstractAction("Unit help...")
+		{
+			private static final long serialVersionUID = 6388976552644695135L;
+			
+			private String getUnitImageURL(final UnitType unitType, final PlayerID player)
+			{
+				final UnitImageFactory unitImageFactory = getUIContext().getUnitImageFactory();
+				if (player == null || unitImageFactory == null)
+				{
+					return "no image";
+				}
+				return "<img src=\"" + unitImageFactory.getBaseImageURL(unitType.getName(), player).toString() + "\" border=\"0\"/>";
+			}
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				// html formatted string
+				int i = 0;
+				final String color1 = "ABABAB";
+				final String color2 = "BDBDBD";
+				final String color3 = "FEECE2";
+				final Map<PlayerID, Map<UnitType, ResourceCollection>> costs = BattleCalculator.getResourceCostsForTUV(getData(), true);
+				final StringBuilder hints = new StringBuilder();
+				hints.append("<html>");
+				for (final Entry<PlayerID, List<UnitType>> entry : UnitType.getAllPlayerUnitsWithImages(getData(), getUIContext(), true).entrySet())
+				{
+					final PlayerID player = entry.getKey();
+					hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
+					hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">" + (player == null ? "NULL" : player.getName()) + " Units</th></tr>");
+					hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + "><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
+					for (final UnitType ut : entry.getValue())
+					{
+						i++;
+						hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
+									+ "<td>" + getUnitImageURL(ut, player) + "</td>"
+									+ "<td>" + ut.getName() + "</td>"
+									+ "<td>" + costs.get(player).get(ut).toStringForHTML() + "</td>"
+									+ "<td>" + ut.getTooltip(player, true) + "</td></tr>");
+					}
+					i++;
+					hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
+								+ "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
+				}
+				hints.append("</html>");
+				final JEditorPane editorPane = new JEditorPane();
+				editorPane.setEditable(false);
+				editorPane.setContentType("text/html");
+				editorPane.setText(hints.toString());
+				editorPane.setCaretPosition(0);
+				final JScrollPane scroll = new JScrollPane(editorPane);
+				scroll.setBorder(BorderFactory.createEmptyBorder());
+				final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+				final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to account for
+				final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
+				scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth :
+							(scroll.getPreferredSize().height > availHeight ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
+							(scroll.getPreferredSize().height > availHeight ? availHeight :
+										(scroll.getPreferredSize().width > availWidth ? Math.min(availHeight, scroll.getPreferredSize().height + 22) : scroll.getPreferredSize().height))));
+				try
+				{
+					final StringSelection stringSelection = new StringSelection(hints.toString()
+								.replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n").replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
+					final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clipboard.setContents(stringSelection, null);
+				} catch (final Exception ex)
+				{
+				}
+				final JDialog dialog = new JDialog(m_frame);
+				dialog.setModal(false);
+				// dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
+				dialog.setAlwaysOnTop(true);
+				dialog.add(scroll, BorderLayout.CENTER);
+				final JPanel buttons = new JPanel();
+				final JButton button = new JButton(new AbstractAction("OK")
+				{
+					private static final long serialVersionUID = -6628015175043647980L;
+					
+					public void actionPerformed(final ActionEvent e)
+					{
+						dialog.setVisible(false);
+						dialog.removeAll();
+						dialog.dispose();
+					}
+				});
+				buttons.add(button);
+				dialog.getRootPane().setDefaultButton(button);
+				dialog.add(buttons, BorderLayout.SOUTH);
+				dialog.pack();
+				dialog.setLocationRelativeTo(m_frame);
+				dialog.addWindowListener(new WindowAdapter()
+				{
+					@Override
+					public void windowOpened(final WindowEvent e)
+					{
+						scroll.getVerticalScrollBar().getModel().setValue(0);
+						scroll.getHorizontalScrollBar().getModel().setValue(0);
+						button.requestFocus();
+					}
+				});
+				dialog.setVisible(true);
+				// dialog.dispose();
+			}
+		}).setMnemonic(KeyEvent.VK_U);
 	}
 	
 	@Override

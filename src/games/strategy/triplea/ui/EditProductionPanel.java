@@ -25,6 +25,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.util.IntegerMap;
 
 import java.awt.Image;
@@ -123,18 +124,22 @@ public class EditProductionPanel extends ProductionPanel
 				{
 					try
 					{
-						final Image unitImage = m_uiContext.getUnitImageFactory().getImage(ut, player, data, false, false);
-						if (unitImage != null)
+						final UnitImageFactory imageFactory = m_uiContext.getUnitImageFactory();
+						if (imageFactory != null)
 						{
-							unitsAllowed.add(ut);
-							final IntegerMap<NamedAttachable> result = new IntegerMap<NamedAttachable>();
-							result.add(ut, 1);
-							final IntegerMap<Resource> cost = new IntegerMap<Resource>();
-							cost.add(data.getResourceList().getResource(Constants.PUS), 1);
-							final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
-							final Rule rule = new Rule(newRule, player);
-							rule.setQuantity(0);
-							m_rules.add(rule);
+							final Image unitImage = imageFactory.getImage(ut, player, data, false, false);
+							if (unitImage != null)
+							{
+								unitsAllowed.add(ut);
+								final IntegerMap<NamedAttachable> result = new IntegerMap<NamedAttachable>();
+								result.add(ut, 1);
+								final IntegerMap<Resource> cost = new IntegerMap<Resource>();
+								cost.add(data.getResourceList().getResource(Constants.PUS), 1);
+								final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
+								final Rule rule = new Rule(newRule, player);
+								rule.setQuantity(0);
+								m_rules.add(rule);
+							}
 						}
 					} catch (final Exception e)
 					{ // ignore

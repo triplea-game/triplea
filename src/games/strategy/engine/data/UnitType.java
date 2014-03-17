@@ -20,12 +20,20 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.util.LocalizeHTML;
 
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 
@@ -109,7 +117,7 @@ public class UnitType extends NamedAttachable implements Serializable
 		final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
 		if (customTip == null || customTip.trim().length() <= 0)
 		{
-			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(playerId, useHTML, false);
+			return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId), useHTML, false);
 			/*for(IAttachment at:this.getAttachments().values()) {
 				try {
 					UnitAttachment ut = (UnitAttachment) at;
@@ -124,5 +132,111 @@ public class UnitType extends NamedAttachable implements Serializable
 		{
 			return LocalizeHTML.localizeImgLinksInHTML(customTip.trim());
 		}
+	}
+	
+	/**
+	 * Will return a key of NULL for any units which we do not have art for.
+	 */
+	public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data, final IUIContext uiContext, final boolean forceIncludeNeutralPlayer)
+	{
+		final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<PlayerID, List<UnitType>>();
+		data.acquireReadLock();
+		try
+		{
+			for (final PlayerID p : data.getPlayerList().getPlayers())
+			{
+				rVal.put(p, getPlayerUnitsWithImages(p, data, uiContext));
+			}
+			final HashSet<UnitType> unitsSoFar = new HashSet<UnitType>();
+			for (final List<UnitType> l : rVal.values())
+			{
+				unitsSoFar.addAll(l);
+			}
+			final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
+			all.removeAll(unitsSoFar);
+			if (forceIncludeNeutralPlayer || !all.isEmpty())
+			{
+				rVal.put(PlayerID.NULL_PLAYERID, getPlayerUnitsWithImages(PlayerID.NULL_PLAYERID, data, uiContext));
+				unitsSoFar.addAll(rVal.get(PlayerID.NULL_PLAYERID));
+				all.removeAll(unitsSoFar);
+				if (!all.isEmpty())
+				{
+					rVal.put(null, new ArrayList<UnitType>(all));
+				}
+			}
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		return rVal;
+	}
+	
+	public static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data, final IUIContext uiContext)
+	{
+		final ArrayList<UnitType> rVal = new ArrayList<UnitType>();
+		data.acquireReadLock();
+		try
+		{
+			// add first based on current production ability
+			if (player.getProductionFrontier() != null)
+			{
+				for (final ProductionRule productionRule : player.getProductionFrontier())
+				{
+					for (final Entry<NamedAttachable, Integer> entry : productionRule.getResults().entrySet())
+					{
+						if (UnitType.class.isAssignableFrom(entry.getKey().getClass()))
+						{
+							final UnitType ut = (UnitType) entry.getKey();
+							if (!rVal.contains(ut))
+								rVal.add(ut);
+						}
+					}
+				}
+			}
+			// this next part is purely to allow people to "add" neutral (null player) units to territories.
+			// This is because the null player does not have a production frontier, and we also do not know what units we have art for, so only use the units on a map.
+			for (final Territory t : data.getMap())
+			{
+				for (final Unit u : t.getUnits())
+				{
+					if (u.getOwner().equals(player))
+					{
+						final UnitType ut = u.getType();
+						if (!rVal.contains(ut))
+						{
+							rVal.add(ut);
+						}
+					}
+				}
+			}
+			// now check if we have the art for anything that is left
+			for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes())
+			{
+				if (!rVal.contains(ut))
+				{
+					try
+					{
+						final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
+						if (imageFactory != null)
+						{
+							final Image unitImage = imageFactory.getImage(ut, player, data, false, false);
+							if (unitImage != null)
+							{
+								if (!rVal.contains(ut))
+								{
+									rVal.add(ut);
+								}
+							}
+						}
+					} catch (final Exception e)
+					{ // ignore
+					}
+				}
+			}
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		return rVal;
 	}
 }

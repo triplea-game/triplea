@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -45,6 +46,15 @@ public class ResourceCollection extends GameDataComponent
 	{
 		super(other.getData());
 		m_resources.add(other.m_resources);
+	}
+	
+	public ResourceCollection(final ResourceCollection[] others, final GameData data)
+	{
+		super(data);
+		for (final ResourceCollection other : others)
+		{
+			m_resources.add(other.m_resources);
+		}
 	}
 	
 	public ResourceCollection(final GameData data, final IntegerMap<Resource> resources)
@@ -234,40 +244,48 @@ public class ResourceCollection extends GameDataComponent
 	@Override
 	public String toString()
 	{
-		return toString(m_resources);
+		return toString(m_resources, getData(), ", ");
 	}
 	
-	public static String toString(final IntegerMap<Resource> resources)
+	public static String toString(final IntegerMap<Resource> resources, final GameData data, final String lineSeparator)
 	{
-		String returnString = "";
+		final StringBuilder sb = new StringBuilder();
+		final Resource pus;
+		data.acquireReadLock();
+		try
+		{
+			pus = data.getResourceList().getResource(Constants.PUS);
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		if (resources.getInt(pus) != 0)
+		{
+			sb.append(lineSeparator);
+			sb.append(resources.getInt(pus));
+			sb.append(" ");
+			sb.append(pus.getName());
+		}
 		for (final Resource resource : resources.keySet())
 		{
-			returnString += ", ";
-			returnString += resources.getInt(resource);
-			returnString += " " + resource.getName();
+			if (resource.equals(pus))
+				continue;
+			sb.append(lineSeparator);
+			sb.append(resources.getInt(resource));
+			sb.append(" ");
+			sb.append(resource.getName());
 		}
-		if (returnString.length() > 0 && returnString.startsWith(", "))
-			returnString = returnString.replaceFirst(", ", "");
-		return returnString;
+		return sb.toString().replaceFirst(lineSeparator, "");
 	}
 	
 	public String toStringForHTML()
 	{
-		return toStringForHTML(m_resources);
+		return toStringForHTML(m_resources, getData());
 	}
 	
-	public static String toStringForHTML(final IntegerMap<Resource> resources)
+	public static String toStringForHTML(final IntegerMap<Resource> resources, final GameData data)
 	{
-		String returnString = "";
-		for (final Resource resource : resources.keySet())
-		{
-			returnString += "<br>";
-			returnString += resources.getInt(resource);
-			returnString += " " + resource.getName();
-		}
-		if (returnString.length() > 0 && returnString.startsWith("<br>"))
-			returnString = returnString.replaceFirst("<br>", "");
-		return returnString;
+		return toString(resources, data, "<br />");
 	}
 	
 	/**

@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Created an new menu option under the 'Help' menu called "Unit Help", which will display a table of all units, by player, including all unit properties. (veqryn)
+
 * Fixed bug in relationship attachment property change by trigger. (veqryn)
 
 * Deleting phase step property option, "resetUnitState", and replacing with "resetUnitStateAtEnd" and "resetUnitStateAtStart". (frogg)

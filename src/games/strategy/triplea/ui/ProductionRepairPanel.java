@@ -317,7 +317,7 @@ public class ProductionRepairPanel extends JPanel
 			m_repairResults = rule.getResults().getInt(type);
 			final TripleAUnit taUnit = (TripleAUnit) repairUnit;
 			final Icon icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasTakenSomeBombingUnitDamage.match(repairUnit), Matches.UnitIsDisabled.match(repairUnit));
-			final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
+			final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, m_data) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 			final JLabel info = new JLabel(territoryUnitIsIn.getName());
 			m_maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);

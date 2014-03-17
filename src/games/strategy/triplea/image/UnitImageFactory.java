@@ -178,7 +178,7 @@ public class UnitImageFactory
 		{
 			return m_images.get(fullName);
 		}
-		final Image baseImage = getBaseImage(baseName, player, damaged);
+		final Image baseImage = getBaseImage(baseName, player);
 		// We want to scale units according to the given scale factor.
 		// We use smooth scaling since the images are cached to allow
 		// to take our time in doing the scaling.
@@ -199,14 +199,24 @@ public class UnitImageFactory
 		return scaledImage;
 	}
 	
-	private Image getBaseImage(final String baseImageName, final PlayerID id, final boolean damaged)
+	public URL getBaseImageURL(final String baseImageName, final PlayerID id)
+	{
+		return getBaseImageURL(baseImageName, id, m_resourceLoader);
+	}
+	
+	public static URL getBaseImageURL(final String baseImageName, final PlayerID id, final ResourceLoader resourceLoader)
 	{
 		// URL uses '/' not '\'
 		final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
-		final URL url = m_resourceLoader.getResource(fileName);
+		final URL url = resourceLoader.getResource(fileName);
 		if (url == null)
 			throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
-		final Image image = Toolkit.getDefaultToolkit().getImage(url);
+		return url;
+	}
+	
+	private Image getBaseImage(final String baseImageName, final PlayerID id)
+	{
+		final Image image = Toolkit.getDefaultToolkit().getImage(getBaseImageURL(baseImageName, id));
 		try
 		{
 			Util.ensureImageLoaded(image);
@@ -244,13 +254,13 @@ public class UnitImageFactory
 		{
 			return m_icons.get(fullName);
 		}
-		final Image img = getBaseImage(baseName, player, damaged);
+		final Image img = getBaseImage(baseName, player);
 		final ImageIcon icon = new ImageIcon(img);
 		m_icons.put(fullName, icon);
 		return icon;
 	}
 	
-	public String getBaseImageName(final UnitType type, final PlayerID id, final GameData data, final boolean damaged, final boolean disabled)
+	public static String getBaseImageName(final UnitType type, final PlayerID id, final GameData data, final boolean damaged, final boolean disabled)
 	{
 		StringBuilder name = new StringBuilder(32);
 		name.append(type.getName());

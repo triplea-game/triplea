@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,7 +96,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 	 * 
 	 * @return a new arraylist copy of the players
 	 */
-	public Collection<PlayerID> getPlayers()
+	public List<PlayerID> getPlayers()
 	{
 		return new ArrayList<PlayerID>(m_players.values());
 	}

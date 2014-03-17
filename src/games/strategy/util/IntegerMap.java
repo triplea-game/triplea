@@ -80,6 +80,21 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		}
 	}
 	
+	/**
+	 * This will make a new IntegerMap.
+	 * The Objects will be linked, but the integers mapped to them will not be linked.
+	 * 
+	 * @param integerMap
+	 */
+	public IntegerMap(final IntegerMap<T>[] integerMaps)
+	{
+		m_values = new HashMap<T, Integer>();
+		for (final IntegerMap<T> integerMap : integerMaps)
+		{
+			this.add(integerMap);
+		}
+	}
+	
 	public int size()
 	{
 		return m_values.size();

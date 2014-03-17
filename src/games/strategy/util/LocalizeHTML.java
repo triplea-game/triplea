@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
  */
 public class LocalizeHTML
 {
-	private static final String ASSET_IMAGE_FOLDER = "doc/images/";
-	private static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
+	public static final String ASSET_IMAGE_FOLDER = "doc/images/";
+	public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
 	/*
 	 * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a> tags.  
 	 * But there isn't, and the internet seems to give million different answers, none of which work perfectly.
@@ -39,7 +39,7 @@ public class LocalizeHTML
 		              (.*?)			#				match anything
 		                   </a>		#					end with "</a>
 	*/
-	private static final String PATTERN_HTML_A_TAG = "(?i)<a([^>]+)>(.*?)</a>";
+	public static final String PATTERN_HTML_A_TAG = "(?i)<a([^>]+)>(.*?)</a>";
 	
 	/* Match the href attribute.
 		\s*													#	can start with whitespace
@@ -54,13 +54,13 @@ public class LocalizeHTML
 		                                     ([^'">]+)		#						can't contains one single quotes, double quotes ">"
 			                                          )		#					end of group #1
 	*/
-	private static final String PATTERN_HTML_A_HREF_TAG = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+	public static final String PATTERN_HTML_A_HREF_TAG = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 	
 	/* Match the <img /> tag */
-	private static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
+	public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
 	
 	/* Match the src attribute */
-	private static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+	public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 	
 	public static List<String> getAllAhrefLinksFromHTML(final String htmlText)
 	{

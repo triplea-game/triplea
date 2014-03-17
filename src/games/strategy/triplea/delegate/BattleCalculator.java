@@ -25,6 +25,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -57,8 +58,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -1021,6 +1024,193 @@ public class BattleCalculator
 		}
 		// s_costsForTuvForAllPlayersMergedAndAveraged = costs; //There is a problem with this variable, that it isn't being cleared out when we switch maps.
 		return costs;
+	}
+	
+	/**
+	 * Return map where keys are unit types and values are resource costs of that unit type, based on a player.
+	 * 
+	 * Any production rule that produces multiple units
+	 * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
+	 * will have their costs rounded up on a per unit basis.
+	 * Therefore, this map should NOT be used for Purchasing information!
+	 * 
+	 * @param data
+	 * @param includeAverageForMissingUnits
+	 * @return
+	 */
+	public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTUV(final GameData data, final boolean includeAverageForMissingUnits)
+	{
+		final LinkedHashMap<PlayerID, Map<UnitType, ResourceCollection>> rVal = new LinkedHashMap<PlayerID, Map<UnitType, ResourceCollection>>();
+		final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits ? getResourceCostsForTUVForAllPlayersMergedAndAveraged(data) : new HashMap<UnitType, ResourceCollection>();
+		final List<PlayerID> players = data.getPlayerList().getPlayers();
+		players.add(PlayerID.NULL_PLAYERID);
+		for (final PlayerID p : players)
+		{
+			final ProductionFrontier frontier = p.getProductionFrontier();
+			// any one will do then
+			if (frontier == null)
+			{
+				rVal.put(p, average);
+				continue;
+			}
+			Map<UnitType, ResourceCollection> current = rVal.get(p);
+			if (current == null)
+			{
+				current = new LinkedHashMap<UnitType, ResourceCollection>();
+				rVal.put(p, current);
+			}
+			for (final ProductionRule rule : frontier.getRules())
+			{
+				if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null || rule.getCosts().isEmpty())
+					continue;
+				final IntegerMap<NamedAttachable> unitMap = rule.getResults();
+				final ResourceCollection costPerGroup = new ResourceCollection(data, rule.getCosts());
+				final Set<UnitType> units = new HashSet<UnitType>();
+				for (final NamedAttachable resourceOrUnit : unitMap.keySet())
+				{
+					if (!(resourceOrUnit instanceof UnitType))
+						continue;
+					units.add((UnitType) resourceOrUnit);
+				}
+				if (units.isEmpty())
+					continue;
+				final int totalProduced = unitMap.totalValues();
+				if (totalProduced == 1)
+				{
+					current.put(units.iterator().next(), costPerGroup);
+				}
+				else if (totalProduced > 1)
+				{
+					costPerGroup.discount((double) 1 / (double) totalProduced);
+					for (final UnitType ut : units)
+					{
+						current.put(ut, costPerGroup);
+					}
+				}
+			}
+			// since our production frontier may not cover all the units we control, and not the enemy units,
+			// we will add any unit types not in our list, based on the list for everyone
+			for (final UnitType ut : average.keySet())
+			{
+				if (!current.keySet().contains(ut))
+					current.put(ut, average.get(ut));
+			}
+		}
+		rVal.put(null, average);
+		return rVal;
+	}
+	
+	/**
+	 * Return a map where key are unit types and values are the AVERAGED for all players.
+	 * 
+	 * Any production rule that produces multiple units
+	 * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
+	 * will have their costs rounded up on a per unit basis.
+	 * Therefore, this map should NOT be used for Purchasing information!
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(final GameData data)
+	{
+		final Map<UnitType, ResourceCollection> average = new HashMap<UnitType, ResourceCollection>();
+		final Resource PUS;
+		data.acquireReadLock();
+		try
+		{
+			PUS = data.getResourceList().getResource(Constants.PUS);
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		final IntegerMap<Resource> defaultMap = new IntegerMap<Resource>();
+		defaultMap.put(PUS, 1);
+		final ResourceCollection defaultResources = new ResourceCollection(data, defaultMap);
+		final Map<UnitType, List<ResourceCollection>> backups = new HashMap<UnitType, List<ResourceCollection>>();
+		final Map<UnitType, ResourceCollection> backupAveraged = new HashMap<UnitType, ResourceCollection>();
+		for (final ProductionRule rule : data.getProductionRuleList().getProductionRules())
+		{
+			if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null || rule.getCosts().isEmpty())
+				continue;
+			final IntegerMap<NamedAttachable> unitMap = rule.getResults();
+			final ResourceCollection costPerGroup = new ResourceCollection(data, rule.getCosts());
+			final Set<UnitType> units = new HashSet<UnitType>();
+			for (final NamedAttachable resourceOrUnit : unitMap.keySet())
+			{
+				if (!(resourceOrUnit instanceof UnitType))
+					continue;
+				units.add((UnitType) resourceOrUnit);
+			}
+			if (units.isEmpty())
+				continue;
+			final int totalProduced = unitMap.totalValues();
+			if (totalProduced == 1)
+			{
+				final UnitType ut = units.iterator().next();
+				List<ResourceCollection> current = backups.get(ut);
+				if (current == null)
+				{
+					current = new ArrayList<ResourceCollection>();
+					backups.put(ut, current);
+				}
+				current.add(costPerGroup);
+			}
+			else if (totalProduced > 1)
+			{
+				costPerGroup.discount((double) 1 / (double) totalProduced);
+				for (final UnitType ut : units)
+				{
+					List<ResourceCollection> current = backups.get(ut);
+					if (current == null)
+					{
+						current = new ArrayList<ResourceCollection>();
+						backups.put(ut, current);
+					}
+					current.add(costPerGroup);
+				}
+			}
+		}
+		for (final Entry<UnitType, List<ResourceCollection>> entry : backups.entrySet())
+		{
+			final ResourceCollection avgCost = new ResourceCollection(entry.getValue().toArray(new ResourceCollection[entry.getValue().size()]), data);
+			if (entry.getValue().size() > 1)
+			{
+				avgCost.discount((double) 1 / (double) entry.getValue().size());
+			}
+			backupAveraged.put(entry.getKey(), avgCost);
+		}
+		final Map<PlayerID, Map<UnitType, ResourceCollection>> allPlayersCurrent = getResourceCostsForTUV(data, false);
+		allPlayersCurrent.remove(null);
+		for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes())
+		{
+			final List<ResourceCollection> costs = new ArrayList<ResourceCollection>();
+			for (final Map<UnitType, ResourceCollection> entry : allPlayersCurrent.values())
+			{
+				if (entry.get(ut) != null)
+				{
+					costs.add(entry.get(ut));
+				}
+			}
+			if (costs.isEmpty())
+			{
+				final ResourceCollection backup = backupAveraged.get(ut);
+				if (backup != null)
+				{
+					costs.add(backup);
+				}
+				else
+				{
+					costs.add(defaultResources);
+				}
+			}
+			final ResourceCollection avgCost = new ResourceCollection(costs.toArray(new ResourceCollection[costs.size()]), data);
+			if (costs.size() > 1)
+			{
+				avgCost.discount((double) 1 / (double) costs.size());
+			}
+			average.put(ut, avgCost);
+		}
+		return average;
 	}
 	
 	/**
