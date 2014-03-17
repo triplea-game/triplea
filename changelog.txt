@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Added menu option under 'Export" menu, called "Export Unit Charts", which will create an html document showing all units in the game and their properties and cost. (veqryn)
+
 * Created an new menu option under the 'Help' menu called "Unit Help", which will display a table of all units, by player, including all unit properties. (veqryn)
 
 * Fixed bug in relationship attachment property change by trigger. (veqryn)

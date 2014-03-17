@@ -58,8 +58,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -192,56 +190,61 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		}).setMnemonic(KeyEvent.VK_M);
 	}
 	
+	private String getUnitImageURL(final UnitType unitType, final PlayerID player)
+	{
+		final UnitImageFactory unitImageFactory = getUIContext().getUnitImageFactory();
+		if (player == null || unitImageFactory == null)
+		{
+			return "no image";
+		}
+		return "<img src=\"" + unitImageFactory.getBaseImageURL(unitType.getName(), player).toString() + "\" border=\"0\"/>";
+	}
+	
+	public String getUnitStatsTable()
+	{
+		// html formatted string
+		int i = 0;
+		final String color1 = "ABABAB";
+		final String color2 = "BDBDBD";
+		final String color3 = "FEECE2";
+		final Map<PlayerID, Map<UnitType, ResourceCollection>> costs = BattleCalculator.getResourceCostsForTUV(getData(), true);
+		final StringBuilder hints = new StringBuilder();
+		hints.append("<html>");
+		for (final Entry<PlayerID, List<UnitType>> entry : UnitType.getAllPlayerUnitsWithImages(getData(), getUIContext(), true).entrySet())
+		{
+			final PlayerID player = entry.getKey();
+			hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
+			hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">" + (player == null ? "NULL" : player.getName()) + " Units</th></tr>");
+			hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + "><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
+			for (final UnitType ut : entry.getValue())
+			{
+				i++;
+				hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
+							+ "<td>" + getUnitImageURL(ut, player) + "</td>"
+							+ "<td>" + ut.getName() + "</td>"
+							+ "<td>" + costs.get(player).get(ut).toStringForHTML() + "</td>"
+							+ "<td>" + ut.getTooltip(player, true) + "</td></tr>");
+			}
+			i++;
+			hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
+						+ "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
+		}
+		hints.append("</html>");
+		return hints.toString();
+	}
+	
 	private void addUnitHelpMenu(final JMenu parentMenu)
 	{
 		parentMenu.add(new AbstractAction("Unit help...")
 		{
 			private static final long serialVersionUID = 6388976552644695135L;
 			
-			private String getUnitImageURL(final UnitType unitType, final PlayerID player)
-			{
-				final UnitImageFactory unitImageFactory = getUIContext().getUnitImageFactory();
-				if (player == null || unitImageFactory == null)
-				{
-					return "no image";
-				}
-				return "<img src=\"" + unitImageFactory.getBaseImageURL(unitType.getName(), player).toString() + "\" border=\"0\"/>";
-			}
-			
 			public void actionPerformed(final ActionEvent e)
 			{
-				// html formatted string
-				int i = 0;
-				final String color1 = "ABABAB";
-				final String color2 = "BDBDBD";
-				final String color3 = "FEECE2";
-				final Map<PlayerID, Map<UnitType, ResourceCollection>> costs = BattleCalculator.getResourceCostsForTUV(getData(), true);
-				final StringBuilder hints = new StringBuilder();
-				hints.append("<html>");
-				for (final Entry<PlayerID, List<UnitType>> entry : UnitType.getAllPlayerUnitsWithImages(getData(), getUIContext(), true).entrySet())
-				{
-					final PlayerID player = entry.getKey();
-					hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
-					hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">" + (player == null ? "NULL" : player.getName()) + " Units</th></tr>");
-					hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + "><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
-					for (final UnitType ut : entry.getValue())
-					{
-						i++;
-						hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-									+ "<td>" + getUnitImageURL(ut, player) + "</td>"
-									+ "<td>" + ut.getName() + "</td>"
-									+ "<td>" + costs.get(player).get(ut).toStringForHTML() + "</td>"
-									+ "<td>" + ut.getTooltip(player, true) + "</td></tr>");
-					}
-					i++;
-					hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-								+ "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
-				}
-				hints.append("</html>");
 				final JEditorPane editorPane = new JEditorPane();
 				editorPane.setEditable(false);
 				editorPane.setContentType("text/html");
-				editorPane.setText(hints.toString());
+				editorPane.setText(getUnitStatsTable());
 				editorPane.setCaretPosition(0);
 				final JScrollPane scroll = new JScrollPane(editorPane);
 				scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -252,15 +255,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 							(scroll.getPreferredSize().height > availHeight ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
 							(scroll.getPreferredSize().height > availHeight ? availHeight :
 										(scroll.getPreferredSize().width > availWidth ? Math.min(availHeight, scroll.getPreferredSize().height + 22) : scroll.getPreferredSize().height))));
-				try
-				{
-					final StringSelection stringSelection = new StringSelection(hints.toString()
-								.replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n").replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
-					final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-					clipboard.setContents(stringSelection, null);
-				} catch (final Exception ex)
-				{
-				}
 				final JDialog dialog = new JDialog(m_frame);
 				dialog.setModal(false);
 				// dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
@@ -345,6 +339,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		addExportStats(menuGame);
 		addExportStatsFull(menuGame);
 		addExportSetupCharts(menuGame);
+		addExportUnitStats(menuGame);
 		addSaveScreenshot(menuGame);
 	}
 	
@@ -1258,6 +1253,44 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			e1.printStackTrace();
 		}
+	}
+	
+	private void addExportUnitStats(final JMenu parentMenu)
+	{
+		final JMenuItem menuFileExport = new JMenuItem(new AbstractAction("Export Unit Charts...")
+		{
+			private static final long serialVersionUID = 1596267069542201864L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final JFileChooser chooser = new JFileChooser();
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				final File rootDir = new File(System.getProperties().getProperty("user.dir"));
+				String defaultFileName = getData().getGameName() + "_unit_stats";
+				defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+				defaultFileName = defaultFileName + ".html";
+				chooser.setSelectedFile(new File(rootDir, defaultFileName));
+				if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
+					return;
+				try
+				{
+					final FileWriter writer = new FileWriter(chooser.getSelectedFile());
+					try
+					{
+						writer.write(getUnitStatsTable().toString().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n").replaceAll("</tr>", "</tr>\r\n")
+									.replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
+					} finally
+					{
+						writer.close();
+					}
+				} catch (final IOException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+		menuFileExport.setMnemonic(KeyEvent.VK_U);
+		parentMenu.add(menuFileExport);
 	}
 	
 	private void setWidgetActivation()
