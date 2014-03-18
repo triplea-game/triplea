@@ -297,7 +297,13 @@ public class ProductionPanel extends JPanel
 			return bidCollection;
 		}
 		else
+		{
+			if (m_id == null || m_id.isNull())
+			{
+				return new ResourceCollection(m_data);
+			}
 			return m_id.getResources();
+		}
 	}
 	
 	

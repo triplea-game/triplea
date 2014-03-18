@@ -1038,7 +1038,7 @@ public class MoveValidator
 	{
 		// neutrals we will overfly in the first place
 		final Collection<Territory> neutrals = MoveDelegate.getEmptyNeutral(route);
-		final int PUs = player.getResources().getQuantity(Constants.PUS);
+		final int PUs = (player == null || player.isNull()) ? 0 : player.getResources().getQuantity(Constants.PUS);
 		if (PUs < getNeutralCharge(data, neutrals.size()))
 			return result.setErrorReturnResult(TOO_POOR_TO_VIOLATE_NEUTRALITY);
 		return result;

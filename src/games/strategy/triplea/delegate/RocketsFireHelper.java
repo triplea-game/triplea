@@ -98,7 +98,8 @@ public class RocketsFireHelper
 		final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
 		if (rocketTerritories.isEmpty())
 		{
-			getRemote(bridge).reportMessage("No rockets to fire", "No rockets to fire");
+			bridge.getHistoryWriter().startEvent(player.getName() + " has no rockets to fire");
+			// getRemote(bridge).reportMessage("No rockets to fire", "No rockets to fire");
 			return;
 		}
 		if (isWW2V2(data) || isAllRocketsAttack(data))
@@ -139,7 +140,8 @@ public class RocketsFireHelper
 		}
 		if (targets.isEmpty())
 		{
-			getRemote(bridge).reportMessage("No targets to attack with rockets", "No targets to attack with rockets");
+			bridge.getHistoryWriter().startEvent(player.getName() + " has no targets to attack with rockets");
+			// getRemote(bridge).reportMessage("No targets to attack with rockets", "No targets to attack with rockets");
 			return;
 		}
 		final Territory attacked = getTarget(targets, player, bridge, null);
