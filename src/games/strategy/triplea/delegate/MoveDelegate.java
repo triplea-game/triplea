@@ -183,7 +183,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			
 			if (GameStepPropertiesHelper.isResetUnitStateAtStart(data))
 			{
-				resetUnitState();
+				resetUnitStateAndDelegateState();
 			}
 			
 			m_needToInitialize = false;
@@ -214,7 +214,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		// do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round, while loading.
 		if (GameStepPropertiesHelper.isResetUnitStateAtEnd(data))
 		{
-			resetUnitState();
+			resetUnitStateAndDelegateState();
 		}
 		m_needToInitialize = true;
 		m_needToDoRockets = true;
@@ -290,10 +290,21 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		}
 	}
 	
-	private void resetUnitState()
+	private void resetUnitStateAndDelegateState()
 	{
 		m_PUsLost.clear(); // while not a 'unit state', this is fine here for now. since we only have one instance of this delegate, as long as it gets cleared once per player's turn block, we are fine.
-		final GameData data = getData();
+		final Change change = getResetUnitStateChange(getData());
+		if (!change.isEmpty())
+		{
+			// if no non-combat occurred, we may have cleanup left from combat
+			// that we need to spawn an event for
+			m_bridge.getHistoryWriter().startEvent(CLEANING_UP_DURING_MOVEMENT_PHASE);
+			m_bridge.addChange(change);
+		}
+	}
+	
+	public static Change getResetUnitStateChange(final GameData data)
+	{
 		final CompositeChange change = new CompositeChange();
 		for (final Unit u : data.getUnits())
 		{
@@ -344,14 +355,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				change.add(ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
 			}
 		}
-		
-		if (!change.isEmpty())
-		{
-			// if no non-combat occurred, we may have cleanup left from combat
-			// that we need to spawn an event for
-			m_bridge.getHistoryWriter().startEvent(CLEANING_UP_DURING_MOVEMENT_PHASE);
-			m_bridge.addChange(change);
-		}
+		return change;
 	}
 	
 	private void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge aBridge, final PlayerID player)

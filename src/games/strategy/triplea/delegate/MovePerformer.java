@@ -313,7 +313,7 @@ public class MovePerformer implements Serializable
 		TerritoryAttachment taRouteEnd = null;
 		if (routeEnd != null)
 			taRouteEnd = TerritoryAttachment.get(routeEnd);
-		final Iterator<Unit> iter = units.iterator();
+		final Iterator<Unit> iter = Match.getMatches(units, Matches.unitIsOwnedBy(id)).iterator(); // only units owned by us need to be marked
 		final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
 		while (iter.hasNext())
 		{

@@ -1,4 +1,8 @@
 Changes for 1.8.0.3
+* Fixed issue with allied land units in friendly transports and allied air on friendly carriers losing their movement when their transport/carrier moved. (veqryn)
+
+* Fixing issue with allied land units starting game loaded on friendly transports, could not offload until at least one non-combat phase had passed. (veqryn)
+
 * Deleted global game option property, "Allied Air Dependents", and replaced with its inverse, "Allied Air Independent". (veqryn)
 
 * Added menu option under 'Export" menu, called "Export Unit Charts", which will create an html document showing all units in the game and their properties and cost. (veqryn)

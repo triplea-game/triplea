@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseTripleADelegate;
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -121,6 +122,22 @@ public class InitializationDelegate extends BaseTripleADelegate
 		initSkipUnusedBids(aBridge.getData());
 		initDeleteAssetsOfDisabledPlayers(aBridge);
 		initTransportedLandUnits(aBridge);
+		resetUnitState(aBridge);
+	}
+	
+	/**
+	 * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid of them.
+	 * 
+	 * @param aBridge
+	 */
+	private void resetUnitState(final IDelegateBridge aBridge)
+	{
+		final Change change = MoveDelegate.getResetUnitStateChange(getData());
+		if (!change.isEmpty())
+		{
+			m_bridge.getHistoryWriter().startEvent("Cleaning up unit state.");
+			m_bridge.addChange(change);
+		}
 	}
 	
 	/**
@@ -136,6 +153,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		// m_firstRun = false;
 		final GameData data = aBridge.getData();
 		// check every territory
+		boolean historyItemCreated = false;
 		final Iterator<Territory> allTerritories = data.getMap().getTerritories().iterator();
 		while (allTerritories.hasNext())
 		{
@@ -146,7 +164,6 @@ public class InitializationDelegate extends BaseTripleADelegate
 			final Collection<Unit> units = current.getUnits().getUnits();
 			if (units.size() == 0 || !Match.someMatch(units, Matches.UnitIsLand))
 				continue;
-			boolean historyItemCreated = false;
 			// map transports, try to fill
 			final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
 			final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
