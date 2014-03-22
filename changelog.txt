@@ -1,4 +1,6 @@
 Changes for 1.8.0.3
+* Created new step property option, "repairPlayers", which will allow a player to repair the units owned by a different player. (veqryn)
+
 * Fixed issue where your move phase was skipped if the only unit you owned was a land unit in a transport. (veqryn)
 
 * Allowing land units to receive repairing and bonus movement from neighboring sea zone sea units. (veqryn)

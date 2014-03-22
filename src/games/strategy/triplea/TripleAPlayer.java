@@ -452,7 +452,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				}
 				if (damagedUnits.size() > 0)
 				{
-					final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(id, bid);
+					final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
 					if (repair != null)
 					{
 						final IPurchaseDelegate purchaseDel;

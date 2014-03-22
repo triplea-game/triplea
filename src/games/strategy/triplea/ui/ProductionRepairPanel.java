@@ -78,27 +78,30 @@ public class ProductionRepairPanel extends JPanel
 	private JButton m_done;
 	private PlayerID m_id;
 	private boolean m_bid;
+	private Collection<PlayerID> m_allowedPlayersToRepair;
 	private GameData m_data;
 	private static HashMap<Unit, Integer> m_repairCount = new HashMap<Unit, Integer>();
 	
-	public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
-				final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext)
+	public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id, final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data,
+				final boolean bid, final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext)
 	{
-		return new ProductionRepairPanel(uiContext).show(id, parent, data, bid, initialPurchase);
+		return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
 	}
 	
 	/**
 	 * Shows the production panel, and returns a map of selected rules.
 	 */
-	public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid, final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase)
+	public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id, final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
+				final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase)
 	{
 		if (!(parent == m_owner))
 			m_dialog = null;
 		if (m_dialog == null)
 			initDialog(parent);
 		this.m_bid = bid;
+		this.m_allowedPlayersToRepair = allowedPlayersToRepair;
 		this.m_data = data;
-		this.initRules(id, data, initialPurchase);
+		this.initRules(id, allowedPlayersToRepair, data, initialPurchase);
 		this.initLayout(id);
 		this.calculateLimits();
 		m_dialog.pack();
@@ -154,37 +157,36 @@ public class ProductionRepairPanel extends JPanel
 		m_uiContext = uiContext;
 	}
 	
-	private void initRules(final PlayerID player, final GameData data, final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase)
+	private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data, final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase)
 	{
+		if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+			return;
 		m_data.acquireReadLock();
 		try
 		{
-			m_id = player;
-			final CompositeMatchAnd<Unit> myPotentiallyDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeDamaged);
-			final CompositeMatchAnd<Unit> myDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitHasTakenSomeBombingUnitDamage);
-			final Collection<Territory> terrsWithPotentiallyDamagedUnits = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myPotentiallyDamagedUnits));
+			this.m_id = player;
+			this.m_allowedPlayersToRepair = allowedPlayersToRepair;
+			final CompositeMatchAnd<Unit> myDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair), Matches.UnitHasTakenSomeBombingUnitDamage);
+			final Collection<Territory> terrsWithPotentiallyDamagedUnits = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
 			for (final RepairRule repairRule : player.getRepairFrontier())
 			{
 				for (final Territory terr : terrsWithPotentiallyDamagedUnits)
 				{
-					if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+					for (final Unit u : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits))
 					{
-						for (final Unit u : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits))
-						{
-							if (!repairRule.getResults().keySet().iterator().next().equals(u.getType()))
-								continue;
-							final TripleAUnit taUnit = (TripleAUnit) u;
-							final Rule rule = new Rule(repairRule, player, m_uiContext, u);
-							// int initialQuantity = initialPurchase.getInt(repairRule);
-							int initialQuantity = 0;
-							if (initialPurchase.get(u) != null)
-								initialQuantity = initialPurchase.get(u).getInt(repairRule);
-							// initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
-							rule.setQuantity(initialQuantity);
-							rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
-							rule.setName(u.toString());
-							m_rules.add(rule);
-						}
+						if (!repairRule.getResults().keySet().iterator().next().equals(u.getType()))
+							continue;
+						final TripleAUnit taUnit = (TripleAUnit) u;
+						final Rule rule = new Rule(repairRule, player, m_uiContext, u);
+						// int initialQuantity = initialPurchase.getInt(repairRule);
+						int initialQuantity = 0;
+						if (initialPurchase.get(u) != null)
+							initialQuantity = initialPurchase.get(u).getInt(repairRule);
+						// initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
+						rule.setQuantity(initialQuantity);
+						rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
+						rule.setName(u.toString());
+						m_rules.add(rule);
 					}
 				}
 			}

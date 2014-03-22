@@ -315,7 +315,7 @@ public class GameStepPropertiesHelper
 		}
 		return isReset;
 	}
-
+	
 	/**
 	 * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of noncombat move phase.
 	 */
@@ -359,6 +359,37 @@ public class GameStepPropertiesHelper
 			data.releaseReadLock();
 		}
 		return isBid;
+	}
+	
+	/**
+	 * @return a set of player ids. if argument player is not null this set will definitely include that player, but if not the set could be empty. never null.
+	 */
+	public static Set<PlayerID> getRepairPlayers(final GameData data, final PlayerID player)
+	{
+		final Set<PlayerID> allowedIDs = new HashSet<PlayerID>();
+		data.acquireReadLock();
+		try
+		{
+			final String allowedPlayers = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairPlayers);// parse allowed players
+			if (player != null)
+				allowedIDs.add(player);
+			if (allowedPlayers != null)
+			{
+				for (final String p : allowedPlayers.split(":"))
+				{
+					final PlayerID id = data.getPlayerList().getPlayerID(p);
+					if (id == null)
+						System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: " + GameStep.PROPERTY_repairPlayers + " player: " + p
+									+ " DOES NOT EXIST");
+					else
+						allowedIDs.add(id);
+				}
+			}
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		return allowedIDs;
 	}
 	
 	//

@@ -50,6 +50,7 @@ public class RepairPanel extends ActionPanel
 	private final JLabel actionLabel = new JLabel();
 	private HashMap<Unit, IntegerMap<RepairRule>> m_repair;
 	private boolean m_bid;
+	private Collection<PlayerID> m_allowedPlayersToRepair;
 	private final SimpleUnitPanel m_unitsPanel;
 	private final JLabel m_repairdSoFar = new JLabel();
 	private final JButton m_buyButton;
@@ -98,14 +99,15 @@ public class RepairPanel extends ActionPanel
 		{
 			public void run()
 			{
-				actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
+				actionLabel.setText(getCurrentPlayer().getName() + " repair " + (m_bid ? " for bid" : ""));
 			}
 		});
 	}
 	
-	public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid)
+	public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid, final Collection<PlayerID> allowedPlayersToRepair)
 	{
 		m_bid = bid;
+		m_allowedPlayersToRepair = allowedPlayersToRepair;
 		refreshActionLabelText();
 		// automatically "click" the buy button for us!
 		SwingUtilities.invokeLater(new Runnable()
@@ -127,7 +129,7 @@ public class RepairPanel extends ActionPanel
 		{
 			final PlayerID player = getCurrentPlayer();
 			final GameData data = getData();
-			m_repair = ProductionRepairPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, m_bid, m_repair, getMap().getUIContext());
+			m_repair = ProductionRepairPanel.getProduction(player, m_allowedPlayersToRepair, (JFrame) getTopLevelAncestor(), data, m_bid, m_repair, getMap().getUIContext());
 			m_unitsPanel.setUnitsFromRepairRuleMap(m_repair, player, data);
 			final int totalValues = getTotalValues(m_repair);
 			if (totalValues == 0)

@@ -698,6 +698,7 @@
 							
 						For any "Purchase" delegate (such as PurchaseDelegate or NoPUPurchaseDelegate or etc):
 							bid 						= true/false (default to true if step ends with Bid)
+							repairPlayers 				= a list of players, separated by colons ":", default is the step player. Determines which players you can repair units of.
 						
 						For any "Move" delegate (such as MoveDelegate or SpecialMoveDelegate or etc):
 							airborneMove 				= true/false is this an AirborneCombatMove for 1940 'paratroopers' move phase? (default is true if delegate ends with "AirborneCombatMove")

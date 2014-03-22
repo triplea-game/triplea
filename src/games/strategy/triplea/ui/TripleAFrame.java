@@ -717,11 +717,11 @@ public class TripleAFrame extends MainGameFrame
 		return m_actionButtons.waitForPurchase(bid);
 	}
 	
-	public HashMap<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, final boolean bid)
+	public HashMap<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, final boolean bid, final Collection<PlayerID> allowedPlayersToRepair)
 	{
 		m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToRepair(player);
-		return m_actionButtons.waitForRepair(bid);
+		return m_actionButtons.waitForRepair(bid, allowedPlayersToRepair);
 	}
 	
 	public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat, final String stepName)

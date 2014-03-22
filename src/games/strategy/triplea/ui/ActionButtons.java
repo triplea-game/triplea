@@ -239,11 +239,13 @@ public class ActionButtons extends JPanel
 	/**
 	 * Blocks until the user selects their purchase.
 	 * 
+	 * @param allowedPlayersToRepair
+	 * 
 	 * @return null if no move was made.
 	 */
-	public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid)
+	public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid, final Collection<PlayerID> allowedPlayersToRepair)
 	{
-		return m_repairPanel.waitForRepair(bid);
+		return m_repairPanel.waitForRepair(bid, allowedPlayersToRepair);
 	}
 	
 	/**
