@@ -815,7 +815,7 @@ public class ProCombatMoveAI extends StrongAI
 					estimatesMap.put(estimate, t);
 				}
 				if (estimatesMap.firstKey() <= 50)
-					minWinTerritory = estimatesMap.firstEntry().getValue();
+					minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
 				
 				// Calculate actual battle result averages to add remaining units
 				if (minWinTerritory == null)
@@ -1099,7 +1099,7 @@ public class ProCombatMoveAI extends StrongAI
 				}
 				if (estimatesMap.firstKey() <= 40)
 				{
-					attackMap.get(estimatesMap.firstEntry().getValue()).addUnit(unit);
+					attackMap.get(estimatesMap.entrySet().iterator().next().getValue()).addUnit(unit);
 					it.remove();
 				}
 			}
