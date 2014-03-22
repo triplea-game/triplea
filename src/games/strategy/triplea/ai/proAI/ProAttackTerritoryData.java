@@ -29,12 +29,17 @@ public class ProAttackTerritoryData
 	private double TUVSwing;
 	private Double attackValue;
 	private boolean canHold;
+	private boolean canAttack;
+	private double strengthEstimate;
 	
 	// Amphib variables
 	private List<Unit> maxAmphibUnits;
 	private boolean needAmphibUnits;
 	private Map<Unit, List<Unit>> amphibAttackMap;
 	private List<Unit> navalAttackTransports;
+	
+	// Determine territory to attack variables
+	private boolean currentlyWins;
 	
 	public ProAttackTerritoryData(final Territory territory)
 	{
@@ -43,10 +48,13 @@ public class ProAttackTerritoryData
 		units = new ArrayList<Unit>();
 		TUVSwing = 0;
 		canHold = false;
+		canAttack = false;
+		strengthEstimate = -1;
 		maxAmphibUnits = new ArrayList<Unit>();
 		needAmphibUnits = false;
 		amphibAttackMap = new HashMap<Unit, List<Unit>>();
 		navalAttackTransports = new ArrayList<Unit>();
+		currentlyWins = false;
 	}
 	
 	public void addUnit(final Unit unit)
@@ -182,6 +190,36 @@ public class ProAttackTerritoryData
 	public void addNavelAttackTransport(final Unit transport)
 	{
 		this.navalAttackTransports.add(transport);
+	}
+	
+	public void setCanAttack(final boolean canAttack)
+	{
+		this.canAttack = canAttack;
+	}
+	
+	public boolean isCanAttack()
+	{
+		return canAttack;
+	}
+	
+	public void setStrengthEstimate(final double strengthEstimate)
+	{
+		this.strengthEstimate = strengthEstimate;
+	}
+	
+	public double getStrengthEstimate()
+	{
+		return strengthEstimate;
+	}
+	
+	public void setCurrentlyWins(final boolean currentlyWins)
+	{
+		this.currentlyWins = currentlyWins;
+	}
+	
+	public boolean isCurrentlyWins()
+	{
+		return currentlyWins;
 	}
 	
 }
