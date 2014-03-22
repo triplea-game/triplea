@@ -2951,6 +2951,8 @@ public class Matches
 		{
 			if (UnitIsDisabled.match(unit))
 				return false;
+			if (Matches.unitIsBeingTransported().match(unit))
+				return false;
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.getRepairsUnits() == null)
 				return false;
@@ -3008,6 +3010,16 @@ public class Matches
 							return true;
 					}
 				}
+				else if (Matches.UnitIsLand.match(damagedUnit))
+				{
+					final Match<Unit> repairUnitSea = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsSea);
+					final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsWater));
+					for (final Territory current : neighbors)
+					{
+						if (Match.someMatch(current.getUnits().getUnits(), repairUnitSea))
+							return true;
+					}
+				}
 				return false;
 			}
 		};
@@ -3016,13 +3028,12 @@ public class Matches
 	public static final Match<Unit> UnitCanGiveBonusMovement = new Match<Unit>()
 	{
 		@Override
-		public boolean match(final Unit obj)
+		public boolean match(final Unit unit)
 		{
-			final Unit unit = obj;
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
-			return ua.getGivesMovement().size() > 0;
+			return ua.getGivesMovement().size() > 0 && Matches.unitIsBeingTransported().invert().match(unit);
 		}
 	};
 	

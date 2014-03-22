@@ -568,7 +568,7 @@ public class MoveValidator
 						mechanizedSupportAvailable--;
 					}
 					else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit) && Matches.UnitTypeCanLandOnCarrier.match(unit.getType())
-								&& !isAlliedAirIndependent(data) && Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data)))
+								/*&& !isAlliedAirIndependent(data)*/&& Match.someMatch(moveTest, Matches.UnitIsAlliedCarrier(unit.getOwner(), data)))
 					{ // this is so that if the unit is owned by any ally and it is cargo, then it will not count. (shouldn't it be a dependant in this case??)
 						continue;
 					}
@@ -1606,7 +1606,7 @@ public class MoveValidator
 		while (alliedCarrierIter.hasNext())
 		{
 			final Unit carrier = alliedCarrierIter.next();
-			final Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
+			final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
 			alliedAir.removeAll(carrying);
 		}
 		if (alliedAir.isEmpty())
@@ -1618,14 +1618,14 @@ public class MoveValidator
 		while (ownedCarrierIter.hasNext())
 		{
 			final Unit carrier = ownedCarrierIter.next();
-			final Collection<Unit> carrying = getCanCarry(carrier, alliedAir);
+			final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
 			alliedAir.removeAll(carrying);
 			mapping.put(carrier, carrying);
 		}
 		return mapping;
 	}
 	
-	public static Collection<Unit> getCanCarry(final Unit carrier, final Collection<Unit> selectFrom)
+	public static Collection<Unit> getCanCarry(final Unit carrier, final Collection<Unit> selectFrom, final PlayerID playerWhoIsDoingTheMovement, final GameData data)
 	{
 		final UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
 		final Collection<Unit> canCarry = new ArrayList<Unit>();
@@ -1641,7 +1641,8 @@ public class MoveValidator
 			if (available >= cost)
 			{
 				// this is to test if they started in the same sea zone or not, and its not a very good way of testing it.
-				if (tACarrier.getAlreadyMoved() == tAPlane.getAlreadyMoved() || (Matches.unitHasNotMoved.match(plane) && Matches.unitHasNotMoved.match(carrier)))
+				if ((tACarrier.getAlreadyMoved() == tAPlane.getAlreadyMoved()) || (Matches.unitHasNotMoved.match(plane) && Matches.unitHasNotMoved.match(carrier))
+							|| (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).invert().match(plane) && Matches.alliedUnit(playerWhoIsDoingTheMovement, data).match(plane)))
 				{
 					available -= cost;
 					canCarry.add(plane);
@@ -1838,10 +1839,10 @@ public class MoveValidator
 		return games.strategy.triplea.Properties.getSubmersible_Subs(data);
 	}
 	
-	private static boolean isAlliedAirIndependent(final GameData data)
+	/*private static boolean isAlliedAirIndependent(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getAlliedAirIndependent(data);
-	}
+	}*/
 	
 	private static boolean isIgnoreTransportInMovement(final GameData data)
 	{

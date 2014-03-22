@@ -982,6 +982,7 @@ public class RevisedTest extends TestCase
 		final BattleTracker tracker = new BattleTracker();
 		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
+		addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 		tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
 		TechTracker.addAdvance(british, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));

@@ -338,15 +338,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return m_attacker.getName() + " attack " + m_defender.getName() + " in " + m_battleSite.getName();
 	}
 	
-	private void removeUnitsThatNoLongerExist()
-	{
-		if (m_headless)
-			return;
-		// we were having a problem with units that had been killed previously were still part of MFB's variables, so we double check that the stuff still exists here.
-		m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
-		m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
-	}
-	
 	public void updateDefendingAAUnits()
 	{
 		final Collection<Unit> canFire = new ArrayList<Unit>(m_defendingUnits.size() + m_defendingWaitingToDie.size());

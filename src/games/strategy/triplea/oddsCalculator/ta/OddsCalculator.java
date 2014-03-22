@@ -12,6 +12,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHitsChange;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.GameDataUtils;
@@ -202,6 +203,15 @@ public class OddsCalculator
 				sections = new String[1];
 				sections[0] = ool.trim();
 			}
+			final UnitTypeList unitTypes;
+			try
+			{
+				data.acquireReadLock();
+				unitTypes = data.getUnitTypeList();
+			} finally
+			{
+				data.releaseReadLock();
+			}
 			for (final String section : sections)
 			{
 				if (section.length() == 0)
@@ -215,7 +225,7 @@ public class OddsCalculator
 					if (amount <= 0)
 						return false;
 				}
-				final UnitType type = data.getUnitTypeList().getUnitType(amountThenType[1]);
+				final UnitType type = unitTypes.getUnitType(amountThenType[1]);
 				if (type == null)
 					return false;
 			}

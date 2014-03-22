@@ -97,12 +97,29 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		updateDefendingUnits();
 	}
 	
+	@Override
+	protected void removeUnitsThatNoLongerExist()
+	{
+		if (m_headless)
+			return;
+		// we were having a problem with units that had been killed previously were still part of battle's variables, so we double check that the stuff still exists here.
+		m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
+		m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
+		final Iterator<Unit> iter = m_targets.keySet().iterator();
+		while (iter.hasNext())
+		{
+			if (!m_battleSite.getUnits().getUnits().contains(iter.next()))
+				iter.remove();
+		}
+	}
+	
 	protected void updateDefendingUnits()
 	{
 		// fill in defenders
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits,
-					airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
+		final Match<Unit> defenders = new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data),
+					new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits,
+								airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data)));
 		if (m_targets.isEmpty())
 		{
 			m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
@@ -171,6 +188,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{
+		// remove units that may already be dead due to a previous event (like they died from a strategic bombing raid, rocket attack, etc)
+		removeUnitsThatNoLongerExist();
 		// we were interrupted
 		if (m_stack.isExecuting())
 		{
@@ -182,6 +201,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		// The reason is because when the battle is created, there are no attacking units yet in it, meaning that m_targets is empty. We need to update right as battle begins to know we have the full list of targets.
 		updateDefendingUnits();
 		bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite, m_battleSite);
+		if (m_attackingUnits.isEmpty() || (m_defendingUnits.isEmpty() || Match.noneMatch(m_defendingUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert())))
+		{
+			endBeforeRolling(bridge);
+			return;
+		}
+		
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
 		// TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
@@ -282,6 +307,17 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 			m_stack.push(executable);
 		}
 		m_stack.execute(bridge);
+	}
+	
+	private void endBeforeRolling(final IDelegateBridge bridge)
+	{
+		getDisplay(bridge).battleEnd(m_battleID, "Bombing raid does no damage");
+		m_whoWon = WhoWon.DRAW;
+		m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
+		m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+					new BattleResults(this, m_data), m_bombingRaidTotal);
+		m_isOver = true;
+		m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
 	}
 	
 	private void end(final IDelegateBridge bridge)

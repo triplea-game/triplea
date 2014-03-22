@@ -90,6 +90,8 @@ public class AirBattle extends AbstractBattle
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{
+		// remove units that may already be dead due to a previous event (like they died from a strategic bombing raid, rocket attack, etc)
+		removeUnitsThatNoLongerExist();
 		// we were interrupted
 		if (m_stack.isExecuting())
 		{

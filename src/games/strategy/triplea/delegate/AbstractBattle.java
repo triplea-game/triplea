@@ -87,6 +87,15 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		return rVal;
 	}
 	
+	protected void removeUnitsThatNoLongerExist()
+	{
+		if (m_headless)
+			return;
+		// we were having a problem with units that had been killed previously were still part of MFB's variables, so we double check that the stuff still exists here.
+		m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
+		m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
+	}
+	
 	public void addBombardingUnit(final Unit unit)
 	{
 		m_bombardingUnits.add(unit);

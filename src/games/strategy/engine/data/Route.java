@@ -614,7 +614,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	{
 		final Set<Unit> units = new HashSet<Unit>(unitsAll);
 		if (!mustFight)
-			units.removeAll(getOwnedAirMovingWithOwnedCarriers(unitsAll, currentPlayer));
+			units.removeAll(getOwnedAirMovingWithOwnedCarriers(unitsAll, currentPlayer, data));
 		units.removeAll(Match.getMatches(unitsAll, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, route, currentPlayer, data, true)));
 		final ResourceCollection movementCharge = new ResourceCollection(data);
 		for (final Unit unit : units)
@@ -624,7 +624,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return movementCharge;
 	}
 	
-	private static Set<Unit> getOwnedAirMovingWithOwnedCarriers(final Collection<Unit> unitsAll, final PlayerID currentPlayer)
+	private static Set<Unit> getOwnedAirMovingWithOwnedCarriers(final Collection<Unit> unitsAll, final PlayerID currentPlayer, final GameData data)
 	{
 		final Collection<Unit> ownedFighters = Match.getMatches(unitsAll, new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.UnitIsAir, Matches.unitIsOwnedBy(currentPlayer)));
 		if (ownedFighters.isEmpty())
@@ -635,7 +635,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		final Set<Unit> ownedFightersOnOwnedCarriers = new HashSet<Unit>();
 		for (final Unit carrier : ownedCarriers)
 		{
-			final Collection<Unit> carrying = MoveValidator.getCanCarry(carrier, ownedFighters);
+			final Collection<Unit> carrying = MoveValidator.getCanCarry(carrier, ownedFighters, currentPlayer, data);
 			ownedFighters.removeAll(carrying);
 			ownedFightersOnOwnedCarriers.addAll(carrying);
 		}

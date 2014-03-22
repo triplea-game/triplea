@@ -390,7 +390,7 @@ public class HistoryLog extends JFrame
 						else if (title.indexOf("Setting uses for triggers used") != -1)
 						{
 						}
-						else if (title.equals("Giving bonus movement to units"))
+						else if (title.equals("Resetting and Giving Bonus Movement to Units"))
 						{
 						}
 						else if (title.equals("Recording Battle Statistics"))

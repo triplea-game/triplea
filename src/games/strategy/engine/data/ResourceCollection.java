@@ -249,6 +249,8 @@ public class ResourceCollection extends GameDataComponent
 	
 	public static String toString(final IntegerMap<Resource> resources, final GameData data, final String lineSeparator)
 	{
+		if (resources == null || resources.isEmpty() || resources.allValuesEqual(0))
+			return "nothing";
 		final StringBuilder sb = new StringBuilder();
 		final Resource pus;
 		data.acquireReadLock();

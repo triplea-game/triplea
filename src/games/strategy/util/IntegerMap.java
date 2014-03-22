@@ -225,6 +225,23 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	}
 	
 	/**
+	 * If empty, will return false.
+	 * 
+	 * @return true if all values are equal to the given integer.
+	 */
+	public boolean allValuesEqual(final int integer)
+	{
+		if (m_values.isEmpty())
+			return false;
+		for (final int value : m_values.values())
+		{
+			if (integer != value)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
 	 * Will return zero if empty.
 	 * 
 	 * @return

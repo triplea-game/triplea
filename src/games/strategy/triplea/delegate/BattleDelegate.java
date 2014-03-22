@@ -740,7 +740,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance())
 				maxScrambleDistance = ua.getMaxScrambleDistance();
 		}
-		final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsNotDisabled);
+		final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsNotDisabled,
+					Matches.unitIsBeingTransported().invert());
 		final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<Territory>(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
 					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitCanScramble, Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsNotDisabled)),
 					Matches.territoryHasUnitsThatMatch(airbasesCanScramble));

@@ -158,9 +158,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			// reset any bonus of units, and give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
 			if (GameStepPropertiesHelper.isGiveBonusMovement(data))
 			{
-				resetBonusMovement();
-				if (games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(data))
-					giveBonusMovement(m_bridge, m_player);
+				resetAndGiveBonusMovement();
 			}
 			
 			// take away all movement from allied fighters sitting on damaged carriers
@@ -187,6 +185,33 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			}
 			
 			m_needToInitialize = false;
+		}
+	}
+	
+	private void resetAndGiveBonusMovement()
+	{
+		boolean addedHistoryEvent = false;
+		{
+			final Change changeReset = resetBonusMovement();
+			if (!changeReset.isEmpty())
+			{
+				m_bridge.getHistoryWriter().startEvent("Resetting and Giving Bonus Movement to Units");
+				m_bridge.addChange(changeReset);
+				addedHistoryEvent = true;
+			}
+		}
+		{
+			Change changeBonus = null;
+			if (games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
+			{
+				changeBonus = giveBonusMovement(m_bridge, m_player);
+			}
+			if (changeBonus != null && !changeBonus.isEmpty())
+			{
+				if (!addedHistoryEvent)
+					m_bridge.getHistoryWriter().startEvent("Resetting and Giving Bonus Movement to Units");
+				m_bridge.addChange(changeBonus);
+			}
 		}
 	}
 	
@@ -258,7 +283,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
 		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));
-		moveableUnitOwnedByMe.add(Matches.unitHasMovementLeft);
+		moveableUnitOwnedByMe.add(new CompositeMatchOr<Unit>(Matches.unitHasMovementLeft,
+					new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsBeingTransported())));// right now, land units on transports have movement taken away when they their transport moves
 		// if not non combat, can not move aa units
 		if (GameStepPropertiesHelper.isCombatMove(getData(), false))
 			moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
@@ -272,7 +298,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		return false;
 	}
 	
-	private void resetBonusMovement()
+	private Change resetBonusMovement()
 	{
 		final GameData data = getData();
 		final CompositeChange change = new CompositeChange();
@@ -283,11 +309,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
 			}
 		}
-		if (!change.isEmpty())
-		{
-			m_bridge.getHistoryWriter().startEvent("Reseting Bonus Movement of Units");
-			m_bridge.addChange(change);
-		}
+		return change;
 	}
 	
 	private void resetUnitStateAndDelegateState()
@@ -387,7 +409,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			aBridge.addChange(change);
 	}
 	
-	private void giveBonusMovement(final IDelegateBridge aBridge, final PlayerID player)
+	private Change giveBonusMovement(final IDelegateBridge aBridge, final PlayerID player)
 	{
 		final GameData data = aBridge.getData();
 		final CompositeChange change = new CompositeChange();
@@ -412,6 +434,15 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 							givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
 						}
 					}
+					else if (Matches.UnitIsLand.match(u))
+					{
+						final Match<Unit> givesBonusUnitSea = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsSea);
+						final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsWater));
+						for (final Territory current : neighbors)
+						{
+							givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
+						}
+					}
 					for (final Unit bonusGiver : givesBonusUnits)
 					{
 						final int tempBonus = UnitAttachment.get(bonusGiver.getType()).getGivesMovement().getInt(u.getType());
@@ -426,11 +457,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				}
 			}
 		}
-		if (!change.isEmpty())
-		{
-			aBridge.getHistoryWriter().startEvent("Giving bonus movement to units");
-			aBridge.addChange(change);
-		}
+		return change;
 	}
 	
 	public static void repairMultipleHitPointUnits(final IDelegateBridge aBridge, final PlayerID player)
@@ -453,7 +480,9 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 					damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnits));// we repair everyone's
 			}
 			else
+			{
 				damaged = new HashSet<Unit>(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedUnitsOwned, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
+			}
 			if (!damaged.isEmpty())
 				damagedMap.put(current, damaged);
 		}
@@ -508,6 +537,15 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			for (final Territory current : neighbors)
 			{
 				repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
+			}
+		}
+		else if (Matches.UnitIsLand.match(unitToBeRepaired))
+		{
+			final Match<Unit> repairUnitSea = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsSea);
+			final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsWater));
+			for (final Territory current : neighbors)
+			{
+				repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitSea));
 			}
 		}
 		int largest = 0;

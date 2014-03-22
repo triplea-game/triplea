@@ -1,4 +1,12 @@
 Changes for 1.8.0.3
+* Fixed issue where your move phase was skipped if the only unit you owned was a land unit in a transport. (veqryn)
+
+* Allowing land units to receive repairing and bonus movement from neighboring sea zone sea units. (veqryn)
+
+* Units on transports no longer are able to repair other units, allow scrambling, or give movement to other units. (veqryn)
+
+* Fixed issue where a unit that dies from rockets, still participates in subsequent strategic bombing battle. (veqryn)
+
 * Fixed issue with allied land units in friendly transports and allied air on friendly carriers losing their movement when their transport/carrier moved. (veqryn)
 
 * Fixing issue with allied land units starting game loaded on friendly transports, could not offload until at least one non-combat phase had passed. (veqryn)
