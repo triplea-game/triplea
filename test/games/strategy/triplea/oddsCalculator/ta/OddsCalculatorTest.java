@@ -61,7 +61,7 @@ public class OddsCalculatorTest extends TestCase
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, germans, false);
 		final List<Unit> bombardingUnits = Collections.emptyList();
-		final IOddsCalculator calculator = new ConcurrentOddsCalculator();
+		final IOddsCalculator calculator = new ConcurrentOddsCalculator("Test");
 		calculator.setGameData(m_data);
 		final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, eastCanada, attackingUnits, defendingUnits, bombardingUnits,
 					TerritoryEffectHelper.getEffects(eastCanada), 2000);

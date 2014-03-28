@@ -103,10 +103,10 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		m_attacker = null;
 		m_defender = null;
 		m_location = null;
-		m_territoryEffects = new ArrayList<TerritoryEffect>();
 		m_attackingUnits = new ArrayList<Unit>();
 		m_defendingUnits = new ArrayList<Unit>();
 		m_bombardingUnits = new ArrayList<Unit>();
+		m_territoryEffects = new ArrayList<TerritoryEffect>();
 		m_runCount = 0;
 		m_isDataSet = data != null;
 	}
@@ -128,10 +128,10 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		m_attacker = m_data.getPlayerList().getPlayerID(attacker.getName());
 		m_defender = m_data.getPlayerList().getPlayerID(defender.getName());
 		m_location = m_data.getMap().getTerritory(location.getName());
-		m_territoryEffects = territoryEffects; // todo: translate
 		m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
 		m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
 		m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
+		m_territoryEffects = (Collection<TerritoryEffect>) GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
 		final ChangePerformer changePerformer = new ChangePerformer(m_data);
 		changePerformer.perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
 		changePerformer.perform(ChangeFactory.addUnits(m_location, m_attackingUnits));

@@ -9,11 +9,13 @@ import games.strategy.engine.data.Unit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,28 +36,31 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	private final List<OddsCalculator> m_workers = new ArrayList<OddsCalculator>();
 	private volatile boolean m_isDataSet = false;
 	private volatile boolean m_isCalcSet = false;
+	private CountDownLatch m_latch = null;
 	
-	public ConcurrentOddsCalculator()
+	public ConcurrentOddsCalculator(final String threadNamePrefix)
 	{
-		m_executor = Executors.newFixedThreadPool(m_maxThreads, new DaemonThreadFactory(true, "ConcurrentOddsCalculator Worker"));
+		m_executor = Executors.newFixedThreadPool(m_maxThreads, new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
 		s_logger.fine("Initialized executor thread pool with size: " + m_maxThreads);
 	}
 	
-	public synchronized void setGameData(final GameData data)
+	public void setGameData(final GameData data)
 	{
+		awaitLatch();
 		m_isDataSet = false;
-		// i suppose there is a small chance calculate or setCalculateData or something could be called in between these synchronized calls to setGameData->createWorkers
+		m_latch = new CountDownLatch(1);
+		// i suppose there is a small chance calculate or setCalculateData or something could be called in between these calls to setGameData->createWorkers
 		m_executor.submit(new Runnable()
 		{
 			public void run()
 			{
 				createWorkers(data);
-				// synchronized should make sure that all workers have their game data set before we can call calculate and other things
+				// should make sure that all workers have their game data set before we can call calculate and other things
 			}
 		});
 	}
 	
-	private synchronized void createWorkers(final GameData data)
+	private void createWorkers(final GameData data)
 	{
 		m_workers.clear();
 		if (data != null)
@@ -73,11 +78,14 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 		m_isDataSet = data != null;
+		if (m_latch != null)
+			m_latch.countDown();
 		s_logger.fine("Initialized worker thread pool with size: " + m_workers.size());
 	}
 	
-	public synchronized void shutdown()
+	public void shutdown()
 	{
+		awaitLatch();
 		m_executor.shutdown();
 	}
 	
@@ -86,9 +94,26 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		m_executor.shutdownNow();
 	}
 	
-	public synchronized void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
+	private void awaitLatch()
+	{
+		if (m_latch == null)
+			return;
+		try
+		{
+			m_latch.await(200, TimeUnit.SECONDS);
+		} catch (final InterruptedException e)
+		{
+		}
+	}
+	
+	public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
 				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
 	{
+		awaitLatch();
+		if (!m_isDataSet)
+		{
+			throw new IllegalStateException("Called set calc settings before setting data!");
+		}
 		m_isCalcSet = false;
 		final int workerRunCount = Math.max(Math.min(1, runCount), (runCount / m_workers.size()));
 		for (final OddsCalculator worker : m_workers)
@@ -101,8 +126,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	/**
 	 * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits for all the future results and combines them together.
 	 */
-	public synchronized AggregateResults calculate()
+	public AggregateResults calculate()
 	{
+		awaitLatch();
 		if (!getIsReady())
 		{
 			throw new IllegalStateException("Called calculate before setting data and calculate data!");
@@ -145,7 +171,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		return results;
 	}
 	
-	public synchronized AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
+	public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
 				final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
 	{
 		setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
@@ -167,71 +193,79 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		return totalRunCount;
 	}
 	
-	public synchronized void setKeepOneAttackingLandUnit(final boolean bool)
+	public void setKeepOneAttackingLandUnit(final boolean bool)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setKeepOneAttackingLandUnit(bool);
 		}
 	}
 	
-	public synchronized void setAmphibious(final boolean bool)
+	public void setAmphibious(final boolean bool)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setAmphibious(bool);
 		}
 	}
 	
-	public synchronized void setRetreatAfterRound(final int value)
+	public void setRetreatAfterRound(final int value)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setRetreatAfterRound(value);
 		}
 	}
 	
-	public synchronized void setRetreatAfterXUnitsLeft(final int value)
+	public void setRetreatAfterXUnitsLeft(final int value)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setRetreatAfterXUnitsLeft(value);
 		}
 	}
 	
-	public synchronized void setRetreatWhenOnlyAirLeft(final boolean value)
+	public void setRetreatWhenOnlyAirLeft(final boolean value)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setRetreatWhenOnlyAirLeft(value);
 		}
 	}
 	
-	public synchronized void setRetreatWhenMetaPowerIsLower(final boolean value)
+	public void setRetreatWhenMetaPowerIsLower(final boolean value)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setRetreatWhenMetaPowerIsLower(value);
 		}
 	}
 	
-	public synchronized void setAttackerOrderOfLosses(final String attackerOrderOfLosses)
+	public void setAttackerOrderOfLosses(final String attackerOrderOfLosses)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setAttackerOrderOfLosses(attackerOrderOfLosses);
 		}
 	}
 	
-	public synchronized void setDefenderOrderOfLosses(final String defenderOrderOfLosses)
+	public void setDefenderOrderOfLosses(final String defenderOrderOfLosses)
 	{
+		awaitLatch();
 		for (final OddsCalculator worker : m_workers)
 		{
 			worker.setDefenderOrderOfLosses(defenderOrderOfLosses);
 		}
 	}
 	
-	// not synchronized on purpose, we need to be able to cancel at any time
+	// not on purpose, we need to be able to cancel at any time
 	public void cancel()
 	{
 		for (final OddsCalculator worker : m_workers)

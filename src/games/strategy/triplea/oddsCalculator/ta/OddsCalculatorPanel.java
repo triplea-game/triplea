@@ -186,7 +186,7 @@ public class OddsCalculatorPanel extends JPanel
 			updateDefender(null);
 			updateAttacker(null);
 		}
-		m_calculator = new ConcurrentOddsCalculator();
+		m_calculator = new ConcurrentOddsCalculator("BtlCalc Panel");
 		m_calculator.setGameData(m_data);
 		setWidgetActivation();
 		revalidate();
