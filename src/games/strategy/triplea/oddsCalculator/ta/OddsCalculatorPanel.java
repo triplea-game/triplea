@@ -40,6 +40,7 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -108,6 +109,7 @@ public class OddsCalculatorPanel extends JPanel
 	private final JCheckBox m_retreatWhenMetaPowerIsLower = new JCheckBox("Retreat when meta-power is lower");
 	private final IUIContext m_context;
 	private final GameData m_data;
+	private final IOddsCalculator m_calculator;
 	private PlayerUnitsPanel m_attackingUnitsPanel;
 	private PlayerUnitsPanel m_defendingUnitsPanel;
 	private JComboBox m_attackerCombo;
@@ -184,8 +186,28 @@ public class OddsCalculatorPanel extends JPanel
 			updateDefender(null);
 			updateAttacker(null);
 		}
+		m_calculator = new ConcurrentOddsCalculator();
+		m_calculator.setGameData(m_data);
 		setWidgetActivation();
 		revalidate();
+	}
+	
+	public void shutdown()
+	{
+		try
+		{ // use this if not using a static calc, so that we gc the calc and shutdown all threads.
+			m_calculator.shutdown(); // must be shutdown, as it has a thread pool per each instance.
+		} catch (final Exception e)
+		{
+			// ignore
+		}
+	}
+	
+	@Override
+	protected void finalize() throws Throwable
+	{
+		shutdown();
+		super.finalize();
 	}
 	
 	private PlayerID getDefender()
@@ -275,6 +297,8 @@ public class OddsCalculatorPanel extends JPanel
 				m_attackerOrderOfLosses = null;
 				m_defenderOrderOfLosses = null;
 				m_parent.setVisible(false);
+				shutdown();
+				m_parent.dispatchEvent(new WindowEvent(m_parent, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		m_clearButton.addActionListener(new ActionListener()
@@ -379,14 +403,13 @@ public class OddsCalculatorPanel extends JPanel
 			throw new IllegalStateException("Wrong thread");
 		}
 		final AtomicReference<AggregateResults> results = new AtomicReference<AggregateResults>();
-		final OddsCalculator calculator = new OddsCalculator();
 		final WaitDialog dialog = new WaitDialog(this, "Calculating Odds", new AbstractAction()
 		{
 			private static final long serialVersionUID = -2148507015083214974L;
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				calculator.cancel();
+				m_calculator.cancel();
 			}
 		});
 		final AtomicReference<Collection<Unit>> defenders = new AtomicReference<Collection<Unit>>();
@@ -424,30 +447,30 @@ public class OddsCalculatorPanel extends JPanel
 						bombarding = Match.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
 						attacking.removeAll(bombarding);
 					}
-					calculator.setRetreatAfterRound(m_retreatAfterXRounds.getValue());
-					calculator.setRetreatAfterXUnitsLeft(m_retreatAfterXUnitsLeft.getValue());
+					m_calculator.setRetreatAfterRound(m_retreatAfterXRounds.getValue());
+					m_calculator.setRetreatAfterXUnitsLeft(m_retreatAfterXUnitsLeft.getValue());
 					if (m_retreatWhenOnlyAirLeftCheckBox.isSelected())
-						calculator.setRetreatWhenOnlyAirLeft(true);
+						m_calculator.setRetreatWhenOnlyAirLeft(true);
 					else
-						calculator.setRetreatWhenOnlyAirLeft(false);
+						m_calculator.setRetreatWhenOnlyAirLeft(false);
 					if (m_landBattleCheckBox.isSelected() && m_keepOneAttackingLandUnitCheckBox.isSelected())
-						calculator.setKeepOneAttackingLandUnit(true);
+						m_calculator.setKeepOneAttackingLandUnit(true);
 					else
-						calculator.setKeepOneAttackingLandUnit(false);
+						m_calculator.setKeepOneAttackingLandUnit(false);
 					if (isAmphibiousBattle())
-						calculator.setAmphibious(true);
+						m_calculator.setAmphibious(true);
 					else
-						calculator.setAmphibious(false);
+						m_calculator.setAmphibious(false);
 					if (m_retreatWhenMetaPowerIsLower.isSelected())
-						calculator.setRetreatWhenMetaPowerIsLower(true);
+						m_calculator.setRetreatWhenMetaPowerIsLower(true);
 					else
-						calculator.setRetreatWhenMetaPowerIsLower(false);
-					calculator.setAttackerOrderOfLosses(m_attackerOrderOfLosses);
-					calculator.setDefenderOrderOfLosses(m_defenderOrderOfLosses);
+						m_calculator.setRetreatWhenMetaPowerIsLower(false);
+					m_calculator.setAttackerOrderOfLosses(m_attackerOrderOfLosses);
+					m_calculator.setDefenderOrderOfLosses(m_defenderOrderOfLosses);
 					final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
 					defenders.set(defending);
 					attackers.set(attacking);
-					results.set(calculator.calculate(m_data, getAttacker(), getDefender(), location, attacking, defending, bombarding, territoryEffects, m_numRuns.getValue()));
+					results.set(m_calculator.setCalculateDataAndCalculate(getAttacker(), getDefender(), location, attacking, defending, bombarding, territoryEffects, m_numRuns.getValue()));
 				} finally
 				{
 					SwingUtilities.invokeLater(new Runnable()

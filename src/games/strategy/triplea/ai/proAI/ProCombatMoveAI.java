@@ -13,14 +13,17 @@ package games.strategy.triplea.ai.proAI;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.message.ConnectionLostException;
+import games.strategy.engine.message.MessengerException;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.strongAI.StrongAI;
+import games.strategy.triplea.ai.proAI.logging.LogUtils;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -30,7 +33,6 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -51,61 +53,61 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Pro combat move AI.
  * 
  * <ol>
- * <li>Need to fix canal consideration to only block if moving across it</li>
- * <li>Need to consider counter attacks vs transports</li>
- * <li>Need to add support for non-blitz land units with more than 1 movement</li>
- * <li>Need to add support for blitz units with more than 2 movement</li>
- * <li>Need to add support for considering carrier landing</li>
- * <li>Need to optimize battle calculator usage</li>
+ * <li>Consider leaving 1 unit in each territory</li>
+ * <li>Consider scramble defenses</li>
+ * <li>Consider objective value</li>
+ * <li>Fix canal consideration to only block if moving across it</li>
+ * <li>Consider counter attacks vs transports</li>
+ * <li>Add support for non-blitz land units with more than 1 movement</li>
+ * <li>Add support for blitz units with more than 2 movement</li>
+ * <li>Add support for considering carrier landing</li>
  * </ol>
  * 
  * @author Ron Murhammer
  * @since 2014
  */
-public class ProCombatMoveAI extends StrongAI
+public class ProCombatMoveAI
 {
-	private final static Logger s_logger = Logger.getLogger(ProCombatMoveAI.class.getName());
-	
 	private final static double WIN_PERCENTAGE = 95.0;
+	
+	private final ProAI ai;
 	
 	private Territory myCapital;
 	private boolean areNeutralsPassableByAir;
+	private long battleCalculatorTime;
 	
-	public ProCombatMoveAI(final String name, final String type)
+	public ProCombatMoveAI(final ProAI proAI)
 	{
-		super(name, type);
+		ai = proAI;
 	}
 	
-	@Override
-	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+	public void move(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
-		if (nonCombat)
-			doNonCombatMove(moveDel, player);
-		else
+		try
 		{
-			try
-			{
-				areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
-				doProCombatMove(moveDel, player);
-			} catch (final Throwable t)
-			{
-				s_logger.log(Level.SEVERE, t.getMessage(), t);
-			}
+			areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
+			battleCalculatorTime = 0;
+			// final long startTime = System.nanoTime();
+			doProCombatMove(moveDel, data, player);
+			// final long endTime = System.nanoTime();
+			// System.out.println("CombatMove time: " + (endTime - startTime));
+			// System.out.println("BattleCalculator time: " + battleCalculatorTime);
+		} catch (final Throwable t)
+		{
+			if (!(t instanceof GameOverException || t instanceof ConnectionLostException || t instanceof MessengerException))
+				LogUtils.log(Level.SEVERE, t.getMessage(), t);
 		}
-		pause();
 	}
 	
-	public void doProCombatMove(final IMoveDelegate moveDel, final PlayerID player)
+	public void doProCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
-		s_logger.fine("Starting ProAI:CombatMove");
+		LogUtils.log(Level.FINE, "Starting combat move phase");
 		
-		final GameData data = getPlayerBridge().getGameData();
 		myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		
 		// Often used variables
@@ -187,7 +189,7 @@ public class ProCombatMoveAI extends StrongAI
 		}
 		
 		// Determine which territories can possibly be held
-		s_logger.fine("determineTerritoriesToHold: listing");
+		LogUtils.log(Level.FINE, "Check if attack territories can be held");
 		for (final Territory t : enemyAttackMap.keySet())
 		{
 			// Find max remaining defenders
@@ -196,7 +198,7 @@ public class ProCombatMoveAI extends StrongAI
 			attackingUnits.addAll(attackMap.get(t).getMaxAmphibUnits());
 			final ProBattleResultData result = calculateBattleResults(data, player, t, attackingUnits);
 			final List<Unit> remainingUnitsToDefendWith = Match.getMatches(result.getAverageUnitsRemaining(), Matches.UnitIsAir.invert());
-			s_logger.fine("determineTerritoriesToHold: Territory=" + t.getName() + ", MyAttackers=" + attackingUnits.size() + ", RemainingUnits=" + remainingUnitsToDefendWith.size());
+			LogUtils.log(Level.FINER, "Territory=" + t.getName() + ", MyAttackers=" + attackingUnits.size() + ", RemainingUnits=" + remainingUnitsToDefendWith.size());
 			
 			// Determine counter attack results to see if I can hold it
 			final List<Unit> enemyAttackingUnits = enemyAttackMap.get(t).getMaxUnits();
@@ -204,9 +206,8 @@ public class ProCombatMoveAI extends StrongAI
 			final ProBattleResultData result2 = calculateBattleResults(data, player, t, enemyAttackingUnits, remainingUnitsToDefendWith, false);
 			final boolean canHold = (!result2.isHasLandUnitRemaining() && !t.isWater()) || (result2.getTUVSwing() < 0) || (result2.getWinPercentage() < WIN_PERCENTAGE);
 			attackMap.get(t).setCanHold(canHold);
-			s_logger.fine("determineTerritoriesToHold: Territory=" + t.getName() + ", CanHold=" + canHold + ", MyDefenders=" + remainingUnitsToDefendWith.size() + ", EnemyAttackers="
-						+ enemyAttackingUnits.size() + ", win%=" + result2.getWinPercentage() + ", EnemyTUVSwing=" + result2.getTUVSwing() + ", hasLandUnitRemaining="
-						+ result2.isHasLandUnitRemaining());
+			LogUtils.log(Level.FINER, "Territory=" + t.getName() + ", CanHold=" + canHold + ", MyDefenders=" + remainingUnitsToDefendWith.size() + ", EnemyAttackers=" + enemyAttackingUnits.size()
+						+ ", win%=" + result2.getWinPercentage() + ", EnemyTUVSwing=" + result2.getTUVSwing() + ", hasLandUnitRemaining=" + result2.isHasLandUnitRemaining());
 		}
 		
 		// Determine how many units to attack each territory with
@@ -226,7 +227,7 @@ public class ProCombatMoveAI extends StrongAI
 		doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 		
 		// Log results
-		s_logger.fine("Logging ProAI");
+		LogUtils.log(Level.FINE, "Logging results");
 		logAttackMoves(data, player, attackMap, unitAttackMap, transportMapList, prioritizedTerritories, enemyAttackMap);
 	}
 	
@@ -633,6 +634,8 @@ public class ProCombatMoveAI extends StrongAI
 	private List<ProAttackTerritoryData> prioritizeAttackOptions(final GameData data, final PlayerID player, final Map<Territory, ProAttackTerritoryData> attackMap,
 				final Map<Unit, Set<Territory>> unitAttackMap, final Map<Unit, Set<Territory>> transportAttackMap)
 	{
+		LogUtils.log(Level.FINE, "Prioritizing territories that can be attacked");
+		
 		// Determine if territory can be successfully attacked with max possible attackers
 		final Set<Territory> territoriesToRemove = new HashSet<Territory>();
 		for (final Territory t : attackMap.keySet())
@@ -662,7 +665,7 @@ public class ProCombatMoveAI extends StrongAI
 		// Remove territories that can't be successfully attacked
 		for (final Territory t : territoriesToRemove)
 		{
-			s_logger.fine("prioritizeAttackOptions: Removing territory: " + t.getName());
+			LogUtils.log(Level.FINER, "Removing territory that we can't successfully attack: " + t.getName());
 			attackMap.remove(t);
 			for (final Set<Territory> territories : unitAttackMap.values())
 				territories.remove(t);
@@ -736,7 +739,7 @@ public class ProCombatMoveAI extends StrongAI
 		// Remove territories that don't have a positive attack value
 		for (final Territory t : territoriesToRemove)
 		{
-			s_logger.fine("prioritizeAttackOptions: Removing territory: " + t.getName());
+			LogUtils.log(Level.FINER, "Removing territory that has a negative attack value: " + t.getName());
 			attackMap.remove(t);
 			for (final Set<Territory> territories : unitAttackMap.values())
 			{
@@ -761,11 +764,11 @@ public class ProCombatMoveAI extends StrongAI
 		});
 		
 		// Log prioritized territories
-		s_logger.fine("prioritizeAttackOptions: Prioritized territories:");
 		for (final ProAttackTerritoryData attackTerritoryData : prioritizedTerritories)
 		{
-			s_logger.fine("AttackValue=" + attackTerritoryData.getAttackValue() + ", TUVSwing=" + attackTerritoryData.getTUVSwing() + ", isAmphib=" + attackTerritoryData.isNeedAmphibUnits() + ", "
-						+ attackTerritoryData.getTerritory().getName());
+			LogUtils.log(Level.FINER,
+						"AttackValue=" + attackTerritoryData.getAttackValue() + ", TUVSwing=" + attackTerritoryData.getTUVSwing() + ", isAmphib=" + attackTerritoryData.isNeedAmphibUnits() + ", "
+									+ attackTerritoryData.getTerritory().getName());
 		}
 		
 		return prioritizedTerritories;
@@ -774,6 +777,8 @@ public class ProCombatMoveAI extends StrongAI
 	private void determineTerritoriesToAttack(final GameData data, final PlayerID player, final Map<Territory, ProAttackTerritoryData> attackMap, final Map<Unit, Set<Territory>> unitAttackMap,
 				final List<ProAttackTerritoryData> prioritizedTerritories, final List<ProAmphibData> transportMapList, final Map<Unit, Set<Territory>> transportAttackMap)
 	{
+		LogUtils.log(Level.FINE, "Determine which territories to attack");
+		
 		// Assign units to territories by prioritization
 		int numToAttack = Math.min(1, prioritizedTerritories.size());
 		while (true)
@@ -815,7 +820,7 @@ public class ProCombatMoveAI extends StrongAI
 					estimatesMap.put(estimate, t);
 				}
 				if (estimatesMap.firstKey() <= 50)
-					minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
+					minWinTerritory = estimatesMap.firstEntry().getValue();
 				
 				// Calculate actual battle result averages to add remaining units
 				if (minWinTerritory == null)
@@ -881,7 +886,7 @@ public class ProCombatMoveAI extends StrongAI
 							attackMap.get(t).addUnit(transport);
 							attackMap.get(t).addNavelAttackTransport(transport);
 							alreadyAttackedWithTransports.add(transport);
-							s_logger.fine("determineTerritoriesToAttack: Adding attack transport to : " + t.getName());
+							LogUtils.log(Level.FINER, "Adding attack transport to: " + t.getName());
 							break;
 						}
 						else
@@ -914,8 +919,6 @@ public class ProCombatMoveAI extends StrongAI
 			// Loop through transports with amphib attack options and determine if any land battle needs it
 			for (final Unit transport : amphibAttackOptions.keySet())
 			{
-				s_logger.fine("determineTerritoriesToAttack: Checking amhib attack from transport in: " + transport.getTerritoryUnitIsIn().getName());
-				
 				// Find current land battle results for territories that unit can amphib attack
 				for (final Territory t : amphibAttackOptions.get(transport))
 				{
@@ -924,8 +927,6 @@ public class ProCombatMoveAI extends StrongAI
 						final ProBattleResultData result = calculateBattleResults(data, player, t, attackMap.get(t).getUnits());
 						if (result.getWinPercentage() < WIN_PERCENTAGE || !result.isHasLandUnitRemaining())
 						{
-							s_logger.fine("determineTerritoriesToAttack: Finding units to transport to attack: " + t.getName());
-							
 							// Get all units that have already attacked
 							final List<Unit> alreadyAttackedWithUnits = new ArrayList<Unit>();
 							for (final Territory t2 : attackMap.keySet())
@@ -946,7 +947,7 @@ public class ProCombatMoveAI extends StrongAI
 							{
 								attackMap.get(t).addUnits(amphibUnits);
 								attackMap.get(t).putAmphibAttackMap(transport, amphibUnits);
-								s_logger.fine("determineTerritoriesToAttack: Adding amphib attack units: " + amphibUnits.size());
+								LogUtils.log(Level.FINER, "Adding amphibious attack to: " + t.getName());
 								break;
 							}
 						}
@@ -960,24 +961,24 @@ public class ProCombatMoveAI extends StrongAI
 			
 			// Determine if all attacks are successful
 			boolean areSuccessful = true;
-			s_logger.fine("determineTerritoriesToAttack: Current number of territories=" + numToAttack);
+			LogUtils.log(Level.FINER, "Current number of territories: " + numToAttack);
 			for (final ProAttackTerritoryData patd : territoriesToTryToAttack)
 			{
 				final Territory t = patd.getTerritory();
 				if (patd.isCurrentlyWins())
 				{
-					s_logger.fine("determineTerritoriesToAttack: Territory=" + t.getName() + ", can attack");
+					LogUtils.log(Level.FINEST, "Territory=" + t.getName() + ", can be attacked");
 					continue;
 				}
 				final double estimate = estimateStrengthDifference(data, player, t, patd.getUnits());
 				if (estimate == patd.getStrengthEstimate())
 				{
-					s_logger.fine("determineTerritoriesToAttack: Territory=" + t.getName() + ", tested unit combination already");
+					LogUtils.log(Level.FINEST, "Territory=" + t.getName() + ", tested unit combination already");
 					continue;
 				}
 				final ProBattleResultData result = calculateBattleResults(data, player, t, attackMap.get(t).getUnits());
-				s_logger.fine("determineTerritoriesToAttack: Territory=" + t.getName() + ", win%=" + result.getWinPercentage() + ", TUVSwing=" + result.getTUVSwing() + ", hasRemainingLandUnit="
-							+ result.isHasLandUnitRemaining());
+				LogUtils.log(Level.FINEST,
+							"Territory=" + t.getName() + ", win%=" + result.getWinPercentage() + ", TUVSwing=" + result.getTUVSwing() + ", hasRemainingLandUnit=" + result.isHasLandUnitRemaining());
 				if (result.getWinPercentage() < WIN_PERCENTAGE || !result.isHasLandUnitRemaining())
 					areSuccessful = false;
 			}
@@ -998,7 +999,7 @@ public class ProCombatMoveAI extends StrongAI
 			}
 			else
 			{
-				s_logger.fine("determineTerritoriesToAttack: Removing territory: " + prioritizedTerritories.get(numToAttack - 1).getTerritory().getName());
+				LogUtils.log(Level.FINER, "Removing territory: " + prioritizedTerritories.get(numToAttack - 1).getTerritory().getName());
 				prioritizedTerritories.remove(numToAttack - 1);
 				// Check if I've tested all territories in list
 				boolean testedAll = true;
@@ -1019,7 +1020,7 @@ public class ProCombatMoveAI extends StrongAI
 				attackMap.get(t).setCurrentlyWins(false);
 			}
 		}
-		s_logger.fine("determineTerritoriesToAttack: Final number of territories=" + (numToAttack - 1));
+		LogUtils.log(Level.FINER, "Final number of territories: " + (numToAttack - 1));
 	}
 	
 	private void determineUnitsToAttackWith(final GameData data, final PlayerID player, final Map<Territory, ProAttackTerritoryData> attackMap, final Map<Unit, Set<Territory>> unitAttackMap,
@@ -1099,7 +1100,7 @@ public class ProCombatMoveAI extends StrongAI
 				}
 				if (estimatesMap.firstKey() <= 40)
 				{
-					attackMap.get(estimatesMap.entrySet().iterator().next().getValue()).addUnit(unit);
+					attackMap.get(estimatesMap.firstEntry().getValue()).addUnit(unit);
 					it.remove();
 				}
 			}
@@ -1233,14 +1234,27 @@ public class ProCombatMoveAI extends StrongAI
 			
 			// Determine if all attacks/defenses are successful
 			final boolean areSuccessful = true;
-			s_logger.fine("determineUnitsToAttackWith:");
+			LogUtils.log(Level.FINE, "Determine units to attack each territory with");
 			for (final ProAttackTerritoryData patd : prioritizedTerritories)
 			{
 				// Check attack
 				final Territory t = patd.getTerritory();
 				final ProBattleResultData result = calculateBattleResults(data, player, t, attackMap.get(t).getUnits());
-				s_logger.fine("determineTerritoriesToAttack: Territory=" + t.getName() + ", win%=" + result.getWinPercentage() + ", TUVSwing=" + result.getTUVSwing() + ", hasRemainingLandUnit="
-							+ result.isHasLandUnitRemaining());
+				if (result.getWinPercentage() < (WIN_PERCENTAGE - 5) || !result.isHasLandUnitRemaining())
+				{
+					attackMap.remove(t);
+					LogUtils.log(
+								Level.FINER,
+								"Removing territory=" + t.getName() + ", win%=" + result.getWinPercentage() + ", TUVSwing=" + result.getTUVSwing() + ", hasRemainingLandUnit="
+											+ result.isHasLandUnitRemaining());
+				}
+				else
+				{
+					LogUtils.log(
+								Level.FINER,
+								"Attacking territory=" + t.getName() + ", win%=" + result.getWinPercentage() + ", TUVSwing=" + result.getTUVSwing() + ", hasRemainingLandUnit="
+											+ result.isHasLandUnitRemaining());
+				}
 			}
 			
 			// Determine whether all attacks are successful or try to hold fewer territories
@@ -1255,43 +1269,43 @@ public class ProCombatMoveAI extends StrongAI
 				final List<ProAmphibData> transportMapList, final List<ProAttackTerritoryData> prioritizedTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap)
 	{
 		// Print prioritization
-		s_logger.fine("Prioritized territories:");
+		LogUtils.log(Level.FINER, "Prioritized territories:");
 		for (final ProAttackTerritoryData attackTerritoryData : prioritizedTerritories)
 		{
-			s_logger.fine("  " + attackTerritoryData.getTUVSwing() + "  " + attackTerritoryData.getAttackValue() + "  " + attackTerritoryData.getTerritory().getName());
+			LogUtils.log(Level.FINEST, "  " + attackTerritoryData.getTUVSwing() + "  " + attackTerritoryData.getAttackValue() + "  " + attackTerritoryData.getTerritory().getName());
 		}
 		
 		// Print transport map
-		s_logger.fine("Transport territories:");
+		LogUtils.log(Level.FINER, "Transport territories:");
 		int tcount = 0;
 		int count = 0;
 		for (final ProAmphibData proTransportData : transportMapList)
 		{
 			final Map<Territory, Set<Territory>> transportMap = proTransportData.getTransportMap();
 			tcount++;
-			s_logger.fine("Transport #" + tcount);
+			LogUtils.log(Level.FINEST, "Transport #" + tcount);
 			for (final Territory t : transportMap.keySet())
 			{
 				count++;
-				s_logger.fine(count + ". Can attack " + t.getName());
+				LogUtils.log(Level.FINEST, count + ". Can attack " + t.getName());
 				final Set<Territory> territories = transportMap.get(t);
-				s_logger.fine("  --- From territories ---");
+				LogUtils.log(Level.FINEST, "  --- From territories ---");
 				for (final Territory fromTerritory : territories)
 				{
-					s_logger.fine("    " + fromTerritory.getName());
+					LogUtils.log(Level.FINEST, "    " + fromTerritory.getName());
 				}
 			}
 		}
 		
 		// Print enemy territories with enemy units vs my units
-		s_logger.fine("Enemy counter attack units:");
+		LogUtils.log(Level.FINER, "Enemy counter attack units:");
 		count = 0;
 		for (final Territory t : enemyAttackMap.keySet())
 		{
 			count++;
-			s_logger.fine(count + ". ---" + t.getName());
+			LogUtils.log(Level.FINEST, count + ". ---" + t.getName());
 			final List<Unit> units = enemyAttackMap.get(t).getMaxUnits();
-			s_logger.fine("  --- Enemy max units ---");
+			LogUtils.log(Level.FINEST, "  --- Enemy max units ---");
 			final Map<String, Integer> printMap = new HashMap<String, Integer>();
 			for (final Unit unit : units)
 			{
@@ -1306,19 +1320,19 @@ public class ProCombatMoveAI extends StrongAI
 			}
 			for (final String key : printMap.keySet())
 			{
-				s_logger.fine("    " + printMap.get(key) + " " + key);
+				LogUtils.log(Level.FINEST, "    " + printMap.get(key) + " " + key);
 			}
 		}
 		
 		// Print enemy territories with enemy units vs my units
-		s_logger.fine("Territories that can be attacked:");
+		LogUtils.log(Level.FINER, "Territories that can be attacked:");
 		count = 0;
 		for (final Territory t : attackMap.keySet())
 		{
 			count++;
-			s_logger.fine(count + ". ---" + t.getName());
+			LogUtils.log(Level.FINEST, count + ". ---" + t.getName());
 			final List<Unit> units = attackMap.get(t).getMaxUnits();
-			s_logger.fine("  --- My max units ---");
+			LogUtils.log(Level.FINEST, "  --- My max units ---");
 			final Map<String, Integer> printMap = new HashMap<String, Integer>();
 			for (final Unit unit : units)
 			{
@@ -1333,10 +1347,10 @@ public class ProCombatMoveAI extends StrongAI
 			}
 			for (final String key : printMap.keySet())
 			{
-				s_logger.fine("    " + printMap.get(key) + " " + key);
+				LogUtils.log(Level.FINEST, "    " + printMap.get(key) + " " + key);
 			}
 			final List<Unit> units3 = attackMap.get(t).getUnits();
-			s_logger.fine("  --- My actual units ---");
+			LogUtils.log(Level.FINEST, "  --- My actual units ---");
 			final Map<String, Integer> printMap3 = new HashMap<String, Integer>();
 			for (final Unit unit : units3)
 			{
@@ -1351,9 +1365,9 @@ public class ProCombatMoveAI extends StrongAI
 			}
 			for (final String key : printMap3.keySet())
 			{
-				s_logger.fine("    " + printMap3.get(key) + " " + key);
+				LogUtils.log(Level.FINEST, "    " + printMap3.get(key) + " " + key);
 			}
-			s_logger.fine("  --- Enemy units ---");
+			LogUtils.log(Level.FINEST, "  --- Enemy units ---");
 			final Map<String, Integer> printMap2 = new HashMap<String, Integer>();
 			final List<Unit> units2 = t.getUnits().getMatches(Matches.enemyUnit(player, data));
 			for (final Unit unit : units2)
@@ -1369,7 +1383,7 @@ public class ProCombatMoveAI extends StrongAI
 			}
 			for (final String key : printMap2.keySet())
 			{
-				s_logger.fine("    " + printMap2.get(key) + " " + key);
+				LogUtils.log(Level.FINEST, "    " + printMap2.get(key) + " " + key);
 			}
 		}
 	}
@@ -1466,12 +1480,19 @@ public class ProCombatMoveAI extends StrongAI
 		
 		// Use battle calculator (hasLandUnitRemaining is always true for naval territories)
 		final List<Unit> bombardingUnits = Collections.emptyList();
-		final OddsCalculator calculator = new OddsCalculator();
+		// final OddsCalculator calculator = new OddsCalculator();
 		AggregateResults results = null;
+		
+		final long startTime = System.nanoTime();
+		
 		if (isAttacker)
-			results = calculator.calculate(data, player, t.getOwner(), t, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(t), 100);
+			results = ai.getCalc().setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(t), 100);
 		else
-			results = calculator.calculate(data, attackingUnits.get(0).getOwner(), player, t, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(t), 100);
+			results = ai.getCalc().setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(t),
+						100);
+		
+		final long endTime = System.nanoTime();
+		battleCalculatorTime += (endTime - startTime);
 		
 		final double winPercentage = results.getAttackerWinPercent() * 100;
 		final List<Unit> mainCombatAttackers = Match.getMatches(attackingUnits, Matches.UnitCanBeInBattle(true, !t.isWater(), data, 1, false, true, true));
@@ -1703,10 +1724,10 @@ public class ProCombatMoveAI extends StrongAI
 	{
 		for (int i = 0; i < moveRoutes.size(); i++)
 		{
-			pause();
+			ProUtils.pause();
 			if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null)
 			{
-				s_logger.warning("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
+				LogUtils.log(Level.WARNING, "Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
 				continue;
 			}
 			String result;
@@ -1716,7 +1737,7 @@ public class ProCombatMoveAI extends StrongAI
 				result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
 			if (result != null)
 			{
-				s_logger.warning("could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result + "\n");
+				LogUtils.log(Level.WARNING, "could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result + "\n");
 			}
 		}
 	}

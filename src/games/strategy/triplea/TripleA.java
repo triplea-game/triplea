@@ -39,7 +39,7 @@ import games.strategy.sound.DummySound;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
-import games.strategy.triplea.ai.proAI.ProCombatMoveAI;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.ai.weakAI.DoesNothingAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
@@ -94,7 +94,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 			}
 			else if (type.equals(PRO_COMPUTER_PLAYER_TYPE))
 			{
-				players.add(new ProCombatMoveAI(name, type));
+				players.add(new ProAI(name, type));
 			}
 			else if (type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE))
 			{

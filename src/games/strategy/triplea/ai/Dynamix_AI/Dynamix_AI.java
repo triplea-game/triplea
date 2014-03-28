@@ -100,7 +100,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	}
 	
 	// These static dynamix AI instances are going to be used by the settings window to let the player change AI goals, aggresiveness, etc.
-	private static List<Dynamix_AI> s_dAIInstances = new ArrayList<Dynamix_AI>();
+	private static final List<Dynamix_AI> s_dAIInstances = new ArrayList<Dynamix_AI>();
 	
 	public static void ClearAIInstancesMemory()
 	{
@@ -134,6 +134,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	 */
 	public static void clearStaticInstances()
 	{
+		s_dAIInstances.clear();
 		GlobalCenter.clearStaticInstances();
 		FactoryCenter.ClearStaticInstances();
 		KnowledgeCenter.ClearStaticInstances();
@@ -425,12 +426,12 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			}
 			final int leftoverLandUnitsWanted = 2; // TODO: Figure out the number determined in CM_Task
 			int timesWeReachLeftoverLUnitsGoal = 0;
-			for (final BattleResults result : simulatedAttack.m_results)
+			for (final BattleResults result : simulatedAttack.getResults())
 			{
 				if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= leftoverLandUnitsWanted)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
-			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();
+			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.getResults().size();
 			if (certaintyOfReachingLUnitsCount < DUtils.ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired))
 			{
 				// Calculate best retreat ter and retreat to it

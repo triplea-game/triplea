@@ -426,12 +426,12 @@ public class CM_Task
 				continue;
 			}
 			int timesWeReachLeftoverLUnitsGoal = 0;
-			for (final BattleResults result : simulatedAttack.m_results)
+			for (final BattleResults result : simulatedAttack.getResults())
 			{
 				if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
-			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();
+			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.getResults().size();
 			if (certaintyOfReachingLUnitsCount < certaintyOfReachingLeftoverLUnitsGoalRequired)
 			{
 				m_recruitedUnits.add(ug);
@@ -474,12 +474,12 @@ public class CM_Task
 				continue;
 			}
 			int timesWeReachLeftoverLUnitsGoal = 0;
-			for (final BattleResults result : simulatedAttack.m_results)
+			for (final BattleResults result : simulatedAttack.getResults())
 			{
 				if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
-			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();
+			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.getResults().size();
 			if (certaintyOfReachingLUnitsCount < certaintyOfReachingLeftoverLUnitsGoalRequired)
 			{
 				m_recruitedUnits.add(ug);
@@ -708,12 +708,12 @@ public class CM_Task
 			if (tradeScore < m_attackTrade_tradeScoreRequired)
 				return false;
 			int timesWeReachLeftoverLUnitsGoal = 0;
-			for (final BattleResults result : simulatedAttack.m_results)
+			for (final BattleResults result : simulatedAttack.getResults())
 			{
 				if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
-			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();
+			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.getResults().size();
 			DUtils.Log(Level.FINEST, "        Certainty of reaching leftover land units goal({0}): {1} Needed: {2}", m_attackTrade_leftoverLandUnits, certaintyOfReachingLUnitsCount,
 						m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired);
 			if (certaintyOfReachingLUnitsCount < m_attackTrade_certaintyOfReachingLeftoverLUnitsGoalRequired)

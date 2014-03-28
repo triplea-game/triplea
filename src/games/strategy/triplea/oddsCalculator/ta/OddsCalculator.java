@@ -53,8 +53,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-public class OddsCalculator
+public class OddsCalculator implements IOddsCalculator, Callable<AggregateResults>
 {
 	public static final String OOL_ALL = "*";
 	public static final String OOL_ALL_REGEX = "\\*";
@@ -62,37 +63,72 @@ public class OddsCalculator
 	public static final String OOL_SEPARATOR_REGEX = ";";
 	public static final String OOL_AMOUNT_DESCRIPTOR = "^";
 	public static final String OOL_AMOUNT_DESCRIPTOR_REGEX = "\\^";
-	private PlayerID m_attacker;
-	private PlayerID m_defender;
-	private GameData m_data;
-	private Territory m_location;
+	
+	private GameData m_data = null;
+	private PlayerID m_attacker = null;
+	private PlayerID m_defender = null;
+	private Territory m_location = null;
 	private Collection<Unit> m_attackingUnits = new ArrayList<Unit>();
 	private Collection<Unit> m_defendingUnits = new ArrayList<Unit>();
 	private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
 	private Collection<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
 	private boolean m_keepOneAttackingLandUnit = false;
 	private boolean m_amphibious = false;
-	private volatile boolean m_cancelled = false;
 	private int m_retreatAfterRound = -1;
 	private int m_retreatAfterXUnitsLeft = -1;
 	private boolean m_retreatWhenOnlyAirLeft = false;
 	private boolean m_retreatWhenMetaPowerIsLower = false;
 	private String m_attackerOrderOfLosses = null;
 	private String m_defenderOrderOfLosses = null;
+	private int m_runCount = 0;
+	private volatile boolean m_cancelled = false;
+	private volatile boolean m_isDataSet = false;
+	private volatile boolean m_isCalcSet = false;
+	private volatile boolean m_isRunning = false;
 	
-	public OddsCalculator()
+	public OddsCalculator(final GameData data)
 	{
+		m_data = data == null ? null : GameDataUtils.cloneGameData(data, false);
+		m_isDataSet = data != null;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public AggregateResults calculate(final GameData data, final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
-				final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
+	public void setGameData(final GameData data)
 	{
-		m_data = GameDataUtils.cloneGameData(data, false);
+		if (m_isRunning)
+			return;
+		m_isDataSet = false;
+		m_isCalcSet = false;
+		m_data = data == null ? null : GameDataUtils.cloneGameData(data, false);
+		// reset old data
+		m_attacker = null;
+		m_defender = null;
+		m_location = null;
+		m_territoryEffects = new ArrayList<TerritoryEffect>();
+		m_attackingUnits = new ArrayList<Unit>();
+		m_defendingUnits = new ArrayList<Unit>();
+		m_bombardingUnits = new ArrayList<Unit>();
+		m_runCount = 0;
+		m_isDataSet = data != null;
+	}
+	
+	/**
+	 * Calculates odds using the stored game data.
+	 */
+	@SuppressWarnings("unchecked")
+	public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
+				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
+	{
+		if (m_isRunning)
+			return;
+		if (!m_isDataSet)
+		{
+			throw new IllegalStateException("Called set calculation before setting game data!");
+		}
+		m_isCalcSet = false;
 		m_attacker = m_data.getPlayerList().getPlayerID(attacker.getName());
 		m_defender = m_data.getPlayerList().getPlayerID(defender.getName());
 		m_location = m_data.getMap().getTerritory(location.getName());
-		m_territoryEffects = territoryEffects;
+		m_territoryEffects = territoryEffects; // todo: translate
 		m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
 		m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
 		m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
@@ -100,17 +136,49 @@ public class OddsCalculator
 		changePerformer.perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
 		changePerformer.perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
 		changePerformer.perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
-		return calculate(runCount);
+		m_runCount = runCount;
+		m_isCalcSet = true;
 	}
 	
-	public void setKeepOneAttackingLandUnit(final boolean aBool)
+	public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
+				final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
 	{
-		m_keepOneAttackingLandUnit = aBool;
+		setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
+		return calculate();
 	}
 	
-	public void setAmphibious(final boolean aBool)
+	public AggregateResults calculate()
 	{
-		m_amphibious = aBool;
+		if (!getIsReady())
+		{
+			throw new IllegalStateException("Called calculate before setting calculate data!");
+		}
+		return calculate(m_runCount);
+	}
+	
+	public AggregateResults call() throws Exception
+	{
+		return calculate();
+	}
+	
+	public boolean getIsReady()
+	{
+		return m_isDataSet && m_isCalcSet;
+	}
+	
+	public int getRunCount()
+	{
+		return m_runCount;
+	}
+	
+	public void setKeepOneAttackingLandUnit(final boolean bool)
+	{
+		m_keepOneAttackingLandUnit = bool;
+	}
+	
+	public void setAmphibious(final boolean bool)
+	{
+		m_amphibious = bool;
 	}
 	
 	public void setRetreatAfterRound(final int value)
@@ -143,8 +211,22 @@ public class OddsCalculator
 		m_defenderOrderOfLosses = defenderOrderOfLosses;
 	}
 	
+	public void cancel()
+	{
+		m_cancelled = true;
+	}
+	
+	public void shutdown()
+	{// nothing so far
+	}
+	
+	public void shutdownNow()
+	{// nothing so far
+	}
+	
 	private AggregateResults calculate(final int count)
 	{
+		m_isRunning = true;
 		final long start = System.currentTimeMillis();
 		// just say we are attacking from all territories surrounding this one, for now
 		/* final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<Territory, Collection<Unit>>();
@@ -179,12 +261,9 @@ public class OddsCalculator
 		}
 		BattleCalculator.DisableCasualtySortingCaching();
 		rVal.setTime(System.currentTimeMillis() - start);
+		m_isRunning = false;
+		m_cancelled = false;
 		return rVal;
-	}
-	
-	public void cancel()
-	{
-		m_cancelled = true;
 	}
 	
 	public static boolean isValidOOL(final String ool, final GameData data)

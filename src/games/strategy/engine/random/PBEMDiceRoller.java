@@ -166,7 +166,7 @@ class HttpDiceRollerDialog extends JDialog
 	private final Object m_lock = new Object();
 	public boolean m_test = false;
 	private final JPanel m_buttons = new JPanel();
-	private final Window m_owner;
+	private Window m_owner;
 	
 	/**
 	 * 
@@ -328,6 +328,8 @@ class HttpDiceRollerDialog extends JDialog
 			{
 				setVisible(false);
 				m_owner.toFront();
+				m_owner = null;
+				dispose();
 			}
 		});
 	}

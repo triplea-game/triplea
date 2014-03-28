@@ -92,7 +92,17 @@ public class BattlePanel extends ActionPanel
 	public BattlePanel(final GameData data, final MapPanel map)
 	{
 		super(data, map);
-		m_battleFrame = new JFrame();
+		m_battleFrame = new JFrame()
+		{
+			private static final long serialVersionUID = -947813247703330615L;
+			
+			@Override
+			public void dispose()
+			{
+				games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(null);
+				super.dispose();
+			}
+		};
 		m_battleFrame.setIconImage(GameRunner2.getGameIcon(m_battleFrame));
 		getMap().getUIContext().addShutdownWindow(m_battleFrame);
 		m_battleFrame.addWindowListener(new WindowListener()

@@ -18,6 +18,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 
 public class OddsCalculatorDialog extends JDialog
 {
@@ -33,7 +34,6 @@ public class OddsCalculatorDialog extends JDialog
 			dialog.setSize(new Dimension(dialog.getWidth(), maxHeight));
 		dialog.addWindowListener(new WindowAdapter()
 		{
-			@SuppressWarnings("null")
 			@Override
 			public void windowClosed(final WindowEvent e)
 			{
@@ -50,11 +50,13 @@ public class OddsCalculatorDialog extends JDialog
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				dialog.setVisible(false);
+				dialog.dispose();
 			}
 		};
 		final String key = "odds.calc.invoke.close";
 		dialog.getRootPane().getActionMap().put(key, closeAction);
 		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
+		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.setLocationRelativeTo(taFrame);
 		dialog.setVisible(true);
 		taFrame.getUIContext().addShutdownWindow(dialog);
@@ -67,6 +69,13 @@ public class OddsCalculatorDialog extends JDialog
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(m_panel, BorderLayout.CENTER);
 		pack();
+	}
+	
+	@Override
+	public void dispose()
+	{
+		m_panel.shutdown();
+		super.dispose();
 	}
 	
 	@Override

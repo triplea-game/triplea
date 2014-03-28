@@ -17,7 +17,7 @@ import java.util.List;
 public class AggregateResults implements Serializable
 {
 	private static final long serialVersionUID = -556699626060414738L;
-	public List<BattleResults> m_results;
+	private final List<BattleResults> m_results;
 	private long m_time;
 	
 	public AggregateResults(final int expectedCount)
@@ -28,6 +28,16 @@ public class AggregateResults implements Serializable
 	public void addResult(final BattleResults result)
 	{
 		m_results.add(result);
+	}
+	
+	public void addResults(final List<BattleResults> results)
+	{
+		m_results.addAll(results);
+	}
+	
+	public List<BattleResults> getResults()
+	{
+		return m_results;
 	}
 	
 	public BattleResults GetBattleResultsClosestToAverage()

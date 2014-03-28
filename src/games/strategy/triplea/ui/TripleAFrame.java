@@ -58,6 +58,7 @@ import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.AbstractConditionsAttachment;
 import games.strategy.triplea.attatchments.AbstractTriggerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -223,7 +224,7 @@ public class TripleAFrame extends MainGameFrame
 	private List<Unit> m_unitsBeingMousedOver;
 	private PlayerID m_lastStepPlayer;
 	private PlayerID m_currentStepPlayer;
-	private final Map<PlayerID, Boolean> m_requiredTurnSeries = new HashMap<PlayerID, Boolean>();
+	private Map<PlayerID, Boolean> m_requiredTurnSeries = new HashMap<PlayerID, Boolean>();
 	private ThreadPool m_messageAndDialogThreadPool;
 	private TripleaMenu m_menu;
 	
@@ -527,8 +528,20 @@ public class TripleAFrame extends MainGameFrame
 		if (m_data != null)
 			m_data.clearAllListeners();
 		m_data = null;
-		m_tabsPanel.removeAll();
-		m_commentPanel.cleanUp();
+		m_territoryLastEntered = null;
+		if (m_unitsBeingMousedOver != null)
+			m_unitsBeingMousedOver.clear();
+		m_unitsBeingMousedOver = null;
+		m_lastStepPlayer = null;
+		m_currentStepPlayer = null;
+		if (m_requiredTurnSeries != null)
+			m_requiredTurnSeries.clear();
+		m_requiredTurnSeries = null;
+		m_editDelegate = null;
+		if (m_tabsPanel != null)
+			m_tabsPanel.removeAll();
+		if (m_commentPanel != null)
+			m_commentPanel.cleanUp();
 		MAP_SELECTION_LISTENER = null;
 		m_actionButtons = null;
 		m_chatPanel = null;
@@ -546,6 +559,9 @@ public class TripleAFrame extends MainGameFrame
 		m_message = null;
 		m_status = null;
 		m_rightHandSidePanel = null;
+		if (m_gameCenterPanel != null)
+			m_gameCenterPanel.removeAll();
+		m_gameCenterPanel = null;
 		m_smallView = null;
 		m_statsPanel = null;
 		m_economyPanel = null;
@@ -564,6 +580,9 @@ public class TripleAFrame extends MainGameFrame
 		m_messageAndDialogThreadPool = null;
 		removeWindowListener(WINDOW_LISTENER);
 		WINDOW_LISTENER = null;
+		// clear out dynamix's properties
+		// Dynamix_AI.clearCachedGameDataAll(); TODO: errors cus dynamix sucks
+		ProAI.clearCache();
 	}
 	
 	@Override

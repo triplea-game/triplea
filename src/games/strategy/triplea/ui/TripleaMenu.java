@@ -36,6 +36,7 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.EndRoundDelegate;
@@ -324,6 +325,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		addShowEnemyCasualties(menuGame);
 		addShowAIBattles(menuGame);
 		addChangeDynamixAISettings(menuGame);
+		addChangeProAISettings(menuGame);
 		addAISleepDuration(menuGame);
 		addShowDiceStats(menuGame);
 		addRollDice(menuGame);
@@ -856,6 +858,32 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					Dynamix_AI.ShowSettingsWindow();
 				}
 			}).setMnemonic(KeyEvent.VK_C);
+			parentMenu.addSeparator();
+		}
+	}
+	
+	private void addChangeProAISettings(final JMenu parentMenu)
+	{
+		boolean areThereProAIs = false;
+		final Set<IGamePlayer> players = (m_frame).getLocalPlayers().getLocalPlayers();
+		for (final IGamePlayer player : players)
+		{
+			if (player instanceof ProAI)
+				areThereProAIs = true;
+		}
+		if (areThereProAIs)
+		{
+			ProAI.Initialize(m_frame);
+			parentMenu.addSeparator();
+			parentMenu.add(new AbstractAction("Show Hard AI Logs")
+			{
+				private static final long serialVersionUID = 3457295609477283292L;
+				
+				public void actionPerformed(final ActionEvent e)
+				{
+					ProAI.ShowSettingsWindow();
+				}
+			}).setMnemonic(KeyEvent.VK_X);
 			parentMenu.addSeparator();
 		}
 	}

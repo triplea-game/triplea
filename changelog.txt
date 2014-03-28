@@ -1,3 +1,11 @@
+Changes for 1.8.1.1
+* Fixing two memory leaks that allowed AI's and GameData to stay in memory after exiting back to main screen. (veqryn)
+
+* Creating a threaded version of the BattleCalculator, to speed up results. (redrum & veqryn)
+
+* Creating a logging window for ProAI so that players can watch the log. (redrum)
+
+
 Changes for 1.8.0.3
 * Created new step property option, "repairPlayers", which will allow a player to repair the units owned by a different player. (veqryn)
 
