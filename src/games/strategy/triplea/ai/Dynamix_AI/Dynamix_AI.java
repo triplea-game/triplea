@@ -54,6 +54,8 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
+import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatchAnd;
@@ -78,6 +80,8 @@ import java.util.logging.Logger;
 public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 {
 	private final static Logger s_logger = Logger.getLogger(Dynamix_AI.class.getName());
+	
+	private static final IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("Dynamix_AI"); // if non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
 	
 	/**
 	 * Some notes on using the Dynamix logger:
@@ -119,6 +123,16 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return s_dAIInstances;
 	}
 	
+	static IOddsCalculator getCalculator()
+	{
+		return s_battleCalculator;
+	}
+	
+	public IOddsCalculator getCalc()
+	{
+		return s_battleCalculator;
+	}
+	
 	/**
 	 * Only call after we have left or quit a game.
 	 */
@@ -135,6 +149,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	public static void clearStaticInstances()
 	{
 		s_dAIInstances.clear();
+		s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game is exited.
 		GlobalCenter.clearStaticInstances();
 		FactoryCenter.ClearStaticInstances();
 		KnowledgeCenter.ClearStaticInstances();
@@ -144,7 +159,6 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		ReconsiderSignalCenter.ClearStaticInstances();
 		StrategyCenter.ClearStaticInstances();
 		UnitGroup.ClearBufferedMoves();
-		DOddsCalculator.clearCachedStaticData();
 		CachedCalculationCenter.clearCachedStaticData();
 		UnitGroup.clearCachedInstances();
 	}
@@ -245,7 +259,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		{
 			GlobalCenter.CurrentPlayer = player;
 			DUtils.Log(Level.FINE, "-----Start of player's turn notification sent out. Player: {0}-----", player.getName());
-			DOddsCalculator.SetGameData(getGameData()); // Refresh DOddsCalculator game data each time the player changes, to keep it up to date
+			s_battleCalculator.setGameData(getGameData());
+			; // Refresh DOddsCalculator game data each time the player changes, to keep it up to date
 			GlobalCenter.CurrentPhaseType = PhaseType.Unknown; // Reset current phase type to re-enable trigger in NotifyPhaseType method
 		}
 	}

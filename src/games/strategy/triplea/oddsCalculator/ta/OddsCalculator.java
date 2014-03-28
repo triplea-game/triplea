@@ -125,8 +125,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 			throw new IllegalStateException("Called set calculation before setting game data!");
 		}
 		m_isCalcSet = false;
-		m_attacker = m_data.getPlayerList().getPlayerID(attacker.getName());
-		m_defender = m_data.getPlayerList().getPlayerID(defender.getName());
+		m_attacker = m_data.getPlayerList().getPlayerID((attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName()));
+		m_defender = m_data.getPlayerList().getPlayerID((defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()));
 		m_location = m_data.getMap().getTerritory(location.getName());
 		m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
 		m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);

@@ -18,9 +18,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.ai.Dynamix_AI.DOddsCalculator;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
+import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import junit.framework.TestCase;
 public class DUtilsTest extends TestCase
 {
 	private GameData m_data;
+	private final IOddsCalculator m_calc = new Dynamix_AI("Superior", "Dynamix (AI)").getCalc();
 	
 	@Override
 	protected void setUp() throws Exception
@@ -60,7 +62,7 @@ public class DUtilsTest extends TestCase
 		final List<Unit> attacking = new ArrayList<Unit>();
 		final List<Unit> defending = new ArrayList<Unit>();
 		attacking.add(infantry.create(superior));
-		DOddsCalculator.SetGameData(m_data);
+		m_calc.setGameData(m_data);
 		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
 		final double test = results.getAttackerWinPercent();
 		assertEquals(1.0D, results.getAttackerWinPercent());
@@ -104,7 +106,7 @@ public class DUtilsTest extends TestCase
 		defending.addAll(fighter.create(4, huron));
 		defending.add(battleship.create(huron));
 		defending = DUtils.InterleaveUnits_CarriersAndPlanes(defending, 0);
-		DOddsCalculator.SetGameData(m_data);
+		m_calc.setGameData(m_data);
 		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
 		System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
 		assertEquals(1.0D, results.getAttackerWinPercent());

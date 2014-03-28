@@ -51,9 +51,11 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
@@ -2173,9 +2175,11 @@ public class DUtils
 		}
 		if (runCount <= 0)
 			throw new IllegalStateException("RunCount for calc can never be less than 1");
-		final DOddsCalculator calc = new DOddsCalculator();
+		final IOddsCalculator calc = Dynamix_AI.getCalculator();
+		// calc.setGameData(data); // This should already be set at the start of each phase...
 		calc.setKeepOneAttackingLandUnit(toTake);
-		final AggregateResults results = calc.calculate(data, attacker, defender, testingTer, attacking, defending, new ArrayList<Unit>(), runCount);
+		final AggregateResults results = calc.setCalculateDataAndCalculate(attacker, defender, testingTer, attacking, defending, new ArrayList<Unit>(), TerritoryEffectHelper.getEffects(testingTer),
+					runCount);
 		if (toTake) // If we're supposed to 'take' ter
 		{
 			// But the attackers averaged without a land unit left (or there are no attackers left after battle)

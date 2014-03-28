@@ -18,9 +18,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.ai.Dynamix_AI.DOddsCalculator;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
+import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import junit.framework.TestCase;
 public class DOddsCalculatorTest extends TestCase
 {
 	private GameData m_data;
+	private final IOddsCalculator m_calc = new Dynamix_AI("Superior", "Dynamix (AI)").getCalc();
 	
 	@Override
 	protected void setUp() throws Exception
@@ -68,7 +70,7 @@ public class DOddsCalculatorTest extends TestCase
 		{
 			defending.add(infantry.create(huron));
 		}
-		DOddsCalculator.SetGameData(m_data);
+		m_calc.setGameData(m_data);
 		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 150, true);
 		System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
 		assertEquals(1.0D, results.getAttackerWinPercent());
