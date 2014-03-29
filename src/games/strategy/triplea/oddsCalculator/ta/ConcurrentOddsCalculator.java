@@ -116,7 +116,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	}
 	
 	public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
-				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
+				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, int runCount)
 	{
 		awaitLatch();
 		if (!m_isDataSet)
@@ -124,10 +124,11 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			throw new IllegalStateException("Called set calc settings before setting data!");
 		}
 		m_isCalcSet = false;
-		final int workerRunCount = Math.max(Math.min(1, runCount), (runCount / m_workers.size()));
+		final int workerRunCount = Math.max(1, (runCount / m_workers.size()));
 		for (final OddsCalculator worker : m_workers)
 		{
-			worker.setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, workerRunCount);
+			worker.setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, (runCount <= 0 ? 0 : workerRunCount));
+			runCount -= workerRunCount;
 		}
 		m_isCalcSet = true;
 	}
@@ -153,9 +154,12 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			{
 				throw new IllegalStateException("Called calculate before setting calculate data!");
 			}
-			totalRunCount += worker.getRunCount();
-			final Future<AggregateResults> workerResult = m_executor.submit(worker);
-			list.add(workerResult);
+			if (worker.getRunCount() > 0)
+			{
+				totalRunCount += worker.getRunCount();
+				final Future<AggregateResults> workerResult = m_executor.submit(worker);
+				list.add(workerResult);
+			}
 		}
 		
 		// Wait for all worker futures to complete and combine results
