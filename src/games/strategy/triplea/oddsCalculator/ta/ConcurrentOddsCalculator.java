@@ -48,16 +48,25 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	{
 		awaitLatch();
 		m_isDataSet = false;
-		m_latch = new CountDownLatch(1);
-		// i suppose there is a small chance calculate or setCalculateData or something could be called in between these calls to setGameData->createWorkers
-		m_executor.submit(new Runnable()
+		if (data == null)
 		{
-			public void run()
+			m_workers.clear();
+			if (m_latch != null)
+				m_latch.countDown();
+		}
+		else
+		{
+			m_latch = new CountDownLatch(1);
+			// i suppose there is a small chance calculate or setCalculateData or something could be called in between these calls to setGameData->createWorkers
+			m_executor.submit(new Runnable()
 			{
-				createWorkers(data);
-				// should make sure that all workers have their game data set before we can call calculate and other things
-			}
-		});
+				public void run()
+				{
+					createWorkers(data);
+					// should make sure that all workers have their game data set before we can call calculate and other things
+				}
+			});
+		}
 	}
 	
 	private void createWorkers(final GameData data)
