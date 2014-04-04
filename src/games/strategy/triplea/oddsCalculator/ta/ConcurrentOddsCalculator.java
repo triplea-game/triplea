@@ -8,7 +8,11 @@ import games.strategy.engine.data.Unit;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -171,6 +175,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		
 		// Wait for all worker futures to complete and combine results
 		final AggregateResults results = new AggregateResults(totalRunCount);
+		final Set<InterruptedException> interruptExceptions = new HashSet<InterruptedException>();
+		final Map<String, Set<ExecutionException>> executionExceptions = new HashMap<String, Set<ExecutionException>>();
 		for (final Future<AggregateResults> future : list)
 		{
 			try
@@ -179,11 +185,35 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 				results.addResults(result.getResults());
 			} catch (final InterruptedException e)
 			{
-				s_logger.log(Level.SEVERE, "Battle results worker interrupted", e);
+				interruptExceptions.add(e);
 			} catch (final ExecutionException e)
 			{
-				s_logger.log(Level.SEVERE, "Battle results worker aborted by exception", e);
+				final String cause = e.getCause().getLocalizedMessage();
+				Set<ExecutionException> exceptions = executionExceptions.get(cause);
+				if (exceptions == null)
+					exceptions = new HashSet<ExecutionException>();
+				exceptions.add(e);
+				executionExceptions.put(cause, exceptions);
 			}
+		}
+		// we don't want to scare the user with 8+ errors all for the same thing
+		if (!interruptExceptions.isEmpty())
+		{
+			s_logger.log(Level.SEVERE, interruptExceptions.size() + " Battle results workers interrupted", interruptExceptions.iterator().next());
+		}
+		if (!executionExceptions.isEmpty())
+		{
+			Exception e = null;
+			for (final Set<ExecutionException> entry : executionExceptions.values())
+			{
+				if (!entry.isEmpty())
+				{
+					e = entry.iterator().next();
+					s_logger.log(Level.SEVERE, entry.size() + " Battle results workers aborted by exception", e.getCause());
+				}
+			}
+			if (e != null)
+				throw new IllegalStateException(e.getCause());
 		}
 		
 		results.setTime(System.currentTimeMillis() - start);
