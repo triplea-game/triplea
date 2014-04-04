@@ -13,15 +13,12 @@ package games.strategy.triplea.ai.proAI;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.message.ConnectionLostException;
-import games.strategy.engine.message.MessengerException;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.logging.LogUtils;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -88,20 +85,20 @@ public class ProCombatMoveAI
 	
 	public void move(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
-		try
-		{
-			areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
-			battleCalculatorTime = 0;
-			// final long startTime = System.nanoTime();
-			doProCombatMove(moveDel, data, player);
-			// final long endTime = System.nanoTime();
-			// System.out.println("CombatMove time: " + (endTime - startTime));
-			// System.out.println("BattleCalculator time: " + battleCalculatorTime);
-		} catch (final Throwable t)
+		/*try
+		{*/
+		areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
+		battleCalculatorTime = 0;
+		// final long startTime = System.nanoTime();
+		doProCombatMove(moveDel, data, player);
+		// final long endTime = System.nanoTime();
+		// System.out.println("CombatMove time: " + (endTime - startTime));
+		// System.out.println("BattleCalculator time: " + battleCalculatorTime);
+		/*} catch (final Throwable t)
 		{
 			if (!(t instanceof GameOverException || t instanceof ConnectionLostException || t instanceof MessengerException))
 				LogUtils.log(Level.SEVERE, t.getMessage(), t);
-		}
+		}*/
 	}
 	
 	public void doProCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player)

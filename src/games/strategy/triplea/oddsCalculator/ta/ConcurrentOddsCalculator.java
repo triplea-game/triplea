@@ -103,13 +103,20 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		m_executor.shutdownNow();
 	}
 	
+	@Override
+	protected void finalize() throws Throwable
+	{
+		shutdown();
+		super.finalize();
+	}
+	
 	private void awaitLatch()
 	{
 		if (m_latch == null)
 			return;
 		try
 		{
-			m_latch.await(200, TimeUnit.SECONDS);
+			m_latch.await(300, TimeUnit.SECONDS);
 		} catch (final InterruptedException e)
 		{
 		}

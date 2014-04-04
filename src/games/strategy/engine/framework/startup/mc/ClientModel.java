@@ -277,7 +277,7 @@ public class ClientModel implements IMessengerErrorListener
 			startGame(gameData, players, latch, false);
 			try
 			{
-				latch.await(10, TimeUnit.SECONDS);
+				latch.await(20, TimeUnit.SECONDS);
 			} catch (final InterruptedException e)
 			{
 				e.printStackTrace();
@@ -293,7 +293,7 @@ public class ClientModel implements IMessengerErrorListener
 			startGame(gameData, players, latch, true);
 			try
 			{
-				latch.await(10, TimeUnit.SECONDS);
+				latch.await(20, TimeUnit.SECONDS);
 			} catch (final InterruptedException e)
 			{
 				e.printStackTrace();
@@ -351,7 +351,7 @@ public class ClientModel implements IMessengerErrorListener
 		final GameData data;
 		try
 		{
-			data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null);
+			data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null); // this normally takes a couple seconds, but can take up to 60 seconds for a freaking huge game
 		} catch (final IOException ex)
 		{
 			ex.printStackTrace();

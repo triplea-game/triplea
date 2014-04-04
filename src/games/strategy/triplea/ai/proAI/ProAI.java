@@ -69,20 +69,6 @@ public class ProAI extends StrongAI
 		LogUI.clearCachedInstances();
 	}
 	
-	@Override
-	protected void finalize() throws Throwable
-	{
-		// s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game is exited.
-		/*try
-		{ 	// use this if not using a static calc, so that we gc the calc and shutdown all threads.
-			s_battleCalculator.shutdown(); // must be shutdown, as it has a thread pool per each instance.
-		} catch (final Exception e)
-		{
-			// ignore
-		}*/
-		super.finalize();
-	}
-	
 	IOddsCalculator getCalc()
 	{
 		return s_battleCalculator;

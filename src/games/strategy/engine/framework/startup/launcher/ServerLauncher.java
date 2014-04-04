@@ -206,7 +206,7 @@ public class ServerLauncher extends AbstractLauncher
 				HeadlessGameServer.log("Game Successfully Loaded. " + (m_abortLaunch ? "Aborting Launch." : "Starting Game."));
 			if (m_abortLaunch)
 				m_serverReady.countDownAll();
-			if (!m_serverReady.await(30, TimeUnit.SECONDS))
+			if (!m_serverReady.await(150, TimeUnit.SECONDS))
 			{
 				System.out.println("Waiting for clients to be ready timed out!");
 				m_abortLaunch = true;
@@ -262,7 +262,7 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							// we are already aborting the launch
 							if (!m_abortLaunch)
-								if (!m_errorLatch.await(30, TimeUnit.SECONDS))
+								if (!m_errorLatch.await(40, TimeUnit.SECONDS))
 									System.err.println("Waiting on error latch timed out!");
 						} catch (final InterruptedException e)
 						{

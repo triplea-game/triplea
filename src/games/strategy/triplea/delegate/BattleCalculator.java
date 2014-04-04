@@ -202,6 +202,18 @@ public class BattleCalculator
 	private static CasualtyDetails getLowLuckAACasualties(final boolean defending, final Collection<Unit> planes, final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location,
 				final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit)
 	{
+		{
+			final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(planes);
+			if (planes.size() != duplicatesCheckSet1.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + planes + "  HashSet:" + duplicatesCheckSet1);
+			}
+			final Set<Unit> duplicatesCheckSet2 = new HashSet<Unit>(defendingAA);
+			if (defendingAA.size() != duplicatesCheckSet2.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + defendingAA + "  HashSet:" + duplicatesCheckSet2);
+			}
+		}
 		int hitsLeft = dice.getHits();
 		if (hitsLeft <= 0)
 			return new CasualtyDetails();
@@ -338,6 +350,13 @@ public class BattleCalculator
 	 */
 	public static CasualtyDetails RandomAACasualties(final Collection<Unit> planes, final DiceRoll dice, final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit)
 	{
+		{
+			final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(planes);
+			if (planes.size() != duplicatesCheckSet1.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + planes + "  HashSet:" + duplicatesCheckSet1);
+			}
+		}
 		final int hitsLeft = dice.getHits();
 		if (hitsLeft <= 0)
 			return new CasualtyDetails();

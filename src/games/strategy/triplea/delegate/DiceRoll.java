@@ -148,6 +148,18 @@ public class DiceRoll implements Externalizable
 	public static DiceRoll rollAA(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAAForThisRoll, final IDelegateBridge bridge, final Territory location,
 				final boolean defending)
 	{
+		{
+			final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(validAttackingUnitsForThisRoll);
+			if (validAttackingUnitsForThisRoll.size() != duplicatesCheckSet1.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + validAttackingUnitsForThisRoll + "  HashSet:" + duplicatesCheckSet1);
+			}
+			final Set<Unit> duplicatesCheckSet2 = new HashSet<Unit>(defendingAAForThisRoll);
+			if (defendingAAForThisRoll.size() != duplicatesCheckSet2.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + defendingAAForThisRoll + "  HashSet:" + duplicatesCheckSet2);
+			}
+		}
 		final List<Unit> defendingAA = Match.getMatches(defendingAAForThisRoll,
 					(defending ? Matches.UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero : Matches.UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
 		if (defendingAA.isEmpty())
@@ -537,9 +549,17 @@ public class DiceRoll implements Externalizable
 	/**
 	 * Roll dice for units using low luck rules. Low luck rules based on rules in DAAK.
 	 */
-	private static DiceRoll rollDiceLowLuck(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
+	private static DiceRoll rollDiceLowLuck(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
 				final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie)
 	{
+		final List<Unit> units = new ArrayList<Unit>(unitsList);
+		{
+			final Set<Unit> duplicatesCheckSet = new HashSet<Unit>(unitsList);
+			if (units.size() != duplicatesCheckSet.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + units + "  HashSet:" + duplicatesCheckSet);
+			}
+		}
 		final GameData data = bridge.getData();
 		final Territory location = battle.getTerritory();
 		final boolean isAmphibiousBattle = battle.isAmphibious();
@@ -788,6 +808,13 @@ public class DiceRoll implements Externalizable
 	 */
 	public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
 	{
+		{
+			final Set<Unit> duplicatesCheckSet1 = new HashSet<Unit>(unitsList);
+			if (unitsList.size() != duplicatesCheckSet1.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + unitsList + "  HashSet:" + duplicatesCheckSet1);
+			}
+		}
 		final GameData data = bridge.getData();
 		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 		final List<Unit> units = new ArrayList<Unit>(unitsList);
@@ -899,8 +926,15 @@ public class DiceRoll implements Externalizable
 	private static DiceRoll rollDiceNormal(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
 				final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie)
 	{
-		final GameData data = bridge.getData();
 		final List<Unit> units = new ArrayList<Unit>(unitsList);
+		{
+			final Set<Unit> duplicatesCheckSet = new HashSet<Unit>(unitsList);
+			if (units.size() != duplicatesCheckSet.size())
+			{
+				throw new IllegalStateException("Duplicate Units Detected: Original List:" + units + "  HashSet:" + duplicatesCheckSet);
+			}
+		}
+		final GameData data = bridge.getData();
 		sortByStrength(units, defending);
 		final Territory location = battle.getTerritory();
 		final boolean isAmphibiousBattle = battle.isAmphibious();
@@ -954,11 +988,20 @@ public class DiceRoll implements Externalizable
 			{
 				for (int i = 0; i < rolls; i++)
 				{
+					/*try
+					{*/
 					final boolean hit = strength > random[diceIndex]; // zero based
 					dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
 					if (hit)
 						hitCount++;
 					diceIndex++;
+					/*} catch (final ArrayIndexOutOfBoundsException ex)
+					{
+						ex.printStackTrace();
+						// lets debug it
+						System.out.println("Units: " + unitsList + "  Territory: " + location + "  Random: " + Arrays.toString(random) + "  Current: " + current + "  rollCount: " + rollCount);
+						throw ex; // need to still throw it
+					}*/
 				}
 			}
 		}
