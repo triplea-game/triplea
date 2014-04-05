@@ -40,12 +40,13 @@ public class LogUtils
 	 * 
 	 * Just keep these things in mind while adding new logging code.
 	 */
-	public static void log(final Level level, String message, final Object... args)
+	public static void log(final Level level, final String message, final Throwable t)
 	{
-		if (args.length > 0)
-			message = format(message, args); // Convert {0}, {1}, etc to the objects supplied for them
 		// We always log to the AI logger, though it only shows up if the developer has the logger enabled in logging.properties
-		ProAI.getLogger().log(level, addIndentationCompensation(message, level));
+		if (t == null)
+			ProAI.getLogger().log(level, addIndentationCompensation(message, level));
+		else
+			ProAI.getLogger().log(level, addIndentationCompensation(message, level), t);
 		if (!LogSettings.loadSettings().EnableAILogging)
 			return; // Skip displaying to settings window if settings window option is turned off
 		final Level logDepth = LogSettings.loadSettings().AILoggingDepth;
@@ -56,19 +57,9 @@ public class LogUtils
 		LogUI.notifyAILogMessage(level, addIndentationCompensation(message, level));
 	}
 	
-	/**
-	 * Meant to duplicate the String.format method I used frequently in Microsoft Visual C#.
-	 * (The String.format method in java doesn't seem to replace {0} with the first argument, {1} with the second, etc.)
-	 */
-	public static String format(String message, final Object... args)
+	public static void log(final Level level, final String message)
 	{
-		int count = 0;
-		for (final Object obj : args)
-		{
-			message = message.replace("{".concat(Integer.toString(count)).concat("}"), "" + obj);
-			count++;
-		}
-		return message;
+		log(level, message, null);
 	}
 	
 	/**

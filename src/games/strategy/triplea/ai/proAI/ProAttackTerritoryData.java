@@ -40,6 +40,7 @@ public class ProAttackTerritoryData
 	
 	// Determine territory to attack variables
 	private boolean currentlyWins;
+	private ProBattleResultData battleResult;
 	
 	public ProAttackTerritoryData(final Territory territory)
 	{
@@ -55,6 +56,7 @@ public class ProAttackTerritoryData
 		amphibAttackMap = new HashMap<Unit, List<Unit>>();
 		navalAttackTransports = new ArrayList<Unit>();
 		currentlyWins = false;
+		battleResult = null;
 	}
 	
 	public void addUnit(final Unit unit)
@@ -212,14 +214,36 @@ public class ProAttackTerritoryData
 		return strengthEstimate;
 	}
 	
-	public void setCurrentlyWins(final boolean currentlyWins)
-	{
-		this.currentlyWins = currentlyWins;
-	}
-	
 	public boolean isCurrentlyWins()
 	{
 		return currentlyWins;
+	}
+	
+	public void setBattleResult(final ProBattleResultData battleResult)
+	{
+		this.battleResult = battleResult;
+		if (battleResult == null)
+			currentlyWins = false;
+		else if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE && battleResult.isHasLandUnitRemaining())
+			currentlyWins = true;
+	}
+	
+	public ProBattleResultData getBattleResult()
+	{
+		return battleResult;
+	}
+	
+	public String getResultString()
+	{
+		if (battleResult == null)
+		{
+			return "territory=" + territory.getName();
+		}
+		else
+		{
+			return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing=" + battleResult.getTUVSwing() + ", hasRemainingLandUnit="
+						+ battleResult.isHasLandUnitRemaining();
+		}
 	}
 	
 }
