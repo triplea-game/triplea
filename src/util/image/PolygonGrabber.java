@@ -911,10 +911,9 @@ public class PolygonGrabber extends JFrame
 		// might be set by -D
 		if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1)
 		{
-			String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
 			if (value != null && value.length() > 0)
 			{
-				value = value.replaceAll("\\(", " ");
 				final File mapFolder = new File(value);
 				if (mapFolder.exists())
 					s_mapFolderLocation = mapFolder;

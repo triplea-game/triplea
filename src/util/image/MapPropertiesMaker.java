@@ -501,10 +501,9 @@ public class MapPropertiesMaker extends JFrame
 			}
 		}
 		// now account for anything set by -D
-		String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+		final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
 		if (folderString != null && folderString.length() > 0)
 		{
-			folderString = folderString.replaceAll("\\(", " ");
 			final File mapFolder = new File(folderString);
 			if (mapFolder.exists())
 				s_mapFolderLocation = mapFolder;

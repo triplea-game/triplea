@@ -840,10 +840,9 @@ public class PlacementPicker extends JFrame
 				}
 			}
 		}
-		String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+		final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
 		if (folderString != null && folderString.length() > 0)
 		{
-			folderString = folderString.replaceAll("\\(", " ");
 			final File mapFolder = new File(folderString);
 			if (mapFolder.exists())
 				s_mapFolderLocation = mapFolder;

@@ -1,4 +1,6 @@
 Changes for 1.8.1.1
+* Fixed MapCreator so that it will properly send the map folder to the utility programs. (veqryn)
+
 * Allowing host to wait up to 150 seconds when starting a game for all clients to report in as good, and wait up to 30 seconds for observers joining after game has started. (veqryn) 
 
 * Fixing two memory leaks that allowed AI's and GameData to stay in memory after exiting back to main screen. (veqryn)

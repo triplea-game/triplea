@@ -801,17 +801,7 @@ public class MapCreator extends JFrame
 		ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
 		if (s_mapFolderLocation != null && s_mapFolderLocation.exists())
 		{
-			try
-			{
-				// TODO: Fucking apparently JAVA can not handle a -D argument with spaces in it, because it
-				// adds quotes to the outside of the -D argument, which results in the whole thing failing.
-				// So from now on, we are replacing spaces with "(", then undoing it later. FUCK.
-				final String pathWithoutSpaces = s_mapFolderLocation.getCanonicalPath().replaceAll(" ", "(");
-				commands.add("-D" + TRIPLEA_MAP_FOLDER + "=\"" + pathWithoutSpaces + "\"");
-			} catch (final Exception ex)
-			{
-				ex.printStackTrace();
-			}
+			commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath()); // no need for quotes, that will just screw up the process builder
 		}
 		commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + s_unit_zoom);
 		commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + s_unit_width);
@@ -885,10 +875,9 @@ public class MapCreator extends JFrame
 				}
 			}
 		}
-		String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+		final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
 		if (folderString != null && folderString.length() > 0)
 		{
-			folderString = folderString.replaceAll("\\(", " ");
 			final File mapFolder = new File(folderString);
 			if (mapFolder.exists())
 				s_mapFolderLocation = mapFolder;
