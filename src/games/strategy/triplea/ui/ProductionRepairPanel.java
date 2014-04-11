@@ -177,7 +177,7 @@ public class ProductionRepairPanel extends JPanel
 						if (!repairRule.getResults().keySet().iterator().next().equals(u.getType()))
 							continue;
 						final TripleAUnit taUnit = (TripleAUnit) u;
-						final Rule rule = new Rule(repairRule, player, m_uiContext, u);
+						final Rule rule = new Rule(repairRule, player, m_uiContext, u, terr);
 						// int initialQuantity = initialPurchase.getInt(repairRule);
 						int initialQuantity = 0;
 						if (initialPurchase.get(u) != null)
@@ -306,13 +306,12 @@ public class ProductionRepairPanel extends JPanel
 		private final int m_maxRepairAmount;
 		private final int m_repairResults;
 		
-		Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit)
+		Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit, final Territory territoryUnitIsIn)
 		{
 			setLayout(new GridBagLayout());
 			m_unit = repairUnit;
 			m_rule = rule;
 			m_cost = rule.getCosts();
-			final Territory territoryUnitIsIn = repairUnit.getTerritoryUnitIsIn();
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");

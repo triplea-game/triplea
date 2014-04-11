@@ -78,6 +78,7 @@ public class Unit extends GameDataComponent implements Serializable
 	 * A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to another. This method will just return the first territory found.
 	 * A unit should never be in more than 2 territories.
 	 */
+	@Deprecated
 	public Territory getTerritoryUnitIsIn()
 	{
 		// Collection<Territory> terrs = new ArrayList<Territory>();
@@ -144,24 +145,10 @@ public class Unit extends GameDataComponent implements Serializable
 	public String toString()
 	{
 		// none of these should happen,... except that they did a couple times.
-		if (m_type == null && m_owner != null)
+		if (m_type == null || m_owner == null)
 		{
-			final String text = "Unit.toString() -> Possible java de-serialization error: Unit of UNKNOWN TYPE owned by " + m_owner.getName() + " in territory: "
-						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: "
-						+ getID();
-			System.err.println(text);
-			return text;
-		}
-		else if (m_type != null && m_owner == null)
-		{
-			final String text = "Unit.toString() -> Possible java de-serialization error: " + m_type.getName() + " owned by UNKNOWN OWNER in territory: "
-						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: " + getID();
-			System.err.println(text);
-			return text;
-		}
-		else if (m_type == null && m_owner == null)
-		{
-			final String text = "Unit.toString() -> Possible java de-serialization error: Unit of UNKNOWN TYPE owned by UNKNOWN OWNER in territory: "
+			final String text = "Unit.toString() -> Possible java de-serialization error: " + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName())
+						+ " owned by " + (m_owner == null ? "UNKNOWN OWNER" : m_owner.getName()) + " in territory: "
 						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: " + getID();
 			System.err.println(text);
 			return text;

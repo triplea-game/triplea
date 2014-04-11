@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -898,7 +899,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			rrules = player.getRepairFrontier().getRules();
 			final IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
 			final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<Unit, IntegerMap<RepairRule>>();
-			final Collection<Unit> unitsThatCanProduceNeedingRepair = new ArrayList<Unit>();
+			final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<Unit, Territory>();
 			final Collection<Unit> unitsThatAreDisabledNeedingRepair = new ArrayList<Unit>();
 			final CompositeMatchAnd<Unit> ourDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled);
 			final int minimumUnitPrice = 3;
@@ -907,6 +908,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			int capDamage = 0;
 			int capProduction = 0;
 			Unit capUnit = null;
+			Territory capUnitTerritory = null;
 			int maxUnits = (totPU - 1) / minimumUnitPrice;
 			int currentProduction = 0;
 			int maxProduction = 0;
@@ -917,7 +919,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					continue;
 				final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(Match.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
 				if (Matches.UnitHasTakenSomeBombingUnitDamage.match(possibleFactoryNeedingRepair))
-					unitsThatCanProduceNeedingRepair.add(possibleFactoryNeedingRepair);
+					unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
 				unitsThatAreDisabledNeedingRepair.addAll(Match.getMatches(fixTerr.getUnits().getUnits(), ourDisabled));
 				final TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
 				maxProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, false, true);
@@ -928,6 +930,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					capDamage += diff;
 					capProduction = TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
 					capUnit = possibleFactoryNeedingRepair;
+					capUnitTerritory = fixTerr;
 				}
 				currentProduction += TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
 			}
@@ -945,7 +948,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						continue;
 					final TripleAUnit taUnit = (TripleAUnit) capUnit;
 					diff = taUnit.getUnitDamage();
-					final int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnit.getTerritoryUnitIsIn(), player, data, false, true) - diff;
+					final int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnitTerritory, player, data, false, true) - diff;
 					if (!rfactories.isEmpty())
 						diff = Math.min(diff, (maxUnits / 2 - unitProductionAllowNegative) + 1);
 					else
@@ -972,18 +975,18 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				for (final RepairRule rrule : rrules)
 				{
-					for (final Unit fixUnit : unitsThatCanProduceNeedingRepair)
+					for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet())
 					{
 						if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next()))
 							continue;
-						if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixUnit.getTerritoryUnitIsIn()))
+						if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(unitsThatCanProduceNeedingRepair.get(fixUnit)))
 							continue;
 						// we will repair the first territories in the list as much as we can, until we fulfill the condition, then skip all other territories
 						if (currentProduction >= maxUnits)
 							continue;
 						final TripleAUnit taUnit = (TripleAUnit) fixUnit;
 						diff = taUnit.getUnitDamage();
-						final int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit, fixUnit.getTerritoryUnitIsIn(), player, data, false, true) - diff;
+						final int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit, unitsThatCanProduceNeedingRepair.get(fixUnit), player, data, false, true) - diff;
 						if (i == 0)
 						{
 							if (unitProductionAllowNegative < 0)
@@ -1010,7 +1013,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 				rfactories.add(capitol);
 				if (capUnit != null)
-					unitsThatCanProduceNeedingRepair.add(capUnit);
+					unitsThatCanProduceNeedingRepair.put(capUnit, capUnitTerritory);
 				i++;
 			}
 		}

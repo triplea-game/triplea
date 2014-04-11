@@ -299,7 +299,7 @@ public class DoCombatMove
 					Territory openPort = null;
 					for (final Territory port : data.getMap().getNeighbors(ter2, Matches.TerritoryIsWater))
 					{
-						if (data.getMap().getRoute(ourUnitGroup.get(0).getTerritoryUnitIsIn(), port, DUtils.CompMatchAnd(Matches.TerritoryIsWater)) == null)
+						if (data.getMap().getRoute(ter, port, DUtils.CompMatchAnd(Matches.TerritoryIsWater)) == null)
 							continue;
 						openPort = port;
 						break;
@@ -315,7 +315,7 @@ public class DoCombatMove
 								DUtils.CompMatchAnd(Matches.TerritoryIsLand, Matches.territoryHasEnemyLandUnits(player, data)), DMatches.TerritoryIsLandAndPassable);
 					if (continentTroubleTers.isEmpty())
 						score -= 10000000; // We really want to land on a continent where we can actually help
-					score -= CachedCalculationCenter.GetSeaRoute(data, ourUnitGroup.get(0).getTerritoryUnitIsIn(), openPort).getLength() * 100000; // And having the unload ter closeby is good too
+					score -= CachedCalculationCenter.GetSeaRoute(data, ter, openPort).getLength() * 100000; // And having the unload ter closeby is good too
 					score -= ter2.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)).size() * 100; // We prefer to not be greeted by a huge army
 					score += TerritoryAttachment.getProduction(ter2); // And we like ters we get money from... :)
 					if (score > highestUnloadingTerScore)
@@ -327,17 +327,17 @@ public class DoCombatMove
 				}
 				if (unloadingTer == null)
 					continue;
-				if (unfilledTransports > 0 && unloadingPort != ourUnitGroup.get(0).getTerritoryUnitIsIn())
+				if (unfilledTransports > 0 && unloadingPort != ter)
 				{
 					if (filledTransports < 10) // As long as we have fewer than 10 filled transports //Todo: Remove hard-coded 10
 						continue; // Don't go on to unload port until all transports are filled(with units on them)
 				}
 				// Move all units to unloading port
-				final UnitGroup ships = DUtils.CreateUnitGroupForUnits(ourUnitGroup, ourUnitGroup.get(0).getTerritoryUnitIsIn(), data);
+				final UnitGroup ships = DUtils.CreateUnitGroupForUnits(ourUnitGroup, ter, data);
 				final String error = ships.MoveAsFarTo_CM(unloadingPort, mover);
 				if (error != null)
 				{
-					DUtils.Log(Level.FINER, "    There was an error moving ships[{0}] to unloading port({1}->{2}): {3}", ships, ourUnitGroup.get(0).getTerritoryUnitIsIn(), unloadingPort, error);
+					DUtils.Log(Level.FINER, "    There was an error moving ships[{0}] to unloading port({1}->{2}): {3}", ships, ter, unloadingPort, error);
 					continue;
 				}
 				// Move all land units onto unloading ter

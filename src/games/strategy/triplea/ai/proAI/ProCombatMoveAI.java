@@ -1506,7 +1506,8 @@ public class ProCombatMoveAI
 		else
 		{
 			// Get all units that can be transported
-			final CompositeMatch<Unit> myUnitsToLoadMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanNotMoveDuringCombatMove.invert());
+			final CompositeMatch<Unit> myUnitsToLoadMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanNotMoveDuringCombatMove.invert(),
+						Matches.unitIsBeingTransported().invert());
 			final List<Unit> units = new ArrayList<Unit>();
 			for (final Territory loadFrom : territoriesToLoadFrom)
 			{
@@ -1625,10 +1626,15 @@ public class ProCombatMoveAI
 				final Match<Territory> canMoveSeaThroughMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(), Matches
 							.territoryHasNonAllowedCanal(player, Collections.singletonList(transport), data).invert());
 				int movesLeft = UnitAttachment.get(transport.getType()).getMovement(player);
+				Territory transportTerritory = transport.getTerritoryUnitIsIn();
+				
+				// Check if units are already loaded or not
 				final List<Unit> loadedUnits = new ArrayList<Unit>();
 				final List<Unit> remainingUnitsToLoad = new ArrayList<Unit>();
-				remainingUnitsToLoad.addAll(amphibAttackMap.get(transport));
-				Territory transportTerritory = transport.getTerritoryUnitIsIn();
+				if (TransportTracker.isTransporting(transport))
+					loadedUnits.addAll(amphibAttackMap.get(transport));
+				else
+					remainingUnitsToLoad.addAll(amphibAttackMap.get(transport));
 				
 				// Load units and move transport
 				while (movesLeft >= 0)

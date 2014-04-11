@@ -488,7 +488,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		}
 		if (damagedMap.isEmpty())
 			return;
-		final Set<Unit> fullyRepaired = new HashSet<Unit>();
+		final Map<Unit, Territory> fullyRepaired = new HashMap<Unit, Territory>();
 		final IntegerMap<Unit> newHitsMap = new IntegerMap<Unit>();
 		for (final Entry<Territory, Set<Unit>> entry : damagedMap.entrySet())
 		{
@@ -500,18 +500,20 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				if (newHits != currentHits)
 					newHitsMap.put(u, newHits);
 				if (newHits <= 0)
-					fullyRepaired.add(u);
+				{
+					fullyRepaired.put(u, entry.getKey());
+				}
 			}
 		}
 		aBridge.getHistoryWriter().startEvent(newHitsMap.size() + " " + MyFormatter.pluralize("unit", newHitsMap.size()) + " repaired.", new HashSet<Unit>(newHitsMap.keySet()));
 		aBridge.addChange(ChangeFactory.unitsHit(newHitsMap));
 		// now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air units to leave while damaged, we need to remove those air units now
-		final Collection<Unit> damagedCarriers = Match.getMatches(fullyRepaired, Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+		final Collection<Unit> damagedCarriers = Match.getMatches(fullyRepaired.keySet(), Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
 		// now cycle through those now-repaired carriers, and remove allied air from being dependant
 		final CompositeChange clearAlliedAir = new CompositeChange();
 		for (final Unit carrier : damagedCarriers)
 		{
-			final CompositeChange change = MustFightBattle.clearTransportedByForAlliedAirOnCarrier(Collections.singleton(carrier), carrier.getTerritoryUnitIsIn(), carrier.getOwner(), data);
+			final CompositeChange change = MustFightBattle.clearTransportedByForAlliedAirOnCarrier(Collections.singleton(carrier), fullyRepaired.get(carrier), carrier.getOwner(), data);
 			if (!change.isEmpty())
 				clearAlliedAir.add(change);
 		}
