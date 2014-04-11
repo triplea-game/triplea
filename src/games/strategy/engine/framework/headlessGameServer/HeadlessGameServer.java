@@ -80,7 +80,8 @@ public class HeadlessGameServer
 	{
 		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY,
 					GameRunner2.TRIPLEA_PORT_PROPERTY, GameRunner2.TRIPLEA_NAME_PROPERTY, GameRunner2.LOBBY_HOST, GameRunner2.LOBBY_PORT, GameRunner2.LOBBY_GAME_COMMENTS,
-					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner2.LOBBY_GAME_RECONNECTION };
+					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner2.LOBBY_GAME_RECONNECTION,
+					GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner2.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME };
 	}
 	
 	private static void usage()
@@ -99,6 +100,8 @@ public class HeadlessGameServer
 					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + "]>\n"
+					+ "   " + GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
+					+ "   " + GameRunner2.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
 					+ "\n"
 					+ "   You must start the Name and HostedBy with \"Bot\".\n"
 					+ "   Game Comments must have this string in it: \"automated_host\".\n"
@@ -1008,6 +1011,34 @@ public class HeadlessGameServer
 				printUsage = true;
 			}
 			// no passwords allowed for bots
+		}
+		{// take any actions or commit to preferences
+			final String clientWait = System.getProperty(GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
+			final String observerWait = System.getProperty(GameRunner2.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
+			if (clientWait.length() > 0)
+			{
+				try
+				{
+					final int wait = Integer.parseInt(clientWait);
+					GameRunner2.setServerStartGameSyncWaitTime(wait);
+				} catch (final NumberFormatException e)
+				{
+					System.out.println("Invalid argument: " + GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
+					printUsage = true;
+				}
+			}
+			if (observerWait.length() > 0)
+			{
+				try
+				{
+					final int wait = Integer.parseInt(observerWait);
+					GameRunner2.setServerObserverJoinWaitTime(wait);
+				} catch (final NumberFormatException e)
+				{
+					System.out.println("Invalid argument: " + GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
+					printUsage = true;
+				}
+			}
 		}
 		if (printUsage)
 		{

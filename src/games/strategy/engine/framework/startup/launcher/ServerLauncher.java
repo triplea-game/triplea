@@ -17,6 +17,7 @@ import games.strategy.common.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -206,7 +207,7 @@ public class ServerLauncher extends AbstractLauncher
 				HeadlessGameServer.log("Game Successfully Loaded. " + (m_abortLaunch ? "Aborting Launch." : "Starting Game."));
 			if (m_abortLaunch)
 				m_serverReady.countDownAll();
-			if (!m_serverReady.await(150, TimeUnit.SECONDS))
+			if (!m_serverReady.await(GameRunner2.getServerStartGameSyncWaitTime(), TimeUnit.SECONDS))
 			{
 				System.out.println("Waiting for clients to be ready timed out!");
 				m_abortLaunch = true;
@@ -262,7 +263,7 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							// we are already aborting the launch
 							if (!m_abortLaunch)
-								if (!m_errorLatch.await(40, TimeUnit.SECONDS))
+								if (!m_errorLatch.await(GameRunner2.getServerObserverJoinWaitTime() + 10, TimeUnit.SECONDS))
 									System.err.println("Waiting on error latch timed out!");
 						} catch (final InterruptedException e)
 						{

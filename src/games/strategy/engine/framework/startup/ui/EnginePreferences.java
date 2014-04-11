@@ -1,6 +1,10 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.debug.Console;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.data.properties.NumberProperty;
+import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.GameRunner2.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
@@ -8,7 +12,6 @@ import games.strategy.engine.framework.TripleAProcessRunner;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.ui.TripleaMenu;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -57,6 +60,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_lookAndFeel;
 	private JButton m_gameParser;
 	private JButton m_setupProxies;
+	private JButton m_hostWaitTime;
 	private JButton m_setMaxMemory;
 	private JButton m_console;
 	// private JButton m_runAutoHost;
@@ -90,6 +94,7 @@ public class EnginePreferences extends JDialog
 		m_lookAndFeel = new JButton("Set Look And Feel");
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
 		m_setupProxies = new JButton("Setup Network and Proxy Settings");
+		m_hostWaitTime = new JButton("Set Max Host Wait Time for Clients and Observers");
 		m_setMaxMemory = new JButton("Set Max Memory Usage");
 		// m_runAutoHost = new JButton("Run an Automated Game Host Bot");
 		m_mapCreator = new JButton("Run the Map Creator");
@@ -118,6 +123,8 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(m_gameParser);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_setupProxies);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_hostWaitTime);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_setMaxMemory);
 		buttonsPanel.add(new JLabel(" "));
@@ -159,7 +166,7 @@ public class EnginePreferences extends JDialog
 			
 			public void actionPerformed(final ActionEvent event)
 			{
-				final Triple<JList, Map<String, String>, String> lookAndFeel = TripleaMenu.getLookAndFeelList();
+				final Triple<JList, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
 				final JList list = lookAndFeel.getFirst();
 				final String currentKey = lookAndFeel.getThird();
 				final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
@@ -243,6 +250,34 @@ public class EnginePreferences extends JDialog
 				else
 					newChoice = ProxyChoice.NONE;
 				GameRunner2.setProxy(hostText.getText(), portText.getText(), newChoice);
+			}
+		});
+		m_hostWaitTime.addActionListener(new AbstractAction("Set Max Host Wait Time for Clients and Observers")
+		{
+			private static final long serialVersionUID = 1262782782389758914L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final NumberProperty clientWait = new NumberProperty("Max seconds to wait for all clients to sync data on game start",
+							"Max seconds to wait for all clients to sync data on game start", 3600, GameRunner2.DEFAULT_SERVER_START_GAME_SYNCE_WAIT_TIME, GameRunner2.getServerStartGameSyncWaitTime());
+				final NumberProperty observerWait = new NumberProperty("Max seconds to wait for an observer joining a running game", "Max seconds to wait for an observer joining a running game",
+							3600, GameRunner2.DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner2.getServerObserverJoinWaitTime());
+				final List<IEditableProperty> list = new ArrayList<IEditableProperty>();
+				list.add(clientWait);
+				list.add(observerWait);
+				final PropertiesUI ui = new PropertiesUI(list, true);
+				final Object[] options = { "Accept", "Reset to Defaults", "Cancel" };
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, ui, "Host Wait Settings", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+				if (answer == JOptionPane.YES_OPTION)
+				{
+					GameRunner2.setServerStartGameSyncWaitTime(clientWait.getValue());
+					GameRunner2.setServerObserverJoinWaitTime(observerWait.getValue());
+				}
+				else if (answer == JOptionPane.NO_OPTION)
+				{// reset
+					GameRunner2.resetServerStartGameSyncWaitTime();
+					GameRunner2.resetServerObserverJoinWaitTime();
+				}
 			}
 		});
 		m_setMaxMemory.addActionListener(new AbstractAction("Set Max Memory Usage")
