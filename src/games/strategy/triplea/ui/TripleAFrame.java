@@ -785,14 +785,14 @@ public class TripleAFrame extends MainGameFrame
 	
 	public void waitForMoveForumPoster(final PlayerID player, final IPlayerBridge bridge)
 	{
-		m_messageAndDialogThreadPool.waitForAll();
+		// m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToMoveForumPosterPanel(player);
 		m_actionButtons.waitForMoveForumPosterPanel(this, bridge);
 	}
 	
 	public void waitForEndTurn(final PlayerID player, final IPlayerBridge bridge)
 	{
-		m_messageAndDialogThreadPool.waitForAll();
+		// m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToEndTurn(player);
 		m_actionButtons.waitForEndTurn(this, bridge);
 	}
@@ -852,9 +852,9 @@ public class TripleAFrame extends MainGameFrame
 	
 	public boolean getOKToLetAirDie(final PlayerID m_id, final Collection<Territory> airCantLand, final boolean movePhase)
 	{
-		m_messageAndDialogThreadPool.waitForAll();
 		if (airCantLand == null || airCantLand.isEmpty())
 			return true;
+		m_messageAndDialogThreadPool.waitForAll();
 		final StringBuilder buf = new StringBuilder("Air in following territories cant land: ");
 		final Iterator<Territory> iter = airCantLand.iterator();
 		while (iter.hasNext())
@@ -884,9 +884,9 @@ public class TripleAFrame extends MainGameFrame
 	
 	public boolean getOKToLetUnitsDie(final PlayerID m_id, final Collection<Territory> unitsCantFight, final boolean movePhase)
 	{
-		m_messageAndDialogThreadPool.waitForAll();
 		if (unitsCantFight == null || unitsCantFight.isEmpty())
 			return true;
+		m_messageAndDialogThreadPool.waitForAll();
 		final StringBuilder buf = new StringBuilder("Units in the following territories will die: ");
 		final Iterator<Territory> iter = unitsCantFight.iterator();
 		while (iter.hasNext())
@@ -966,11 +966,11 @@ public class TripleAFrame extends MainGameFrame
 	
 	public Unit getStrategicBombingRaidTarget(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
-		m_messageAndDialogThreadPool.waitForAll();
 		if (potentialTargets == null || potentialTargets.size() == 0)
 			return null;
 		if (potentialTargets.size() == 1)
 			return potentialTargets.iterator().next();
+		m_messageAndDialogThreadPool.waitForAll();
 		final AtomicReference<Unit> selected = new AtomicReference<Unit>();
 		final String message = "Select bombing target in " + territory.getName();
 		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
@@ -1106,15 +1106,15 @@ public class TripleAFrame extends MainGameFrame
 	public HashMap<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack, final Resource attackResourceToken,
 				final int maxNumberOfAttacksAllowed)
 	{
-		m_messageAndDialogThreadPool.waitForAll();
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			throw new IllegalStateException("Should not be called from dispatch thread");
 		}
-		final CountDownLatch continueLatch = new CountDownLatch(1);
 		final HashMap<Territory, IntegerMap<Unit>> selection = new HashMap<Territory, IntegerMap<Unit>>();
 		if (possibleUnitsToAttack == null || possibleUnitsToAttack.isEmpty() || attackResourceToken == null || maxNumberOfAttacksAllowed <= 0)
 			return selection;
+		m_messageAndDialogThreadPool.waitForAll();
+		final CountDownLatch continueLatch = new CountDownLatch(1);
 		final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<IndividualUnitPanelGrouped>();
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -2683,33 +2683,34 @@ public class TripleAFrame extends MainGameFrame
 	
 	public BattlePanel getBattlePanel()
 	{
-		m_messageAndDialogThreadPool.waitForAll();
+		// m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getBattlePanel();
 	}
 	
+	/*
 	public AbstractMovePanel getMovePanel()
 	{
-		m_messageAndDialogThreadPool.waitForAll();
+		//m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getMovePanel();
 	}
 	
 	public TechPanel getTechPanel()
 	{
-		m_messageAndDialogThreadPool.waitForAll();
+		//m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getTechPanel();
 	}
 	
 	public PlacePanel getPlacePanel()
 	{
-		m_messageAndDialogThreadPool.waitForAll();
+		//m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getPlacePanel();
 	}
 	
 	public PurchasePanel getPurchasePanel()
 	{
-		m_messageAndDialogThreadPool.waitForAll();
+		//m_messageAndDialogThreadPool.waitForAll();
 		return m_actionButtons.getPurchasePanel();
-	}
+	}*/
 	
 	Action getShowGameAction()
 	{

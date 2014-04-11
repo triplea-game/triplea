@@ -1,4 +1,6 @@
 Changes for 1.8.1.1
+* Fixed issue with the game waiting on a player to click all 'OK' messages before a battle would continue. (veqryn)
+
 * Adding options to engine preferences to change how long your game host waits for clients on game startup and for observers joining. (veqryn)
 
 * Fixed MapCreator so that it will properly send the map folder to the utility programs. (veqryn)

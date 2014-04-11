@@ -81,22 +81,12 @@ public class Unit extends GameDataComponent implements Serializable
 	@Deprecated
 	public Territory getTerritoryUnitIsIn()
 	{
-		// Collection<Territory> terrs = new ArrayList<Territory>();
 		for (final Territory t : this.getData().getMap().getTerritories())
 		{
 			if (t.getUnits().getUnits().contains(this))
 				return t;
-			// terrs.add(t);
 		}
 		return null;
-		/*if (terrs.size() > 2)
-			throw new IllegalStateException("Unit, " + this.toString() + ", may not be in multiple territories at the same time.");
-		else if (terrs.size() == 2)
-			return terrs.iterator().next(); // this actually does occur while in the middle of moving a unit from one territory to another, before the unit gets deleted from the first.
-		else if (terrs.size() == 1)
-			return terrs.iterator().next();
-		else
-			return null;*/
 	}
 	
 	public int getHits()
