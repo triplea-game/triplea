@@ -98,8 +98,9 @@ public class ModeratorController extends AbstractModeratorController implements 
 			throw new IllegalStateException("Can't mute an admin");
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
-		new MutedUsernameController().addMutedUsername(getRealName(node), muteExpires);
-		m_serverMessenger.NotifyUsernameMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
+		final String realName = getRealName(node);
+		new MutedUsernameController().addMutedUsername(realName, muteExpires);
+		m_serverMessenger.NotifyUsernameMutingOfPlayer(realName, muteExpires);
 		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(Username mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node
 					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
@@ -112,8 +113,9 @@ public class ModeratorController extends AbstractModeratorController implements 
 			throw new IllegalStateException("Can't mute an admin");
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
-		new MutedIpController().addMutedIp(node.getAddress().getHostAddress(), muteExpires);
-		m_serverMessenger.NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
+		final String ip = node.getAddress().getHostAddress();
+		new MutedIpController().addMutedIp(ip, muteExpires);
+		m_serverMessenger.NotifyIPMutingOfPlayer(ip, muteExpires);
 		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(IP mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node.getAddress()
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
