@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global 1942 Test 2nd Edition" version="3.9"/>
+        <info name="World War II Global 1942 Test 2nd Edition" version="4.0"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.8"/>
 		<diceSides value="6"/>
@@ -4941,18 +4941,21 @@
 					<option name="conditions" value="conditionAttachmentRussiansNotYetAtWarWithTrueNeutralsButAlliesAre"/>
 					<option name="relationshipChange" value="Russians:Neutral_True:anyNeutral:War"/>
 					<option name="when" value="before:russiansPolitics"/>
+					<option name="when" value="after:russiansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Russians_Friendly_TrueNeutral" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentRussiansNotYetFriendlyWithTrueNeutralsButAlliesAre"/>
 					<option name="relationshipChange" value="Russians:Neutral_True:anyNeutral:Friendly_Neutral"/>
 					<option name="when" value="before:russiansPolitics"/>
+					<option name="when" value="after:russiansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Russians_Friendly_Mongolians1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentRussiansNotYetFriendlyWithMongoliansButAlliesAre"/>
 					<option name="relationshipChange" value="Russians:Mongolians:anyNeutral:Friendly_Neutral"/>
 					<option name="when" value="before:russiansPolitics"/>
+					<option name="when" value="after:russiansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Russians_Friendly_Mongolians2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -4965,6 +4968,7 @@
 					<option name="conditions" value="conditionAttachmentAmericansNotYetAtWarWithTrueNeutralsButAlliesAre"/>
 					<option name="relationshipChange" value="Americans:Neutral_True:anyNeutral:War"/>
 					<option name="when" value="before:americansPolitics"/>
+					<option name="when" value="after:americansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Americans_Friendly_TrueNeutral" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -4972,12 +4976,14 @@
 					<option name="relationshipChange" value="Americans:Neutral_True:anyNeutral:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Americans:Mongolians:anyNeutral:Friendly_Neutral"/>
 					<option name="when" value="before:americansPolitics"/>
+					<option name="when" value="after:americansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Americans_War_Mongolians" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_Americans_Not_Yet_At_War_With_Mongolians_But_Allies_Are"/>
 					<option name="relationshipChange" value="Americans:Mongolians:anyNeutral:War"/>
 					<option name="when" value="before:americansPolitics"/>
+					<option name="when" value="after:americansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
                 
@@ -7171,6 +7177,9 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>4.0
+<br>Added a check after USA and Russian politics to change relationship with True Neutrals and Mongolians.
 <br>
 <br>3.9
 <br>Stopped British fighters from dying if UK Pacific could place a carrier under them.
