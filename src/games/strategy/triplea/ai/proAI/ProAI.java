@@ -15,6 +15,8 @@ package games.strategy.triplea.ai.proAI;
  */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.net.GUID;
 import games.strategy.triplea.ai.proAI.logging.LogUI;
 import games.strategy.triplea.ai.proAI.logging.LogUtils;
 import games.strategy.triplea.ai.strongAI.StrongAI;
@@ -23,6 +25,7 @@ import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,12 +41,19 @@ public class ProAI extends StrongAI
 	
 	private static final IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
 	
+	// Utilities
+	private final ProBattleUtils proBattleUtils;
+	
+	// Phases
 	private final ProCombatMoveAI proCombatMoveAI;
+	private final ProRetreatAI proRetreatAI;
 	
 	public ProAI(final String name, final String type)
 	{
 		super(name, type);
-		proCombatMoveAI = new ProCombatMoveAI(this);
+		proBattleUtils = new ProBattleUtils(this);
+		proCombatMoveAI = new ProCombatMoveAI(proBattleUtils);
+		proRetreatAI = new ProRetreatAI(this, proBattleUtils);
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -69,11 +79,14 @@ public class ProAI extends StrongAI
 		LogUI.clearCachedInstances();
 	}
 	
-	IOddsCalculator getCalc()
+	public IOddsCalculator getCalc()
 	{
 		return s_battleCalculator;
 	}
 	
+	/* (non-Javadoc)
+	 * @see games.strategy.triplea.ai.strongAI.StrongAI#move(boolean, games.strategy.triplea.delegate.remote.IMoveDelegate, games.strategy.engine.data.GameData, games.strategy.engine.data.PlayerID)
+	 */
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
@@ -89,4 +102,15 @@ public class ProAI extends StrongAI
 		}
 		pause();
 	}
+	
+	/* (non-Javadoc)
+	 * @see games.strategy.triplea.ai.strongAI.StrongAI#retreatQuery(games.strategy.net.GUID, boolean, games.strategy.engine.data.Territory, java.util.Collection, java.lang.String)
+	 */
+	@Override
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
+	{
+		s_battleCalculator.setGameData(getGameData());
+		return proRetreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
+	}
+	
 }

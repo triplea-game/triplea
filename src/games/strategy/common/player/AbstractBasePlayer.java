@@ -52,7 +52,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	/**
 	 * Get the GameData for the game.
 	 */
-	protected final GameData getGameData()
+	public final GameData getGameData()
 	{
 		return m_iPlayerBridge.getGameData();
 	}

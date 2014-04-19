@@ -48,9 +48,9 @@ public class ProAttackTerritoryData
 		maxUnits = new ArrayList<Unit>();
 		units = new ArrayList<Unit>();
 		TUVSwing = 0;
-		canHold = false;
+		canHold = true;
 		canAttack = false;
-		strengthEstimate = -1;
+		strengthEstimate = Double.POSITIVE_INFINITY;
 		maxAmphibUnits = new ArrayList<Unit>();
 		needAmphibUnits = false;
 		amphibAttackMap = new HashMap<Unit, List<Unit>>();
