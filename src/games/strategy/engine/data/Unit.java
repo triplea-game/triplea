@@ -79,7 +79,7 @@ public class Unit extends GameDataComponent implements Serializable
 	 * A unit should never be in more than 2 territories.
 	 */
 	@Deprecated
-	public Territory getTerritoryUnitIsIn()
+	protected Territory getTerritoryUnitIsIn()
 	{
 		for (final Territory t : this.getData().getMap().getTerritories())
 		{

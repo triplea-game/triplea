@@ -436,7 +436,7 @@ public class MovePerformer implements Serializable
 			while (iter.hasNext())
 			{
 				final Unit unit = iter.next();
-				if (paratroopsLanding && Matches.UnitIsAirTransport.match(unit))
+				if (Matches.UnitIsAir.match(unit))// || (paratroopsLanding && Matches.UnitIsAirTransport.match(unit)))
 					continue;
 				final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
 				// we will unload our paratroopers after they land in battle (after aa guns fire)

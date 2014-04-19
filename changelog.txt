@@ -1,4 +1,6 @@
 Changes for 1.8.1.1
+* Fixed bug in movement performer, which under certain rare circumstances would take all movement away from air units going from sea to land. (veqryn)
+
 * Further work on ProAI (called Hard AI in game menu), including new methods to determine retreats in battles. (redrum)
 
 * Fixed bug in username muting, which caused it to not work at all. (veqryn)

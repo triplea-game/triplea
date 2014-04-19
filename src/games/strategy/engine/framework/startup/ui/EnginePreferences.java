@@ -259,9 +259,9 @@ public class EnginePreferences extends JDialog
 			public void actionPerformed(final ActionEvent e)
 			{
 				final NumberProperty clientWait = new NumberProperty("Max seconds to wait for all clients to sync data on game start",
-							"Max seconds to wait for all clients to sync data on game start", 3600, GameRunner2.DEFAULT_SERVER_START_GAME_SYNCE_WAIT_TIME, GameRunner2.getServerStartGameSyncWaitTime());
+							"Max seconds to wait for all clients to sync data on game start", 3600, GameRunner2.MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner2.getServerStartGameSyncWaitTime());
 				final NumberProperty observerWait = new NumberProperty("Max seconds to wait for an observer joining a running game", "Max seconds to wait for an observer joining a running game",
-							3600, GameRunner2.DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner2.getServerObserverJoinWaitTime());
+							3600, GameRunner2.MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner2.getServerObserverJoinWaitTime());
 				final List<IEditableProperty> list = new ArrayList<IEditableProperty>();
 				list.add(clientWait);
 				list.add(observerWait);

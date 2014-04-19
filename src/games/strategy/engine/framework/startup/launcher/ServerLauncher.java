@@ -263,7 +263,7 @@ public class ServerLauncher extends AbstractLauncher
 						{
 							// we are already aborting the launch
 							if (!m_abortLaunch)
-								if (!m_errorLatch.await(GameRunner2.getServerObserverJoinWaitTime() + 10, TimeUnit.SECONDS))
+								if (!m_errorLatch.await(GameRunner2.getServerObserverJoinWaitTime() + GameRunner2.ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME, TimeUnit.SECONDS))
 									System.err.println("Waiting on error latch timed out!");
 						} catch (final InterruptedException e)
 						{

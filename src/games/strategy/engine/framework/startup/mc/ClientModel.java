@@ -277,7 +277,7 @@ public class ClientModel implements IMessengerErrorListener
 			startGame(gameData, players, latch, false);
 			try
 			{
-				latch.await(20, TimeUnit.SECONDS);
+				latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
 			} catch (final InterruptedException e)
 			{
 				e.printStackTrace();
@@ -293,7 +293,7 @@ public class ClientModel implements IMessengerErrorListener
 			startGame(gameData, players, latch, true);
 			try
 			{
-				latch.await(20, TimeUnit.SECONDS);
+				latch.await(GameRunner2.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
 			} catch (final InterruptedException e)
 			{
 				e.printStackTrace();
