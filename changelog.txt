@@ -7,11 +7,11 @@ Changes for 1.8.1.1
 
 * Fixed issue with the game waiting on a player to click all 'OK' messages before a battle would continue. (veqryn)
 
-* Adding options to engine preferences to change how long your game host waits for clients on game startup and for observers joining. (veqryn)
-
 * Fixed MapCreator so that it will properly send the map folder to the utility programs. (veqryn)
 
-* Allowing host to wait up to 150 seconds when starting a game for all clients to report in as good, and wait up to 30 seconds for observers joining after game has started. (veqryn) 
+* Adding options to engine preferences to change how long your game host waits for clients on game startup and for observers joining. (veqryn)
+
+* Allowing host to wait up to 100 seconds when starting a game for all clients to report in as good, and wait up to 30 seconds for observers joining after game has started. (veqryn) 
 
 * Fixing two memory leaks that allowed AI's and GameData to stay in memory after exiting back to main screen. (veqryn)
 

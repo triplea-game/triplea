@@ -208,27 +208,36 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		final String color1 = "ABABAB";
 		final String color2 = "BDBDBD";
 		final String color3 = "FEECE2";
-		final Map<PlayerID, Map<UnitType, ResourceCollection>> costs = BattleCalculator.getResourceCostsForTUV(getData(), true);
 		final StringBuilder hints = new StringBuilder();
 		hints.append("<html>");
-		for (final Entry<PlayerID, List<UnitType>> entry : UnitType.getAllPlayerUnitsWithImages(getData(), getUIContext(), true).entrySet())
+		final GameData data = getData();
+		try
 		{
-			final PlayerID player = entry.getKey();
-			hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
-			hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">" + (player == null ? "NULL" : player.getName()) + " Units</th></tr>");
-			hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + "><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
-			for (final UnitType ut : entry.getValue())
+			data.acquireReadLock();
+			final Map<PlayerID, Map<UnitType, ResourceCollection>> costs = BattleCalculator.getResourceCostsForTUV(data, true);
+			final Map<PlayerID, List<UnitType>> playerUnitTypes = UnitType.getAllPlayerUnitsWithImages(data, getUIContext(), true);
+			for (final Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet())
 			{
+				final PlayerID player = entry.getKey();
+				hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
+				hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">" + (player == null ? "NULL" : player.getName()) + " Units</th></tr>");
+				hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + "><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
+				for (final UnitType ut : entry.getValue())
+				{
+					i++;
+					hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
+								+ "<td>" + getUnitImageURL(ut, player) + "</td>"
+								+ "<td>" + ut.getName() + "</td>"
+								+ "<td>" + costs.get(player).get(ut).toStringForHTML() + "</td>"
+								+ "<td>" + ut.getTooltip(player, true) + "</td></tr>");
+				}
 				i++;
 				hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-							+ "<td>" + getUnitImageURL(ut, player) + "</td>"
-							+ "<td>" + ut.getName() + "</td>"
-							+ "<td>" + costs.get(player).get(ut).toStringForHTML() + "</td>"
-							+ "<td>" + ut.getTooltip(player, true) + "</td></tr>");
+							+ "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
 			}
-			i++;
-			hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-						+ "<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
+		} finally
+		{
+			data.releaseReadLock();
 		}
 		hints.append("</html>");
 		return hints.toString();
