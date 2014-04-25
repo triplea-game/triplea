@@ -14,7 +14,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
+/**
+ * A text area that can show updates scrolling by.
+ * 
+ * @author veqryn
+ * 
+ */
 public class JTextAreaOptionPane
 {
 	private final JTextArea m_editor = new JTextArea();
@@ -33,7 +40,7 @@ public class JTextAreaOptionPane
 		m_countDownLatch = countDownLatch;
 		m_counter = latchCount;
 		m_parentComponentReference = new WeakReference<Window>(parentComponent);
-		m_windowFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		m_windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		if (icon != null)
 			m_windowFrame.setIconImage(icon);
 		else if (parentComponent != null && parentComponent.getIconImage() != null)

@@ -31,6 +31,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -971,6 +972,20 @@ public class BattleTracker implements java.io.Serializable
 				battles.add(battle);
 		}
 		return battles;
+	}
+	
+	public IBattle getPendingBattle(final GUID guid)
+	{
+		if (guid == null)
+			return null;
+		for (final IBattle battle : m_pendingBattles)
+		{
+			if (guid.equals(battle.getBattleID()))
+			{
+				return battle;
+			}
+		}
+		return null;
 	}
 	
 	/**
