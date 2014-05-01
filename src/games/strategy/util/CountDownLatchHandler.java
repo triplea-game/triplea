@@ -4,28 +4,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * A handler for CountDownLatch's with methods to release latches being waited on from outside of their threads.
+ * Is Thread Safe.
+ * 
+ * @author Mark Christopher Duncan (veqryn)
+ * 
+ */
 public class CountDownLatchHandler
 {
 	private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
-	private boolean m_isShutDown;
-	private boolean m_shutDownOnInterrupt = false;
+	private volatile boolean m_isShutDown = false;
+	private final boolean m_releaseLatchOnInterrupt;
 	
 	public CountDownLatchHandler(final boolean releaseLatchOnInterrupt)
 	{
 		super();
-		m_shutDownOnInterrupt = releaseLatchOnInterrupt;
+		m_releaseLatchOnInterrupt = releaseLatchOnInterrupt;
 	}
 	
+	/**
+	 * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then interruptAll will release and remove all current latches.
+	 * Otherwise does nothing.
+	 */
 	public void interruptAll()
 	{
-		if (m_shutDownOnInterrupt)
-			shutDown();
+		if (m_releaseLatchOnInterrupt)
+		{
+			for (final CountDownLatch latch : m_latchesToCloseOnShutdown)
+			{
+				removeShutdownLatch(latch);
+			}
+		}
 	}
 	
+	/**
+	 * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then interruptLatch will release and remove the latch.
+	 * Otherwise does nothing.
+	 */
 	public void interruptLatch(final CountDownLatch latch)
 	{
-		if (m_shutDownOnInterrupt)
-			releaseLatch(latch);
+		if (m_releaseLatchOnInterrupt)
+		{
+			removeShutdownLatch(latch);
+		}
 	}
 	
 	public boolean isShutDown()
@@ -33,6 +55,9 @@ public class CountDownLatchHandler
 		return m_isShutDown;
 	}
 	
+	/**
+	 * Shuts down this handler by releasing all latches and clearing the list of latches being handled.
+	 */
 	public void shutDown()
 	{
 		synchronized (this)
@@ -48,7 +73,10 @@ public class CountDownLatchHandler
 		m_latchesToCloseOnShutdown.clear();
 	}
 	
-	private void releaseLatch(final CountDownLatch latch)
+	/**
+	 * Utility method to fully release any CountDownLatch.
+	 */
+	public static void releaseLatch(final CountDownLatch latch)
 	{
 		if (latch == null)
 			return;
@@ -59,7 +87,8 @@ public class CountDownLatchHandler
 	}
 	
 	/**
-	 * Add a latch that will be released when the game shuts down.
+	 * Add a latch that will be released when this handler shuts down.
+	 * If this handler is already shutdown, then we will release the latch immediately.
 	 */
 	public void addShutdownLatch(final CountDownLatch latch)
 	{
@@ -74,11 +103,25 @@ public class CountDownLatchHandler
 		}
 	}
 	
+	/**
+	 * Releases the latch and removes it from the latches being handled by this handler.
+	 */
 	public void removeShutdownLatch(final CountDownLatch latch)
+	{
+		removeShutdownLatch(latch, false);
+	}
+	
+	/**
+	 * Removes the latch from the latches being handled by this handler, and will not release it if doNotRelease is true.
+	 */
+	public void removeShutdownLatch(final CountDownLatch latch, final boolean doNotRelease)
 	{
 		synchronized (this)
 		{
-			releaseLatch(latch);
+			if (!doNotRelease)
+			{
+				releaseLatch(latch);
+			}
 			m_latchesToCloseOnShutdown.remove(latch);
 		}
 	}

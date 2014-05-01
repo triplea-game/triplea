@@ -1,10 +1,11 @@
-package games.strategy.triplea.ai.proAI;
+package games.strategy.triplea.ai.proAI.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProBattleResultData;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -45,62 +46,60 @@ public class ProBattleUtils
 		ai = proAI;
 	}
 	
-	public boolean checkForOverwhelmingWin(final PlayerID player, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
+	public boolean checkForOverwhelmingWin(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
 	{
-		int totalAttackValue = 0;
-		for (final Unit attackingUnit : attackingUnits)
-		{
-			final UnitAttachment unitAttachment = UnitAttachment.get(attackingUnit.getType());
-			totalAttackValue += unitAttachment.getAttack(player) * unitAttachment.getAttackRolls(player);
-		}
-		int totalDefenderHitPoints = 0;
-		for (final Unit defendingUnit : defendingUnits)
-		{
-			final UnitAttachment unitAttachment = UnitAttachment.get(defendingUnit.getType());
-			totalDefenderHitPoints += unitAttachment.getHitPoints();
-		}
-		return ((totalAttackValue / 6) >= totalDefenderHitPoints);
+		final GameData data = ai.getGameData();
+		final int attackPower = DiceRoll.getTotalPowerAndRolls(
+					DiceRoll.getUnitPowerAndRollsForNormalBattles(attackingUnits, attackingUnits, defendingUnits, false, false, player, data, t, null, false, null), data).getFirst();
+		final List<Unit> defendersWithHitPoints = Match.getMatches(defendingUnits, Matches.UnitIsInfrastructure.invert());
+		final int totalDefenderHitPoints = BattleCalculator.getTotalHitpoints(defendersWithHitPoints);
+		
+		return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
 	}
 	
-	public double estimateStrengthDifference(final GameData data, final PlayerID player, final Territory t, final List<Unit> attackingUnits)
+	public double estimateStrengthDifference(final PlayerID player, final Territory t, final List<Unit> attackingUnits)
 	{
+		final GameData data = ai.getGameData();
 		final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-		return estimateStrengthDifference(data, player, t, attackingUnits, defendingUnits);
+		return estimateStrengthDifference(player, t, attackingUnits, defendingUnits);
 	}
 	
-	public double estimateStrengthDifference(final GameData data, final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
+	public double estimateStrengthDifference(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
 	{
 		if (attackingUnits.size() == 0)
 			return 0;
 		if (defendingUnits.size() == 0)
 			return 100;
-		final double attackerStrength = estimateStrength(data, player, t, attackingUnits, defendingUnits, true);
-		final double defenderStrength = estimateStrength(data, defendingUnits.get(0).getOwner(), t, defendingUnits, attackingUnits, false);
+		final double attackerStrength = estimateStrength(player, t, attackingUnits, defendingUnits, true);
+		final double defenderStrength = estimateStrength(defendingUnits.get(0).getOwner(), t, defendingUnits, attackingUnits, false);
 		return ((attackerStrength - defenderStrength) / defenderStrength * 50 + 50);
 	}
 	
-	public double estimateStrength(final GameData data, final PlayerID player, final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits, final boolean attacking)
+	public double estimateStrength(final PlayerID player, final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits, final boolean attacking)
 	{
+		final GameData data = ai.getGameData();
 		final int myHP = BattleCalculator.getTotalHitpoints(myUnits);
 		final int myPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(myUnits, myUnits, enemyUnits, !attacking, false, player, data, t, null, false, null), data)
 					.getFirst();
 		return (2 * myHP) + (myPower * 6 / data.getDiceSides());
 	}
 	
-	public ProBattleResultData estimateBattleResults(final GameData data, final PlayerID player, final Territory t, final List<Unit> attackingUnits)
+	public ProBattleResultData estimateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits)
 	{
+		final GameData data = ai.getGameData();
 		final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-		return estimateBattleResults(data, player, t, attackingUnits, defendingUnits);
+		return estimateBattleResults(player, t, attackingUnits, defendingUnits);
 	}
 	
-	public ProBattleResultData estimateBattleResults(final GameData data, final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
+	public ProBattleResultData estimateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
 	{
-		return estimateBattleResults(data, player, t, attackingUnits, defendingUnits, true);
+		return estimateBattleResults(player, t, attackingUnits, defendingUnits, true);
 	}
 	
-	public ProBattleResultData estimateBattleResults(final GameData data, final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits,
-				final boolean isAttacker)
+	public ProBattleResultData estimateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
 	{
+		final GameData data = ai.getGameData();
+		
 		// Determine if there are no defenders or no attackers
 		final boolean hasNoDefenders = Match.allMatch(defendingUnits, Matches.UnitIsInfrastructure);
 		if (attackingUnits.size() == 0 || (Match.allMatch(attackingUnits, Matches.UnitIsAir) && !t.isWater()))
@@ -109,7 +108,7 @@ public class ProBattleUtils
 			return new ProBattleResultData(100, 0, true, attackingUnits);
 		
 		// Determine if attackers have no chance
-		final double strengthDifference = estimateStrengthDifference(data, player, t, attackingUnits, defendingUnits);
+		final double strengthDifference = estimateStrengthDifference(player, t, attackingUnits, defendingUnits);
 		if (strengthDifference < 40)
 			return new ProBattleResultData();
 		
@@ -134,9 +133,10 @@ public class ProBattleUtils
 			return new ProBattleResultData(winPercentage, TUVswing, true, averageUnitsRemaining);
 	}
 	
-	public ProBattleResultData calculateBattleResults(final GameData data, final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits,
-				final boolean isAttacker)
+	public ProBattleResultData calculateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
 	{
+		final GameData data = ai.getGameData();
+		
 		// Determine if there are no defenders or no attackers
 		final boolean hasNoDefenders = Match.allMatch(defendingUnits, Matches.UnitIsInfrastructure);
 		if (defendingUnits.isEmpty() || hasNoDefenders)

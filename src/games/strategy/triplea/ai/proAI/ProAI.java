@@ -18,7 +18,12 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.net.GUID;
 import games.strategy.triplea.ai.proAI.logging.LogUI;
-import games.strategy.triplea.ai.proAI.logging.LogUtils;
+import games.strategy.triplea.ai.proAI.util.LogUtils;
+import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
+import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
+import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
+import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
+import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
@@ -42,18 +47,26 @@ public class ProAI extends StrongAI
 	private static final IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
 	
 	// Utilities
-	private final ProBattleUtils proBattleUtils;
+	private final ProUtils utils;
+	private final ProBattleUtils battleUtils;
+	private final ProTransportUtils transportUtils;
+	private final ProAttackOptionsUtils attackOptionsUtils;
+	private final ProMoveUtils moveUtils;
 	
 	// Phases
-	private final ProCombatMoveAI proCombatMoveAI;
-	private final ProRetreatAI proRetreatAI;
+	private final ProCombatMoveAI combatMoveAI;
+	private final ProRetreatAI retreatAI;
 	
 	public ProAI(final String name, final String type)
 	{
 		super(name, type);
-		proBattleUtils = new ProBattleUtils(this);
-		proCombatMoveAI = new ProCombatMoveAI(proBattleUtils);
-		proRetreatAI = new ProRetreatAI(this, proBattleUtils);
+		utils = new ProUtils(this);
+		battleUtils = new ProBattleUtils(this);
+		transportUtils = new ProTransportUtils();
+		attackOptionsUtils = new ProAttackOptionsUtils(this, transportUtils);
+		moveUtils = new ProMoveUtils(this, utils);
+		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils);
+		retreatAI = new ProRetreatAI(this, battleUtils);
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -98,7 +111,7 @@ public class ProAI extends StrongAI
 		else
 		{
 			LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
-			proCombatMoveAI.move(moveDel, data, player);
+			combatMoveAI.doCombatMove(moveDel, data, player);
 		}
 		pause();
 	}
@@ -110,7 +123,7 @@ public class ProAI extends StrongAI
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		s_battleCalculator.setGameData(getGameData());
-		return proRetreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
+		return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
 	}
 	
 }
