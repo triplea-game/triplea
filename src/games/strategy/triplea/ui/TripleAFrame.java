@@ -856,10 +856,9 @@ public class TripleAFrame extends MainGameFrame
 			return true;
 		m_messageAndDialogThreadPool.waitForAll();
 		final StringBuilder buf = new StringBuilder("Air in following territories cant land: ");
-		final Iterator<Territory> iter = airCantLand.iterator();
-		while (iter.hasNext())
+		for (final Territory t : airCantLand)
 		{
-			buf.append((iter.next()).getName());
+			buf.append(t.getName());
 			buf.append(" ");
 		}
 		final boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(m_data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(m_data);

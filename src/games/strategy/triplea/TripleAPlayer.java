@@ -520,6 +520,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		final PlayerID id = getPlayerID();
 		while (true)
 		{
+			if (getPlayerBridge().isGameOver())
+				return;
 			final BattleListing battles = battleDel.getBattles();
 			if (battles.isEmpty())
 			{
@@ -541,9 +543,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			final FightBattleDetails details = m_ui.getBattle(id, battles.getBattles());
 			if (getPlayerBridge().isGameOver())
 				return;
-			final String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid(), details.getBattleType());
-			if (error != null)
-				m_ui.notifyError(error);
+			if (details != null)
+			{
+				final String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid(), details.getBattleType());
+				if (error != null)
+					m_ui.notifyError(error);
+			}
 		}
 	}
 	

@@ -1866,6 +1866,40 @@ public class Matches
 	};
 	public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<Territory>(TerritoryIsImpassable);
 	
+	public static Match<Territory> seaCanMoveOver(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (!TerritoryIsWater.match(t))
+					return false;
+				if (!TerritoryIsPassableAndNotRestricted(player, data).match(t))
+					return false;
+				return true;
+			}
+		};
+	}
+	
+	public static Match<Territory> airCanFlyOver(final PlayerID player, final GameData data, final boolean areNeutralsPassableByAir)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (!areNeutralsPassableByAir && TerritoryIsNeutralButNotWater.match(t))
+					return false;
+				if (!TerritoryIsPassableAndNotRestricted(player, data).match(t))
+					return false;
+				if (TerritoryIsLand.match(t) && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()))
+					return false;
+				return true;
+			}
+		};
+	}
+	
 	public static final Match<Territory> TerritoryIsPassableAndNotRestricted(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -1911,6 +1945,78 @@ public class Matches
 			public boolean match(final Territory t)
 			{
 				return TerritoryIsImpassableToLandUnits(player, data).invert().match(t);
+			}
+		};
+	}
+	
+	/**
+	 * Does NOT check for Canals, Blitzing, Loading units on transports, TerritoryEffects that disallow units, Stacking Limits, Unit movement left, Fuel available, etc.<br>
+	 * <br>
+	 * Does check for: Impassible, ImpassibleNeutrals, ImpassableToAirNeutrals, RestrictedTerritories, Land units moving on water, Sea units moving on land,
+	 * and territories that are disallowed due to a relationship attachment (canMoveLandUnitsOverOwnedLand, canMoveAirUnitsOverOwnedLand, canLandAirUnitsOnOwnedLand, canMoveIntoDuringCombatMove, etc).
+	 */
+	public static final Match<Territory> TerritoryIsPassableAndNotRestrictedAndOkByRelationships(final PlayerID playerWhoOwnsAllTheUnitsMoving, final GameData data, final boolean isCombatMovePhase,
+				final boolean hasLandUnitsNotBeingTransportedOrBeingLoaded, final boolean hasSeaUnitsNotBeingTransported, final boolean hasAirUnitsNotBeingTransported,
+				final boolean isLandingZoneOnLandForAirUnits)
+	{
+		final boolean neutralsPassable = !games.strategy.triplea.Properties.getNeutralsImpassable(data);
+		final boolean areNeutralsPassableByAir = neutralsPassable && games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data);
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (Matches.TerritoryIsImpassable.match(t))
+				{
+					return false;
+				}
+				if ((!neutralsPassable || (hasAirUnitsNotBeingTransported && !areNeutralsPassableByAir)) && TerritoryIsNeutralButNotWater.match(t))
+				{
+					return false;
+				}
+				if (Properties.getMovementByTerritoryRestricted(data))
+				{
+					final RulesAttachment ra = (RulesAttachment) playerWhoOwnsAllTheUnitsMoving.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+					if (ra != null && ra.getMovementRestrictionTerritories() != null)
+					{
+						final String movementRestrictionType = ra.getMovementRestrictionType();
+						final Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
+						if (!(movementRestrictionType.equals("allowed") == listedTerritories.contains(t)))
+						{
+							return false;
+						}
+					}
+				}
+				final boolean isWater = Matches.TerritoryIsWater.match(t);
+				final boolean isLand = Matches.TerritoryIsLand.match(t);
+				if (hasLandUnitsNotBeingTransportedOrBeingLoaded && !isLand)
+				{
+					return false;
+				}
+				if (hasSeaUnitsNotBeingTransported && !isWater)
+				{
+					return false;
+				}
+				if (isLand)
+				{
+					if (hasLandUnitsNotBeingTransportedOrBeingLoaded && !data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
+					{
+						return false;
+					}
+					if (hasAirUnitsNotBeingTransported && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
+					{
+						return false;
+					}
+				}
+				if (isLandingZoneOnLandForAirUnits && !data.getRelationshipTracker().canLandAirUnitsOnOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
+				{
+					return false;
+				}
+				if (isCombatMovePhase && !data.getRelationshipTracker().canMoveIntoDuringCombatMove(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
+				{
+					return false;
+				}
+				return true;
 			}
 		};
 	}
@@ -3858,40 +3964,6 @@ public class Matches
 					}
 				}
 				return false;
-			}
-		};
-	}
-	
-	public static Match<Territory> seaCanMoveOver(final PlayerID player, final GameData data)
-	{
-		return new Match<Territory>()
-		{
-			@Override
-			public boolean match(final Territory t)
-			{
-				if (!TerritoryIsWater.match(t))
-					return false;
-				if (!TerritoryIsPassableAndNotRestricted(player, data).match(t))
-					return false;
-				return true;
-			}
-		};
-	}
-	
-	public static Match<Territory> airCanFlyOver(final PlayerID player, final GameData data, final boolean areNeutralsPassableByAir)
-	{
-		return new Match<Territory>()
-		{
-			@Override
-			public boolean match(final Territory t)
-			{
-				if (!areNeutralsPassableByAir && TerritoryIsNeutralButNotWater.match(t))
-					return false;
-				if (!TerritoryIsPassableAndNotRestricted(player, data).match(t))
-					return false;
-				if (TerritoryIsLand.match(t) && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()))
-					return false;
-				return true;
 			}
 		};
 	}
