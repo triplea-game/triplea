@@ -252,14 +252,29 @@ public class ResourceCollection extends GameDataComponent
 		if (resources == null || resources.isEmpty() || resources.allValuesEqual(0))
 			return "nothing";
 		final StringBuilder sb = new StringBuilder();
-		final Resource pus;
+		Resource pus = null;
 		data.acquireReadLock();
 		try
 		{
 			pus = data.getResourceList().getResource(Constants.PUS);
+		} catch (final NullPointerException e)
+		{
+			// we are getting null pointers here occasionally on deserializing gamesaves, because data.getResourceList() is still null at this point
+			for (final Resource r : resources.keySet())
+			{
+				if (r.getName().equals(Constants.PUS))
+				{
+					pus = r;
+					break;
+				}
+			}
 		} finally
 		{
 			data.releaseReadLock();
+		}
+		if (pus == null)
+		{
+			throw new IllegalStateException("Possible deserialization error: PUs is null");
 		}
 		if (resources.getInt(pus) != 0)
 		{

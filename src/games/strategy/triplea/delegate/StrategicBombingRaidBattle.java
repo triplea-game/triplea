@@ -556,7 +556,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 		final List<Unit> killed = casualties.getKilled();
 		if (!killed.isEmpty())
 		{
-			bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAA, killed);
+			bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAA, new ArrayList<Unit>(killed));
 			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
 			final int tuvLostAttacker = BattleCalculator.getTUV(killed, m_attacker, costs, m_data);
 			m_attackerLostTUV += tuvLostAttacker;

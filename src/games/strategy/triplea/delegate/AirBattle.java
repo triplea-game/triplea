@@ -528,7 +528,7 @@ public class AirBattle extends AbstractBattle
 		final String transcriptText = MyFormatter.unitsToText(retreating) + (defender ? " grounded" : " retreated");
 		final Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
 		units.removeAll(retreating);
-		bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
+		bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<Unit>(retreating));
 		recordUnitsWereInAirBattle(retreating, bridge);
 	}
 	
@@ -598,9 +598,11 @@ public class AirBattle extends AbstractBattle
 			}
 			
 			if (!m_attackingUnits.isEmpty())
-				bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " attacks with " + m_attackingUnits.size() + " units heading to " + m_battleSite.getName(), m_attackingUnits);
+				bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " attacks with " + m_attackingUnits.size() + " units heading to " + m_battleSite.getName(),
+							new ArrayList<Unit>(m_attackingUnits));
 			if (!m_defendingUnits.isEmpty())
-				bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " launches " + m_defendingUnits.size() + " interceptors out of " + m_battleSite.getName(), m_defendingUnits);
+				bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " launches " + m_defendingUnits.size() + " interceptors out of " + m_battleSite.getName(),
+							new ArrayList<Unit>(m_defendingUnits));
 		}
 	}
 	
@@ -834,7 +836,7 @@ public class AirBattle extends AbstractBattle
 		final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
 		// m_killed.addAll(killed);
 		final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
-		bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
+		bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<Unit>(killed));
 		bridge.addChange(killedChange);
 		final Collection<IBattle> dependentBattles = m_battleTracker.getBlocked(AirBattle.this);
 		removeFromDependents(killed, bridge, dependentBattles, false);

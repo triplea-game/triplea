@@ -1253,7 +1253,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			if (defendingAir.size() > 0)
 			{
 				// no where to go, they must die
-				m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(defendingAir) + " could not land and were killed", defendingAir);
+				m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(defendingAir) + " could not land and were killed", new ArrayList<Unit>(defendingAir));
 				final Change change = ChangeFactory.removeUnits(battleSite, defendingAir);
 				m_bridge.addChange(change);
 			}
@@ -1282,7 +1282,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	private static void moveAirAndLand(final IDelegateBridge bridge, final Collection<Unit> defendingAirBeingMoved, final Collection<Unit> defendingAirTotal, final Territory newTerritory,
 				final Territory battleSite)
 	{
-		bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(defendingAirBeingMoved) + " forced to land in " + newTerritory.getName(), defendingAirBeingMoved);
+		bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(defendingAirBeingMoved) + " forced to land in " + newTerritory.getName(), new ArrayList<Unit>(defendingAirBeingMoved));
 		final Change change = ChangeFactory.moveUnits(battleSite, newTerritory, defendingAirBeingMoved);
 		bridge.addChange(change);
 		// remove those that landed in case it was a carrier

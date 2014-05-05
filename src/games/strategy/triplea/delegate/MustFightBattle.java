@@ -1757,7 +1757,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			getDisplay(bridge).notifyRetreat(m_battleID, retreating);
 		}
-		bridge.getHistoryWriter().addChildToEvent(transcriptText, retreating);
+		bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<Unit>(retreating));
 	}
 	
 	private void submergeUnits(final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge)
@@ -1777,7 +1777,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			getDisplay(bridge).notifyRetreat(m_battleID, submerging);
 		}
-		bridge.getHistoryWriter().addChildToEvent(transcriptText, submerging);
+		bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<Unit>(submerging));
 	}
 	
 	private void retreatUnits(Collection<Unit> retreating, final Territory to, final boolean defender, final IDelegateBridge bridge)
@@ -2713,7 +2713,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
 		m_killed.addAll(killed);
 		final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
-		bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
+		bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<Unit>(killed));
 		bridge.addChange(killedChange);
 		final Collection<IBattle> dependentBattles = m_battleTracker.getBlocked(this);
 		// If there are NO dependent battles, check for unloads in allied territories
@@ -2787,7 +2787,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				m_battleTracker.takeOver(m_battleSite, m_defender, bridge, null, m_defendingUnits); // should we create a new battle records to show the defender capturing the territory (in the case where they didn't already own/allied it)?
 			}
 		}
-		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win", m_defendingUnits);
+		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win", new ArrayList<Unit>(m_defendingUnits));
 		m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 		showCasualties(bridge);
 		if (!m_headless)
@@ -2850,7 +2850,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				bridge.addChange(change);
 			}
 		}
-		bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
+		bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", new ArrayList<Unit>(m_attackingUnits));
 		showCasualties(bridge);
 		if (!m_headless)
 			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
@@ -3099,7 +3099,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		costs = BattleCalculator.getCostsForTUV(m_defender, m_data);
 		final int tuvLostDefender = BattleCalculator.getTUV(m_killed, m_defender, costs, m_data);
 		final int tuvChange = tuvLostDefender - tuvLostAttacker;
-		bridge.getHistoryWriter().addChildToEvent("Battle casualty summary: Battle score (TUV change) for attacker is " + tuvChange, m_killed);
+		bridge.getHistoryWriter().addChildToEvent("Battle casualty summary: Battle score (TUV change) for attacker is " + tuvChange, new ArrayList<Unit>(m_killed));
 		m_attackerLostTUV += tuvLostAttacker;
 		m_defenderLostTUV += tuvLostDefender;
 	}
