@@ -273,9 +273,12 @@ public abstract class AbstractMovePanel extends ActionPanel
 					throw new IllegalStateException("Not listening");
 				}
 				m_listening = true;
-				final String key = s_MOVE_PANEL_CANCEL;
-				getRootPane().getActionMap().put(key, m_CANCEL_MOVE_ACTION);
-				getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
+				if (getRootPane() != null)
+				{
+					final String key = s_MOVE_PANEL_CANCEL;
+					getRootPane().getActionMap().put(key, m_CANCEL_MOVE_ACTION);
+					getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
+				}
 			}
 		});
 	}

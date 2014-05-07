@@ -524,9 +524,18 @@ public class MoveValidator
 				}
 			}
 			// check units individually
+			final Match<Unit> hasEnoughMovementForRoute;
+			try
+			{
+				data.acquireReadLock();
+				hasEnoughMovementForRoute = Matches.UnitHasEnoughMovementForRoute(route);
+			} finally
+			{
+				data.releaseReadLock();
+			}
 			for (final Unit unit : moveTest)
 			{
-				if (!Matches.UnitHasEnoughMovementForRoute(route).match(unit))
+				if (!hasEnoughMovementForRoute.match(unit))
 				{
 					boolean unitOK = false;
 					if ((Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved.match(unit))

@@ -223,7 +223,7 @@ public class GameSelectorModel extends Observable
 			if (message == null && e.getStackTrace() != null)
 				message = e.getClass().getName() + "  at  " + e.getStackTrace()[0].toString();
 			if (ui != null)
-				error(message + System.lineSeparator() + "Please see console for full error log!", ui);
+				error(message + "\r\nPlease see console for full error log!", ui);
 		}
 	}
 	

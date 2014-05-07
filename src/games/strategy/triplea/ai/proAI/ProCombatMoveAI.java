@@ -607,7 +607,7 @@ public class ProCombatMoveAI
 			}
 			if (estimatesMap.firstKey() <= 40)
 			{
-				attackMap.get(estimatesMap.firstEntry().getValue()).addUnit(unit);
+				attackMap.get(estimatesMap.entrySet().iterator().next().getValue()).addUnit(unit);
 				it.remove();
 			}
 		}
