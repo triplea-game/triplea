@@ -1504,6 +1504,20 @@ public class Matches
 		};
 	}
 	
+	public static Match<Territory> territoryHasNeighborMatching(final GameData data, final Match<Territory> match)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (data.getMap().getNeighbors(t, match).size() > 0)
+					return true;
+				return false;
+			}
+		};
+	}
+	
 	public static Match<Territory> territoryHasEnemyLandNeighbor(final GameData data, final PlayerID player)
 	{
 		return new Match<Territory>()

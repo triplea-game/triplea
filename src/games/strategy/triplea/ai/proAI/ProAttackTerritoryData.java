@@ -26,6 +26,7 @@ public class ProAttackTerritoryData
 	private Territory territory;
 	private List<Unit> maxUnits;
 	private List<Unit> units;
+	private List<Unit> cantMoveUnits;
 	private double TUVSwing;
 	private Double attackValue;
 	private boolean canHold;
@@ -47,6 +48,7 @@ public class ProAttackTerritoryData
 		this.territory = territory;
 		maxUnits = new ArrayList<Unit>();
 		units = new ArrayList<Unit>();
+		cantMoveUnits = new ArrayList<Unit>();
 		TUVSwing = 0;
 		canHold = true;
 		canAttack = false;
@@ -244,6 +246,21 @@ public class ProAttackTerritoryData
 			return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing=" + battleResult.getTUVSwing() + ", hasRemainingLandUnit="
 						+ battleResult.isHasLandUnitRemaining();
 		}
+	}
+	
+	public void setCantMoveUnits(final List<Unit> cantMoveUnits)
+	{
+		this.cantMoveUnits = cantMoveUnits;
+	}
+	
+	public List<Unit> getCantMoveUnits()
+	{
+		return cantMoveUnits;
+	}
+	
+	public void addCantMoveUnit(final Unit unit)
+	{
+		this.cantMoveUnits.add(unit);
 	}
 	
 }

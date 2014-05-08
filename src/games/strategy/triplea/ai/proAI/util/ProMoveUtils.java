@@ -5,13 +5,12 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
@@ -55,18 +54,28 @@ public class ProMoveUtils
 		this.utils = utils;
 	}
 	
-	public void calculateAttackRoutes(final PlayerID player, final boolean areNeutralsPassableByAir, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
-				final Map<Territory, ProAttackTerritoryData> attackMap)
+	public void calculateMoveRoutes(final PlayerID player, final boolean areNeutralsPassableByAir, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
+				final Map<Territory, ProAttackTerritoryData> attackMap, final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
 		final Map<Unit, Territory> unitTerritoryMap = createUnitTerritoryMap(player);
 		
-		final CompositeMatch<Unit> mySeaUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.UnitCanMove);
-		final CompositeMatch<Unit> myLandUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitCanMove,
-					Matches.UnitIsNotInfrastructure, Matches.UnitCanNotMoveDuringCombatMove.invert(), Matches.unitIsBeingTransported().invert());
-		final CompositeMatch<Unit> myAirUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanMove);
-		final CompositeMatch<Territory> canFlyOverMatch = new CompositeMatchAnd<Territory>(Matches.airCanFlyOver(player, data, areNeutralsPassableByAir), Matches.territoryHasEnemyAAforAnything(
-					player, data).invert());
+		// Unit matches
+		final Match<Unit> mySeaUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.UnitCanMove);
+		final Match<Unit> myLandUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitCanMove, Matches.UnitIsNotInfrastructure,
+					Matches.UnitCanNotMoveDuringCombatMove.invert(), Matches.unitIsBeingTransported().invert());
+		final Match<Unit> myAirUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanMove);
+		
+		// Territory matches
+		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false, false, false));
+		final Match<Territory> canMoveNonBlitzTerritoriesMatch = new CompositeMatchAnd<Territory>(canMoveLandTerritoryMatch, Matches.isTerritoryAllied(player, data));
+		final Match<Territory> canMoveBlitzTerritoriesMatch = new CompositeMatchAnd<Territory>(canMoveLandTerritoryMatch, Matches.TerritoryIsBlitzable(player, data));
+		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
+		final Match<Territory> canMoveAirTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, false, true, false));
+		final Match<Territory> canFlyOverMatch = new CompositeMatchAnd<Territory>(canMoveAirTerritoryMatch, Matches.territoryHasEnemyAAforAnything(player, data).invert());
 		
 		// Loop through all territories to attack
 		for (final Territory t : attackMap.keySet())
@@ -84,6 +93,11 @@ public class ProMoveUtils
 				if (isAmphib)
 					continue;
 				
+				// Skip if unit is already in move to territory
+				final Territory startTerritory = unitTerritoryMap.get(u);
+				if (startTerritory.equals(t))
+					continue;
+				
 				// Add unit to move list
 				final List<Unit> unitList = new ArrayList<Unit>();
 				unitList.add(u);
@@ -91,23 +105,22 @@ public class ProMoveUtils
 				
 				// Determine route and add to move list
 				Route route = null;
-				final Territory startTerritory = unitTerritoryMap.get(u);
 				if (Match.allMatch(unitList, mySeaUnitMatch))
 				{
 					// Naval unit
-					final Match<Territory> canMoveSeaThroughMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(), Matches
+					final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(canMoveNavalTerritoryMatch, Matches.territoryHasNoEnemyUnits(player, data), Matches
 								.territoryHasNonAllowedCanal(player, unitList, data).invert());
-					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, canMoveSeaThroughMatch);
+					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, canMoveNavalThroughMatch);
 				}
 				else if (Match.allMatch(unitList, myLandUnitMatch) && !Matches.UnitCanBlitz.match(u))
 				{
 					// Land unit that can't blitz
-					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, Matches.TerritoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
+					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, canMoveNonBlitzTerritoriesMatch);
 				}
 				else if (Match.allMatch(unitList, myLandUnitMatch) && Matches.UnitCanBlitz.match(u))
 				{
 					// Land unit that can blitz
-					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, Matches.TerritoryIsBlitzable(player, data));
+					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, canMoveBlitzTerritoriesMatch);
 				}
 				else if (Match.allMatch(unitList, myAirUnitMatch))
 				{
@@ -120,10 +133,12 @@ public class ProMoveUtils
 	}
 	
 	public void calculateAmphibRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad,
-				final Map<Territory, ProAttackTerritoryData> attackMap)
+				final Map<Territory, ProAttackTerritoryData> attackMap, final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
 		final Map<Unit, Territory> unitTerritoryMap = createUnitTerritoryMap(player);
+		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
 		
 		// Loop through all territories to attack
 		for (final Territory t : attackMap.keySet())
@@ -132,9 +147,9 @@ public class ProMoveUtils
 			final Map<Unit, List<Unit>> amphibAttackMap = attackMap.get(t).getAmphibAttackMap();
 			for (final Unit transport : amphibAttackMap.keySet())
 			{
-				final Match<Territory> canMoveSeaThroughMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(), Matches
+				final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(canMoveNavalTerritoryMatch, Matches.territoryHasNoEnemyUnits(player, data), Matches
 							.territoryHasNonAllowedCanal(player, Collections.singletonList(transport), data).invert());
-				int movesLeft = UnitAttachment.get(transport.getType()).getMovement(player);
+				int movesLeft = TripleAUnit.get(transport).getMovementLeft();
 				Territory transportTerritory = unitTerritoryMap.get(transport);
 				
 				// Check if units are already loaded or not
@@ -172,12 +187,12 @@ public class ProMoveUtils
 					final int distanceFromEnd = data.getMap().getDistance(transportTerritory, t);
 					if (movesLeft > 0 && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty()))
 					{
-						final Set<Territory> neighbors = data.getMap().getNeighbors(transportTerritory, canMoveSeaThroughMatch);
+						final Set<Territory> neighbors = data.getMap().getNeighbors(transportTerritory, canMoveNavalThroughMatch);
 						Territory territoryToMoveTo = null;
 						int minUnitDistance = Integer.MAX_VALUE;
 						for (final Territory neighbor : neighbors)
 						{
-							final int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor, t, canMoveSeaThroughMatch);
+							final int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor, t, canMoveNavalThroughMatch);
 							int maxUnitDistance = 0;
 							for (final Unit u : remainingUnitsToLoad)
 							{

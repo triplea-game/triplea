@@ -61,6 +61,7 @@ import java.util.logging.Level;
  * <li>Fix canal consideration to only block if moving across it</li>
  * <li>Consider counter attacks vs transports</li>
  * <li>Add naval bombardment</li>
+ * <li>Consider convoy zones</li>
  * </ol>
  * 
  * @author Ron Murhammer
@@ -136,14 +137,14 @@ public class ProCombatMoveAI
 		// Calculate attack routes and perform moves
 		final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
 		final List<Route> moveRoutes = new ArrayList<Route>();
-		moveUtils.calculateAttackRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, attackMap);
+		moveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, attackMap, true);
 		moveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
 		
 		// Calculate amphib attack routes and perform moves
 		moveUnits.clear();
 		moveRoutes.clear();
 		final List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
-		moveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, attackMap);
+		moveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
 		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 		
 		// Log results

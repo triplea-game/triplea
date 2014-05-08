@@ -56,6 +56,7 @@ public class ProAI extends StrongAI
 	// Phases
 	private final ProCombatMoveAI combatMoveAI;
 	private final ProRetreatAI retreatAI;
+	private final ProNonCombatMoveAI nonCombatMoveAI;
 	
 	public ProAI(final String name, final String type)
 	{
@@ -67,6 +68,7 @@ public class ProAI extends StrongAI
 		moveUtils = new ProMoveUtils(this, utils);
 		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
+		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils);
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -106,7 +108,8 @@ public class ProAI extends StrongAI
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
 		{
-			doNonCombatMove(moveDel, player);
+			this.doNonCombatMove(moveDel, player);
+			// nonCombatMoveAI.doNonCombatMove(moveDel, data, player);
 		}
 		else
 		{
