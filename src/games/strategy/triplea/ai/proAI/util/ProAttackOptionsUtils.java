@@ -98,8 +98,9 @@ public class ProAttackOptionsUtils
 				final List<Territory> enemyTerritories, final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
-		final Match<Territory> canMoveTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data), Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(
-					player, data, isCombatMove, false, true, false, false));
+		final Match<Territory> canMoveTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(
+								player, data, isCombatMove, false, true, false, false));
 		
 		for (final Territory myUnitTerritory : myUnitTerritories)
 		{
@@ -181,8 +182,9 @@ public class ProAttackOptionsUtils
 				final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
-		final Match<Territory> canMoveTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data), Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(
-					player, data, isCombatMove, true, false, false, false));
+		final Match<Territory> canMoveTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(
+								player, data, isCombatMove, true, false, false, false));
 		
 		for (final Territory myUnitTerritory : myUnitTerritories)
 		{
@@ -257,8 +259,9 @@ public class ProAttackOptionsUtils
 				final Map<Unit, Set<Territory>> unitMoveMap, final Match<Territory> moveToTerritoryMatch, final Match<Unit> canMoveUnitMatch, final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
-		final Match<Territory> canMoveTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data), Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(
-					player, data, isCombatMove, false, false, true, false));
+		final Match<Territory> canMoveTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(
+								player, data, isCombatMove, false, false, true, false));
 		final Match<Territory> canLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, false, true, true));
 		
@@ -330,9 +333,9 @@ public class ProAttackOptionsUtils
 				final List<Territory> enemyTerritories, final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
-		final Match<Territory> canMoveTransportTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+		final Match<Territory> canMoveTransportTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
-		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false, false, false));
 		
 		for (final Territory myUnitTerritory : myUnitTerritories)

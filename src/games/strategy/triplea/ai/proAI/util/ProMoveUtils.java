@@ -67,13 +67,13 @@ public class ProMoveUtils
 		final Match<Unit> myAirUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanMove);
 		
 		// Territory matches
-		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false, false, false));
 		final Match<Territory> canMoveNonBlitzTerritoriesMatch = new CompositeMatchAnd<Territory>(canMoveLandTerritoryMatch, Matches.isTerritoryAllied(player, data));
 		final Match<Territory> canMoveBlitzTerritoriesMatch = new CompositeMatchAnd<Territory>(canMoveLandTerritoryMatch, Matches.TerritoryIsBlitzable(player, data));
-		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
-		final Match<Territory> canMoveAirTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+		final Match<Territory> canMoveAirTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, false, true, false));
 		final Match<Territory> canFlyOverMatch = new CompositeMatchAnd<Territory>(canMoveAirTerritoryMatch, Matches.territoryHasEnemyAAforAnything(player, data).invert());
 		
@@ -137,7 +137,7 @@ public class ProMoveUtils
 	{
 		final GameData data = ai.getGameData();
 		final Map<Unit, Territory> unitTerritoryMap = createUnitTerritoryMap(player);
-		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryFreeNeutral(data),
+		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
 		
 		// Loop through all territories to attack

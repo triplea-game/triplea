@@ -2498,6 +2498,18 @@ public class Matches
 		};
 	}
 	
+	public static Match<Territory> territoryDoesNotCostMoneyToEnter(final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				return !t.getOwner().equals(PlayerID.NULL_PLAYERID) || Properties.getNeutralCharge(data) <= 0;
+			}
+		};
+	}
+	
 	/*
 	    public static Match<Territory> isTerritoryEnemyAndWater(final PlayerID player, final GameData data)
 	    {
