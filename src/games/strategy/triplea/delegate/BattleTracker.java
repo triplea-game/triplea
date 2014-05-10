@@ -600,7 +600,7 @@ public class BattleTracker implements java.io.Serializable
 			}
 		}
 		// if neutral, we may charge money to enter
-		if (territory.getOwner().isNull() && !territory.isWater() && games.strategy.triplea.Properties.getNeutralCharge(data) != 0)
+		if (territory.getOwner().isNull() && !territory.isWater() && games.strategy.triplea.Properties.getNeutralCharge(data) >= 0)
 		{
 			final Resource PUs = data.getResourceList().getResource(Constants.PUS);
 			final int PUChargeIdeal = -games.strategy.triplea.Properties.getNeutralCharge(data);

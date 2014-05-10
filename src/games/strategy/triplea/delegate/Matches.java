@@ -2505,7 +2505,7 @@ public class Matches
 			@Override
 			public boolean match(final Territory t)
 			{
-				return !t.getOwner().equals(PlayerID.NULL_PLAYERID) || Properties.getNeutralCharge(data) <= 0;
+				return Matches.TerritoryIsLand.invert().match(t) || !t.getOwner().equals(PlayerID.NULL_PLAYERID) || Properties.getNeutralCharge(data) <= 0;
 			}
 		};
 	}
