@@ -26,9 +26,8 @@ public class ProAttackTerritoryData
 	private Territory territory;
 	private List<Unit> maxUnits;
 	private List<Unit> units;
-	private List<Unit> cantMoveUnits;
 	private double TUVSwing;
-	private Double attackValue;
+	private Double value;
 	private boolean canHold;
 	private boolean canAttack;
 	private double strengthEstimate;
@@ -37,11 +36,19 @@ public class ProAttackTerritoryData
 	private List<Unit> maxAmphibUnits;
 	private boolean needAmphibUnits;
 	private Map<Unit, List<Unit>> amphibAttackMap;
-	private List<Unit> navalAttackTransports;
+	private final Map<Unit, Territory> transportTerritoryMap;
 	
 	// Determine territory to attack variables
 	private boolean currentlyWins;
 	private ProBattleResultData battleResult;
+	
+	// Non-combat move variables
+	private List<Unit> cantMoveUnits;
+	private List<Unit> maxEnemyUnits;
+	private ProBattleResultData minBattleResult;
+	private final List<Unit> tempUnits;
+	private final Map<Unit, List<Unit>> tempAmphibAttackMap;
+	private Double loadValue;
 	
 	public ProAttackTerritoryData(final Territory territory)
 	{
@@ -49,6 +56,7 @@ public class ProAttackTerritoryData
 		maxUnits = new ArrayList<Unit>();
 		units = new ArrayList<Unit>();
 		cantMoveUnits = new ArrayList<Unit>();
+		maxEnemyUnits = new ArrayList<Unit>();
 		TUVSwing = 0;
 		canHold = true;
 		canAttack = false;
@@ -56,9 +64,20 @@ public class ProAttackTerritoryData
 		maxAmphibUnits = new ArrayList<Unit>();
 		needAmphibUnits = false;
 		amphibAttackMap = new HashMap<Unit, List<Unit>>();
-		navalAttackTransports = new ArrayList<Unit>();
+		transportTerritoryMap = new HashMap<Unit, Territory>();
 		currentlyWins = false;
 		battleResult = null;
+		tempUnits = new ArrayList<Unit>();
+		tempAmphibAttackMap = new HashMap<Unit, List<Unit>>();
+		loadValue = null;
+	}
+	
+	public List<Unit> getAllDefenders()
+	{
+		final List<Unit> defenders = new ArrayList<Unit>(units);
+		defenders.addAll(cantMoveUnits);
+		defenders.addAll(tempUnits);
+		return defenders;
 	}
 	
 	public void addUnit(final Unit unit)
@@ -116,14 +135,14 @@ public class ProAttackTerritoryData
 		TUVSwing = tUVSwing;
 	}
 	
-	public void setAttackValue(final double attackValue)
+	public void setValue(final double value)
 	{
-		this.attackValue = attackValue;
+		this.value = value;
 	}
 	
-	public double getAttackValue()
+	public double getValue()
 	{
-		return attackValue;
+		return value;
 	}
 	
 	public void setUnits(final List<Unit> units)
@@ -179,21 +198,6 @@ public class ProAttackTerritoryData
 	public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits)
 	{
 		this.amphibAttackMap.put(transport, amphibUnits);
-	}
-	
-	public List<Unit> getNavalAttackTransports()
-	{
-		return navalAttackTransports;
-	}
-	
-	public void setNavalAttackTransports(final List<Unit> navalAttackTransports)
-	{
-		this.navalAttackTransports = navalAttackTransports;
-	}
-	
-	public void addNavelAttackTransport(final Unit transport)
-	{
-		this.navalAttackTransports.add(transport);
 	}
 	
 	public void setCanAttack(final boolean canAttack)
@@ -261,6 +265,66 @@ public class ProAttackTerritoryData
 	public void addCantMoveUnit(final Unit unit)
 	{
 		this.cantMoveUnits.add(unit);
+	}
+	
+	public void setMaxEnemyUnits(final List<Unit> maxEnemyUnits)
+	{
+		this.maxEnemyUnits = maxEnemyUnits;
+	}
+	
+	public List<Unit> getMaxEnemyUnits()
+	{
+		return maxEnemyUnits;
+	}
+	
+	public void setMinBattleResult(final ProBattleResultData minBattleResult)
+	{
+		this.minBattleResult = minBattleResult;
+	}
+	
+	public ProBattleResultData getMinBattleResult()
+	{
+		return minBattleResult;
+	}
+	
+	public List<Unit> getTempUnits()
+	{
+		return tempUnits;
+	}
+	
+	public void addTempUnit(final Unit unit)
+	{
+		this.tempUnits.add(unit);
+	}
+	
+	public void addTempUnits(final List<Unit> units)
+	{
+		this.tempUnits.addAll(units);
+	}
+	
+	public Map<Unit, List<Unit>> getTempAmphibAttackMap()
+	{
+		return tempAmphibAttackMap;
+	}
+	
+	public void putTempAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits)
+	{
+		this.tempAmphibAttackMap.put(transport, amphibUnits);
+	}
+	
+	public Map<Unit, Territory> getTransportTerritoryMap()
+	{
+		return transportTerritoryMap;
+	}
+	
+	public void setLoadValue(final Double loadValue)
+	{
+		this.loadValue = loadValue;
+	}
+	
+	public Double getLoadValue()
+	{
+		return loadValue;
 	}
 	
 }

@@ -15,8 +15,13 @@ package games.strategy.triplea.ai.proAI.util;
  */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +51,33 @@ public class ProUtils
 				enemyPlayers.add(players);
 		}
 		return enemyPlayers;
+	}
+	
+	public double getPlayerProduction(final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final Territory place : data.getMap().getTerritories())
+		{
+			/* Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested */
+			if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
+			{
+				rVal += TerritoryAttachment.getProduction(place);
+			}
+		}
+		rVal *= Properties.getPU_Multiplier(data);
+		return rVal;
+	}
+	
+	public List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player)
+	{ // generate a list of all enemy capitals
+		final List<Territory> enemyCapitals = new ArrayList<Territory>();
+		final List<PlayerID> ePlayers = getEnemyPlayers(player);
+		for (final PlayerID otherPlayer : ePlayers)
+		{
+			enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
+		}
+		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+		return enemyCapitals;
 	}
 	
 	/**
