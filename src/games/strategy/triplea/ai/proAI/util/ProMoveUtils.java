@@ -9,6 +9,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.CompositeMatchAnd;
@@ -111,8 +112,7 @@ public class ProMoveUtils
 				if (Match.allMatch(unitList, mySeaUnitMatch))
 				{
 					// Naval unit
-					final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(canMoveNavalTerritoryMatch, Matches.territoryHasNoEnemyUnits(player, data), Matches
-								.territoryHasNonAllowedCanal(player, unitList, data).invert());
+					final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(canMoveNavalTerritoryMatch, Matches.territoryHasNoEnemyUnits(player, data));
 					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, canMoveNavalThroughMatch);
 				}
 				else if (Match.allMatch(unitList, myLandUnitMatch) && (!Matches.UnitCanBlitz.match(u) || !isCombatMove))
@@ -150,8 +150,7 @@ public class ProMoveUtils
 			final Map<Unit, List<Unit>> amphibAttackMap = attackMap.get(t).getAmphibAttackMap();
 			for (final Unit transport : amphibAttackMap.keySet())
 			{
-				final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(canMoveNavalTerritoryMatch, Matches.territoryHasNoEnemyUnits(player, data), Matches
-							.territoryHasNonAllowedCanal(player, Collections.singletonList(transport), data).invert());
+				final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(canMoveNavalTerritoryMatch, Matches.territoryHasNoEnemyUnits(player, data));
 				int movesLeft = TripleAUnit.get(transport).getMovementLeft();
 				Territory transportTerritory = unitTerritoryMap.get(transport);
 				
@@ -197,6 +196,8 @@ public class ProMoveUtils
 						int minUnitDistance = Integer.MAX_VALUE;
 						for (final Territory neighbor : neighbors)
 						{
+							if (MoveValidator.validateCanal(new Route(transportTerritory, neighbor), Collections.singletonList(transport), player, data) != null)
+								continue;
 							int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor, t, canMoveNavalThroughMatch);
 							if (t.isWater())
 								neighborDistanceFromEnd++;

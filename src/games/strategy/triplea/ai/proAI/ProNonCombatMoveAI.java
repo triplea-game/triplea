@@ -32,6 +32,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.CompositeMatch;
@@ -47,6 +48,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +58,7 @@ import java.util.logging.Level;
  * Pro non-combat move AI.
  * 
  * <ol>
- * <li>None yet</li>
+ * <li>Consider neutral territory value better</li>
  * </ol>
  * 
  * @author Ron Murhammer
@@ -80,7 +82,6 @@ public class ProNonCombatMoveAI
 	private GameData data;
 	private PlayerID player;
 	private Territory myCapital;
-	private List<PlayerID> enemyPlayers;
 	private List<Territory> allTerritories;
 	private Map<Unit, Territory> unitTerritoryMap;
 	
@@ -103,7 +104,6 @@ public class ProNonCombatMoveAI
 		this.player = player;
 		areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
 		myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-		enemyPlayers = utils.getEnemyPlayers(player);
 		allTerritories = data.getMap().getTerritories();
 		unitTerritoryMap = createUnitTerritoryMap(player);
 		
@@ -427,7 +427,7 @@ public class ProNonCombatMoveAI
 			for (final Unit unit : unitMoveMap.keySet())
 			{
 				// Find number of attack options
-				final Set<Territory> canDefendTerritories = new HashSet<Territory>();
+				final Set<Territory> canDefendTerritories = new LinkedHashSet<Territory>();
 				for (final ProAttackTerritoryData attackTerritoryData : territoriesToTryToDefend)
 				{
 					if (unitMoveMap.get(unit).contains(attackTerritoryData.getTerritory()))
@@ -456,8 +456,6 @@ public class ProNonCombatMoveAI
 					}
 					final ProBattleResultData result = moveMap.get(t).getBattleResult();
 					final boolean hasFactory = t.getUnits().someMatch(Matches.UnitCanProduceUnits) && !AbstractMoveDelegate.getBattleTracker(data).wasConquered(t);
-					LogUtils.log(Level.FINEST, t.getName() + " TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage() + ", enemyAttackers="
-								+ moveMap.get(t).getMaxEnemyUnits().size() + ", defenders=" + defendingUnits.size());
 					if ((hasFactory && (result.getWinPercentage() > (100 - WIN_PERCENTAGE))) || (!hasFactory && result.getTUVSwing() >= 0))
 					{
 						moveMap.get(t).addTempUnit(unit);
@@ -915,8 +913,7 @@ public class ProNonCombatMoveAI
 			final Territory currentTerritory = unitTerritoryMap.get(transport);
 			
 			final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
-							Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, true, false, true, false, false), Matches.territoryHasNoEnemyUnits(player, data), Matches
-										.territoryHasNonAllowedCanal(player, Collections.singletonList(transport), data).invert());
+							Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, true, false, true, false, false), Matches.territoryHasNoEnemyUnits(player, data));
 			final List<ProAttackTerritoryData> priorizitedLoadTerritories = new ArrayList<ProAttackTerritoryData>();
 			for (final Territory t : moveMap.keySet())
 			{
@@ -944,19 +941,21 @@ public class ProNonCombatMoveAI
 			
 			// Sort prioritized territories
 			Collections.sort(priorizitedLoadTerritories, new Comparator<ProAttackTerritoryData>()
-						{
-							public int compare(final ProAttackTerritoryData t1, final ProAttackTerritoryData t2)
-							{
-								final double value1 = t1.getLoadValue();
-								final double value2 = t2.getLoadValue();
-								return Double.compare(value1, value2);
-							}
-						});
+			{
+				public int compare(final ProAttackTerritoryData t1, final ProAttackTerritoryData t2)
+				{
+					final double value1 = t1.getLoadValue();
+					final double value2 = t2.getLoadValue();
+					return Double.compare(value1, value2);
+				}
+			});
 			
 			for (final ProAttackTerritoryData patd : priorizitedLoadTerritories)
 			{
 				// Move towards best loading territory if route is safe
 				final Route route = data.getMap().getRoute_IgnoreEnd(currentTerritory, patd.getTerritory(), canMoveNavalThroughMatch);
+				if (MoveValidator.validateCanal(route, Collections.singletonList(transport), player, data) != null)
+					continue;
 				final List<Territory> territories = route.getAllTerritories();
 				territories.remove(territories.size() - 1);
 				final int range = TripleAUnit.get(transport).getMovementLeft();
@@ -974,6 +973,7 @@ public class ProNonCombatMoveAI
 		LogUtils.log(Level.FINE, "Determine where to move land units");
 		
 		// Move land units to territory with highest value
+		// TODO: consider if territory ends up being safe
 		final Match<Unit> unitIsLandAndNotAA = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsAAforAnything.invert());
 		for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();)
 		{

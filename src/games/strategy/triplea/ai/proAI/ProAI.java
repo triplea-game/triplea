@@ -64,9 +64,9 @@ public class ProAI extends StrongAI
 		utils = new ProUtils(this);
 		battleUtils = new ProBattleUtils(this);
 		transportUtils = new ProTransportUtils();
-		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, transportUtils);
+		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils);
 		moveUtils = new ProMoveUtils(this, utils);
-		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils);
+		combatMoveAI = new ProCombatMoveAI(battleUtils, transportUtils, attackOptionsUtils, moveUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils);
 	}
@@ -108,7 +108,6 @@ public class ProAI extends StrongAI
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
 		{
-			// this.doNonCombatMove(moveDel, player);
 			nonCombatMoveAI.doNonCombatMove(moveDel, data, player);
 		}
 		else

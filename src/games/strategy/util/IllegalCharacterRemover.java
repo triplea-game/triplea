@@ -1,12 +1,10 @@
-/**
- * 
- */
 package games.strategy.util;
 
 /**
- * Designed to remove/replace / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
+ * Designed to remove/replace<br>
+ * / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
  * 
- * @author Chris Duncan
+ * @author Mark Christopher Duncan (veqryn)
  * 
  */
 public class IllegalCharacterRemover

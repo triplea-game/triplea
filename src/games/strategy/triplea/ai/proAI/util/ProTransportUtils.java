@@ -50,8 +50,8 @@ public class ProTransportUtils
 		else
 		{
 			// Get all units that can be transported
-			final CompositeMatch<Unit> myUnitsToLoadMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanNotMoveDuringCombatMove.invert(),
-						Matches.unitIsBeingTransported().invert());
+			final CompositeMatch<Unit> myUnitsToLoadMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.unitHasNotMoved,
+						Matches.UnitCanNotMoveDuringCombatMove.invert(), Matches.unitIsBeingTransported().invert());
 			final List<Unit> units = new ArrayList<Unit>();
 			for (final Territory loadFrom : territoriesToLoadFrom)
 			{
