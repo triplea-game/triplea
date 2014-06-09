@@ -70,7 +70,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			cancel();
 			m_isDataSet = false;
 			m_isCalcSet = false;
-			if (data == null)
+			if (data == null || m_isShutDown)
 			{
 				m_workers.clear();
 				++m_cancelCurrentOperation;
@@ -151,7 +151,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	{
 		m_isShutDown = true;
 		m_cancelCurrentOperation = Integer.MIN_VALUE / 2;
-		awaitLatch();
+		// m_latchSetData.await(2000, TimeUnit.MILLISECONDS);
 		cancel();
 		m_executor.shutdown();
 	}
@@ -188,13 +188,13 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		{
 			awaitLatch();
 			m_isCalcSet = false;
-			if (!m_isDataSet || m_isShutDown)
-			{
-				return;// we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
-			}
 			final int workerRunCount = Math.max(1, (runCount / m_workers.size()));
 			for (final OddsCalculator worker : m_workers)
 			{
+				if (!m_isDataSet || m_isShutDown)
+				{
+					return;// we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
+				}
 				worker.setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, (runCount <= 0 ? 0 : workerRunCount));
 				runCount -= workerRunCount;
 			}
@@ -210,23 +210,18 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		synchronized (m_mutexCalcIsRunning)
 		{
 			awaitLatch();
-			if (!getIsReady())
-			{
-				return new AggregateResults(0);// we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
-			}
 			final long start = System.currentTimeMillis();
-			
 			// Create worker thread pool and start all workers
 			int totalRunCount = 0;
 			final List<Future<AggregateResults>> list = new ArrayList<Future<AggregateResults>>();
 			for (final OddsCalculator worker : m_workers)
 			{
+				if (!getIsReady())
+				{
+					return new AggregateResults(0);// we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
+				}
 				if (!worker.getIsReady())
 				{
-					if (!getIsReady())
-					{
-						return new AggregateResults(0);// we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
-					}
 					throw new IllegalStateException("Called calculate before setting calculate data!");
 				}
 				if (worker.getRunCount() > 0)
