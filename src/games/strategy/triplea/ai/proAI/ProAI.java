@@ -88,7 +88,7 @@ public class ProAI extends StrongAI
 		return s_logger;
 	}
 	
-	public static void clearCache()
+	public static void gameOverClearCache()
 	{
 		s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game is exited.
 		LogUI.clearCachedInstances();

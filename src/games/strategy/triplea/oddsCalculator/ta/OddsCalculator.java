@@ -88,7 +88,12 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 	
 	public OddsCalculator(final GameData data)
 	{
-		m_data = data == null ? null : GameDataUtils.cloneGameData(data, false);
+		this(data, false);
+	}
+	
+	public OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned)
+	{
+		m_data = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
 		m_isDataSet = data != null;
 	}
 	
@@ -116,15 +121,15 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 	 */
 	@SuppressWarnings("unchecked")
 	public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
-				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
+				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException
 	{
 		if (m_isRunning)
 			return;
+		m_isCalcSet = false;
 		if (!m_isDataSet)
 		{
 			throw new IllegalStateException("Called set calculation before setting game data!");
 		}
-		m_isCalcSet = false;
 		m_attacker = m_data.getPlayerList().getPlayerID((attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName()));
 		m_defender = m_data.getPlayerList().getPlayerID((defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()));
 		m_location = m_data.getMap().getTerritory(location.getName());

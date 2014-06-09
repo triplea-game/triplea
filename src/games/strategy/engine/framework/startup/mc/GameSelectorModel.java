@@ -364,8 +364,8 @@ public class GameSelectorModel extends Observable
 	public void loadDefaultGame(final Component ui)
 	{
 		// clear out dynamix's properties (this ended up being the best place to put it, as we have definitely left a game at this point)
-		Dynamix_AI.clearCachedGameDataAll();
-		ProAI.clearCache();
+		Dynamix_AI.gameOverClearCachedGameDataAll();
+		ProAI.gameOverClearCache();
 		loadDefaultGame(ui, false);
 	}
 	

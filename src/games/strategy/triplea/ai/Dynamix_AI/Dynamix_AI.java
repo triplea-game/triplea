@@ -136,7 +136,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	/**
 	 * Only call after we have left or quit a game.
 	 */
-	public static void clearCachedGameDataAll()
+	public static void gameOverClearCachedGameDataAll()
 	{
 		CachedInstanceCenter.clearCachedDelegatesAndData();
 		UI.clearCachedInstances();

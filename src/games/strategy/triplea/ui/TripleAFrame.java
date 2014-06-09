@@ -582,7 +582,7 @@ public class TripleAFrame extends MainGameFrame
 		WINDOW_LISTENER = null;
 		// clear out dynamix's properties
 		// Dynamix_AI.clearCachedGameDataAll(); TODO: errors cus dynamix sucks
-		ProAI.clearCache();
+		ProAI.gameOverClearCache();
 	}
 	
 	@Override
