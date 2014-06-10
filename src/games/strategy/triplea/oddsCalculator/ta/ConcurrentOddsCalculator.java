@@ -188,7 +188,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		{
 			awaitLatch();
 			m_isCalcSet = false;
-			final int workerRunCount = Math.max(1, (runCount / m_workers.size()));
+			final int workerNum = m_workers.size();
+			final int workerRunCount = Math.max(1, (runCount / Math.max(1, workerNum)));
 			for (final OddsCalculator worker : m_workers)
 			{
 				if (!m_isDataSet || m_isShutDown)
@@ -197,6 +198,10 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 				}
 				worker.setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, (runCount <= 0 ? 0 : workerRunCount));
 				runCount -= workerRunCount;
+			}
+			if (!m_isDataSet || m_isShutDown || workerNum <= 0)
+			{
+				return;
 			}
 			m_isCalcSet = true;
 		}

@@ -356,8 +356,11 @@ public class ServerGame extends AbstractGame
 		m_isGameOver = true;
 		ErrorHandler.setGameOver(true);
 		m_delegateExecutionStoppedLatch.countDown();
-		// block delegate execution to prevent outbound messages to the players
-		// while we shut down.
+		for (final IGamePlayer player : m_gamePlayers.values())
+		{ // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
+			player.stopGame();// not sure whether to put this before or after we delegate execution block, but definitely before the game loader shutdown
+		}
+		// block delegate execution to prevent outbound messages to the players while we shut down.
 		try
 		{
 			if (!m_delegateExecutionManager.blockDelegateExecution(16000))

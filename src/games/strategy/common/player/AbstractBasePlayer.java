@@ -29,6 +29,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	private final String m_type; // what are we? ex: "Human", or "Moore N. Able (AI)"
 	private PlayerID m_playerID;
 	private IPlayerBridge m_iPlayerBridge;
+	private boolean m_stoppedGame = false;
 	
 	/**
 	 * @param name
@@ -126,6 +127,16 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 				bridgeStep = getPlayerBridge().getStepName();
 			}
 		}
+	}
+	
+	public void stopGame()
+	{
+		m_stoppedGame = true;
+	}
+	
+	public boolean isGameStopped()
+	{
+		return m_stoppedGame;
 	}
 	
 	// public abstract Class<?> getRemotePlayerType();
