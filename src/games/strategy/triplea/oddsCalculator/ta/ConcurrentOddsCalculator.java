@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,9 +35,10 @@ import java.util.logging.Logger;
  */
 public class ConcurrentOddsCalculator implements IOddsCalculator
 {
-	private final static Logger s_logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
+	private static final Logger s_logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
+	private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
 	
-	private final int m_maxThreads = Math.max(1, Runtime.getRuntime().availableProcessors());
+	private int m_currentThreads = MAX_THREADS;
 	private final ExecutorService m_executor;
 	private final CopyOnWriteArrayList<OddsCalculator> m_workers = new CopyOnWriteArrayList<OddsCalculator>();
 	private volatile boolean m_isDataSet = false; // do not let calc be set up til data is set
@@ -50,8 +52,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	
 	public ConcurrentOddsCalculator(final String threadNamePrefix)
 	{
-		m_executor = Executors.newFixedThreadPool(m_maxThreads, new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
-		s_logger.fine("Initialized executor thread pool with size: " + m_maxThreads);
+		m_executor = Executors.newFixedThreadPool(MAX_THREADS, new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
+		s_logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
 	}
 	
 	public void setGameData(final GameData data)
@@ -91,12 +93,32 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	public int getThreadCount()
+	{
+		return m_currentThreads;
+	}
+	
+	private int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy)
+	{ // use both time and memory left to determine how many copies to make
+		if (timeToCopyInMillis > 20000 || MAX_THREADS == 1)
+			return 1; // just use 1 thread if we took more than 20 seconds to copy
+		final Runtime runtime = Runtime.getRuntime();
+		final long usedMemoryAfterCopy = runtime.totalMemory() - runtime.freeMemory();
+		final long memoryLeftBeforeMax = runtime.maxMemory() - (Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy)); // we can not predict how the gc works
+		final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy)); // make sure it is a decent size regardless of how stupid the gc is
+		final int numberOfTimesWeCanCopyMax = Math.max(1, (int) (Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)))); // we leave some memory left over just in case
+		if (timeToCopyInMillis > 3000)
+			return Math.min(numberOfTimesWeCanCopyMax, Math.max(1, (MAX_THREADS / 2))); // use half the number of threads available if we took more than 3 seconds to copy
+		return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS); // use all threads
+	}
+	
 	private void createWorkers(final GameData data)
 	{
 		m_workers.clear();
 		if (data != null && m_cancelCurrentOperation >= 0)
 		{
-			final long start = System.currentTimeMillis(); // see how long 1 copy takes (some games can get REALLY big)
+			final long startTime = System.currentTimeMillis(); // see how long 1 copy takes (some games can get REALLY big)
+			final long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 			final GameData newData;
 			try
 			{ // make first copy, then release lock on it so game can continue (ie: we don't want to lock on it while we copy it 16 times, when once is enough)
@@ -106,27 +128,43 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			{
 				data.releaseReadLock();
 			}
-			final long timeToCopyInMillis = (System.currentTimeMillis() - start);
-			final int maxThreads;
-			if (timeToCopyInMillis > 40000)
-			{
-				maxThreads = 1; // just use 1 thread if we took more than 30 seconds to copy
-			}
-			else if (timeToCopyInMillis > 5000)
-			{
-				maxThreads = Math.max(1, m_maxThreads / 2); // use half the number of threads available if we took more than 5 seconds to copy
-			}
-			else
-			{
-				maxThreads = m_maxThreads; // use all threads
-			}
+			m_currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
 			try
 			{
 				newData.acquireReadLock(); // make sure all workers are using the same data
 				int i = 0;
-				while (m_cancelCurrentOperation >= 0 && i < maxThreads)
-				{
-					m_workers.add(new OddsCalculator(newData, (maxThreads == ++i))); // the last one will use our already copied data from above, without copying it again
+				if (m_currentThreads <= 2 || MAX_THREADS <= 2) // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
+				{ // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most only 1 more copy to make)
+					while (m_cancelCurrentOperation >= 0 && i < m_currentThreads)
+					{
+						m_workers.add(new OddsCalculator(newData, (m_currentThreads == ++i))); // the last one will use our already copied data from above, without copying it again
+					}
+				}
+				else
+				{ // multi-thread our copying, cus why the heck not (it increases the speed of copying by about double)
+					final CountDownLatch workerLatch = new CountDownLatch(m_currentThreads - 1);
+					while (i < (m_currentThreads - 1))
+					{
+						++i;
+						m_executor.submit(new Runnable()
+						{
+							public void run()
+							{
+								if (m_cancelCurrentOperation >= 0)
+								{
+									m_workers.add(new OddsCalculator(newData, false));
+								}
+								workerLatch.countDown();
+							}
+						});
+					}
+					m_workers.add(new OddsCalculator(newData, true)); // the last one will use our already copied data from above, without copying it again
+					try
+					{
+						workerLatch.await();
+					} catch (final InterruptedException e)
+					{
+					}
 				}
 			} finally
 			{
@@ -151,17 +189,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	{
 		m_isShutDown = true;
 		m_cancelCurrentOperation = Integer.MIN_VALUE / 2;
-		// m_latchSetData.await(2000, TimeUnit.MILLISECONDS);
 		cancel();
 		m_executor.shutdown();
-	}
-	
-	public void shutdownNow()
-	{
-		m_isShutDown = true;
-		m_cancelCurrentOperation = Integer.MIN_VALUE / 2;
-		cancel();
-		m_executor.shutdownNow();
 	}
 	
 	@Override

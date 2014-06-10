@@ -1,5 +1,6 @@
 package games.strategy.util;
 
+import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
@@ -9,25 +10,30 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * except that you can increment the latch, and can also countDownOrWaitIfZero
  * (which will wait until the latch is positive again before counting down).
  * Implements AQS behind the scenes similar to CountDownLatch.
+ * Class is hobbled together from various learnings and tickets on stackexchange/stackoverflow.
+ * If you have access to Java 7, you should probably use Phaser instead, despite its name.
+ * All calls to increment, or to wait if zero, will be synchronized on an internal mutex.
  * 
  * @author Mark Christopher Duncan (veqryn)
  */
-public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
+public class CountUpAndDownLatch implements Serializable {
 	private static final long serialVersionUID = -1656388212821764097L;
 	
 	private final Sync sync;
 	private final Sync waitIfZeroSync;
+	private final int originalCount;
 	
 	/**
-	 * Constructs a {@code CountUpAndDownLatch} initialized with zero.
+	 * Constructs a {@link CountUpAndDownLatch} initialized with zero.
 	 */
 	public CountUpAndDownLatch() {
+		originalCount = 0;
 		sync = new Sync();
 		waitIfZeroSync = new Sync();
 	}
 	
 	/**
-	 * Constructs a {@code CountUpAndDownLatch} initialized with the given count.
+	 * Constructs a {@link CountUpAndDownLatch} initialized with the given count.
 	 * 
 	 * @param count
 	 *          the number of times {@link #countDown} must be invoked before threads can pass through {@link #await}
@@ -38,6 +44,7 @@ public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
 		if (count < 0) {
 			throw new IllegalArgumentException("count < 0");
 		}
+		originalCount = count;
 		sync = new Sync(count);
 		waitIfZeroSync = new Sync();
 	}
@@ -46,8 +53,10 @@ public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
 	 * Increment the count by one.
 	 */
 	public void increment() {
-		sync.releaseShared(1);
-		waitIfZeroSync.releaseShared(-1);
+		synchronized (waitIfZeroSync) {
+			sync.releaseShared(1);
+			waitIfZeroSync.releaseShared(-1);
+		}
 	}
 	
 	/**
@@ -95,9 +104,13 @@ public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
 	 *          the amount to increment (or if negative, decrement countDown)
 	 */
 	public void applyDelta(final int delta) {
-		sync.releaseShared(delta);
 		if (delta > 0) {
-			waitIfZeroSync.releaseShared(-delta);
+			synchronized (waitIfZeroSync) {
+				sync.releaseShared(delta);
+				waitIfZeroSync.releaseShared(-delta);
+			}
+		} else {
+			sync.releaseShared(delta);
 		}
 	}
 	
@@ -136,8 +149,10 @@ public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
 				throws InterruptedException {
 		boolean didNotTimeOut = true;
 		if (delta < 0 && sync.getCount() <= 0) {
-			if (waitIfZeroSync.getCount() <= 0) {
-				waitIfZeroSync.releaseShared(1);
+			synchronized (waitIfZeroSync) {
+				if (waitIfZeroSync.getCount() <= 0) {
+					waitIfZeroSync.releaseShared(1);
+				}
 			}
 			try {
 				if (timeout <= 0L) {
@@ -160,9 +175,22 @@ public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
 	 * countDown until zero.
 	 */
 	public void releaseAll() {
-		final int count = sync.getCount();
-		if (count > 0) {
-			applyDelta(-count);
+		synchronized (waitIfZeroSync) {
+			final int count = sync.getCount();
+			if (count > 0) {
+				applyDelta(-count);
+			}
+		}
+	}
+	
+	/**
+	 * Reset the latch to its original count.
+	 */
+	public void resetCount() {
+		synchronized (waitIfZeroSync) {
+			final int syncCount = sync.getCount();
+			final int diff = originalCount - syncCount;
+			applyDelta(diff);
 		}
 	}
 	
@@ -171,6 +199,13 @@ public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
 	 */
 	public int getCount() {
 		return sync.getCount();
+	}
+	
+	/**
+	 * @return the original count this latch was created with
+	 */
+	public int getOriginalCount() {
+		return originalCount;
 	}
 	
 	/**
@@ -185,6 +220,43 @@ public class CountUpAndDownLatch extends AbstractQueuedSynchronizer {
 	 */
 	public boolean await(final long timeout, final TimeUnit unit) throws InterruptedException {
 		return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
+	}
+	
+	/**
+	 * If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
+	 * 
+	 * @see CountDownLatch#await()
+	 */
+	public void awaitOrWaitIfZeroToStartAwaiting() throws InterruptedException {
+		awaitOrWaitIfZeroToStartAwaiting(0, 0, TimeUnit.MILLISECONDS);
+	}
+	
+	/**
+	 * If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
+	 * 
+	 * @see CountDownLatch#await(long,TimeUnit)
+	 */
+	public boolean awaitOrWaitIfZeroToStartAwaiting(final long timeoutToWaitOnceAwaiting, final long timeoutToWaitIfZeroToStartAwaiting,
+				final TimeUnit unit) throws InterruptedException {
+		boolean didNotTimeOut = true;
+		if (sync.getCount() <= 0) {
+			synchronized (waitIfZeroSync) {
+				if (waitIfZeroSync.getCount() <= 0) {
+					waitIfZeroSync.releaseShared(1);
+				}
+			}
+			if (timeoutToWaitIfZeroToStartAwaiting <= 0L) {
+				waitIfZeroSync.acquireSharedInterruptibly(1);
+			} else {
+				didNotTimeOut = waitIfZeroSync.tryAcquireSharedNanos(1, unit.toNanos(timeoutToWaitIfZeroToStartAwaiting));
+			}
+		}
+		if (timeoutToWaitOnceAwaiting <= 0L) {
+			sync.acquireSharedInterruptibly(1);
+		} else {
+			didNotTimeOut &= sync.tryAcquireSharedNanos(1, unit.toNanos(timeoutToWaitOnceAwaiting));
+		}
+		return didNotTimeOut;
 	}
 	
 	/**

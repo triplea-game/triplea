@@ -50,6 +50,6 @@ public interface IOddsCalculator
 	
 	public void shutdown();
 	
-	public void shutdownNow();
+	public int getThreadCount();
 	
 }

@@ -225,8 +225,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 	{// nothing so far
 	}
 	
-	public void shutdownNow()
-	{// nothing so far
+	public int getThreadCount()
+	{
+		return 1;
 	}
 	
 	private AggregateResults calculate(final int count)

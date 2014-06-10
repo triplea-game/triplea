@@ -403,7 +403,7 @@ public class OddsCalculatorPanel extends JPanel
 			throw new IllegalStateException("Wrong thread");
 		}
 		final AtomicReference<AggregateResults> results = new AtomicReference<AggregateResults>();
-		final WaitDialog dialog = new WaitDialog(this, "Calculating Odds", new AbstractAction()
+		final WaitDialog dialog = new WaitDialog(this, "Calculating Odds (" + m_calculator.getThreadCount() + " threads)", new AbstractAction()
 		{
 			private static final long serialVersionUID = -2148507015083214974L;
 			
