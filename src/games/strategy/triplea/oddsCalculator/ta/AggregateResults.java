@@ -17,7 +17,7 @@ import java.util.List;
 public class AggregateResults implements Serializable
 {
 	private static final long serialVersionUID = -556699626060414738L;
-	private final List<BattleResults> m_results;
+	private final List<BattleResults> m_results; // can be empty!
 	private long m_time;
 	
 	public AggregateResults(final int expectedCount)
@@ -30,7 +30,7 @@ public class AggregateResults implements Serializable
 		m_results.add(result);
 	}
 	
-	public void addResults(final List<BattleResults> results)
+	public void addResults(final Collection<BattleResults> results)
 	{
 		m_results.addAll(results);
 	}
@@ -40,6 +40,9 @@ public class AggregateResults implements Serializable
 		return m_results;
 	}
 	
+	/**
+	 * This could be null if we have zero results!
+	 */
 	public BattleResults GetBattleResultsClosestToAverage()
 	{
 		float closestBattleDif = Integer.MAX_VALUE;
@@ -54,21 +57,27 @@ public class AggregateResults implements Serializable
 				closestBattle = results;
 			}
 		}
-		return closestBattle;
+		return closestBattle; // can be null!
 	}
 	
 	public List<Unit> GetAverageAttackingUnitsRemaining()
 	{
-		return GetBattleResultsClosestToAverage().getRemainingAttackingUnits();
+		final BattleResults results = GetBattleResultsClosestToAverage(); // can be null!
+		return results == null ? new ArrayList<Unit>() : results.getRemainingAttackingUnits();
 	}
 	
 	public List<Unit> GetAverageDefendingUnitsRemaining()
 	{
-		return GetBattleResultsClosestToAverage().getRemainingDefendingUnits();
+		final BattleResults results = GetBattleResultsClosestToAverage(); // can be null!
+		return results == null ? new ArrayList<Unit>() : results.getRemainingDefendingUnits();
 	}
 	
 	public double getAverageAttackingUnitsLeft()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
@@ -82,6 +91,10 @@ public class AggregateResults implements Serializable
 	 */
 	public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTUV, final IntegerMap<UnitType> defenderCostsForTUV)
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return new Tuple<Double, Double>(0.0, 0.0);
+		}
 		double attackerTUV = 0;
 		double defenderTUV = 0;
 		for (final BattleResults result : m_results)
@@ -94,6 +107,10 @@ public class AggregateResults implements Serializable
 	
 	public double getAverageTUVswing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender, final Collection<Unit> defenders, final GameData data)
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		final IntegerMap<UnitType> attackerCostsForTUV = BattleCalculator.getCostsForTUV(attacker, data);
 		final IntegerMap<UnitType> defenderCostsForTUV = BattleCalculator.getCostsForTUV(defender, data);
 		final int attackerTotalTUV = BattleCalculator.getTUV(attackers, attackerCostsForTUV);
@@ -107,6 +124,10 @@ public class AggregateResults implements Serializable
 	
 	public double getAverageAttackingUnitsLeftWhenAttackerWon()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		double total = 0;
 		for (final BattleResults result : m_results)
@@ -124,6 +145,10 @@ public class AggregateResults implements Serializable
 	
 	public double getAverageDefendingUnitsLeft()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
@@ -134,6 +159,10 @@ public class AggregateResults implements Serializable
 	
 	public double getAverageDefendingUnitsLeftWhenDefenderWon()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		double total = 0;
 		for (final BattleResults result : m_results)
@@ -151,6 +180,10 @@ public class AggregateResults implements Serializable
 	
 	public double getAttackerWinPercent()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
@@ -162,6 +195,10 @@ public class AggregateResults implements Serializable
 	
 	public double getDefenderWinPercent()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
@@ -173,18 +210,26 @@ public class AggregateResults implements Serializable
 	
 	public double getAverageBattleRoundsFought()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
 			count += result.getBattleRoundsFought();
 		}
-		if (m_results.isEmpty() || count == 0)
-			return 1.0F; // If this is a 'fake' aggregate result, return 1.0
+		if (count == 0)
+			return 1.0; // If this is a 'fake' aggregate result, return 1.0
 		return count / m_results.size();
 	}
 	
 	public double getDrawPercent()
 	{
+		if (m_results.isEmpty()) // can be empty!
+		{
+			return 0.0;
+		}
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
