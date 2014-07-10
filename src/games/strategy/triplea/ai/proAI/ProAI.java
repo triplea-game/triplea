@@ -163,4 +163,10 @@ public class ProAI extends StrongAI
 		return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
 	}
 	
+	@Override
+	public void stopGame()
+	{
+		super.stopGame(); // absolutely MUST call super.stopGame() first
+		s_battleCalculator.cancel(); // cancel any current calcing
+	}
 }
