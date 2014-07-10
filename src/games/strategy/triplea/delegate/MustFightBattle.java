@@ -464,7 +464,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				delim = "";
 			final Collection<Unit> attackingUnits = Match.getMatches(m_attackingUnits, Matches.unitIsOwnedBy(current));
 			final String verb = current.equals(m_attacker) ? "attack" : "loiter and taunt";
-			transcriptText += current.getName() + " " + verb + " with " + MyFormatter.unitsToTextNoOwner(attackingUnits) + delim;
+			transcriptText += current.getName() + " " + verb + (attackingUnits.isEmpty() ? "" : " with " + MyFormatter.unitsToTextNoOwner(attackingUnits)) + delim;
 			allAttackingUnits.addAll(attackingUnits);
 			// If any attacking transports are in the battle, set their status to later restrict load/unload
 			if (current.equals(m_attacker))

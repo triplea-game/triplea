@@ -61,16 +61,16 @@ public class ProBattleUtils
 	{
 		final GameData data = ai.getGameData();
 		final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-		return estimateStrengthDifference(player, t, attackingUnits, defendingUnits);
+		return estimateStrengthDifference(t, attackingUnits, defendingUnits);
 	}
 	
-	public double estimateStrengthDifference(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
+	public double estimateStrengthDifference(final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
 	{
 		if (attackingUnits.size() == 0)
 			return 0;
 		if (defendingUnits.size() == 0)
 			return 100;
-		final double attackerStrength = estimateStrength(player, t, attackingUnits, defendingUnits, true);
+		final double attackerStrength = estimateStrength(attackingUnits.get(0).getOwner(), t, attackingUnits, defendingUnits, true);
 		final double defenderStrength = estimateStrength(defendingUnits.get(0).getOwner(), t, defendingUnits, attackingUnits, false);
 		return ((attackerStrength - defenderStrength) / defenderStrength * 50 + 50);
 	}
@@ -98,6 +98,8 @@ public class ProBattleUtils
 	
 	public ProBattleResultData estimateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
 	{
+		if (ai.isGameStopped())
+			return new ProBattleResultData();
 		final GameData data = ai.getGameData();
 		
 		// Determine if there are no defenders or no attackers
@@ -108,7 +110,7 @@ public class ProBattleUtils
 			return new ProBattleResultData(100, 0, true, attackingUnits);
 		
 		// Determine if attackers have no chance
-		final double strengthDifference = estimateStrengthDifference(player, t, attackingUnits, defendingUnits);
+		final double strengthDifference = estimateStrengthDifference(t, attackingUnits, defendingUnits);
 		if (strengthDifference < 40)
 			return new ProBattleResultData();
 		
@@ -135,6 +137,8 @@ public class ProBattleUtils
 	
 	public ProBattleResultData calculateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
 	{
+		if (ai.isGameStopped())
+			return new ProBattleResultData();
 		final GameData data = ai.getGameData();
 		
 		// Determine if there are no defenders or no attackers

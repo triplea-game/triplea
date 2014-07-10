@@ -25,6 +25,7 @@ import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
+import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -74,6 +75,7 @@ public class ProNonCombatMoveAI
 	private final ProTransportUtils transportUtils;
 	private final ProAttackOptionsUtils attackOptionsUtils;
 	private final ProMoveUtils moveUtils;
+	private final ProTerritoryValueUtils territoryValueUtils;
 	
 	// Current map settings
 	private boolean areNeutralsPassableByAir;
@@ -86,13 +88,14 @@ public class ProNonCombatMoveAI
 	private Map<Unit, Territory> unitTerritoryMap;
 	
 	public ProNonCombatMoveAI(final ProUtils utils, final ProBattleUtils battleUtils, final ProTransportUtils transportUtils, final ProAttackOptionsUtils attackOptionsUtils,
-				final ProMoveUtils moveUtils)
+				final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils)
 	{
 		this.utils = utils;
 		this.battleUtils = battleUtils;
 		this.transportUtils = transportUtils;
 		this.attackOptionsUtils = attackOptionsUtils;
 		this.moveUtils = moveUtils;
+		this.territoryValueUtils = territoryValueUtils;
 	}
 	
 	public void doNonCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
@@ -136,6 +139,19 @@ public class ProNonCombatMoveAI
 		
 		// Determine which territories to defend and how many units each one needs
 		moveUnitsToDefendTerritories(moveMap, unitMoveMap, prioritizedTerritories, transportMapList, transportMoveMap);
+		
+		// Get list of territories that can't be held and find move value for each territory
+		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
+		for (final Territory t : moveMap.keySet())
+		{
+			if (!moveMap.get(t).isCanHold())
+				territoriesThatCantBeHeld.add(t);
+		}
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, moveMap.keySet(), territoriesThatCantBeHeld);
+		for (final Territory t : territoryValueMap.keySet())
+		{
+			moveMap.get(t).setValue(territoryValueMap.get(t));
+		}
 		
 		// Determine where to move remaining land and transport units
 		moveLandAndTransportUnits(moveMap, unitMoveMap, transportMapList, transportMoveMap);
@@ -671,125 +687,11 @@ public class ProNonCombatMoveAI
 	private void moveLandAndTransportUnits(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final List<ProAmphibData> transportMapList,
 				final Map<Unit, Set<Territory>> transportMoveMap)
 	{
-		LogUtils.log(Level.FINE, "Determine move value for each territory");
-		
-		// Matches
-		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
-					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, true, true, false, false, false));
-		final Match<Territory> canMoveSeaTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
-					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, true, false, false));
-		final Match<Territory> enemyFactories = Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitCanProduceUnits));
-		
-		// Get all enemy factories and determine a value for them
-		final Map<Territory, Double> enemyCapitalsAndFactoriesMap = new HashMap<Territory, Double>();
-		final Set<Territory> enemyCapitalsAndFactories = new HashSet<Territory>();
-		enemyCapitalsAndFactories.addAll(Match.getMatches(allTerritories, enemyFactories));
-		enemyCapitalsAndFactories.addAll(utils.getLiveEnemyCapitals(data, player));
-		for (final Territory t : enemyCapitalsAndFactories)
-		{
-			// Get factory production if factory
-			int factoryProduction = 0;
-			if (Matches.territoryHasUnitsThatMatch(Matches.UnitCanProduceUnits).match(t))
-				factoryProduction = TerritoryAttachment.getProduction(t);
-			
-			// Get player production if capital
-			double playerProduction = 0;
-			final TerritoryAttachment ta = TerritoryAttachment.get(t);
-			if (ta != null && ta.isCapital())
-			{
-				playerProduction = utils.getPlayerProduction(t.getOwner(), data);
-			}
-			
-			// Check if neutral
-			final int isNeutral = t.getOwner().isNull() ? 1 : 0;
-			
-			// Calculate value
-			final double value = factoryProduction * 4 / (1 + isNeutral) + playerProduction;
-			enemyCapitalsAndFactoriesMap.put(t, value);
-		}
-		
-		// Get list of territories that can't be held
-		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
-		for (final Territory t : moveMap.keySet())
-		{
-			if (!moveMap.get(t).isCanHold())
-				territoriesThatCantBeHeld.add(t);
-		}
-		
-		// Determine value for each territory I can hold
-		for (final Territory t : moveMap.keySet())
-		{
-			if (moveMap.get(t).isCanHold() && !t.isWater())
-			{
-				// Determine value based on enemy factory land distance
-				double capitalOrFactoryValue = 0;
-				for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet())
-				{
-					final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory, canMoveLandTerritoryMatch);
-					if (distance > 0)
-					{
-						capitalOrFactoryValue += (enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
-					}
-				}
-				
-				// Determine value based on nearby territory production
-				double nearbyEnemyValue = 0;
-				final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 2, canMoveLandTerritoryMatch);
-				final Match<Territory> territoryIsEnemyOrCantBeHeld = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemy(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
-				final List<Territory> nearbyEnemyTerritories = Match.getMatches(nearbyTerritories, territoryIsEnemyOrCantBeHeld);
-				for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories)
-				{
-					final int distance = data.getMap().getDistance(t, nearbyEnemyTerritory, canMoveLandTerritoryMatch);
-					if (distance > 0)
-					{
-						final int isNeutral = nearbyEnemyTerritory.getOwner().isNull() ? 1 : 0;
-						nearbyEnemyValue += TerritoryAttachment.getProduction(nearbyEnemyTerritory) / (isNeutral + 1) / Math.pow(2, distance);
-					}
-				}
-				final double value = capitalOrFactoryValue + nearbyEnemyValue;
-				moveMap.get(t).setValue(value);
-				LogUtils.log(Level.FINER, "Land value: " + value + " = " + capitalOrFactoryValue + " + " + nearbyEnemyValue + " for " + t.getName());
-			}
-			else if (moveMap.get(t).isCanHold() && t.isWater())
-			{
-				// Determine value based on enemy factory distance
-				double capitalOrFactoryValue = 0;
-				for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet())
-				{
-					final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory);
-					if (distance > 0)
-					{
-						capitalOrFactoryValue += (enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(3, distance));
-					}
-				}
-				
-				// Determine value based on nearby territory production
-				double nearbyEnemyValue = 0;
-				final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 3);
-				final Match<Territory> territoryIsEnemyOrCantBeHeld = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemy(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
-				final List<Territory> nearbyEnemyTerritories = Match.getMatches(nearbyTerritories, territoryIsEnemyOrCantBeHeld);
-				for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories)
-				{
-					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyEnemyTerritory, canMoveSeaTerritoryMatch);
-					if (distance <= 3)
-					{
-						final int isNeutral = nearbyEnemyTerritory.getOwner().isNull() ? 1 : 0;
-						nearbyEnemyValue += TerritoryAttachment.getProduction(nearbyEnemyTerritory) / (isNeutral + 1) / 2;
-					}
-				}
-				final double value = capitalOrFactoryValue + nearbyEnemyValue;
-				moveMap.get(t).setValue(value);
-				LogUtils.log(Level.FINER, "Water value: " + value + " = " + capitalOrFactoryValue + " + " + nearbyEnemyValue + " for " + t.getName());
-			}
-			else
-			{
-				moveMap.get(t).setValue(0);
-			}
-		}
-		
 		LogUtils.log(Level.FINE, "Determine where to move amphib units");
 		
 		// Move amphib units to territory with highest value
+		final Match<Territory> canMoveSeaTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, true, false, false));
 		for (final Iterator<ProAmphibData> it = transportMapList.iterator(); it.hasNext();)
 		{
 			final ProAmphibData amphibData = it.next();
@@ -1271,7 +1173,7 @@ public class ProNonCombatMoveAI
 					defenders.add(u);
 					double strengthDifference = 0;
 					if (!attackers.isEmpty())
-						strengthDifference = battleUtils.estimateStrengthDifference(attackers.get(0).getOwner(), t, attackers, defenders);
+						strengthDifference = battleUtils.estimateStrengthDifference(t, attackers, defenders);
 					if (strengthDifference < minStrengthDifference)
 					{
 						minStrengthDifference = strengthDifference;
@@ -1397,7 +1299,7 @@ public class ProNonCombatMoveAI
 						final List<Unit> attackers = moveMap.get(t).getMaxEnemyUnits();
 						final List<Unit> defenders = moveMap.get(t).getAllDefenders();
 						defenders.add(u);
-						final double strengthDifference = battleUtils.estimateStrengthDifference(attackers.get(0).getOwner(), t, attackers, defenders);
+						final double strengthDifference = battleUtils.estimateStrengthDifference(t, attackers, defenders);
 						LogUtils.log(Level.FINEST, "Unsafe territory: " + t + " with strengthDifference=" + strengthDifference);
 						if (strengthDifference < minStrengthDifference)
 						{

@@ -22,10 +22,13 @@ import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
+import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.StrongAI;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -52,23 +55,27 @@ public class ProAI extends StrongAI
 	private final ProTransportUtils transportUtils;
 	private final ProAttackOptionsUtils attackOptionsUtils;
 	private final ProMoveUtils moveUtils;
+	private final ProTerritoryValueUtils territoryValueUtils;
 	
 	// Phases
 	private final ProCombatMoveAI combatMoveAI;
-	private final ProRetreatAI retreatAI;
 	private final ProNonCombatMoveAI nonCombatMoveAI;
+	private final ProPurchaseAI purchaseAI;
+	private final ProRetreatAI retreatAI;
 	
 	public ProAI(final String name, final String type)
 	{
 		super(name, type);
 		utils = new ProUtils(this);
 		battleUtils = new ProBattleUtils(this);
-		transportUtils = new ProTransportUtils();
+		transportUtils = new ProTransportUtils(this);
 		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils);
 		moveUtils = new ProMoveUtils(this, utils);
+		territoryValueUtils = new ProTerritoryValueUtils(this, utils);
 		combatMoveAI = new ProCombatMoveAI(battleUtils, transportUtils, attackOptionsUtils, moveUtils);
+		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
+		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
-		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils);
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -99,9 +106,6 @@ public class ProAI extends StrongAI
 		return s_battleCalculator;
 	}
 	
-	/* (non-Javadoc)
-	 * @see games.strategy.triplea.ai.strongAI.StrongAI#move(boolean, games.strategy.triplea.delegate.remote.IMoveDelegate, games.strategy.engine.data.GameData, games.strategy.engine.data.PlayerID)
-	 */
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
@@ -115,12 +119,43 @@ public class ProAI extends StrongAI
 			LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
 			combatMoveAI.doCombatMove(moveDel, data, player);
 		}
-		pause();
 	}
 	
-	/* (non-Javadoc)
-	 * @see games.strategy.triplea.ai.strongAI.StrongAI#retreatQuery(games.strategy.net.GUID, boolean, games.strategy.engine.data.Territory, java.util.Collection, java.lang.String)
-	 */
+	@Override
+	protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
+	{
+		if (PUsToSpend <= 0)
+			return;
+		s_battleCalculator.setGameData(data);
+		if (purchaseForBid)
+		{
+			super.purchase(true, PUsToSpend, purchaseDelegate, data, player);
+			// purchaseAI.bid(PUsToSpend, purchaseDelegate, data, player);
+		}
+		else
+		{
+			purchaseAI.purchase(PUsToSpend, purchaseDelegate, data, player);
+		}
+	}
+	
+	@Override
+	public void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
+	{
+		if (bid)
+		{
+			super.place(bid, placeDelegate, data, player);
+		}
+		else
+		{
+			purchaseAI.place(placeDelegate, data, player);
+			if (placeDelegate.getPlacementsMade() == 0)
+			{
+				LogUtils.log(Level.WARNING, "Unable to place any units so reverting to use medium AI place methods");
+				super.place(bid, placeDelegate, data, player);
+			}
+		}
+	}
+	
 	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{

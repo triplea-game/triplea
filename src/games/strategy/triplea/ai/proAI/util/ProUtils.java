@@ -21,10 +21,12 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
@@ -78,6 +80,26 @@ public class ProUtils
 		}
 		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
 		return enemyCapitals;
+	}
+	
+	public int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t)
+	{
+		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
+					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, true, true, false, false, false));
+		final Match<Territory> isEnemyAndNotNeutral = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
+		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandTerritoryMatch);
+		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, isEnemyAndNotNeutral);
+		int minDistance = 10;
+		for (final Territory enemyLandTerritory : enemyLandTerritories)
+		{
+			final int distance = data.getMap().getDistance(t, enemyLandTerritory, canMoveLandTerritoryMatch);
+			if (distance < minDistance)
+				minDistance = distance;
+		}
+		if (minDistance < 10)
+			return minDistance;
+		else
+			return -1;
 	}
 	
 	/**

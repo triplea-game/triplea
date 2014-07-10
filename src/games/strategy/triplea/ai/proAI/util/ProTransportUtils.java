@@ -1,13 +1,16 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +40,26 @@ import java.util.Set;
  */
 public class ProTransportUtils
 {
+	private final ProAI ai;
+	
+	public ProTransportUtils(final ProAI ai)
+	{
+		this.ai = ai;
+	}
+	
+	public int findNumUnitsThatCanBeTransported(final PlayerID player, final Territory t)
+	{
+		final GameData data = ai.getGameData();
+		
+		final CompositeMatch<Unit> myUnitsToLoadMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanNotMoveDuringCombatMove.invert());
+		int numUnitsToLoad = 0;
+		final Set<Territory> neighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
+		for (final Territory neighbor : neighbors)
+		{
+			numUnitsToLoad += Match.getMatches(neighbor.getUnits().getUnits(), myUnitsToLoadMatch).size();
+		}
+		return numUnitsToLoad;
+	}
 	
 	public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore)
 	{
