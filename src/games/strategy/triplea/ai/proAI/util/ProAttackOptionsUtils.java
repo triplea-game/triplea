@@ -246,6 +246,8 @@ public class ProAttackOptionsUtils
 				final Set<Territory> possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range, canMoveTerritoryMatch);
 				possibleMoveTerritories.add(myUnitTerritory);
 				final Set<Territory> potentialTerritories = new HashSet<Territory>(Match.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
+				if (!isCombatMove)
+					potentialTerritories.add(myUnitTerritory);
 				
 				for (final Territory potentialTerritory : potentialTerritories)
 				{

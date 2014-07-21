@@ -14,10 +14,15 @@ package games.strategy.triplea.ai.proAI;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
 import games.strategy.triplea.ai.proAI.logging.LogUI;
+import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
+import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
@@ -26,6 +31,7 @@ import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.StrongAI;
+import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -33,7 +39,10 @@ import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,12 +65,16 @@ public class ProAI extends StrongAI
 	private final ProAttackOptionsUtils attackOptionsUtils;
 	private final ProMoveUtils moveUtils;
 	private final ProTerritoryValueUtils territoryValueUtils;
+	private final ProSimulateTurnUtils simulateTurnUtils;
 	
 	// Phases
 	private final ProCombatMoveAI combatMoveAI;
 	private final ProNonCombatMoveAI nonCombatMoveAI;
 	private final ProPurchaseAI purchaseAI;
 	private final ProRetreatAI retreatAI;
+	
+	// Data
+	private GameData data;
 	
 	public ProAI(final String name, final String type)
 	{
@@ -72,10 +85,12 @@ public class ProAI extends StrongAI
 		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils);
 		moveUtils = new ProMoveUtils(this, utils);
 		territoryValueUtils = new ProTerritoryValueUtils(this, utils);
+		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils);
 		combatMoveAI = new ProCombatMoveAI(battleUtils, transportUtils, attackOptionsUtils, moveUtils);
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
 		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
+		data = null;
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -107,6 +122,22 @@ public class ProAI extends StrongAI
 	}
 	
 	@Override
+	public final GameData getGameData()
+	{
+		if (data != null)
+			return data;
+		else
+			return super.getGameData();
+	}
+	
+	@Override
+	public void stopGame()
+	{
+		super.stopGame(); // absolutely MUST call super.stopGame() first
+		s_battleCalculator.cancel(); // cancel any current calcing
+	}
+	
+	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
 		s_battleCalculator.setGameData(data);
@@ -126,7 +157,6 @@ public class ProAI extends StrongAI
 	{
 		if (PUsToSpend <= 0)
 			return;
-		s_battleCalculator.setGameData(data);
 		if (purchaseForBid)
 		{
 			super.purchase(true, PUsToSpend, purchaseDelegate, data, player);
@@ -134,7 +164,52 @@ public class ProAI extends StrongAI
 		}
 		else
 		{
-			purchaseAI.purchase(PUsToSpend, purchaseDelegate, data, player);
+			LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
+			
+			// Setup data copy and delegates
+			final GameData dataCopy = GameDataUtils.cloneGameData(data, true);
+			this.data = dataCopy;
+			s_battleCalculator.setGameData(dataCopy);
+			final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
+			final IDelegateBridge bridge = new ProDummyDelegateBridge(this, player, dataCopy);
+			moveDel.setDelegateBridgeAndPlayer(bridge);
+			
+			// Determine turn sequence
+			final List<GameStep> gameSteps = new ArrayList<GameStep>();
+			for (final Iterator<GameStep> it = dataCopy.getSequence().iterator(); it.hasNext();)
+			{
+				final GameStep gameStep = it.next();
+				gameSteps.add(gameStep);
+			}
+			
+			// Simulate the next phases until place/end of turn is reached then use simulated data for purchase
+			final String nationName = dataCopy.getSequence().getStep().getName().replace("Purchase", "");
+			final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
+			for (int i = nextStepIndex; i < gameSteps.size(); i++)
+			{
+				final GameStep step = gameSteps.get(i);
+				dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(), player);
+				final String stepName = step.getName();
+				LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
+				if (stepName.startsWith(nationName) && stepName.endsWith("NonCombatMove"))
+				{
+					nonCombatMoveAI.doNonCombatMove(moveDel, dataCopy, player);
+				}
+				else if (stepName.startsWith(nationName) && stepName.endsWith("CombatMove"))
+				{
+					combatMoveAI.doCombatMove(moveDel, dataCopy, player);
+				}
+				else if (stepName.startsWith(nationName) && stepName.endsWith("Battle"))
+				{
+					simulateTurnUtils.simulateBattles(dataCopy, player, bridge);
+				}
+				else if (stepName.startsWith(nationName) && (stepName.endsWith("Place") || stepName.endsWith("EndTurn")))
+				{
+					purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, player);
+					this.data = null;
+					break;
+				}
+			}
 		}
 	}
 	
@@ -163,10 +238,4 @@ public class ProAI extends StrongAI
 		return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
 	}
 	
-	@Override
-	public void stopGame()
-	{
-		super.stopGame(); // absolutely MUST call super.stopGame() first
-		s_battleCalculator.cancel(); // cancel any current calcing
-	}
 }

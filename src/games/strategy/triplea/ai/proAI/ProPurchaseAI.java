@@ -163,13 +163,14 @@ public class ProPurchaseAI
 		final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
 		PUsRemaining = purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, landPurchaseOptions);
 		
-		// TODO: Prioritize sea place options and purchase units
+		// Prioritize sea place options and purchase units
 		final List<ProPlaceTerritory> prioritizedSeaTerritories = prioritizeSeaTerritories(purchaseTerritories);
 		PUsRemaining = purchaseSeaUnits(purchaseTerritories, enemyAttackMap, prioritizedSeaTerritories, PUsRemaining, seaPurchaseOptions, landPurchaseOptions);
 		
 		// TODO: Determine whether to purchase new factory
 		
-		// TODO: Try to use any remaining PUs
+		// Try to use any remaining PUs to upgrade land units to planes
+		PUsRemaining = spendRemainingPUs(purchaseTerritories, PUsRemaining, landPurchaseOptions, airPurchaseOptions);
 		
 		// Determine final count of each production rule
 		final IntegerMap<ProductionRule> purchaseMap = populateProductionRuleMap(purchaseTerritories, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions);
@@ -199,14 +200,15 @@ public class ProPurchaseAI
 						}
 					}
 				}
-				doPlace(ppt.getTerritory(), unitsToPlace, placeDelegate);
+				doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
+				// doPlace(ppt.getTerritory(), unitsToPlace, placeDelegate);
 				LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
 			}
 		}
 	}
 	
-	private void findPurchaseOptions(final List<ProPurchaseOption> landPurchaseOptions, final List<ProPurchaseOption> airPurchaseOptions, final List<ProPurchaseOption> seaPurchaseOptions,
-				final List<ProPurchaseOption> factoryPurchaseOptions, final List<ProPurchaseOption> specialPurchaseOptions)
+	private void findPurchaseOptions(final List<ProPurchaseOption> landPurchaseOptions, final List<ProPurchaseOption> airPurchaseOptions,
+				final List<ProPurchaseOption> seaPurchaseOptions, final List<ProPurchaseOption> factoryPurchaseOptions, final List<ProPurchaseOption> specialPurchaseOptions)
 	{
 		LogUtils.log(Level.FINE, "Find all purchase options");
 		
@@ -873,34 +875,124 @@ public class ProPurchaseAI
 			}
 			
 			// Add transport units to place territory and amphib units to adjacent factories
-			placeTerritory.getPlaceUnits().addAll(transportUnitsToPlace);
-			LogUtils.log(Level.FINER, t + ", transportUnits=" + transportUnitsToPlace);
-			if (!amphibUnitsToPlace.isEmpty())
+			for (final Territory purchaseTerritory : purchaseTerritories.keySet())
 			{
-				for (final Territory purchaseTerritory : purchaseTerritories.keySet())
+				for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
 				{
-					for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
+					// If place territory is equal to the current place territory and has remaining production
+					if (t.equals(ppt.getTerritory()) && purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction() > 0)
 					{
-						if (t.equals(ppt.getTerritory()) && purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction() > 0)
+						// Place transports
+						final int numUnits = Math.min(purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction(), transportUnitsToPlace.size());
+						final List<Unit> units = transportUnitsToPlace.subList(0, numUnits);
+						ppt.getPlaceUnits().addAll(units);
+						LogUtils.log(Level.FINER, t + ", transportUnits=" + transportUnitsToPlace);
+						units.clear();
+						
+						for (final ProPlaceTerritory ppt2 : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
 						{
-							for (final ProPlaceTerritory ppt2 : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
+							// Find factory place territory
+							if (purchaseTerritory.equals(ppt2.getTerritory()))
 							{
-								if (purchaseTerritory.equals(ppt2.getTerritory()))
-								{
-									final int numUnits = Math.min(purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction(), amphibUnitsToPlace.size());
-									final List<Unit> units = amphibUnitsToPlace.subList(0, numUnits);
-									ppt2.getPlaceUnits().addAll(units);
-									LogUtils.log(Level.FINER, t + ", amphibUnits placed at " + purchaseTerritory + ": " + units);
-									units.clear();
-									break;
-								}
+								// Place amphib units
+								final int numUnits2 = Math.min(purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction(), amphibUnitsToPlace.size());
+								final List<Unit> units2 = amphibUnitsToPlace.subList(0, numUnits2);
+								ppt2.getPlaceUnits().addAll(units2);
+								LogUtils.log(Level.FINER, t + ", amphibUnits placed at " + purchaseTerritory + ": " + units);
+								units2.clear();
+								break;
 							}
 						}
 					}
-					if (amphibUnitsToPlace.isEmpty())
-						break;
 				}
 			}
+		}
+		
+		return PUsRemaining;
+	}
+	
+	private int spendRemainingPUs(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, int PUsRemaining, final List<ProPurchaseOption> landPurchaseOptions,
+				final List<ProPurchaseOption> airPurchaseOptions)
+	{
+		LogUtils.log(Level.FINE, "Spend remaining PUs with PUsRemaining=" + PUsRemaining);
+		
+		// Loop through prioritized territories and purchase land units
+		for (final Territory t : purchaseTerritories.keySet())
+		{
+			// Get place territory
+			ProPlaceTerritory placeTerritory = null;
+			for (final ProPlaceTerritory pt : purchaseTerritories.get(t).getCanPlaceTerritories())
+			{
+				if (pt.getTerritory().equals(t))
+					placeTerritory = pt;
+			}
+			if (placeTerritory == null || placeTerritory.getTerritory().isWater())
+				continue;
+			
+			// Determine units that can be produced in this territory
+			final List<ProPurchaseOption> purchaseOptionsForTerritory = findPurchaseOptionsForTerritory(airPurchaseOptions, t);
+			LogUtils.log(Level.FINER, "Air attack options: " + purchaseOptionsForTerritory.size());
+			
+			// Determine most cost efficient units
+			ProPurchaseOption bestAirAttackOption = null;
+			double maxAirAttackEfficiency = 0;
+			for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
+			{
+				if (ppo.getCost() <= PUsRemaining)
+				{
+					if (ppo.getQuantity() == 1 && ppo.getAttackEfficiency() > maxAirAttackEfficiency)
+					{
+						bestAirAttackOption = ppo;
+						maxAirAttackEfficiency = ppo.getAttackEfficiency();
+					}
+				}
+			}
+			
+			// Check if there aren't enough PUs to buy any units
+			if (bestAirAttackOption == null)
+				continue;
+			
+			LogUtils.log(Level.FINER, "Best air attack unit: " + bestAirAttackOption.getUnitType().getName());
+			
+			// Replace land units with air units
+			final int maxAirUnits = purchaseTerritories.get(t).getUnitProduction() / 3;
+			final List<Unit> unitsToPlace = new ArrayList<Unit>();
+			while (true)
+			{
+				// Find current purchase option
+				final ProPurchaseOption ppo = bestAirAttackOption;
+				if (unitsToPlace.size() < maxAirUnits && !placeTerritory.getPlaceUnits().isEmpty() && bestAirAttackOption.getCost() <= PUsRemaining)
+				{
+					// Find unit to replace with air unit
+					Unit unitToRemove = null;
+					for (final Unit u : placeTerritory.getPlaceUnits())
+					{
+						for (final ProPurchaseOption ppo2 : landPurchaseOptions)
+						{
+							if (u.getType().equals(ppo2.getUnitType()) && ppo2.getQuantity() == 1 && ppo.getCost() > ppo2.getCost())
+							{
+								final List<Unit> newUnit = ppo.getUnitType().create(ppo.getQuantity(), player, true);
+								unitsToPlace.addAll(newUnit);
+								PUsRemaining -= (ppo.getCost() - ppo2.getCost());
+								unitToRemove = u;
+								LogUtils.log(Level.FINEST, t + ", addedUnit=" + newUnit + ", removedUnit=" + unitToRemove);
+								break;
+							}
+						}
+						if (unitToRemove != null)
+							break;
+					}
+					if (unitToRemove != null)
+						placeTerritory.getPlaceUnits().remove(unitToRemove);
+				}
+				else
+				{
+					break;
+				}
+			}
+			
+			// Add units to place territory
+			placeTerritory.getPlaceUnits().addAll(unitsToPlace);
 		}
 		
 		return PUsRemaining;
