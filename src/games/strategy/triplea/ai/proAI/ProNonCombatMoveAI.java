@@ -98,7 +98,7 @@ public class ProNonCombatMoveAI
 		this.territoryValueUtils = territoryValueUtils;
 	}
 	
-	public void doNonCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+	public Map<Territory, ProAttackTerritoryData> doNonCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
 		LogUtils.log(Level.FINE, "Starting non-combat move phase");
 		
@@ -183,6 +183,22 @@ public class ProNonCombatMoveAI
 		}
 		
 		// Calculate move routes and perform moves
+		doMove(moveMap, moveDel, data, player);
+		
+		// Log results
+		LogUtils.log(Level.FINE, "Logging results");
+		logAttackMoves(moveMap, unitMoveMap, transportMapList, prioritizedTerritories, enemyAttackMap);
+		
+		return moveMap;
+	}
+	
+	public void doMove(final Map<Territory, ProAttackTerritoryData> moveMap, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+	{
+		this.data = data;
+		this.player = player;
+		areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
+		
+		// Calculate move routes and perform moves
 		final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
 		final List<Route> moveRoutes = new ArrayList<Route>();
 		moveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, moveMap, false);
@@ -194,10 +210,6 @@ public class ProNonCombatMoveAI
 		final List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
 		moveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, moveMap, false);
 		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
-		
-		// Log results
-		LogUtils.log(Level.FINE, "Logging results");
-		logAttackMoves(moveMap, unitMoveMap, transportMapList, prioritizedTerritories, enemyAttackMap);
 	}
 	
 	private void findUnitsThatCantMove(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap)
@@ -653,7 +665,7 @@ public class ProNonCombatMoveAI
 		for (final Territory t : moveMap.keySet())
 		{
 			moveMap.get(t).addUnits(moveMap.get(t).getTempUnits());
-			moveMap.get(t).getAmphibAttackMap().putAll(moveMap.get(t).getTempAmphibAttackMap());
+			moveMap.get(t).putAllAmphibAttackMap(moveMap.get(t).getTempAmphibAttackMap());
 			for (final Unit u : moveMap.get(t).getTempUnits())
 			{
 				if (Matches.UnitIsTransport.match(u))

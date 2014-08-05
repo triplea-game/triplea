@@ -8,17 +8,24 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.ai.proAI.ProBattleResultData;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
+import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,12 +60,14 @@ public class ProSimulateTurnUtils
 	private final ProAI ai;
 	private final ProUtils utils;
 	private final ProBattleUtils battleUtils;
+	private final ProMoveUtils moveUtils;
 	
-	public ProSimulateTurnUtils(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils)
+	public ProSimulateTurnUtils(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils, final ProMoveUtils moveUtils)
 	{
 		this.ai = ai;
 		this.utils = utils;
 		this.battleUtils = battleUtils;
+		this.moveUtils = moveUtils;
 	}
 	
 	public void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge)
@@ -96,6 +105,115 @@ public class ProSimulateTurnUtils
 				LogUtils.log(Level.FINER, "after changes owner=" + updatedTerritory.getOwner() + ", units=" + updatedTerritory.getUnits().getUnits());
 			}
 		}
+	}
+	
+	public Map<Territory, ProAttackTerritoryData> transferMoveMap(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Territory> unitTerritoryMap, final GameData fromData,
+				final GameData toData, final PlayerID player)
+	{
+		// TODO: Fix this
+		System.out.println("Transferring move map");
+		
+		final Map<Territory, ProAttackTerritoryData> result = new HashMap<Territory, ProAttackTerritoryData>();
+		final List<Unit> usedUnits = new ArrayList<Unit>();
+		for (final Territory fromTerritory : moveMap.keySet())
+		{
+			final Territory toTerritory = toData.getMap().getTerritory(fromTerritory.getName());
+			final ProAttackTerritoryData patd = new ProAttackTerritoryData(toTerritory);
+			result.put(toTerritory, patd);
+			final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(fromTerritory).getAmphibAttackMap();
+			final Map<Unit, Boolean> isTransportingMap = moveMap.get(fromTerritory).getIsTransportingMap();
+			System.out.println("Transferring " + fromTerritory + " to " + toTerritory);
+			final List<Unit> amphibUnits = new ArrayList<Unit>();
+			for (final Unit transport : amphibAttackMap.keySet())
+			{
+				Unit toTransport = null;
+				final List<Unit> toUnits = new ArrayList<Unit>();
+				if (isTransportingMap.get(transport))
+				{
+					System.out.println("-----Transferring loaded transport " + transport + " with " + amphibAttackMap.get(transport));
+					toTransport = transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits, toData, player);
+					toUnits.addAll(TransportTracker.transporting(toTransport));
+					System.out.println("-----Transferred loaded transport " + toTransport + " with " + TransportTracker.transporting(toTransport));
+				}
+				else
+				{
+					System.out.println("-----Transferring unloaded transport " + transport + " with " + amphibAttackMap.get(transport));
+					toTransport = transferUnit(transport, unitTerritoryMap, usedUnits, toData, player);
+					for (final Unit u : amphibAttackMap.get(transport))
+					{
+						final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
+						toUnits.add(toUnit);
+					}
+					System.out.println("-----Transferred unloaded transport " + toTransport + " with " + toUnits);
+				}
+				patd.addUnits(toUnits);
+				patd.putAmphibAttackMap(toTransport, toUnits);
+				amphibUnits.addAll(amphibAttackMap.get(transport));
+				System.out.println("---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport) + " to transport=" + toTransport + " with units=" + toUnits);
+			}
+			for (final Unit u : moveMap.get(fromTerritory).getUnits())
+			{
+				if (!amphibUnits.contains(u))
+				{
+					final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
+					patd.addUnit(toUnit);
+					System.out.println("---Transferring unit " + u + " to " + toUnit);
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	private Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits, final GameData toData, final PlayerID player)
+	{
+		final Territory unitTerritory = unitTerritoryMap.get(u);
+		final Match<Unit> ownedByPlayerAndUnitTypeMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(u.getType()), Matches.unitIsTransporting().invert());
+		final List<Unit> toUnits = toData.getMap().getTerritory(unitTerritory.getName()).getUnits().getMatches(ownedByPlayerAndUnitTypeMatch);
+		System.out.println("-----Transfer unit " + u + " to " + toUnits);
+		for (final Unit toUnit : toUnits)
+		{
+			if (!usedUnits.contains(toUnit))
+			{
+				usedUnits.add(toUnit);
+				return toUnit;
+			}
+		}
+		return null;
+	}
+	
+	private Unit transferLoadedTransport(final Unit transport, final List<Unit> transportingUnits, final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits, final GameData toData,
+				final PlayerID player)
+	{
+		final Territory unitTerritory = unitTerritoryMap.get(transport);
+		final Match<Unit> ownedByPlayerAndTransportingMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(transport.getType()), Matches.unitIsTransporting());
+		final List<Unit> toTransports = toData.getMap().getTerritory(unitTerritory.getName()).getUnits().getMatches(ownedByPlayerAndTransportingMatch);
+		for (final Unit toTransport : toTransports)
+		{
+			if (!usedUnits.contains(toTransport))
+			{
+				final List<Unit> toTransportingUnits = (List<Unit>) TransportTracker.transporting(toTransport);
+				if (transportingUnits.size() == toTransportingUnits.size())
+				{
+					boolean canTransfer = true;
+					for (int i = 0; i < transportingUnits.size(); i++)
+					{
+						if (!transportingUnits.get(i).getType().equals(toTransportingUnits.get(i).getType()))
+						{
+							canTransfer = false;
+							break;
+						}
+					}
+					if (canTransfer)
+					{
+						usedUnits.add(toTransport);
+						usedUnits.addAll(toTransportingUnits);
+						return toTransport;
+					}
+				}
+			}
+		}
+		return null;
 	}
 	
 }

@@ -156,13 +156,11 @@ public class ProTerritoryValueUtils
 				}
 				final double value = capitalOrFactoryValue + nearbyEnemyValue;
 				territoryValueMap.put(t, value);
-				// moveMap.get(t).setValue(value);
 				LogUtils.log(Level.FINER, "Water value: " + value + " = " + capitalOrFactoryValue + " + " + nearbyEnemyValue + " for " + t.getName());
 			}
 			else
 			{
 				territoryValueMap.put(t, 0.0);
-				// moveMap.get(t).setValue(0);
 			}
 		}
 		return territoryValueMap;

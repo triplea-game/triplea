@@ -15,6 +15,7 @@ package games.strategy.triplea.ai.proAI;
  */
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.TransportTracker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class ProAttackTerritoryData
 	private List<Unit> maxAmphibUnits;
 	private boolean needAmphibUnits;
 	private Map<Unit, List<Unit>> amphibAttackMap;
+	private Map<Unit, Boolean> isTransportingMap;
 	private final Map<Unit, Territory> transportTerritoryMap;
 	
 	// Determine territory to attack variables
@@ -64,6 +66,7 @@ public class ProAttackTerritoryData
 		maxAmphibUnits = new ArrayList<Unit>();
 		needAmphibUnits = false;
 		amphibAttackMap = new HashMap<Unit, List<Unit>>();
+		isTransportingMap = new HashMap<Unit, Boolean>();
 		transportTerritoryMap = new HashMap<Unit, Territory>();
 		currentlyWins = false;
 		battleResult = null;
@@ -195,9 +198,16 @@ public class ProAttackTerritoryData
 		this.amphibAttackMap = amphibAttackMap;
 	}
 	
+	public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap)
+	{
+		for (final Unit u : amphibAttackMap.keySet())
+			putAmphibAttackMap(u, amphibAttackMap.get(u));
+	}
+	
 	public void putAmphibAttackMap(final Unit transport, final List<Unit> amphibUnits)
 	{
 		this.amphibAttackMap.put(transport, amphibUnits);
+		this.isTransportingMap.put(transport, TransportTracker.isTransporting(transport));
 	}
 	
 	public void setCanAttack(final boolean canAttack)
@@ -325,6 +335,16 @@ public class ProAttackTerritoryData
 	public Double getLoadValue()
 	{
 		return loadValue;
+	}
+	
+	public void setIsTransportingMap(final Map<Unit, Boolean> isTransportingMap)
+	{
+		this.isTransportingMap = isTransportingMap;
+	}
+	
+	public Map<Unit, Boolean> getIsTransportingMap()
+	{
+		return isTransportingMap;
 	}
 	
 }

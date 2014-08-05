@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,6 +77,7 @@ public class ProAI extends StrongAI
 	
 	// Data
 	private GameData data;
+	private Map<Territory, ProAttackTerritoryData> storedMoveMap;
 	
 	public ProAI(final String name, final String type)
 	{
@@ -85,12 +88,13 @@ public class ProAI extends StrongAI
 		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils);
 		moveUtils = new ProMoveUtils(this, utils);
 		territoryValueUtils = new ProTerritoryValueUtils(this, utils);
-		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils);
-		combatMoveAI = new ProCombatMoveAI(battleUtils, transportUtils, attackOptionsUtils, moveUtils);
+		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
+		combatMoveAI = new ProCombatMoveAI(battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
 		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		data = null;
+		storedMoveMap = null;
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -148,8 +152,12 @@ public class ProAI extends StrongAI
 		else
 		{
 			LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
-			combatMoveAI.doCombatMove(moveDel, data, player);
+			if (storedMoveMap == null)
+				combatMoveAI.doCombatMove(moveDel, data, player);
+			else
+				combatMoveAI.doMove(storedMoveMap, moveDel, data, player);
 		}
+		storedMoveMap = null;
 	}
 	
 	@Override
@@ -185,6 +193,7 @@ public class ProAI extends StrongAI
 			// Simulate the next phases until place/end of turn is reached then use simulated data for purchase
 			final String nationName = dataCopy.getSequence().getStep().getName().replace("Purchase", "");
 			final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
+			final Map<Unit, Territory> unitTerritoryMap = moveUtils.createUnitTerritoryMap(player);
 			for (int i = nextStepIndex; i < gameSteps.size(); i++)
 			{
 				final GameStep step = gameSteps.get(i);
@@ -197,7 +206,9 @@ public class ProAI extends StrongAI
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("CombatMove"))
 				{
-					combatMoveAI.doCombatMove(moveDel, dataCopy, player);
+					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, player);
+					if (storedMoveMap == null)
+						storedMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("Battle"))
 				{

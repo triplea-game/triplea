@@ -266,7 +266,7 @@ public class ProMoveUtils
 		}
 	}
 	
-	private Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player)
+	public Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player)
 	{
 		final List<Territory> allTerritories = ai.getGameData().getMap().getTerritories();
 		final CompositeMatchAnd<Territory> myUnitTerritoriesMatch = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(player));

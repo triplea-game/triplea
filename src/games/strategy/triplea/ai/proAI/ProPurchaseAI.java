@@ -132,6 +132,7 @@ public class ProPurchaseAI
 		// Find all purchase territories
 		purchaseTerritories = findPurchaseTerritories();
 		final Set<Territory> placeTerritories = new HashSet<Territory>();
+		placeTerritories.addAll(Match.getMatches(data.getMap().getTerritoriesOwnedBy(player), Matches.TerritoryIsLand));
 		for (final Territory t : purchaseTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
@@ -167,13 +168,19 @@ public class ProPurchaseAI
 		final List<ProPlaceTerritory> prioritizedSeaTerritories = prioritizeSeaTerritories(purchaseTerritories);
 		PUsRemaining = purchaseSeaUnits(purchaseTerritories, enemyAttackMap, prioritizedSeaTerritories, PUsRemaining, seaPurchaseOptions, landPurchaseOptions);
 		
-		// TODO: Determine whether to purchase new factory
+		// Determine whether to purchase new factory
+		final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
+		PUsRemaining = purchaseFactory(factoryPurchaseTerritories, enemyAttackMap, PUsRemaining, factoryPurchaseOptions);
 		
 		// Try to use any remaining PUs to upgrade land units to planes
 		PUsRemaining = spendRemainingPUs(purchaseTerritories, PUsRemaining, landPurchaseOptions, airPurchaseOptions);
 		
+		// Add factory purchase territory to list if not null
+		if (!factoryPurchaseTerritories.isEmpty())
+			purchaseTerritories.putAll(factoryPurchaseTerritories);
+		
 		// Determine final count of each production rule
-		final IntegerMap<ProductionRule> purchaseMap = populateProductionRuleMap(purchaseTerritories, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions);
+		final IntegerMap<ProductionRule> purchaseMap = populateProductionRuleMap(purchaseTerritories, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions, factoryPurchaseOptions);
 		
 		// Purchase units
 		purchaseDelegate.purchase(purchaseMap);
@@ -201,7 +208,6 @@ public class ProPurchaseAI
 					}
 				}
 				doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
-				// doPlace(ppt.getTerritory(), unitsToPlace, placeDelegate);
 				LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
 			}
 		}
@@ -911,12 +917,107 @@ public class ProPurchaseAI
 		return PUsRemaining;
 	}
 	
+	private int purchaseFactory(final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap, int PUsRemaining,
+				final List<ProPurchaseOption> factoryPurchaseOptions)
+	{
+		// Find all owned land territories that weren't conquered and don't already have a factory
+		final Match<Territory> ownedLandWithNoFactory = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand, Matches
+					.territoryHasOwnedIsFactoryOrCanProduceUnits(data, player).invert());
+		final List<Territory> ownedLandTerritories = Match.getMatches(data.getMap().getTerritories(), ownedLandWithNoFactory);
+		final Set<Territory> purchaseFactoryTerritories = new HashSet<Territory>();
+		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
+		final Match<Unit> myUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
+		final Match<Unit> alliedUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data));
+		final Match<Unit> myUnitOrAlliedMatch = new CompositeMatchOr<Unit>(myUnitMatch, alliedUnitMatch);
+		for (final Territory t : ownedLandTerritories)
+		{
+			// Check if no enemy attackers and that it wasn't conquered this turn
+			if (enemyAttackMap.get(t) == null)
+			{
+				if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(t))
+					purchaseFactoryTerritories.add(t);
+			}
+			else
+			{
+				// Find current battle result
+				final List<Unit> defenders = t.getUnits().getMatches(myUnitOrAlliedMatch);
+				final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackMap.get(t).getMaxUnits());
+				enemyAttackingUnits.addAll(enemyAttackMap.get(t).getMaxAmphibUnits());
+				final ProBattleResultData result = battleUtils.estimateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders, false);
+				
+				// Check if it can't be held or if it can then that it wasn't conquered this turn
+				if (result.isHasLandUnitRemaining() || result.getTUVSwing() > 0)
+					territoriesThatCantBeHeld.add(t);
+				else if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(t))
+					purchaseFactoryTerritories.add(t);
+			}
+		}
+		
+		// Find strategic value for each territory
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, purchaseFactoryTerritories, territoriesThatCantBeHeld);
+		double maxValue = 0.0;
+		Territory maxTerritory = null;
+		for (final Territory t : territoryValueMap.keySet())
+		{
+			final int production = TerritoryAttachment.get(t).getProduction();
+			final double value = territoryValueMap.get(t) * production;
+			if (production > 2 && value > maxValue)
+			{
+				maxValue = value;
+				maxTerritory = t;
+			}
+		}
+		
+		// Determine whether to purchase factory
+		if (maxTerritory != null)
+		{
+			// Determine units that can be produced in this territory
+			final List<ProPurchaseOption> purchaseOptionsForTerritory = findPurchaseOptionsForTerritory(factoryPurchaseOptions, maxTerritory);
+			
+			// Determine most expensive factory option
+			ProPurchaseOption bestFactoryOption = null;
+			double maxFactoryEfficiency = 0;
+			for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
+			{
+				if (ppo.getCost() <= PUsRemaining)
+				{
+					if (ppo.getCost() > maxFactoryEfficiency)
+					{
+						bestFactoryOption = ppo;
+						maxFactoryEfficiency = ppo.getCost();
+					}
+				}
+			}
+			
+			// Check if there are enough PUs to buy a factory
+			if (bestFactoryOption != null)
+			{
+				LogUtils.log(Level.FINER, "Best factory unit: " + bestFactoryOption.getUnitType().getName());
+				
+				final ProPurchaseTerritory factoryPurchaseTerritory = new ProPurchaseTerritory(maxTerritory, data, player);
+				factoryPurchaseTerritories.put(maxTerritory, factoryPurchaseTerritory);
+				for (final ProPlaceTerritory ppt : factoryPurchaseTerritory.getCanPlaceTerritories())
+				{
+					if (ppt.getTerritory().equals(maxTerritory))
+					{
+						PUsRemaining -= bestFactoryOption.getCost();
+						final List<Unit> factory = bestFactoryOption.getUnitType().create(bestFactoryOption.getQuantity(), player, true);
+						ppt.getPlaceUnits().addAll(factory);
+						LogUtils.log(Level.FINEST, maxTerritory + ", placedFactory=" + factory);
+					}
+				}
+			}
+		}
+		
+		return PUsRemaining;
+	}
+	
 	private int spendRemainingPUs(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, int PUsRemaining, final List<ProPurchaseOption> landPurchaseOptions,
 				final List<ProPurchaseOption> airPurchaseOptions)
 	{
 		LogUtils.log(Level.FINE, "Spend remaining PUs with PUsRemaining=" + PUsRemaining);
 		
-		// Loop through prioritized territories and purchase land units
+		// Loop through prioritized territories and purchase air units
 		for (final Territory t : purchaseTerritories.keySet())
 		{
 			// Get place territory
@@ -990,22 +1091,41 @@ public class ProPurchaseAI
 					break;
 				}
 			}
-			
-			// Add units to place territory
 			placeTerritory.getPlaceUnits().addAll(unitsToPlace);
+			
+			// Purchase air units for any remaining production
+			int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
+			while (true)
+			{
+				// Find current purchase option
+				final ProPurchaseOption ppo = bestAirAttackOption;
+				if (remainingUnitProduction >= ppo.getQuantity() && bestAirAttackOption.getCost() <= PUsRemaining)
+				{
+					PUsRemaining -= ppo.getCost();
+					remainingUnitProduction -= ppo.getQuantity();
+					final List<Unit> newUnit = ppo.getUnitType().create(ppo.getQuantity(), player, true);
+					placeTerritory.getPlaceUnits().addAll(newUnit);
+					LogUtils.log(Level.FINEST, t + ", addedUnit=" + newUnit);
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
 		
 		return PUsRemaining;
 	}
 	
 	private IntegerMap<ProductionRule> populateProductionRuleMap(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<ProPurchaseOption> landPurchaseOptions,
-				final List<ProPurchaseOption> airPurchaseOptions, final List<ProPurchaseOption> seaPurchaseOptions)
+				final List<ProPurchaseOption> airPurchaseOptions, final List<ProPurchaseOption> seaPurchaseOptions, final List<ProPurchaseOption> factoryPurchaseOptions)
 	{
 		LogUtils.log(Level.FINE, "Populate production rule map");
 		
 		final List<ProPurchaseOption> purchaseOptions = new ArrayList<ProPurchaseOption>(landPurchaseOptions);
 		purchaseOptions.addAll(airPurchaseOptions);
 		purchaseOptions.addAll(seaPurchaseOptions);
+		purchaseOptions.addAll(factoryPurchaseOptions);
 		final IntegerMap<ProductionRule> purchaseMap = new IntegerMap<ProductionRule>();
 		for (final ProPurchaseOption ppo : purchaseOptions)
 		{
