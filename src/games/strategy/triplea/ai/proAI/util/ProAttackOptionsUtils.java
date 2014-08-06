@@ -337,8 +337,11 @@ public class ProAttackOptionsUtils
 					Match<Territory> canMoveThroughTerritoriesMatch = new CompositeMatchAnd<Territory>(canMoveTerritoryMatch, Matches.isTerritoryAllied(player, data), Matches.territoryIsInList(
 								enemyTerritories).invert());
 					if (isCombatMove && Matches.UnitCanBlitz.match(myLandUnit))
-						canMoveThroughTerritoriesMatch = new CompositeMatchAnd<Territory>(canMoveTerritoryMatch, Matches.TerritoryIsBlitzable(player, data), Matches
+					{
+						final Match<Territory> alliedOrBlitzableMatch = new CompositeMatchOr<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsBlitzable(player, data));
+						canMoveThroughTerritoriesMatch = new CompositeMatchAnd<Territory>(canMoveTerritoryMatch, alliedOrBlitzableMatch, Matches
 									.territoryIsInList(enemyTerritories).invert());
+					}
 					final Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory, canMoveThroughTerritoriesMatch);
 					if (myRoute == null)
 						continue;

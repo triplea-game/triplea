@@ -118,6 +118,7 @@ public class ProCombatMoveAI
 					new ArrayList<Territory>());
 		
 		// Determine which territories to attack
+		// TODO: determine whether I should be in defensive stance and avoid low value attacks
 		final List<ProAttackTerritoryData> prioritizedTerritories = prioritizeAttackOptions(player, attackMap, unitAttackMap, transportAttackMap);
 		determineTerritoriesToAttack(attackMap, unitAttackMap, prioritizedTerritories, transportMapList, transportAttackMap);
 		
@@ -132,7 +133,7 @@ public class ProCombatMoveAI
 		determineTerritoriesThatCanBeHeld(prioritizedTerritories, attackMap, enemyAttackMap);
 		
 		// Remove any neutral territories that can't be held
-		removeCertainTerritoriesThatCantBeHeld(prioritizedTerritories);
+		removeCertainTerritoriesThatCantBeHeld(prioritizedTerritories, enemyAttackMap);
 		
 		// Determine how many units to attack each territory with
 		determineUnitsToAttackWith(attackMap, unitAttackMap, prioritizedTerritories, transportMapList, transportAttackMap);
@@ -435,6 +436,11 @@ public class ProCombatMoveAI
 		{
 			final Territory t = patd.getTerritory();
 			
+			// Add strategic value for factories
+			int isFactory = 0;
+			if (t.getUnits().someMatch(Matches.UnitCanProduceUnits))
+				isFactory = 1;
+			
 			// Determine whether its worth trying to hold territory
 			double totalValue = 0.0;
 			for (final Unit u : patd.getMaxUnits())
@@ -442,7 +448,8 @@ public class ProCombatMoveAI
 				totalValue += territoryValueMap.get(unitTerritoryMap.get(u));
 			}
 			final double averageValue = totalValue / patd.getMaxUnits().size();
-			if (territoryValueMap.get(t) < averageValue)
+			final double territoryValue = territoryValueMap.get(t) * (1 + 4 * isFactory);
+			if (territoryValue < averageValue)
 			{
 				attackMap.get(t).setCanHold(false);
 				LogUtils.log(Level.FINER, "Territory=" + t.getName() + ", CanHold=false, value=" + territoryValueMap.get(t) + ", averageAttackFromValue=" + averageValue);
@@ -476,7 +483,7 @@ public class ProCombatMoveAI
 		}
 	}
 	
-	private void removeCertainTerritoriesThatCantBeHeld(final List<ProAttackTerritoryData> prioritizedTerritories)
+	private void removeCertainTerritoriesThatCantBeHeld(final List<ProAttackTerritoryData> prioritizedTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap)
 	{
 		LogUtils.log(Level.FINE, "Remove certain territories that can't be held");
 		
@@ -485,19 +492,21 @@ public class ProCombatMoveAI
 		{
 			final ProAttackTerritoryData patd = it.next();
 			
-			if (!patd.isCanHold() && !patd.getTerritory().isWater())
+			if (!patd.isCanHold() && enemyAttackMap.get(patd.getTerritory()) != null && !patd.getTerritory().isWater())
 			{
 				final boolean isNeutral = patd.getTerritory().getOwner().isNull();
+				
 				if (isNeutral)
 				{
-					// Remove any neutral territories that can't be held
-					LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + patd.getTerritory().getName());
+					// Remove any neutral territories that can't be held and can be counter attacked
+					LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + patd.getTerritory().getName() + ", enemyAttackers=" + enemyAttackMap.get(patd.getTerritory()));
 					it.remove();
 				}
 				else if (patd.isNeedAmphibUnits() && patd.getValue() <= 2)
 				{
 					// Remove amphib territories that aren't worth attacking
-					LogUtils.log(Level.FINER, "Removing low value amphib territory that can't be held: " + patd.getTerritory().getName());
+					LogUtils.log(Level.FINER,
+								"Removing low value amphib territory that can't be held: " + patd.getTerritory().getName() + ", enemyAttackers=" + enemyAttackMap.get(patd.getTerritory()));
 					it.remove();
 				}
 			}
@@ -957,6 +966,7 @@ public class ProCombatMoveAI
 						+ ", attackers=" + enemyAttackingUnits.size());
 			
 			// Determine attack that uses the most units from capital and remove it
+			// TODO: consider units adjacent to capital
 			if (result.isHasLandUnitRemaining() || result.getTUVSwing() > 0)
 			{
 				int maxUnitsFromCapital = 0;

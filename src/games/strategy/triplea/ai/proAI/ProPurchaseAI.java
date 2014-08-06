@@ -402,6 +402,8 @@ public class ProPurchaseAI
 		for (final ProPlaceTerritory placeTerritory : needToDefendTerritories)
 		{
 			final Territory t = placeTerritory.getTerritory();
+			LogUtils.log(Level.FINER, "Purchasing defenders for " + t.getName() + ", landEnemyAttackers=" + enemyAttackMap.get(t).getMaxUnits() + ", amphibEnemyAttackers="
+						+ enemyAttackMap.get(t).getMaxAmphibUnits());
 			
 			// Determine most cost efficient defender that can be produced in this territory
 			final List<ProPurchaseOption> purchaseOptionsForTerritory = findPurchaseOptionsForTerritory(landPurchaseOptions, t);
@@ -415,6 +417,7 @@ public class ProPurchaseAI
 					maxDefenseEfficiency = ppo.getDefenseEfficiency();
 				}
 			}
+			LogUtils.log(Level.FINER, "Best defense option: " + bestDefenseOption.getUnitType().getName());
 			
 			int remainingUnitProduction = purchaseTerritories.get(t).getUnitProduction();
 			int PUsSpent = 0;
@@ -556,7 +559,7 @@ public class ProPurchaseAI
 			if (bestThreeMoveOption != null && enemyDistance > 4)
 				threeMovePercent = 50;
 			else if (bestTwoMoveOption != null)
-				twoMovePercent = 10 * enemyDistance;
+				twoMovePercent = Math.min(50, 10 * enemyDistance);
 			if (threeMovePercent + twoMovePercent > attackPercent)
 			{
 				hitPointPercent = 100 - (threeMovePercent + twoMovePercent);
@@ -920,6 +923,8 @@ public class ProPurchaseAI
 	private int purchaseFactory(final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap, int PUsRemaining,
 				final List<ProPurchaseOption> factoryPurchaseOptions)
 	{
+		LogUtils.log(Level.FINE, "Purchase factory with PUsRemaining=" + PUsRemaining);
+		
 		// Find all owned land territories that weren't conquered and don't already have a factory
 		final Match<Territory> ownedLandWithNoFactory = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand, Matches
 					.territoryHasOwnedIsFactoryOrCanProduceUnits(data, player).invert());
@@ -952,8 +957,10 @@ public class ProPurchaseAI
 					purchaseFactoryTerritories.add(t);
 			}
 		}
+		LogUtils.log(Level.FINER, "Possible factory territories: " + purchaseFactoryTerritories);
 		
 		// Find strategic value for each territory
+		// TODO: add consideration for island factories
 		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, purchaseFactoryTerritories, territoriesThatCantBeHeld);
 		double maxValue = 0.0;
 		Territory maxTerritory = null;
@@ -967,6 +974,7 @@ public class ProPurchaseAI
 				maxTerritory = t;
 			}
 		}
+		LogUtils.log(Level.FINER, "Try to purchase factory for territory: " + maxTerritory);
 		
 		// Determine whether to purchase factory
 		if (maxTerritory != null)
@@ -1003,7 +1011,7 @@ public class ProPurchaseAI
 						PUsRemaining -= bestFactoryOption.getCost();
 						final List<Unit> factory = bestFactoryOption.getUnitType().create(bestFactoryOption.getQuantity(), player, true);
 						ppt.getPlaceUnits().addAll(factory);
-						LogUtils.log(Level.FINEST, maxTerritory + ", placedFactory=" + factory);
+						LogUtils.log(Level.FINER, maxTerritory + ", placedFactory=" + factory);
 					}
 				}
 			}
@@ -1031,6 +1039,7 @@ public class ProPurchaseAI
 				continue;
 			
 			// Determine units that can be produced in this territory
+			// TODO: add land units in case no air units
 			final List<ProPurchaseOption> purchaseOptionsForTerritory = findPurchaseOptionsForTerritory(airPurchaseOptions, t);
 			LogUtils.log(Level.FINER, "Air attack options: " + purchaseOptionsForTerritory.size());
 			

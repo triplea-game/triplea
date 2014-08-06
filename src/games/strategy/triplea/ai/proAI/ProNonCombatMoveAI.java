@@ -396,6 +396,7 @@ public class ProNonCombatMoveAI
 		LogUtils.log(Level.FINE, "Determine which territories to defend with one land unit");
 		
 		// Find land territories with no can't move units and adjacent to enemy land units
+		// TODO: check if can't move units are allied planes
 		final List<Territory> territoriesToDefendWithOneUnit = new ArrayList<Territory>();
 		for (final Territory t : moveMap.keySet())
 		{
