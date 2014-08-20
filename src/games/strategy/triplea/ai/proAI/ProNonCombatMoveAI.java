@@ -59,7 +59,7 @@ import java.util.logging.Level;
  * Pro non-combat move AI.
  * 
  * <ol>
- * <li>Consider neutral territory value better</li>
+ * <li>Consider not holding factories</li>
  * </ol>
  * 
  * @author Ron Murhammer
@@ -98,7 +98,8 @@ public class ProNonCombatMoveAI
 		this.territoryValueUtils = territoryValueUtils;
 	}
 	
-	public Map<Territory, ProAttackTerritoryData> doNonCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+	public Map<Territory, ProAttackTerritoryData> doNonCombatMove(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IMoveDelegate moveDel, final GameData data,
+				final PlayerID player)
 	{
 		LogUtils.log(Level.FINE, "Starting non-combat move phase");
 		
@@ -124,7 +125,7 @@ public class ProNonCombatMoveAI
 		attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, landRoutesMap, transportMapList);
 		
 		// Find number of units in each allied territory that can't move anywhere else
-		findUnitsThatCantMove(moveMap, unitMoveMap);
+		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories);
 		
 		// Determine max enemy attack units and if territories can be held
 		final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
@@ -212,12 +213,13 @@ public class ProNonCombatMoveAI
 		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 	}
 	
-	private void findUnitsThatCantMove(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap)
+	private void findUnitsThatCantMove(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final Map<Territory, ProPurchaseTerritory> purchaseTerritories)
 	{
 		final Match<Unit> myUnitHasNoMovementMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft.invert(), Matches.UnitIsNotInfrastructure);
 		final Match<Unit> alliedUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches.UnitIsNotInfrastructure);
 		final Match<Unit> myUnitHasNoMovementOrAlliedMatch = new CompositeMatchOr<Unit>(myUnitHasNoMovementMatch, alliedUnitMatch);
 		
+		// Add all units that can't move and don't have any other move options
 		for (final Territory t : moveMap.keySet())
 		{
 			final List<Unit> units = t.getUnits().getMatches(myUnitHasNoMovementOrAlliedMatch);
@@ -232,6 +234,17 @@ public class ProNonCombatMoveAI
 				patd.getMaxUnits().remove(u);
 				patd.addCantMoveUnit(u);
 				it.remove();
+			}
+		}
+		
+		// Add all units that will be purchased
+		for (final ProPurchaseTerritory ppt : purchaseTerritories.values())
+		{
+			for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories())
+			{
+				final Territory t = placeTerritory.getTerritory();
+				if (moveMap.get(t) != null)
+					moveMap.get(t).getCantMoveUnits().addAll(placeTerritory.getPlaceUnits());
 			}
 		}
 	}
@@ -364,12 +377,21 @@ public class ProNonCombatMoveAI
 			final boolean hasFactory = patd.getTerritory().getUnits().someMatch(Matches.UnitCanProduceUnits) && !AbstractMoveDelegate.getBattleTracker(data).wasConquered(patd.getTerritory());
 			final List<Unit> minDefendingUnitsAndNotAA = Match.getMatches(patd.getCantMoveUnits(), Matches.UnitIsAAforAnything.invert());
 			if (patd.getMaxEnemyUnits().isEmpty() || !patd.isCanHold() || patd.getValue() <= 0 || isEmptyAndCanOnlyBeAttackedByAir
-						|| (patd.getMinBattleResult().getTUVSwing() < 0 && !patd.getMinBattleResult().isHasLandUnitRemaining())
-						|| (!hasFactory && patd.getMinBattleResult().getTUVSwing() <= 0 && !minDefendingUnitsAndNotAA.isEmpty()))
+						|| (!hasFactory && patd.getMinBattleResult().getTUVSwing() < 0 && !patd.getMinBattleResult().isHasLandUnitRemaining())
+						|| (!hasFactory && patd.getMinBattleResult().getTUVSwing() <= 0 && !minDefendingUnitsAndNotAA.isEmpty())
+						|| (patd.getMinBattleResult().getTUVSwing() < 0 && patd.getMinBattleResult().getWinPercentage() < (100 - WIN_PERCENTAGE)))
 			{
 				// Remove territories that don't need any more defenders (no attackers, can't be held, empty with only air attackers, negative enemy TUV swing)
+				double TUVSwing = 0;
+				boolean hasRemainingLandUnit = false;
+				if (patd.getMinBattleResult() != null)
+				{
+					TUVSwing = patd.getMinBattleResult().getTUVSwing();
+					hasRemainingLandUnit = patd.getMinBattleResult().isHasLandUnitRemaining();
+				}
 				LogUtils.log(Level.FINER, "Removing territory=" + patd.getTerritory().getName() + ", value=" + patd.getValue() + ", maxEnemyUnits=" + patd.getMaxEnemyUnits().size()
-							+ ", TryToHold=" + patd.isCanHold() + ", isEmptyAndCanOnlyBeAttackedByAir=" + isEmptyAndCanOnlyBeAttackedByAir + ", minDefenders=" + minDefendingUnitsAndNotAA.size());
+							+ ", TryToHold=" + patd.isCanHold() + ", isEmptyAndCanOnlyBeAttackedByAir=" + isEmptyAndCanOnlyBeAttackedByAir + ", minDefenders=" + minDefendingUnitsAndNotAA.size()
+							+ ", TUVSwing=" + TUVSwing + ", hasRemainingLandUnit=" + hasRemainingLandUnit);
 				it.remove();
 				
 			}
@@ -396,11 +418,11 @@ public class ProNonCombatMoveAI
 		LogUtils.log(Level.FINE, "Determine which territories to defend with one land unit");
 		
 		// Find land territories with no can't move units and adjacent to enemy land units
-		// TODO: check if can't move units are allied planes
 		final List<Territory> territoriesToDefendWithOneUnit = new ArrayList<Territory>();
 		for (final Territory t : moveMap.keySet())
 		{
-			if (!t.isWater() && moveMap.get(t).getCantMoveUnits().isEmpty() && Matches.territoryHasEnemyNonNeutralNeighborWithEnemyUnitMatching(data, player, Matches.UnitIsLand).match(t))
+			final boolean hasAlliedLandUnits = Match.someMatch(moveMap.get(t).getCantMoveUnits(), Matches.UnitIsLand);
+			if (!t.isWater() && !hasAlliedLandUnits && Matches.territoryHasEnemyNonNeutralNeighborWithEnemyUnitMatching(data, player, Matches.UnitIsLand).match(t))
 			{
 				territoriesToDefendWithOneUnit.add(t);
 			}

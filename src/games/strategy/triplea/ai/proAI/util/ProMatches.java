@@ -43,6 +43,15 @@ public class ProMatches
 				final Collection<Unit> unitsAtStartOfTurnInProducer = t.getUnits().getUnits();
 				if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer).match(unitWhichRequiresUnits))
 					return true;
+				if (t.isWater() && Matches.UnitIsSea.match(unitWhichRequiresUnits))
+				{
+					for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.TerritoryIsLand))
+					{
+						final Collection<Unit> unitsAtStartOfTurnInCurrent = neighbor.getUnits().getUnits();
+						if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent).match(unitWhichRequiresUnits))
+							return true;
+					}
+				}
 				return false;
 			}
 		};

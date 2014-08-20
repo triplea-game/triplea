@@ -18,7 +18,6 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,7 @@ public class ProMoveUtils
 				final Map<Territory, ProAttackTerritoryData> attackMap, final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
-		final Map<Unit, Territory> unitTerritoryMap = createUnitTerritoryMap(player);
+		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
 		
 		// Unit matches
 		final Match<Unit> mySeaUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.unitHasMovementLeft);
@@ -139,7 +138,7 @@ public class ProMoveUtils
 				final Map<Territory, ProAttackTerritoryData> attackMap, final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
-		final Map<Unit, Territory> unitTerritoryMap = createUnitTerritoryMap(player);
+		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
 		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
 		
@@ -264,21 +263,6 @@ public class ProMoveUtils
 				LogUtils.log(Level.WARNING, "could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result + "\n");
 			}
 		}
-	}
-	
-	public Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player)
-	{
-		final List<Territory> allTerritories = ai.getGameData().getMap().getTerritories();
-		final CompositeMatchAnd<Territory> myUnitTerritoriesMatch = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(player));
-		final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
-		final Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
-		for (final Territory t : myUnitTerritories)
-		{
-			final List<Unit> myUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
-			for (final Unit u : myUnits)
-				unitTerritoryMap.put(u, t);
-		}
-		return unitTerritoryMap;
 	}
 	
 }

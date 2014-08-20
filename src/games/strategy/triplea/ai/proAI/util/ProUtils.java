@@ -16,6 +16,7 @@ package games.strategy.triplea.ai.proAI.util;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -25,7 +26,9 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -41,6 +44,21 @@ public class ProUtils
 	public ProUtils(final ProAI ai)
 	{
 		this.ai = ai;
+	}
+	
+	public Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player)
+	{
+		final List<Territory> allTerritories = ai.getGameData().getMap().getTerritories();
+		final CompositeMatchAnd<Territory> myUnitTerritoriesMatch = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(player));
+		final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
+		final Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
+		for (final Territory t : myUnitTerritories)
+		{
+			final List<Unit> myUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+			for (final Unit u : myUnits)
+				unitTerritoryMap.put(u, t);
+		}
+		return unitTerritoryMap;
 	}
 	
 	public List<PlayerID> getEnemyPlayers(final PlayerID player)

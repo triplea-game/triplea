@@ -28,6 +28,7 @@ import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
+import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
@@ -42,6 +43,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +70,7 @@ public class ProAI extends StrongAI
 	private final ProMoveUtils moveUtils;
 	private final ProTerritoryValueUtils territoryValueUtils;
 	private final ProSimulateTurnUtils simulateTurnUtils;
+	private final ProPurchaseUtils purchaseUtils;
 	
 	// Phases
 	private final ProCombatMoveAI combatMoveAI;
@@ -78,23 +81,26 @@ public class ProAI extends StrongAI
 	// Data
 	private GameData data;
 	private Map<Territory, ProAttackTerritoryData> storedMoveMap;
+	private Map<Territory, ProPurchaseTerritory> storedPurchaseTerritories;
 	
 	public ProAI(final String name, final String type)
 	{
 		super(name, type);
 		utils = new ProUtils(this);
 		battleUtils = new ProBattleUtils(this);
-		transportUtils = new ProTransportUtils(this);
+		transportUtils = new ProTransportUtils(this, utils);
 		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils);
 		moveUtils = new ProMoveUtils(this, utils);
 		territoryValueUtils = new ProTerritoryValueUtils(this, utils);
 		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
-		combatMoveAI = new ProCombatMoveAI(battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
+		purchaseUtils = new ProPurchaseUtils(this);
+		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
-		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
+		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		data = null;
 		storedMoveMap = null;
+		storedPurchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -147,7 +153,7 @@ public class ProAI extends StrongAI
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
 		{
-			nonCombatMoveAI.doNonCombatMove(moveDel, data, player);
+			nonCombatMoveAI.doNonCombatMove(storedPurchaseTerritories, moveDel, data, player);
 		}
 		else
 		{
@@ -193,7 +199,7 @@ public class ProAI extends StrongAI
 			// Simulate the next phases until place/end of turn is reached then use simulated data for purchase
 			final String nationName = dataCopy.getSequence().getStep().getName().replace("Purchase", "");
 			final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
-			final Map<Unit, Territory> unitTerritoryMap = moveUtils.createUnitTerritoryMap(player);
+			final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
 			for (int i = nextStepIndex; i < gameSteps.size(); i++)
 			{
 				final GameStep step = gameSteps.get(i);
@@ -202,7 +208,7 @@ public class ProAI extends StrongAI
 				LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
 				if (stepName.startsWith(nationName) && stepName.endsWith("NonCombatMove"))
 				{
-					nonCombatMoveAI.doNonCombatMove(moveDel, dataCopy, player);
+					nonCombatMoveAI.doNonCombatMove(new HashMap<Territory, ProPurchaseTerritory>(), moveDel, dataCopy, player);
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("CombatMove"))
 				{
@@ -216,7 +222,7 @@ public class ProAI extends StrongAI
 				}
 				else if (stepName.startsWith(nationName) && (stepName.endsWith("Place") || stepName.endsWith("EndTurn")))
 				{
-					purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, player);
+					storedPurchaseTerritories = purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, player);
 					this.data = null;
 					break;
 				}
@@ -233,7 +239,7 @@ public class ProAI extends StrongAI
 		}
 		else
 		{
-			purchaseAI.place(placeDelegate, data, player);
+			purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
 			if (placeDelegate.getPlacementsMade() == 0)
 			{
 				LogUtils.log(Level.WARNING, "Unable to place any units so reverting to use medium AI place methods");

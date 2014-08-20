@@ -125,7 +125,7 @@ public class ProTerritoryValueUtils
 				final double value = capitalOrFactoryValue + nearbyEnemyValue;
 				territoryValueMap.put(t, value);
 				// moveMap.get(t).setValue(value);
-				LogUtils.log(Level.FINER, "Land value: " + value + " = " + capitalOrFactoryValue + " + " + nearbyEnemyValue + " for " + t.getName());
+				// LogUtils.log(Level.FINER, "Land value: " + value + " = " + capitalOrFactoryValue + " + " + nearbyEnemyValue + " for " + t.getName());
 			}
 			else if (!territoriesThatCantBeHeld.contains(t) && t.isWater())
 			{
@@ -156,7 +156,7 @@ public class ProTerritoryValueUtils
 				}
 				final double value = capitalOrFactoryValue + nearbyEnemyValue;
 				territoryValueMap.put(t, value);
-				LogUtils.log(Level.FINER, "Water value: " + value + " = " + capitalOrFactoryValue + " + " + nearbyEnemyValue + " for " + t.getName());
+				// LogUtils.log(Level.FINER, "Water value: " + value + " = " + capitalOrFactoryValue + " + " + nearbyEnemyValue + " for " + t.getName());
 			}
 			else
 			{

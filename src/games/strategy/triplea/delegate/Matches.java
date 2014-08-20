@@ -2764,6 +2764,18 @@ public class Matches
 		};
 	}
 	
+	public static Match<Territory> territoryHasEnemySeaUnits(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				return t.getUnits().someMatch(new CompositeMatchAnd<Unit>(enemyUnit(player, data), UnitIsSea));
+			}
+		};
+	}
+	
 	public static Match<Territory> territoryHasEnemyBlitzUnits(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()

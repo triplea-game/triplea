@@ -32,6 +32,7 @@ public class ProPurchaseOption
 	private int attack;
 	private final int defense;
 	private final int transportCost;
+	private final boolean isAir;
 	private final boolean isSub;
 	private final boolean isTransport;
 	private final boolean isCarrier;
@@ -58,6 +59,7 @@ public class ProPurchaseOption
 			attack += quantity;
 		defense = unitAttachment.getDefense(player) * quantity;
 		transportCost = unitAttachment.getTransportCost();
+		isAir = unitAttachment.getIsAir();
 		isSub = unitAttachment.getIsSub();
 		isTransport = unitAttachment.getTransportCapacity() > 0;
 		isCarrier = unitAttachment.getCarrierCapacity() > 0;
@@ -167,10 +169,15 @@ public class ProPurchaseOption
 	{
 		return carrierCapacity;
 	}
-
+	
 	public int getTransportCost()
 	{
 		return transportCost;
+	}
+	
+	public boolean isAir()
+	{
+		return isAir;
 	}
 	
 }

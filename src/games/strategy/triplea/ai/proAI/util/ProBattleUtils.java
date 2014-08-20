@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -68,10 +69,12 @@ public class ProBattleUtils
 	{
 		if (attackingUnits.size() == 0)
 			return 0;
-		if (defendingUnits.size() == 0)
+		final Match<Unit> unitCantBattle = new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure);
+		final List<Unit> actualDefenders = Match.getMatches(defendingUnits, unitCantBattle.invert());
+		if (actualDefenders.size() == 0)
 			return 100;
-		final double attackerStrength = estimateStrength(attackingUnits.get(0).getOwner(), t, attackingUnits, defendingUnits, true);
-		final double defenderStrength = estimateStrength(defendingUnits.get(0).getOwner(), t, defendingUnits, attackingUnits, false);
+		final double attackerStrength = estimateStrength(attackingUnits.get(0).getOwner(), t, attackingUnits, actualDefenders, true);
+		final double defenderStrength = estimateStrength(actualDefenders.get(0).getOwner(), t, actualDefenders, attackingUnits, false);
 		return ((attackerStrength - defenderStrength) / defenderStrength * 50 + 50);
 	}
 	
@@ -103,7 +106,9 @@ public class ProBattleUtils
 		final GameData data = ai.getGameData();
 		
 		// Determine if there are no defenders or no attackers
-		final boolean hasNoDefenders = Match.allMatch(defendingUnits, Matches.UnitIsInfrastructure);
+		// Properties.getTransportCasualtiesRestricted(data);
+		final Match<Unit> unitCantBattle = new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure);
+		final boolean hasNoDefenders = Match.allMatch(defendingUnits, unitCantBattle);
 		if (attackingUnits.size() == 0 || (Match.allMatch(attackingUnits, Matches.UnitIsAir) && !t.isWater()))
 			return new ProBattleResultData();
 		else if (defendingUnits.isEmpty() || hasNoDefenders)
@@ -142,7 +147,8 @@ public class ProBattleUtils
 		final GameData data = ai.getGameData();
 		
 		// Determine if there are no defenders or no attackers
-		final boolean hasNoDefenders = Match.allMatch(defendingUnits, Matches.UnitIsInfrastructure);
+		final Match<Unit> unitCantBattle = new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure);
+		final boolean hasNoDefenders = Match.allMatch(defendingUnits, unitCantBattle);
 		if (defendingUnits.isEmpty() || hasNoDefenders)
 		{
 			if (attackingUnits.size() > 0 && (Match.someMatch(attackingUnits, Matches.UnitIsAir.invert()) || t.isWater()))

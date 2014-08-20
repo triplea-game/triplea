@@ -93,11 +93,12 @@ public class ProSimulateTurnUtils
 				// Make updates to data
 				final List<Unit> attackersToRemove = new ArrayList<Unit>(attackers);
 				attackersToRemove.removeAll(remainingUnits);
+				final List<Unit> defendersToRemove = Match.getMatches(defenders, Matches.UnitIsInfrastructure.invert());
 				LogUtils.log(Level.FINER, "attackersToRemove=" + attackersToRemove);
-				LogUtils.log(Level.FINER, "defendersToRemove=" + defenders);
+				LogUtils.log(Level.FINER, "defendersToRemove=" + defendersToRemove);
 				final Change attackerskilledChange = ChangeFactory.removeUnits(t, attackersToRemove);
 				delegateBridge.addChange(attackerskilledChange);
-				final Change defenderskilledChange = ChangeFactory.removeUnits(t, defenders);
+				final Change defenderskilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
 				delegateBridge.addChange(defenderskilledChange);
 				delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
 				battleDelegate.getBattleTracker().getConquered().add(t);
@@ -110,8 +111,7 @@ public class ProSimulateTurnUtils
 	public Map<Territory, ProAttackTerritoryData> transferMoveMap(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Territory> unitTerritoryMap, final GameData fromData,
 				final GameData toData, final PlayerID player)
 	{
-		// TODO: Fix this
-		System.out.println("Transferring move map");
+		LogUtils.log(Level.FINE, "Transferring move map");
 		
 		final Map<Territory, ProAttackTerritoryData> result = new HashMap<Territory, ProAttackTerritoryData>();
 		final List<Unit> usedUnits = new ArrayList<Unit>();
@@ -122,7 +122,7 @@ public class ProSimulateTurnUtils
 			result.put(toTerritory, patd);
 			final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(fromTerritory).getAmphibAttackMap();
 			final Map<Unit, Boolean> isTransportingMap = moveMap.get(fromTerritory).getIsTransportingMap();
-			System.out.println("Transferring " + fromTerritory + " to " + toTerritory);
+			LogUtils.log(Level.FINER, "Transferring " + fromTerritory + " to " + toTerritory);
 			final List<Unit> amphibUnits = new ArrayList<Unit>();
 			for (final Unit transport : amphibAttackMap.keySet())
 			{
@@ -130,26 +130,26 @@ public class ProSimulateTurnUtils
 				final List<Unit> toUnits = new ArrayList<Unit>();
 				if (isTransportingMap.get(transport))
 				{
-					System.out.println("-----Transferring loaded transport " + transport + " with " + amphibAttackMap.get(transport));
+					// System.out.println("-----Transferring loaded transport " + transport + " with " + amphibAttackMap.get(transport));
 					toTransport = transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits, toData, player);
 					toUnits.addAll(TransportTracker.transporting(toTransport));
-					System.out.println("-----Transferred loaded transport " + toTransport + " with " + TransportTracker.transporting(toTransport));
+					// System.out.println("-----Transferred loaded transport " + toTransport + " with " + TransportTracker.transporting(toTransport));
 				}
 				else
 				{
-					System.out.println("-----Transferring unloaded transport " + transport + " with " + amphibAttackMap.get(transport));
+					// System.out.println("-----Transferring unloaded transport " + transport + " with " + amphibAttackMap.get(transport));
 					toTransport = transferUnit(transport, unitTerritoryMap, usedUnits, toData, player);
 					for (final Unit u : amphibAttackMap.get(transport))
 					{
 						final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
 						toUnits.add(toUnit);
 					}
-					System.out.println("-----Transferred unloaded transport " + toTransport + " with " + toUnits);
+					// System.out.println("-----Transferred unloaded transport " + toTransport + " with " + toUnits);
 				}
 				patd.addUnits(toUnits);
 				patd.putAmphibAttackMap(toTransport, toUnits);
 				amphibUnits.addAll(amphibAttackMap.get(transport));
-				System.out.println("---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport) + " to transport=" + toTransport + " with units=" + toUnits);
+				LogUtils.log(Level.FINEST, "---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport) + " to transport=" + toTransport + " with units=" + toUnits);
 			}
 			for (final Unit u : moveMap.get(fromTerritory).getUnits())
 			{
@@ -157,7 +157,7 @@ public class ProSimulateTurnUtils
 				{
 					final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
 					patd.addUnit(toUnit);
-					System.out.println("---Transferring unit " + u + " to " + toUnit);
+					LogUtils.log(Level.FINEST, "---Transferring unit " + u + " to " + toUnit);
 				}
 			}
 		}
@@ -170,7 +170,6 @@ public class ProSimulateTurnUtils
 		final Territory unitTerritory = unitTerritoryMap.get(u);
 		final Match<Unit> ownedByPlayerAndUnitTypeMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(u.getType()), Matches.unitIsTransporting().invert());
 		final List<Unit> toUnits = toData.getMap().getTerritory(unitTerritory.getName()).getUnits().getMatches(ownedByPlayerAndUnitTypeMatch);
-		System.out.println("-----Transfer unit " + u + " to " + toUnits);
 		for (final Unit toUnit : toUnits)
 		{
 			if (!usedUnits.contains(toUnit))
