@@ -2,26 +2,20 @@ package games.strategy.triplea.ai.proAI.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /*
@@ -122,108 +116,6 @@ public class ProTransportUtils
 		}
 		
 		return attackers;
-	}
-	
-	public Territory findTransportUnloadTerritory(final PlayerID player, final Territory t, final Unit transport, final List<Unit> amphibUnits, final Map<Territory, ProAttackTerritoryData> attackMap,
-				final boolean isCombatMove, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad)
-	{
-		final GameData data = ai.getGameData();
-		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
-		final Match<Territory> canMoveNavalTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
-					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
-		
-		final Match<Territory> canMoveNavalThroughMatch = new CompositeMatchAnd<Territory>(canMoveNavalTerritoryMatch, Matches.territoryHasNoEnemyUnits(player, data));
-		int movesLeft = TripleAUnit.get(transport).getMovementLeft();
-		Territory transportTerritory = unitTerritoryMap.get(transport);
-		
-		// Check if units are already loaded or not
-		final List<Unit> loadedUnits = new ArrayList<Unit>();
-		final List<Unit> remainingUnitsToLoad = new ArrayList<Unit>();
-		if (TransportTracker.isTransporting(transport))
-			loadedUnits.addAll(amphibUnits);
-		else
-			remainingUnitsToLoad.addAll(amphibUnits);
-		
-		// Load units and move transport
-		while (movesLeft >= 0)
-		{
-			// Load adjacent units if no enemies present in transport territory
-			if (Matches.territoryHasEnemyUnits(player, data).invert().match(transportTerritory))
-			{
-				final List<Unit> unitsToRemove = new ArrayList<Unit>();
-				for (final Unit amphibUnit : remainingUnitsToLoad)
-				{
-					if (data.getMap().getDistance(transportTerritory, unitTerritoryMap.get(amphibUnit)) == 1)
-					{
-						moveUnits.add(Collections.singletonList(amphibUnit));
-						transportsToLoad.add(Collections.singletonList(transport));
-						final Route route = new Route(unitTerritoryMap.get(amphibUnit), transportTerritory);
-						moveRoutes.add(route);
-						unitsToRemove.add(amphibUnit);
-						loadedUnits.add(amphibUnit);
-					}
-				}
-				for (final Unit u : unitsToRemove)
-					remainingUnitsToLoad.remove(u);
-			}
-			
-			// Move transport if I'm not already at the end or out of moves
-			int distanceFromEnd = data.getMap().getDistance(transportTerritory, t);
-			if (t.isWater())
-				distanceFromEnd++;
-			if (movesLeft > 0 && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty()))
-			{
-				final Set<Territory> neighbors = data.getMap().getNeighbors(transportTerritory, canMoveNavalThroughMatch);
-				Territory territoryToMoveTo = null;
-				int minUnitDistance = Integer.MAX_VALUE;
-				for (final Territory neighbor : neighbors)
-				{
-					if (MoveValidator.validateCanal(new Route(transportTerritory, neighbor), Collections.singletonList(transport), player, data) != null)
-						continue;
-					int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor, t, canMoveNavalThroughMatch);
-					if (t.isWater())
-						neighborDistanceFromEnd++;
-					int maxUnitDistance = 0;
-					for (final Unit u : remainingUnitsToLoad)
-					{
-						final int distance = data.getMap().getDistance(neighbor, unitTerritoryMap.get(u));
-						if (distance > maxUnitDistance)
-							maxUnitDistance = distance;
-					}
-					if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance < minUnitDistance)
-					{
-						territoryToMoveTo = neighbor;
-						minUnitDistance = maxUnitDistance;
-					}
-				}
-				if (territoryToMoveTo != null)
-				{
-					final List<Unit> unitsToMove = new ArrayList<Unit>();
-					unitsToMove.add(transport);
-					unitsToMove.addAll(loadedUnits);
-					moveUnits.add(unitsToMove);
-					transportsToLoad.add(null);
-					final Route route = new Route(transportTerritory, territoryToMoveTo);
-					moveRoutes.add(route);
-					transportTerritory = territoryToMoveTo;
-				}
-			}
-			movesLeft--;
-		}
-		
-		// Set territory transport is moving to
-		attackMap.get(t).getTransportTerritoryMap().put(transport, transportTerritory);
-		
-		// Unload transport
-		if (!loadedUnits.isEmpty() && !t.isWater())
-		{
-			moveUnits.add(loadedUnits);
-			transportsToLoad.add(null);
-			final Route route = new Route(transportTerritory, t);
-			moveRoutes.add(route);
-		}
-		
-		return transportTerritory;
 	}
 	
 }

@@ -61,7 +61,8 @@ public class ProTerritoryValueUtils
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, true, true, false, false, false));
 		final Match<Territory> canMoveSeaTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, true, false, false));
-		final Match<Territory> enemyFactories = Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitCanProduceUnits));
+		final Match<Territory> enemyFactories = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data),
+					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitCanProduceUnits)));
 		
 		// Get all enemy factories and determine a value for them
 		final Map<Territory, Double> enemyCapitalsAndFactoriesMap = new HashMap<Territory, Double>();

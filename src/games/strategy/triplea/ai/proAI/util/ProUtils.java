@@ -97,6 +97,7 @@ public class ProUtils
 			enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
 		}
 		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryEnemy(player, data)));
 		return enemyCapitals;
 	}
 	

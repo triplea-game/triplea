@@ -33,7 +33,9 @@ import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.StrongAI;
+import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -87,13 +89,13 @@ public class ProAI extends StrongAI
 	{
 		super(name, type);
 		utils = new ProUtils(this);
-		battleUtils = new ProBattleUtils(this);
+		battleUtils = new ProBattleUtils(this, utils);
 		transportUtils = new ProTransportUtils(this, utils);
-		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils);
+		purchaseUtils = new ProPurchaseUtils(this);
+		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils, purchaseUtils);
 		moveUtils = new ProMoveUtils(this, utils);
 		territoryValueUtils = new ProTerritoryValueUtils(this, utils);
 		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
-		purchaseUtils = new ProPurchaseUtils(this);
 		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
 		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
@@ -251,6 +253,26 @@ public class ProAI extends StrongAI
 	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
+		// Get battle data
+		final GameData data = getGameData();
+		final PlayerID player = getPlayerID();
+		final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+		final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
+		
+		// If battle is null or amphibious then don't retreat
+		if (battle == null || battleTerritory == null || battle.isAmphibious())
+			return null;
+		
+		// If I'm attacker and have more unit strength then don't retreat
+		final boolean isAttacker = player.equals(battle.getAttacker());
+		final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
+		final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+		final double strengthDifference = battleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
+		LogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers=" + attackers.size() + ", defenders=" + defenders.size() + ", submerge="
+					+ submerge + ", attacker=" + isAttacker);
+		if (isAttacker && strengthDifference > 50)
+			return null;
+		
 		s_battleCalculator.setGameData(getGameData());
 		return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
 	}

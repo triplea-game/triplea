@@ -67,7 +67,7 @@ public class ProPurchaseOption
 		carrierCapacity = unitAttachment.getCarrierCapacity();
 		transportEfficiency = (double) unitAttachment.getTransportCapacity() * quantity / cost;
 		carrierEfficiency = (double) unitAttachment.getCarrierCapacity() * quantity / cost;
-		hitPointEfficiency = (double) hitPoints / cost;
+		hitPointEfficiency = (hitPoints + 0.1 * attack + 0.2 * defense) / cost;
 		attackEfficiency = (hitPoints + attack + 0.5 * defense) / cost;
 		defenseEfficiency = (hitPoints + 0.5 * attack + defense) / cost;
 	}

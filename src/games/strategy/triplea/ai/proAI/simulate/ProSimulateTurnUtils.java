@@ -94,12 +94,16 @@ public class ProSimulateTurnUtils
 				final List<Unit> attackersToRemove = new ArrayList<Unit>(attackers);
 				attackersToRemove.removeAll(remainingUnits);
 				final List<Unit> defendersToRemove = Match.getMatches(defenders, Matches.UnitIsInfrastructure.invert());
+				final List<Unit> infrastructureToChangeOwner = Match.getMatches(defenders, Matches.UnitIsInfrastructure);
 				LogUtils.log(Level.FINER, "attackersToRemove=" + attackersToRemove);
 				LogUtils.log(Level.FINER, "defendersToRemove=" + defendersToRemove);
+				LogUtils.log(Level.FINER, "infrastructureToChangeOwner=" + infrastructureToChangeOwner);
 				final Change attackerskilledChange = ChangeFactory.removeUnits(t, attackersToRemove);
 				delegateBridge.addChange(attackerskilledChange);
 				final Change defenderskilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
 				delegateBridge.addChange(defenderskilledChange);
+				final Change infrastructureOwnerChange = ChangeFactory.changeOwner(infrastructureToChangeOwner, player, t);
+				delegateBridge.addChange(infrastructureOwnerChange);
 				delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
 				battleDelegate.getBattleTracker().getConquered().add(t);
 				final Territory updatedTerritory = data.getMap().getTerritory(t.getName());

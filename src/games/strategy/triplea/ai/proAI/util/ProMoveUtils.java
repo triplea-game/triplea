@@ -185,10 +185,11 @@ public class ProMoveUtils
 					}
 					
 					// Move transport if I'm not already at the end or out of moves
+					final Territory unloadTerritory = attackMap.get(t).getTransportTerritoryMap().get(transport);
 					int distanceFromEnd = data.getMap().getDistance(transportTerritory, t);
 					if (t.isWater())
 						distanceFromEnd++;
-					if (movesLeft > 0 && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty()))
+					if (movesLeft > 0 && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty() || (unloadTerritory != null && !unloadTerritory.equals(transportTerritory))))
 					{
 						final Set<Territory> neighbors = data.getMap().getNeighbors(transportTerritory, canMoveNavalThroughMatch);
 						Territory territoryToMoveTo = null;
@@ -197,6 +198,9 @@ public class ProMoveUtils
 						{
 							if (MoveValidator.validateCanal(new Route(transportTerritory, neighbor), Collections.singletonList(transport), player, data) != null)
 								continue;
+							int distanceFromUnloadTerritory = 0;
+							if (unloadTerritory != null)
+								distanceFromUnloadTerritory = data.getMap().getDistance_IgnoreEndForCondition(neighbor, unloadTerritory, canMoveNavalThroughMatch);
 							int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor, t, canMoveNavalThroughMatch);
 							if (t.isWater())
 								neighborDistanceFromEnd++;
@@ -207,7 +211,7 @@ public class ProMoveUtils
 								if (distance > maxUnitDistance)
 									maxUnitDistance = distance;
 							}
-							if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance < minUnitDistance)
+							if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance < minUnitDistance && distanceFromUnloadTerritory < movesLeft)
 							{
 								territoryToMoveTo = neighbor;
 								minUnitDistance = maxUnitDistance;

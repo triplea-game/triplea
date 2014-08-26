@@ -78,17 +78,10 @@ public class ProRetreatAI
 		final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
 		final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
 		
-		// If battle is null or amphibious then don't retreat
-		if (battle == null || battleTerritory == null || battle.isAmphibious())
-			return null;
-		
 		// Get units and determine if attacker
 		final boolean isAttacker = player.equals(battle.getAttacker());
 		final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
 		final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-		
-		LogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers=" + attackers.size() + ", defenders=" + defenders.size() + ", submerge="
-					+ submerge + ", attacker=" + isAttacker);
 		
 		// Calculate battle results
 		final ProBattleResultData result = battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders, isAttacker);
