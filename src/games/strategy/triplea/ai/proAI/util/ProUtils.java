@@ -22,7 +22,6 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -49,8 +48,7 @@ public class ProUtils
 	public Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player)
 	{
 		final List<Territory> allTerritories = ai.getGameData().getMap().getTerritories();
-		final CompositeMatchAnd<Territory> myUnitTerritoriesMatch = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(player));
-		final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
+		final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, Matches.territoryHasUnitsOwnedBy(player));
 		final Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
 		for (final Territory t : myUnitTerritories)
 		{
@@ -103,15 +101,12 @@ public class ProUtils
 	
 	public int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t)
 	{
-		final Match<Territory> canMoveLandTerritoryMatch = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
-					Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, true, true, false, false, false));
-		final Match<Territory> isEnemyAndNotNeutral = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
-		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, canMoveLandTerritoryMatch);
-		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, isEnemyAndNotNeutral);
+		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, true));
+		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, ProMatches.territoryIsEnemyNotNeutral(player, data));
 		int minDistance = 10;
 		for (final Territory enemyLandTerritory : enemyLandTerritories)
 		{
-			final int distance = data.getMap().getDistance(t, enemyLandTerritory, canMoveLandTerritoryMatch);
+			final int distance = data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanMoveLandUnits(player, data, true));
 			if (distance < minDistance)
 				minDistance = distance;
 		}

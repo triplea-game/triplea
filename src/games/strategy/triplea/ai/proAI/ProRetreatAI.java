@@ -20,6 +20,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
+import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -88,7 +89,7 @@ public class ProRetreatAI
 		
 		// Determine if it has a factory
 		int isFactory = 0;
-		if (battleTerritory.getUnits().someMatch(Matches.UnitCanProduceUnits))
+		if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(battleTerritory))
 			isFactory = 1;
 		
 		// Determine if it has an AA
@@ -121,7 +122,7 @@ public class ProRetreatAI
 			final Territory myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 			for (final Territory t : possibleTerritories)
 			{
-				if (Matches.territoryIs(myCapital).match(t))
+				if (myCapital.equals(t))
 				{
 					retreatTerritory = t;
 					break;

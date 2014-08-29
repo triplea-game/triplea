@@ -8,8 +8,6 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -53,12 +51,11 @@ public class ProTransportUtils
 	{
 		final GameData data = ai.getGameData();
 		
-		final CompositeMatch<Unit> myUnitsToLoadMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanNotMoveDuringCombatMove.invert());
 		int numUnitsToLoad = 0;
 		final Set<Territory> neighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
 		for (final Territory neighbor : neighbors)
 		{
-			numUnitsToLoad += Match.getMatches(neighbor.getUnits().getUnits(), myUnitsToLoadMatch).size();
+			numUnitsToLoad += Match.getMatches(neighbor.getUnits().getUnits(), ProMatches.unitIsOwnedTransportableUnit(player)).size();
 		}
 		return numUnitsToLoad;
 	}
@@ -75,12 +72,10 @@ public class ProTransportUtils
 		else
 		{
 			// Get all units that can be transported
-			final CompositeMatch<Unit> myUnitsToLoadMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.unitHasNotMoved,
-						Matches.UnitCanNotMoveDuringCombatMove.invert(), Matches.unitIsBeingTransported().invert());
 			final List<Unit> units = new ArrayList<Unit>();
 			for (final Territory loadFrom : territoriesToLoadFrom)
 			{
-				units.addAll(loadFrom.getUnits().getMatches(myUnitsToLoadMatch));
+				units.addAll(loadFrom.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
 			}
 			units.removeAll(unitsToIgnore);
 			
