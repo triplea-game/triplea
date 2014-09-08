@@ -285,7 +285,8 @@ public class ProAttackOptionsUtils
 					double currentStrength = 0;
 					if (!currentUnits.isEmpty())
 						currentStrength = battleUtils.estimateStrength(currentUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(currentUnits), new ArrayList<Unit>(), true);
-					if (currentStrength > maxStrength)
+					final boolean currentHasLandUnits = Match.someMatch(currentUnits, Matches.UnitIsLand);
+					if (currentStrength > maxStrength && (currentHasLandUnits || t.isWater()))
 						enemyAttackMap.put(t, attackMap2.get(t));
 				}
 			}

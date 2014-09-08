@@ -154,12 +154,14 @@ public class ProPurchaseAI
 		PUsRemaining = purchaseDefenders(purchaseTerritories, enemyAttackMap, needToDefendTerritories, PUsRemaining, landPurchaseOptions);
 		
 		// Find strategic value for each territory
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, placeTerritories, new ArrayList<Territory>());
+		LogUtils.log(Level.FINE, "Find strategic value for place territories");
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>());
 		for (final Territory t : purchaseTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
 			{
 				ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
+				LogUtils.log(Level.FINER, ppt.getTerritory() + ", strategicValue=" + territoryValueMap.get(ppt.getTerritory()));
 			}
 		}
 		
@@ -167,13 +169,17 @@ public class ProPurchaseAI
 		final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
 		PUsRemaining = purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, landPurchaseOptions);
 		
+		// Determine whether to purchase new land factory
+		final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
+		PUsRemaining = purchaseFactory(factoryPurchaseTerritories, enemyAttackMap, PUsRemaining, factoryPurchaseOptions, prioritizedLandTerritories, landPurchaseOptions, false);
+		
 		// Prioritize sea place options and purchase units
 		final List<ProPlaceTerritory> prioritizedSeaTerritories = prioritizeSeaTerritories(purchaseTerritories);
 		PUsRemaining = purchaseSeaUnits(purchaseTerritories, enemyAttackMap, prioritizedSeaTerritories, PUsRemaining, seaPurchaseOptions, landPurchaseOptions);
 		
-		// Determine whether to purchase new factory
-		final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
-		PUsRemaining = purchaseFactory(factoryPurchaseTerritories, enemyAttackMap, PUsRemaining, factoryPurchaseOptions, prioritizedLandTerritories, landPurchaseOptions);
+		// If a land factory wasn't purchase then try to purchase a sea factory
+		if (factoryPurchaseTerritories.isEmpty())
+			PUsRemaining = purchaseFactory(factoryPurchaseTerritories, enemyAttackMap, PUsRemaining, factoryPurchaseOptions, prioritizedLandTerritories, landPurchaseOptions, true);
 		
 		// Try to use any remaining PUs to upgrade land units
 		PUsRemaining = spendRemainingPUs(purchaseTerritories, PUsRemaining, landPurchaseOptions, airPurchaseOptions);
@@ -408,7 +414,7 @@ public class ProPurchaseAI
 			for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories())
 			{
 				final Territory t = placeTerritory.getTerritory();
-				if (!t.isWater() && placeTerritory.getStrategicValue() > 0.1)
+				if (!t.isWater() && placeTerritory.getStrategicValue() >= 0.25)
 					prioritizedLandTerritories.add(placeTerritory);
 			}
 		}
@@ -573,14 +579,14 @@ public class ProPurchaseAI
 	{
 		LogUtils.log(Level.FINE, "Prioritize sea territories");
 		
-		// Determine which territories can be held
+		// Determine which sea territories can be placed in
 		final List<ProPlaceTerritory> seaPlaceTerritories = new ArrayList<ProPlaceTerritory>();
 		for (final ProPurchaseTerritory ppt : purchaseTerritories.values())
 		{
 			for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories())
 			{
 				final Territory t = placeTerritory.getTerritory();
-				if (t.isWater())
+				if (t.isWater() && placeTerritory.getStrategicValue() > 0)
 				{
 					boolean alreadyAdded = false;
 					for (final ProPlaceTerritory addedPlaceTerritory : seaPlaceTerritories)
@@ -760,7 +766,8 @@ public class ProPurchaseAI
 				}
 				else
 				{
-					LogUtils.log(Level.FINER, t + ", can't defend TUVSwing=" + finalResult.getTUVSwing() + ", win%=" + finalResult.getWinPercentage());
+					LogUtils.log(Level.FINER, t + ", can't defend TUVSwing=" + finalResult.getTUVSwing() + ", win%=" + finalResult.getWinPercentage() + ", tried to placeDefenders=" + unitsToPlace
+								+ ", enemyAttackers=" + enemyAttackMap.get(t).getMaxUnits());
 					continue;
 				}
 			}
@@ -772,7 +779,7 @@ public class ProPurchaseAI
 			nearbySeaTerritories.add(t);
 			final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<Unit>();
 			final List<Unit> enemyUnitsInLandTerritories = new ArrayList<Unit>();
-			final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<Unit>();
+			final List<Unit> myUnitsInSeaTerritories = new ArrayList<Unit>();
 			for (final Territory nearbyLandTerritory : nearbyLandTerritories)
 			{
 				enemyUnitsInLandTerritories.addAll(nearbyLandTerritory.getUnits().getMatches(ProMatches.unitIsEnemyAir(player, data)));
@@ -780,7 +787,7 @@ public class ProPurchaseAI
 			for (final Territory nearbySeaTerritory : nearbySeaTerritories)
 			{
 				enemyUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotLand(player, data)));
-				alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotLand(player, data)));
+				myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
 			}
 			while (true)
 			{
@@ -789,17 +796,17 @@ public class ProPurchaseAI
 					break;
 				
 				// Find current naval defense strength
-				final List<Unit> alliedUnits = new ArrayList<Unit>(alliedUnitsInSeaTerritories);
-				alliedUnits.addAll(placeTerritory.getPlaceUnits());
+				final List<Unit> myUnits = new ArrayList<Unit>(myUnitsInSeaTerritories);
+				myUnits.addAll(placeTerritory.getPlaceUnits());
 				final List<Unit> enemyAttackers = new ArrayList<Unit>(enemyUnitsInSeaTerritories);
 				enemyAttackers.addAll(enemyUnitsInLandTerritories);
-				final double defenseStrengthDifference = battleUtils.estimateStrengthDifference(t, enemyAttackers, alliedUnits);
+				final double defenseStrengthDifference = battleUtils.estimateStrengthDifference(t, enemyAttackers, myUnits);
 				LogUtils.log(Level.FINER, t + ", current enemy naval attack strengthDifference=" + defenseStrengthDifference + ", enemySize=" + enemyAttackers.size() + ", alliedSize="
-							+ alliedUnits.size());
+							+ myUnits.size());
 				
 				// Find current naval attack strength
-				final double attackStrengthDifference = battleUtils.estimateStrengthDifference(t, alliedUnits, enemyUnitsInSeaTerritories);
-				LogUtils.log(Level.FINER, t + ", current allied naval attack strengthDifference=" + attackStrengthDifference + ", alliedSize=" + alliedUnits.size() + ", enemySize="
+				final double attackStrengthDifference = battleUtils.estimateStrengthDifference(t, myUnits, enemyUnitsInSeaTerritories);
+				LogUtils.log(Level.FINER, t + ", current allied naval attack strengthDifference=" + attackStrengthDifference + ", alliedSize=" + myUnits.size() + ", enemySize="
 							+ enemyUnitsInSeaTerritories.size());
 				
 				// If I have naval attack/defense superiority then break
@@ -895,9 +902,10 @@ public class ProPurchaseAI
 	}
 	
 	private int purchaseFactory(final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap, int PUsRemaining,
-				final List<ProPurchaseOption> factoryPurchaseOptions, final List<ProPlaceTerritory> prioritizedLandTerritories, final List<ProPurchaseOption> landPurchaseOptions)
+				final List<ProPurchaseOption> factoryPurchaseOptions, final List<ProPlaceTerritory> prioritizedLandTerritories, final List<ProPurchaseOption> landPurchaseOptions,
+				final boolean allowSeaFactoryPurchase)
 	{
-		LogUtils.log(Level.FINE, "Purchase factory with PUsRemaining=" + PUsRemaining);
+		LogUtils.log(Level.FINE, "Purchase factory with PUsRemaining=" + PUsRemaining + ", purchaseSeaFactory=" + allowSeaFactoryPurchase);
 		
 		// Find all owned land territories that weren't conquered and don't already have a factory
 		final List<Territory> possibleFactoryTerritories = Match.getMatches(data.getMap().getTerritories(), ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player, data));
@@ -951,16 +959,16 @@ public class ProPurchaseAI
 		LogUtils.log(Level.FINER, "Possible factory territories that have land superiority: " + purchaseFactoryTerritories);
 		
 		// Find strategic value for each territory
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, purchaseFactoryTerritories, territoriesThatCantBeHeld);
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld);
 		double maxValue = 0.0;
 		Territory maxTerritory = null;
-		for (final Territory t : territoryValueMap.keySet())
+		for (final Territory t : purchaseFactoryTerritories)
 		{
 			final int production = TerritoryAttachment.get(t).getProduction();
 			final double value = territoryValueMap.get(t) * production + 0.1 * production;
 			final boolean isAdjacentToSea = Matches.territoryHasNeighborMatching(data, Matches.TerritoryIsWater).match(t);
 			LogUtils.log(Level.FINEST, t + ", strategic value=" + territoryValueMap.get(t) + ", value=" + value);
-			if (value > maxValue && (isAdjacentToSea || territoryValueMap.get(t) > 0.1))
+			if (value > maxValue && (territoryValueMap.get(t) >= 0.25 || (isAdjacentToSea && allowSeaFactoryPurchase)))
 			{
 				maxValue = value;
 				maxTerritory = t;

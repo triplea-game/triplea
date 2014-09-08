@@ -145,8 +145,8 @@ public class ProNonCombatMoveAI
 			if (!moveMap.get(t).isCanHold())
 				territoriesThatCantBeHeld.add(t);
 		}
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, moveMap.keySet(), territoriesThatCantBeHeld);
-		for (final Territory t : territoryValueMap.keySet())
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld);
+		for (final Territory t : moveMap.keySet())
 		{
 			moveMap.get(t).setValue(territoryValueMap.get(t));
 		}
@@ -392,9 +392,9 @@ public class ProNonCombatMoveAI
 				it.remove();
 				
 			}
-			else if (!hasFactory && data.getMap().getNeighbors(patd.getTerritory(), ProMatches.territoryCanMoveLandUnitsAndIsEnemy(player, data)).isEmpty())
+			else if (!patd.getTerritory().isWater() && !hasFactory && data.getMap().getNeighbors(patd.getTerritory(), ProMatches.territoryCanMoveLandUnitsAndIsEnemy(player, data)).isEmpty())
 			{
-				// Remove territories that don't have a factory and there are no neighboring enemy land territories
+				// Remove land territories that don't have a factory and there are no neighboring enemy land territories
 				LogUtils.log(Level.FINER, "Removing territory=" + patd.getTerritory().getName() + ", value=" + patd.getValue() + " since it has no enemy land neighbors");
 				it.remove();
 			}

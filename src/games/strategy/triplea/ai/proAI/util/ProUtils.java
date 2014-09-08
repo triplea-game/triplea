@@ -102,7 +102,7 @@ public class ProUtils
 	public int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t)
 	{
 		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, true));
-		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, ProMatches.territoryIsEnemyNotNeutral(player, data));
+		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player, data));
 		int minDistance = 10;
 		for (final Territory enemyLandTerritory : enemyLandTerritories)
 		{

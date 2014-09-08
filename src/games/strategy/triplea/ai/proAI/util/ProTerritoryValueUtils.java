@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -46,10 +45,8 @@ public class ProTerritoryValueUtils
 		this.utils = utils;
 	}
 	
-	public Map<Territory, Double> findTerritoryValues(final PlayerID player, final Set<Territory> territories, final List<Territory> territoriesThatCantBeHeld)
+	public Map<Territory, Double> findTerritoryValues(final PlayerID player, final List<Territory> territoriesThatCantBeHeld)
 	{
-		LogUtils.log(Level.FINE, "Determine move value for each territory");
-		
 		final GameData data = ai.getGameData();
 		final List<Territory> allTerritories = data.getMap().getTerritories();
 		
@@ -81,9 +78,9 @@ public class ProTerritoryValueUtils
 			enemyCapitalsAndFactoriesMap.put(t, value);
 		}
 		
-		// Determine value for each territory I can hold
+		// Determine value for land territories
 		final Map<Territory, Double> territoryValueMap = new HashMap<Territory, Double>();
-		for (final Territory t : territories)
+		for (final Territory t : allTerritories)
 		{
 			if (!territoriesThatCantBeHeld.contains(t) && !t.isWater())
 			{
@@ -114,13 +111,22 @@ public class ProTerritoryValueUtils
 				final double value = capitalOrFactoryValue + nearbyEnemyValue;
 				territoryValueMap.put(t, value);
 			}
-			else if (!territoriesThatCantBeHeld.contains(t) && t.isWater())
+			else if (!t.isWater())
+			{
+				territoryValueMap.put(t, 0.0);
+			}
+		}
+		
+		// Determine value for water territories
+		for (final Territory t : allTerritories)
+		{
+			if (!territoriesThatCantBeHeld.contains(t) && t.isWater())
 			{
 				// Determine value based on enemy factory distance
 				double capitalOrFactoryValue = 0;
 				for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet())
 				{
-					final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory);
+					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, enemyCapitalOrFactory, ProMatches.territoryCanMoveSeaUnits(player, data, false));
 					if (distance > 0)
 					{
 						capitalOrFactoryValue += (enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(3, distance));
@@ -128,22 +134,26 @@ public class ProTerritoryValueUtils
 				}
 				
 				// Determine value based on nearby territory production
-				double nearbyEnemyValue = 0;
+				double nearbyLandValue = 0;
 				final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 3);
-				final List<Territory> nearbyEnemyTerritories = Match.getMatches(nearbyTerritories, ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
-				for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories)
+				final List<Territory> nearbyLandTerritories = Match.getMatches(nearbyTerritories, ProMatches.territoryCanMoveLandUnits(player, data, false));
+				for (final Territory nearbyLandTerritory : nearbyLandTerritories)
 				{
-					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyEnemyTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, false));
-					if (distance <= 3)
+					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyLandTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, false));
+					if (distance > 0 && distance <= 3)
 					{
-						final int isNeutral = nearbyEnemyTerritory.getOwner().isNull() ? 1 : 0;
-						nearbyEnemyValue += TerritoryAttachment.getProduction(nearbyEnemyTerritory) / (isNeutral + 1) / 2;
+						final int isNeutral = nearbyLandTerritory.getOwner().isNull() ? 1 : 0;
+						if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld).match(nearbyLandTerritory))
+							nearbyLandValue += (double) TerritoryAttachment.getProduction(nearbyLandTerritory) / (isNeutral + 1);
+						nearbyLandValue += territoryValueMap.get(nearbyLandTerritory);
 					}
 				}
-				final double value = capitalOrFactoryValue + nearbyEnemyValue;
+				final double value = capitalOrFactoryValue + nearbyLandValue;
+				// LogUtils.log(Level.FINEST, t + ", strategicValue=" + value + ", factoryValue=" + capitalOrFactoryValue + ", nearbyValue=" + nearbyLandValue + ", nearbyTerritories="
+				// + nearbyLandTerritories);
 				territoryValueMap.put(t, value);
 			}
-			else
+			else if (t.isWater())
 			{
 				territoryValueMap.put(t, 0.0);
 			}

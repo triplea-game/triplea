@@ -253,14 +253,28 @@ public class ProMatches
 		};
 	}
 	
-	public static Match<Territory> territoryIsEnemyNotNeutral(final PlayerID player, final GameData data)
+	public static Match<Territory> territoryIsEnemyNotNeutralLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory t)
 			{
-				final Match<Territory> match = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
+				final Match<Territory> match = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
+				return match.match(t);
+			}
+		};
+	}
+	
+	public static Match<Territory> territoryIsEnemyNotNeutralOrAllied(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				final Match<Territory> alliedLand = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.isTerritoryAllied(player, data));
+				final Match<Territory> match = new CompositeMatchOr<Territory>(territoryIsEnemyNotNeutralLand(player, data), alliedLand);
 				return match.match(t);
 			}
 		};
@@ -578,6 +592,19 @@ public class ProMatches
 			public boolean match(final Unit u)
 			{
 				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand);
+				return match.match(u);
+			}
+		};
+	}
+	
+	public static Match<Unit> unitIsOwnedNotLand(final PlayerID player, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.UnitIsNotLand, Matches.unitIsOwnedBy(player));
 				return match.match(u);
 			}
 		};
