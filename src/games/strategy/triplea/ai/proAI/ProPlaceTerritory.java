@@ -27,6 +27,7 @@ public class ProPlaceTerritory
 	private double defenseValue;
 	private double strategicValue;
 	private List<Unit> placeUnits;
+	private boolean canHold;
 	
 	public ProPlaceTerritory(final Territory territory)
 	{
@@ -36,6 +37,7 @@ public class ProPlaceTerritory
 		defenseValue = 0;
 		strategicValue = 0;
 		placeUnits = new ArrayList<Unit>();
+		canHold = true;
 	}
 	
 	@Override
@@ -44,11 +46,20 @@ public class ProPlaceTerritory
 		return territory.toString();
 	}
 	
-	public List<Unit> getAllDefenders()
+	@Override
+	public boolean equals(final Object o)
 	{
-		final List<Unit> defenders = new ArrayList<Unit>(defendingUnits);
-		defenders.addAll(placeUnits);
-		return defenders;
+		if (o instanceof ProPlaceTerritory)
+		{
+			return ((ProPlaceTerritory) o).getTerritory().equals(territory);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return territory.hashCode();
 	}
 	
 	public Territory getTerritory()
@@ -109,6 +120,16 @@ public class ProPlaceTerritory
 	public ProBattleResultData getMinBattleResult()
 	{
 		return minBattleResult;
+	}
+	
+	public void setCanHold(final boolean canHold)
+	{
+		this.canHold = canHold;
+	}
+	
+	public boolean isCanHold()
+	{
+		return canHold;
 	}
 	
 }

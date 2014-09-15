@@ -149,8 +149,6 @@ public class ProTerritoryValueUtils
 					}
 				}
 				final double value = capitalOrFactoryValue + nearbyLandValue;
-				// LogUtils.log(Level.FINEST, t + ", strategicValue=" + value + ", factoryValue=" + capitalOrFactoryValue + ", nearbyValue=" + nearbyLandValue + ", nearbyTerritories="
-				// + nearbyLandTerritories);
 				territoryValueMap.put(t, value);
 			}
 			else if (t.isWater())

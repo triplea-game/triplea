@@ -175,22 +175,28 @@ public class ProBattleUtils
 		if (Match.allMatch(tList, Matches.TerritoryIsLand))
 			return new ProBattleResultData(winPercentage, TUVswing, Match.someMatch(averageUnitsRemaining, Matches.UnitIsLand), averageUnitsRemaining, results.getAverageBattleRoundsFought());
 		else
-			return new ProBattleResultData(winPercentage, TUVswing, true, averageUnitsRemaining, results.getAverageBattleRoundsFought());
+			return new ProBattleResultData(winPercentage, TUVswing, !averageUnitsRemaining.isEmpty(), averageUnitsRemaining, results.getAverageBattleRoundsFought());
 	}
 	
 	public boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player)
 	{
 		final GameData data = ai.getGameData();
 		
-		final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, distance, Matches.TerritoryIsLand);
-		nearbyTerritories.add(t);
+		// Find enemy strength
+		final Set<Territory> nearbyTerritoriesForEnemy = data.getMap().getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(player, data, false));
+		nearbyTerritoriesForEnemy.add(t);
 		final List<Unit> enemyUnits = new ArrayList<Unit>();
-		final List<Unit> alliedUnits = new ArrayList<Unit>();
-		for (final Territory nearbyTerritory : nearbyTerritories)
-		{
+		for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy)
 			enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutralLand(player, data)));
+		
+		// Find allied strength
+		final Set<Territory> nearbyTerritoriesForAllied = data.getMap().getNeighbors(t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
+		nearbyTerritoriesForAllied.add(t);
+		final List<Unit> alliedUnits = new ArrayList<Unit>();
+		for (final Territory nearbyTerritory : nearbyTerritoriesForAllied)
 			alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsAlliedLand(player, data)));
-		}
+		
+		// Determine strength difference
 		final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
 		LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
 		if (strengthDifference > 50)

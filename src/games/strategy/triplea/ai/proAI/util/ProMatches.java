@@ -466,6 +466,19 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Unit> unitIsAlliedNotOwned(final PlayerID player, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data));
+				return match.match(u);
+			}
+		};
+	}
+	
 	public static Match<Unit> unitIsEnemyAir(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -631,6 +644,19 @@ public class ProMatches
 			public boolean match(final Unit u)
 			{
 				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported);
+				return match.match(u);
+			}
+		};
+	}
+	
+	public static Match<Unit> unitIsOwnedCombatTransportableUnit(final PlayerID player)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanNotMoveDuringCombatMove.invert());
 				return match.match(u);
 			}
 		};
