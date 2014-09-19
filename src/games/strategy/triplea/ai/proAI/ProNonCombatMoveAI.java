@@ -124,16 +124,16 @@ public class ProNonCombatMoveAI
 		// Find number of units in each allied territory that can't move anywhere else
 		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories);
 		
+		// Try to have one land unit in each territory that is bordering an enemy territory
+		final List<Territory> movedOneDefenderToTerritories = moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap);
+		
 		// Determine max enemy attack units and if territories can be held
 		final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
-		attackOptionsUtils.findMaxEnemyAttackUnits(player, new ArrayList<Territory>(), new ArrayList<Territory>(moveMap.keySet()), enemyAttackMap);
-		determineMaxEnemyAttackersForMoveTerritories(moveMap, enemyAttackMap);
+		attackOptionsUtils.findMaxEnemyAttackUnits(player, movedOneDefenderToTerritories, new ArrayList<Territory>(moveMap.keySet()), enemyAttackMap);
+		determineIfMoveTerritoriesCanBeHeld(moveMap, enemyAttackMap);
 		
 		// Prioritize territories to defend
 		final List<ProAttackTerritoryData> prioritizedTerritories = prioritizeDefendOptions(moveMap);
-		
-		// Try to have one land unit in each territory that is bordering an enemy territory
-		moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap, prioritizedTerritories);
 		
 		// Determine which territories to defend and how many units each one needs
 		moveUnitsToDefendTerritories(moveMap, unitMoveMap, prioritizedTerritories, transportMapList, transportMoveMap);
@@ -243,7 +243,7 @@ public class ProNonCombatMoveAI
 		}
 	}
 	
-	private void determineMaxEnemyAttackersForMoveTerritories(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Territory, ProAttackTerritoryData> enemyAttackMap)
+	private void determineIfMoveTerritoriesCanBeHeld(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Territory, ProAttackTerritoryData> enemyAttackMap)
 	{
 		// Determine which territories can possibly be held
 		LogUtils.log(Level.FINE, "Find max enemy attackers and if territories can be held");
@@ -254,7 +254,6 @@ public class ProNonCombatMoveAI
 			
 			if (enemyAttackMap.get(t) == null)
 			{
-				// No enemy attackers to remove from move map since it doesn't need reinforced
 				LogUtils.log(Level.FINER, "Territory=" + t.getName() + ", has no enemy attackers so can hold");
 				patd.setCanHold(true);
 			}
@@ -341,14 +340,18 @@ public class ProNonCombatMoveAI
 				for (final Territory neighbor : landNeighbors)
 				{
 					double neighborProduction = TerritoryAttachment.getProduction(neighbor);
-					if (Match.allMatch(Collections.singletonList(neighbor), Matches.isTerritoryAllied(player, data)))
+					if (Matches.isTerritoryAllied(player, data).match(neighbor))
 						neighborProduction = 0.5 * neighborProduction;
 					neighborValue += neighborProduction;
 				}
 			}
 			
+			// Determine defending unit value
+			int cantMoveUnitValue = BattleCalculator.getTUV(moveMap.get(t).getCantMoveUnits(), playerCostMap);
+			if (t.isWater() && Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsOwnedBy(player)))
+				cantMoveUnitValue = 0;
+			
 			// Calculate defense value for prioritization
-			final int cantMoveUnitValue = BattleCalculator.getTUV(moveMap.get(t).getCantMoveUnits(), playerCostMap);
 			final double territoryValue = (2 * production + 5 * isFactory + 0.5 * cantMoveUnitValue + 0.5 * neighborValue) * (1 + 10 * isMyCapital) * (1 + 4 * isEnemyOrAlliedCapital)
 						* (1 + 2 * isAdjacentToMyCapital);
 			moveMap.get(t).setValue(territoryValue);
@@ -409,8 +412,7 @@ public class ProNonCombatMoveAI
 		return prioritizedTerritories;
 	}
 	
-	private void moveOneDefenderToLandTerritoriesBorderingEnemy(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
-				final List<ProAttackTerritoryData> prioritizedTerritories)
+	private List<Territory> moveOneDefenderToLandTerritoriesBorderingEnemy(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap)
 	{
 		LogUtils.log(Level.FINE, "Determine which territories to defend with one land unit");
 		
@@ -424,6 +426,7 @@ public class ProNonCombatMoveAI
 				territoriesToDefendWithOneUnit.add(t);
 			}
 		}
+		final List<Territory> result = new ArrayList<Territory>(territoriesToDefendWithOneUnit);
 		
 		// Sort units by number of defend options and cost
 		final Map<Unit, Set<Territory>> sortedUnitMoveOptions = attackOptionsUtils.sortUnitMoveOptions(player, unitMoveMap);
@@ -441,6 +444,7 @@ public class ProNonCombatMoveAI
 						moveMap.get(t).addUnit(unit);
 						unitMoveMap.remove(unit);
 						territoriesToDefendWithOneUnit.remove(t);
+						LogUtils.log(Level.FINER, t + ", added one land unit: " + unit);
 						break;
 					}
 				}
@@ -448,6 +452,8 @@ public class ProNonCombatMoveAI
 					break;
 			}
 		}
+		
+		return result;
 	}
 	
 	private void moveUnitsToDefendTerritories(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,

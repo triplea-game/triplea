@@ -277,4 +277,10 @@ public class ProAI extends StrongAI
 		return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
 	}
 	
+	@Override
+	public boolean shouldBomberBomb(final Territory territory)
+	{
+		return false;
+	}
+	
 }
