@@ -15,13 +15,10 @@ package games.strategy.triplea.ai.proAI;
  */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
@@ -345,11 +342,9 @@ public class ProCombatMoveAI
 			attackTerritoryData.setValue(attackValue);
 			
 			// Remove negative territories
-			double minAttackValue = 0;
-			if (isDefensive)
-				minAttackValue = 10;
-			if (attackValue <= minAttackValue)
+			if (attackValue <= 0 || (isDefensive && attackValue <= 10 && data.getMap().getDistance(myCapital, t) <= 3))
 				territoriesToRemove.add(t);
+			
 		}
 		
 		// Remove territories that don't have a positive attack value
@@ -1088,43 +1083,10 @@ public class ProCombatMoveAI
 	{
 		LogUtils.log(Level.FINE, "Determine if capital can be held");
 		
-		// Determine most cost efficient defender that can be produced in this territory
-		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-		final int PUsRemaining = player.getResources().getQuantity(PUs);
-		final List<ProPurchaseOption> purchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, landPurchaseOptions, myCapital);
-		ProPurchaseOption bestDefenseOption = null;
-		double maxDefenseEfficiency = 0;
-		for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
-		{
-			if (ppo.getDefenseEfficiency() > maxDefenseEfficiency && ppo.getCost() <= PUsRemaining)
-			{
-				bestDefenseOption = ppo;
-				maxDefenseEfficiency = ppo.getDefenseEfficiency();
-			}
-		}
+		// Determine max number of defenders I can purchase
+		final List<Unit> placeUnits = purchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions);
 		
-		// Determine number of defenders I can purchase
-		final List<Unit> placeUnits = new ArrayList<Unit>();
-		if (bestDefenseOption != null)
-		{
-			LogUtils.log(Level.FINER, "Best defense option: " + bestDefenseOption.getUnitType().getName());
-			
-			int remainingUnitProduction = TripleAUnit.getProductionPotentialOfTerritory(myCapital.getUnits().getUnits(), myCapital, player, data, true, true);
-			int PUsSpent = 0;
-			while (true)
-			{
-				// If out of PUs or production then break
-				if (bestDefenseOption.getCost() > (PUsRemaining - PUsSpent) || remainingUnitProduction < bestDefenseOption.getQuantity())
-					break;
-				
-				// Create new temp defenders
-				PUsSpent += bestDefenseOption.getCost();
-				remainingUnitProduction -= bestDefenseOption.getQuantity();
-				placeUnits.addAll(bestDefenseOption.getUnitType().create(bestDefenseOption.getQuantity(), player, true));
-			}
-			LogUtils.log(Level.FINER, "Potential purchased defenders: " + placeUnits);
-		}
-		
+		// Remove attack until capital can be defended
 		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
 		while (true)
 		{

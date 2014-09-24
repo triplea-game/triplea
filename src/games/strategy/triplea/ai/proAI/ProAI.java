@@ -97,7 +97,7 @@ public class ProAI extends StrongAI
 		territoryValueUtils = new ProTerritoryValueUtils(this, utils);
 		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
 		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
-		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils);
+		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		data = null;
@@ -210,7 +210,7 @@ public class ProAI extends StrongAI
 				LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
 				if (stepName.startsWith(nationName) && stepName.endsWith("NonCombatMove"))
 				{
-					nonCombatMoveAI.doNonCombatMove(new HashMap<Territory, ProPurchaseTerritory>(), moveDel, dataCopy, player);
+					nonCombatMoveAI.doNonCombatMove(null, moveDel, dataCopy, player);
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("CombatMove"))
 				{

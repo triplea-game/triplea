@@ -46,10 +46,10 @@ import java.util.logging.Level;
  */
 
 /**
- * Pro AI attack options utilities.
+ * Pro AI simulate turn utilities.
  * 
  * <ol>
- * <li>Add support for considering carrier landing when calculating air routes</li>
+ * <li>Fix territory ownership change for recaptured allied capitals</li>
  * </ol>
  * 
  * @author Ron Murhammer

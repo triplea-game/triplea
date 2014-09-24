@@ -4,10 +4,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -121,6 +124,52 @@ public class ProPurchaseUtils
 		final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
 		final boolean result = !Properties.getUnitPlacementRestrictions(data) || Match.someMatch(units, ProMatches.unitWhichRequiresUnitsHasRequiredUnits(player, t));
 		return result;
+	}
+	
+	public List<Unit> findMaxPurchaseDefenders(final PlayerID player, final Territory t, final List<ProPurchaseOption> landPurchaseOptions)
+	{
+		LogUtils.log(Level.FINE, "Find max purchase defenders for " + t.getName());
+		
+		final GameData data = ai.getGameData();
+		
+		// Determine most cost efficient defender that can be produced in this territory
+		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+		final int PUsRemaining = player.getResources().getQuantity(PUs);
+		final List<ProPurchaseOption> purchaseOptionsForTerritory = findPurchaseOptionsForTerritory(player, landPurchaseOptions, t);
+		ProPurchaseOption bestDefenseOption = null;
+		double maxDefenseEfficiency = 0;
+		for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
+		{
+			if (ppo.getDefenseEfficiency() > maxDefenseEfficiency && ppo.getCost() <= PUsRemaining)
+			{
+				bestDefenseOption = ppo;
+				maxDefenseEfficiency = ppo.getDefenseEfficiency();
+			}
+		}
+		
+		// Determine number of defenders I can purchase
+		final List<Unit> placeUnits = new ArrayList<Unit>();
+		if (bestDefenseOption != null)
+		{
+			LogUtils.log(Level.FINER, "Best defense option: " + bestDefenseOption.getUnitType().getName());
+			
+			int remainingUnitProduction = TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, player, data, true, true);
+			int PUsSpent = 0;
+			while (true)
+			{
+				// If out of PUs or production then break
+				if (bestDefenseOption.getCost() > (PUsRemaining - PUsSpent) || remainingUnitProduction < bestDefenseOption.getQuantity())
+					break;
+				
+				// Create new temp defenders
+				PUsSpent += bestDefenseOption.getCost();
+				remainingUnitProduction -= bestDefenseOption.getQuantity();
+				placeUnits.addAll(bestDefenseOption.getUnitType().create(bestDefenseOption.getQuantity(), player, true));
+			}
+			LogUtils.log(Level.FINER, "Potential purchased defenders: " + placeUnits);
+		}
+		
+		return placeUnits;
 	}
 	
 }

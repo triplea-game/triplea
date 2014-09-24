@@ -466,10 +466,11 @@ public class ProPurchaseAI
 				final Territory t = placeTerritory.getTerritory();
 				if (!t.isWater() && placeTerritory.getStrategicValue() >= 0.25 && placeTerritory.isCanHold())
 				{
+					final boolean hasEnemyNeighbors = !data.getMap().getNeighbors(t, ProMatches.territoryIsEnemyLand(player, data)).isEmpty();
 					final Set<Territory> nearbyLandTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
 					final int numNearbyEnemyTerritories = Match.countMatches(nearbyLandTerritories, Matches.isTerritoryEnemy(player, data));
 					final boolean hasLocalLandSuperiority = battleUtils.territoryHasLocalLandSuperiority(t, 2, player);
-					if (numNearbyEnemyTerritories > 3 || !hasLocalLandSuperiority)
+					if (hasEnemyNeighbors || numNearbyEnemyTerritories >= 3 || !hasLocalLandSuperiority)
 						prioritizedLandTerritories.add(placeTerritory);
 				}
 			}

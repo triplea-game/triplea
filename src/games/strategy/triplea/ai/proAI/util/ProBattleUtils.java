@@ -106,7 +106,7 @@ public class ProBattleUtils
 		
 		// Determine if attackers have no chance
 		final double strengthDifference = estimateStrengthDifference(t, attackingUnits, defendingUnits);
-		if (strengthDifference < 50)
+		if (strengthDifference < 45)
 			return new ProBattleResultData(0, -999, false, new ArrayList<Unit>(), 1);
 		
 		return callBattleCalculator(player, t, attackingUnits, defendingUnits, true);
@@ -120,7 +120,7 @@ public class ProBattleUtils
 		
 		// Determine if defenders have no chance
 		final double strengthDifference = estimateStrengthDifference(t, attackingUnits, defendingUnits);
-		if (strengthDifference > 50)
+		if (strengthDifference > 55)
 			return new ProBattleResultData(100, 999, true, attackingUnits, 1);
 		
 		return callBattleCalculator(player, t, attackingUnits, defendingUnits, false);

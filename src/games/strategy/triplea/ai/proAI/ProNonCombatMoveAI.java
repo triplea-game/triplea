@@ -26,6 +26,7 @@ import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
+import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
@@ -74,6 +75,7 @@ public class ProNonCombatMoveAI
 	private final ProAttackOptionsUtils attackOptionsUtils;
 	private final ProMoveUtils moveUtils;
 	private final ProTerritoryValueUtils territoryValueUtils;
+	private final ProPurchaseUtils purchaseUtils;
 	
 	// Current map settings
 	private boolean areNeutralsPassableByAir;
@@ -86,7 +88,7 @@ public class ProNonCombatMoveAI
 	private Map<Unit, Territory> unitTerritoryMap;
 	
 	public ProNonCombatMoveAI(final ProUtils utils, final ProBattleUtils battleUtils, final ProTransportUtils transportUtils, final ProAttackOptionsUtils attackOptionsUtils,
-				final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils)
+				final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils, final ProPurchaseUtils purchaseUtils)
 	{
 		this.utils = utils;
 		this.battleUtils = battleUtils;
@@ -94,6 +96,7 @@ public class ProNonCombatMoveAI
 		this.attackOptionsUtils = attackOptionsUtils;
 		this.moveUtils = moveUtils;
 		this.territoryValueUtils = territoryValueUtils;
+		this.purchaseUtils = purchaseUtils;
 	}
 	
 	public Map<Territory, ProAttackTerritoryData> doNonCombatMove(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IMoveDelegate moveDel, final GameData data,
@@ -116,13 +119,21 @@ public class ProNonCombatMoveAI
 		final List<ProAmphibData> transportMapList = new ArrayList<ProAmphibData>();
 		final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
 		
+		// Find all purchase options
+		final List<ProPurchaseOption> specialPurchaseOptions = new ArrayList<ProPurchaseOption>();
+		final List<ProPurchaseOption> factoryPurchaseOptions = new ArrayList<ProPurchaseOption>();
+		final List<ProPurchaseOption> landPurchaseOptions = new ArrayList<ProPurchaseOption>();
+		final List<ProPurchaseOption> airPurchaseOptions = new ArrayList<ProPurchaseOption>();
+		final List<ProPurchaseOption> seaPurchaseOptions = new ArrayList<ProPurchaseOption>();
+		purchaseUtils.findPurchaseOptions(player, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions, factoryPurchaseOptions, specialPurchaseOptions);
+		
 		// Find the max number of units that can move to each allied territory
 		final Match<Territory> myUnitTerritoriesMatch = Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
 		final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
 		attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, landRoutesMap, transportMapList);
 		
 		// Find number of units in each allied territory that can't move anywhere else
-		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories);
+		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions);
 		
 		// Try to have one land unit in each territory that is bordering an enemy territory
 		final List<Territory> movedOneDefenderToTerritories = moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap);
@@ -210,8 +221,11 @@ public class ProNonCombatMoveAI
 		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 	}
 	
-	private void findUnitsThatCantMove(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final Map<Territory, ProPurchaseTerritory> purchaseTerritories)
+	private void findUnitsThatCantMove(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
+				final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<ProPurchaseOption> landPurchaseOptions)
 	{
+		LogUtils.log(Level.FINE, "Find units that can't move");
+		
 		// Add all units that can't move or are infra
 		// TODO: consider moving infrastructure units
 		for (final Territory t : moveMap.keySet())
@@ -231,14 +245,29 @@ public class ProNonCombatMoveAI
 			}
 		}
 		
-		// Add all units that will be purchased
-		for (final ProPurchaseTerritory ppt : purchaseTerritories.values())
+		if (purchaseTerritories != null)
 		{
-			for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories())
+			// Add all units that will be purchased
+			for (final ProPurchaseTerritory ppt : purchaseTerritories.values())
 			{
-				final Territory t = placeTerritory.getTerritory();
-				if (moveMap.get(t) != null)
-					moveMap.get(t).getCantMoveUnits().addAll(placeTerritory.getPlaceUnits());
+				for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories())
+				{
+					final Territory t = placeTerritory.getTerritory();
+					if (moveMap.get(t) != null)
+						moveMap.get(t).getCantMoveUnits().addAll(placeTerritory.getPlaceUnits());
+				}
+			}
+		}
+		else
+		{
+			// Add max defenders that can be purchased to each territory
+			for (final Territory t : moveMap.keySet())
+			{
+				if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(t))
+				{
+					final List<Unit> units = purchaseUtils.findMaxPurchaseDefenders(player, t, landPurchaseOptions);
+					moveMap.get(t).getCantMoveUnits().addAll(units);
+				}
 			}
 		}
 	}
@@ -632,22 +661,16 @@ public class ProNonCombatMoveAI
 			for (final ProAttackTerritoryData patd : territoriesToTryToDefend)
 			{
 				final Territory t = patd.getTerritory();
-				final boolean hasFactory = t.getUnits().someMatch(Matches.UnitCanProduceUnits) && !AbstractMoveDelegate.getBattleTracker(data).wasConquered(t);
-				if (hasFactory)
-				{
-					LogUtils.log(Level.FINEST, patd.getResultString());
-					continue;
-				}
 				final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
 				if (patd.getBattleResult() == null)
-					moveMap.get(t).setBattleResult(battleUtils.estimateDefendBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits));
+					moveMap.get(t).setBattleResult(battleUtils.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, false));
 				final ProBattleResultData result = patd.getBattleResult();
 				double territoryValue = 0;
 				if (!result.isHasLandUnitRemaining())
 					territoryValue = 2 * TerritoryAttachment.getProduction(t);
 				if ((result.getTUVSwing() - territoryValue) >= patd.getMinBattleResult().getTUVSwing())
 					areSuccessful = false;
-				LogUtils.log(Level.FINEST, patd.getResultString());
+				LogUtils.log(Level.FINEST, patd.getResultString() + ", defenders=" + defendingUnits + ", attackers=" + moveMap.get(t).getMaxEnemyUnits());
 			}
 			
 			// Determine whether to try more territories, remove a territory, or end

@@ -50,11 +50,16 @@ public class ProTerritoryValueUtils
 		final GameData data = ai.getGameData();
 		final List<Territory> allTerritories = data.getMap().getTerritories();
 		
-		// Get all enemy factories and determine a value for them
-		final Map<Territory, Double> enemyCapitalsAndFactoriesMap = new HashMap<Territory, Double>();
+		// Get all enemy factories and capitals (check if most territories have factories and if so remove them)
 		final Set<Territory> enemyCapitalsAndFactories = new HashSet<Territory>();
 		enemyCapitalsAndFactories.addAll(Match.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data)));
+		final int numEnemyLandTerritories = Match.countMatches(allTerritories, ProMatches.territoryIsEnemyLand(player, data));
+		if (enemyCapitalsAndFactories.size() * 2 >= numEnemyLandTerritories)
+			enemyCapitalsAndFactories.clear();
 		enemyCapitalsAndFactories.addAll(utils.getLiveEnemyCapitals(data, player));
+		
+		// Loop through factories/capitals and find value
+		final Map<Territory, Double> enemyCapitalsAndFactoriesMap = new HashMap<Territory, Double>();
 		for (final Territory t : enemyCapitalsAndFactories)
 		{
 			// Get factory production if factory
@@ -120,7 +125,7 @@ public class ProTerritoryValueUtils
 		// Determine value for water territories
 		for (final Territory t : allTerritories)
 		{
-			if (!territoriesThatCantBeHeld.contains(t) && t.isWater())
+			if (!territoriesThatCantBeHeld.contains(t) && t.isWater() && !data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty())
 			{
 				// Determine value based on enemy factory distance
 				double capitalOrFactoryValue = 0;
