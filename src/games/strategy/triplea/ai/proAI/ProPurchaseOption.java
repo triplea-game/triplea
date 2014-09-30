@@ -28,7 +28,7 @@ public class ProPurchaseOption
 	private final int cost;
 	private final int movement;
 	private final int quantity;
-	private final int hitPoints;
+	private int hitPoints;
 	private int attack;
 	private final int defense;
 	private final int transportCost;
@@ -36,11 +36,12 @@ public class ProPurchaseOption
 	private final boolean isSub;
 	private final boolean isTransport;
 	private final boolean isCarrier;
+	private final boolean isInfra;
 	private final int transportCapacity;
 	private final int carrierCapacity;
 	private final double transportEfficiency;
 	private final double carrierEfficiency;
-	private final double hitPointEfficiency;
+	private double hitPointEfficiency;
 	private final double attackEfficiency;
 	private final double defenseEfficiency;
 	
@@ -53,7 +54,10 @@ public class ProPurchaseOption
 		cost = productionRule.getCosts().getInt(PUs);
 		movement = unitAttachment.getMovement(player);
 		quantity = productionRule.getResults().totalValues();
+		isInfra = unitAttachment.getIsInfrastructure();
 		hitPoints = unitAttachment.getHitPoints() * quantity;
+		if (isInfra)
+			hitPoints = 0;
 		attack = unitAttachment.getAttack(player) * quantity;
 		if (unitAttachment.getArtillery())
 			attack += quantity;
@@ -67,9 +71,11 @@ public class ProPurchaseOption
 		carrierCapacity = unitAttachment.getCarrierCapacity();
 		transportEfficiency = (double) unitAttachment.getTransportCapacity() * quantity / cost;
 		carrierEfficiency = (double) unitAttachment.getCarrierCapacity() * quantity / cost;
-		hitPointEfficiency = (hitPoints + 0.1 * attack + 0.2 * defense) / cost;
-		attackEfficiency = (hitPoints + attack + 0.5 * defense) / cost;
-		defenseEfficiency = (hitPoints + 0.5 * attack + defense) / cost;
+		hitPointEfficiency = (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
+		if (isInfra)
+			hitPointEfficiency = 0;
+		attackEfficiency = (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
+		defenseEfficiency = (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
 	}
 	
 	@Override

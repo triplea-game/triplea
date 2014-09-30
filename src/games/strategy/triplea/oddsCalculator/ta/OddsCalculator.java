@@ -243,7 +243,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		}*/
 		final AggregateResults rVal = new AggregateResults(count);
 		final BattleTracker battleTracker = new BattleTracker();
-		BattleCalculator.EnableCasualtySortingCaching();
+		// Commented out casualty sorting caching as it seemed to be causing multi-threaded errors
+		// BattleCalculator.EnableCasualtySortingCaching();
 		final List<Unit> attackerOrderOfLosses = OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
 		final List<Unit> defenderOrderOfLosses = OddsCalculator.getUnitListByOOL(m_defenderOrderOfLosses, m_defendingUnits, m_data);
 		for (int i = 0; i < count && !m_cancelled; i++)
@@ -265,7 +266,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 			battleTracker.clear();
 			battleTracker.clearBattleRecords();
 		}
-		BattleCalculator.DisableCasualtySortingCaching();
+		// BattleCalculator.DisableCasualtySortingCaching();
 		rVal.setTime(System.currentTimeMillis() - start);
 		m_isRunning = false;
 		m_cancelled = false;
@@ -490,7 +491,7 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	/*public void setRenderingData(final Object renderingData)
 	{
 	}*/
-	
+
 	public void shutDown()
 	{
 	}
@@ -669,7 +670,7 @@ class DummyPlayer extends AbstractAI
 		// no scramble
 		return null;
 	}*/
-	
+
 	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{

@@ -99,8 +99,8 @@ public class ProNonCombatMoveAI
 		this.purchaseUtils = purchaseUtils;
 	}
 	
-	public Map<Territory, ProAttackTerritoryData> doNonCombatMove(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IMoveDelegate moveDel, final GameData data,
-				final PlayerID player)
+	public Map<Territory, ProAttackTerritoryData> doNonCombatMove(Map<Territory, ProAttackTerritoryData> factoryMoveMap, final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+				final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
 		LogUtils.log(Level.FINE, "Starting non-combat move phase");
 		
@@ -132,8 +132,9 @@ public class ProNonCombatMoveAI
 		final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
 		attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, landRoutesMap, transportMapList);
 		
-		// Find number of units in each allied territory that can't move anywhere else
+		// Find number of units in each move territory that can't move and all infra units
 		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions);
+		final Map<Unit, Set<Territory>> infraUnitMoveMap = findInfraUnitsThatCanMove(unitMoveMap);
 		
 		// Try to have one land unit in each territory that is bordering an enemy territory
 		final List<Territory> movedOneDefenderToTerritories = moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap);
@@ -144,7 +145,7 @@ public class ProNonCombatMoveAI
 		determineIfMoveTerritoriesCanBeHeld(moveMap, enemyAttackMap);
 		
 		// Prioritize territories to defend
-		final List<ProAttackTerritoryData> prioritizedTerritories = prioritizeDefendOptions(moveMap);
+		final List<ProAttackTerritoryData> prioritizedTerritories = prioritizeDefendOptions(moveMap, factoryMoveMap);
 		
 		// Determine which territories to defend and how many units each one needs
 		moveUnitsToDefendTerritories(moveMap, unitMoveMap, prioritizedTerritories, transportMapList, transportMoveMap);
@@ -184,6 +185,9 @@ public class ProNonCombatMoveAI
 		// Determine where to move remaining air units
 		moveAirUnits(moveMap, unitMoveMap);
 		
+		// Determine where to move infra units
+		factoryMoveMap = moveInfraUnits(factoryMoveMap, moveMap, infraUnitMoveMap);
+		
 		// Log a warning if any units not assigned to a territory (skip infrastructure for now)
 		for (final Unit u : unitMoveMap.keySet())
 		{
@@ -198,7 +202,7 @@ public class ProNonCombatMoveAI
 		LogUtils.log(Level.FINE, "Logging results");
 		logAttackMoves(moveMap, unitMoveMap, transportMapList, prioritizedTerritories, enemyAttackMap);
 		
-		return moveMap;
+		return factoryMoveMap;
 	}
 	
 	public void doMove(final Map<Territory, ProAttackTerritoryData> moveMap, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
@@ -226,25 +230,14 @@ public class ProNonCombatMoveAI
 	{
 		LogUtils.log(Level.FINE, "Find units that can't move");
 		
-		// Add all units that can't move or are infra
-		// TODO: consider moving infrastructure units
+		// Add all units that can't move
 		for (final Territory t : moveMap.keySet())
 		{
 			final List<Unit> units = t.getUnits().getMatches(ProMatches.unitCantBeMovedAndIsAlliedDefender(player, data));
 			moveMap.get(t).setCantMoveUnits(units);
 		}
-		for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();)
-		{
-			final Unit u = it.next();
-			if (Match.allMatch(Collections.singletonList(u), Matches.UnitIsInfrastructure))
-			{
-				final ProAttackTerritoryData patd = moveMap.get(unitTerritoryMap.get(u));
-				patd.getMaxUnits().remove(u);
-				patd.addCantMoveUnit(u);
-				it.remove();
-			}
-		}
 		
+		// Check if purchase units are known yet
 		if (purchaseTerritories != null)
 		{
 			// Add all units that will be purchased
@@ -270,6 +263,26 @@ public class ProNonCombatMoveAI
 				}
 			}
 		}
+	}
+	
+	private Map<Unit, Set<Territory>> findInfraUnitsThatCanMove(final Map<Unit, Set<Territory>> unitMoveMap)
+	{
+		LogUtils.log(Level.FINE, "Find non-combat infra units that can move");
+		
+		// Add all units that can't move or are infra
+		final Map<Unit, Set<Territory>> infraUnitMoveMap = new HashMap<Unit, Set<Territory>>();
+		for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();)
+		{
+			final Unit u = it.next();
+			if (ProMatches.unitCanBeMovedAndIsOwnedNonCombatInfra(player).match(u))
+			{
+				infraUnitMoveMap.put(u, unitMoveMap.get(u));
+				LogUtils.log(Level.FINEST, u + " is infra unit with move options: " + unitMoveMap.get(u));
+				it.remove();
+			}
+		}
+		
+		return infraUnitMoveMap;
 	}
 	
 	private void determineIfMoveTerritoriesCanBeHeld(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Territory, ProAttackTerritoryData> enemyAttackMap)
@@ -329,7 +342,7 @@ public class ProNonCombatMoveAI
 		}
 	}
 	
-	private List<ProAttackTerritoryData> prioritizeDefendOptions(final Map<Territory, ProAttackTerritoryData> moveMap)
+	private List<ProAttackTerritoryData> prioritizeDefendOptions(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Territory, ProAttackTerritoryData> factoryMoveMap)
 	{
 		LogUtils.log(Level.FINE, "Prioritizing territories to try to defend");
 		
@@ -347,7 +360,7 @@ public class ProNonCombatMoveAI
 			
 			// Determine if it has a factory
 			int isFactory = 0;
-			if (t.getUnits().someMatch(Matches.UnitCanProduceUnits))
+			if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t) || (factoryMoveMap != null && factoryMoveMap.containsKey(t)))
 				isFactory = 1;
 			
 			// Determine production value and if it is an enemy capital
@@ -381,7 +394,7 @@ public class ProNonCombatMoveAI
 				cantMoveUnitValue = 0;
 			
 			// Calculate defense value for prioritization
-			final double territoryValue = (2 * production + 5 * isFactory + 0.5 * cantMoveUnitValue + 0.5 * neighborValue) * (1 + 10 * isMyCapital) * (1 + 4 * isEnemyOrAlliedCapital)
+			final double territoryValue = (2 * production + 10 * isFactory + 0.5 * cantMoveUnitValue + 0.5 * neighborValue) * (1 + 10 * isMyCapital) * (1 + 4 * isEnemyOrAlliedCapital)
 						* (1 + 2 * isAdjacentToMyCapital);
 			moveMap.get(t).setValue(territoryValue);
 		}
@@ -1377,6 +1390,75 @@ public class ProNonCombatMoveAI
 				}
 			}
 		}
+	}
+	
+	private Map<Territory, ProAttackTerritoryData> moveInfraUnits(Map<Territory, ProAttackTerritoryData> factoryMoveMap, final Map<Territory, ProAttackTerritoryData> moveMap,
+				final Map<Unit, Set<Territory>> infraUnitMoveMap)
+	{
+		LogUtils.log(Level.FINE, "Determine where to move infra units");
+		
+		// TODO: move AA units
+		
+		if (factoryMoveMap == null)
+		{
+			LogUtils.log(Level.FINER, "Creating factory move map");
+			
+			// Determine and store where to move factories
+			factoryMoveMap = new HashMap<Territory, ProAttackTerritoryData>();
+			for (final Iterator<Unit> it = infraUnitMoveMap.keySet().iterator(); it.hasNext();)
+			{
+				final Unit u = it.next();
+				
+				// Move factory units
+				if (Matches.UnitCanProduceUnits.match(u))
+				{
+					Territory maxValueTerritory = null;
+					double maxValue = 0;
+					for (final Territory t : infraUnitMoveMap.get(u))
+					{
+						// Find value by checking if territory is not conquered and doesn't already have a factory
+						final List<Unit> units = new ArrayList<Unit>(moveMap.get(t).getCantMoveUnits());
+						units.addAll(moveMap.get(t).getUnits());
+						final int production = TerritoryAttachment.get(t).getProduction();
+						double value = 0.1 * moveMap.get(t).getValue();
+						if (ProMatches.territoryIsNotConqueredOwnedLand(player, data).match(t) && Match.noneMatch(units, Matches.UnitCanProduceUnitsAndIsInfrastructure))
+							value = moveMap.get(t).getValue() * production + 0.01 * production;
+						LogUtils.log(Level.FINEST, t.getName() + " has value=" + value + ", strategicValue=" + moveMap.get(t).getValue() + ", production=" + production);
+						if (value > maxValue)
+						{
+							maxValue = value;
+							maxValueTerritory = t;
+						}
+					}
+					if (maxValueTerritory != null)
+					{
+						LogUtils.log(Level.FINER, u.getType().getName() + " moved to " + maxValueTerritory.getName() + " with value=" + maxValue);
+						moveMap.get(maxValueTerritory).addUnit(u);
+						if (factoryMoveMap.containsKey(maxValueTerritory))
+						{
+							factoryMoveMap.get(maxValueTerritory).addUnit(u);
+						}
+						else
+						{
+							final ProAttackTerritoryData patd = new ProAttackTerritoryData(maxValueTerritory);
+							patd.addUnit(u);
+							factoryMoveMap.put(maxValueTerritory, patd);
+						}
+						it.remove();
+					}
+				}
+			}
+		}
+		else
+		{
+			LogUtils.log(Level.FINER, "Using stored factory move map");
+			
+			// Transfer stored factory moves to move map
+			for (final Territory t : factoryMoveMap.keySet())
+				moveMap.get(t).addUnits(factoryMoveMap.get(t).getUnits());
+		}
+		
+		return factoryMoveMap;
 	}
 	
 	private void logAttackMoves(final Map<Territory, ProAttackTerritoryData> attackMap, final Map<Unit, Set<Territory>> unitAttackMap, final List<ProAmphibData> transportMapList,

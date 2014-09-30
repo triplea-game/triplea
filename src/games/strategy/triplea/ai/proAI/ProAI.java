@@ -82,7 +82,8 @@ public class ProAI extends StrongAI
 	
 	// Data
 	private GameData data;
-	private Map<Territory, ProAttackTerritoryData> storedMoveMap;
+	private Map<Territory, ProAttackTerritoryData> storedCombatMoveMap;
+	private Map<Territory, ProAttackTerritoryData> storedFactoryMoveMap;
 	private Map<Territory, ProPurchaseTerritory> storedPurchaseTerritories;
 	
 	public ProAI(final String name, final String type)
@@ -101,7 +102,7 @@ public class ProAI extends StrongAI
 		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		data = null;
-		storedMoveMap = null;
+		storedCombatMoveMap = null;
 		storedPurchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
 	}
 	
@@ -155,17 +156,22 @@ public class ProAI extends StrongAI
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
 		{
-			nonCombatMoveAI.doNonCombatMove(storedPurchaseTerritories, moveDel, data, player);
+			nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel, data, player);
+			storedFactoryMoveMap = null;
 		}
 		else
 		{
 			LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
-			if (storedMoveMap == null)
+			if (storedCombatMoveMap == null)
+			{
 				combatMoveAI.doCombatMove(moveDel, data, player);
+			}
 			else
-				combatMoveAI.doMove(storedMoveMap, moveDel, data, player);
+			{
+				combatMoveAI.doMove(storedCombatMoveMap, moveDel, data, player);
+				storedCombatMoveMap = null;
+			}
 		}
-		storedMoveMap = null;
 	}
 	
 	@Override
@@ -210,13 +216,15 @@ public class ProAI extends StrongAI
 				LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
 				if (stepName.startsWith(nationName) && stepName.endsWith("NonCombatMove"))
 				{
-					nonCombatMoveAI.doNonCombatMove(null, moveDel, dataCopy, player);
+					final Map<Territory, ProAttackTerritoryData> factoryMoveMap = nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, player);
+					if (storedFactoryMoveMap == null)
+						storedFactoryMoveMap = simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("CombatMove"))
 				{
 					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, player);
-					if (storedMoveMap == null)
-						storedMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
+					if (storedCombatMoveMap == null)
+						storedCombatMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("Battle"))
 				{

@@ -425,6 +425,19 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Unit> unitCanBeMovedAndIsOwnedNonCombatInfra(final PlayerID player)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(unitCanBeMovedAndIsOwned(player), Matches.UnitCanNotMoveDuringCombatMove, Matches.UnitIsInfrastructure);
+				return match.match(u);
+			}
+		};
+	}
+	
 	public static Match<Unit> unitCantBeMovedAndIsAlliedDefender(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -432,8 +445,8 @@ public class ProMatches
 			@Override
 			public boolean match(final Unit u)
 			{
-				final Match<Unit> myUnitHasNoMovementMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft.invert(), Matches.UnitIsNotInfrastructure);
-				final Match<Unit> alliedUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches.UnitIsNotInfrastructure);
+				final Match<Unit> myUnitHasNoMovementMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft.invert());
+				final Match<Unit> alliedUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data));
 				final Match<Unit> match = new CompositeMatchOr<Unit>(myUnitHasNoMovementMatch, alliedUnitMatch);
 				return match.match(u);
 			}
