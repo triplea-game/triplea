@@ -843,7 +843,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		{
 			// make sure we own the territory
 			if (!to.getOwner().equals(player))
-				return "You don't own " + to.getName();
+			{
+				if (GameStepPropertiesHelper.isBid(getData()))
+				{
+					final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
+					if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(player))
+								&& !to.getUnits().someMatch(Matches.unitIsOwnedBy(player)))
+						return "You don't own " + to.getName();
+				}
+				else
+					return "You don't own " + to.getName();
+			}
 			// make sure all units are land
 			if (!Match.allMatch(units, Matches.UnitIsNotSea))
 				return "Cant place sea units on land";

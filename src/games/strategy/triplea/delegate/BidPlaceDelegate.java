@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -68,8 +69,17 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 			// we can place on territories we own
 			if (Match.someMatch(units, Matches.UnitIsSea))
 				return "Cant place sea units on land";
-			else if (!to.getOwner().equals(player))
+			else if (to.getOwner() == null)
 				return "You dont own " + to.getName();
+			else if (!to.getOwner().equals(player))
+			{
+				final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
+				if (pa != null && pa.getGiveUnitControl() != null && pa.getGiveUnitControl().contains(player))
+					return null;
+				else if (to.getUnits().someMatch(Matches.unitIsOwnedBy(player)))
+					return null;
+				return "You dont own " + to.getName();
+			}
 			else
 				return null;
 		}

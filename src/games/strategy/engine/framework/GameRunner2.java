@@ -99,10 +99,13 @@ public class GameRunner2
 	private static WaitWindow s_waitWindow;
 	private static CountDownLatch s_countDownLatch;
 	public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
+	public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME = Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
 	public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10; // need time for network transmission of a large game data
+	public static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME = Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
 	public static final int ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME = 10;
-	public static final int MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME = MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 20;
-	public static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME = Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 100);
+	public static final int MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME = MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110;
+	public static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME = Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900), DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME
+				+ ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 	
 	
 	public static enum ProxyChoice
@@ -768,12 +771,12 @@ public class GameRunner2
 	public static int getServerObserverJoinWaitTime()
 	{
 		return Math.max(MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, Preferences.userNodeForPackage(GameRunner2.class)
-					.getInt(TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME));
+					.getInt(TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME));
 	}
 	
 	public static void resetServerObserverJoinWaitTime()
 	{
-		setServerObserverJoinWaitTime(MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME);
+		setServerObserverJoinWaitTime(DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME);
 	}
 	
 	public static void setServerObserverJoinWaitTime(final int seconds)

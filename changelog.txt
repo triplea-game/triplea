@@ -1,4 +1,10 @@
 Changes for 1.8.1.1
+* Fixed bug in bid placement where you could not play British units in UK Pacific territories in Global 1940/1942. (veqryn)
+
+* Changing default host waiting time to 900 seconds (15 minutes) so that large games do not time out on people who don't know how to change the setting. (veqryn)
+
+* Massive improvements to the new Hard AI. (redrum)
+
 * Fixed lag and synchronization issues in the multi-threaded battle calc. Also added methods to time how long it takes to copy the game data, and use fewer threads if this takes more than 5 seconds. (veqryn)
 
 * Fixed possible deserialization error in resource collections. (veqryn)

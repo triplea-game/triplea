@@ -23,6 +23,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
@@ -153,7 +154,19 @@ public class PlacePanel extends AbstractMovePanel
 		{
 			// not our territory
 			if (!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
-				return Collections.emptyList();
+			{
+				if (GameStepPropertiesHelper.isBid(getData()))
+				{
+					final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
+					if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
+								&& !territory.getUnits().someMatch(Matches.unitIsOwnedBy(getCurrentPlayer())))
+						return Collections.emptyList();
+				}
+				else
+				{
+					return Collections.emptyList();
+				}
+			}
 			// get the units that can be placed on this territory.
 			Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
 			if (territory.isWater())
