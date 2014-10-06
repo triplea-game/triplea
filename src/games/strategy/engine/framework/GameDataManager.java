@@ -304,4 +304,50 @@ public class GameDataManager
 		// mark end of delegate section
 		out.writeObject(DELEGATE_LIST_END);
 	}
+	
+	/**
+	 * Test if a game save works. Also a good way to dump a gamesave in memory to a hprof file, without all the background stuff.
+	 */
+	public static void main(final String[] args)
+	{
+		if (args == null || args.length == 0 || args[0] == null || args[0].length() == 0)
+		{
+			System.out.println("Usage: Please provide an argument that a valid path to a savegame file");
+			return;
+		}
+		GameData data;
+		{
+			final File save = new File(args[0]);
+			if (!save.exists() || save.isDirectory() || !save.canRead())
+			{
+				System.out.println("Usage: Please provide an argument that a valid path to a savegame file");
+				return;
+			}
+			final GameDataManager manager = new GameDataManager();
+			try
+			{
+				data = manager.loadGame(save);
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+				return;
+			}
+		}
+		if (data == null)
+		{
+			System.out.println("GameData null, exiting.");
+		}
+		else
+		{
+			System.out.println("GameData loaded successfully for game: " + data.getGameName()
+						+ " (round " + data.getSequence().getRound() + "). Press any key to exit.");
+			try
+			{
+				System.in.read();
+			} catch (final IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 }

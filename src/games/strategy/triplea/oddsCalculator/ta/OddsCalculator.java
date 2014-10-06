@@ -103,7 +103,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 			return;
 		m_isDataSet = false;
 		m_isCalcSet = false;
-		m_data = data == null ? null : GameDataUtils.cloneGameData(data, false);
+		m_data = (data == null ? null : GameDataUtils.cloneGameData(data, false));
 		// reset old data
 		m_attacker = null;
 		m_defender = null;
@@ -243,7 +243,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		}*/
 		final AggregateResults rVal = new AggregateResults(count);
 		final BattleTracker battleTracker = new BattleTracker();
-		// Commented out casualty sorting caching as it seemed to be causing multi-threaded errors
+		// CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if the AI and a human are both using the calc)
+		// TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a per-thread, per-calc caching
 		// BattleCalculator.EnableCasualtySortingCaching();
 		final List<Unit> attackerOrderOfLosses = OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
 		final List<Unit> defenderOrderOfLosses = OddsCalculator.getUnitListByOOL(m_defenderOrderOfLosses, m_defendingUnits, m_data);
@@ -491,7 +492,7 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	/*public void setRenderingData(final Object renderingData)
 	{
 	}*/
-
+	
 	public void shutDown()
 	{
 	}
@@ -670,7 +671,7 @@ class DummyPlayer extends AbstractAI
 		// no scramble
 		return null;
 	}*/
-
+	
 	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{

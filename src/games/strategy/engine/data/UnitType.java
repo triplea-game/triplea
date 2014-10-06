@@ -58,7 +58,7 @@ public class UnitType extends NamedAttachable implements Serializable
 	
 	public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp)
 	{
-		return create(quantity, owner, false, 0, 0);
+		return create(quantity, owner, isTemp, 0, 0);
 	}
 	
 	public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp, final int hitsTaken, final int bombingUnitDamage)
