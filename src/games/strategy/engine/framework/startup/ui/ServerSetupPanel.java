@@ -405,7 +405,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			}
 			else if (playerName.startsWith("Neutral") || playerName.startsWith("AI"))
 			{
-				m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 2))]); // the 3rd in the list should be Moore N Able
+				m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]); // the 4th in the list should be Pro AI (Hard AI)
 				m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
 			}
 			if (playerAlliances.contains(playerName))

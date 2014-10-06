@@ -318,24 +318,24 @@ public abstract class AbstractUIContext implements IUIContext
 			if (m_isShutDown)
 				return;
 			m_isShutDown = true;
+			m_latchesToCloseOnShutdown.shutDown();
+			/* for (final CountDownLatch latch : m_latchesToCloseOnShutdown)
+			{
+				releaseLatch(latch);
+			}*/
+			for (final Window window : m_windowsToCloseOnShutdown)
+			{
+				closeWindow(window);
+			}
+			for (final Active actor : m_activeToDeactivate)
+			{
+				closeActor(actor);
+			}
+			m_activeToDeactivate.clear();
+			m_windowsToCloseOnShutdown.clear();
+			// m_latchesToCloseOnShutdown.clear();
+			// m_mapData.close();
 		}
-		m_latchesToCloseOnShutdown.shutDown();
-		/* for (final CountDownLatch latch : m_latchesToCloseOnShutdown)
-		{
-			releaseLatch(latch);
-		}*/
-		for (final Window window : m_windowsToCloseOnShutdown)
-		{
-			closeWindow(window);
-		}
-		for (final Active actor : m_activeToDeactivate)
-		{
-			closeActor(actor);
-		}
-		m_activeToDeactivate.clear();
-		m_windowsToCloseOnShutdown.clear();
-		// m_latchesToCloseOnShutdown.clear();
-		// m_mapData.close();
 	}
 	
 	/**

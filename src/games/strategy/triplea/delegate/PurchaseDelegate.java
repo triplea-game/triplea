@@ -295,7 +295,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 			return null;
 		// Get the map of the factories that were repaired and how much for each
-		final Map<Unit, Integer> repairMap = getTerritoryRepairs(repairRules);
+		final IntegerMap<Unit> repairMap = getUnitRepairs(repairRules);
 		if (repairMap.isEmpty())
 			return null;
 		// remove first, since add logs PUs remaining
@@ -304,7 +304,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		final IntegerMap<Unit> damageMap = new IntegerMap<Unit>();
 		for (final Unit u : repairUnits)
 		{
-			final int repairCount = repairMap.get(u);
+			final int repairCount = repairMap.getInt(u);
 			// Display appropriate damaged/repaired factory and factory damage totals
 			if (repairCount > 0)
 			{
@@ -322,7 +322,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		// add history event
 		String transcriptText;
 		if (!damageMap.isEmpty())
-			transcriptText = m_player.getName() + " repair " + damageMap.totalValues() + " damage on " + MyFormatter.unitsToTextNoOwner(damageMap.keySet()) + "; " + remaining;
+			transcriptText = m_player.getName() + " repair damage of " + MyFormatter.integerUnitMapToString(repairMap, ", ", "x ", true) + "; " + remaining;
 		else
 			transcriptText = m_player.getName() + " repair nothing; " + remaining;
 		m_bridge.getHistoryWriter().startEvent(transcriptText, new HashSet<Unit>(damageMap.keySet()));
@@ -332,9 +332,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		return null;
 	}
 	
-	private HashMap<Unit, Integer> getTerritoryRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules)
+	private IntegerMap<Unit> getUnitRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
-		final HashMap<Unit, Integer> repairMap = new HashMap<Unit, Integer>();
+		final IntegerMap<Unit> repairMap = new IntegerMap<Unit>();
 		for (final Unit u : repairRules.keySet())
 		{
 			final IntegerMap<RepairRule> rules = repairRules.get(u);
@@ -343,7 +343,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 			for (final RepairRule repairRule : repRules)
 			{
 				final int quantity = rules.getInt(repairRule) * repairRule.getResults().getInt(u.getType());
-				repairMap.put(u, quantity);
+				repairMap.add(u, quantity);
 			}
 		}
 		return repairMap;

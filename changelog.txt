@@ -1,4 +1,6 @@
 Changes for 1.8.1.1
+* Fixed display issue with repairs not being recorded properly in history panel. (veqryn)
+
 * Fixed memory leak in battle calc and game data, causing an exponential number of units to be added to saves. (veqryn)
 
 * Fixed bug in bid placement where you could not play British units in UK Pacific territories in Global 1940/1942. (veqryn)
