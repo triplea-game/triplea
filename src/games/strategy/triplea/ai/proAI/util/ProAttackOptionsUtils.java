@@ -216,7 +216,7 @@ public class ProAttackOptionsUtils
 		final GameData data = ai.getGameData();
 		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>(enemyTerritories);
 		territoriesThatCantBeHeld.addAll(territoriesToCheck);
-		findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, ProMatches.territoryHasEnemyUnitsOrCantBeHeld(player, data, territoriesThatCantBeHeld),
+		findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, ProMatches.territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(player, data, territoriesThatCantBeHeld),
 					enemyTerritories, true, isCheckingEnemyAttacks);
 		findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap, ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld),
 					enemyTerritories, true);

@@ -264,6 +264,11 @@ public class ProCombatMoveAI
 				attackTerritoryData.setTUVSwing(TUVSwing);
 			}
 			
+			// Determine if land
+			int isLand = 0;
+			if (!t.isWater())
+				isLand = 1;
+			
 			// Determine if amphib attack
 			int isAmphib = 0;
 			if (attackTerritoryData.isNeedAmphibUnits())
@@ -300,7 +305,7 @@ public class ProCombatMoveAI
 			double defendingUnitsSizeMultiplier = (1.0 / (defendingUnits.size() + 1)) + 0.5; // Used to consider how many attackers I need
 			if (TUVSwing < 0)
 				defendingUnitsSizeMultiplier = 1;
-			double attackValue = (defendingUnitsSizeMultiplier * TUVSwing + 2 * production + 10 * isEmpty + 5 * isFactory) * (1 + 4 * isEnemyCapital)
+			double attackValue = (defendingUnitsSizeMultiplier * TUVSwing + (1 + isLand) * production + 10 * isEmpty + 5 * isFactory) * (1 + 4 * isEnemyCapital)
 						* (1 + 2 * isNotNeutralAdjacentToMyCapital) * (1 - 0.5 * isAmphib);
 			
 			// Determine enemy neighbor territory production value for neutral land territories
@@ -538,34 +543,42 @@ public class ProCombatMoveAI
 		for (final Iterator<ProAttackTerritoryData> it = prioritizedTerritories.iterator(); it.hasNext();)
 		{
 			final ProAttackTerritoryData patd = it.next();
+			final Territory t = patd.getTerritory();
 			LogUtils.log(Level.FINER, "Checking territory=" + patd.getTerritory().getName() + " with isAmphib=" + patd.isNeedAmphibUnits());
 			
-			// Remove neutral and low value amphib territories that can't be held
-			if (!patd.isCanHold() && enemyAttackMap.get(patd.getTerritory()) != null && !patd.getTerritory().isWater())
+			// Remove empty convoy zones that can't be held
+			if (!patd.isCanHold() && enemyAttackMap.get(t) != null && t.isWater() && !t.getUnits().someMatch(Matches.enemyUnit(player, data)))
 			{
-				final boolean isNeutral = patd.getTerritory().getOwner().isNull();
+				LogUtils.log(Level.FINER, "Removing convoy zone that can't be held: " + t.getName() + ", enemyAttackers=" + enemyAttackMap.get(t).getMaxUnits());
+				it.remove();
+				continue;
+			}
+			
+			// Remove neutral and low value amphib land territories that can't be held
+			if (!patd.isCanHold() && enemyAttackMap.get(t) != null && !t.isWater())
+			{
+				final boolean isNeutral = t.getOwner().isNull();
 				
 				if (isNeutral)
 				{
 					// Remove any neutral territories that can't be held and can be counter attacked
-					LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + patd.getTerritory().getName() + ", enemyAttackers="
-								+ enemyAttackMap.get(patd.getTerritory()).getMaxUnits() + ", enemyAmphibAttackers=" + enemyAttackMap.get(patd.getTerritory()).getMaxAmphibUnits());
+					LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + t.getName() + ", enemyAttackers="
+								+ enemyAttackMap.get(t).getMaxUnits() + ", enemyAmphibAttackers=" + enemyAttackMap.get(t).getMaxAmphibUnits());
 					it.remove();
 					continue;
 				}
 				else if (patd.isNeedAmphibUnits() && patd.getValue() < 2)
 				{
 					// Remove amphib territories that aren't worth attacking
-					LogUtils.log(Level.FINER,
-								"Removing low value amphib territory that can't be held: " + patd.getTerritory().getName() + ", enemyAttackers="
-											+ enemyAttackMap.get(patd.getTerritory()).getMaxUnits() + ", enemyAmphibAttackers=" + enemyAttackMap.get(patd.getTerritory()).getMaxAmphibUnits());
+					LogUtils.log(Level.FINER, "Removing low value amphib territory that can't be held: " + t.getName() + ", enemyAttackers=" + enemyAttackMap.get(t).getMaxUnits()
+								+ ", enemyAmphibAttackers=" + enemyAttackMap.get(t).getMaxAmphibUnits());
 					it.remove();
 					continue;
 				}
 			}
 			
 			// Remove neutral territories that have attackers adjacent to enemy territories that aren't being attacked
-			if (patd.getTerritory().getOwner().isNull() && !patd.getTerritory().isWater())
+			if (t.getOwner().isNull() && !t.isWater())
 			{
 				// Get list of territories I'm attacking
 				final List<Territory> prioritizedTerritoryList = new ArrayList<Territory>();
@@ -577,7 +590,7 @@ public class ProCombatMoveAI
 				final Set<Territory> attackFromTerritories = new HashSet<Territory>();
 				for (final Unit u : patd.getMaxUnits())
 					attackFromTerritories.add(unitTerritoryMap.get(u));
-				attackFromTerritories.retainAll(data.getMap().getNeighbors(patd.getTerritory()));
+				attackFromTerritories.retainAll(data.getMap().getNeighbors(t));
 				
 				// Determine if any of the attacking from territories has enemy neighbors that aren't being attacked
 				boolean attackersHaveEnemyNeighbors = false;
@@ -594,7 +607,7 @@ public class ProCombatMoveAI
 				}
 				if (attackersHaveEnemyNeighbors)
 				{
-					LogUtils.log(Level.FINER, "Removing neutral territory that has attackers that are adjacent to enemies: " + patd.getTerritory().getName() + ", attackFromTerritory="
+					LogUtils.log(Level.FINER, "Removing neutral territory that has attackers that are adjacent to enemies: " + t.getName() + ", attackFromTerritory="
 								+ attackFromTerritoryWithEnemyNeighbors);
 					it.remove();
 					continue;
@@ -987,7 +1000,8 @@ public class ProCombatMoveAI
 				// Find current naval battle that needs transport if it isn't transporting units
 				for (final Territory t : transportAttackOptions.get(transport))
 				{
-					if (!attackMap.get(t).isCurrentlyWins() && !TransportTracker.isTransporting(transport))
+					final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
+					if (!attackMap.get(t).isCurrentlyWins() && !TransportTracker.isTransporting(transport) && !defendingUnits.isEmpty())
 					{
 						if (attackMap.get(t).getBattleResult() == null)
 							attackMap.get(t).setBattleResult(battleUtils.estimateAttackBattleResults(player, t, attackMap.get(t).getUnits()));

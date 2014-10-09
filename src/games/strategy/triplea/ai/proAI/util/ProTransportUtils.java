@@ -5,6 +5,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /*
@@ -58,6 +60,37 @@ public class ProTransportUtils
 			numUnitsToLoad += Match.getMatches(neighbor.getUnits().getUnits(), ProMatches.unitIsOwnedTransportableUnit(player)).size();
 		}
 		return numUnitsToLoad;
+	}
+	
+	public List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
+				final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final double value)
+	{
+		final List<Unit> unitsToIgnoreOrHaveBetterLandMove = new ArrayList<Unit>(unitsToIgnore);
+		if (!TransportTracker.isTransporting(transport))
+		{
+			// Get all units that can be transported
+			final List<Unit> units = new ArrayList<Unit>();
+			for (final Territory loadFrom : territoriesToLoadFrom)
+			{
+				units.addAll(loadFrom.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
+			}
+			units.removeAll(unitsToIgnore);
+			
+			// Check to see which have higher land move value
+			for (final Unit u : units)
+			{
+				for (final Territory t : unitMoveMap.get(u))
+				{
+					if (moveMap.get(t) != null && moveMap.get(t).getValue() >= value)
+					{
+						unitsToIgnoreOrHaveBetterLandMove.add(u);
+						break;
+					}
+				}
+			}
+		}
+		
+		return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnore);
 	}
 	
 	public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore)

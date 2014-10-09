@@ -99,7 +99,7 @@ public class ProAI extends StrongAI
 		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
 		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
-		purchaseAI = new ProPurchaseAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
+		purchaseAI = new ProPurchaseAI(this, utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		data = null;
 		storedCombatMoveMap = null;

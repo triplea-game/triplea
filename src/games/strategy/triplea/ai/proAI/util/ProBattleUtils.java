@@ -143,7 +143,7 @@ public class ProBattleUtils
 		if (attackingUnits.size() == 0 || (Match.allMatch(attackingUnits, Matches.UnitIsAir) && !t.isWater()))
 			return new ProBattleResultData();
 		else if (defendingUnits.isEmpty() || hasNoDefenders)
-			return new ProBattleResultData(100, 0, true, attackingUnits, 0);
+			return new ProBattleResultData(100, 1, true, attackingUnits, 0);
 		else if (Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub) && Match.noneMatch(attackingUnits, Matches.UnitIsDestroyer))
 			return new ProBattleResultData();
 		return null;

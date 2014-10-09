@@ -29,7 +29,7 @@ public class ProBattleResultData
 	public ProBattleResultData()
 	{
 		winPercentage = 0;
-		TUVSwing = 0;
+		TUVSwing = -1;
 		hasLandUnitRemaining = false;
 		averageUnitsRemaining = new ArrayList<Unit>();
 		battleRounds = 0;

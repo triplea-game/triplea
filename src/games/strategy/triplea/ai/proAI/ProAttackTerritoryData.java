@@ -29,6 +29,7 @@ public class ProAttackTerritoryData
 	private List<Unit> units;
 	private double TUVSwing;
 	private Double value;
+	private Double seaValue;
 	private boolean canHold;
 	private boolean canAttack;
 	private double strengthEstimate;
@@ -70,6 +71,7 @@ public class ProAttackTerritoryData
 		transportTerritoryMap = new HashMap<Unit, Territory>();
 		currentlyWins = false;
 		battleResult = null;
+		minBattleResult = new ProBattleResultData();
 		tempUnits = new ArrayList<Unit>();
 		tempAmphibAttackMap = new HashMap<Unit, List<Unit>>();
 		loadValue = null;
@@ -345,6 +347,16 @@ public class ProAttackTerritoryData
 	public Map<Unit, Boolean> getIsTransportingMap()
 	{
 		return isTransportingMap;
+	}
+	
+	public void setSeaValue(final Double seaValue)
+	{
+		this.seaValue = seaValue;
+	}
+	
+	public Double getSeaValue()
+	{
+		return seaValue;
 	}
 	
 }

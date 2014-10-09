@@ -16,6 +16,7 @@ package games.strategy.triplea.ai.proAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
@@ -38,7 +39,10 @@ public class ProPurchaseTerritory
 		if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(territory))
 		{
 			for (final Territory t : data.getMap().getNeighbors(territory, Matches.TerritoryIsWater))
-				canPlaceTerritories.add(new ProPlaceTerritory(t));
+			{
+				if (Properties.getWW2V2(data) || Properties.getUnitPlacementInEnemySeas(data) || !t.getUnits().someMatch(Matches.enemyUnit(player, data)))
+					canPlaceTerritories.add(new ProPlaceTerritory(t));
+			}
 		}
 	}
 	

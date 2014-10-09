@@ -18,6 +18,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
@@ -27,6 +28,12 @@ import games.strategy.util.Match;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Pro AI matches.
+ * 
+ * @author Ron Murhammer
+ * @since 2014
+ */
 public class ProMatches
 {
 	
@@ -139,6 +146,9 @@ public class ProMatches
 			@Override
 			public boolean match(final Territory t)
 			{
+				final boolean navalMayNotNonComIntoControlled = Properties.getWW2V2(data) || games.strategy.triplea.Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
+				if (!isCombatMove && navalMayNotNonComIntoControlled && Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(t))
+					return false;
 				final Match<Territory> match = new CompositeMatchAnd<Territory>(Matches.territoryDoesNotCostMoneyToEnter(data),
 							Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true, false, false));
 				return match.match(t);
@@ -167,6 +177,20 @@ public class ProMatches
 			public boolean match(final Territory t)
 			{
 				final Match<Territory> match = new CompositeMatchOr<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
+				return match.match(t);
+			}
+		};
+	}
+	
+	public static Match<Territory> territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(final PlayerID player, final GameData data, final List<Territory> territoriesThatCantBeHeld)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				final Match<Territory> match = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemyAndNotUnownedWater(player, data), Matches.territoryHasEnemyUnits(player, data),
+							Matches.territoryIsInList(territoriesThatCantBeHeld));
 				return match.match(t);
 			}
 		};
@@ -300,7 +324,7 @@ public class ProMatches
 			@Override
 			public boolean match(final Territory t)
 			{
-				final Match<Territory> match = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemy(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
+				final Match<Territory> match = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemyAndNotUnownedWater(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
 				return match.match(t);
 			}
 		};
