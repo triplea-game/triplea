@@ -265,12 +265,11 @@ public class HeadlessGameServerUI extends MainGameFrame
 		// we have already shut down
 		if (!m_uiContextOriginallyNull && m_uiContext == null)
 			return;
-		this.dispose();
 		this.setVisible(false);
+		this.dispose();
 		if (GameRunner.isMac())
 		{
-			// this frame should not handle shutdowns anymore
-			MacWrapper.unregisterShutdownHandler();
+			MacWrapper.unregisterShutdownHandler(); // this frame should not handle shutdowns anymore
 		}
 		if (m_uiContext != null)
 			m_uiContext.shutDown();

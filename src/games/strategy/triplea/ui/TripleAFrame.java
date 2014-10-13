@@ -495,12 +495,11 @@ public class TripleAFrame extends MainGameFrame
 			return;
 		m_menu.dispose();
 		m_menu = null;
-		this.dispose();
 		this.setVisible(false);
+		TripleAFrame.this.dispose();
 		if (GameRunner.isMac())
 		{
-			// this frame should not handle shutdowns anymore
-			MacWrapper.unregisterShutdownHandler();
+			MacWrapper.unregisterShutdownHandler();// this frame should not handle shutdowns anymore
 		}
 		m_messageAndDialogThreadPool.shutDown();
 		m_uiContext.shutDown();

@@ -48,7 +48,7 @@ public abstract class AbstractUIContext implements IUIContext
 	protected static final String AI_PAUSE_DURATION = "AIPauseDuration";
 	protected static ResourceLoader m_resourceLoader;
 	// instance
-	protected boolean m_isShutDown;
+	protected boolean m_isShutDown = false;
 	protected final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
 	protected final List<Active> m_activeToDeactivate = new ArrayList<Active>();
 	protected final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false); // List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
@@ -63,7 +63,7 @@ public abstract class AbstractUIContext implements IUIContext
 	public static int getAIPauseDuration()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
-		return prefs.getInt(AI_PAUSE_DURATION, 700);
+		return prefs.getInt(AI_PAUSE_DURATION, 400);
 	}
 	
 	public static void setAIPauseDuration(final int value)
@@ -171,6 +171,11 @@ public abstract class AbstractUIContext implements IUIContext
 	
 	public void removeActive(final Active actor)
 	{
+		if (m_isShutDown)
+		{
+			// closeActor(actor);
+			return;
+		}
 		synchronized (this)
 		{
 			// closeActor(actor);
@@ -183,6 +188,11 @@ public abstract class AbstractUIContext implements IUIContext
 	 */
 	public void addActive(final Active actor)
 	{
+		if (m_isShutDown)
+		{
+			closeActor(actor);
+			return;
+		}
 		synchronized (this)
 		{
 			if (m_isShutDown)
@@ -231,6 +241,11 @@ public abstract class AbstractUIContext implements IUIContext
 	 */
 	public void addShutdownWindow(final Window window)
 	{
+		if (m_isShutDown)
+		{
+			closeWindow(window);
+			return;
+		}
 		synchronized (this)
 		{
 			if (m_isShutDown)
@@ -245,11 +260,19 @@ public abstract class AbstractUIContext implements IUIContext
 	protected static void closeWindow(final Window window)
 	{
 		window.setVisible(false);
-		window.dispose();
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
+				// Having dispose run on anything but the Swing Event Dispatch Thread is very dangerous.
+				// This is because dispose will call invokeAndWait if it is not on this thread already.
+				// If you are calling this method while holding a lock on an object, while the EDT is separately
+				// waiting for that lock, then you have a deadlock.
+				// A real life example: player disconnects while you have the battle calc open.
+				// Non-EDT thread does shutdown on IGame and UIContext, causing btl calc to shutdown, which calls the
+				// window closed event on the EDT, and waits for the lock on UIContext to removeShutdownWindow, meanwhile
+				// our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a deadlock.
+				window.dispose();
 				// there is a bug in java (1.50._06 for linux at least)
 				// where frames are not garbage collected.
 				//
@@ -291,6 +314,11 @@ public abstract class AbstractUIContext implements IUIContext
 	
 	public void removeShutdownWindow(final Window window)
 	{
+		if (m_isShutDown)
+		{
+			// closeWindow(window);
+			return;
+		}
 		synchronized (this)
 		{
 			// closeWindow(window);

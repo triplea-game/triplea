@@ -37,7 +37,7 @@ public class OddsCalculatorDialog extends JDialog
 			@Override
 			public void windowClosed(final WindowEvent e)
 			{
-				if (taFrame != null && taFrame.getUIContext() != null)
+				if (taFrame != null && taFrame.getUIContext() != null && !taFrame.getUIContext().isShutDown())
 					taFrame.getUIContext().removeShutdownWindow(dialog);
 			}
 		});
