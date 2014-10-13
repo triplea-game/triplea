@@ -1,6 +1,7 @@
 package games.strategy.common.ui;
 
 import games.strategy.debug.Console;
+import games.strategy.debug.DebugUtils;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -514,23 +515,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			public void actionPerformed(final ActionEvent e)
 			{
 				Console.getConsole().setVisible(true);
-				reportMemoryUsageToConsole();
+				Console.getConsole().append(DebugUtils.getMemory());
 			}
 		}).setMnemonic(KeyEvent.VK_C);
-	}
-	
-	private void reportMemoryUsageToConsole()
-	{
-		final int mb = 1024 * 1024;
-		final Runtime runtime = Runtime.getRuntime(); // Getting the runtime reference from system
-		System.out.println("Heap utilization statistics [MB]");
-		System.out.println("Used Memory: " + (runtime.totalMemory() - runtime.freeMemory()) / mb); // Print used memory
-		System.out.println("Free Memory: " + runtime.freeMemory() / mb); // Print free memory
-		System.out.println("Total Memory: " + runtime.totalMemory() / mb); // Print total available memory
-		System.out.println("Max Memory: " + runtime.maxMemory() / mb); // Print Maximum available memory
-		final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
-		if (currentMaxSetting > 0)
-			System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
 	}
 	
 	/**

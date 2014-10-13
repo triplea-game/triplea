@@ -108,7 +108,12 @@ public class CryptoRandomSource implements IRandomSource
 		final VaultID localID = vault.lock(intsToBytes(localRandom));
 		// ask the remote to generate numbers
 		final IRemoteRandom remote = (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
-		final int[] remoteNumbers = remote.generate(max, count, annotation, localID);
+		final Object clientRandom = remote.generate(max, count, annotation, localID);
+		if (!(clientRandom instanceof int[]))
+		{
+			System.out.println("Client remote random generated: " + clientRandom + ".  Asked for: " + count + "x" + max + " for " + annotation); // Let the error be thrown
+		}
+		final int[] remoteNumbers = (int[]) clientRandom;
 		// unlock ours, tell the client he can verify
 		vault.unlock(localID);
 		remote.verifyNumbers();

@@ -1,6 +1,7 @@
 package games.strategy.debug;
 
 import games.strategy.engine.EngineVersion;
+import games.strategy.engine.framework.GameRunner2;
 
 import java.awt.Frame;
 import java.lang.management.ManagementFactory;
@@ -72,17 +73,18 @@ public class DebugUtils
 	public static String getMemory()
 	{
 		System.gc();
-		final StringBuilder buf = new StringBuilder("MEMORY\n");
+		System.runFinalization();
+		System.gc();
+		final int mb = 1024 * 1024;
+		final StringBuilder buf = new StringBuilder("Heap utilization statistics [MB]\r\n");
 		final Runtime runtime = Runtime.getRuntime();
-		buf.append("****\n");
-		buf.append("Used Memory: " + (runtime.totalMemory() - runtime.freeMemory()));
-		buf.append("\n");
-		buf.append("Free memory: " + runtime.freeMemory());
-		buf.append("\n");
-		buf.append("Total memory: " + runtime.totalMemory());
-		buf.append("\n");
-		buf.append("Max memory: " + runtime.maxMemory());
-		buf.append("\n");
+		buf.append("Used Memory: " + ((runtime.totalMemory() - runtime.freeMemory()) / mb) + "\r\n");
+		buf.append("Free memory: " + (runtime.freeMemory() / mb) + "\r\n");
+		buf.append("Total memory: " + (runtime.totalMemory() / mb) + "\r\n");
+		buf.append("Max memory: " + (runtime.maxMemory() / mb) + "\r\n");
+		final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
+		if (currentMaxSetting > 0)
+			buf.append("Max Memory user setting within 22% of: " + currentMaxSetting);
 		return buf.toString();
 	}
 	

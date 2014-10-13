@@ -40,6 +40,8 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -97,7 +99,7 @@ public class OddsCalculatorPanel extends JPanel
 	private final IntTextField m_retreatAfterXRounds = new games.strategy.ui.IntTextField();
 	private final IntTextField m_retreatAfterXUnitsLeft = new games.strategy.ui.IntTextField();
 	private final JPanel m_resultsPanel = new JPanel();
-	private final JButton m_calculateButton = new JButton("Calculate Odds");
+	private final JButton m_calculateButton = new JButton("Pls Wait, Copying Data...");
 	private final JButton m_clearButton = new JButton("Clear");
 	private final JButton m_closeButton = new JButton("Close");
 	private final JButton m_SwapSidesButton = new JButton("Swap Sides");
@@ -134,6 +136,14 @@ public class OddsCalculatorPanel extends JPanel
 			setWidgetActivation();
 		}
 	};
+	private final OddsCalculatorListener m_listenerOddsCalculator = new OddsCalculatorListener()
+	{
+		public void dataReady()
+		{
+			m_calculateButton.setText("Calculate Odds");
+			m_calculateButton.setEnabled(true);
+		}
+	};
 	
 	public OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location, final Window parent)
 	{
@@ -141,6 +151,7 @@ public class OddsCalculatorPanel extends JPanel
 		m_context = context;
 		m_location = location;
 		m_parent = parent;
+		m_calculateButton.setEnabled(false);
 		createComponents();
 		layoutComponents();
 		setupListeners();
@@ -186,7 +197,14 @@ public class OddsCalculatorPanel extends JPanel
 			updateDefender(null);
 			updateAttacker(null);
 		}
+		if (OddsCalculatorPanel.percentageOfFreeMemoryAvailable() < 0.4)
+		{
+			System.gc();
+			System.runFinalization();
+			System.gc();
+		}
 		m_calculator = new ConcurrentOddsCalculator("BtlCalc Panel");
+		m_calculator.addOddsCalculatorListener(m_listenerOddsCalculator);
 		m_calculator.setGameData(m_data);
 		setWidgetActivation();
 		revalidate();
@@ -208,6 +226,21 @@ public class OddsCalculatorPanel extends JPanel
 	{
 		shutdown();
 		super.finalize();
+	}
+	
+	public static double percentageOfFreeMemoryAvailable()
+	{
+		final Runtime runtime = Runtime.getRuntime();
+		final long maxMemory = runtime.maxMemory();
+		final long memoryAvailable = Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
+		return (((double) memoryAvailable) / ((double) maxMemory));
+	}
+	
+	public static long freeMemoryAvailable()
+	{
+		final Runtime runtime = Runtime.getRuntime();
+		final long maxMemory = runtime.maxMemory();
+		return Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
 	}
 	
 	private PlayerID getDefender()
@@ -281,6 +314,29 @@ public class OddsCalculatorPanel extends JPanel
 				updateDefender(null);
 				updateAttacker(null);
 				setWidgetActivation();
+			}
+		});
+		m_calculateButton.addMouseMotionListener(new MouseMotionListener()
+		{
+			public void mouseDragged(final MouseEvent e)
+			{
+			}
+			
+			public void mouseMoved(final MouseEvent e)
+			{
+				final String memoryAvailable = "<br/>Percentage of memory available: " + String.format("%.2f", (percentageOfFreeMemoryAvailable() * 100))
+							+ "% <br/>Free memory available: " + (freeMemoryAvailable() / (1024 * 1024))
+							+ "MB <br/>Maximum allowed memory: " + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB </html>";
+				if (m_calculateButton.isEnabled())
+				{
+					m_calculateButton.setToolTipText("<html>Data copying finished. " + memoryAvailable);
+				}
+				else
+				{
+					m_calculateButton.setToolTipText("<html>If this is taking forever to enable, it means "
+								+ "<br/>you do not have enough memory to copy the data quickly! "
+								+ "<br/>Consider increasing the max memory for TripleA. " + memoryAvailable);
+				}
 			}
 		});
 		m_calculateButton.addActionListener(new ActionListener()
@@ -487,9 +543,7 @@ public class OddsCalculatorPanel extends JPanel
 		}, "Odds calc thread");
 		// Actually start thread.
 		calcThread.start();
-		// the runnable setting the dialog visible must
-		// run after this code executes, since this
-		// code is running on the swing event thread
+		// the runnable setting the dialog visible must run after this code executes, since this code is running on the swing event thread
 		dialog.setVisible(true);
 		// results.get() could be null if we cancelled to quickly or something weird like that.
 		if (results == null || results.get() == null)

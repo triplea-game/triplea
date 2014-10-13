@@ -274,7 +274,10 @@ public class ServerLauncher extends AbstractLauncher
 					{
 						e.printStackTrace(System.err);
 						if (m_headless)
+						{
 							System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
+							HeadlessGameServer.sendChat("If this is a repeatable issue or error, please make a copy of this savegame and contact a Mod and/or file a bug report.");
+						}
 						stopGame();
 					}
 					try

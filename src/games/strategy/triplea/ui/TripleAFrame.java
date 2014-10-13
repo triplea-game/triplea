@@ -785,6 +785,8 @@ public class TripleAFrame extends MainGameFrame
 	
 	public void waitForMoveForumPoster(final PlayerID player, final IPlayerBridge bridge)
 	{
+		if (m_actionButtons == null)
+			return;
 		// m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToMoveForumPosterPanel(player);
 		m_actionButtons.waitForMoveForumPosterPanel(this, bridge);
@@ -792,6 +794,8 @@ public class TripleAFrame extends MainGameFrame
 	
 	public void waitForEndTurn(final PlayerID player, final IPlayerBridge bridge)
 	{
+		if (m_actionButtons == null)
+			return;
 		// m_messageAndDialogThreadPool.waitForAll();
 		m_actionButtons.changeToEndTurn(player);
 		m_actionButtons.waitForEndTurn(this, bridge);

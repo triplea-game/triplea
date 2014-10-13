@@ -147,9 +147,6 @@ public class Console extends JFrame
 		
 		public void actionPerformed(final ActionEvent e)
 		{
-			System.gc();
-			System.runFinalization();
-			System.gc();
 			append(DebugUtils.getMemory());
 		}
 	};

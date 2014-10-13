@@ -118,6 +118,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		super.start(name); // must call super.start
 		if (getPlayerBridge().isGameOver())
 			return;
+		if (m_ui == null)
+		{
+			System.out.println("Game frame is null, but entered player step: " + name + " for player: " + this.toString());
+			return; // headless games shouldn't get here, but lets try returning anyway
+		}
 		// TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate class seems like a bad way of doing this whole method. however i can't think of anything better right now.
 		
 		// This is how we find out our game step: getGameData().getSequence().getStep()

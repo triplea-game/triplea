@@ -85,6 +85,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 	private volatile boolean m_isDataSet = false;
 	private volatile boolean m_isCalcSet = false;
 	private volatile boolean m_isRunning = false;
+	private final List<OddsCalculatorListener> m_listeners = new ArrayList<OddsCalculatorListener>();
 	
 	public OddsCalculator(final GameData data)
 	{
@@ -94,7 +95,11 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 	public OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned)
 	{
 		m_data = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
-		m_isDataSet = data != null;
+		if (data != null)
+		{
+			m_isDataSet = true;
+			notifyListenersGameDataIsSet();
+		}
 	}
 	
 	public void setGameData(final GameData data)
@@ -113,7 +118,11 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		m_bombardingUnits = new ArrayList<Unit>();
 		m_territoryEffects = new ArrayList<TerritoryEffect>();
 		m_runCount = 0;
-		m_isDataSet = data != null;
+		if (data != null)
+		{
+			m_isDataSet = true;
+			notifyListenersGameDataIsSet();
+		}
 	}
 	
 	/**
@@ -222,7 +231,12 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 	}
 	
 	public void shutdown()
-	{// nothing so far
+	{
+		cancel();
+		synchronized (m_listeners)
+		{
+			m_listeners.clear();
+		}
 	}
 	
 	public int getThreadCount()
@@ -358,6 +372,33 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		}
 		Collections.reverse(order);
 		return order;
+	}
+	
+	public void addOddsCalculatorListener(final OddsCalculatorListener listener)
+	{
+		synchronized (m_listeners)
+		{
+			m_listeners.add(listener);
+		}
+	}
+	
+	public void removeOddsCalculatorListener(final OddsCalculatorListener listener)
+	{
+		synchronized (m_listeners)
+		{
+			m_listeners.remove(listener);
+		}
+	}
+	
+	private void notifyListenersGameDataIsSet()
+	{
+		synchronized (m_listeners)
+		{
+			for (final OddsCalculatorListener listener : m_listeners)
+			{
+				listener.dataReady();
+			}
+		}
 	}
 }
 

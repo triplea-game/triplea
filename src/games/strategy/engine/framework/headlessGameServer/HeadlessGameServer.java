@@ -244,6 +244,25 @@ public class HeadlessGameServer
 			System.out.println(stdout);
 	}
 	
+	public static synchronized void sendChat(final String chatString)
+	{
+		final HeadlessGameServer instance = getInstance();
+		if (instance != null)
+		{
+			final Chat chat = instance.getChat();
+			if (chat != null)
+			{
+				try
+				{
+					chat.sendMessage(chatString, false);
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	public String getSalt()
 	{
 		final String encryptedPassword = MD5Crypt.crypt(System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, ""));
@@ -590,7 +609,19 @@ public class HeadlessGameServer
 		{
 			public void run()
 			{
-				restartLobbyWatcher(m_setupPanelModel, m_iGame);
+				try
+				{
+					restartLobbyWatcher(m_setupPanelModel, m_iGame);
+				} catch (final Exception e)
+				{
+					try
+					{
+						Thread.sleep(5 * 60 * 1000);
+					} catch (final InterruptedException e1)
+					{
+					}
+					restartLobbyWatcher(m_setupPanelModel, m_iGame); // try again, but don't catch it this time
+				}
 			}
 		}, reconnect, reconnect, TimeUnit.SECONDS);
 		s_logger.info("Game Server initialized");

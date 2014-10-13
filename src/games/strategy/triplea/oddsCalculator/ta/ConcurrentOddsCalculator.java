@@ -49,6 +49,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	private final CountUpAndDownLatch m_latchWorkerThreadsCreation = new CountUpAndDownLatch(); // do not let setting of game data happen multiple times while we offload creating workers and copying data to a different thread
 	private final Object m_mutexSetGameData = new Object(); // do not let setting of game data happen at same time
 	private final Object m_mutexCalcIsRunning = new Object(); // do not let multiple calculations or setting calc data happen at same time
+	private final List<OddsCalculatorListener> m_listeners = new ArrayList<OddsCalculatorListener>();
 	
 	public ConcurrentOddsCalculator(final String threadNamePrefix)
 	{
@@ -98,7 +99,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		return m_currentThreads;
 	}
 	
-	private int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy)
+	private static int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy)
 	{ // use both time and memory left to determine how many copies to make
 		if (timeToCopyInMillis > 20000 || MAX_THREADS == 1)
 			return 1; // just use 1 thread if we took more than 20 seconds to copy
@@ -179,6 +180,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		else
 		{
 			m_isDataSet = true;// should make sure that all workers have their game data set before we can call calculate and other things
+			notifyListenersGameDataIsSet();
 		}
 		m_latchWorkerThreadsCreation.countDown(); // allow setting new data to take place if it is waiting on us
 		m_latchSetData.countDown(); // allow calcing and other stuff to go ahead
@@ -191,6 +193,10 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		m_cancelCurrentOperation = Integer.MIN_VALUE / 2;
 		cancel();
 		m_executor.shutdown();
+		synchronized (m_listeners)
+		{
+			m_listeners.clear();
+		}
 	}
 	
 	@Override
@@ -443,6 +449,32 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	public void addOddsCalculatorListener(final OddsCalculatorListener listener)
+	{
+		synchronized (m_listeners)
+		{
+			m_listeners.add(listener);
+		}
+	}
+	
+	public void removeOddsCalculatorListener(final OddsCalculatorListener listener)
+	{
+		synchronized (m_listeners)
+		{
+			m_listeners.remove(listener);
+		}
+	}
+	
+	private void notifyListenersGameDataIsSet()
+	{
+		synchronized (m_listeners)
+		{
+			for (final OddsCalculatorListener listener : m_listeners)
+			{
+				listener.dataReady();
+			}
+		}
+	}
 }
 
 

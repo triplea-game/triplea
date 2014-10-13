@@ -1,4 +1,6 @@
-Changes for 1.8.1.1
+Changes for 1.8.0.5
+* Prevented battle calc's calculate button from being enabled until data has finished being copied. Also added a tool tip on the button to let the user know how much memory they have left. (veqryn)
+
 * Fixed display issue with repairs not being recorded properly in history panel. (veqryn)
 
 * Fixed memory leak in battle calc and game data, causing an exponential number of units to be added to saves. (veqryn)

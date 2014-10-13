@@ -264,6 +264,7 @@ public class RemoteMessengerTest extends TestCase
 			final RemoteMessenger serverRM = new RemoteMessenger(serverUM);
 			final RemoteMessenger clientRM = new RemoteMessenger(new UnifiedMessenger(client));
 			final Object lock = new Object();
+			final AtomicBoolean started = new AtomicBoolean(false);
 			final IFoo foo = new IFoo()
 			{
 				public void foo()
@@ -272,6 +273,7 @@ public class RemoteMessengerTest extends TestCase
 					{
 						try
 						{
+							started.set(true);
 							lock.wait();
 						} catch (final InterruptedException e)
 						{
@@ -284,7 +286,6 @@ public class RemoteMessengerTest extends TestCase
 			serverUM.getHub().waitForNodesToImplement(test.getName(), 200);
 			assertTrue(serverUM.getHub().hasImplementors(test.getName()));
 			final AtomicReference<ConnectionLostException> rme = new AtomicReference<ConnectionLostException>(null);
-			final AtomicBoolean started = new AtomicBoolean(false);
 			final Runnable r = new Runnable()
 			{
 				public void run()
@@ -292,7 +293,6 @@ public class RemoteMessengerTest extends TestCase
 					try
 					{
 						final IFoo remoteFoo = (IFoo) serverRM.getRemote(test);
-						started.set(true);
 						remoteFoo.foo();
 					} catch (final ConnectionLostException e)
 					{
@@ -306,6 +306,8 @@ public class RemoteMessengerTest extends TestCase
 			while (started.get() == false)
 				sleep(1);
 			sleep(20);
+			// TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out completely
+			// Perhaps this situation should be changed to a ConnectionLostException or something else?
 			client.shutDown();
 			// when the client shutdowns, this should wake up.
 			// and an error should be thrown

@@ -52,4 +52,8 @@ public interface IOddsCalculator
 	
 	public int getThreadCount();
 	
+	public void addOddsCalculatorListener(final OddsCalculatorListener listener);
+	
+	public void removeOddsCalculatorListener(final OddsCalculatorListener listener);
+	
 }

@@ -176,6 +176,10 @@ public class ClientGame extends AbstractGame
 	{
 		public void startPlayerStep(final String stepName, final PlayerID player)
 		{
+			if (m_isGameOver)
+			{
+				return;
+			}
 			// make sure we are in the correct step
 			// steps are advanced on a different channel, and the
 			// message advancing the step may be being processed in a different thread
@@ -187,7 +191,7 @@ public class ClientGame extends AbstractGame
 					m_data.acquireReadLock();
 					try
 					{
-						if (m_data.getSequence().getStep().getName().equals(stepName))
+						if (m_data.getSequence().getStep().getName().equals(stepName) || m_isGameOver)
 							break;
 					} finally
 					{
@@ -208,6 +212,10 @@ public class ClientGame extends AbstractGame
 						// no worries mate
 					}
 				}
+			}
+			if (m_isGameOver)
+			{
+				return;
 			}
 			final IGamePlayer gp = m_gamePlayers.get(player);
 			if (gp == null)

@@ -391,8 +391,8 @@ public class GameRunner2
 		final long currentMaxMemory = Runtime.getRuntime().maxMemory();
 		System.out.println("Current max memory: " + currentMaxMemory + ";  and new xmx should be: " + xmx);
 		final long diff = Math.abs(currentMaxMemory - xmx);
-		// Runtime.maxMemory is never accurate, and is usually off by 5% to 15%, so if our difference is less than 20% we should just ignore the difference
-		if (diff <= xmx * 0.2)
+		// Runtime.maxMemory is never accurate, and is usually off by 5% to 15%, so if our difference is less than 22% we should just ignore the difference
+		if (diff <= xmx * 0.22)
 			return;
 		// the difference is significant enough that we should re-run triplea with a larger number
 		if (s_waitWindow != null)
