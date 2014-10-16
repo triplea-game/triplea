@@ -189,11 +189,20 @@ public class ProAI extends StrongAI
 			LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
 			
 			// Setup data copy and delegates
-			final GameData dataCopy = GameDataUtils.cloneGameData(data, true);
+			final GameData dataCopy;
+			try
+			{
+				data.acquireReadLock();
+				dataCopy = GameDataUtils.cloneGameData(data, true);
+			} finally
+			{
+				data.releaseReadLock();
+			}
 			this.data = dataCopy;
 			s_battleCalculator.setGameData(dataCopy);
+			final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerID(player.getName());
 			final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
-			final IDelegateBridge bridge = new ProDummyDelegateBridge(this, player, dataCopy);
+			final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
 			moveDel.setDelegateBridgeAndPlayer(bridge);
 			
 			// Determine turn sequence
@@ -207,28 +216,28 @@ public class ProAI extends StrongAI
 			// Simulate the next phases until place/end of turn is reached then use simulated data for purchase
 			final String nationName = dataCopy.getSequence().getStep().getName().replace("Purchase", "");
 			final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
-			final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
+			final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(playerCopy);
 			for (int i = nextStepIndex; i < gameSteps.size(); i++)
 			{
 				final GameStep step = gameSteps.get(i);
-				dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(), player);
+				dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(), playerCopy);
 				final String stepName = step.getName();
 				LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
 				if (stepName.startsWith(nationName) && stepName.endsWith("NonCombatMove"))
 				{
-					final Map<Territory, ProAttackTerritoryData> factoryMoveMap = nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, player);
+					final Map<Territory, ProAttackTerritoryData> factoryMoveMap = nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy);
 					if (storedFactoryMoveMap == null)
 						storedFactoryMoveMap = simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("CombatMove"))
 				{
-					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, player);
+					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy);
 					if (storedCombatMoveMap == null)
 						storedCombatMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
 				}
 				else if (stepName.startsWith(nationName) && stepName.endsWith("Battle"))
 				{
-					simulateTurnUtils.simulateBattles(dataCopy, player, bridge);
+					simulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
 				}
 				else if (stepName.startsWith(nationName) && (stepName.endsWith("Place") || stepName.endsWith("EndTurn")))
 				{
