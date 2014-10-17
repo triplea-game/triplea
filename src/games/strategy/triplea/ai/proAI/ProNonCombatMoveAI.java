@@ -312,6 +312,7 @@ public class ProNonCombatMoveAI
 		final Map<Unit, Set<Territory>> sortedUnitMoveOptions = attackOptionsUtils.sortUnitMoveOptions(player, unitMoveMap);
 		
 		// Set unit with the fewest move options in each territory
+		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
 		for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();)
 		{
 			final Unit unit = it.next();
@@ -319,7 +320,12 @@ public class ProNonCombatMoveAI
 			{
 				for (final Territory t : sortedUnitMoveOptions.get(unit))
 				{
-					if (territoriesToDefendWithOneUnit.contains(t))
+					final int unitValue = playerCostMap.getInt(unit.getType());
+					int production = 0;
+					final TerritoryAttachment ta = TerritoryAttachment.get(t);
+					if (ta != null)
+						production = ta.getProduction();
+					if (territoriesToDefendWithOneUnit.contains(t) && unitValue <= (2 * production))
 					{
 						moveMap.get(t).addUnit(unit);
 						unitMoveMap.remove(unit);

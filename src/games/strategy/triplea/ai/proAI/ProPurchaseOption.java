@@ -29,8 +29,8 @@ public class ProPurchaseOption
 	private final int movement;
 	private final int quantity;
 	private int hitPoints;
-	private int attack;
-	private final int defense;
+	private double attack;
+	private final double defense;
 	private final int transportCost;
 	private final boolean isAir;
 	private final boolean isSub;
@@ -60,7 +60,7 @@ public class ProPurchaseOption
 			hitPoints = 0;
 		attack = unitAttachment.getAttack(player) * quantity;
 		if (unitAttachment.getArtillery())
-			attack += quantity;
+			attack += 0.5 * quantity;
 		defense = unitAttachment.getDefense(player) * quantity;
 		transportCost = unitAttachment.getTransportCost();
 		isAir = unitAttachment.getIsAir();
@@ -74,8 +74,8 @@ public class ProPurchaseOption
 		hitPointEfficiency = (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
 		if (isInfra)
 			hitPointEfficiency = 0;
-		attackEfficiency = (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
-		defenseEfficiency = (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
+		attackEfficiency = (1 + hitPoints) * (attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
+		defenseEfficiency = (1 + hitPoints) * (0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
 	}
 	
 	@Override
@@ -111,12 +111,12 @@ public class ProPurchaseOption
 		return hitPoints;
 	}
 	
-	public int getAttack()
+	public double getAttack()
 	{
 		return attack;
 	}
 	
-	public int getDefense()
+	public double getDefense()
 	{
 		return defense;
 	}

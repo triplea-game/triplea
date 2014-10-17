@@ -189,11 +189,15 @@ public class ProAI extends StrongAI
 			LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
 			
 			// Setup data copy and delegates
-			final GameData dataCopy;
+			GameData dataCopy;
 			try
 			{
 				data.acquireReadLock();
 				dataCopy = GameDataUtils.cloneGameData(data, true);
+			} catch (final Throwable t)
+			{
+				LogUtils.log(Level.WARNING, "Error trying to clone game data for simulating phases", t);
+				return;
 			} finally
 			{
 				data.releaseReadLock();
@@ -259,11 +263,6 @@ public class ProAI extends StrongAI
 		else
 		{
 			purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
-			if (placeDelegate.getPlacementsMade() == 0)
-			{
-				LogUtils.log(Level.WARNING, "Unable to place any units so reverting to use medium AI place methods");
-				super.place(bid, placeDelegate, data, player);
-			}
 		}
 	}
 	

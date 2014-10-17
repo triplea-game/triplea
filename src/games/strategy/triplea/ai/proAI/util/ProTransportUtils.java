@@ -79,12 +79,15 @@ public class ProTransportUtils
 			// Check to see which have higher land move value
 			for (final Unit u : units)
 			{
-				for (final Territory t : unitMoveMap.get(u))
+				if (unitMoveMap.get(u) != null)
 				{
-					if (moveMap.get(t) != null && moveMap.get(t).getValue() >= value)
+					for (final Territory t : unitMoveMap.get(u))
 					{
-						unitsToIgnoreOrHaveBetterLandMove.add(u);
-						break;
+						if (moveMap.get(t) != null && moveMap.get(t).getValue() >= value)
+						{
+							unitsToIgnoreOrHaveBetterLandMove.add(u);
+							break;
+						}
 					}
 				}
 			}
