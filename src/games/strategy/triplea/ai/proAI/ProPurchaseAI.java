@@ -189,7 +189,7 @@ public class ProPurchaseAI
 		
 		// Prioritize sea place options and purchase units
 		final List<ProPlaceTerritory> prioritizedSeaTerritories = prioritizeSeaTerritories(purchaseTerritories);
-		PUsRemaining = purchaseSeaUnits(purchaseTerritories, enemyAttackMap, prioritizedSeaTerritories, PUsRemaining, seaPurchaseOptions, landPurchaseOptions);
+		PUsRemaining = purchaseSeaUnits(purchaseTerritories, enemyAttackMap, prioritizedSeaTerritories, territoryValueMap, PUsRemaining, seaPurchaseOptions, landPurchaseOptions);
 		
 		// Try to use any remaining PUs
 		PUsRemaining = purchaseAttackUnitsWithRemainingProduction(purchaseTerritories, PUsRemaining, landPurchaseOptions, airPurchaseOptions);
@@ -1042,12 +1042,12 @@ public class ProPurchaseAI
 	}
 	
 	private int purchaseSeaUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
-				final List<ProPlaceTerritory> prioritizedSeaTerritories, int PUsRemaining, final List<ProPurchaseOption> seaPurchaseOptions, final List<ProPurchaseOption> landPurchaseOptions)
+				final List<ProPlaceTerritory> prioritizedSeaTerritories, final Map<Territory, Double> territoryValueMap, int PUsRemaining, final List<ProPurchaseOption> seaPurchaseOptions,
+				final List<ProPurchaseOption> landPurchaseOptions)
 	{
 		LogUtils.log(Level.FINE, "Purchase sea units with PUsRemaining=" + PUsRemaining);
 		
 		// Loop through prioritized territories and purchase sea units
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>());
 		for (final ProPlaceTerritory placeTerritory : prioritizedSeaTerritories)
 		{
 			final Territory t = placeTerritory.getTerritory();
@@ -1147,26 +1147,38 @@ public class ProPurchaseAI
 				}
 			}
 			
-			// Make sure to have local naval superiority
-			final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 4);
+			// Find nearby naval/air units
+			int landDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, t);
+			if (landDistance <= 0)
+				landDistance = 10;
+			final int enemyDistance = Math.max(4, (landDistance + 2));
+			final int alliedDistance = enemyDistance / 2;
+			final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, enemyDistance);
 			final List<Territory> nearbyLandTerritories = Match.getMatches(nearbyTerritories, Matches.TerritoryIsLand);
-			final Set<Territory> nearbySeaTerritories = data.getMap().getNeighbors(t, 4, Matches.TerritoryIsWater);
-			nearbySeaTerritories.add(t);
+			final Set<Territory> nearbyEnemySeaTerritories = data.getMap().getNeighbors(t, enemyDistance, Matches.TerritoryIsWater);
+			nearbyEnemySeaTerritories.add(t);
+			final Set<Territory> nearbyAlliedSeaTerritories = data.getMap().getNeighbors(t, alliedDistance, Matches.TerritoryIsWater);
+			nearbyAlliedSeaTerritories.add(t);
 			final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<Unit>();
 			final List<Unit> enemyUnitsInLandTerritories = new ArrayList<Unit>();
-			final List<Unit> myUnitsInSeaTerritories = new ArrayList<Unit>();
-			final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<Unit>();
+			List<Unit> myUnitsInSeaTerritories = new ArrayList<Unit>();
+			List<Unit> alliedUnitsInSeaTerritories = new ArrayList<Unit>();
 			for (final Territory nearbyLandTerritory : nearbyLandTerritories)
-			{
 				enemyUnitsInLandTerritories.addAll(nearbyLandTerritory.getUnits().getMatches(ProMatches.unitIsEnemyAir(player, data)));
-			}
-			for (final Territory nearbySeaTerritory : nearbySeaTerritories)
-			{
+			for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories)
 				enemyUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotLand(player, data)));
+			for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories)
+			{
 				myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
 				myUnitsInSeaTerritories.addAll(getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
 				alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
 			}
+			myUnitsInSeaTerritories = Match.getMatches(myUnitsInSeaTerritories, Matches.UnitIsNotTransportButCouldBeCombatTransport);
+			alliedUnitsInSeaTerritories = Match.getMatches(alliedUnitsInSeaTerritories, Matches.UnitIsNotTransportButCouldBeCombatTransport);
+			LogUtils.log(Level.FINEST, t + ", enemyDistance=" + enemyDistance + ", alliedDistance=" + alliedDistance + ", enemyAirUnits=" + enemyUnitsInLandTerritories
+						+ ", enemySeaUnits=" + enemyUnitsInSeaTerritories + ", mySeaUnits=" + myUnitsInSeaTerritories);
+			
+			// Purchase naval defenders unit I have local naval superiority
 			while (true)
 			{
 				// If out of PUs or production then break

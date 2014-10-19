@@ -131,7 +131,7 @@ public class ProTerritoryValueUtils
 				double capitalOrFactoryValue = 0;
 				for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet())
 				{
-					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, enemyCapitalOrFactory, ProMatches.territoryCanMoveSeaUnits(player, data, false));
+					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, enemyCapitalOrFactory, Matches.TerritoryIsWater);
 					if (distance > 0)
 					{
 						capitalOrFactoryValue += (enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(3, distance));
@@ -144,7 +144,7 @@ public class ProTerritoryValueUtils
 				final List<Territory> nearbyLandTerritories = Match.getMatches(nearbyTerritories, ProMatches.territoryCanMoveLandUnits(player, data, false));
 				for (final Territory nearbyLandTerritory : nearbyLandTerritories)
 				{
-					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyLandTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, false));
+					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyLandTerritory, Matches.TerritoryIsWater);
 					if (distance > 0 && distance <= 3)
 					{
 						final int isNeutral = nearbyLandTerritory.getOwner().isNull() ? 1 : 0;
