@@ -74,8 +74,8 @@ public class ProPurchaseOption
 		hitPointEfficiency = (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
 		if (isInfra)
 			hitPointEfficiency = 0;
-		attackEfficiency = (1 + hitPoints) * (attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
-		defenseEfficiency = (1 + hitPoints) * (0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
+		attackEfficiency = (1 + hitPoints) * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
+		defenseEfficiency = (1 + hitPoints) * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
 	}
 	
 	@Override

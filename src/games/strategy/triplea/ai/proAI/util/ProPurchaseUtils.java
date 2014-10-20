@@ -76,7 +76,7 @@ public class ProPurchaseUtils
 				specialPurchaseOptions.add(purchaseOption);
 				LogUtils.log(Level.FINER, "Special: " + purchaseOption);
 			}
-			else if (Matches.UnitTypeCanProduceUnits.match(unitType))
+			else if (Matches.UnitTypeCanProduceUnits.match(unitType) && Matches.UnitTypeIsInfrastructure.match(unitType))
 			{
 				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
 				factoryPurchaseOptions.add(purchaseOption);

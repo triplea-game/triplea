@@ -7,6 +7,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProBattleResultData;
+import games.strategy.triplea.ai.proAI.ProPlaceTerritory;
+import games.strategy.triplea.ai.proAI.ProPurchaseTerritory;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -16,7 +18,9 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -180,6 +184,11 @@ public class ProBattleUtils
 	
 	public boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player)
 	{
+		return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<Territory, ProPurchaseTerritory>());
+	}
+	
+	public boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player, final Map<Territory, ProPurchaseTerritory> purchaseTerritories)
+	{
 		final GameData data = ai.getGameData();
 		
 		// Find enemy strength
@@ -195,6 +204,14 @@ public class ProBattleUtils
 		final List<Unit> alliedUnits = new ArrayList<Unit>();
 		for (final Territory nearbyTerritory : nearbyTerritoriesForAllied)
 			alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsAlliedLand(player, data)));
+		for (final Territory purchaseTerritory : purchaseTerritories.keySet())
+		{
+			for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
+			{
+				if (nearbyTerritoriesForAllied.contains(ppt.getTerritory()))
+					alliedUnits.addAll(ppt.getPlaceUnits());
+			}
+		}
 		
 		// Determine strength difference
 		final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
