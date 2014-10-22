@@ -62,7 +62,7 @@ public class ProAI extends StrongAI
 {
 	private final static Logger s_logger = Logger.getLogger(ProAI.class.getName());
 	
-	private static final IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
+	private final static IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
 	
 	// Utilities
 	private final ProUtils utils;

@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -37,6 +38,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -215,26 +217,53 @@ public class ProPurchaseAI
 	{
 		LogUtils.log(Level.FINE, "Starting place phase");
 		
-		// Place all units calculated during purchase phase
+		// Place all units calculated during purchase phase (land then sea to reduce failed placements)
 		for (final Territory t : purchaseTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
 			{
-				final Collection<Unit> myUnits = player.getUnits().getUnits();
-				final Collection<Unit> unitsToPlace = new ArrayList<Unit>();
-				for (final Unit placeUnit : ppt.getPlaceUnits())
+				if (!ppt.getTerritory().isWater())
 				{
-					for (final Unit myUnit : myUnits)
+					final Collection<Unit> myUnits = player.getUnits().getUnits();
+					final List<Unit> unitsToPlace = new ArrayList<Unit>();
+					for (final Unit placeUnit : ppt.getPlaceUnits())
 					{
-						if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit))
+						for (final Unit myUnit : myUnits)
 						{
-							unitsToPlace.add(myUnit);
-							break;
+							if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit))
+							{
+								unitsToPlace.add(myUnit);
+								break;
+							}
 						}
 					}
+					doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
+					LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
 				}
-				doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
-				LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
+			}
+		}
+		for (final Territory t : purchaseTerritories.keySet())
+		{
+			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
+			{
+				if (ppt.getTerritory().isWater())
+				{
+					final Collection<Unit> myUnits = player.getUnits().getUnits();
+					final List<Unit> unitsToPlace = new ArrayList<Unit>();
+					for (final Unit placeUnit : ppt.getPlaceUnits())
+					{
+						for (final Unit myUnit : myUnits)
+						{
+							if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit))
+							{
+								unitsToPlace.add(myUnit);
+								break;
+							}
+						}
+					}
+					doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
+					LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
+				}
 			}
 		}
 		
@@ -1174,7 +1203,19 @@ public class ProPurchaseAI
 			for (final Territory nearbyLandTerritory : nearbyLandTerritories)
 				enemyUnitsInLandTerritories.addAll(nearbyLandTerritory.getUnits().getMatches(ProMatches.unitIsEnemyAir(player, data)));
 			for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories)
-				enemyUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotLand(player, data)));
+			{
+				final List<Unit> enemySeaUnits = nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotLand(player, data));
+				if (enemySeaUnits.isEmpty())
+					continue;
+				final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbySeaTerritory, Matches.TerritoryIsWater);
+				if (route == null)
+					continue;
+				if (MoveValidator.validateCanal(route, enemySeaUnits, enemySeaUnits.get(0).getOwner(), data) != null)
+					continue;
+				final int routeLength = route.numberOfSteps();
+				if (routeLength <= enemyDistance)
+					enemyUnitsInSeaTerritories.addAll(enemySeaUnits);
+			}
 			for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories)
 			{
 				myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
@@ -1780,13 +1821,18 @@ public class ProPurchaseAI
 		return placeUnits;
 	}
 	
-	private void doPlace(final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del)
+	private void doPlace(final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del)
 	{
-		final String message = del.placeUnits(new ArrayList<Unit>(toPlace), where);
-		if (message != null)
+		for (final Unit unit : toPlace)
 		{
-			LogUtils.log(Level.WARNING, message);
-			LogUtils.log(Level.WARNING, "Attempt was at: " + where + " with: " + toPlace);
+			final List<Unit> unitList = new ArrayList<Unit>();
+			unitList.add(unit);
+			final String message = del.placeUnits(unitList, t);
+			if (message != null)
+			{
+				LogUtils.log(Level.WARNING, message);
+				LogUtils.log(Level.WARNING, "Attempt was at: " + t + " with: " + unit);
+			}
 		}
 		utils.pause();
 	}

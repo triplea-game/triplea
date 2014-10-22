@@ -4,6 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -15,12 +16,14 @@ import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
@@ -48,10 +51,6 @@ import java.util.logging.Level;
 
 /**
  * Pro AI simulate turn utilities.
- * 
- * <ol>
- * <li>Fix territory ownership change for recaptured allied capitals</li>
- * </ol>
  * 
  * @author Ron Murhammer
  * @since 2014
@@ -104,9 +103,8 @@ public class ProSimulateTurnUtils
 				final Change defenderskilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
 				delegateBridge.addChange(defenderskilledChange);
 				BattleTracker.captureOrDestroyUnits(t, player, player, delegateBridge, null, remainingUnits);
-				// final Change infrastructureOwnerChange = ChangeFactory.changeOwner(infrastructureToChangeOwner, player, t);
-				// delegateBridge.addChange(infrastructureOwnerChange);
-				delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
+				if (!checkIfCapturedTerritoryIsAlliedCapital(t, data, player, delegateBridge))
+					delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
 				battleDelegate.getBattleTracker().getConquered().add(t);
 				final Territory updatedTerritory = data.getMap().getTerritory(t.getName());
 				LogUtils.log(Level.FINER, "after changes owner=" + updatedTerritory.getOwner() + ", units=" + updatedTerritory.getUnits().getUnits());
@@ -165,6 +163,36 @@ public class ProSimulateTurnUtils
 		}
 		
 		return result;
+	}
+	
+	private boolean checkIfCapturedTerritoryIsAlliedCapital(final Territory t, final GameData data, final PlayerID player, final IDelegateBridge delegateBridge)
+	{
+		final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
+		final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
+		final TerritoryAttachment ta = TerritoryAttachment.get(t);
+		if (ta != null && ta.getCapital() != null && terrOrigOwner != null && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(t)
+					&& relationshipTracker.isAllied(terrOrigOwner, player))
+		{
+			// Give capital and any allied territories back to original owner
+			final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
+			final List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+			friendlyTerritories.add(t);
+			for (final Territory item : friendlyTerritories)
+			{
+				if (item.getOwner() == terrOrigOwner)
+					continue;
+				final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
+				delegateBridge.addChange(takeOverFriendlyTerritories);
+				final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsInfrastructure);
+				if (!units.isEmpty())
+				{
+					final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, t);
+					delegateBridge.addChange(takeOverNonComUnits);
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	private Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits, final GameData toData, final PlayerID player)
