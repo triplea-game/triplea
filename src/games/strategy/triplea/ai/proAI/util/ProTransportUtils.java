@@ -93,7 +93,7 @@ public class ProTransportUtils
 			}
 		}
 		
-		return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnore);
+		return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnoreOrHaveBetterLandMove);
 	}
 	
 	public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore)

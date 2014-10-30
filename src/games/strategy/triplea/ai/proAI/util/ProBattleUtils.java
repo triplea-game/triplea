@@ -196,14 +196,14 @@ public class ProBattleUtils
 		nearbyTerritoriesForEnemy.add(t);
 		final List<Unit> enemyUnits = new ArrayList<Unit>();
 		for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy)
-			enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutralLand(player, data)));
+			enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
 		
 		// Find allied strength
 		final Set<Territory> nearbyTerritoriesForAllied = data.getMap().getNeighbors(t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
 		nearbyTerritoriesForAllied.add(t);
 		final List<Unit> alliedUnits = new ArrayList<Unit>();
 		for (final Territory nearbyTerritory : nearbyTerritoriesForAllied)
-			alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsAlliedLand(player, data)));
+			alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.isUnitAllied(player, data)));
 		for (final Territory purchaseTerritory : purchaseTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())

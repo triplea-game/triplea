@@ -661,7 +661,7 @@ public class ProPurchaseAI
 			}
 			
 			// Check to see if its worth trying to defend the territory
-			if (!finalResult.isHasLandUnitRemaining() || finalResult.getTUVSwing() < placeTerritory.getMinBattleResult().getTUVSwing() || t.equals(myCapital))
+			if (!finalResult.isHasLandUnitRemaining() || (finalResult.getTUVSwing() - PUsSpent / 2) < placeTerritory.getMinBattleResult().getTUVSwing() || t.equals(myCapital))
 			{
 				PUsRemaining -= PUsSpent;
 				LogUtils.log(Level.FINEST, t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing());
@@ -671,7 +671,7 @@ public class ProPurchaseAI
 			{
 				setCantHoldPlaceTerritory(placeTerritory, purchaseTerritories);
 				LogUtils.log(Level.FINEST, t + ", unable to defend with placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing() + ", minTUVSwing="
-							+ placeTerritory.getMinBattleResult().getTUVSwing());
+							+ placeTerritory.getMinBattleResult().getTUVSwing() + ", PUsSpent=" + PUsSpent);
 			}
 		}
 		
@@ -1048,13 +1048,21 @@ public class ProPurchaseAI
 			}
 		}
 		
-		// Calculate value of defending territory
-		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
+		// Calculate value of territory
+		// final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
+		LogUtils.log(Level.FINER, "Determine sea place value:");
 		for (final ProPlaceTerritory placeTerritory : seaPlaceTerritories)
 		{
 			// Calculate defense value for prioritization
-			final int defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), playerCostMap);
-			final double territoryValue = placeTerritory.getStrategicValue() + 0.1 * defendingUnitValue;
+			final List<Unit> units = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
+			units.addAll(placeTerritory.getPlaceUnits());
+			final List<Unit> myUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
+			final int numMyTransports = Match.countMatches(myUnits, Matches.UnitIsTransport);
+			final int numSeaDefenders = Match.countMatches(units, Matches.UnitIsNotTransport);
+			// final int defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), playerCostMap);
+			final double territoryValue = placeTerritory.getStrategicValue() * (1 + numMyTransports + 0.1 * numSeaDefenders);
+			LogUtils.log(Level.FINER, placeTerritory.toString() + ", seaValue=" + placeTerritory.getStrategicValue() + ", strategicValue=" + placeTerritory.getStrategicValue() + ", numMyTransports="
+						+ numMyTransports + ", numSeaDefenders=" + numSeaDefenders);
 			placeTerritory.setStrategicValue(territoryValue);
 		}
 		
@@ -1069,7 +1077,7 @@ public class ProPurchaseAI
 				return Double.compare(value2, value1);
 			}
 		});
-		
+		LogUtils.log(Level.FINER, "Sorted sea territories:");
 		for (final ProPlaceTerritory placeTerritory : sortedTerritories)
 			LogUtils.log(Level.FINER, placeTerritory.toString() + " seaValue=" + placeTerritory.getStrategicValue());
 		
@@ -1235,6 +1243,7 @@ public class ProPurchaseAI
 				// Find current naval defense strength
 				final List<Unit> myUnits = new ArrayList<Unit>(myUnitsInSeaTerritories);
 				myUnits.addAll(unitsToPlace);
+				myUnits.addAll(alliedUnitsInSeaTerritories);
 				final List<Unit> enemyAttackers = new ArrayList<Unit>(enemyUnitsInSeaTerritories);
 				enemyAttackers.addAll(enemyUnitsInLandTerritories);
 				final double defenseStrengthDifference = battleUtils.estimateStrengthDifference(t, enemyAttackers, myUnits);

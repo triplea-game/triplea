@@ -477,19 +477,6 @@ public class ProMatches
 		};
 	}
 	
-	public static Match<Unit> unitIsAlliedLand(final PlayerID player, final GameData data)
-	{
-		return new Match<Unit>()
-		{
-			@Override
-			public boolean match(final Unit u)
-			{
-				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.isUnitAllied(player, data));
-				return match.match(u);
-			}
-		};
-	}
-	
 	public static Match<Unit> unitIsAlliedLandAndNotInfra(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -497,7 +484,7 @@ public class ProMatches
 			@Override
 			public boolean match(final Unit u)
 			{
-				final Match<Unit> match = new CompositeMatchAnd<Unit>(unitIsAlliedLand(player, data), Matches.UnitIsNotInfrastructure);
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.isUnitAllied(player, data), Matches.UnitIsNotInfrastructure);
 				return match.match(u);
 			}
 		};
@@ -581,14 +568,14 @@ public class ProMatches
 		};
 	}
 	
-	public static Match<Unit> unitIsEnemyNotNeutralLand(final PlayerID player, final GameData data)
+	public static Match<Unit> unitIsEnemyNotNeutral(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
 		{
 			@Override
 			public boolean match(final Unit u)
 			{
-				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsLand, unitIsNeutral().invert());
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), unitIsNeutral().invert());
 				return match.match(u);
 			}
 		};

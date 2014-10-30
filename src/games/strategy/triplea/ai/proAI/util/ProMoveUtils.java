@@ -168,6 +168,7 @@ public class ProMoveUtils
 						final Set<Territory> neighbors = data.getMap().getNeighbors(transportTerritory, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
 						Territory territoryToMoveTo = null;
 						int minUnitDistance = Integer.MAX_VALUE;
+						int maxDistanceFromEnd = Integer.MIN_VALUE; // Used to move to farthest away loading territory first
 						for (final Territory neighbor : neighbors)
 						{
 							if (MoveValidator.validateCanal(new Route(transportTerritory, neighbor), Collections.singletonList(transport), player, data) != null)
@@ -186,10 +187,12 @@ public class ProMoveUtils
 								if (distance > maxUnitDistance)
 									maxUnitDistance = distance;
 							}
-							if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance < minUnitDistance && distanceFromUnloadTerritory < movesLeft)
+							if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance <= minUnitDistance && distanceFromUnloadTerritory < movesLeft
+										&& (maxUnitDistance < minUnitDistance || neighborDistanceFromEnd > maxDistanceFromEnd))
 							{
 								territoryToMoveTo = neighbor;
 								minUnitDistance = maxUnitDistance;
+								maxDistanceFromEnd = neighborDistanceFromEnd;
 							}
 						}
 						if (territoryToMoveTo != null)

@@ -25,18 +25,19 @@ public class ProAmphibData
 {
 	private Unit transport;
 	private Map<Territory, Set<Territory>> transportMap;
+	private Map<Territory, Set<Territory>> seaTransportMap;
 	
 	public ProAmphibData(final Unit transport)
 	{
 		this.transport = transport;
 		transportMap = new HashMap<Territory, Set<Territory>>();
+		seaTransportMap = new HashMap<Territory, Set<Territory>>();
 	}
 	
 	public void addTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories)
 	{
 		for (final Territory attackTerritory : attackTerritories)
 		{
-			// Populate enemy territories with sea unit
 			if (transportMap.containsKey(attackTerritory))
 			{
 				transportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
@@ -50,14 +51,21 @@ public class ProAmphibData
 		}
 	}
 	
-	public void setTransportMap(final Map<Territory, Set<Territory>> transportMap)
+	public void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories)
 	{
-		this.transportMap = transportMap;
-	}
-	
-	public Map<Territory, Set<Territory>> getTransportMap()
-	{
-		return transportMap;
+		for (final Territory attackTerritory : attackTerritories)
+		{
+			if (seaTransportMap.containsKey(attackTerritory))
+			{
+				seaTransportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
+			}
+			else
+			{
+				final Set<Territory> territories = new HashSet<Territory>();
+				territories.addAll(myUnitsToLoadTerritories);
+				seaTransportMap.put(attackTerritory, territories);
+			}
+		}
 	}
 	
 	public void setTransport(final Unit transport)
@@ -68,6 +76,26 @@ public class ProAmphibData
 	public Unit getTransport()
 	{
 		return transport;
+	}
+	
+	public void setTransportMap(final Map<Territory, Set<Territory>> transportMap)
+	{
+		this.transportMap = transportMap;
+	}
+	
+	public Map<Territory, Set<Territory>> getTransportMap()
+	{
+		return transportMap;
+	}
+	
+	public void setSeaTransportMap(final Map<Territory, Set<Territory>> seaTransportMap)
+	{
+		this.seaTransportMap = seaTransportMap;
+	}
+	
+	public Map<Territory, Set<Territory>> getSeaTransportMap()
+	{
+		return seaTransportMap;
 	}
 	
 }

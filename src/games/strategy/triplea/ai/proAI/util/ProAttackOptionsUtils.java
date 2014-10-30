@@ -572,7 +572,8 @@ public class ProAttackOptionsUtils
 						if (!units.isEmpty())
 						{
 							// Find all water territories I can move to
-							final Set<Territory> possibleMoveTerritories = new HashSet<Territory>();
+							final Set<Territory> seaMoveTerritories = new HashSet<Territory>();
+							seaMoveTerritories.add(currentTerritory);
 							if (movesLeft > 0)
 							{
 								Set<Territory> neighborTerritories = data.getMap().getNeighbors(currentTerritory, movesLeft, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
@@ -585,20 +586,18 @@ public class ProAttackOptionsUtils
 										continue;
 									if (MoveValidator.validateCanal(myRoute, Collections.singletonList(myTransportUnit), player, data) != null)
 										continue;
-									possibleMoveTerritories.add(neighborTerritory);
+									seaMoveTerritories.add(neighborTerritory);
 								}
 							}
-							possibleMoveTerritories.add(currentTerritory);
 							
-							// Loop through possible unload territories
-							final Set<Territory> moveTerritories = new HashSet<Territory>();
-							for (final Territory possibleUnloadTerritory : possibleMoveTerritories)
-							{
-								moveTerritories.addAll(data.getMap().getNeighbors(possibleUnloadTerritory, unloadAmphibTerritoryMatch));
-							}
+							// Find possible unload territories
+							final Set<Territory> amphibTerritories = new HashSet<Territory>();
+							for (final Territory seaMoveTerritory : seaMoveTerritories)
+								amphibTerritories.addAll(data.getMap().getNeighbors(seaMoveTerritory, unloadAmphibTerritoryMatch));
 							
 							// Add to transport map
-							proTransportData.addTerritories(moveTerritories, myUnitsToLoadTerritories);
+							proTransportData.addTerritories(amphibTerritories, myUnitsToLoadTerritories);
+							proTransportData.addSeaTerritories(seaMoveTerritories, myUnitsToLoadTerritories);
 						}
 					}
 					currentTerritories.clear();
