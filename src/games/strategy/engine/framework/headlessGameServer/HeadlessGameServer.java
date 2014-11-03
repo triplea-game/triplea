@@ -74,6 +74,7 @@ public class HeadlessGameServer
 	@SuppressWarnings("deprecation")
 	private final String m_startDate = new Date().toGMTString();
 	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 21600;
+	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 43200;
 	private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 	
 	public static String[] getProperties()
@@ -309,29 +310,33 @@ public class HeadlessGameServer
 		final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
 		if (encryptedPassword.equals(hashedPassword))
 		{
-			(new Thread(new Runnable()
+			final ServerGame iGame = m_iGame;
+			if (iGame != null)
 			{
-				public void run()
+				(new Thread(new Runnable()
 				{
-					System.out.println("Remote Stop Game Initiated.");
-					SaveGameFileChooser.ensureDefaultDirExists();
-					final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-					final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
-					final File f;
-					if (f1.lastModified() > f2.lastModified())
-						f = f2;
-					else
-						f = f1;
-					try
+					public void run()
 					{
-						m_iGame.saveGame(f);
-					} catch (final Exception e)
-					{
-						e.printStackTrace();
+						System.out.println("Remote Stop Game Initiated.");
+						SaveGameFileChooser.ensureDefaultDirExists();
+						final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+						final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+						final File f;
+						if (f1.lastModified() > f2.lastModified())
+							f = f2;
+						else
+							f = f1;
+						try
+						{
+							iGame.saveGame(f);
+						} catch (final Exception e)
+						{
+							e.printStackTrace();
+						}
+						iGame.stopGame();
 					}
-					m_iGame.stopGame();
-				}
-			})).start();
+				})).start();
+			}
 			return null;
 		}
 		System.out.println("Attempted remote stop game with invalid password.");
@@ -600,7 +605,7 @@ public class HeadlessGameServer
 		try
 		{
 			final String reconnectionSeconds = System.getProperty(GameRunner2.LOBBY_GAME_RECONNECTION, "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-			reconnect = Math.max(Integer.parseInt(reconnectionSeconds), LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+			reconnect = Math.max(Integer.parseInt(reconnectionSeconds), LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
 		} catch (final NumberFormatException e)
 		{
 			reconnect = LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
@@ -616,7 +621,7 @@ public class HeadlessGameServer
 				{
 					try
 					{
-						Thread.sleep(5 * 60 * 1000);
+						Thread.sleep(10 * 60 * 1000);
 					} catch (final InterruptedException e1)
 					{
 					}
@@ -1029,15 +1034,15 @@ public class HeadlessGameServer
 			try
 			{
 				final int reconnect = Integer.parseInt(reconnection);
-				if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT)
+				if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM)
 				{
-					System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
+					System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
 								+ " seconds.");
 					printUsage = true;
 				}
 			} catch (final NumberFormatException e)
 			{
-				System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
+				System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
 							+ " seconds.");
 				printUsage = true;
 			}

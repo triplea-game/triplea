@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
@@ -56,7 +57,7 @@ public class GameDataManagerTest extends TestCase
 		final URL url = SerializationTest.class.getResource("Test.xml");
 		// get the source data
 		final InputStream input = url.openStream();
-		(new GameParser()).parse(input, false);
+		(new GameParser()).parse(input, new AtomicReference<String>(), false);
 	}
 	
 	public void testLoadStoreKeepsGamUUID() throws IOException

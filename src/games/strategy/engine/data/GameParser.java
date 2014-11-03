@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,12 +70,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * 
- * 
- * 
  * @author Sean Bridges
  * @version 1.0
- * 
  */
 public class GameParser
 {
@@ -100,10 +97,13 @@ public class GameParser
 	 * @throws SAXException
 	 * @throws EngineVersionException
 	 */
-	public synchronized GameData parse(final InputStream stream, final boolean delayParsing) throws GameParseException, SAXException, EngineVersionException
+	public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName, final boolean delayParsing)
+				throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException
 	{
 		if (stream == null)
+		{
 			throw new IllegalArgumentException("Stream must be non null");
+		}
 		Document doc = null;
 		try
 		{
@@ -119,6 +119,8 @@ public class GameParser
 		data = new GameData();
 		// mandatory fields
 		parseInfo(getSingleChild("info", root)); // get the name of the map
+		if (gameName != null)
+			gameName.set(data.getGameName());
 		parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true)); // test minimum engine version FIRST
 		parseGameLoader(getSingleChild("loader", root));
 		// if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and see if we have any SAX errors we need to show
@@ -136,39 +138,61 @@ public class GameParser
 		parseAlliances(playerListNode);
 		final Node properties = getSingleChild("propertyList", root, true);
 		if (properties != null)
+		{
 			parseProperties(properties);
+		}
 		// everything until here is needed to select a game, the rest can be parsed when a game is selected
 		if (delayParsing)
+		{
 			return data;
+		}
 		parseMap(getSingleChild("map", root));
 		final Element resourceList = getSingleChild("resourceList", root, true);
 		if (resourceList != null)
+		{
 			parseResources(resourceList);
+		}
 		final Element unitList = getSingleChild("unitList", root, true);
 		if (unitList != null)
+		{
 			parseUnits(unitList);
+		}
 		// Parse all different relationshipTypes that are defined in the xml, for example: War, Allied, Neutral, NAP
 		final Element relationshipTypes = getSingleChild("relationshipTypes", root, true);
 		if (relationshipTypes != null)
+		{
 			parseRelationshipTypes(relationshipTypes);
+		}
 		final Element territoryEffectList = getSingleChild("territoryEffectList", root, true);
 		if (territoryEffectList != null)
+		{
 			parseTerritoryEffects(territoryEffectList);
+		}
 		parseGamePlay(getSingleChild("gamePlay", root));
 		final Element production = getSingleChild("production", root, true);
 		if (production != null)
+		{
 			parseProduction(production);
+		}
 		final Element technology = getSingleChild("technology", root, true);
 		if (technology != null)
+		{
 			parseTechnology(technology);
+		}
 		else
+		{
 			TechAdvance.createDefaultTechAdvances(data);
+		}
 		final Element attachmentList = getSingleChild("attatchmentList", root, true);
 		if (attachmentList != null)
+		{
 			parseAttachments(attachmentList);
+		}
 		final Node initialization = getSingleChild("initialize", root, true);
 		if (initialization != null)
+		{
 			parseInitialization(initialization);
+		}
 		// set & override default relationships
 		data.getRelationshipTracker().setNullPlayerRelations(); // sets the relationship between all players and the NullPlayer to NullRelation (with archeType War)
 		data.getRelationshipTracker().setSelfRelations(); // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
@@ -192,15 +216,21 @@ public class GameParser
 	private void parseDiceSides(final Node diceSides)
 	{
 		if (diceSides == null)
+		{
 			data.setDiceSides(6);
+		}
 		else
+		{
 			data.setDiceSides(Integer.parseInt(((Element) diceSides).getAttribute("value")));
+		}
 	}
 	
 	private void parseMinimumEngineVersionNumber(final Node minimumVersion) throws EngineVersionException
 	{
 		if (minimumVersion == null)
+		{
 			return;
+		}
 		final Version mapCompatibleWithTripleaVersion = new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
 		if (mapCompatibleWithTripleaVersion.isGreaterThan(EngineVersion.VERSION, true))
 		{
@@ -254,8 +284,10 @@ public class GameParser
 			{
 				// See if there is a relationship between them
 				if ((data.getRelationshipTracker().getRelationshipType(player, player2) == null))
+				{
 					throw new GameParseException("No relation set for: " + player.getName() + " and " + player2.getName());
-				// or else throw an exception!
+					// or else throw an exception!
+				}
 			}
 		}
 	}
@@ -305,7 +337,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final PlayerID player = data.getPlayerList().getPlayerID(name);
 		if (player == null && mustFind)
+		{
 			throw new GameParseException("Could not find player. name:" + name);
+		}
 		return player;
 	}
 	
@@ -321,7 +355,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final RelationshipType relation = data.getRelationshipTypeList().getRelationshipType(name);
 		if (relation == null && mustFind)
+		{
 			throw new GameParseException("Could not find relation name:" + name);
+		}
 		return relation;
 	}
 	
@@ -330,7 +366,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final TerritoryEffect effect = data.getTerritoryEffectList().get(name);
 		if (effect == null && mustFind)
+		{
 			throw new GameParseException("Could not find territoryEffect name:" + name);
+		}
 		return effect;
 	}
 	
@@ -342,7 +380,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(name);
 		if (productionRule == null && mustFind)
+		{
 			throw new GameParseException("Could not find production rule. name:" + name);
+		}
 		return productionRule;
 	}
 	
@@ -354,7 +394,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final RepairRule repairRule = data.getRepairRuleList().getRepairRule(name);
 		if (repairRule == null && mustFind)
+		{
 			throw new GameParseException("Could not find production rule. name:" + name);
+		}
 		return repairRule;
 	}
 	
@@ -366,7 +408,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final Territory territory = data.getMap().getTerritory(name);
 		if (territory == null && mustFind)
+		{
 			throw new GameParseException("Could not find territory. name:" + name);
+		}
 		return territory;
 	}
 	
@@ -378,7 +422,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final UnitType type = data.getUnitTypeList().getUnitType(name);
 		if (type == null && mustFind)
+		{
 			throw new GameParseException("Could not find unitType. name:" + name);
+		}
 		return type;
 	}
 	
@@ -390,9 +436,13 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		TechAdvance type = data.getTechnologyFrontier().getAdvanceByName(name);
 		if (type == null)
+		{
 			type = data.getTechnologyFrontier().getAdvanceByProperty(name);
+		}
 		if (type == null && mustFind)
+		{
 			throw new GameParseException("Could not find technology. name:" + name);
+		}
 		return type;
 	}
 	
@@ -404,7 +454,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final IDelegate delegate = data.getDelegateList().getDelegate(name);
 		if (delegate == null && mustFind)
+		{
 			throw new GameParseException("Could not find delegate. name:" + name);
+		}
 		return delegate;
 	}
 	
@@ -416,7 +468,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final Resource resource = data.getResourceList().getResource(name);
 		if (resource == null && mustFind)
+		{
 			throw new GameParseException("Could not find resource. name:" + name);
+		}
 		return resource;
 	}
 	
@@ -428,7 +482,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final ProductionFrontier productionFrontier = data.getProductionFrontierList().getProductionFrontier(name);
 		if (productionFrontier == null && mustFind)
+		{
 			throw new GameParseException("Could not find production frontier. name:" + name);
+		}
 		return productionFrontier;
 	}
 	
@@ -440,7 +496,9 @@ public class GameParser
 		final String name = element.getAttribute(attribute);
 		final RepairFrontier repairFrontier = data.getRepairFrontierList().getRepairFrontier(name);
 		if (repairFrontier == null && mustFind)
+		{
 			throw new GameParseException("Could not find production frontier. name:" + name);
+		}
 		return repairFrontier;
 	}
 	
@@ -491,7 +549,9 @@ public class GameParser
 			}
 			final String newClassName = newClassesForOldNames.get(className);
 			if (newClassName != null)
+			{
 				return getClassByName(newClassName);
+			}
 			throw new GameParseException("Class <" + className + "> could not be found.");
 		}
 	}
@@ -515,7 +575,9 @@ public class GameParser
 		if (children.size() == 0)
 		{
 			if (optional)
+			{
 				return null;
+			}
 			throw new GameParseException("No child called " + name);
 		}
 		// too many found
@@ -534,7 +596,9 @@ public class GameParser
 		{
 			final Node current = children.item(i);
 			if (current.getNodeName().equals(name))
+			{
 				found.add((Element) current);
+			}
 		}
 		return found;
 	}
@@ -561,7 +625,9 @@ public class GameParser
 		{
 			final Node current = children.item(i);
 			if (!(current.getNodeType() == Node.TEXT_NODE))
+			{
 				found.add(current);
+			}
 		}
 		return found;
 	}
@@ -622,34 +688,56 @@ public class GameParser
 		final GameMap map = data.getMap();
 		boolean horizontalConnectionsImplict;
 		if (horizontalConnections.equals("implicit"))
+		{
 			horizontalConnectionsImplict = true;
+		}
 		else if (horizontalConnections.equals("explicit"))
+		{
 			horizontalConnectionsImplict = false;
+		}
 		else
+		{
 			throw new GameParseException("horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
+		}
 		
 		boolean verticalConnectionsImplict;
 		if (verticalConnections.equals("implicit"))
+		{
 			verticalConnectionsImplict = true;
+		}
 		else if (verticalConnections.equals("explicit"))
+		{
 			verticalConnectionsImplict = false;
+		}
 		else
+		{
 			throw new GameParseException("vertical-connections attribute must be either \"explicit\" or \"implicit\"");
+		}
 		
 		boolean diagonalConnectionsImplict;
 		if (diagonalConnections.equals("implicit"))
+		{
 			diagonalConnectionsImplict = true;
+		}
 		else if (diagonalConnections.equals("explicit"))
+		{
 			diagonalConnectionsImplict = false;
+		}
 		else
+		{
 			throw new GameParseException("diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
+		}
 		
 		final int x_size = Integer.valueOf(xs);
 		int y_size;
 		if (ys != null)
+		{
 			y_size = Integer.valueOf(ys);
+		}
 		else
+		{
 			y_size = 0;
+		}
 		map.setGridDimensions(x_size, y_size);
 		if (gridType.equals("square"))
 		{
@@ -660,17 +748,25 @@ public class GameParser
 				{
 					boolean isWater;
 					if (water.contains(x + "-" + y))
+					{
 						isWater = true;
+					}
 					else
+					{
 						isWater = false;
+					}
 					final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
 					if (addingOntoExistingMap && map.getTerritories().contains(newTerritory))
+					{
 						continue;
+					}
 					map.addTerritory(newTerritory);
 				}
 			}
 			if (addingOntoExistingMap)
+			{
 				map.reorderTerritoryList();
+			}
 			// Add any implicit horizontal connections
 			if (horizontalConnectionsImplict)
 			{
@@ -729,13 +825,17 @@ public class GameParser
 					{
 						final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
 						if (addingOntoExistingMap && map.getTerritories().contains(newTerritory))
+						{
 							continue;
+						}
 						map.addTerritory(newTerritory);
 					}
 				}
 			}
 			if (addingOntoExistingMap)
+			{
 				map.reorderTerritoryList();
+			}
 			// Add any implicit horizontal connections
 			if (horizontalConnectionsImplict)
 			{
@@ -746,7 +846,9 @@ public class GameParser
 						final Territory from = map.getTerritoryFromCoordinates(x, y);
 						final Territory to = map.getTerritoryFromCoordinates(x + 1, y);
 						if (from != null && to != null)
+						{
 							map.addConnection(from, to);
+						}
 					}
 				}
 			}
@@ -762,14 +864,18 @@ public class GameParser
 							final Territory from = map.getTerritoryFromCoordinates(x, y);
 							final Territory to = map.getTerritoryFromCoordinates(x, y - 1);
 							if (from != null && to != null)
+							{
 								map.addConnection(from, to);
+							}
 						}
 						else
 						{
 							final Territory from = map.getTerritoryFromCoordinates(x, y);
 							final Territory to = map.getTerritoryFromCoordinates(x + 1, y - 1);
 							if (from != null && to != null)
+							{
 								map.addConnection(from, to);
+							}
 						}
 					}
 				}
@@ -786,14 +892,18 @@ public class GameParser
 							final Territory from = map.getTerritoryFromCoordinates(x, y);
 							final Territory to = map.getTerritoryFromCoordinates(x - 1, y - 1);
 							if (from != null && to != null)
+							{
 								map.addConnection(from, to);
+							}
 						}
 						else
 						{
 							final Territory from = map.getTerritoryFromCoordinates(x, y);
 							final Territory to = map.getTerritoryFromCoordinates(x, y - 1);
 							if (from != null && to != null)
+							{
 								map.addConnection(from, to);
+							}
 						}
 					}
 				}
@@ -989,7 +1099,9 @@ public class GameParser
 				}
 			}
 			if (editable != null && editable.equalsIgnoreCase("true"))
+			{
 				parseEditableProperty(current, property, value);
+			}
 			else
 			{
 				final List<Node> children2 = getNonTextNodesIgnoring(current, "value");
@@ -1075,7 +1187,9 @@ public class GameParser
 		// what type
 		final List<Node> children = getNonTextNodes(property);
 		if (children.size() != 1)
+		{
 			throw new GameParseException("Editable properties must have exactly 1 child specifying the type. Number of children found:" + children.size() + " for node:" + property.getNodeName());
+		}
 		final Element child = (Element) children.get(0);
 		final String childName = child.getNodeName();
 		IEditableProperty editableProperty;
@@ -1092,7 +1206,9 @@ public class GameParser
 			final StringTokenizer tokenizer = new StringTokenizer(child.getAttribute("values"), ",");
 			final Collection<String> values = new ArrayList<String>();
 			while (tokenizer.hasMoreElements())
+			{
 				values.add(tokenizer.nextToken());
+			}
 			editableProperty = new ComboProperty<String>(name, null, defaultValue, values);
 		}
 		else if (childName.equals("number"))
@@ -1122,7 +1238,9 @@ public class GameParser
 	private void parseOffset(final Node offsetAttributes) throws GameParseException
 	{
 		if (offsetAttributes == null)
+		{
 			return;
+		}
 		final int roundOffset = Integer.parseInt(((Element) offsetAttributes).getAttribute("round"));
 		data.getSequence().setRoundOffset(roundOffset);
 	}
@@ -1147,7 +1265,9 @@ public class GameParser
 			final String name = current.getAttribute("name");
 			String displayName = current.getAttribute("display");
 			if (displayName == null)
+			{
 				displayName = name;
+			}
 			delegate.initialize(name, displayName);
 			delegates.addDelegate(delegate);
 		}
@@ -1171,13 +1291,17 @@ public class GameParser
 			final List<Element> propertyElements = getChildren("stepProperty", current);
 			final Properties stepProperties = pareStepProperties(propertyElements);
 			if (current.hasAttribute("display"))
+			{
 				displayName = current.getAttribute("display");
+			}
 			final GameStep step = new GameStep(name, displayName, player, delegate, data, stepProperties);
 			if (current.hasAttribute("maxRunCount"))
 			{
 				final int runCount = Integer.parseInt(current.getAttribute("maxRunCount"));
 				if (runCount <= 0)
+				{
 					throw new GameParseException("maxRunCount must be positive");
+				}
 				step.setMaxRunCount(runCount);
 			}
 			data.getSequence().addStep(step);
@@ -1239,7 +1363,9 @@ public class GameParser
 	private void parseCosts(final ProductionRule rule, final List<Element> elements) throws GameParseException
 	{
 		if (elements.size() == 0)
+		{
 			throw new GameParseException("no costs  for rule:" + rule.getName());
+		}
 		for (final Element current : elements)
 		{
 			final Resource resource = getResource(current, "resource", true);
@@ -1251,7 +1377,9 @@ public class GameParser
 	private void parseRepairCosts(final RepairRule rule, final List<Element> elements) throws GameParseException
 	{
 		if (elements.size() == 0)
+		{
 			throw new GameParseException("no costs  for rule:" + rule.getName());
+		}
 		for (final Element current : elements)
 		{
 			final Resource resource = getResource(current, "resource", true);
@@ -1263,16 +1391,22 @@ public class GameParser
 	private void parseResults(final ProductionRule rule, final List<Element> elements) throws GameParseException
 	{
 		if (elements.size() == 0)
+		{
 			throw new GameParseException("no results  for rule:" + rule.getName());
+		}
 		for (final Element current : elements)
 		{
 			// must find either a resource or a unit with the given name
 			NamedAttachable result = null;
 			result = getResource(current, "resourceOrUnit", false);
 			if (result == null)
+			{
 				result = getUnitType(current, "resourceOrUnit", false);
+			}
 			if (result == null)
+			{
 				throw new GameParseException("Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
+			}
 			final int quantity = Integer.parseInt(current.getAttribute("quantity"));
 			rule.addResult(result, quantity);
 		}
@@ -1281,16 +1415,22 @@ public class GameParser
 	private void parseRepairResults(final RepairRule rule, final List<Element> elements) throws GameParseException
 	{
 		if (elements.size() == 0)
+		{
 			throw new GameParseException("no results  for rule:" + rule.getName());
+		}
 		for (final Element current : elements)
 		{
 			// must find either a resource or a unit with the given name
 			NamedAttachable result = null;
 			result = getResource(current, "resourceOrUnit", false);
 			if (result == null)
+			{
 				result = getUnitType(current, "resourceOrUnit", false);
+			}
 			if (result == null)
+			{
 				throw new GameParseException("Could not find resource or unit" + current.getAttribute("resourceOrUnit"));
+			}
 			final int quantity = Integer.parseInt(current.getAttribute("quantity"));
 			rule.addResult(result, quantity);
 		}
@@ -1311,7 +1451,9 @@ public class GameParser
 	private void parseTechnologies(final Node element)
 	{
 		if (element == null)
+		{
 			return;
+		}
 		final TechnologyFrontier allTechs = data.getTechnologyFrontier();
 		parseTechs(getChildren("techname", element), allTechs);
 	}
@@ -1409,9 +1551,13 @@ public class GameParser
 		{
 			TechAdvance ta = data.getTechnologyFrontier().getAdvanceByProperty(current.getAttribute("name"));
 			if (ta == null)
+			{
 				ta = data.getTechnologyFrontier().getAdvanceByName(current.getAttribute("name"));
+			}
 			if (ta == null)
+			{
 				throw new GameParseException("Technology not found :" + current.getAttribute("name"));
+			}
 			frontier.addAdvance(ta);
 		}
 	}
@@ -1439,7 +1585,9 @@ public class GameParser
 				{
 					final Class<?> objectClass = getClassByName(className);
 					if (!IAttachment.class.isAssignableFrom(objectClass))
+					{
 						throw new GameParseException(className + " does not implement IAttachable");
+					}
 					constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
 				} catch (final NoSuchMethodException exception)
 				{
@@ -1538,7 +1686,9 @@ public class GameParser
 			{
 				name = current.getAttribute("name");
 				if (name.length() == 0)
+				{
 					throw new GameParseException("Option name with 0 length");
+				}
 				setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(name), SETTER_ARGS);
 			} catch (final NoSuchMethodException nsme)
 			{
@@ -1551,9 +1701,13 @@ public class GameParser
 			final String count = current.getAttribute("count");
 			String itemValues;
 			if (count.length() > 0)
+			{
 				itemValues = count + ":" + value;
+			}
 			else
+			{
 				itemValues = value;
+			}
 			// invoke
 			try
 			{
@@ -1577,7 +1731,9 @@ public class GameParser
 		// parse territory owners
 		final Node owner = getSingleChild("ownerInitialize", root, true);
 		if (owner != null)
+		{
 			parseOwner(getChildren("territoryOwner", owner));
+		}
 		// parse initial unit placement
 		final Node unit = getSingleChild("unitInitialize", root, true);
 		if (unit != null)
@@ -1588,11 +1744,15 @@ public class GameParser
 		// parse resources given
 		final Node resource = getSingleChild("resourceInitialize", root, true);
 		if (resource != null)
+		{
 			parseResourceInitialization(getChildren("resourceGiven", resource));
+		}
 		// parse relationships
 		final Node relationInitialize = getSingleChild("relationshipInitialize", root, true);
 		if (relationInitialize != null)
+		{
 			parseRelationInitialize(getChildren("relationship", relationInitialize));
+		}
 	}
 	
 	private void parseOwner(final List<Element> elements) throws GameParseException
@@ -1618,7 +1778,9 @@ public class GameParser
 					// This is how we can have a game start with territories owned by 1 faction but controlled by a 2nd faction.
 					final PlayerID currentOwner = ta.getOriginalOwner();
 					if (currentOwner == null)
+					{
 						ta.setOriginalOwner(owner);
+					}
 				}
 			}
 		}
@@ -1635,27 +1797,39 @@ public class GameParser
 			final String unitDamageString = current.getAttribute("unitDamage");
 			final PlayerID owner;
 			if (ownerString == null || ownerString.trim().length() == 0)
+			{
 				owner = PlayerID.NULL_PLAYERID;
+			}
 			else
+			{
 				owner = getPlayerID(current, "owner", false);
+			}
 			final int hits;
 			if (hitsTakenString != null && hitsTakenString.trim().length() > 0)
 			{
 				hits = Integer.parseInt(hitsTakenString);
 				if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1)
+				{
 					throw new GameParseException("hitsTaken can not be less than zero or greater than one less than total hitpPoints");
+				}
 			}
 			else
+			{
 				hits = 0;
+			}
 			final int unitDamage;
 			if (unitDamageString != null && unitDamageString.trim().length() > 0)
 			{
 				unitDamage = Integer.parseInt(unitDamageString);
 				if (unitDamage < 0)
+				{
 					throw new GameParseException("unitDamage can not be less than zero");
+				}
 			}
 			else
+			{
 				unitDamage = 0;
+			}
 			final int quantity = Integer.parseInt(current.getAttribute("quantity"));
 			territory.getUnits().addAllUnits(type.create(quantity, owner, false, hits, unitDamage));
 		}
@@ -1690,9 +1864,13 @@ public class GameParser
 		{
 			final UnitAttachment ua = UnitAttachment.get(ut);
 			if (ua == null)
+			{
 				errors.add(ut);
+			}
 		}
 		if (!errors.isEmpty())
+		{
 			throw new GameParseException(data.getGameName() + " does not have unit attachments for: " + MyFormatter.defaultNamedToTextList(errors));
+		}
 	}
 }

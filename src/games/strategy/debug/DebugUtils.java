@@ -17,7 +17,6 @@ import java.util.Properties;
  * Moved out of Console class, so that we don't need swing.
  * 
  * @author veqryn
- * 
  */
 public class DebugUtils
 {
@@ -38,10 +37,10 @@ public class DebugUtils
 					result.append("locked on:" + info.getLockName()).append(" locked owned by:<" + info.getLockOwnerId() + "," + info.getLockOwnerName() + ">\n");
 				}
 				final StackTraceElement[] stackTrace = info.getStackTrace();
-				for (int i = 0; i < stackTrace.length; i++)
+				for (final StackTraceElement element : stackTrace)
 				{
 					result.append("  ");
-					result.append(stackTrace[i]);
+					result.append(element);
 					result.append("\n");
 				}
 				result.append("\n");
@@ -84,7 +83,9 @@ public class DebugUtils
 		buf.append("Max memory: " + (runtime.maxMemory() / mb) + "\r\n");
 		final int currentMaxSetting = GameRunner2.getMaxMemoryFromSystemIniFileInMB(GameRunner2.getSystemIni());
 		if (currentMaxSetting > 0)
-			buf.append("Max Memory user setting within 22% of: " + currentMaxSetting);
+		{
+			buf.append("Max Memory user setting within 22% of: " + currentMaxSetting + "\r\n");
+		}
 		return buf.toString();
 	}
 	

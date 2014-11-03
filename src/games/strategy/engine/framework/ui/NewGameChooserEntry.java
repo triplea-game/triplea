@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -26,11 +27,12 @@ public class NewGameChooserEntry
 	{
 		m_url = uri;
 		InputStream input = null;
+		final AtomicReference<String> gameName = new AtomicReference<String>();
 		try
 		{
 			input = uri.toURL().openStream();
 			final boolean delayParsing = GameRunner2.getDelayedParsing();
-			m_data = new GameParser().parse(input, delayParsing);
+			m_data = new GameParser().parse(input, gameName, delayParsing);
 			m_gameDataFullyLoaded = !delayParsing;
 			m_gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
 		} finally
@@ -38,7 +40,9 @@ public class NewGameChooserEntry
 			try
 			{
 				if (input != null)
+				{
 					input.close();
+				}
 			} catch (final IOException e)
 			{// ignore
 			}
@@ -50,12 +54,13 @@ public class NewGameChooserEntry
 		m_data = null;
 		InputStream input = null;
 		String error = null;
+		final AtomicReference<String> gameName = new AtomicReference<String>();
 		try
 		{
 			input = m_url.toURL().openStream();
 			try
 			{
-				m_data = new GameParser().parse(input, false);
+				m_data = new GameParser().parse(input, gameName, false);
 				m_gameDataFullyLoaded = true;
 			} catch (final EngineVersionException e)
 			{
@@ -85,13 +90,17 @@ public class NewGameChooserEntry
 			try
 			{
 				if (input != null)
+				{
 					input.close();
+				}
 			} catch (final IOException e)
 			{// ignore
 			}
 		}
 		if (error != null)
+		{
 			throw new GameParseException(error);
+		}
 	}
 	
 	/**
@@ -102,12 +111,13 @@ public class NewGameChooserEntry
 	{
 		m_data = null;
 		InputStream input = null;
+		final AtomicReference<String> gameName = new AtomicReference<String>();
 		try
 		{
 			input = m_url.toURL().openStream();
 			try
 			{
-				m_data = new GameParser().parse(input, true);
+				m_data = new GameParser().parse(input, gameName, true);
 				m_gameDataFullyLoaded = false;
 			} catch (final EngineVersionException e)
 			{
@@ -132,7 +142,9 @@ public class NewGameChooserEntry
 			try
 			{
 				if (input != null)
+				{
 					input.close();
+				}
 			} catch (final IOException e)
 			{// ignore
 			}
@@ -206,21 +218,31 @@ public class NewGameChooserEntry
 	public boolean equals(final Object obj)
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
+		}
 		if (getClass() != obj.getClass())
+		{
 			return false;
+		}
 		final NewGameChooserEntry other = (NewGameChooserEntry) obj;
 		if (m_data == null)
 		{
 			if (other.m_data != null)
+			{
 				return false;
+			}
 		}
 		else
 		{
 			if (other.m_data == null)
+			{
 				return false;
+			}
 		}
 		return this.getGameNameAndMapNameProperty().equals(other.getGameNameAndMapNameProperty());
 	}

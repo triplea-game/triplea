@@ -30,11 +30,11 @@ import games.strategy.triplea.attatchments.TechAttachment;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
 /**
- * 
  * @author Sean Bridges
  * @version 1.0
  */
@@ -115,7 +115,7 @@ public class DelegateTest extends TestCase
 		// get the xml file
 		final URL url = this.getClass().getResource("DelegateTest.xml");
 		final InputStream input = url.openStream();
-		m_data = (new GameParser()).parse(input, false);
+		m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
 		input.close();
 		british = m_data.getPlayerList().getPlayerID("British");
 		british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());

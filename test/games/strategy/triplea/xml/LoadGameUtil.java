@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LoadGameUtil
 {
@@ -28,13 +29,14 @@ public class LoadGameUtil
 				}
 			}
 		}
-		if (is == null)
+		if (is == null) {
 			throw new IllegalStateException(game + " does not exist");
+		}
 		try
 		{
 			try
 			{
-				return (new GameParser()).parse(is, false);
+				return (new GameParser()).parse(is, new AtomicReference<String>(), false);
 			} finally
 			{
 				is.close();

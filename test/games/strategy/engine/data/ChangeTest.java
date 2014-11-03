@@ -27,11 +27,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
 /**
- * 
  * @author Sean Bridges
  * @version 1.0
  */
@@ -52,7 +52,7 @@ public class ChangeTest extends TestCase
 		final URL url = this.getClass().getResource("Test.xml");
 		// System.out.println(url);
 		final InputStream input = url.openStream();
-		m_data = (new GameParser()).parse(input, false);
+		m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
 	}
 	
 	private Change serialize(final Change aChange) throws Exception

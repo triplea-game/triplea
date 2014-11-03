@@ -67,11 +67,17 @@ public class DelegateExecutionManager
 		{
 			if (sm_logger.isLoggable(Level.FINE))
 			{
-				sm_logger.fine("Could not block delegate execution. Lock count: " + m_readWriteLock.getReadLockCount());
+				sm_logger.fine("Could not block delegate execution. Read Lock count: " + m_readWriteLock.getReadLockCount() + " Read Hold count: " + m_readWriteLock.getReadHoldCount()
+							+ " Write Hold count: " + m_readWriteLock.getWriteHoldCount() + " Queue Length: " + m_readWriteLock.getQueueLength()
+							+ " Current Thread Has Lock: " + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: " + m_readWriteLock.hasQueuedThreads()
+							+ " Is Write Locked: " + m_readWriteLock.isWriteLocked() + " toString: " + m_readWriteLock.toString());
 			}
 			else
 			{
-				HeadlessGameServer.log("Could not block delegate execution. Lock count: " + m_readWriteLock.getReadLockCount());
+				HeadlessGameServer.log("Could not block delegate execution. Read Lock count: " + m_readWriteLock.getReadLockCount() + " Read Hold count: " + m_readWriteLock.getReadHoldCount()
+							+ " Write Hold count: " + m_readWriteLock.getWriteHoldCount() + " Queue Length: " + m_readWriteLock.getQueueLength()
+							+ " Current Thread Has Lock: " + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: " + m_readWriteLock.hasQueuedThreads()
+							+ " Is Write Locked: " + m_readWriteLock.isWriteLocked() + " toString: " + m_readWriteLock.toString());
 			}
 		}
 		else

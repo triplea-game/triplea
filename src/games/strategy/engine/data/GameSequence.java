@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 
  * @author Sean Bridges
  * @version 1.0
  */
@@ -54,7 +53,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	 */
 	public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName, final PlayerID player)
 	{
-		System.out.println("Finding step for: Player: " + player + "  at Step: " + stepDisplayName);
+		// System.out.println("Finding step for: Player: " + player + "  at Step: " + stepDisplayName);
 		m_round = currentRound;
 		boolean found = false;
 		for (int i = 0; i < m_steps.size(); i++)
@@ -73,10 +72,12 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		if (!found)
 		{
 			m_currentIndex = 0;
-			System.out.println("Step Not Found, will instead use: " + m_steps.get(m_currentIndex));
+			System.err.println("Step Not Found, will instead use: " + m_steps.get(m_currentIndex));
 		}
 		else
-			System.out.println("Step Found: " + m_steps.get(m_currentIndex));
+		{
+			// System.out.println("Step Found: " + m_steps.get(m_currentIndex));
+		}
 	}
 	
 	protected void addStep(final GameStep step)
@@ -91,7 +92,9 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	protected void remove(final GameStep step)
 	{
 		if (!m_steps.contains(step))
+		{
 			throw new IllegalArgumentException("Step does not exist");
+		}
 		m_steps.remove(step);
 	}
 	
@@ -129,12 +132,13 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	void setStepIndex(final int newIndex)
 	{
 		if ((newIndex < 0) || (newIndex >= m_steps.size()))
+		{
 			throw new IllegalArgumentException("New index out of range: " + newIndex);
+		}
 		m_currentIndex = newIndex;
 	}
 	
 	/**
-	 * 
 	 * @return boolean wether the round has changed
 	 */
 	public boolean next()
@@ -164,7 +168,9 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		synchronized (m_currentStepMutex)
 		{
 			if (m_currentIndex + 1 >= m_steps.size())
+			{
 				return true;
+			}
 			return false;
 		}
 	}
@@ -175,9 +181,13 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		{
 			// since we can now delete game steps mid game, it is a good idea to test if our index is out of range
 			if (m_currentIndex < 0)
+			{
 				m_currentIndex = 0;
+			}
 			if (m_currentIndex >= m_steps.size())
+			{
 				next();
+			}
 			return getStep(m_currentIndex);
 		}
 	}
@@ -185,7 +195,9 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	public GameStep getStep(final int index)
 	{
 		if ((index < 0) || (index >= m_steps.size()))
+		{
 			throw new IllegalArgumentException("Attempt to access invalid state: " + index);
+		}
 		return m_steps.get(index);
 	}
 	

@@ -370,7 +370,12 @@ public class ServerGame extends AbstractGame
 					HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
 				else
 					Console.getConsole().dumpStacks();
-				System.exit(-1);
+				// Try one more time
+				if (!m_delegateExecutionManager.blockDelegateExecution(16000))
+				{
+					System.err.println("Exiting...");
+					System.exit(-1);
+				}
 			}
 		} catch (final InterruptedException e)
 		{

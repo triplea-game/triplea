@@ -28,16 +28,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
  * A utilty for seeing which elements in a collection satisfy a given condition.
  * <p>
- * 
  * An instance of match allows you to test that an object matches some condition.
  * <p>
- * 
  * Static utility methods allow you to find what elements in a collection satisfy a match, <br>
  * count the number of matches, see if any elements match etc.
- * 
  * 
  * @author Sean Bridges
  * @version 1.0
@@ -74,7 +70,9 @@ public abstract class Match<T>
 		for (final T current : collection)
 		{
 			if (aMatch.match(current))
+			{
 				matches.add(current);
+			}
 		}
 		return matches;
 	}
@@ -87,16 +85,24 @@ public abstract class Match<T>
 	public static final <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> aMatch)
 	{
 		if (max == 0 || collection.isEmpty())
+		{
 			return Collections.emptyList();
+		}
 		if (max < 0)
+		{
 			throw new IllegalArgumentException("max must be positive, instead its:" + max);
+		}
 		final List<T> matches = new ArrayList<T>(Math.min(max, collection.size()));
 		for (final T current : collection)
 		{
 			if (aMatch.match(current))
+			{
 				matches.add(current);
+			}
 			if (matches.size() == max)
+			{
 				return matches;
+			}
 		}
 		return matches;
 	}
@@ -107,11 +113,15 @@ public abstract class Match<T>
 	public final static <T> boolean allMatch(final Collection<T> collection, final Match<T> aMatch)
 	{
 		if (collection.isEmpty())
+		{
 			return false;
+		}
 		for (final T current : collection)
 		{
 			if (!aMatch.match(current))
+			{
 				return false;
+			}
 		}
 		return true;
 	}
@@ -122,11 +132,15 @@ public abstract class Match<T>
 	public static final <T> boolean someMatch(final Collection<T> collection, final Match<T> aMatch)
 	{
 		if (collection.isEmpty())
+		{
 			return false;
+		}
 		for (final T current : collection)
 		{
 			if (aMatch.match(current))
+			{
 				return true;
+			}
 		}
 		return false;
 	}
@@ -148,7 +162,9 @@ public abstract class Match<T>
 		for (final T current : collection)
 		{
 			if (aMatch.match(current))
+			{
 				count++;
+			}
 		}
 		return count;
 	}

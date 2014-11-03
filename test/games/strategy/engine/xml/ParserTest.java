@@ -35,11 +35,11 @@ import games.strategy.triplea.Constants;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
 /**
- * 
  * @author Sean Bridges
  * @version 1.0
  */
@@ -59,7 +59,7 @@ public class ParserTest extends TestCase
 		final URL url = this.getClass().getResource("GameExample.xml");
 		// System.out.println(url);
 		final InputStream input = url.openStream();
-		gameData = (new GameParser()).parse(input, false);
+		gameData = (new GameParser()).parse(input, new AtomicReference<String>(), false);
 	}
 	
 	public void testCanCreateData()

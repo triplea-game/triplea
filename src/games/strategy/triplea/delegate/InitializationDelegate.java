@@ -94,7 +94,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		final InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
-		state.m_needToInitialize = m_needToInitialize;
+		state.m_needToInitialize = this.m_needToInitialize;
 		return state;
 	}
 	
@@ -104,7 +104,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
-		m_needToInitialize = s.m_needToInitialize;
+		this.m_needToInitialize = s.m_needToInitialize;
 	}
 	
 	public boolean delegateCurrentlyRequiresUserInput()
@@ -324,6 +324,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 	 */
 	private void initShipyards(final IDelegateBridge aBridge)
 	{
+		// TODO: why the hell do we keep ending up here in rounds after round 1, on headless server games?
 		final GameData data = aBridge.getData();
 		final boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
 		if (useShipyards)

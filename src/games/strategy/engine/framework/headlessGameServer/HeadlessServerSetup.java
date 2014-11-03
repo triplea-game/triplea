@@ -64,7 +64,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		shutDownLobbyWatcher();
 		try
 		{
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 		} catch (final InterruptedException e)
 		{
 		}

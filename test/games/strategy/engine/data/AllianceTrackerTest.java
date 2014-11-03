@@ -7,12 +7,12 @@ import games.strategy.triplea.Constants;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
 /**
  * @author Mukul Agrawal
- * 
  */
 public class AllianceTrackerTest extends TestCase
 {
@@ -24,7 +24,7 @@ public class AllianceTrackerTest extends TestCase
 		// get the xml file
 		final URL url = this.getClass().getResource("Test.xml");
 		final InputStream input = url.openStream();
-		m_data = (new GameParser()).parse(input, false);
+		m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
 	}
 	
 	public void testAddAlliance() throws Exception
@@ -37,7 +37,8 @@ public class AllianceTrackerTest extends TestCase
 		// the alliance tracker now only keeps track of GUI elements like the stats panel alliance TUV totals, and does not affect gameplay
 		allianceTracker.addToAlliance(bush, "natp");
 		// the relationship tracker is the one that keeps track of actual relationships between players, affecting gameplay. Note that changing the relationship between bush and castro, does not change the relationship between bush and chretian
-		relationshipTracker.setRelationship(bush, castro, m_data.getRelationshipTypeList().getRelationshipType(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED));
+		relationshipTracker.setRelationship(bush, castro,
+					m_data.getRelationshipTypeList().getRelationshipType(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED));
 		assertEquals(relationshipTracker.isAllied(bush, castro), true);
 	}
 	

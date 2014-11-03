@@ -21,6 +21,7 @@ import games.strategy.engine.data.UnitType;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
@@ -52,14 +53,16 @@ public class DelegateTest extends TestCase
 		// get the xml file
 		final URL url = this.getClass().getResource("DelegateTest.xml");
 		final InputStream input = url.openStream();
-		m_data = (new GameParser()).parse(input, false);
+		m_data = (new GameParser()).parse(input, new AtomicReference<String>(), false);
 		input.close();
 		black = m_data.getPlayerList().getPlayerID("Black");
 		white = m_data.getPlayerList().getPlayerID("White");
 		territories = new Territory[m_data.getMap().getXDimension()][m_data.getMap().getYDimension()];
-		for (int x = 0; x < m_data.getMap().getXDimension(); x++)
-			for (int y = 0; y < m_data.getMap().getYDimension(); y++)
+		for (int x = 0; x < m_data.getMap().getXDimension(); x++) {
+			for (int y = 0; y < m_data.getMap().getYDimension(); y++) {
 				territories[x][y] = m_data.getMap().getTerritoryFromCoordinates(x, y);
+			}
+		}
 		pawn = m_data.getUnitTypeList().getUnitType("pawn");
 		king = m_data.getUnitTypeList().getUnitType("king");
 		// System.out.println("setup");

@@ -24,11 +24,11 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
 /**
- * 
  * @author Sean Bridges
  */
 public class SerializationTest extends TestCase
@@ -43,10 +43,10 @@ public class SerializationTest extends TestCase
 		final URL url = this.getClass().getResource("Test.xml");
 		// get the source data
 		InputStream input = url.openStream();
-		m_dataSource = (new GameParser()).parse(input, false);
+		m_dataSource = (new GameParser()).parse(input, new AtomicReference<String>(), false);
 		// get the sink data
 		input = url.openStream();
-		m_dataSink = (new GameParser()).parse(input, false);
+		m_dataSink = (new GameParser()).parse(input, new AtomicReference<String>(), false);
 	}
 	
 	private Object serialize(final Object anObject) throws Exception
@@ -56,7 +56,8 @@ public class SerializationTest extends TestCase
 		output.writeObject(anObject);
 		output.flush();
 		final InputStream source = new ByteArrayInputStream(sink.toByteArray());
-		final ObjectInputStream input = new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_dataSource), source);
+		final ObjectInputStream input = new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_dataSource),
+					source);
 		final Object obj = input.readObject();
 		input.close();
 		output.close();

@@ -1165,6 +1165,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 			final Collection<Unit> defendingAir = entry.getValue();
 			if (defendingAir == null || defendingAir.isEmpty())
 				continue;
+			defendingAir.retainAll(battleSite.getUnits().getUnits());
+			if (defendingAir.isEmpty())
+				continue;
 			final PlayerID defender = AbstractBattle.findDefender(battleSite, m_player, data);
 			// Get all land territories where we can land
 			final Set<Territory> neighbors = data.getMap().getNeighbors(battleSite);

@@ -88,7 +88,9 @@ public class GameDataManager
 				// a hack for now, but a headless server should not try to open any savegame that is not its version
 				if (headless)
 				{
-					System.out.println("Incompatible game save, we are: " + EngineVersion.VERSION + "  Trying to load game created with: " + readVersion);
+					final String message = "Incompatible game save, we are: " + EngineVersion.VERSION + "  Trying to load game created with: " + readVersion;
+					HeadlessGameServer.sendChat(message);
+					System.out.println(message);
 					return null;
 				}
 				final String error = "<html>Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion
