@@ -218,32 +218,35 @@ public class ProAI extends StrongAI
 			}
 			
 			// Simulate the next phases until place/end of turn is reached then use simulated data for purchase
-			final String nationName = dataCopy.getSequence().getStep().getName().replace("Purchase", "");
 			final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
 			final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(playerCopy);
 			for (int i = nextStepIndex; i < gameSteps.size(); i++)
 			{
 				final GameStep step = gameSteps.get(i);
-				dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(), playerCopy);
+				if (!playerCopy.equals(step.getPlayerID()))
+				{
+					continue;
+				}
+				dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(), step.getPlayerID());
 				final String stepName = step.getName();
 				LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
-				if (stepName.startsWith(nationName) && stepName.endsWith("NonCombatMove"))
+				if (stepName.endsWith("NonCombatMove"))
 				{
 					final Map<Territory, ProAttackTerritoryData> factoryMoveMap = nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy);
 					if (storedFactoryMoveMap == null)
 						storedFactoryMoveMap = simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
 				}
-				else if (stepName.startsWith(nationName) && stepName.endsWith("CombatMove"))
+				else if (stepName.endsWith("CombatMove"))
 				{
 					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy);
 					if (storedCombatMoveMap == null)
 						storedCombatMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
 				}
-				else if (stepName.startsWith(nationName) && stepName.endsWith("Battle"))
+				else if (stepName.endsWith("Battle"))
 				{
 					simulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge);
 				}
-				else if (stepName.startsWith(nationName) && (stepName.endsWith("Place") || stepName.endsWith("EndTurn")))
+				else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn"))
 				{
 					storedPurchaseTerritories = purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, player);
 					this.data = null;

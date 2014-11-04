@@ -128,14 +128,14 @@ public class Unit extends GameDataComponent implements Serializable
 	@Override
 	public int hashCode()
 	{
-		return m_uid.hashCode();
+		return m_uid == null ? 0 : m_uid.hashCode();
 	}
 	
 	@Override
 	public String toString()
 	{
-		// none of these should happen,... except that they did a couple times.
-		if (m_type == null || m_owner == null)
+		// TODO: none of these should happen,... except that they did a couple times.
+		if (m_type == null || m_owner == null || m_uid == null || this.getData() == null)
 		{
 			final String text = "Unit.toString() -> Possible java de-serialization error: " + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName())
 						+ " owned by " + (m_owner == null ? "UNKNOWN OWNER" : m_owner.getName()) + " in territory: "

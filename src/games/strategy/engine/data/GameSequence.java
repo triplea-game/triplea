@@ -72,7 +72,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		if (!found)
 		{
 			m_currentIndex = 0;
-			System.err.println("Step Not Found, will instead use: " + m_steps.get(m_currentIndex));
+			System.err.println("Step Not Found (" + stepDisplayName + ":" + player.getName() + "), will instead use: " + m_steps.get(m_currentIndex));
 		}
 		else
 		{
