@@ -37,7 +37,7 @@ import java.util.List;
 public class ProMatches
 {
 	
-	public static Match<Territory> territoryCanLandAirUnits(final PlayerID player, final GameData data, final boolean isCombatMove)
+	public static Match<Territory> territoryCanLandAirUnits(final PlayerID player, final GameData data, final boolean isCombatMove, final List<Territory> enemyTerritories)
 	{
 		return new Match<Territory>()
 		{
@@ -45,7 +45,7 @@ public class ProMatches
 			public boolean match(final Territory t)
 			{
 				final Match<Territory> match = new CompositeMatchAnd<Territory>(Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data),
-							Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, false, true, true));
+							Matches.TerritoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, false, true, true), Matches.territoryIsInList(enemyTerritories).invert());
 				return match.match(t);
 			}
 		};
@@ -169,6 +169,20 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Territory> territoryCanMoveSeaUnitsThroughOrCleared(final PlayerID player, final GameData data, final boolean isCombatMove, final List<Territory> clearedTerritories)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				final Match<Territory> match = new CompositeMatchAnd<Territory>(territoryCanMoveSeaUnits(player, data, isCombatMove), territoryHasNoEnemyUnitsOrCleared(player, data,
+							clearedTerritories));
+				return match.match(t);
+			}
+		};
+	}
+	
 	public static Match<Territory> territoryHasEnemyUnitsOrCantBeHeld(final PlayerID player, final GameData data, final List<Territory> territoriesThatCantBeHeld)
 	{
 		return new Match<Territory>()
@@ -177,6 +191,19 @@ public class ProMatches
 			public boolean match(final Territory t)
 			{
 				final Match<Territory> match = new CompositeMatchOr<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.territoryIsInList(territoriesThatCantBeHeld));
+				return match.match(t);
+			}
+		};
+	}
+	
+	public static Match<Territory> territoryHasNoEnemyUnitsOrCleared(final PlayerID player, final GameData data, final List<Territory> clearedTerritories)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				final Match<Territory> match = new CompositeMatchOr<Territory>(Matches.territoryHasNoEnemyUnits(player, data), Matches.territoryIsInList(clearedTerritories));
 				return match.match(t);
 			}
 		};
@@ -511,6 +538,19 @@ public class ProMatches
 			public boolean match(final Unit u)
 			{
 				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data));
+				return match.match(u);
+			}
+		};
+	}
+	
+	public static Match<Unit> unitIsAlliedNotOwnedAir(final PlayerID player, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(unitIsAlliedNotOwned(player, data), Matches.UnitIsAir);
 				return match.match(u);
 			}
 		};

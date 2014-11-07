@@ -221,20 +221,20 @@ public class ProAttackOptionsUtils
 		findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap, ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld),
 					enemyTerritories, true);
 		findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, ProMatches.territoryHasEnemyUnitsOrCantBeHeld(player, data, territoriesThatCantBeHeld),
-					true, isCheckingEnemyAttacks);
+					enemyTerritories, true, isCheckingEnemyAttacks);
 		findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap, ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld),
 					enemyTerritories, true, isCheckingEnemyAttacks);
 	}
 	
 	public void findDefendOptions(final PlayerID player, final List<Territory> myUnitTerritories, final Map<Territory, ProAttackTerritoryData> moveMap,
 				final Map<Unit, Set<Territory>> unitMoveMap, final Map<Unit, Set<Territory>> transportMoveMap, final Map<Territory, Set<Territory>> landRoutesMap,
-				final List<ProAmphibData> transportMapList)
+				final List<ProAmphibData> transportMapList, final List<Territory> clearedTerritories)
 	{
 		final GameData data = ai.getGameData();
-		findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, Matches.territoryHasNoEnemyUnits(player, data), new ArrayList<Territory>(), false,
-					false);
+		findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, ProMatches.territoryHasNoEnemyUnitsOrCleared(player, data, clearedTerritories),
+					clearedTerritories, false, false);
 		findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap, Matches.isTerritoryAllied(player, data), new ArrayList<Territory>(), false);
-		findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, ProMatches.territoryIsNotConqueredAlliedLand(player, data), false, false);
+		findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, ProMatches.territoryIsNotConqueredAlliedLand(player, data), new ArrayList<Territory>(), false, false);
 		findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap, Matches.isTerritoryAllied(player, data), new ArrayList<Territory>(), false,
 					false);
 	}
@@ -318,7 +318,8 @@ public class ProAttackOptionsUtils
 				for (final Territory potentialTerritory : potentialTerritories)
 				{
 					// Find route over water with no enemy units blocking
-					Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+					Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
+								ProMatches.territoryCanMoveSeaUnitsThroughOrCleared(player, data, isCombatMove, enemyTerritories));
 					if (isCheckingEnemyAttacks)
 						myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove));
 					if (myRoute == null)
@@ -443,7 +444,8 @@ public class ProAttackOptionsUtils
 	}
 	
 	private void findAirMoveOptions(final PlayerID player, final List<Territory> myUnitTerritories, final Map<Territory, ProAttackTerritoryData> moveMap,
-				final Map<Unit, Set<Territory>> unitMoveMap, final Match<Territory> moveToTerritoryMatch, final boolean isCombatMove, final boolean isCheckingEnemyAttacks)
+				final Map<Unit, Set<Territory>> unitMoveMap, final Match<Territory> moveToTerritoryMatch, final List<Territory> enemyTerritories, final boolean isCombatMove,
+				final boolean isCheckingEnemyAttacks)
 	{
 		final GameData data = ai.getGameData();
 		
@@ -479,7 +481,8 @@ public class ProAttackOptionsUtils
 						// TODO: add carriers to landing possibilities
 						final Set<Territory> possibleLandingTerritories = data.getMap().getNeighbors(potentialTerritory, remainingMoves,
 									canFlyOverMatch);
-						final Set<Territory> landingTerritories = new HashSet<Territory>(Match.getMatches(possibleLandingTerritories, ProMatches.territoryCanLandAirUnits(player, data, isCombatMove)));
+						final Set<Territory> landingTerritories = new HashSet<Territory>(Match.getMatches(possibleLandingTerritories,
+									ProMatches.territoryCanLandAirUnits(player, data, isCombatMove, enemyTerritories)));
 						if (landingTerritories.isEmpty())
 							continue;
 					}

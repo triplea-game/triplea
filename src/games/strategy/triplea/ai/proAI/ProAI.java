@@ -36,12 +36,14 @@ import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -282,14 +284,14 @@ public class ProAI extends StrongAI
 		if (battle == null || battleTerritory == null || battle.isAmphibious())
 			return null;
 		
-		// If I'm attacker and have more unit strength then don't retreat
+		// If I'm attacker, have more unit strength, and isn't land battle with only air left then don't retreat
 		final boolean isAttacker = player.equals(battle.getAttacker());
 		final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
 		final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
 		final double strengthDifference = battleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
 		LogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers=" + attackers.size() + ", defenders=" + defenders.size() + ", submerge="
 					+ submerge + ", attacker=" + isAttacker);
-		if (isAttacker && strengthDifference > 50)
+		if (isAttacker && strengthDifference > 50 && (battleTerritory.isWater() || Match.someMatch(attackers, Matches.UnitIsLand)))
 			return null;
 		
 		s_battleCalculator.setGameData(getGameData());

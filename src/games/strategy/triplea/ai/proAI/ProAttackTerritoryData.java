@@ -28,8 +28,8 @@ public class ProAttackTerritoryData
 	private List<Unit> maxUnits;
 	private List<Unit> units;
 	private double TUVSwing;
-	private Double value;
-	private Double seaValue;
+	private double value;
+	private double seaValue;
 	private boolean canHold;
 	private boolean canAttack;
 	private double strengthEstimate;
@@ -51,7 +51,7 @@ public class ProAttackTerritoryData
 	private ProBattleResultData minBattleResult;
 	private final List<Unit> tempUnits;
 	private final Map<Unit, List<Unit>> tempAmphibAttackMap;
-	private Double loadValue;
+	private double loadValue;
 	
 	public ProAttackTerritoryData(final Territory territory)
 	{
@@ -74,7 +74,9 @@ public class ProAttackTerritoryData
 		minBattleResult = new ProBattleResultData();
 		tempUnits = new ArrayList<Unit>();
 		tempAmphibAttackMap = new HashMap<Unit, List<Unit>>();
-		loadValue = null;
+		loadValue = 0;
+		value = 0;
+		seaValue = 0;
 	}
 	
 	public List<Unit> getAllDefenders()
@@ -82,6 +84,13 @@ public class ProAttackTerritoryData
 		final List<Unit> defenders = new ArrayList<Unit>(units);
 		defenders.addAll(cantMoveUnits);
 		defenders.addAll(tempUnits);
+		return defenders;
+	}
+	
+	public List<Unit> getMaxDefenders()
+	{
+		final List<Unit> defenders = new ArrayList<Unit>(maxUnits);
+		defenders.addAll(cantMoveUnits);
 		return defenders;
 	}
 	
@@ -329,12 +338,12 @@ public class ProAttackTerritoryData
 		return transportTerritoryMap;
 	}
 	
-	public void setLoadValue(final Double loadValue)
+	public void setLoadValue(final double loadValue)
 	{
 		this.loadValue = loadValue;
 	}
 	
-	public Double getLoadValue()
+	public double getLoadValue()
 	{
 		return loadValue;
 	}
@@ -349,12 +358,12 @@ public class ProAttackTerritoryData
 		return isTransportingMap;
 	}
 	
-	public void setSeaValue(final Double seaValue)
+	public void setSeaValue(final double seaValue)
 	{
 		this.seaValue = seaValue;
 	}
 	
-	public Double getSeaValue()
+	public double getSeaValue()
 	{
 		return seaValue;
 	}

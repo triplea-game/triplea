@@ -553,6 +553,14 @@ public class ProPurchaseAI
 			placeTerritory.setDefenseValue(territoryValue);
 		}
 		
+		// Remove any territories with negative defense value
+		for (final Iterator<ProPlaceTerritory> it = needToDefendTerritories.iterator(); it.hasNext();)
+		{
+			final ProPlaceTerritory ppt = it.next();
+			if (ppt.getDefenseValue() <= 0)
+				it.remove();
+		}
+		
 		// Sort territories by value
 		final List<ProPlaceTerritory> sortedTerritories = new ArrayList<ProPlaceTerritory>(needToDefendTerritories);
 		Collections.sort(sortedTerritories, new Comparator<ProPlaceTerritory>()

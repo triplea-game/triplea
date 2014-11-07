@@ -83,7 +83,7 @@ public class ProTransportUtils
 				{
 					for (final Territory t : unitMoveMap.get(u))
 					{
-						if (moveMap.get(t) != null && moveMap.get(t).getValue() >= value)
+						if (moveMap.get(t) != null && moveMap.get(t).getValue() > value)
 						{
 							unitsToIgnoreOrHaveBetterLandMove.add(u);
 							break;
