@@ -553,8 +553,8 @@ public class TripleAUnit extends Unit
 			else
 			{
 				productionCapacity = territoryProduction;
-				if (productionCapacity < 1)
-					productionCapacity = 1;
+				if (productionCapacity < 0)
+					productionCapacity = 0;
 			}
 		}
 		else
@@ -565,8 +565,8 @@ public class TripleAUnit extends Unit
 				productionCapacity = territoryUnitProduction;
 			else
 				productionCapacity = ua.getCanProduceXUnits();
-			if (productionCapacity < 1 && !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
-				productionCapacity = 1;
+			if (productionCapacity < 0 && !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
+				productionCapacity = 0;
 		}
 		// Increase production if have industrial technology
 		if (territoryProduction >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(player, data))

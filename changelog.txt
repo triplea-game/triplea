@@ -1,4 +1,6 @@
 Changes for 1.8.0.5
+* Fixed bug which allowed you to try to place units in a factory territory with zero production, but then disallowed their placement. (veqryn)
+
 * More stability improvements for server games. (veqryn)
 
 * Fixed a thread deadlock that occurs when a game ends while the battle calc is still open, resulting in triplea not returning to the host screen. (veqryn)

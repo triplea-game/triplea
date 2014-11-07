@@ -929,11 +929,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		// if its an original factory then unlimited production
 		Collections.sort(producers, getBestProducerComparator(to, units, player));
 		final TerritoryAttachment ta = TerritoryAttachment.get(producers.iterator().next()); // Can be null!
-		// WW2V2, you cant place factories in territories with no production
-		if (isWW2V2() && (ta == null || ta.getProduction() <= 0) && !Match.someMatch(units, Matches.UnitIsConstruction))
+		// WW2V2, you can not place factories in territories with no production
+		/*if (isWW2V2() && (ta == null || ta.getProduction() <= 0) && !Match.someMatch(units, Matches.UnitIsConstruction))
 		{
 			return "Cannot place factory, that territory cant produce any units";
-		}
+		}*/
 		if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to))
 		{
 			return "Cannot place more units which require units, than production capacity of territories with the required units";
