@@ -82,11 +82,14 @@ public class ProSimulateTurnUtils
 			{
 				final IBattle battle = battleDelegate.getBattleTracker().getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
 				final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
+				attackers.retainAll(t.getUnits().getUnits());
 				final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+				defenders.retainAll(t.getUnits().getUnits());
 				LogUtils.log(Level.FINER, "---" + t);
 				LogUtils.log(Level.FINER, "attackers=" + attackers);
 				LogUtils.log(Level.FINER, "defenders=" + defenders);
-				final ProBattleResultData result = battleUtils.calculateBattleResults(player, t, attackers, defenders, true);
+				final ProBattleResultData result = battleUtils.callBattleCalculator(player, t, attackers, defenders, true);
+				// final ProBattleResultData result = battleUtils.calculateBattleResults(player, t, attackers, defenders, true);
 				final List<Unit> remainingUnits = result.getAverageUnitsRemaining();
 				LogUtils.log(Level.FINER, "remainingUnits=" + remainingUnits);
 				

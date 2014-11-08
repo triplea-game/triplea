@@ -153,7 +153,7 @@ public class ProBattleUtils
 		return null;
 	}
 	
-	private ProBattleResultData callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
+	public ProBattleResultData callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
 	{
 		if (ai.isGameStopped())
 			return new ProBattleResultData();
