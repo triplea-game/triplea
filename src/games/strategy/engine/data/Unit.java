@@ -128,7 +128,15 @@ public class Unit extends GameDataComponent implements Serializable
 	@Override
 	public int hashCode()
 	{
-		return m_uid == null ? 0 : m_uid.hashCode();
+		if (m_type == null || m_owner == null || m_uid == null || this.getData() == null)
+		{
+			final String text = "Unit.toString() -> Possible java de-serialization error: " + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName())
+						+ " owned by " + (m_owner == null ? "UNKNOWN OWNER" : m_owner.getName()) + " in territory: "
+						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: " + getID();
+			System.err.println(text);
+			return 0;
+		}
+		return m_uid.hashCode();
 	}
 	
 	@Override

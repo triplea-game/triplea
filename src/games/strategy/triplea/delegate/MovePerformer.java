@@ -180,8 +180,11 @@ public class MovePerformer implements Serializable
 				}
 				final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(arrived);
 				presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
+				final CompositeChange change = new CompositeChange();
+				if (games.strategy.triplea.Properties.getUseFuelCost(data))
+					change.add(markFuelCostResourceChange(units, route, id, data /*, createdBattle */)); // markFuelCostResourceChange must be done before we load/unload units
 				markTransportsMovement(arrived, transporting, route);
-				boolean createdBattle = false;
+				// boolean createdBattle = false;
 				if (route.someMatch(mustFightThrough) && arrived.size() != 0)
 				{
 					boolean bombing = false;
@@ -226,7 +229,7 @@ public class MovePerformer implements Serializable
 								targetedAttack = true;
 								final HashMap<Unit, HashSet<Unit>> targets = new HashMap<Unit, HashSet<Unit>>();
 								targets.put(target, new HashSet<Unit>(arrived));
-								createdBattle = true;
+								// createdBattle = true;
 								getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, dependentOnSomethingTilTheEndOfRoute, targets, false);
 							}
 						}
@@ -242,7 +245,7 @@ public class MovePerformer implements Serializable
 					}
 					if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data, false) && !targetedAttack)
 					{
-						createdBattle = true;
+						// createdBattle = true;
 						getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, dependentOnSomethingTilTheEndOfRoute);
 					}
 					if (!ignoreBattle && GameStepPropertiesHelper.isNonCombatMove(data, false) && !targetedAttack)
@@ -256,14 +259,14 @@ public class MovePerformer implements Serializable
 							if ((t.equals(route.getEnd()) && Match.allMatch(arrivedCopyForBattles, Matches.UnitIsAir))
 										|| (!t.equals(route.getEnd()) && Match.allMatch(presentFromStartTilEnd, Matches.UnitIsAir)))
 								continue;
-							createdBattle = true;
+							// createdBattle = true;
 							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrivedCopyForBattles);
 						}
 					}
 				}
 				// mark movement
 				final Change moveChange = markMovementChange(arrived, route, id);
-				final CompositeChange change = new CompositeChange(moveChange);
+				change.add(moveChange);
 				// actually move the units
 				Change remove = null;
 				Change add = null;
@@ -274,8 +277,6 @@ public class MovePerformer implements Serializable
 					add = ChangeFactory.addUnits(route.getEnd(), arrived);
 					change.add(add, remove);
 				}
-				if (games.strategy.triplea.Properties.getUseFuelCost(data))
-					change.add(markFuelCostResourceChange(units, route, id, data, createdBattle));
 				m_bridge.addChange(change);
 				m_currentMove.addChange(change);
 				m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
@@ -298,9 +299,9 @@ public class MovePerformer implements Serializable
 		return mustFightThrough;
 	}
 	
-	private Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id, final GameData data, final boolean mustFight)
+	private Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id, final GameData data /*, final boolean mustFight */)
 	{
-		return ChangeFactory.removeResourceCollection(id, Route.getMovementFuelCostCharge(units, route, id, data, mustFight));
+		return ChangeFactory.removeResourceCollection(id, Route.getMovementFuelCostCharge(units, route, id, data /*, mustFight */));
 	}
 	
 	private Change markMovementChange(final Collection<Unit> units, final Route route, final PlayerID id)

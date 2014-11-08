@@ -212,7 +212,7 @@ public class MoveValidator
 			return result;
 		if (!games.strategy.triplea.Properties.getUseFuelCost(data))
 			return result;
-		final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data, route.someMatch(MovePerformer.getMustFightThroughMatch(player, data)));
+		final ResourceCollection fuelCost = Route.getMovementFuelCostCharge(units, route, player, data /*, route.someMatch(MovePerformer.getMustFightThroughMatch(player, data))*/);
 		if (player.getResources().has(fuelCost.getResourcesCopy()))
 			return result;
 		return result.setErrorReturnResult("Not enough resources to perform this move, you need: " + fuelCost + " for this move");
