@@ -1106,12 +1106,15 @@ public class ProCombatMoveAI
 								
 								// Find best territory to move transport
 								double minStrengthDifference = Double.POSITIVE_INFINITY;
+								minUnloadFromTerritory = null;
 								final Set<Territory> territoriesToMoveTransport = data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, false));
 								for (final Territory territoryToMoveTransport : territoriesToMoveTransport)
 								{
-									if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport) && enemyAttackMap.get(territoryToMoveTransport) != null)
+									if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport))
 									{
-										final List<Unit> attackers = enemyAttackMap.get(territoryToMoveTransport).getMaxUnits();
+										List<Unit> attackers = new ArrayList<Unit>();
+										if (enemyAttackMap.get(territoryToMoveTransport) != null)
+											attackers = enemyAttackMap.get(territoryToMoveTransport).getMaxUnits();
 										final List<Unit> defenders = territoryToMoveTransport.getUnits().getMatches(Matches.isUnitAllied(player, data));
 										defenders.add(transport);
 										final double strengthDifference = battleUtils.estimateStrengthDifference(territoryToMoveTransport, attackers, defenders);
