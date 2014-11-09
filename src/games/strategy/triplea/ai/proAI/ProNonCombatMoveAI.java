@@ -914,6 +914,10 @@ public class ProNonCombatMoveAI
 			{
 				final Unit transport = it.next();
 				final Territory currentTerritory = unitTerritoryMap.get(transport);
+				final int moves = TripleAUnit.get(transport).getMovementLeft();
+				if (moves <= 0)
+					continue;
+				
 				final List<ProAttackTerritoryData> priorizitedLoadTerritories = new ArrayList<ProAttackTerritoryData>();
 				for (final Territory t : moveMap.keySet())
 				{
@@ -931,7 +935,6 @@ public class ProNonCombatMoveAI
 						int factoryProduction = 0;
 						if (hasUnconqueredFactory)
 							factoryProduction = TerritoryAttachment.getProduction(t);
-						final int moves = UnitAttachment.get(transport.getType()).getMovement(player);
 						int numTurnsAway = (distance - 1) / moves;
 						if (distance <= moves)
 							numTurnsAway = 0;
@@ -966,8 +969,7 @@ public class ProNonCombatMoveAI
 							break;
 						final List<Territory> territories = route.getAllTerritories();
 						territories.remove(territories.size() - 1);
-						final int range = TripleAUnit.get(transport).getMovementLeft();
-						final Territory moveToTerritory = territories.get(Math.min(territories.size() - 1, range));
+						final Territory moveToTerritory = territories.get(Math.min(territories.size() - 1, moves));
 						if (moveMap.get(moveToTerritory).isCanHold())
 						{
 							LogUtils.log(Level.FINEST, transport + " moved towards best loading territory " + patd.getTerritory() + " and moved to " + moveToTerritory);
