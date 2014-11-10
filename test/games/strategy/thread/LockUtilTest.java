@@ -13,6 +13,8 @@
  */
 package games.strategy.thread;
 
+import games.strategy.thread.LockUtil.ErrorReporter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -22,17 +24,18 @@ import junit.framework.TestCase;
 
 public class LockUtilTest extends TestCase
 {
+	private static final LockUtil S_LOCKUTIL = new LockUtil();
 	private final TestErrorReporter m_reporter = new TestErrorReporter();
 	
 	@Override
 	public void setUp()
 	{
-		LockUtil.setErrorReporter(m_reporter);
+		S_LOCKUTIL.setErrorReporter(m_reporter);
 	}
 	
 	public void testEmpty()
 	{
-		assertFalse(LockUtil.isLockHeld(new ReentrantLock()));
+		assertFalse(S_LOCKUTIL.isLockHeld(new ReentrantLock()));
 	}
 	
 	public void testMultipleLocks()
@@ -44,19 +47,19 @@ public class LockUtilTest extends TestCase
 		}
 		for (final Lock l : locks)
 		{
-			LockUtil.acquireLock(l);
-			assertTrue(LockUtil.isLockHeld(l));
+			S_LOCKUTIL.acquireLock(l);
+			assertTrue(S_LOCKUTIL.isLockHeld(l));
 		}
 		for (final Lock l : locks)
 		{
-			LockUtil.releaseLock(l);
-			assertFalse(LockUtil.isLockHeld(l));
+			S_LOCKUTIL.releaseLock(l);
+			assertFalse(S_LOCKUTIL.isLockHeld(l));
 		}
 		assertFalse(m_reporter.errorOccured());
 		// repeat the sequence, make sure no errors
 		for (final Lock l : locks)
 		{
-			LockUtil.acquireLock(l);
+			S_LOCKUTIL.acquireLock(l);
 		}
 		assertFalse(m_reporter.errorOccured());
 	}
@@ -66,27 +69,27 @@ public class LockUtilTest extends TestCase
 		final Lock l1 = new ReentrantLock();
 		final Lock l2 = new ReentrantLock();
 		// acquire in the correct order
-		LockUtil.acquireLock(l1);
-		LockUtil.acquireLock(l2);
+		S_LOCKUTIL.acquireLock(l1);
+		S_LOCKUTIL.acquireLock(l2);
 		// release
-		LockUtil.releaseLock(l2);
-		LockUtil.releaseLock(l1);
+		S_LOCKUTIL.releaseLock(l2);
+		S_LOCKUTIL.releaseLock(l1);
 		assertFalse(m_reporter.errorOccured());
 		// acquire locks in the wrong order
-		LockUtil.acquireLock(l2);
-		LockUtil.acquireLock(l1);
+		S_LOCKUTIL.acquireLock(l2);
+		S_LOCKUTIL.acquireLock(l1);
 		assertTrue(m_reporter.errorOccured());
 	}
 	
 	public void testAcquireTwice()
 	{
 		final ReentrantLock l1 = new ReentrantLock();
-		LockUtil.acquireLock(l1);
-		LockUtil.acquireLock(l1);
-		LockUtil.releaseLock(l1);
-		LockUtil.releaseLock(l1);
+		S_LOCKUTIL.acquireLock(l1);
+		S_LOCKUTIL.acquireLock(l1);
+		S_LOCKUTIL.releaseLock(l1);
+		S_LOCKUTIL.releaseLock(l1);
 		assertTrue(l1.getHoldCount() == 0);
-		assertFalse(LockUtil.isLockHeld(l1));
+		assertFalse(S_LOCKUTIL.isLockHeld(l1));
 	}
 }
 

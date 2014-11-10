@@ -26,7 +26,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
-import games.strategy.thread.LockUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
@@ -623,7 +622,7 @@ public class MapPanel extends ImageScrollerLargeView
 		final Collection<Tile> tileList = m_tileManager.getTiles(bounds);
 		for (final Tile tile : tileList)
 		{
-			LockUtil.acquireLock(tile.getLock());
+			Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
 			try
 			{
 				final Image img = tile.getImage(gameData, m_uiContext.getMapData());
@@ -635,7 +634,7 @@ public class MapPanel extends ImageScrollerLargeView
 				}
 			} finally
 			{
-				LockUtil.releaseLock(tile.getLock());
+				Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
 			}
 		}
 	}
@@ -800,7 +799,7 @@ public class MapPanel extends ImageScrollerLargeView
 		for (final Tile tile : tileList)
 		{
 			Image img = null;
-			LockUtil.acquireLock(tile.getLock());
+			Tile.S_TILE_LOCKUTIL.acquireLock(tile.getLock());
 			try
 			{
 				if (tile.isDirty())
@@ -822,7 +821,7 @@ public class MapPanel extends ImageScrollerLargeView
 				}
 			} finally
 			{
-				LockUtil.releaseLock(tile.getLock());
+				Tile.S_TILE_LOCKUTIL.releaseLock(tile.getLock());
 			}
 		}
 	}

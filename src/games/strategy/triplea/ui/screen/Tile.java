@@ -47,6 +47,7 @@ import java.util.logging.Logger;
  */
 public class Tile
 {
+	public static final LockUtil S_TILE_LOCKUTIL = new LockUtil();
 	private static final boolean DRAW_DEBUG = false;
 	private static final Logger s_logger = Logger.getLogger(Tile.class.getName());
 	// allow the gc to implement memory management
@@ -70,19 +71,19 @@ public class Tile
 	
 	public boolean isDirty()
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			return m_isDirty || m_imageRef == null || m_imageRef.get() == null;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	
 	public Image getImage(final GameData data, final MapData mapData)
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			if (m_imageRef == null)
@@ -109,7 +110,7 @@ public class Tile
 			return image;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	
@@ -173,78 +174,78 @@ public class Tile
 	
 	public void addDrawables(final Collection<IDrawable> drawables)
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			m_contents.addAll(drawables);
 			m_isDirty = true;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	
 	public void addDrawable(final IDrawable d)
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			m_contents.add(d);
 			m_isDirty = true;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	
 	public void removeDrawable(final IDrawable d)
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			m_contents.remove(d);
 			m_isDirty = true;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	
 	public void removeDrawables(final Collection<IDrawable> c)
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			m_contents.removeAll(c);
 			m_isDirty = true;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	
 	public void clear()
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			m_contents.clear();
 			m_isDirty = true;
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	
 	public List<IDrawable> getDrawables()
 	{
-		LockUtil.acquireLock(m_lock);
+		Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
 		try
 		{
 			return new ArrayList<IDrawable>(m_contents);
 		} finally
 		{
-			LockUtil.releaseLock(m_lock);
+			Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
 		}
 	}
 	

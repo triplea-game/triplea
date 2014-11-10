@@ -44,10 +44,14 @@ public class LockUtil
 	// a map of all the locks ever held when a lock was acquired
 	// store weak references to everything so that locks don't linger here forever
 	private final static Map<Lock, Set<WeakLockRef>> m_locksHeldWhenAcquired = new WeakHashMap<Lock, Set<WeakLockRef>>();
-	private final static Object m_mutex = new Object();
+	private final Object m_mutex = new Object();
 	private static ErrorReporter m_errorReporter = new ErrorReporter();
 	
-	public static void acquireLock(final Lock aLock)
+	public LockUtil()
+	{
+	}
+	
+	public void acquireLock(final Lock aLock)
 	{
 		synchronized (m_mutex)
 		{
@@ -99,7 +103,7 @@ public class LockUtil
 		aLock.lock();
 	}
 	
-	public static void releaseLock(final Lock aLock)
+	public void releaseLock(final Lock aLock)
 	{
 		synchronized (m_mutex)
 		{
@@ -113,7 +117,7 @@ public class LockUtil
 		aLock.unlock();
 	}
 	
-	public static boolean isLockHeld(final Lock aLock)
+	public boolean isLockHeld(final Lock aLock)
 	{
 		if (m_locksHeld.get() == null)
 			return false;
@@ -123,62 +127,62 @@ public class LockUtil
 		}
 	}
 	
-	public static void setErrorReporter(final ErrorReporter reporter)
+	public void setErrorReporter(final ErrorReporter reporter)
 	{
 		m_errorReporter = reporter;
 	}
-}
-
-
-class ErrorReporter
-{
-	public void reportError(final Lock from, final Lock to)
-	{
-		System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
-	}
 	
-	private String getStackTrace()
+	
+	public static class ErrorReporter
 	{
-		final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-		final StringBuilder builder = new StringBuilder();
-		for (final StackTraceElement e : trace)
+		public void reportError(final Lock from, final Lock to)
 		{
-			builder.append(e.toString());
-			builder.append("\n");
+			System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
 		}
-		return builder.toString();
-	}
-}
-
-
-class WeakLockRef extends WeakReference<Lock>
-{
-	// cache the hash code to make sure it doesn't change if our reference
-	// has been cleared
-	private final int hashCode;
-	
-	public WeakLockRef(final Lock referent)
-	{
-		super(referent);
-		hashCode = referent.hashCode();
-	}
-	
-	@Override
-	public boolean equals(final Object o)
-	{
-		if (o == this)
-			return true;
-		if (o instanceof WeakLockRef)
+		
+		private String getStackTrace()
 		{
-			final WeakLockRef other = (WeakLockRef) o;
-			return other.get() == this.get();
+			final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+			final StringBuilder builder = new StringBuilder();
+			for (final StackTraceElement e : trace)
+			{
+				builder.append(e.toString());
+				builder.append("\n");
+			}
+			return builder.toString();
 		}
-		return false;
 	}
 	
-	@Override
-	public int hashCode()
+	
+	protected static final class WeakLockRef extends WeakReference<Lock>
 	{
-		return hashCode;
+		// cache the hash code to make sure it doesn't change if our reference
+		// has been cleared
+		private final int hashCode;
+		
+		public WeakLockRef(final Lock referent)
+		{
+			super(referent);
+			hashCode = referent.hashCode();
+		}
+		
+		@Override
+		public boolean equals(final Object o)
+		{
+			if (o == this)
+				return true;
+			if (o instanceof WeakLockRef)
+			{
+				final WeakLockRef other = (WeakLockRef) o;
+				return other.get() == this.get();
+			}
+			return false;
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return hashCode;
+		}
 	}
 }

@@ -32,6 +32,8 @@ import games.strategy.util.ListenerList;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -79,6 +81,7 @@ public class GameData implements java.io.Serializable
 	private static final long serialVersionUID = -2612710634080125728L;
 	public static final String GAME_UUID = "GAME_UUID";
 	private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
+	private transient LockUtil m_lockUtil = new LockUtil();
 	private volatile transient boolean m_forceInSwingEventThread = false;
 	private String m_gameName;
 	private Version m_gameVersion;
@@ -115,8 +118,15 @@ public class GameData implements java.io.Serializable
 	/** Creates new GameData */
 	public GameData()
 	{
+		super();
 		m_delegateList = new DelegateList(this);
 		m_properties.set(GAME_UUID, UUID.randomUUID().toString());
+	}
+	
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException
+	{
+		in.defaultReadObject();
+		m_lockUtil = new LockUtil();
 	}
 	
 	/**
@@ -140,7 +150,7 @@ public class GameData implements java.io.Serializable
 			return;
 		if (m_readWriteLock == null)
 			return;
-		if (!LockUtil.isLockHeld(m_readWriteLock.readLock()) && !LockUtil.isLockHeld(m_readWriteLock.writeLock()))
+		if (!m_lockUtil.isLockHeld(m_readWriteLock.readLock()) && !m_lockUtil.isLockHeld(m_readWriteLock.writeLock()))
 		{
 			new Exception("Lock not held").printStackTrace(System.out);
 		}
@@ -431,7 +441,7 @@ public class GameData implements java.io.Serializable
 		// this can happen in very odd cirumcstances while deserializing
 		if (m_readWriteLock == null)
 			return;
-		LockUtil.acquireLock(m_readWriteLock.readLock());
+		m_lockUtil.acquireLock(m_readWriteLock.readLock());
 	}
 	
 	public void releaseReadLock()
@@ -439,7 +449,7 @@ public class GameData implements java.io.Serializable
 		// this can happen in very odd cirumcstances while deserializing
 		if (m_readWriteLock == null)
 			return;
-		LockUtil.releaseLock(m_readWriteLock.readLock());
+		m_lockUtil.releaseLock(m_readWriteLock.readLock());
 	}
 	
 	/**
@@ -453,7 +463,7 @@ public class GameData implements java.io.Serializable
 		// this can happen in very odd cirumcstances while deserializing
 		if (m_readWriteLock == null)
 			return;
-		LockUtil.acquireLock(m_readWriteLock.writeLock());
+		m_lockUtil.acquireLock(m_readWriteLock.writeLock());
 	}
 	
 	public void releaseWriteLock()
@@ -461,7 +471,7 @@ public class GameData implements java.io.Serializable
 		// this can happen in very odd cirumcstances while deserializing
 		if (m_readWriteLock == null)
 			return;
-		LockUtil.releaseLock(m_readWriteLock.writeLock());
+		m_lockUtil.releaseLock(m_readWriteLock.writeLock());
 	}
 	
 	public void clearAllListeners()
