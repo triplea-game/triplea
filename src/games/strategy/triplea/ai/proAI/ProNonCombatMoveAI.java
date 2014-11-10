@@ -915,7 +915,7 @@ public class ProNonCombatMoveAI
 				final Unit transport = it.next();
 				final Territory currentTerritory = unitTerritoryMap.get(transport);
 				final int moves = TripleAUnit.get(transport).getMovementLeft();
-				if (moves <= 0)
+				if (TransportTracker.isTransporting(transport) || moves <= 0)
 					continue;
 				
 				final List<ProAttackTerritoryData> priorizitedLoadTerritories = new ArrayList<ProAttackTerritoryData>();

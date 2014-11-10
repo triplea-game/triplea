@@ -301,9 +301,10 @@ public class ProCombatMoveAI
 			double attackValue = (defendingUnitsSizeMultiplier * TUVSwing + (1 + isLand) * production + 10 * isEmpty + 5 * isFactory) * (1 + 4 * isEnemyCapital)
 						* (1 + 2 * isNotNeutralAdjacentToMyCapital) * (1 - 0.5 * isAmphib);
 			
-			// Determine enemy neighbor territory production value for neutral land territories
+			// Check if a negative value neutral territory should be attacked
 			if (attackValue <= 0 && !attackTerritoryData.isNeedAmphibUnits() && !t.isWater() && t.getOwner().isNull())
 			{
+				// Determine enemy neighbor territory production value for neutral land territories
 				double nearbyEnemyValue = 0;
 				final List<Territory> cantReachEnemyTerritories = new ArrayList<Territory>();
 				final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, ProMatches.territoryCanMoveLandUnits(player, data, true));
@@ -329,14 +330,25 @@ public class ProCombatMoveAI
 						cantReachEnemyTerritories.add(nearbyEnemyTerritory);
 					}
 				}
+				LogUtils.log(Level.FINER, t.getName() + " calculated nearby enemy value=" + nearbyEnemyValue + " from " + cantReachEnemyTerritories);
 				if (nearbyEnemyValue > 0)
 				{
 					LogUtils.log(Level.FINEST, t.getName() + " updating negative neutral attack value=" + attackValue);
 					attackValue = nearbyEnemyValue * .01 / (1 - attackValue);
 				}
-				
-				LogUtils.log(Level.FINER, t.getName() + " calculated nearby enemy value=" + nearbyEnemyValue + " from " + cantReachEnemyTerritories);
+				else
+				{
+					// Check if overwhelming attack strength (more than 5 times)
+					final double strengthDifference = battleUtils.estimateStrengthDifference(player, t, attackMap.get(t).getMaxUnits());
+					LogUtils.log(Level.FINER, t.getName() + " calculated strengthDifference=" + strengthDifference);
+					if (strengthDifference > 250)
+					{
+						LogUtils.log(Level.FINEST, t.getName() + " updating negative neutral attack value=" + attackValue);
+						attackValue = strengthDifference * .0001 / (1 - attackValue);
+					}
+				}
 			}
+			
 			attackTerritoryData.setValue(attackValue);
 			
 			// Remove negative territories
