@@ -613,8 +613,7 @@
 
 	<!-- zip -->
 	<target name="zip" depends="makejar" description="create a zip file for all end users">
-		<zip destfile="${release}/${zip.prefix}_all_platforms.zip"
-			compress="true">
+		<zip destfile="${release}/${zip.prefix}_all_platforms.zip" compress="true">
 			<zipfileset dir="doc" prefix="${zip.prefix}/doc/">
 				<include name="**/*.*" />
 			</zipfileset>
@@ -661,6 +660,56 @@
 				<exclude name="fix_mac_icon.sh" />
 				<exclude name="run-server.sh" />
 				<exclude name="run-headless-game-host-mac-os.sh" />
+			</zipfileset>
+
+			<zipfileset dir="bin" prefix="${zip.prefix}/bin/"
+				filemode="755">
+				<include name="triplea.jar" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<!-- zipBots -->
+	<target name="zipBots" depends="zip" description="create a zip file for automated host servers (bots)">
+		<zip destfile="${release}/${zip.prefix}_bots.zip" compress="true">
+			<zipfileset dir="doc" prefix="${zip.prefix}/doc/">
+				<include name="**/*.*" />
+			</zipfileset>
+
+			<zipfileset dir="license" prefix="${zip.prefix}/license/">
+				<include name="gpl.txt" />
+			</zipfileset>
+
+			<zipfileset dir="dice_servers" prefix="${zip.prefix}/dice_servers/">
+				<include name="*.properties" />
+			</zipfileset>
+
+			<zipfileset dir="icons" prefix="${zip.prefix}/icons/">
+				<include name="**/*.png" />
+				<include name="**/*.bmp" />
+				<include name="**/*.ico" />
+			</zipfileset>
+
+			<zipfileset dir="assets" prefix="${zip.prefix}/assets/">
+				<include name="**/*.*" />
+			</zipfileset>
+
+			<zipfileset dir="${basedir}" prefix="${zip.prefix}/">
+				<include name="readme.html" />
+				<include name="system.ini" />
+				<include name="*.bat" />
+				<include name="triplea.exe" />
+				<include name="changelog.txt" />
+				<include name="TripleA_RuleBook.pdf" />
+				<include name="MacOS_users_read_this_first.txt" />
+			</zipfileset>
+
+			<zipfileset dir="${basedir}" prefix="${zip.prefix}/"
+				filemode="755">
+				<include name="*.sh" />
+				<include name="fix_mac_icon.sh" />
+				<exclude name="run-server.sh" />
+				<include name="run-headless-game-host-mac-os.sh" />
 			</zipfileset>
 
 			<zipfileset dir="bin" prefix="${zip.prefix}/bin/"
@@ -867,7 +916,7 @@
 
 		<pathconvert refid="src.classpath" property="findbugs-path" />
 		<fb:findbugs home="ant/findbugs-1.3.9" excludeFilter="ant/FindbugsExcludeFilter.txt"
-			output="xml" outputFile="fb.xml" timeout="3600000" jvmargs="-Xmx256m">
+			output="xml" outputFile="fb.xml" timeout="3600000" jvmargs="-Xmx1000m">
 			<sourcePath path="${src}" />
 			<auxclasspath path="${findbugs-path}" />
 			<class location="classes.jar" />
@@ -927,7 +976,7 @@
 
 	</target>
 
-	<target name="release" depends="checkForWinNT,clean,zipServer,zipInstaller,zipInstallerWithJava,zipSource"
+	<target name="release" depends="checkForWinNT,clean,zipBots,zipServer,zipInstaller,zipInstallerWithJava,zipSource"
 		description="do a full windows/generic release, this must be done on a windows machine"
 		if="isWindowsNT" />
 	
