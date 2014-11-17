@@ -692,6 +692,9 @@
 
 			<zipfileset dir="assets" prefix="${zip.prefix}/assets/">
 				<include name="**/*.*" />
+				<exclude name="sounds/" />
+				<exclude name="resources/" />
+				<exclude name="territoryEffects/" />
 			</zipfileset>
 
 			<zipfileset dir="${basedir}" prefix="${zip.prefix}/">
@@ -700,16 +703,13 @@
 				<include name="*.bat" />
 				<include name="triplea.exe" />
 				<include name="changelog.txt" />
-				<include name="TripleA_RuleBook.pdf" />
 				<include name="MacOS_users_read_this_first.txt" />
 			</zipfileset>
 
 			<zipfileset dir="${basedir}" prefix="${zip.prefix}/"
 				filemode="755">
 				<include name="*.sh" />
-				<include name="fix_mac_icon.sh" />
 				<exclude name="run-server.sh" />
-				<include name="run-headless-game-host-mac-os.sh" />
 			</zipfileset>
 
 			<zipfileset dir="bin" prefix="${zip.prefix}/bin/"
