@@ -260,7 +260,7 @@ public class ProNonCombatMoveAI
 	{
 		LogUtils.log(Level.FINE, "Find non-combat infra units that can move");
 		
-		// Add all units that can't move or are infra
+		// Add all units that are infra
 		final Map<Unit, Set<Territory>> infraUnitMoveMap = new HashMap<Unit, Set<Territory>>();
 		for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();)
 		{
@@ -476,15 +476,17 @@ public class ProNonCombatMoveAI
 			final boolean canAlreadyBeHeld = minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - WIN_PERCENTAGE);
 			final boolean isNotFactoryAndHasNoEnemyNeighbors = !t.isWater() && !hasFactory && cantMoveUnitValue < 10
 						&& data.getMap().getNeighbors(t, ProMatches.territoryCanMoveLandUnitsAndIsEnemy(player, data)).isEmpty();
+			final boolean isNotFactoryAndOnlyAmphib = !t.isWater() && !hasFactory && Match.noneMatch(moveMap.get(t).getMaxUnits(), Matches.UnitIsLand) && cantMoveUnitValue < 5;
 			if (!patd.isCanHold() || patd.getValue() <= 0 || isLandAndCanOnlyBeAttackedByAir || isNotFactoryAndShouldHold || canAlreadyBeHeld
-						|| isNotFactoryAndHasNoEnemyNeighbors)
+						|| isNotFactoryAndHasNoEnemyNeighbors || isNotFactoryAndOnlyAmphib)
 			{
 				final double TUVSwing = minResult.getTUVSwing();
 				final boolean hasRemainingLandUnit = minResult.isHasLandUnitRemaining();
 				LogUtils.log(Level.FINER, "Removing territory=" + t.getName() + ", value=" + patd.getValue() + ", CanHold=" + patd.isCanHold()
 							+ ", isLandAndCanOnlyBeAttackedByAir=" + isLandAndCanOnlyBeAttackedByAir + ", isNotFactoryAndShouldHold=" + isNotFactoryAndShouldHold
 							+ ", canAlreadyBeHeld=" + canAlreadyBeHeld + ", isNotFactoryAndHasNoEnemyNeighbors=" + isNotFactoryAndHasNoEnemyNeighbors
-							+ ", TUVSwing=" + TUVSwing + ", hasRemainingLandUnit=" + hasRemainingLandUnit + ", maxEnemyUnits=" + patd.getMaxEnemyUnits().size());
+							+ ", isNotFactoryAndOnlyAmphib=" + isNotFactoryAndOnlyAmphib + ", TUVSwing=" + TUVSwing + ", hasRemainingLandUnit=" + hasRemainingLandUnit
+							+ ", maxEnemyUnits=" + patd.getMaxEnemyUnits().size());
 				it.remove();
 			}
 		}
@@ -1426,8 +1428,7 @@ public class ProNonCombatMoveAI
 	{
 		LogUtils.log(Level.FINE, "Determine where to move infra units");
 		
-		// TODO: move AA units
-		
+		// Move factory units
 		if (factoryMoveMap == null)
 		{
 			LogUtils.log(Level.FINER, "Creating factory move map");
@@ -1438,7 +1439,7 @@ public class ProNonCombatMoveAI
 			{
 				final Unit u = it.next();
 				
-				// Move factory units
+				// Only check factory units
 				if (Matches.UnitCanProduceUnits.match(u))
 				{
 					Territory maxValueTerritory = null;
@@ -1485,6 +1486,47 @@ public class ProNonCombatMoveAI
 			// Transfer stored factory moves to move map
 			for (final Territory t : factoryMoveMap.keySet())
 				moveMap.get(t).addUnits(factoryMoveMap.get(t).getUnits());
+		}
+		
+		LogUtils.log(Level.FINER, "Move infra AA units");
+		
+		// Move AA units
+		for (final Iterator<Unit> it = infraUnitMoveMap.keySet().iterator(); it.hasNext();)
+		{
+			final Unit u = it.next();
+			final Territory currentTerritory = unitTerritoryMap.get(u);
+			
+			// Only check AA units whose territory can't be held
+			if (Matches.UnitIsAAforAnything.match(u) && !moveMap.get(currentTerritory).isCanHold())
+			{
+				Territory maxValueTerritory = null;
+				double maxValue = 0;
+				for (final Territory t : infraUnitMoveMap.get(u))
+				{
+					if (!moveMap.get(t).isCanHold())
+						continue;
+					
+					// Find value and try to move to territory that doesn't already have AA
+					final List<Unit> units = new ArrayList<Unit>(moveMap.get(t).getCantMoveUnits());
+					units.addAll(moveMap.get(t).getUnits());
+					final boolean hasAA = Match.someMatch(units, Matches.UnitIsAAforAnything);
+					double value = moveMap.get(t).getValue();
+					if (hasAA)
+						value *= 0.01;
+					LogUtils.log(Level.FINEST, t.getName() + " has value=" + value);
+					if (value > maxValue)
+					{
+						maxValue = value;
+						maxValueTerritory = t;
+					}
+				}
+				if (maxValueTerritory != null)
+				{
+					LogUtils.log(Level.FINER, u.getType().getName() + " moved to " + maxValueTerritory.getName() + " with value=" + maxValue);
+					moveMap.get(maxValueTerritory).addUnit(u);
+					it.remove();
+				}
+			}
 		}
 		
 		return factoryMoveMap;
