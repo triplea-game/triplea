@@ -1023,16 +1023,17 @@ public class ProNonCombatMoveAI
 					// TODO: consider which is 'safest'
 					if (TransportTracker.isTransporting(transport))
 					{
+						final List<Unit> amphibUnits = (List<Unit>) TransportTracker.transporting(transport);
 						final Set<Territory> possibleUnloadTerritories = data.getMap().getNeighbors(minTerritory, ProMatches.territoryCanMoveLandUnitsAndIsAllied(player, data));
-						Territory unloadToTerritory = null;
-						for (final Territory t : possibleUnloadTerritories)
+						if (!possibleUnloadTerritories.isEmpty())
 						{
-							if (moveMap.get(t) != null && moveMap.get(t).isCanHold())
-								unloadToTerritory = t;
-						}
-						if (unloadToTerritory != null)
-						{
-							final List<Unit> amphibUnits = (List<Unit>) TransportTracker.transporting(transport);
+							// Find best unload territory
+							Territory unloadToTerritory = possibleUnloadTerritories.iterator().next();
+							for (final Territory t : possibleUnloadTerritories)
+							{
+								if (moveMap.get(t) != null && moveMap.get(t).isCanHold())
+									unloadToTerritory = t;
+							}
 							LogUtils.log(Level.FINEST, transport + " moved to safest territory at " + minTerritory + " and unloading to " + unloadToTerritory + " with " + amphibUnits
 										+ ", strengthDifference=" + minStrengthDifference);
 							moveMap.get(unloadToTerritory).addTempUnits(amphibUnits);
@@ -1041,14 +1042,25 @@ public class ProNonCombatMoveAI
 							for (final Unit unit : amphibUnits)
 								currentUnitMoveMap.remove(unit);
 							it.remove();
-							continue;
+						}
+						else
+						{
+							// Move transport with units since no unload options
+							LogUtils.log(Level.FINEST, transport + " moved to safest territory at " + minTerritory + " with " + amphibUnits + ", strengthDifference=" + minStrengthDifference);
+							moveMap.get(minTerritory).addTempUnits(amphibUnits);
+							moveMap.get(minTerritory).putTempAmphibAttackMap(transport, amphibUnits);
+							for (final Unit unit : amphibUnits)
+								currentUnitMoveMap.remove(unit);
+							it.remove();
 						}
 					}
-					
-					// If not transporting units or no territories to unload to
-					LogUtils.log(Level.FINEST, transport + " moved to safest territory at " + minTerritory + ", strengthDifference=" + minStrengthDifference);
-					moveMap.get(minTerritory).addTempUnit(transport);
-					it.remove();
+					else
+					{
+						// If not transporting units
+						LogUtils.log(Level.FINEST, transport + " moved to safest territory at " + minTerritory + ", strengthDifference=" + minStrengthDifference);
+						moveMap.get(minTerritory).addTempUnit(transport);
+						it.remove();
+					}
 				}
 			}
 			

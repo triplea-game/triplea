@@ -8,14 +8,15 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
+import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,8 @@ public class ProPurchaseUtils
 			if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
 						|| Matches.UnitTypeHasMaxBuildRestrictions.match(unitType)
 						|| Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
-						|| Matches.UnitTypeCanNotMoveDuringCombatMove.match(unitType))
+						|| Matches.UnitTypeCanNotMoveDuringCombatMove.match(unitType)
+						|| UnitAttachment.get(unitType).getIsSuicide())
 			{
 				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
 				specialPurchaseOptions.add(purchaseOption);
@@ -122,8 +124,13 @@ public class ProPurchaseUtils
 		if (ppo == null)
 			return false;
 		final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
-		final boolean result = !Properties.getUnitPlacementRestrictions(data) || Match.someMatch(units, ProMatches.unitWhichRequiresUnitsHasRequiredUnits(player, t));
-		return result;
+		final AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
+		final IDelegateBridge bridge = new ProDummyDelegateBridge(ai, player, data);
+		placeDelegate.setDelegateBridgeAndPlayer(bridge);
+		final String s = placeDelegate.canUnitsBePlaced(t, units, player);
+		if (s == null)
+			return true;
+		return false;
 	}
 	
 	public List<Unit> findMaxPurchaseDefenders(final PlayerID player, final Territory t, final List<ProPurchaseOption> landPurchaseOptions)

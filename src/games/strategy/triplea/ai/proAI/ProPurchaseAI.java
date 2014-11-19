@@ -634,7 +634,7 @@ public class ProPurchaseAI
 					{
 						if (placeTerritory.equals(ppt))
 						{
-							if (purchaseUtils.canTerritoryUsePurchaseOption(player, bestDefenseOption, purchaseTerritory))
+							if (purchaseUtils.canTerritoryUsePurchaseOption(player, bestDefenseOption, t))
 								remainingUnitProduction += purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction();
 						}
 					}
@@ -857,9 +857,9 @@ public class ProPurchaseAI
 				LogUtils.log(Level.FINEST, "Best three move unit: " + bestThreeMoveOption.getUnitType().getName());
 			
 			// Get optimal unit combo based on distance from enemy
-			final int enemyDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, t);
+			int enemyDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, t);
 			if (enemyDistance <= 0)
-				continue;
+				enemyDistance = 9;
 			int hitPointPercent = 65;
 			int attackPercent = 35;
 			int twoMovePercent = 0;
@@ -1211,7 +1211,7 @@ public class ProPurchaseAI
 				{
 					if (placeTerritory.equals(ppt))
 					{
-						if (purchaseUtils.canTerritoryUsePurchaseOption(player, bestDefenseOption, purchaseTerritory))
+						if (purchaseUtils.canTerritoryUsePurchaseOption(player, bestDefenseOption, t))
 							remainingDefenseProduction += purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction();
 					}
 				}
@@ -1477,7 +1477,7 @@ public class ProPurchaseAI
 							ProPurchaseOption ppo = bestTransportOption;
 							if (bestTransportOption != null && numNeededUnits < 0 && bestTransportOption.getCost() <= PUsRemaining
 										&& (remainingUnitProduction - usedProduction) >= bestTransportOption.getQuantity()
-										&& purchaseUtils.canTerritoryUsePurchaseOption(player, bestTransportOption, purchaseTerritory))
+										&& purchaseUtils.canTerritoryUsePurchaseOption(player, bestTransportOption, t))
 							{
 								numNeededUnits += bestTransportOptionUnits;
 								final List<Unit> transports = ppo.getUnitType().create(ppo.getQuantity(), player, true);
