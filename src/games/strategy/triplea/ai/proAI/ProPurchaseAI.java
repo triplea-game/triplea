@@ -22,7 +22,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
@@ -86,9 +85,6 @@ public class ProPurchaseAI
 	private final ProTerritoryValueUtils territoryValueUtils;
 	private final ProPurchaseUtils purchaseUtils;
 	
-	// Current map settings
-	private boolean areNeutralsPassableByAir;
-	
 	// Current data
 	private GameData data;
 	private PlayerID player;
@@ -116,7 +112,6 @@ public class ProPurchaseAI
 		// Current data at the start of combat move
 		this.data = data;
 		this.player = player;
-		areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
 		myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		allTerritories = data.getMap().getTerritories();
 	}
@@ -128,7 +123,6 @@ public class ProPurchaseAI
 		// Current data at the start of combat move
 		this.data = data;
 		this.player = player;
-		areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
 		myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		allTerritories = data.getMap().getTerritories();
 		int PUsRemaining = PUsToSpend;
@@ -277,7 +271,6 @@ public class ProPurchaseAI
 		LogUtils.log(Level.FINER, "Remaining units to place: " + player.getUnits().getUnits());
 		this.data = data;
 		this.player = player;
-		areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
 		myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		allTerritories = data.getMap().getTerritories();
 		
