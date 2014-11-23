@@ -858,7 +858,7 @@ public class ProNonCombatMoveAI
 				// Transport amphib units to best sea territory
 				for (final Territory t : amphibData.getSeaTransportMap().keySet())
 				{
-					if (moveMap.get(t).getValue() > maxValue && !t.equals(currentTerritory))
+					if (moveMap.get(t) != null && moveMap.get(t).getValue() > maxValue && !t.equals(currentTerritory))
 					{
 						// Find units to load
 						final Set<Territory> territoriesCanLoadFrom = amphibData.getSeaTransportMap().get(t);
