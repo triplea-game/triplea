@@ -19,7 +19,10 @@ import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 /*
@@ -131,6 +134,41 @@ public class ProPurchaseUtils
 		if (s == null)
 			return true;
 		return false;
+	}
+	
+	public void removePurchaseOptionsByCostAndProduction(final List<ProPurchaseOption> purchaseOptions, final int PUsRemaining, final int remainingUnitProduction)
+	{
+		for (final Iterator<ProPurchaseOption> it = purchaseOptions.iterator(); it.hasNext();)
+		{
+			final ProPurchaseOption ppo = it.next();
+			if (ppo.getCost() > PUsRemaining || ppo.getQuantity() > remainingUnitProduction)
+				it.remove();
+		}
+	}
+	
+	public ProPurchaseOption randomizePurchaseOption(final Map<ProPurchaseOption, Double> purchaseEfficiencies, final String type)
+	{
+		LogUtils.log(Level.FINER, "Select purchase option for " + type);
+		double totalEfficiency = 0;
+		for (final Double efficiency : purchaseEfficiencies.values())
+			totalEfficiency += efficiency;
+		final Map<ProPurchaseOption, Double> purchasePercentages = new LinkedHashMap<ProPurchaseOption, Double>();
+		double upperBound = 0.0;
+		for (final ProPurchaseOption ppo : purchaseEfficiencies.keySet())
+		{
+			final double chance = purchaseEfficiencies.get(ppo) / totalEfficiency * 100;
+			upperBound += chance;
+			purchasePercentages.put(ppo, upperBound);
+			LogUtils.log(Level.FINEST, ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
+		}
+		final double randomNumber = Math.random() * 100;
+		LogUtils.log(Level.FINEST, "Random number: " + randomNumber);
+		for (final ProPurchaseOption ppo : purchasePercentages.keySet())
+		{
+			if (randomNumber <= purchasePercentages.get(ppo))
+				return ppo;
+		}
+		return purchasePercentages.keySet().iterator().next();
 	}
 	
 	public List<Unit> findMaxPurchaseDefenders(final PlayerID player, final Territory t, final List<ProPurchaseOption> landPurchaseOptions)

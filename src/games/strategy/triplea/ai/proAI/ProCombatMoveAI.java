@@ -567,11 +567,15 @@ public class ProCombatMoveAI
 				
 				if (isNeutral)
 				{
-					// Remove any neutral territories that can't be held and can be counter attacked
-					LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + t.getName() + ", enemyAttackers="
-								+ enemyAttackMap.get(t).getMaxUnits() + ", enemyAmphibAttackers=" + enemyAttackMap.get(t).getMaxAmphibUnits());
-					it.remove();
-					continue;
+					// Remove any neutral territories that can't be held, can be counter attacked, and don't have overwhelming attack strength (more than 5 times)
+					final double strengthDifference = battleUtils.estimateStrengthDifference(player, t, patd.getMaxUnits());
+					if (strengthDifference <= 250)
+					{
+						LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + t.getName() + ", enemyAttackers="
+									+ enemyAttackMap.get(t).getMaxUnits() + ", enemyAmphibAttackers=" + enemyAttackMap.get(t).getMaxAmphibUnits() + ", strengthDifference=" + strengthDifference);
+						it.remove();
+						continue;
+					}
 				}
 				else if (patd.isNeedAmphibUnits() && patd.getValue() < 2)
 				{

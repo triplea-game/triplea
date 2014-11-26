@@ -41,7 +41,8 @@ public class ProPurchaseOption
 	private final int carrierCapacity;
 	private final double transportEfficiency;
 	private final double carrierEfficiency;
-	private double hitPointEfficiency;
+	private double costPerHitPoint;
+	private final double hitPointEfficiency;
 	private final double attackEfficiency;
 	private final double defenseEfficiency;
 	
@@ -60,7 +61,7 @@ public class ProPurchaseOption
 			hitPoints = 0;
 		attack = unitAttachment.getAttack(player) * quantity;
 		if (unitAttachment.getArtillery())
-			attack += 0.5 * quantity;
+			attack += 0.75 * quantity;
 		defense = unitAttachment.getDefense(player) * quantity;
 		transportCost = unitAttachment.getTransportCost();
 		isAir = unitAttachment.getIsAir();
@@ -71,9 +72,11 @@ public class ProPurchaseOption
 		carrierCapacity = unitAttachment.getCarrierCapacity();
 		transportEfficiency = (double) unitAttachment.getTransportCapacity() * quantity / cost;
 		carrierEfficiency = (double) unitAttachment.getCarrierCapacity() * quantity / cost;
+		if (hitPoints == 0)
+			costPerHitPoint = Double.POSITIVE_INFINITY;
+		else
+			costPerHitPoint = (double) cost / hitPoints;
 		hitPointEfficiency = (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
-		if (isInfra)
-			hitPointEfficiency = 0;
 		attackEfficiency = (1 + hitPoints) * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
 		defenseEfficiency = (1 + hitPoints) * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
 	}
@@ -184,6 +187,42 @@ public class ProPurchaseOption
 	public boolean isAir()
 	{
 		return isAir;
+	}
+	
+	public void setCostPerHitPoint(final double costPerHitPoint)
+	{
+		this.costPerHitPoint = costPerHitPoint;
+	}
+	
+	public double getCostPerHitPoint()
+	{
+		return costPerHitPoint;
+	}
+	
+	public double getFodderEfficiency(final int enemyDistance, final GameData data)
+	{
+		return calculateEfficiency(enemyDistance, data, 1, 1);
+	}
+	
+	public double getAttackEfficiency2(final int enemyDistance, final GameData data)
+	{
+		return calculateEfficiency(enemyDistance, data, 1, 0.75);
+	}
+	
+	public double getDefenseEfficiency2(final int enemyDistance, final GameData data)
+	{
+		return calculateEfficiency(enemyDistance, data, 0.75, 1);
+	}
+	
+	private double calculateEfficiency(final int enemyDistance, final GameData data, final double attackFactor, final double defenseFactor)
+	{
+		final double distance = Math.max(0, enemyDistance - 1.5);
+		final double distanceFactor = 1 + Math.pow(movement - 1, 0.05 * distance) * distance / 9;
+		final double hitPointPerUnitFactor = (2 + hitPoints / quantity);
+		final double hitPointValue = 2 * hitPoints;
+		final double attackValue = attackFactor * attack * 6 / data.getDiceSides();
+		final double defenseValue = defenseFactor * defense * 6 / data.getDiceSides();
+		return Math.pow((hitPointValue + attackValue + defenseValue) * distanceFactor * hitPointPerUnitFactor / cost, 30) / quantity;
 	}
 	
 }

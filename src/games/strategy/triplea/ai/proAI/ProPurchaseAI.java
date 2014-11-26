@@ -131,6 +131,7 @@ public class ProPurchaseAI
 		PUsRemaining = repairFactories(PUsRemaining, purchaseDelegate);
 		
 		// Find all purchase options
+		final ProPurchaseOptionMap purchaseOptions = new ProPurchaseOptionMap(player, data);
 		final List<ProPurchaseOption> specialPurchaseOptions = new ArrayList<ProPurchaseOption>();
 		final List<ProPurchaseOption> factoryPurchaseOptions = new ArrayList<ProPurchaseOption>();
 		final List<ProPurchaseOption> landPurchaseOptions = new ArrayList<ProPurchaseOption>();
@@ -174,7 +175,7 @@ public class ProPurchaseAI
 		// Prioritize land place options purchase AA then land units
 		final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
 		PUsRemaining = purchaseAAUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, specialPurchaseOptions);
-		PUsRemaining = purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, landPurchaseOptions);
+		PUsRemaining = purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, purchaseOptions);
 		
 		// Prioritize sea territories that need defended and purchase additional defenders
 		final List<ProPlaceTerritory> needToDefendSeaTerritories = prioritizeTerritoriesToDefend(purchaseTerritories, enemyAttackMap, false);
@@ -784,7 +785,7 @@ public class ProPurchaseAI
 	}
 	
 	private int purchaseLandUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
-				final List<ProPlaceTerritory> prioritizedLandTerritories, int PUsRemaining, final List<ProPurchaseOption> landPurchaseOptions)
+				final List<ProPlaceTerritory> prioritizedLandTerritories, int PUsRemaining, final ProPurchaseOptionMap purchaseOptions)
 	{
 		if (PUsRemaining == 0)
 			return PUsRemaining;
@@ -803,110 +804,52 @@ public class ProPurchaseAI
 				continue;
 			
 			// Determine most cost efficient units that can be produced in this territory
-			final List<ProPurchaseOption> purchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, landPurchaseOptions, t);
-			ProPurchaseOption bestHitPointOption = null;
-			double maxHitPointEfficiency = 0;
-			ProPurchaseOption bestAttackOption = null;
-			double maxAttackEfficiency = 0;
-			ProPurchaseOption bestTwoMoveOption = null;
-			double maxTwoMoveEfficiency = 0;
-			ProPurchaseOption bestThreeMoveOption = null;
-			double maxThreeMoveEfficiency = 0;
-			for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
-			{
-				if (ppo.getCost() <= PUsRemaining)
-				{
-					if (ppo.getHitPointEfficiency() > maxHitPointEfficiency)
-					{
-						bestHitPointOption = ppo;
-						maxHitPointEfficiency = ppo.getHitPointEfficiency();
-					}
-					if (ppo.getAttackEfficiency() > maxAttackEfficiency)
-					{
-						bestAttackOption = ppo;
-						maxAttackEfficiency = ppo.getAttackEfficiency();
-					}
-					if (ppo.getMovement() >= 2 && ppo.getAttackEfficiency() > maxTwoMoveEfficiency)
-					{
-						bestTwoMoveOption = ppo;
-						maxTwoMoveEfficiency = ppo.getAttackEfficiency();
-					}
-					if (ppo.getMovement() >= 3 && ppo.getAttackEfficiency() > maxThreeMoveEfficiency)
-					{
-						bestThreeMoveOption = ppo;
-						maxThreeMoveEfficiency = ppo.getAttackEfficiency();
-					}
-				}
-			}
+			final List<ProPurchaseOption> landFodderOptions = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandFodderOptions(), t);
+			final List<ProPurchaseOption> landAttackOptions = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandAttackOptions(), t);
+			final List<ProPurchaseOption> landDefenseOptions = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandDefenseOptions(), t);
 			
-			// Check if there aren't any available units
-			if (bestHitPointOption == null || bestAttackOption == null)
-				continue;
-			LogUtils.log(Level.FINEST, "Best hit point unit: " + bestHitPointOption.getUnitType().getName());
-			LogUtils.log(Level.FINEST, "Best attack unit:" + bestAttackOption.getUnitType().getName());
-			if (bestTwoMoveOption != null)
-				LogUtils.log(Level.FINEST, "Best two move unit: " + bestTwoMoveOption.getUnitType().getName());
-			if (bestThreeMoveOption != null)
-				LogUtils.log(Level.FINEST, "Best three move unit: " + bestThreeMoveOption.getUnitType().getName());
-			
-			// Get optimal unit combo based on distance from enemy
+			// Determine enemy distance and amount of needed fodder units
 			int enemyDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, t);
 			if (enemyDistance <= 0)
-				enemyDistance = 9;
-			int hitPointPercent = 65;
-			int attackPercent = 35;
-			int twoMovePercent = 0;
-			int threeMovePercent = 0;
-			if (bestThreeMoveOption != null && enemyDistance > 4)
-				threeMovePercent = 50;
-			else if (bestTwoMoveOption != null)
-				twoMovePercent = Math.min(50, 10 * enemyDistance);
-			if (threeMovePercent + twoMovePercent > attackPercent)
-			{
-				hitPointPercent = 100 - (threeMovePercent + twoMovePercent);
-				attackPercent = 0;
-			}
-			else
-			{
-				attackPercent = attackPercent - (threeMovePercent + twoMovePercent);
-			}
-			LogUtils.log(Level.FINEST, t + ", enemyDistance=" + enemyDistance + ", hitPointPercent=" + hitPointPercent + ", attackPercent=" + attackPercent + ", twoMovePercent=" + twoMovePercent
-						+ " threeMovePercent=" + threeMovePercent);
-			
-			// Find optimal units for remaining production
-			final int numHitPointUnits = (int) Math.ceil(hitPointPercent / 100.0 * remainingUnitProduction);
-			final int numAttackUnits = (int) Math.ceil(attackPercent / 100.0 * remainingUnitProduction);
-			final int numTwoMoveUnits = (int) Math.ceil(twoMovePercent / 100.0 * remainingUnitProduction);
-			final int numThreeMoveUnits = (int) Math.ceil(threeMovePercent / 100.0 * remainingUnitProduction);
+				enemyDistance = 10;
+			final int fodderPercent = 80 - enemyDistance * 5;
+			LogUtils.log(Level.FINER, t + ", enemyDistance=" + enemyDistance + ", fodderPercent=" + fodderPercent);
 			
 			// Purchase as many units as possible
-			int addedHitPointUnits = 0;
-			int addedAttackUnits = 0;
-			int addedTwoMoveUnits = 0;
-			int addedThreeMoveUnits = 0;
+			int addedFodderUnits = 0;
 			final List<Unit> unitsToPlace = new ArrayList<Unit>();
+			double attackAndDefenseDifference = 0;
+			boolean selectFodderUnit = true;
 			while (true)
 			{
-				// Find current purchase option
-				ProPurchaseOption ppo = bestHitPointOption;
-				if (addedHitPointUnits < numHitPointUnits && bestHitPointOption.getCost() <= PUsRemaining && remainingUnitProduction >= bestHitPointOption.getQuantity())
+				// Remove options that cost too much PUs or production
+				purchaseUtils.removePurchaseOptionsByCostAndProduction(landFodderOptions, PUsRemaining, remainingUnitProduction);
+				purchaseUtils.removePurchaseOptionsByCostAndProduction(landAttackOptions, PUsRemaining, remainingUnitProduction);
+				purchaseUtils.removePurchaseOptionsByCostAndProduction(landDefenseOptions, PUsRemaining, remainingUnitProduction);
+				
+				// Select purchase option
+				ProPurchaseOption selectedOption = null;
+				if (selectFodderUnit && !landFodderOptions.isEmpty())
 				{
-					addedHitPointUnits += ppo.getQuantity();
+					final Map<ProPurchaseOption, Double> fodderEfficiencies = new HashMap<ProPurchaseOption, Double>();
+					for (final ProPurchaseOption ppo : landFodderOptions)
+						fodderEfficiencies.put(ppo, ppo.getFodderEfficiency(enemyDistance, data));
+					selectedOption = purchaseUtils.randomizePurchaseOption(fodderEfficiencies, "Land Fodder");
+					addedFodderUnits += selectedOption.getQuantity();
 				}
-				else if (addedThreeMoveUnits < numThreeMoveUnits && bestThreeMoveOption.getCost() <= PUsRemaining && remainingUnitProduction >= bestThreeMoveOption.getQuantity())
+				else if (attackAndDefenseDifference > 0 && !landDefenseOptions.isEmpty())
 				{
-					ppo = bestThreeMoveOption;
-					addedThreeMoveUnits += ppo.getQuantity();
+					final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<ProPurchaseOption, Double>();
+					for (final ProPurchaseOption ppo : landDefenseOptions)
+						defenseEfficiencies.put(ppo, ppo.getDefenseEfficiency2(enemyDistance, data));
+					selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
 				}
-				else if (addedTwoMoveUnits < numTwoMoveUnits && bestTwoMoveOption.getCost() <= PUsRemaining && remainingUnitProduction >= bestTwoMoveOption.getQuantity())
+				else if (!landAttackOptions.isEmpty())
 				{
-					ppo = bestTwoMoveOption;
-					addedTwoMoveUnits += ppo.getQuantity();
-				}
-				else if (addedAttackUnits < numAttackUnits && bestAttackOption.getCost() <= PUsRemaining && remainingUnitProduction >= bestAttackOption.getQuantity())
-				{
-					ppo = bestAttackOption;
-					addedAttackUnits += ppo.getQuantity();
+					final Map<ProPurchaseOption, Double> attackEfficiencies = new HashMap<ProPurchaseOption, Double>();
+					for (final ProPurchaseOption ppo : landAttackOptions)
+						attackEfficiencies.put(ppo, ppo.getAttackEfficiency2(enemyDistance, data));
+					selectedOption = purchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack");
 				}
 				else
 				{
@@ -914,14 +857,17 @@ public class ProPurchaseAI
 				}
 				
 				// Create new temp units
-				PUsRemaining -= ppo.getCost();
-				remainingUnitProduction -= ppo.getQuantity();
-				unitsToPlace.addAll(ppo.getUnitType().create(ppo.getQuantity(), player, true));
+				PUsRemaining -= selectedOption.getCost();
+				remainingUnitProduction -= selectedOption.getQuantity();
+				unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+				attackAndDefenseDifference += (selectedOption.getAttack() - selectedOption.getDefense());
+				selectFodderUnit = ((double) addedFodderUnits / unitsToPlace.size() * 100) <= fodderPercent;
+				LogUtils.log(Level.FINEST, "Selected unit=" + selectedOption.getUnitType().getName());
 			}
 			
 			// Add units to place territory
 			placeTerritory.getPlaceUnits().addAll(unitsToPlace);
-			LogUtils.log(Level.FINEST, t + ", placedUnits=" + unitsToPlace);
+			LogUtils.log(Level.FINER, t + ", placedUnits=" + unitsToPlace);
 		}
 		
 		return PUsRemaining;
