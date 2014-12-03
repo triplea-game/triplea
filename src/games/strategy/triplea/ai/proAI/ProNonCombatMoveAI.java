@@ -121,6 +121,9 @@ public class ProNonCombatMoveAI
 		final Map<Unit, Set<Territory>> transportMoveMap = new HashMap<Unit, Set<Territory>>();
 		final List<ProAmphibData> transportMapList = new ArrayList<ProAmphibData>();
 		final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
+		final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
+		Map<Unit, Set<Territory>> infraUnitMoveMap = new HashMap<Unit, Set<Territory>>();
+		List<ProAttackTerritoryData> prioritizedTerritories = new ArrayList<ProAttackTerritoryData>();
 		
 		// Find all purchase options
 		final List<ProPurchaseOption> specialPurchaseOptions = new ArrayList<ProPurchaseOption>();
@@ -130,47 +133,74 @@ public class ProNonCombatMoveAI
 		final List<ProPurchaseOption> seaPurchaseOptions = new ArrayList<ProPurchaseOption>();
 		purchaseUtils.findPurchaseOptions(player, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions, factoryPurchaseOptions, specialPurchaseOptions);
 		
-		// Find the max number of units that can move to each allied territory
-		final Match<Territory> myUnitTerritoriesMatch = Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
-		final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
-		attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, landRoutesMap, transportMapList, new ArrayList<Territory>());
-		
-		// Find number of units in each move territory that can't move and all infra units
-		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions);
-		final Map<Unit, Set<Territory>> infraUnitMoveMap = findInfraUnitsThatCanMove(unitMoveMap);
-		
-		// Try to have one land unit in each territory that is bordering an enemy territory
-		final List<Territory> movedOneDefenderToTerritories = moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap);
-		
-		// Determine max enemy attack units and if territories can be held
-		final Map<Territory, ProAttackTerritoryData> enemyAttackMap = new HashMap<Territory, ProAttackTerritoryData>();
-		attackOptionsUtils.findMaxEnemyAttackUnits(player, movedOneDefenderToTerritories, new ArrayList<Territory>(moveMap.keySet()), enemyAttackMap);
-		determineIfMoveTerritoriesCanBeHeld(moveMap, enemyAttackMap);
-		
-		// Prioritize territories to defend
-		final List<ProAttackTerritoryData> prioritizedTerritories = prioritizeDefendOptions(moveMap, factoryMoveMap);
-		
-		// Determine which territories to defend and how many units each one needs
-		moveUnitsToDefendTerritories(moveMap, unitMoveMap, prioritizedTerritories, transportMapList, transportMoveMap);
-		
-		// Get list of territories that can't be held and find move value for each territory
-		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
-		for (final Territory t : moveMap.keySet())
+		// Use loop to ensure capital is protected after moves
+		int defenseRange = -1;
+		while (true)
 		{
-			if (!moveMap.get(t).isCanHold())
-				territoriesThatCantBeHeld.add(t);
+			// Find the max number of units that can move to each allied territory
+			final Match<Territory> myUnitTerritoriesMatch = Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
+			final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, myUnitTerritoriesMatch);
+			attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, landRoutesMap, transportMapList, new ArrayList<Territory>());
+			
+			// Find number of units in each move territory that can't move and all infra units
+			findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions);
+			infraUnitMoveMap = findInfraUnitsThatCanMove(unitMoveMap);
+			
+			// Try to have one land unit in each territory that is bordering an enemy territory
+			final List<Territory> movedOneDefenderToTerritories = moveOneDefenderToLandTerritoriesBorderingEnemy(moveMap, unitMoveMap);
+			
+			// Determine max enemy attack units and if territories can be held
+			attackOptionsUtils.findMaxEnemyAttackUnits(player, movedOneDefenderToTerritories, new ArrayList<Territory>(moveMap.keySet()), enemyAttackMap);
+			determineIfMoveTerritoriesCanBeHeld(moveMap, enemyAttackMap);
+			
+			// Prioritize territories to defend
+			prioritizedTerritories = prioritizeDefendOptions(moveMap, factoryMoveMap);
+			
+			// Determine which territories to defend and how many units each one needs
+			moveUnitsToDefendTerritories(moveMap, unitMoveMap, prioritizedTerritories, transportMapList, transportMoveMap);
+			
+			// Get list of territories that can't be held and find move value for each territory
+			final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
+			for (final Territory t : moveMap.keySet())
+			{
+				if (!moveMap.get(t).isCanHold())
+					territoriesThatCantBeHeld.add(t);
+			}
+			final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld);
+			final Map<Territory, Double> seaTerritoryValueMap = territoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
+			for (final Territory t : moveMap.keySet())
+			{
+				double value = territoryValueMap.get(t);
+				final int distance = data.getMap().getDistance(myCapital, t, ProMatches.territoryCanMoveLandUnits(player, data, false));
+				if (distance >= 0 && distance <= defenseRange)
+					value *= 10;
+				moveMap.get(t).setValue(value);
+				if (t.isWater())
+					moveMap.get(t).setSeaValue(seaTerritoryValueMap.get(t));
+			}
+			
+			// Move units to best territories
+			moveUnitsToBestTerritories(moveMap, unitMoveMap, transportMapList, transportMoveMap);
+			
+			// Check if capital has local land superiority
+			final int enemyDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, myCapital);
+			LogUtils.log(Level.FINE, "Checking if capital has local land superiority with enemyDistance=" + enemyDistance);
+			if (enemyDistance >= 2 && enemyDistance <= 3 && defenseRange == -1 && !battleUtils.territoryHasLocalLandSuperiorityAfterMoves(myCapital, enemyDistance, player, moveMap))
+			{
+				defenseRange = enemyDistance - 1;
+				moveMap.clear();
+				unitMoveMap.clear();
+				transportMoveMap.clear();
+				transportMapList.clear();
+				landRoutesMap.clear();
+				enemyAttackMap.clear();
+				LogUtils.log(Level.FINER, "Capital doesn't have local land superiority so setting defensive stance");
+			}
+			else
+			{
+				break;
+			}
 		}
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld);
-		final Map<Territory, Double> seaTerritoryValueMap = territoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
-		for (final Territory t : moveMap.keySet())
-		{
-			moveMap.get(t).setValue(territoryValueMap.get(t));
-			if (t.isWater())
-				moveMap.get(t).setSeaValue(seaTerritoryValueMap.get(t));
-		}
-		
-		// Move units to best territories
-		moveUnitsToBestTerritories(moveMap, unitMoveMap, transportMapList, transportMoveMap);
 		
 		// Determine where to move infra units
 		factoryMoveMap = moveInfraUnits(factoryMoveMap, moveMap, infraUnitMoveMap);
@@ -1508,8 +1538,8 @@ public class ProNonCombatMoveAI
 			final Unit u = it.next();
 			final Territory currentTerritory = unitTerritoryMap.get(u);
 			
-			// Only check AA units whose territory can't be held
-			if (Matches.UnitIsAAforAnything.match(u) && !moveMap.get(currentTerritory).isCanHold())
+			// Only check AA units whose territory can't be held and don't have factories
+			if (Matches.UnitIsAAforAnything.match(u) && !moveMap.get(currentTerritory).isCanHold() && !ProMatches.territoryHasInfraFactoryAndIsLand(player).match(currentTerritory))
 			{
 				Territory maxValueTerritory = null;
 				double maxValue = 0;

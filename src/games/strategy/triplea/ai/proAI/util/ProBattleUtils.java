@@ -6,6 +6,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.ai.proAI.ProBattleResultData;
 import games.strategy.triplea.ai.proAI.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.ProPurchaseTerritory;
@@ -211,6 +212,36 @@ public class ProBattleUtils
 				if (nearbyTerritoriesForAllied.contains(ppt.getTerritory()))
 					alliedUnits.addAll(ppt.getPlaceUnits());
 			}
+		}
+		
+		// Determine strength difference
+		final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
+		LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
+		if (strengthDifference > 50)
+			return false;
+		else
+			return true;
+	}
+	
+	public boolean territoryHasLocalLandSuperiorityAfterMoves(final Territory t, final int distance, final PlayerID player, final Map<Territory, ProAttackTerritoryData> moveMap)
+	{
+		final GameData data = ai.getGameData();
+		
+		// Find enemy strength
+		final Set<Territory> nearbyTerritoriesForEnemy = data.getMap().getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(player, data, false));
+		nearbyTerritoriesForEnemy.add(t);
+		final List<Unit> enemyUnits = new ArrayList<Unit>();
+		for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy)
+			enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
+		
+		// Find allied strength
+		final Set<Territory> nearbyTerritoriesForAllied = data.getMap().getNeighbors(t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
+		nearbyTerritoriesForAllied.add(t);
+		final List<Unit> alliedUnits = new ArrayList<Unit>();
+		for (final Territory nearbyTerritory : nearbyTerritoriesForAllied)
+		{
+			if (moveMap.get(nearbyTerritory) != null)
+				alliedUnits.addAll(moveMap.get(nearbyTerritory).getAllDefenders());
 		}
 		
 		// Determine strength difference

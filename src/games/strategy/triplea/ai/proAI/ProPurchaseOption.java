@@ -61,7 +61,7 @@ public class ProPurchaseOption
 			hitPoints = 0;
 		attack = unitAttachment.getAttack(player) * quantity;
 		if (unitAttachment.getArtillery())
-			attack += 0.75 * quantity;
+			attack += 0.9 * quantity;
 		defense = unitAttachment.getDefense(player) * quantity;
 		transportCost = unitAttachment.getTransportCost();
 		isAir = unitAttachment.getIsAir();
@@ -217,7 +217,8 @@ public class ProPurchaseOption
 	private double calculateEfficiency(final int enemyDistance, final GameData data, final double attackFactor, final double defenseFactor)
 	{
 		final double distance = Math.max(0, enemyDistance - 1.5);
-		final double distanceFactor = 1 + Math.pow(movement - 1, 0.05 * distance) * distance / 9;
+		final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1); // 1, 2, 2.5, 2.75, etc
+		final double distanceFactor = Math.pow(moveFactor, distance / 7.5);
 		final double hitPointPerUnitFactor = (2 + hitPoints / quantity);
 		final double hitPointValue = 2 * hitPoints;
 		final double attackValue = attackFactor * attack * 6 / data.getDiceSides();

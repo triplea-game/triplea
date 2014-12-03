@@ -117,7 +117,7 @@ public class ProPurchaseOptionMap
 		{
 			if (ppo.getCostPerHitPoint() <= minCostPerHitPoint)
 				landFodderOptions.add(ppo);
-			if (ppo.getAttack() >= ppo.getDefense())
+			if (ppo.getAttack() >= ppo.getDefense() || ppo.getMovement() > 1)
 				landAttackOptions.add(ppo);
 			if (ppo.getDefense() >= ppo.getAttack())
 				landDefenseOptions.add(ppo);

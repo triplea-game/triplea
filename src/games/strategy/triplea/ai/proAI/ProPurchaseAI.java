@@ -22,11 +22,13 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.ai.proAI.util.ProAttackOptionsUtils;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
+import games.strategy.triplea.ai.proAI.util.ProMetricUtils;
 import games.strategy.triplea.ai.proAI.util.ProMoveUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
@@ -158,7 +160,7 @@ public class ProPurchaseAI
 		
 		// Prioritize land territories that need defended and purchase additional defenders
 		final List<ProPlaceTerritory> needToDefendLandTerritories = prioritizeTerritoriesToDefend(purchaseTerritories, enemyAttackMap, true);
-		PUsRemaining = purchaseDefenders(purchaseTerritories, enemyAttackMap, needToDefendLandTerritories, PUsRemaining, landPurchaseOptions, true);
+		PUsRemaining = purchaseDefenders(purchaseTerritories, enemyAttackMap, needToDefendLandTerritories, PUsRemaining, purchaseOptions, true);
 		
 		// Find strategic value for each territory
 		LogUtils.log(Level.FINE, "Find strategic value for place territories");
@@ -205,6 +207,7 @@ public class ProPurchaseAI
 					specialPurchaseOptions);
 		
 		// Purchase units
+		ProMetricUtils.collectPurchaseStats(purchaseMap);
 		purchaseDelegate.purchase(purchaseMap);
 		
 		return purchaseTerritories;
@@ -665,10 +668,91 @@ public class ProPurchaseAI
 			}
 			
 			// Check to see if its worth trying to defend the territory
-			if (!finalResult.isHasLandUnitRemaining() || (finalResult.getTUVSwing() - PUsSpent / 2) < placeTerritory.getMinBattleResult().getTUVSwing() || t.equals(myCapital))
+			final boolean hasLocalSuperiority = battleUtils.territoryHasLocalLandSuperiority(t, 2, player, purchaseTerritories);
+			if (!finalResult.isHasLandUnitRemaining() || (finalResult.getTUVSwing() - PUsSpent / 2) < placeTerritory.getMinBattleResult().getTUVSwing() || t.equals(myCapital) || hasLocalSuperiority)
 			{
 				PUsRemaining -= PUsSpent;
-				LogUtils.log(Level.FINEST, t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing());
+				LogUtils.log(Level.FINEST, t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing() + ", hasLandUnitRemaining=" + finalResult.isHasLandUnitRemaining()
+							+ ", hasLocalSuperiority=" + hasLocalSuperiority);
+				addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
+			}
+			else
+			{
+				setCantHoldPlaceTerritory(placeTerritory, purchaseTerritories);
+				LogUtils.log(Level.FINEST, t + ", unable to defend with placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing() + ", minTUVSwing="
+							+ placeTerritory.getMinBattleResult().getTUVSwing() + ", PUsSpent=" + PUsSpent);
+			}
+		}
+		
+		return PUsRemaining;
+	}
+	
+	private int purchaseDefenders(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
+				final List<ProPlaceTerritory> needToDefendTerritories, int PUsRemaining, final ProPurchaseOptionMap purchaseOptions, final boolean isLand)
+	{
+		if (PUsRemaining == 0)
+			return PUsRemaining;
+		LogUtils.log(Level.FINE, "Purchase defenders with PUsRemaining=" + PUsRemaining + ", isLand=" + isLand);
+		
+		// Loop through prioritized territories and purchase defenders
+		for (final ProPlaceTerritory placeTerritory : needToDefendTerritories)
+		{
+			final Territory t = placeTerritory.getTerritory();
+			LogUtils.log(Level.FINER, "Purchasing defenders for " + t.getName() + ", enemyAttackers=" + enemyAttackMap.get(t).getMaxUnits() + ", amphibEnemyAttackers="
+						+ enemyAttackMap.get(t).getMaxAmphibUnits() + ", defenders=" + placeTerritory.getDefendingUnits());
+			
+			// Check remaining production
+			int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
+			LogUtils.log(Level.FINER, t + ", remainingUnitProduction=" + remainingUnitProduction);
+			if (remainingUnitProduction <= 0)
+				continue;
+			
+			// Find defenders that can be produced in this territory
+			final List<ProPurchaseOption> purchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandDefenseOptions(), t);
+			
+			// Purchase necessary defenders
+			int PUsSpent = 0;
+			final List<Unit> unitsToPlace = new ArrayList<Unit>();
+			ProBattleResultData finalResult = new ProBattleResultData();
+			while (true)
+			{
+				// Remove options that cost too much PUs or production
+				purchaseUtils.removePurchaseOptionsByCostAndProduction(purchaseOptionsForTerritory, PUsRemaining - PUsSpent, remainingUnitProduction);
+				if (purchaseOptionsForTerritory.isEmpty())
+					break;
+				
+				// Select purchase option
+				final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<ProPurchaseOption, Double>();
+				for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
+					defenseEfficiencies.put(ppo, ppo.getDefenseEfficiency2(1, data));
+				final ProPurchaseOption selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
+				
+				// Create new temp units
+				PUsSpent += selectedOption.getCost();
+				remainingUnitProduction -= selectedOption.getQuantity();
+				unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+				LogUtils.log(Level.FINEST, "Selected unit=" + selectedOption.getUnitType().getName());
+				
+				// Find current battle result
+				final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackMap.get(t).getMaxUnits());
+				enemyAttackingUnits.addAll(enemyAttackMap.get(t).getMaxAmphibUnits());
+				final List<Unit> defenders = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
+				defenders.addAll(unitsToPlace);
+				finalResult = battleUtils.calculateBattleResults(player, t, new ArrayList<Unit>(enemyAttackingUnits), defenders, false);
+				
+				// Break if it can be held
+				if ((!t.equals(myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0) ||
+							(t.equals(myCapital) && finalResult.getWinPercentage() < (100 - WIN_PERCENTAGE) && finalResult.getTUVSwing() <= 0))
+					break;
+			}
+			
+			// Check to see if its worth trying to defend the territory
+			final boolean hasLocalSuperiority = battleUtils.territoryHasLocalLandSuperiority(t, 2, player, purchaseTerritories);
+			if (!finalResult.isHasLandUnitRemaining() || (finalResult.getTUVSwing() - PUsSpent / 2) < placeTerritory.getMinBattleResult().getTUVSwing() || t.equals(myCapital) || hasLocalSuperiority)
+			{
+				PUsRemaining -= PUsSpent;
+				LogUtils.log(Level.FINEST, t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing() + ", hasLandUnitRemaining=" + finalResult.isHasLandUnitRemaining()
+							+ ", hasLocalSuperiority=" + hasLocalSuperiority);
 				addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
 			}
 			else
@@ -1166,6 +1250,8 @@ public class ProPurchaseAI
 				final List<Unit> initialDefendingUnits = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
 				initialDefendingUnits.addAll(getPlaceUnits(t, purchaseTerritories));
 				ProBattleResultData finalResult = battleUtils.calculateBattleResults(player, t, enemyAttackMap.get(t).getMaxUnits(), initialDefendingUnits, false);
+				boolean hasOnlyRetreatingSubs = Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(initialDefendingUnits, Matches.UnitIsSub)
+							&& Match.noneMatch(enemyAttackMap.get(t).getMaxUnits(), Matches.UnitIsDestroyer);
 				while (true)
 				{
 					// If out of PUs or production then break
@@ -1173,7 +1259,7 @@ public class ProPurchaseAI
 						break;
 					
 					// If it can be held then break
-					if (finalResult.getTUVSwing() < -1 || finalResult.getWinPercentage() < WIN_PERCENTAGE)
+					if (!hasOnlyRetreatingSubs && (finalResult.getTUVSwing() < -1 || finalResult.getWinPercentage() < WIN_PERCENTAGE))
 						break;
 					
 					// Create new temp defenders
@@ -1188,6 +1274,8 @@ public class ProPurchaseAI
 					defendingUnits.addAll(getPlaceUnits(t, purchaseTerritories));
 					defendingUnits.addAll(unitsToPlace);
 					finalResult = battleUtils.estimateDefendBattleResults(player, t, enemyAttackMap.get(t).getMaxUnits(), defendingUnits);
+					hasOnlyRetreatingSubs = Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub)
+								&& Match.noneMatch(enemyAttackMap.get(t).getMaxUnits(), Matches.UnitIsDestroyer);
 				}
 				
 				// Check to see if its worth trying to defend the territory
