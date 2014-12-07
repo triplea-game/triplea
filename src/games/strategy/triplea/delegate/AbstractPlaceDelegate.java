@@ -832,44 +832,26 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		{
 			return "Cannot place sea units with enemy naval units";
 		}
-		// land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in land, and like sea if in water.
-		final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player),
-					Matches.unitIsBeingTransported().invert());
-		if (producer.isWater())
-		{
-			factoryMatch.add(Matches.UnitIsLand.invert());
-		}
-		else
-		{
-			factoryMatch.add(Matches.UnitIsSea.invert());
-		}
-		final List<Unit> factories = producer.getUnits().getMatches(factoryMatch);
 		// make sure there is a factory
-		if (factories.isEmpty())
+		if (wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(producer, player))
 		{
-			// check to see if we are producing a factory
-			if (Match.someMatch(testUnits, Matches.UnitIsConstruction))
-			{
-				if (howManyOfEachConstructionCanPlace(to, producer, testUnits, player).totalValues() > 0)
-				{
-					return null;
-				}
-				return "No more Constructions Allowed in " + producer.getName();
-			}
-			return "No Factory in " + producer.getName();
+			return null;
 		}
-		// check we havent just put a factory there (should we be checking producer?)
-		if (Match.someMatch(getAlreadyProduced(producer), Matches.UnitCanProduceUnits)
-					|| Match.someMatch(getAlreadyProduced(to), Matches.UnitCanProduceUnits))
+		// check to see if we are producing a factory or construction
+		if (Match.someMatch(testUnits, Matches.UnitIsConstruction))
 		{
-			if (Match.someMatch(testUnits, Matches.UnitIsConstruction)
-						&& howManyOfEachConstructionCanPlace(to, producer, testUnits, player).totalValues() > 0)
+			if (howManyOfEachConstructionCanPlace(to, producer, testUnits, player).totalValues() > 0)
 			{
 				return null;
 			}
+			return "No more Constructions Allowed in " + producer.getName();
+		}
+		// check we havent just put a factory there (should we be checking producer?)
+		if (Match.someMatch(getAlreadyProduced(producer), Matches.UnitCanProduceUnits) || Match.someMatch(getAlreadyProduced(to), Matches.UnitCanProduceUnits))
+		{
 			return "Factory in " + producer.getName() + " cant produce until 1 turn after it is created";
 		}
-		return null;
+		return "No Factory in " + producer.getName();
 	}
 	
 	/**
@@ -1918,6 +1900,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
 		final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player),
 					Matches.unitIsBeingTransported().invert());
+		// land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in land, and like sea if in water.
 		if (to.isWater())
 		{
 			factoryMatch.add(Matches.UnitIsLand.invert());
