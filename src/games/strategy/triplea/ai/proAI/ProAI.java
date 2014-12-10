@@ -177,7 +177,7 @@ public class ProAI extends StrongAI
 	}
 	
 	@Override
-	protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
+	protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
 		if (PUsToSpend <= 0)
 			return;
@@ -188,6 +188,9 @@ public class ProAI extends StrongAI
 		}
 		else
 		{
+			// Repair factories
+			PUsToSpend = purchaseAI.repair(PUsToSpend, purchaseDelegate, data, player);
+			
 			LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
 			
 			// Setup data copy and delegates

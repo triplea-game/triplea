@@ -129,6 +129,7 @@ public class ProSimulateTurnUtils
 			result.put(toTerritory, patd);
 			final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(fromTerritory).getAmphibAttackMap();
 			final Map<Unit, Boolean> isTransportingMap = moveMap.get(fromTerritory).getIsTransportingMap();
+			final Map<Unit, Territory> transportTerritoryMap = moveMap.get(fromTerritory).getTransportTerritoryMap();
 			LogUtils.log(Level.FINER, "Transferring " + fromTerritory + " to " + toTerritory);
 			final List<Unit> amphibUnits = new ArrayList<Unit>();
 			for (final Unit transport : amphibAttackMap.keySet())
@@ -152,7 +153,10 @@ public class ProSimulateTurnUtils
 				patd.addUnits(toUnits);
 				patd.putAmphibAttackMap(toTransport, toUnits);
 				amphibUnits.addAll(amphibAttackMap.get(transport));
-				LogUtils.log(Level.FINEST, "---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport) + " to transport=" + toTransport + " with units=" + toUnits);
+				if (transportTerritoryMap.get(transport) != null)
+					patd.getTransportTerritoryMap().put(toTransport, toData.getMap().getTerritory(transportTerritoryMap.get(transport).getName()));
+				LogUtils.log(Level.FINEST, "---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport) + " unloadTerritory=" + transportTerritoryMap.get(transport)
+							+ " to transport=" + toTransport + " with units=" + toUnits + " unloadTerritory=" + patd.getTransportTerritoryMap().get(toTransport));
 			}
 			for (final Unit u : moveMap.get(fromTerritory).getUnits())
 			{

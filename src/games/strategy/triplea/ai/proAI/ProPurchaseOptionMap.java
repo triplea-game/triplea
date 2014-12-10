@@ -23,7 +23,9 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class ProPurchaseOptionMap
@@ -32,7 +34,10 @@ public class ProPurchaseOptionMap
 	private final List<ProPurchaseOption> landAttackOptions;
 	private final List<ProPurchaseOption> landDefenseOptions;
 	private final List<ProPurchaseOption> airOptions;
-	private final List<ProPurchaseOption> seaOptions;
+	private final List<ProPurchaseOption> seaDefenseOptions;
+	private final List<ProPurchaseOption> seaTransportOptions;
+	private final List<ProPurchaseOption> seaCarrierOptions;
+	private final List<ProPurchaseOption> seaSubOptions;
 	private final List<ProPurchaseOption> aaOptions;
 	private final List<ProPurchaseOption> factoryOptions;
 	private final List<ProPurchaseOption> specialOptions;
@@ -46,7 +51,10 @@ public class ProPurchaseOptionMap
 		landAttackOptions = new ArrayList<ProPurchaseOption>();
 		landDefenseOptions = new ArrayList<ProPurchaseOption>();
 		airOptions = new ArrayList<ProPurchaseOption>();
-		seaOptions = new ArrayList<ProPurchaseOption>();
+		seaDefenseOptions = new ArrayList<ProPurchaseOption>();
+		seaTransportOptions = new ArrayList<ProPurchaseOption>();
+		seaCarrierOptions = new ArrayList<ProPurchaseOption>();
+		seaSubOptions = new ArrayList<ProPurchaseOption>();
 		aaOptions = new ArrayList<ProPurchaseOption>();
 		factoryOptions = new ArrayList<ProPurchaseOption>();
 		specialOptions = new ArrayList<ProPurchaseOption>();
@@ -99,7 +107,14 @@ public class ProPurchaseOptionMap
 			else if (Matches.UnitTypeIsSea.match(unitType))
 			{
 				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				seaOptions.add(purchaseOption);
+				if (!purchaseOption.isSub())
+					seaDefenseOptions.add(purchaseOption);
+				if (purchaseOption.isTransport())
+					seaTransportOptions.add(purchaseOption);
+				if (purchaseOption.isCarrier())
+					seaCarrierOptions.add(purchaseOption);
+				if (purchaseOption.isSub())
+					seaSubOptions.add(purchaseOption);
 				LogUtils.log(Level.FINER, "Sea: " + purchaseOption);
 			}
 		}
@@ -133,10 +148,44 @@ public class ProPurchaseOptionMap
 		logOptions(landAttackOptions, "Land Attack Options: ");
 		logOptions(landDefenseOptions, "Land Defense Options: ");
 		logOptions(airOptions, "Air Options: ");
-		logOptions(seaOptions, "Sea Options: ");
+		logOptions(seaDefenseOptions, "Sea Defense Options: ");
+		logOptions(seaTransportOptions, "Sea Transport Options: ");
+		logOptions(seaCarrierOptions, "Sea Carrier Options: ");
+		logOptions(seaSubOptions, "Sea Sub Options: ");
 		logOptions(aaOptions, "AA Options: ");
 		logOptions(factoryOptions, "Factory Options: ");
 		logOptions(specialOptions, "Special Options: ");
+	}
+	
+	public List<ProPurchaseOption> getAllOptions()
+	{
+		final Set<ProPurchaseOption> allOptions = new HashSet<ProPurchaseOption>();
+		allOptions.addAll(getLandOptions());
+		allOptions.addAll(airOptions);
+		allOptions.addAll(getSeaOptions());
+		allOptions.addAll(aaOptions);
+		allOptions.addAll(factoryOptions);
+		allOptions.addAll(specialOptions);
+		return new ArrayList<ProPurchaseOption>(allOptions);
+	}
+	
+	public List<ProPurchaseOption> getLandOptions()
+	{
+		final Set<ProPurchaseOption> landOptions = new HashSet<ProPurchaseOption>();
+		landOptions.addAll(landFodderOptions);
+		landOptions.addAll(landAttackOptions);
+		landOptions.addAll(landDefenseOptions);
+		return new ArrayList<ProPurchaseOption>(landOptions);
+	}
+	
+	public List<ProPurchaseOption> getSeaOptions()
+	{
+		final Set<ProPurchaseOption> seaOptions = new HashSet<ProPurchaseOption>();
+		seaOptions.addAll(seaDefenseOptions);
+		seaOptions.addAll(seaTransportOptions);
+		seaOptions.addAll(seaCarrierOptions);
+		seaOptions.addAll(seaSubOptions);
+		return new ArrayList<ProPurchaseOption>(seaOptions);
 	}
 	
 	public List<ProPurchaseOption> getLandFodderOptions()
@@ -159,9 +208,24 @@ public class ProPurchaseOptionMap
 		return airOptions;
 	}
 	
-	public List<ProPurchaseOption> getSeaOptions()
+	public List<ProPurchaseOption> getSeaDefenseOptions()
 	{
-		return seaOptions;
+		return seaDefenseOptions;
+	}
+	
+	public List<ProPurchaseOption> getSeaTransportOptions()
+	{
+		return seaTransportOptions;
+	}
+	
+	public List<ProPurchaseOption> getSeaCarrierOptions()
+	{
+		return seaCarrierOptions;
+	}
+	
+	public List<ProPurchaseOption> getSeaSubOptions()
+	{
+		return seaSubOptions;
 	}
 	
 	public List<ProPurchaseOption> getAAOptions()

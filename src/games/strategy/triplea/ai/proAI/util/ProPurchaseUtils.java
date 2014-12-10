@@ -148,7 +148,8 @@ public class ProPurchaseUtils
 	
 	public ProPurchaseOption randomizePurchaseOption(final Map<ProPurchaseOption, Double> purchaseEfficiencies, final String type)
 	{
-		LogUtils.log(Level.FINER, "Select purchase option for " + type);
+		LogUtils.log(Level.FINEST, "Select purchase option for " + type);
+		
 		double totalEfficiency = 0;
 		for (final Double efficiency : purchaseEfficiencies.values())
 			totalEfficiency += efficiency;
@@ -161,6 +162,7 @@ public class ProPurchaseUtils
 			purchasePercentages.put(ppo, upperBound);
 			LogUtils.log(Level.FINEST, ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
 		}
+		
 		final double randomNumber = Math.random() * 100;
 		LogUtils.log(Level.FINEST, "Random number: " + randomNumber);
 		for (final ProPurchaseOption ppo : purchasePercentages.keySet())
@@ -168,6 +170,7 @@ public class ProPurchaseUtils
 			if (randomNumber <= purchasePercentages.get(ppo))
 				return ppo;
 		}
+		
 		return purchasePercentages.keySet().iterator().next();
 	}
 	

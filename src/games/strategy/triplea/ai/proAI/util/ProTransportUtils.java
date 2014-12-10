@@ -6,6 +6,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
+import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -47,6 +48,17 @@ public class ProTransportUtils
 	{
 		this.ai = ai;
 		this.utils = utils;
+	}
+	
+	public int findMaxMovementForTransports(final List<ProPurchaseOption> seaTransportPurchaseOptions)
+	{
+		int maxMovement = 2;
+		for (final ProPurchaseOption ppo : seaTransportPurchaseOptions)
+		{
+			if (ppo.getMovement() > maxMovement)
+				maxMovement = ppo.getMovement();
+		}
+		return maxMovement;
 	}
 	
 	public int findNumUnitsThatCanBeTransported(final PlayerID player, final Territory t)
@@ -98,12 +110,12 @@ public class ProTransportUtils
 	
 	public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore)
 	{
-		final List<Unit> attackers = new ArrayList<Unit>();
+		final List<Unit> selectedUnits = new ArrayList<Unit>();
 		
 		// Get units if transport already loaded
 		if (TransportTracker.isTransporting(transport))
 		{
-			attackers.addAll(TransportTracker.transporting(transport));
+			selectedUnits.addAll(TransportTracker.transporting(transport));
 		}
 		else
 		{
@@ -130,23 +142,38 @@ public class ProTransportUtils
 				}
 			});
 			
-			// Get best attackers that can be loaded
-			final int capacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
-			int capacityCount = 0;
-			for (final Unit unit : units)
-			{
-				final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
-				if (cost <= (capacity - capacityCount))
-				{
-					attackers.add(unit);
-					capacityCount += cost;
-					if (capacityCount >= capacity)
-						break;
-				}
-			}
+			// Get best units that can be loaded
+			selectedUnits.addAll(selectUnitsToTransportFromList(transport, units));
 		}
 		
-		return attackers;
+		return selectedUnits;
+	}
+	
+	public List<Unit> selectUnitsToTransportFromList(final Unit transport, final List<Unit> units)
+	{
+		final List<Unit> selectedUnits = new ArrayList<Unit>();
+		final int capacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
+		int capacityCount = 0;
+		for (final Unit unit : units)
+		{
+			final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
+			if (cost <= (capacity - capacityCount))
+			{
+				selectedUnits.add(unit);
+				capacityCount += cost;
+				if (capacityCount >= capacity)
+					break;
+			}
+		}
+		return selectedUnits;
+	}
+	
+	public int findUnitsTransportCost(final List<Unit> units)
+	{
+		int transportCost = 0;
+		for (final Unit unit : units)
+			transportCost += UnitAttachment.get(unit.getType()).getTransportCost();
+		return transportCost;
 	}
 	
 }

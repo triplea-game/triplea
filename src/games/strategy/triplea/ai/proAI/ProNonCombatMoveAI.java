@@ -468,7 +468,7 @@ public class ProNonCombatMoveAI
 			double unitOwnerMultiplier = 1;
 			if (Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsOwnedBy(player)))
 			{
-				if (t.isWater())
+				if (t.isWater() && Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.UnitIsTransportButNotCombatTransport))
 					unitOwnerMultiplier = 0;
 				else
 					unitOwnerMultiplier = 0.5;
@@ -1182,8 +1182,11 @@ public class ProNonCombatMoveAI
 				final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
 				moveMap.get(t).setBattleResult(battleUtils.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, false));
 				final ProBattleResultData result = moveMap.get(t).getBattleResult();
+				int isWater = 0;
+				if (t.isWater())
+					isWater = 1;
 				final double extraUnitValue = BattleCalculator.getTUV(moveMap.get(t).getTempUnits(), playerCostMap);
-				final double holdValue = result.getTUVSwing() - extraUnitValue / 8;
+				final double holdValue = result.getTUVSwing() - (extraUnitValue / 8 * (1 + isWater));
 				
 				// Find min result without temp units
 				final List<Unit> minDefendingUnits = new ArrayList<Unit>(defendingUnits);
@@ -1267,8 +1270,14 @@ public class ProNonCombatMoveAI
 						int transportCapacity = 0;
 						for (final Unit transport : transports)
 							transportCapacity += UnitAttachment.get(transport.getType()).getTransportCapacity();
-						final int numUnitsToTransport = Match.getMatches(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransportableUnit(player)).size();
-						final int numNeededUnits = Math.max(0, transportCapacity - numUnitsToTransport) * 10 + data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size();
+						final List<Unit> unitsToTransport = Match.getMatches(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransportableUnit(player));
+						int transportCost = 0;
+						for (final Unit unit : unitsToTransport)
+							transportCost += UnitAttachment.get(unit.getType()).getTransportCost();
+						int hasFactory = 0;
+						if (ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data).match(t))
+							hasFactory = 1;
+						final int numNeededUnits = 100 * Math.max(0, transportCapacity - transportCost) + (1 + 10 * hasFactory) * data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size();
 						if (moveMap.get(t).getValue() > maxValue || numNeededUnits > maxNumNeededUnits)
 						{
 							maxValue = moveMap.get(t).getValue();

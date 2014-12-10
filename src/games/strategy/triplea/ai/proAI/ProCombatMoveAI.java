@@ -1004,8 +1004,9 @@ public class ProCombatMoveAI
 					{
 						final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
 						final boolean hasNoDefenders = Match.allMatch(defendingUnits, Matches.UnitIsInfrastructure);
+						final boolean isOverwhelmingWin = battleUtils.checkForOverwhelmingWin(player, t, attackMap.get(t).getUnits(), defendingUnits);
 						final boolean hasAA = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
-						if (!isAirUnit || !(defendingUnits.isEmpty() || hasNoDefenders || (hasAA && result.getWinPercentage() >= minWinPercentage)))
+						if (!isAirUnit || (!defendingUnits.isEmpty() && !hasNoDefenders && !isOverwhelmingWin && (!hasAA || result.getWinPercentage() < minWinPercentage)))
 						{
 							minWinPercentage = result.getWinPercentage();
 							minWinTerritory = t;
@@ -1015,6 +1016,8 @@ public class ProCombatMoveAI
 			}
 			if (minWinTerritory != null)
 			{
+				LogUtils.log(Level.FINEST, minWinTerritory + ", adding unit=" + unit + ", win%=" + attackMap.get(minWinTerritory).getBattleResult().getWinPercentage() + ", isHasLandUnitRemaining="
+							+ attackMap.get(minWinTerritory).getBattleResult().isHasLandUnitRemaining());
 				attackMap.get(minWinTerritory).addUnit(unit);
 				attackMap.get(minWinTerritory).setBattleResult(null);
 				it.remove();
