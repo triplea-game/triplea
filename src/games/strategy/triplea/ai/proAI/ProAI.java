@@ -253,7 +253,7 @@ public class ProAI extends StrongAI
 				}
 				else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn"))
 				{
-					storedPurchaseTerritories = purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, player);
+					storedPurchaseTerritories = purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, data, player);
 					this.data = null;
 					break;
 				}

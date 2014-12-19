@@ -12,11 +12,16 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
+import games.strategy.triplea.ai.proAI.ProPurchaseTerritory;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -136,13 +141,42 @@ public class ProPurchaseUtils
 		return false;
 	}
 	
-	public void removePurchaseOptionsByCostAndProduction(final List<ProPurchaseOption> purchaseOptions, final int PUsRemaining, final int remainingUnitProduction)
+	public void removePurchaseOptionsByCostAndProductionAndLimits(final PlayerID player, final GameData data, final List<ProPurchaseOption> purchaseOptions, final int PUsRemaining,
+				final int remainingUnitProduction, final List<Unit> unitsToPlace, final Map<Territory, ProPurchaseTerritory> purchaseTerritories)
 	{
 		for (final Iterator<ProPurchaseOption> it = purchaseOptions.iterator(); it.hasNext();)
 		{
 			final ProPurchaseOption ppo = it.next();
+			
+			// Check PU cost and production
 			if (ppo.getCost() > PUsRemaining || ppo.getQuantity() > remainingUnitProduction)
 				it.remove();
+			
+			// Check max unit limits (-1 is unlimited)
+			final int maxBuilt = ppo.getMaxBuiltPerPlayer();
+			final UnitType type = ppo.getUnitType();
+			if (maxBuilt == 0)
+			{
+				it.remove();
+			}
+			else if (maxBuilt > 0)
+			{
+				// Find number of unit type that are already built and about to be placed
+				int currentlyBuilt = 0;
+				final CompositeMatch<Unit> unitTypeOwnedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
+				final List<Territory> allTerritories = data.getMap().getTerritories();
+				for (final Territory t : allTerritories)
+					currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
+				currentlyBuilt += Match.countMatches(unitsToPlace, unitTypeOwnedBy);
+				for (final Territory t : purchaseTerritories.keySet())
+				{
+					for (final ProPlaceTerritory placeTerritory : purchaseTerritories.get(t).getCanPlaceTerritories())
+						currentlyBuilt += Match.countMatches(placeTerritory.getPlaceUnits(), unitTypeOwnedBy);
+				}
+				final int allowedBuild = maxBuilt - currentlyBuilt;
+				if (allowedBuild - ppo.getQuantity() < 0)
+					it.remove();
+			}
 		}
 	}
 	

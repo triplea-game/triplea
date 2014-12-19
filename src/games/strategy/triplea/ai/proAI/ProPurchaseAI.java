@@ -87,6 +87,7 @@ public class ProPurchaseAI
 	
 	// Current data
 	private GameData data;
+	private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
 	private PlayerID player;
 	private Territory myCapital;
 	private List<Territory> allTerritories;
@@ -171,12 +172,13 @@ public class ProPurchaseAI
 		return PUsRemaining;
 	}
 	
-	public Map<Territory, ProPurchaseTerritory> purchase(int PUsRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
+	public Map<Territory, ProPurchaseTerritory> purchase(int PUsRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data, final GameData startOfTurnData, final PlayerID player)
 	{
 		LogUtils.log(Level.FINE, "Starting purchase phase with PUsRemaining=" + PUsRemaining);
 		
-		// Current data at the start of combat move
+		// Current data fields
 		this.data = data;
+		this.startOfTurnData = startOfTurnData;
 		this.player = player;
 		myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		allTerritories = data.getMap().getTerritories();
@@ -529,7 +531,8 @@ public class ProPurchaseAI
 				while (true)
 				{
 					// Remove options that cost too much PUs or production
-					purchaseUtils.removePurchaseOptionsByCostAndProduction(purchaseOptionsForTerritory, PUsRemaining - PUsSpent, remainingUnitProduction);
+					purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, purchaseOptionsForTerritory, PUsRemaining - PUsSpent, remainingUnitProduction,
+								unitsToPlace, purchaseTerritories);
 					if (purchaseOptionsForTerritory.isEmpty())
 						break;
 					
@@ -731,9 +734,9 @@ public class ProPurchaseAI
 			while (true)
 			{
 				// Remove options that cost too much PUs or production
-				purchaseUtils.removePurchaseOptionsByCostAndProduction(landFodderOptions, PUsRemaining, remainingUnitProduction);
-				purchaseUtils.removePurchaseOptionsByCostAndProduction(landAttackOptions, PUsRemaining, remainingUnitProduction);
-				purchaseUtils.removePurchaseOptionsByCostAndProduction(landDefenseOptions, PUsRemaining, remainingUnitProduction);
+				purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, landFodderOptions, PUsRemaining, remainingUnitProduction, unitsToPlace, purchaseTerritories);
+				purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, landAttackOptions, PUsRemaining, remainingUnitProduction, unitsToPlace, purchaseTerritories);
+				purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, landDefenseOptions, PUsRemaining, remainingUnitProduction, unitsToPlace, purchaseTerritories);
 				
 				// Select purchase option
 				ProPurchaseOption selectedOption = null;
@@ -1052,7 +1055,8 @@ public class ProPurchaseAI
 					while (true)
 					{
 						// Remove options that cost too much PUs or production
-						purchaseUtils.removePurchaseOptionsByCostAndProduction(seaPurchaseOptionsForTerritory, PUsRemaining - PUsSpent, remainingUnitProduction);
+						purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, seaPurchaseOptionsForTerritory, PUsRemaining - PUsSpent, remainingUnitProduction,
+									unitsToPlace, purchaseTerritories);
 						if (seaPurchaseOptionsForTerritory.isEmpty())
 							break;
 						
@@ -1156,7 +1160,8 @@ public class ProPurchaseAI
 				while (true)
 				{
 					// Remove options that cost too much PUs or production
-					purchaseUtils.removePurchaseOptionsByCostAndProduction(seaPurchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction);
+					purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, seaPurchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction, unitsToPlace,
+								purchaseTerritories);
 					if (seaPurchaseOptionsForTerritory.isEmpty())
 						break;
 					
@@ -1274,7 +1279,8 @@ public class ProPurchaseAI
 						while (transportCapacity > 0)
 						{
 							// Remove options that cost too much PUs or production
-							purchaseUtils.removePurchaseOptionsByCostAndProduction(amphibPurchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction);
+							purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, amphibPurchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction,
+										amphibUnitsToPlace, purchaseTerritories);
 							if (amphibPurchaseOptionsForTerritory.isEmpty())
 								break;
 							
@@ -1302,7 +1308,8 @@ public class ProPurchaseAI
 					else
 					{
 						// Remove options that cost too much PUs or production
-						purchaseUtils.removePurchaseOptionsByCostAndProduction(seaTransportPurchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction);
+						purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, seaTransportPurchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction,
+									transportsThatNeedUnits, purchaseTerritories);
 						if (seaTransportPurchaseOptionsForTerritory.isEmpty())
 							break;
 						

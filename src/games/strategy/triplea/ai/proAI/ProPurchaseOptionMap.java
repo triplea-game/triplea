@@ -71,7 +71,6 @@ public class ProPurchaseOptionMap
 			
 			// Add rule to appropriate purchase option list
 			if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
-						|| Matches.UnitTypeHasMaxBuildRestrictions.match(unitType)
 						|| Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
 						|| UnitAttachment.get(unitType).getIsSuicide())
 			{

@@ -1193,14 +1193,14 @@ public class ProCombatMoveAI
 			if (alreadyMovedUnits.contains(u))
 				continue;
 			
-			// Find number of attack options
+			// Find number of bombard options
 			final Set<Territory> canBombardTerritories = new HashSet<Territory>();
 			for (final ProAttackTerritoryData patd : prioritizedTerritories)
 			{
 				final Territory t = patd.getTerritory();
 				final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
 				final boolean hasDefenders = Match.someMatch(defendingUnits, Matches.UnitIsInfrastructure.invert());
-				if (bombardMap.get(u).contains(patd.getTerritory()) && !patd.getTransportTerritoryMap().isEmpty() && hasDefenders)
+				if (bombardMap.get(u).contains(patd.getTerritory()) && !patd.getTransportTerritoryMap().isEmpty() && hasDefenders && !TransportTracker.isTransporting(u))
 					canBombardTerritories.add(patd.getTerritory());
 			}
 			if (!canBombardTerritories.isEmpty())

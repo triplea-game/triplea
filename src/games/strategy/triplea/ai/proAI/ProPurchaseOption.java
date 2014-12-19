@@ -52,6 +52,7 @@ public class ProPurchaseOption
 	private final double hitPointEfficiency;
 	private final double attackEfficiency;
 	private final double defenseEfficiency;
+	private final int maxBuiltPerPlayer;
 	
 	public ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player, final GameData data)
 	{
@@ -86,6 +87,7 @@ public class ProPurchaseOption
 		hitPointEfficiency = (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
 		attackEfficiency = (1 + hitPoints) * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
 		defenseEfficiency = (1 + hitPoints) * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
+		maxBuiltPerPlayer = unitAttachment.getMaxBuiltPerPlayer();
 	}
 	
 	@Override
@@ -204,6 +206,11 @@ public class ProPurchaseOption
 	public double getCostPerHitPoint()
 	{
 		return costPerHitPoint;
+	}
+	
+	public int getMaxBuiltPerPlayer()
+	{
+		return maxBuiltPerPlayer;
 	}
 	
 	public double getFodderEfficiency(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
