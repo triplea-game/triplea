@@ -476,6 +476,21 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Unit> unitCanBeMovedAndIsOwnedBombard(final PlayerID player)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				if (Matches.UnitCanNotMoveDuringCombatMove.match(u))
+					return false;
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(unitCanBeMovedAndIsOwned(player), Matches.unitCanBombard(player));
+				return match.match(u);
+			}
+		};
+	}
+	
 	public static Match<Unit> unitCanBeMovedAndIsOwnedNonCombatInfra(final PlayerID player)
 	{
 		return new Match<Unit>()

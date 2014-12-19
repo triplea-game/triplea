@@ -61,7 +61,6 @@ public class ProPurchaseOptionMap
 		
 		// Add each production rule to appropriate list(s)
 		final List<ProductionRule> rules = player.getProductionFrontier().getRules();
-		final List<ProPurchaseOption> landOptions = new ArrayList<ProPurchaseOption>();
 		for (final ProductionRule rule : rules)
 		{
 			// Check if rule is for a unit
@@ -95,7 +94,11 @@ public class ProPurchaseOptionMap
 			else if (Matches.UnitTypeIsLand.match(unitType))
 			{
 				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				landOptions.add(purchaseOption);
+				landFodderOptions.add(purchaseOption);
+				if (purchaseOption.getAttack() >= purchaseOption.getDefense() || purchaseOption.getMovement() > 1)
+					landAttackOptions.add(purchaseOption);
+				if (purchaseOption.getDefense() >= purchaseOption.getAttack())
+					landDefenseOptions.add(purchaseOption);
 				LogUtils.log(Level.FINER, "Land: " + purchaseOption);
 			}
 			else if (Matches.UnitTypeIsAir.match(unitType))
@@ -117,25 +120,6 @@ public class ProPurchaseOptionMap
 					seaSubOptions.add(purchaseOption);
 				LogUtils.log(Level.FINER, "Sea: " + purchaseOption);
 			}
-		}
-		
-		// Find min cost per hitpoints
-		double minCostPerHitPoint = Double.POSITIVE_INFINITY;
-		for (final ProPurchaseOption ppo : landOptions)
-		{
-			if (ppo.getCostPerHitPoint() < minCostPerHitPoint)
-				minCostPerHitPoint = ppo.getCostPerHitPoint();
-		}
-		
-		// Divide land options into sub categories
-		for (final ProPurchaseOption ppo : landOptions)
-		{
-			if (ppo.getCostPerHitPoint() <= minCostPerHitPoint)
-				landFodderOptions.add(ppo);
-			if (ppo.getAttack() >= ppo.getDefense() || ppo.getMovement() > 1)
-				landAttackOptions.add(ppo);
-			if (ppo.getDefense() >= ppo.getAttack())
-				landDefenseOptions.add(ppo);
 		}
 		if (landAttackOptions.isEmpty())
 			landAttackOptions.addAll(landDefenseOptions);

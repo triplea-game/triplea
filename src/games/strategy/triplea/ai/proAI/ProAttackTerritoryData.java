@@ -19,8 +19,10 @@ import games.strategy.triplea.delegate.TransportTracker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ProAttackTerritoryData
 {
@@ -36,10 +38,13 @@ public class ProAttackTerritoryData
 	
 	// Amphib variables
 	private List<Unit> maxAmphibUnits;
-	private boolean needAmphibUnits;
 	private Map<Unit, List<Unit>> amphibAttackMap;
-	private Map<Unit, Boolean> isTransportingMap;
 	private final Map<Unit, Territory> transportTerritoryMap;
+	private boolean needAmphibUnits;
+	private Map<Unit, Boolean> isTransportingMap;
+	private Set<Unit> maxBombardUnits;
+	private Map<Unit, Set<Territory>> bombardOptionsMap;
+	private final Map<Unit, Territory> bombardTerritoryMap;
 	
 	// Determine territory to attack variables
 	private boolean currentlyWins;
@@ -48,6 +53,7 @@ public class ProAttackTerritoryData
 	// Non-combat move variables
 	private List<Unit> cantMoveUnits;
 	private List<Unit> maxEnemyUnits;
+	private Set<Unit> maxEnemyBombardUnits;
 	private ProBattleResultData minBattleResult;
 	private final List<Unit> tempUnits;
 	private final Map<Unit, List<Unit>> tempAmphibAttackMap;
@@ -60,15 +66,19 @@ public class ProAttackTerritoryData
 		units = new ArrayList<Unit>();
 		cantMoveUnits = new ArrayList<Unit>();
 		maxEnemyUnits = new ArrayList<Unit>();
+		maxEnemyBombardUnits = new HashSet<Unit>();
 		TUVSwing = 0;
 		canHold = true;
 		canAttack = false;
 		strengthEstimate = Double.POSITIVE_INFINITY;
 		maxAmphibUnits = new ArrayList<Unit>();
+		maxBombardUnits = new HashSet<Unit>();
 		needAmphibUnits = false;
 		amphibAttackMap = new HashMap<Unit, List<Unit>>();
 		isTransportingMap = new HashMap<Unit, Boolean>();
 		transportTerritoryMap = new HashMap<Unit, Territory>();
+		bombardOptionsMap = new HashMap<Unit, Set<Territory>>();
+		bombardTerritoryMap = new HashMap<Unit, Territory>();
 		currentlyWins = false;
 		battleResult = null;
 		minBattleResult = new ProBattleResultData();
@@ -366,6 +376,60 @@ public class ProAttackTerritoryData
 	public double getSeaValue()
 	{
 		return seaValue;
+	}
+	
+	public Map<Unit, Territory> getBombardTerritoryMap()
+	{
+		return bombardTerritoryMap;
+	}
+	
+	public void setMaxBombardUnits(final Set<Unit> maxBombardUnits)
+	{
+		this.maxBombardUnits = maxBombardUnits;
+	}
+	
+	public Set<Unit> getMaxBombardUnits()
+	{
+		return maxBombardUnits;
+	}
+	
+	public void addMaxBombardUnit(final Unit unit)
+	{
+		this.maxBombardUnits.add(unit);
+	}
+	
+	public void setBombardOptionsMap(final Map<Unit, Set<Territory>> bombardOptionsMap)
+	{
+		this.bombardOptionsMap = bombardOptionsMap;
+	}
+	
+	public Map<Unit, Set<Territory>> getBombardOptionsMap()
+	{
+		return bombardOptionsMap;
+	}
+	
+	public void addBombardOptionsMap(final Unit unit, final Territory t)
+	{
+		if (bombardOptionsMap.containsKey(unit))
+		{
+			bombardOptionsMap.get(unit).add(t);
+		}
+		else
+		{
+			final Set<Territory> territories = new HashSet<Territory>();
+			territories.add(t);
+			bombardOptionsMap.put(unit, territories);
+		}
+	}
+	
+	public void setMaxEnemyBombardUnits(final Set<Unit> maxEnemyBombardUnits)
+	{
+		this.maxEnemyBombardUnits = maxEnemyBombardUnits;
+	}
+	
+	public Set<Unit> getMaxEnemyBombardUnits()
+	{
+		return maxEnemyBombardUnits;
 	}
 	
 }

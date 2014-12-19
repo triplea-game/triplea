@@ -18,7 +18,6 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,17 +92,17 @@ public class ProBattleUtils
 		final int myHP = BattleCalculator.getTotalHitpoints(unitsThatCanFight);
 		final int myPower = DiceRoll.getTotalPowerAndRolls(
 					DiceRoll.getUnitPowerAndRollsForNormalBattles(unitsThatCanFight, unitsThatCanFight, enemyUnits, !attacking, false, player, data, t, null, false, null), data).getFirst();
-		return (2 * myHP) + (myPower * 6 / data.getDiceSides());
+		return (2 * myHP) + (myPower * 6.0 / data.getDiceSides());
 	}
 	
-	public ProBattleResultData estimateAttackBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits)
+	public ProBattleResultData estimateAttackBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final Set<Unit> bombardingUnits)
 	{
 		final GameData data = ai.getGameData();
 		final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-		return estimateAttackBattleResults(player, t, attackingUnits, defendingUnits);
+		return estimateAttackBattleResults(player, t, attackingUnits, defendingUnits, bombardingUnits);
 	}
 	
-	public ProBattleResultData estimateAttackBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
+	public ProBattleResultData estimateAttackBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits)
 	{
 		final ProBattleResultData result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
 		if (result != null)
@@ -114,10 +113,10 @@ public class ProBattleUtils
 		if (strengthDifference < 45)
 			return new ProBattleResultData(0, -999, false, new ArrayList<Unit>(), 1);
 		
-		return callBattleCalculator(player, t, attackingUnits, defendingUnits, true);
+		return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, true);
 	}
 	
-	public ProBattleResultData estimateDefendBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
+	public ProBattleResultData estimateDefendBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits)
 	{
 		final ProBattleResultData result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
 		if (result != null)
@@ -128,16 +127,17 @@ public class ProBattleUtils
 		if (strengthDifference > 55)
 			return new ProBattleResultData(100, 999, true, attackingUnits, 1);
 		
-		return callBattleCalculator(player, t, attackingUnits, defendingUnits, false);
+		return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
 	}
 	
-	public ProBattleResultData calculateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
+	public ProBattleResultData calculateBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
+				final boolean isAttacker)
 	{
 		final ProBattleResultData result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits);
 		if (result != null)
 			return result;
 		
-		return callBattleCalculator(player, t, attackingUnits, defendingUnits, isAttacker);
+		return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, isAttacker);
 	}
 	
 	private ProBattleResultData checkIfNoAttackersOrDefenders(final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
@@ -154,20 +154,22 @@ public class ProBattleUtils
 		return null;
 	}
 	
-	public ProBattleResultData callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final boolean isAttacker)
+	public ProBattleResultData callBattleCalculator(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits,
+				final boolean isAttacker)
 	{
 		if (ai.isGameStopped())
 			return new ProBattleResultData();
 		final GameData data = ai.getGameData();
 		
 		// Use battle calculator (hasLandUnitRemaining is always true for naval territories)
-		final List<Unit> bombardingUnits = Collections.emptyList();
 		AggregateResults results = null;
 		final int runCount = Math.max(10, 100 - (attackingUnits.size() + defendingUnits.size()));
 		if (isAttacker)
-			results = ai.getCalc().setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(t), runCount);
+			results = ai.getCalc().setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits, new ArrayList<Unit>(bombardingUnits), TerritoryEffectHelper.getEffects(t),
+						runCount);
 		else
-			results = ai.getCalc().setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(t),
+			results = ai.getCalc().setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits, defendingUnits, new ArrayList<Unit>(bombardingUnits),
+						TerritoryEffectHelper.getEffects(t),
 						runCount);
 		
 		final double winPercentage = results.getAttackerWinPercent() * 100;

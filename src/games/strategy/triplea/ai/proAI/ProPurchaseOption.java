@@ -17,9 +17,14 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.attatchments.UnitAttachment;
+
+import java.util.List;
+import java.util.logging.Level;
 
 public class ProPurchaseOption
 {
@@ -29,7 +34,8 @@ public class ProPurchaseOption
 	private final int movement;
 	private final int quantity;
 	private int hitPoints;
-	private double attack;
+	private final double attack;
+	private final boolean isArtillery;
 	private final double amphibAttack;
 	private final double defense;
 	private final int transportCost;
@@ -61,9 +67,8 @@ public class ProPurchaseOption
 		if (isInfra)
 			hitPoints = 0;
 		attack = unitAttachment.getAttack(player) * quantity;
-		if (unitAttachment.getArtillery())
-			attack += 0.9 * quantity;
-		amphibAttack = attack + 0.5 * unitAttachment.getIsMarine();
+		isArtillery = unitAttachment.getArtillery();
+		amphibAttack = attack + 0.5 * unitAttachment.getIsMarine() * quantity;
 		defense = unitAttachment.getDefense(player) * quantity;
 		transportCost = unitAttachment.getTransportCost() * quantity;
 		isAir = unitAttachment.getIsAir();
@@ -201,27 +206,31 @@ public class ProPurchaseOption
 		return costPerHitPoint;
 	}
 	
-	public double getFodderEfficiency(final int enemyDistance, final GameData data)
+	public double getFodderEfficiency(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
-		final double distanceFactor = calculateLandDistanceFactor(enemyDistance);
-		return calculateEfficiency(1, 1, distanceFactor, data);
+		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
+		final double distanceFactor = Math.sqrt(calculateLandDistanceFactor(enemyDistance));
+		return calculateEfficiency(0.25, 0.25, artilleryFactor, distanceFactor, data);
 	}
 	
-	public double getAttackEfficiency2(final int enemyDistance, final GameData data)
+	public double getAttackEfficiency2(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
+		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
 		final double distanceFactor = calculateLandDistanceFactor(enemyDistance);
-		return calculateEfficiency(1, 0.75, distanceFactor, data);
+		return calculateEfficiency(1.25, 0.75, artilleryFactor, distanceFactor, data);
 	}
 	
-	public double getDefenseEfficiency2(final int enemyDistance, final GameData data)
+	public double getDefenseEfficiency2(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
+		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
 		final double distanceFactor = calculateLandDistanceFactor(enemyDistance);
-		return calculateEfficiency(0.75, 1, distanceFactor, data);
+		return calculateEfficiency(0.75, 1.25, artilleryFactor, distanceFactor, data);
 	}
 	
-	public double getSeaDefenseEfficiency(final GameData data)
+	public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
-		return calculateEfficiency(0.75, 1, movement, data);
+		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
+		return calculateEfficiency(0.75, 1, artilleryFactor, movement, data);
 	}
 	
 	public double getAmphibEfficiency(final GameData data)
@@ -247,11 +256,44 @@ public class ProPurchaseOption
 		return distanceFactor;
 	}
 	
-	private double calculateEfficiency(final double attackFactor, final double defenseFactor, final double distanceFactor, final GameData data)
+	private double calculateArtilleryFactor(final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
+	{
+		if (!isArtillery)
+			return 0;
+		
+		int numLocalArtillery = 0;
+		int numLocalSupportable = 0;
+		for (final Unit u : ownedLocalUnits)
+		{
+			if (UnitAttachment.get(u.getType()).getArtillery())
+				numLocalArtillery++;
+			if (UnitAttachment.get(u.getType()).getArtillerySupportable())
+				numLocalSupportable++;
+		}
+		final int numNeededLocalSupportable = Math.max(1, 2 * numLocalArtillery - numLocalSupportable);
+		int numPlaceArtillery = 0;
+		int numPlaceSupportable = 0;
+		for (final Unit u : unitsToPlace)
+		{
+			if (UnitAttachment.get(u.getType()).getArtillery())
+				numPlaceArtillery++;
+			if (UnitAttachment.get(u.getType()).getArtillerySupportable())
+				numPlaceSupportable++;
+		}
+		final double supportableRatio = (double) numPlaceSupportable / (2 * numPlaceArtillery + numNeededLocalSupportable);
+		final double artilleryFactor = 0.9 * Math.min(1.0, supportableRatio); // ranges from 0 to 0.9
+		
+		LogUtils.log(Level.FINEST, "artilleryFactor=" + artilleryFactor + ", numPlaceSupportable=" + numPlaceSupportable + ", numPlaceArtillery=" + numPlaceArtillery + ", numNeededLocalSupportable="
+					+ numNeededLocalSupportable);
+		
+		return artilleryFactor;
+	}
+	
+	private double calculateEfficiency(final double attackFactor, final double defenseFactor, final double artilleryFactor, final double distanceFactor, final GameData data)
 	{
 		final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
 		final double hitPointValue = 2 * hitPoints;
-		final double attackValue = attackFactor * attack * 6 / data.getDiceSides();
+		final double attackValue = attackFactor * (attack + artilleryFactor * quantity) * 6 / data.getDiceSides();
 		final double defenseValue = defenseFactor * defense * 6 / data.getDiceSides();
 		return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor / cost, 30) / quantity;
 	}

@@ -225,6 +225,42 @@ public class ProMoveUtils
 		}
 	}
 	
+	public void calculateBombardMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
+				final Map<Territory, ProAttackTerritoryData> attackMap)
+	{
+		final GameData data = ai.getGameData();
+		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
+		
+		// Loop through all territories to attack
+		for (final Territory t : attackMap.keySet())
+		{
+			// Loop through each unit that is attacking the current territory
+			for (final Unit u : attackMap.get(t).getBombardTerritoryMap().keySet())
+			{
+				final Territory bombardFromTerritory = attackMap.get(t).getBombardTerritoryMap().get(u);
+				
+				// Skip if unit is already in move to territory
+				final Territory startTerritory = unitTerritoryMap.get(u);
+				if (startTerritory.equals(bombardFromTerritory))
+					continue;
+				
+				// Add unit to move list
+				final List<Unit> unitList = new ArrayList<Unit>();
+				unitList.add(u);
+				moveUnits.add(unitList);
+				
+				// Determine route and add to move list
+				Route route = null;
+				if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedSea(player, true)))
+				{
+					// Naval unit
+					route = data.getMap().getRoute_IgnoreEnd(startTerritory, bombardFromTerritory, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
+				}
+				moveRoutes.add(route);
+			}
+		}
+	}
+	
 	public void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel)
 	{
 		for (int i = 0; i < moveRoutes.size(); i++)

@@ -241,7 +241,7 @@ public class ProAI extends StrongAI
 					if (storedFactoryMoveMap == null)
 						storedFactoryMoveMap = simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
 				}
-				else if (stepName.endsWith("CombatMove"))
+				else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove"))
 				{
 					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy);
 					if (storedCombatMoveMap == null)
