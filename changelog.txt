@@ -1,4 +1,6 @@
 Changes for 1.8.0.5
+* Fixed null pointer error in Classic (WW2v1) rockets. (veqryn)
+
 * Speeding up battle calculator by reducing possibilities of thread contention over locks. (veqryn) 
 
 * Fixed bugs in Fuel cost for units, including around loading and unloading, and moving air with carriers. (veqryn)

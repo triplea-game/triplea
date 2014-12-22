@@ -45,11 +45,11 @@ public class PlainRandomSource implements IRandomSource
 	// private static Random s_random;
 	private static MersenneTwister s_random;
 	
-	public synchronized int[] getRandom(final int max, final int count, final String annotation)
+	public synchronized int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException
 	{
 		if (count <= 0)
 		{
-			throw new IllegalStateException("count must be > o, annotation:" + annotation);
+			throw new IllegalArgumentException("count must be > 0, annotation:" + annotation);
 		}
 		final int[] numbers = new int[count];
 		for (int i = 0; i < count; i++)
@@ -59,7 +59,7 @@ public class PlainRandomSource implements IRandomSource
 		return numbers;
 	}
 	
-	public synchronized int getRandom(final int max, final String annotation)
+	public synchronized int getRandom(final int max, final String annotation) throws IllegalArgumentException
 	{
 		if (s_random == null)
 			s_random = new MersenneTwister(getSeed());

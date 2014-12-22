@@ -19,6 +19,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.AbstractGame;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
@@ -76,7 +77,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
+	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) throws IllegalArgumentException, IllegalStateException
 	{
 		final int random = m_randomSource.getRandom(max, annotation);
 		m_randomStats.addRandom(random, player, diceType);
@@ -86,7 +87,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
+	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) throws IllegalArgumentException, IllegalStateException
 	{
 		final int[] rVal = m_randomSource.getRandom(max, count, annotation);
 		m_randomStats.addRandom(rVal, player, diceType);
@@ -155,7 +156,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	 */
 	public IDisplay getDisplayChannelBroadcaster()
 	{
-		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_data));
+		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getDisplayChannel(m_data));
 		return (IDisplay) getOutbound(implementor);
 	}
 	
@@ -164,7 +165,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	 */
 	public ISound getSoundChannelBroadcaster()
 	{
-		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getSoundChannel(m_data));
+		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getSoundChannel(m_data));
 		return (ISound) getOutbound(implementor);
 	}
 	

@@ -79,7 +79,7 @@ public class PBEMDiceRoller implements IRandomSource
 	/**
 	 * getRandom
 	 */
-	public int[] getRandom(final int max, final int count, final String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 		{
@@ -138,7 +138,7 @@ public class PBEMDiceRoller implements IRandomSource
 	 *            String
 	 * @return int
 	 */
-	public int getRandom(final int max, final String annotation)
+	public int getRandom(final int max, final String annotation) throws IllegalStateException
 	{
 		return getRandom(max, 1, annotation)[0];
 	}
@@ -265,7 +265,7 @@ class HttpDiceRollerDialog extends JDialog
 	// should only be called if we are not visible
 	// can be called from any thread
 	// wont return until the roll is done.
-	public void roll()
+	public void roll() throws IllegalStateException
 	{
 		// if we are not the event thread, then start again in the event thread
 		// pausing this thread until we are done
@@ -295,7 +295,7 @@ class HttpDiceRollerDialog extends JDialog
 	}
 	
 	// should be called from the event thread
-	private void rollInternal()
+	private void rollInternal() throws IllegalStateException
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
@@ -344,7 +344,7 @@ class HttpDiceRollerDialog extends JDialog
 	 * 
 	 * 
 	 */
-	private void rollInSeperateThread()
+	private void rollInSeperateThread() throws IllegalStateException
 	{
 		if (SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");

@@ -89,7 +89,7 @@ public class CryptoRandomSource implements IRandomSource
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	public int getRandom(final int max, final String annotation)
+	public int getRandom(final int max, final String annotation) throws IllegalArgumentException, IllegalStateException
 	{
 		return getRandom(max, 1, annotation)[0];
 	}
@@ -97,7 +97,7 @@ public class CryptoRandomSource implements IRandomSource
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	public int[] getRandom(final int max, final int count, final String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException, IllegalStateException
 	{
 		if (count <= 0)
 			throw new IllegalArgumentException("Invalid count:" + count);

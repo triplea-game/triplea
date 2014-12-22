@@ -424,7 +424,7 @@ public class RocketsFireHelper
 			final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, PUs, -cost);
 			bridge.addChange(rocketCharge);
 		}
-		bridge.getHistoryWriter().addChildToEvent(transcript, new ArrayList<Unit>(rockets));
+		bridge.getHistoryWriter().addChildToEvent(transcript, rockets == null ? null : new ArrayList<Unit>(rockets));
 		// this is null in WW2V1
 		if (attackFrom != null)
 		{

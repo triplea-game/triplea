@@ -133,7 +133,7 @@ public class Unit extends GameDataComponent implements Serializable
 			final String text = "Unit.toString() -> Possible java de-serialization error: " + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName())
 						+ " owned by " + (m_owner == null ? "UNKNOWN OWNER" : m_owner.getName()) + " in territory: "
 						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: " + getID();
-			System.err.println(text);
+			UnitDeserializationErrorLazyMessage.printError(text);
 			return 0;
 		}
 		return m_uid.hashCode();
@@ -148,7 +148,7 @@ public class Unit extends GameDataComponent implements Serializable
 			final String text = "Unit.toString() -> Possible java de-serialization error: " + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName())
 						+ " owned by " + (m_owner == null ? "UNKNOWN OWNER" : m_owner.getName()) + " in territory: "
 						+ ((this.getData() != null && this.getData().getMap() != null) ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY") + " with id: " + getID();
-			System.err.println(text);
+			UnitDeserializationErrorLazyMessage.printError(text);
 			return text;
 		}
 		return m_type.getName() + " owned by " + m_owner.getName();
@@ -157,5 +157,24 @@ public class Unit extends GameDataComponent implements Serializable
 	public String toStringNoOwner()
 	{
 		return m_type.getName();
+	}
+	
+	
+	/**
+	 * Until this error gets fixed, lets not scare the crap out of our users, as the problem doesn't seem to be causing any serious issues.
+	 * TODO: fix the root cause of this deserialization issue (probably a circular dependency somewhere)
+	 */
+	public static class UnitDeserializationErrorLazyMessage
+	{
+		private static transient boolean s_shownError = false;
+		
+		public static void printError(final String errorMessage)
+		{
+			if (s_shownError == false)
+			{
+				s_shownError = true;
+				System.err.println(errorMessage);
+			}
+		}
 	}
 }

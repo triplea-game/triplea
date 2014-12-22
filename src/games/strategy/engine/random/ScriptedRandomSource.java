@@ -98,16 +98,16 @@ public class ScriptedRandomSource implements IRandomSource
 		}
 	}
 	
-	public int getRandom(final int max, final String annotation)
+	public int getRandom(final int max, final String annotation) throws IllegalStateException
 	{
 		return getRandom(max, 1, null)[0];
 	}
 	
-	public int[] getRandom(final int max, final int count, final String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException, IllegalStateException
 	{
 		if (count <= 0)
 		{
-			throw new IllegalStateException("count must be > o, annotation:" + annotation);
+			throw new IllegalArgumentException("count must be > 0, annotation:" + annotation);
 		}
 		m_rolled += count;
 		final int[] rVal = new int[count];
