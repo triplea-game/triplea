@@ -867,8 +867,8 @@ public class OddsCalculatorPanel extends JPanel
 			m_defenderUnitsTotalNumber.setText("Units: " + defenders.size());
 			m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(attackers, getAttacker(), BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
 			m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(defenders, getDefender(), BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
-			final int attackHP = BattleCalculator.getTotalHitpoints(attackers);
-			final int defenseHP = BattleCalculator.getTotalHitpoints(defenders);
+			final int attackHP = BattleCalculator.getTotalHitpointsLeft(attackers);
+			final int defenseHP = BattleCalculator.getTotalHitpointsLeft(defenders);
 			m_attackerUnitsTotalHitpoints.setText("HP: " + attackHP);
 			m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
 			final boolean isAmphibiousBattle = isAmphibiousBattle();

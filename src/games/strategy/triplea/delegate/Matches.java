@@ -140,7 +140,7 @@ public class Matches
 			return ua.getHitPoints() - unit.getHits() <= 1;
 		}
 	};
-	public static final Match<Unit> UnitHasMoreThanOneHitPointLeft = new Match<Unit>()
+	/*public static final Match<Unit> UnitHasMoreThanOneHitPointLeft = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit unit)
@@ -148,7 +148,7 @@ public class Matches
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getHitPoints() - unit.getHits() > 1;
 		}
-	};
+	};*/
 	public static final Match<Unit> UnitIsSea = new Match<Unit>()
 	{
 		@Override

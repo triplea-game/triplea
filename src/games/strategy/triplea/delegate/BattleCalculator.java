@@ -93,7 +93,7 @@ public class BattleCalculator
 		Collections.sort(units, comparator);
 	}
 	
-	public static int getTotalHitpoints(final Collection<Unit> units)
+	public static int getTotalHitpointsLeft(final Collection<Unit> units)
 	{
 		if (units == null || units.isEmpty())
 			return 0;
@@ -105,6 +105,14 @@ public class BattleCalculator
 			rVal -= u.getHits();
 		}
 		return rVal;
+	}
+	
+	public static int getTotalHitpointsLeft(final Unit unit)
+	{
+		if (unit == null)
+			return 0;
+		final UnitAttachment ua = UnitAttachment.get(unit.getType());
+		return ua.getHitPoints() - unit.getHits();
 	}
 	
 	/**
@@ -219,7 +227,6 @@ public class BattleCalculator
 			return new CasualtyDetails();
 		// if we can damage units, do it now
 		final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-		final Match<Unit> canBeDamaged = Matches.UnitHasMoreThanOneHitPointLeft;
 		
 		final GameData data = bridge.getData();
 		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, data, !defending);
@@ -230,6 +237,17 @@ public class BattleCalculator
 		final Triple<Integer, Integer, Boolean> triple = DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAA, planes, data, false);
 		// final int totalPower = triple.getFirst();
 		final boolean allSameAttackPower = triple.getThird();
+		// multiple HP units need to be counted multiple times:
+		final List<Unit> planesList = new ArrayList<Unit>();
+		for (final Unit plane : planes)
+		{
+			final int hpLeft = allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()) :
+						(Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
+			for (int hp = 0; hp < hpLeft; ++hp)
+			{
+				planesList.add(plane); // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units, we roll multiple times for any unit with multiple hitpoints
+			}
+		}
 		// killing the air by groups does not work if the the attack power is different for some of the rolls
 		// also, killing by groups does not work if some of the aa guns have 'MayOverStackAA' and we have more hits than the total number of groups (including the remainder group)
 		// (when i mean, 'does not work', i mean that it is no longer a mathematically fair way to find casualties)
@@ -239,11 +257,9 @@ public class BattleCalculator
 			groupSize = chosenDiceSize / highestAttack;
 		else
 			groupSize = chosenDiceSize;
-		int numberOfGroupsByDiceSides = planes.size() / groupSize;
-		if (planes.size() % groupSize > 0)
-			numberOfGroupsByDiceSides++;
+		final int numberOfGroupsByDiceSides = (int) Math.ceil((double) planesList.size() / (double) groupSize);
 		final boolean tooManyHitsToDoGroups = hitsLeft > numberOfGroupsByDiceSides;
-		if (!allSameAttackPower || tooManyHitsToDoGroups)
+		if (!allSameAttackPower || tooManyHitsToDoGroups || chosenDiceSize % highestAttack != 0)
 		{
 			// we have too many hits, so just pick randomly
 			return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
@@ -253,11 +269,11 @@ public class BattleCalculator
 			// if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1 fighter to die for sure. this is what groupsize is for.
 			// if the attack is greater than 1 though, and all use the same attack power, then the group size can be smaller (ie: attack is 2, and we have 3 fighters and 2 bombers, we would want 1 fighter to die for sure).
 			// categorize with groupSize
-			final Tuple<List<List<Unit>>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, chosenDiceSize, groupSize);
+			final Tuple<List<List<Unit>>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planesList, location, chosenDiceSize, groupSize);
 			// the non rolling air units
 			// if we are less hits than the number of groups, OR we have equal hits to number of groups but we also have a remainder that is equal to or greater than group size,
 			// THEN we need to make sure to pick randomly, and include the remainder group. (reason we do not do this with any remainder size, is because we might have missed the dice roll to hit the remainder)
-			if (hitsLeft < airSplit.getFirst().size() || (hitsLeft == airSplit.getFirst().size() && airSplit.getSecond().size() >= groupSize))
+			if (hitsLeft < (airSplit.getFirst().size() + ((int) Math.ceil((double) airSplit.getSecond().size() / (double) groupSize))))
 			{
 				// fewer hits than groups.
 				final List<Unit> tempPossibleHitUnits = new ArrayList<Unit>();
@@ -270,15 +286,20 @@ public class BattleCalculator
 					// if we have a remainder group, we need to add some of them into the mix
 					// but we have to do so randomly.
 					final List<Unit> remainders = new ArrayList<Unit>(airSplit.getSecond());
-					int numberOfRemainderGroups = remainders.size() / groupSize;
-					if (remainders.size() % groupSize > 0)
-						numberOfRemainderGroups++;
-					final int[] randomRemainder = bridge.getRandom(remainders.size(), numberOfRemainderGroups, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
-					int pos2 = 0;
-					for (int i = 0; i < randomRemainder.length; i++)
+					if (remainders.size() == 1)
 					{
-						pos2 += randomRemainder[i];
-						tempPossibleHitUnits.add(remainders.remove(pos2 % remainders.size()));
+						tempPossibleHitUnits.add(remainders.remove(0));
+					}
+					else
+					{
+						final int numberOfRemainderGroups = (int) Math.ceil((double) remainders.size() / (double) groupSize);
+						final int[] randomRemainder = bridge.getRandom(remainders.size(), numberOfRemainderGroups, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
+						int pos2 = 0;
+						for (int i = 0; i < randomRemainder.length; i++)
+						{
+							pos2 += randomRemainder[i];
+							tempPossibleHitUnits.add(remainders.remove(pos2 % remainders.size()));
+						}
 					}
 				}
 				final int[] hitRandom = bridge.getRandom(tempPossibleHitUnits.size(), hitsLeft, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
@@ -288,10 +309,14 @@ public class BattleCalculator
 				{
 					pos += hitRandom[i];
 					final Unit unitHit = tempPossibleHitUnits.remove(pos % tempPossibleHitUnits.size());
-					if (allowMultipleHitsPerUnit && canBeDamaged.match(unitHit))
+					if (allowMultipleHitsPerUnit && (Collections.frequency(finalCasualtyDetails.getDamaged(), unitHit) < (getTotalHitpointsLeft(unitHit) - 1)))
+					{
 						finalCasualtyDetails.addToDamaged(unitHit);
+					}
 					else
+					{
 						finalCasualtyDetails.addToKilled(unitHit);
+					}
 				}
 				hitsLeft = 0;
 			}
@@ -301,40 +326,53 @@ public class BattleCalculator
 				for (final List<Unit> group : airSplit.getFirst())
 				{
 					final Unit unitHit = group.get(0);
-					if (allowMultipleHitsPerUnit && canBeDamaged.match(unitHit))
+					if (allowMultipleHitsPerUnit && (Collections.frequency(finalCasualtyDetails.getDamaged(), unitHit) < (getTotalHitpointsLeft(unitHit) - 1)))
+					{
 						finalCasualtyDetails.addToDamaged(unitHit);
+					}
 					else
+					{
 						finalCasualtyDetails.addToKilled(unitHit);
+					}
 					hitsLeft--;
 				}
-			}
-			if (hitsLeft == airSplit.getSecond().size())
-			{
-				for (final Unit unitHit : airSplit.getSecond())
+				// for any hits left over...
+				if (hitsLeft == airSplit.getSecond().size())
 				{
-					if (allowMultipleHitsPerUnit && canBeDamaged.match(unitHit))
-						finalCasualtyDetails.addToDamaged(unitHit);
-					else
-						finalCasualtyDetails.addToKilled(unitHit);
+					for (final Unit unitHit : airSplit.getSecond())
+					{
+						if (allowMultipleHitsPerUnit && (Collections.frequency(finalCasualtyDetails.getDamaged(), unitHit) < (getTotalHitpointsLeft(unitHit) - 1)))
+						{
+							finalCasualtyDetails.addToDamaged(unitHit);
+						}
+						else
+						{
+							finalCasualtyDetails.addToKilled(unitHit);
+						}
+					}
+					hitsLeft = 0;
 				}
-				hitsLeft = 0;
-			}
-			else if (hitsLeft != 0)
-			{
-				// the remainder
-				// roll all at once to prevent frequent random calls, important for pbem games
-				final int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
-				int pos = 0;
-				for (int i = 0; i < hitRandom.length; i++)
+				else if (hitsLeft != 0)
 				{
-					pos += hitRandom[i];
-					final Unit unitHit = airSplit.getSecond().remove(pos % airSplit.getSecond().size());
-					if (allowMultipleHitsPerUnit && canBeDamaged.match(unitHit))
-						finalCasualtyDetails.addToDamaged(unitHit);
-					else
-						finalCasualtyDetails.addToKilled(unitHit);
+					// the remainder
+					// roll all at once to prevent frequent random calls, important for pbem games
+					final int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
+					int pos = 0;
+					for (int i = 0; i < hitRandom.length; i++)
+					{
+						pos += hitRandom[i];
+						final Unit unitHit = airSplit.getSecond().remove(pos % airSplit.getSecond().size());
+						if (allowMultipleHitsPerUnit && (Collections.frequency(finalCasualtyDetails.getDamaged(), unitHit) < (getTotalHitpointsLeft(unitHit) - 1)))
+						{
+							finalCasualtyDetails.addToDamaged(unitHit);
+						}
+						else
+						{
+							finalCasualtyDetails.addToKilled(unitHit);
+						}
+					}
+					hitsLeft = 0;
 				}
-				hitsLeft = 0;
 			}
 		}
 		// double check
@@ -361,15 +399,16 @@ public class BattleCalculator
 		if (hitsLeft <= 0)
 			return new CasualtyDetails();
 		final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-		final Match<Unit> canBeDamaged = Matches.UnitHasMoreThanOneHitPointLeft;
-		final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpoints(planes) : planes.size()); // normal behavior is instant kill, which means planes.size()
+		final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size()); // normal behavior is instant kill, which means planes.size()
 		final List<Unit> planesList = new ArrayList<Unit>();
 		for (final Unit plane : planes)
 		{
-			// need to add planes twice if they have two HP
-			planesList.add(plane);
-			if (allowMultipleHitsPerUnit && canBeDamaged.match(plane))
-				planesList.add(plane);
+			final int hpLeft = allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()) :
+						(Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
+			for (int hp = 0; hp < hpLeft; ++hp)
+			{
+				planesList.add(plane); // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units, we roll multiple times for any unit with multiple hitpoints
+			}
 		}
 		// We need to choose which planes die randomly
 		if (hitsLeft < planeHP)
@@ -381,18 +420,29 @@ public class BattleCalculator
 			{
 				pos += hitRandom[i];
 				final Unit unitHit = planesList.remove(pos % planesList.size());
-				// if it already in the damaged list, then we must add it to the kill list, cus right now units can only have 1 or 2 hp
-				if (allowMultipleHitsPerUnit && canBeDamaged.match(unitHit) && !finalCasualtyDetails.getDamaged().contains(unitHit))
+				if (allowMultipleHitsPerUnit && (Collections.frequency(finalCasualtyDetails.getDamaged(), unitHit) < (getTotalHitpointsLeft(unitHit) - 1)))
+				{
 					finalCasualtyDetails.addToDamaged(unitHit);
+				}
 				else
+				{
 					finalCasualtyDetails.addToKilled(unitHit);
+				}
 			}
 		}
 		else
 		{
-			finalCasualtyDetails.addToKilled(planesList);
-			if (allowMultipleHitsPerUnit)
-				finalCasualtyDetails.addToDamaged(Match.getMatches(planesList, canBeDamaged));
+			for (final Unit plane : planesList)
+			{
+				if (finalCasualtyDetails.getKilled().contains(plane))
+				{
+					finalCasualtyDetails.addToDamaged(plane);
+				}
+				else
+				{
+					finalCasualtyDetails.addToKilled(plane);
+				}
+			}
 		}
 		return finalCasualtyDetails;
 	}
@@ -404,7 +454,7 @@ public class BattleCalculator
 				final Territory location, final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit)
 	{
 		// if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not enough rolls to have a single roll for each aircraft, or too many rolls
-		final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpoints(planes) : planes.size()); // normal behavior is instant kill, which means planes.size()
+		final int planeHP = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size()); // normal behavior is instant kill, which means planes.size()
 		if (DiceRoll.getTotalAAattacks(defendingAA, planes, bridge.getData()) != planeHP)
 			return RandomAACasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
 		final Triple<Integer, Integer, Boolean> triple = DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAA, planes, bridge.getData(), false);
@@ -415,9 +465,17 @@ public class BattleCalculator
 		final int highestAttack = attackThenDiceSides.getFirst();
 		// int chosenDiceSize = attackThenDiceSides[1];
 		final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-		final Match<Unit> canBeDamaged = Matches.UnitHasMoreThanOneHitPointLeft;
 		final int hits = dice.getHits();
-		final List<Unit> planesList = new ArrayList<Unit>(planes);
+		final List<Unit> planesList = new ArrayList<Unit>();
+		for (final Unit plane : planes)
+		{
+			final int hpLeft = allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()) :
+						(Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
+			for (int hp = 0; hp < hpLeft; ++hp)
+			{
+				planesList.add(plane); // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units, we roll multiple times for any unit with multiple hitpoints
+			}
+		}
 		// We need to choose which planes die based on their position in the list and the individual AA rolls
 		if (hits > planeHP)
 			throw new IllegalStateException("Can not have more hits than number of die rolls");
@@ -430,10 +488,9 @@ public class BattleCalculator
 				if (die.getType() == DieType.HIT)
 				{
 					final Unit unit = planesList.get(i);
-					if (allowMultipleHitsPerUnit && canBeDamaged.match(unit))
+					if (allowMultipleHitsPerUnit && (Collections.frequency(finalCasualtyDetails.getDamaged(), unit) < (getTotalHitpointsLeft(unit) - 1)))
 					{
 						finalCasualtyDetails.addToDamaged(unit);
-						i--; // because the number of rolls exactly equals the hitpoints of all units, we roll twice for any unit with multiple hitpoints
 					}
 					else
 					{
@@ -444,9 +501,17 @@ public class BattleCalculator
 		}
 		else
 		{
-			finalCasualtyDetails.addToKilled(planesList);
-			if (allowMultipleHitsPerUnit)
-				finalCasualtyDetails.addToDamaged(Match.getMatches(planesList, canBeDamaged));
+			for (final Unit plane : planesList)
+			{
+				if (finalCasualtyDetails.getKilled().contains(plane))
+				{
+					finalCasualtyDetails.addToDamaged(plane);
+				}
+				else
+				{
+					finalCasualtyDetails.addToKilled(plane);
+				}
+			}
 		}
 		return finalCasualtyDetails;
 	}
@@ -513,7 +578,7 @@ public class BattleCalculator
 		final IntegerMap<UnitType> costs = getCostsForTUV(player, data);
 		final CasualtyList defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, territoryEffects, data, allowMultipleHitsPerUnit);
 		final CasualtyDetails casualtySelection;
-		final int totalHitpoints = (allowMultipleHitsPerUnit ? getTotalHitpoints(targets) : targets.size());
+		final int totalHitpoints = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(targets) : targets.size());
 		if (hitsRemaining >= totalHitpoints)
 		{
 			casualtySelection = new CasualtyDetails(defaultCasualties, true);
@@ -616,6 +681,7 @@ public class BattleCalculator
 		return killed;
 	}
 	
+	/*
 	private static boolean s_enableCasualtySortingCaching = false;
 	
 	public static void EnableCasualtySortingCaching()
@@ -635,6 +701,7 @@ public class BattleCalculator
 	// Key is the hash of the possible casualties collection[targets], value is the cached sorted result[perfectlySortedUnitsList]
 	private static HashMap<Integer, List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
 	private static final Object s_cachedLock = new Object();
+	*/
 	
 	/**
 	 * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged. The second time they are listed, it is dead.
@@ -700,18 +767,20 @@ public class BattleCalculator
 	public static Collection<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targets, final boolean defending, final PlayerID player, final IntegerMap<UnitType> costs,
 				final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus)
 	{
+		/*
 		if (s_enableCasualtySortingCaching)
 		{
 			synchronized (s_cachedLock)
 			{
-				/*if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets)
-				    		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
-					s_cachedSortedCasualties.clear();
-				else*/
+				//if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets)
+				//    		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
+				//	s_cachedSortedCasualties.clear();
+				//else
 				if (s_cachedSortedCasualties.containsKey(targets.hashCode()))
 					return s_cachedSortedCasualties.get(targets.hashCode());
 			}
 		}
+		*/
 		final List<Unit> sortedUnitsList = new ArrayList<Unit>(targets);
 		Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus));
 		final List<Unit> perfectlySortedUnitsList = new ArrayList<Unit>();
@@ -903,6 +972,7 @@ public class BattleCalculator
 		if (perfectlySortedUnitsList.isEmpty() || !perfectlySortedUnitsList.containsAll(sortedUnitsList) || !sortedUnitsList.containsAll(perfectlySortedUnitsList)
 					|| perfectlySortedUnitsList.size() != sortedUnitsList.size())
 			throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
+		/*
 		if (s_enableCasualtySortingCaching)
 		{
 			synchronized (s_cachedLock)
@@ -911,6 +981,7 @@ public class BattleCalculator
 					s_cachedSortedCasualties.put(targets.hashCode(), perfectlySortedUnitsList);
 			}
 		}
+		*/
 		return perfectlySortedUnitsList;
 	}
 	

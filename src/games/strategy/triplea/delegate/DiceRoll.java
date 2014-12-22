@@ -118,7 +118,7 @@ public class DiceRoll implements Externalizable
 			}
 		}
 		if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1)
-			highestAttack = chosenDiceSize / 2; // sadly the whole low luck section falls apart if AA are hitting at greater than half the value of dice, and I don't feel like rewriting it
+			highestAttack = chosenDiceSize / 2; // TODO: sadly the whole low luck section falls apart if AA are hitting at greater than half the value of dice, and I don't feel like rewriting it
 		return new Tuple<Integer, Integer>(highestAttack, chosenDiceSize);
 	}
 	

@@ -61,7 +61,7 @@ public class ProBattleUtils
 		final int attackPower = DiceRoll.getTotalPowerAndRolls(
 					DiceRoll.getUnitPowerAndRollsForNormalBattles(attackingUnits, attackingUnits, defendingUnits, false, false, player, data, t, null, false, null), data).getFirst();
 		final List<Unit> defendersWithHitPoints = Match.getMatches(defendingUnits, Matches.UnitIsInfrastructure.invert());
-		final int totalDefenderHitPoints = BattleCalculator.getTotalHitpoints(defendersWithHitPoints);
+		final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
 		
 		return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
 	}
@@ -89,7 +89,7 @@ public class ProBattleUtils
 	{
 		final GameData data = ai.getGameData();
 		final List<Unit> unitsThatCanFight = Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
-		final int myHP = BattleCalculator.getTotalHitpoints(unitsThatCanFight);
+		final int myHP = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
 		final int myPower = DiceRoll.getTotalPowerAndRolls(
 					DiceRoll.getUnitPowerAndRollsForNormalBattles(unitsThatCanFight, unitsThatCanFight, enemyUnits, !attacking, false, player, data, t, null, false, null), data).getFirst();
 		return (2 * myHP) + (myPower * 6.0 / data.getDiceSides());

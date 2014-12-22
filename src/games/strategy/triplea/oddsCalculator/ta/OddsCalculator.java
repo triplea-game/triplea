@@ -685,8 +685,8 @@ class DummyPlayer extends AbstractAI
 				if (ourUnits != null && enemyUnits != null)
 				{
 					// assume we are attacker
-					final int ourHP = BattleCalculator.getTotalHitpoints(ourUnits);
-					final int enemyHP = BattleCalculator.getTotalHitpoints(enemyUnits);
+					final int ourHP = BattleCalculator.getTotalHitpointsLeft(ourUnits);
+					final int enemyHP = BattleCalculator.getTotalHitpointsLeft(enemyUnits);
 					final int ourPower = DiceRoll.getTotalPowerAndRolls(
 								DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits, ourUnits, enemyUnits, !m_isAttacker, false, (m_isAttacker ? battle.getAttacker() : battle.getDefender()),
 											m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
