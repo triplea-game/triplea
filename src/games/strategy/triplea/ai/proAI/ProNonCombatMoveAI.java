@@ -843,7 +843,7 @@ public class ProNonCombatMoveAI
 				// Transport amphib units to best land territory
 				Territory maxValueTerritory = null;
 				List<Unit> maxAmphibUnitsToAdd = null;
-				double maxValue = 0.1;
+				double maxValue = Double.MIN_VALUE;
 				double maxSeaValue = 0;
 				Territory maxUnloadFromTerritory = null;
 				for (final Territory t : amphibData.getTransportMap().keySet())
