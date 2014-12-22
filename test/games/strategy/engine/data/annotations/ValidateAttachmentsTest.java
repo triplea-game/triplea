@@ -224,8 +224,10 @@ public class ValidateAttachmentsTest extends TestCase
 			} catch (final ClassNotFoundException e)
 			{
 				sb.append("Warning: Class " + className + " not found. Error Message: " + e.getMessage() + "\n");
+			} catch (final Throwable e)
+			{
+				sb.append("Warning: Class " + className + " could not be loaded. Error Message: " + e.getMessage() + "\n");
 			}
-			
 		}
 		return sb.toString();
 	}

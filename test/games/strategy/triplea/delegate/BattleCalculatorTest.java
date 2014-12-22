@@ -214,7 +214,7 @@ public class BattleCalculatorTest extends TestCase
 		planes.addAll(fighter(data).create(7, british(data)));
 		final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
 		// one roll, a miss
-		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 2 });
+		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 2, 0, 0, 0, ScriptedRandomSource.ERROR });
 		m_bridge.setRandomSource(randomSource);
 		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data), true);
@@ -222,7 +222,7 @@ public class BattleCalculatorTest extends TestCase
 		assertEquals(1, randomSource.getTotalRolled());
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data), null).getKilled();
 		assertEquals(casualties.size(), 2);
-		assertEquals(1, randomSource.getTotalRolled());
+		assertEquals(4, randomSource.getTotalRolled());
 		// should be 1 fighter and 1 bomber
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);

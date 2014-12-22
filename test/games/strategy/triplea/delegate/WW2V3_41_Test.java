@@ -197,7 +197,7 @@ public class WW2V3_41_Test extends TestCase
 		final Collection<Unit> defendingAA = territory("Germany", m_data).getUnits().getMatches(Matches.UnitIsAAforAnything);
 		// 1 roll, a miss
 		// then a dice to select the casualty
-		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 5, ScriptedRandomSource.ERROR });
+		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 5, 0, 0, 0, ScriptedRandomSource.ERROR });
 		m_bridge.setRandomSource(randomSource);
 		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(m_data))), defendingAA, m_bridge,
 					territory("Germany", m_data), true);
@@ -206,6 +206,7 @@ public class WW2V3_41_Test extends TestCase
 		assertEquals(1, randomSource.getTotalRolled());
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", m_data), null).getKilled();
 		assertEquals(casualties.size(), 2);
+		assertEquals(4, randomSource.getTotalRolled());
 		// should be 1 fighter and 2 bombers
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);

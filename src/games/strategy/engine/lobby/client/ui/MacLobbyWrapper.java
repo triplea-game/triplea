@@ -28,7 +28,7 @@ public class MacLobbyWrapper
 	// i think the java validator triggers this
 	public static void registerMacShutdownHandler(final LobbyFrame frame)
 	{
-		final Application application = new Application();
+		final Application application = Application.getApplication();// new Application();
 		application.addApplicationListener(new ApplicationAdapter()
 		{
 			@Override

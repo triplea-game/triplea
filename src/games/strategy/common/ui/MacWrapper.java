@@ -32,10 +32,9 @@ import com.apple.eawt.ApplicationEvent;
 public class MacWrapper
 {
 	private static MainGameFrame s_shutdownFrame;
-	private static Application application = new Application();
 	static
 	{
-		application.addApplicationListener(new ApplicationAdapter()
+		Application.getApplication().addApplicationListener(new ApplicationAdapter()
 		{
 			@Override
 			public void handleQuit(final ApplicationEvent event)
