@@ -173,7 +173,7 @@ public class BattleCalculator
 				final GUID battleID, final Territory terr, final Collection<TerritoryEffect> territoryEffects, final boolean allowMultipleHitsPerUnit)
 	{
 		final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
-		return selectCasualties(attacker, planes, terr, territoryEffects, bridge, text, dice, defending, battleID, allowMultipleHitsPerUnit);
+		return selectCasualties(null, attacker, planes, terr, territoryEffects, bridge, text, dice, defending, battleID, false, dice.getHits(), allowMultipleHitsPerUnit);
 	}
 	
 	/**
@@ -516,12 +516,6 @@ public class BattleCalculator
 		return finalCasualtyDetails;
 	}
 	
-	public static CasualtyDetails selectCasualties(final PlayerID player, final Collection<Unit> targets, final Territory battlesite, final Collection<TerritoryEffect> territoryEffects,
-				final IDelegateBridge bridge, final String text, final DiceRoll dice, final boolean defending, final GUID battleID, final boolean allowMultipleHitsPerUnit)
-	{
-		return selectCasualties(null, player, targets, battlesite, territoryEffects, bridge, text, dice, defending, battleID, false, dice.getHits(), allowMultipleHitsPerUnit);
-	}
-	
 	/**
 	 * 
 	 * @param battleID
@@ -545,7 +539,7 @@ public class BattleCalculator
 			dependents = Collections.emptyMap();
 		else
 			dependents = getDependents(targets, data);
-		if (isEditMode)
+		if (isEditMode && !headLess)
 		{
 			final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targets, dependents, 0, text, dice, player, new CasualtyList(), battleID, battlesite, allowMultipleHitsPerUnit);
 			List<Unit> killed = editSelection.getKilled();
@@ -573,12 +567,11 @@ public class BattleCalculator
 			}
 			return new CasualtyDetails(killed, Collections.<Unit> emptyList(), true);
 		}
-		// Create production cost map, Maybe should do this elsewhere, but in
-		// case prices change, we do it here.
+		// Create production cost map, Maybe should do this elsewhere, but in case prices change, we do it here.
 		final IntegerMap<UnitType> costs = getCostsForTUV(player, data);
 		final CasualtyList defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, territoryEffects, data, allowMultipleHitsPerUnit);
-		final CasualtyDetails casualtySelection;
 		final int totalHitpoints = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(targets) : targets.size());
+		final CasualtyDetails casualtySelection;
 		if (hitsRemaining >= totalHitpoints)
 		{
 			casualtySelection = new CasualtyDetails(defaultCasualties, true);
@@ -619,7 +612,7 @@ public class BattleCalculator
 				System.err.println("Possible Infinite Loop: Wrong number of casualties selected: number of hits on units " + (numhits + damaged.size()) + " != number of hits to take "
 							+ (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for " + casualtySelection.toString());
 			}
-			return selectCasualties(player, targets, battlesite, territoryEffects, bridge, text, dice, defending, battleID, allowMultipleHitsPerUnit);
+			return selectCasualties(step, player, targets, battlesite, territoryEffects, bridge, text, dice, defending, battleID, headLess, extraHits, allowMultipleHitsPerUnit);
 		}
 		// check we have enough of each type
 		if (!targets.containsAll(killed) || !targets.containsAll(damaged))
@@ -629,7 +622,7 @@ public class BattleCalculator
 			{
 				System.err.println("Possible Infinite Loop: Cannot remove enough units of those types: targets " + targets + ", for " + casualtySelection.toString());
 			}
-			return selectCasualties(player, targets, battlesite, territoryEffects, bridge, text, dice, defending, battleID, allowMultipleHitsPerUnit);
+			return selectCasualties(step, player, targets, battlesite, territoryEffects, bridge, text, dice, defending, battleID, headLess, extraHits, allowMultipleHitsPerUnit);
 		}
 		return casualtySelection;
 	}

@@ -638,7 +638,8 @@ public class AirBattle extends AbstractBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_details = BattleCalculator.selectCasualties(m_defender, m_defendingUnits, m_battleSite, null, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID, true);
+					m_details = BattleCalculator.selectCasualties(ATTACKERS_FIRE, m_defender, m_defendingUnits, m_battleSite, null, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID, false,
+								m_dice.getHits(), true);
 					m_defendingWaitingToDie.addAll(m_details.getKilled());
 					markDamaged(m_details.getDamaged(), bridge, true);
 				}
@@ -691,7 +692,8 @@ public class AirBattle extends AbstractBattle
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_details = BattleCalculator.selectCasualties(m_attacker, m_attackingUnits, m_battleSite, null, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID, true);
+					m_details = BattleCalculator.selectCasualties(DEFENDERS_FIRE, m_attacker, m_attackingUnits, m_battleSite, null, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID, false,
+								m_dice.getHits(), true);
 					m_attackingWaitingToDie.addAll(m_details.getKilled());
 					markDamaged(m_details.getDamaged(), bridge, true);
 				}
