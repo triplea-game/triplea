@@ -49,20 +49,33 @@ public interface ITripleaPlayer extends IRemotePlayer
 	 *            - the number of casualties to select
 	 * @param message
 	 *            - ui message to display
-	 * @param hit
-	 *            - the player hit
 	 * @param dice
 	 *            - the dice rolled for the casualties
+	 * @param hit
+	 *            - the player hit
+	 * @param friendlyUnits
+	 *            - all friendly units in the battle (or moving)
+	 * @param enemyPlayer
+	 *            - the player who has hit you
+	 * @param enemyUnits
+	 *            - all enemy units in the battle (or defending aa)
+	 * @param amphibious
+	 *            - is the battle amphibious?
+	 * @param amphibiousLandAttackers
+	 *            - can be null
 	 * @param defaultCasualties
 	 *            - default casualties as selected by the game
 	 * @param battleID
 	 *            - the battle we are fighting in, may be null if this is an aa casualty selection during a move
-	 * @return the selected casualties
-	 * 
-	 *         Added new collection autoKilled to handle killing units prior to casualty selection
+	 * @param battlesite
+	 *            - the territory where this happened
+	 * @param allowMultipleHitsPerUnit
+	 *            - can units be hit more than one time if they have more than one hitpoints left?
+	 * @return CasualtyDetails
 	 */
 	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
-				CasualtyList defaultCasualties, GUID battleID, Territory battlesite, boolean allowMultipleHitsPerUnit);
+				Collection<Unit> friendlyUnits, PlayerID enemyPlayer, Collection<Unit> enemyUnits, boolean amphibious, Collection<Unit> amphibiousLandAttackers, CasualtyList defaultCasualties,
+				GUID battleID, Territory battlesite, boolean allowMultipleHitsPerUnit);
 	
 	/**
 	 * Select a fixed dice roll

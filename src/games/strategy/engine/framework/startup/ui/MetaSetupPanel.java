@@ -38,6 +38,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class MetaSetupPanel extends SetupPanel
 {
@@ -252,7 +253,7 @@ public class MetaSetupPanel extends SetupPanel
 		editorPane.setEditable(false);
 		editorPane.setContentType("text/html");
 		editorPane.setText(text);
-		final JScrollPane scroll = new JScrollPane(editorPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		final JScrollPane scroll = new JScrollPane(editorPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBorder(null);
 		JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(getParent()), editorPane, "About...", JOptionPane.PLAIN_MESSAGE);
 	}
@@ -311,6 +312,10 @@ public class MetaSetupPanel extends SetupPanel
 			// System.out.println("Trying to connect to: " + serverPropertiesURL);
 			props = contactServerForLobbyServerProperties(serverPropertiesURL);
 			// System.out.println("Finished connecting to: " + serverPropertiesURL);
+			if (props == null || props.getPort() == -1)
+			{
+				System.out.println("Unable to connect to: " + serverPropertiesURL);
+			}
 		}
 		return props;
 	}

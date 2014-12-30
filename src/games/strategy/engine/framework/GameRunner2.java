@@ -53,6 +53,7 @@ public class GameRunner2
 	public static final int PORT = 3300;
 	public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
 	public static final String DELAYED_PARSING = "DelayedParsing";
+	public static final String CASUALTY_SELECTION_BETA = "CasualtySelectionBeta";
 	public static final String PROXY_CHOICE = "proxy.choice";
 	public static final String HTTP_PROXYHOST = "http.proxyHost";
 	public static final String HTTP_PROXYPORT = "http.proxyPort";
@@ -732,6 +733,35 @@ public class GameRunner2
 	{
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
 		pref.putBoolean(DELAYED_PARSING, delayedParsing);
+		try
+		{
+			pref.sync();
+		} catch (final BackingStoreException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	// TODO: delete all this when we figure out the new casualty selection algorithm
+	public static boolean getCasualtySelectionBeta()
+	{
+		if (s_checkedCasualtySelectionBetaPreference)
+		{
+			return s_casualtySelectionBeta;
+		}
+		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+		s_casualtySelectionBeta = pref.getBoolean(CASUALTY_SELECTION_BETA, false);
+		s_checkedCasualtySelectionBetaPreference = true;
+		return s_casualtySelectionBeta;
+	}
+	
+	private static boolean s_casualtySelectionBeta = false;
+	private static boolean s_checkedCasualtySelectionBetaPreference = false;
+	
+	public static void setCasualtySelectionBeta(final boolean casualtySelectionBeta)
+	{
+		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+		pref.putBoolean(CASUALTY_SELECTION_BETA, casualtySelectionBeta);
 		try
 		{
 			pref.sync();

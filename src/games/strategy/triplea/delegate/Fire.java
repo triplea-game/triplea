@@ -45,6 +45,10 @@ public class Fire implements IExecutable
 	private final Territory m_battleSite;
 	private final Collection<TerritoryEffect> m_territoryEffects;
 	private final List<Unit> m_allEnemyUnitsAliveOrWaitingToDie;
+	private final Collection<Unit> m_allFriendlyUnitsNotIncludingWaitingToDie;
+	private final Collection<Unit> m_allEnemyUnitsNotIncludingWaitingToDie;
+	private final boolean m_isAmphibious;
+	private final Collection<Unit> m_amphibiousLandAttackers;
 	
 	public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire, final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits,
 				final String stepName, final String text, final MustFightBattle battle, final boolean defending, final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack,
@@ -69,6 +73,10 @@ public class Fire implements IExecutable
 		m_battleSite = battleSite;
 		m_territoryEffects = territoryEffects;
 		m_allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
+		m_allFriendlyUnitsNotIncludingWaitingToDie = m_defending ? m_battle.getDefendingUnits() : m_battle.getAttackingUnits();
+		m_allEnemyUnitsNotIncludingWaitingToDie = !m_defending ? m_battle.getDefendingUnits() : m_battle.getAttackingUnits();
+		m_isAmphibious = m_battle.isAmphibious();
+		m_amphibiousLandAttackers = m_battle.getAmphibiousLandAttackers();
 	}
 	
 	private void rollDice(final IDelegateBridge bridge)
@@ -126,8 +134,9 @@ public class Fire implements IExecutable
 				// m_confirmOwnCasualties = true;
 				if (extraHits > transportsOnly.size())
 					extraHits = transportsOnly.size();
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless,
-							extraHits, true);
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly, m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer,
+							m_allFriendlyUnitsNotIncludingWaitingToDie, m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID,
+							m_isHeadless, extraHits, true);
 				m_killed.addAll(message.getKilled());
 				m_confirmOwnCasualties = true;
 			}
@@ -141,8 +150,9 @@ public class Fire implements IExecutable
 			// less than possible number
 			else
 			{
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID, m_isHeadless,
-							m_dice.getHits(), true);
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports, m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer,
+							m_allFriendlyUnitsNotIncludingWaitingToDie, m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID,
+							m_isHeadless, m_dice.getHits(), true);
 				m_killed = message.getKilled();
 				m_damaged = message.getDamaged();
 				m_confirmOwnCasualties = message.getAutoCalculated();
@@ -163,7 +173,8 @@ public class Fire implements IExecutable
 			else
 			{
 				CasualtyDetails message;
-				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID,
+				message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits, m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer,
+							m_allFriendlyUnitsNotIncludingWaitingToDie, m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice, !m_defending, m_battleID,
 							m_isHeadless, m_dice.getHits(), true);
 				m_killed = message.getKilled();
 				m_damaged = message.getDamaged();

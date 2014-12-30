@@ -59,6 +59,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_okButton;
 	private JButton m_lookAndFeel;
 	private JButton m_gameParser;
+	private JButton m_casualtySelection;
 	private JButton m_setupProxies;
 	private JButton m_hostWaitTime;
 	private JButton m_setMaxMemory;
@@ -93,6 +94,7 @@ public class EnginePreferences extends JDialog
 		m_okButton = new JButton("OK");
 		m_lookAndFeel = new JButton("Set Look And Feel");
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
+		m_casualtySelection = new JButton("Set Default Casualty Selection Method");
 		m_setupProxies = new JButton("Setup Network and Proxy Settings");
 		m_hostWaitTime = new JButton("Set Max Host Wait Time for Clients and Observers");
 		m_setMaxMemory = new JButton("Set Max Memory Usage");
@@ -121,6 +123,8 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(m_lookAndFeel);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_gameParser);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_casualtySelection);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_setupProxies);
 		buttonsPanel.add(new JLabel(" "));
@@ -206,6 +210,29 @@ public class EnginePreferences extends JDialog
 					return;
 				GameRunner2.setDelayedParsing(delay);
 				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors", new CountDownLatchHandler(true));
+			}
+		});
+		m_casualtySelection.addActionListener(new AbstractAction("Set Default Casualty Selection Method")
+		{
+			private static final long serialVersionUID = -6223524865968825151L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				// TODO: replace with 2 radio buttons
+				final boolean currentIsBeta = GameRunner2.getCasualtySelectionBeta();
+				final Object[] options = { "Default", "Beta", "Cancel" };
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Use *beta* default casualty selection method?" +
+							"<br><br>('" + options[0] + "' sorts by power, and takes legacy artillery support into account." +
+							"<br>'" + options[1] + "' will attempt to take all support attachments into account, but is very slow.)" +
+							"<br><br>Your current setting is: '" + (currentIsBeta ? options[1].toString() : options[0].toString()) + "'</html>"),
+							"Select Default Casualty Selection Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+				if (answer == JOptionPane.CANCEL_OPTION)
+					return;
+				final boolean useBeta = (answer != JOptionPane.YES_OPTION);
+				if (useBeta == currentIsBeta)
+					return;
+				GameRunner2.setCasualtySelectionBeta(useBeta);
+				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA for this to take effect", new CountDownLatchHandler(true));
 			}
 		});
 		m_setupProxies.addActionListener(new AbstractAction("Setup Network and Proxy Settings")

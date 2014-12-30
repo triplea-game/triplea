@@ -1311,7 +1311,7 @@ public class TripleAFrame extends MainGameFrame
 					final List<Unit> units = new ArrayList<Unit>(entry.getValue());
 					Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(m_data),
 								TerritoryEffectHelper.getEffects(entry.getKey()),
-								m_data, false));
+								m_data, true, false));
 					Collections.reverse(units);
 					possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
 				}

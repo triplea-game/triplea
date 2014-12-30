@@ -1,4 +1,6 @@
 Changes for 1.8.0.5
+* Created a prototype unit sorter for sorting units with support attachments (still in beta) and added it as an option in engine preferences. (veqryn & redrum)
+
 * Updating Substance/Insubstantial look and feel UI to version 7.3. (veqryn)
 
 * Fixed bug with how AA casualties are taken for multiple-hitpoint airplanes. (veqryn)

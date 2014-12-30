@@ -415,7 +415,7 @@ public class EditPanel extends ActionPanel
 					return;
 				}
 				sortUnitsToRemove(units, m_selectedTerritory);
-				Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), false));
+				Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
 				Collections.reverse(units);
 				// unit mapped to <max, min, current>
 				final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<Unit, Triple<Integer, Integer, Integer>>();
@@ -460,7 +460,7 @@ public class EditPanel extends ActionPanel
 					return;
 				}
 				sortUnitsToRemove(units, m_selectedTerritory);
-				Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), false));
+				Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
 				Collections.reverse(units);
 				final int currentDamage = 0;
 				// unit mapped to <max, min, current>

@@ -301,20 +301,6 @@ public class ProAI extends StrongAI
 		return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
 	}
 	
-	// @Override
-	// public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-	// final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
-	// {
-	// final GameData data = getPlayerBridge().getGameData();
-	// final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(hit, data);
-	// final CasualtyList casualtyList = ProBattleCalculator.getDefaultCasualties(selectFrom, count, hit, costs, TerritoryEffectHelper.getEffects(battlesite), data, allowMultipleHitsPerUnit,
-	// battleID);
-	// LogUtils.log(Level.FINE, "Casualties for " + battlesite + ", remainingUnits=" + selectFrom + ", count=" + count);
-	// LogUtils.log(Level.FINE, "Default: " + defaultCasualties);
-	// LogUtils.log(Level.FINE, "Pro: " + casualtyList);
-	// return new CasualtyDetails(casualtyList, false);
-	// }
-	
 	@Override
 	public boolean shouldBomberBomb(final Territory territory)
 	{

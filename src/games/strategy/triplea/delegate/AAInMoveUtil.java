@@ -18,7 +18,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -179,8 +178,17 @@ class AAInMoveUtil implements Serializable
 	{
 		if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player)))
 			return m_player;
-		else
-			return units.iterator().next().getOwner();
+		if (units != null)
+		{
+			for (final Unit u : units)
+			{
+				if (u != null && u.getOwner() != null)
+				{
+					return u.getOwner();
+				}
+			}
+		}
+		return PlayerID.NULL_PLAYERID;
 	}
 	
 	/**
@@ -201,7 +209,7 @@ class AAInMoveUtil implements Serializable
 			final Collection<Unit> currentPossibleAA = Match.getMatches(defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
 			final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(getData());
 			final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAA);
-			final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(units, new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+			final Collection<Unit> validTargetedUnitsForThisRoll = Match.getMatches(units, new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
 						new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
 			
 			// once we fire the AA guns, we can't undo
@@ -215,10 +223,10 @@ class AAInMoveUtil implements Serializable
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					validAttackingUnitsForThisRoll.removeAll(m_casualties); // get rid of units already killed, so we don't target them twice
-					if (!validAttackingUnitsForThisRoll.isEmpty())
+					validTargetedUnitsForThisRoll.removeAll(m_casualties); // get rid of units already killed, so we don't target them twice
+					if (!validTargetedUnitsForThisRoll.isEmpty())
 					{
-						dice[0] = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, m_bridge, territory, true);
+						dice[0] = DiceRoll.rollAA(validTargetedUnitsForThisRoll, currentPossibleAA, m_bridge, territory, true);
 					}
 				}
 			};
@@ -228,26 +236,26 @@ class AAInMoveUtil implements Serializable
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					if (!validAttackingUnitsForThisRoll.isEmpty())
+					if (!validTargetedUnitsForThisRoll.isEmpty())
 					{
 						final int hitCount = dice[0].getHits();
 						if (hitCount == 0)
 						{
 							if (currentTypeAA.equals("AA"))
-								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA).getName());
+								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA, territory).getName());
 							else
 								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-											findDefender(currentPossibleAA).getName());
+											findDefender(currentPossibleAA, territory).getName());
 							getRemotePlayer().reportMessage("No " + currentTypeAA + " hits in " + territory.getName(), "No " + currentTypeAA + " hits in " + territory.getName());
 						}
 						else
 						{
 							if (currentTypeAA.equals("AA"))
-								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA).getName());
+								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA, territory).getName());
 							else
 								m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAA.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-											findDefender(currentPossibleAA).getName());
-							selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null, currentTypeAA);
+											findDefender(currentPossibleAA, territory).getName());
+							selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAA, defendingAA, territory, currentTypeAA);
 						}
 					}
 				}
@@ -258,27 +266,43 @@ class AAInMoveUtil implements Serializable
 		}
 	}
 	
-	private PlayerID findDefender(final Collection<Unit> defendingUnits)
+	private PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory)
 	{
 		if (defendingUnits == null || defendingUnits.isEmpty())
+		{
+			if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull())
+			{
+				return territory.getOwner();
+			}
 			return PlayerID.NULL_PLAYERID;
-		else
-			return defendingUnits.iterator().next().getOwner();
+		}
+		else if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull() && Match.someMatch(defendingUnits, Matches.unitIsOwnedBy(territory.getOwner())))
+		{
+			return territory.getOwner();
+		}
+		for (final Unit u : defendingUnits)
+		{
+			if (u != null && u.getOwner() != null)
+			{
+				return u.getOwner();
+			}
+		}
+		return PlayerID.NULL_PLAYERID;
 	}
 	
 	/**
 	 * hits are removed from units. Note that units are removed in the order
 	 * that the iterator will move through them.
 	 */
-	private void selectCasualties(final DiceRoll dice, final Collection<Unit> allAttackingUnits, final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA,
-				final Territory territory, final GUID battleID, final String currentTypeAA)
+	private void selectCasualties(final DiceRoll dice, final Collection<Unit> allFriendlyUnits, final Collection<Unit> validTargetedUnitsForThisRoll, final Collection<Unit> defendingAA,
+				final Collection<Unit> allEnemyUnits, final Territory territory, final String currentTypeAA)
 	{
-		final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory,
-					TerritoryEffectHelper.getEffects(territory));
+		final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validTargetedUnitsForThisRoll, allFriendlyUnits, defendingAA, allEnemyUnits, dice, m_bridge, territory.getOwner(),
+					m_player, null, territory, TerritoryEffectHelper.getEffects(territory), false, new ArrayList<Unit>());
 		getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAA + " hits in " + territory.getName(), casualties.size() + " " + currentTypeAA + " hits in " + territory.getName());
 		BattleDelegate.markDamaged(new ArrayList<Unit>(casualties.getDamaged()), m_bridge, true);
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(), new ArrayList<Unit>(casualties.getKilled()));
-		allAttackingUnits.removeAll(casualties.getKilled());
+		allFriendlyUnits.removeAll(casualties.getKilled());
 		if (m_casualties == null)
 			m_casualties = new ArrayList<Unit>(casualties.getKilled());
 		else
