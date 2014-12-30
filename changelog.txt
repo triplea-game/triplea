@@ -1,4 +1,6 @@
 Changes for 1.8.0.5
+* Updating Substance/Insubstantial look and feel UI to version 7.3. (veqryn)
+
 * Fixed bug with how AA casualties are taken for multiple-hitpoint airplanes. (veqryn)
 
 * Fixed null pointer error in Classic (WW2v1) rockets. (veqryn)
