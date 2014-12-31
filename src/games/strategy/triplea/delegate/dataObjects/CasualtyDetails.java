@@ -56,6 +56,12 @@ public class CasualtyDetails extends CasualtyList implements Serializable
 		m_autoCalculated = autoCalculated;
 	}
 	
+	public CasualtyDetails(final boolean autoCalculated)
+	{
+		super();
+		m_autoCalculated = autoCalculated;
+	}
+	
 	/**
 	 * Empty details, with autoCalculated as true.
 	 */

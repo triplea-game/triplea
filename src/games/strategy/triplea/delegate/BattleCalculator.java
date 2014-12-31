@@ -43,6 +43,7 @@ import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -572,9 +573,15 @@ public class BattleCalculator
 		}
 		// Create production cost map, Maybe should do this elsewhere, but in case prices change, we do it here.
 		final IntegerMap<UnitType> costs = getCostsForTUV(player, data);
-		final CasualtyList defaultCasualties = getDefaultCasualties(targetsToPickFrom, hitsRemaining, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers,
-					battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);
-		final int totalHitpoints = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(targetsToPickFrom) : targetsToPickFrom.size());
+		final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets = getDefaultCasualties(targetsToPickFrom, hitsRemaining, defending, player, friendlyUnits, enemyPlayer, enemyUnits,
+					amphibious, amphibiousLandAttackers, battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);
+		final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
+		final List<Unit> sortedTargetsToPickFrom = defaultCasualtiesAndSortedTargets.getSecond();
+		if (sortedTargetsToPickFrom.size() != targetsToPickFrom.size() || !targetsToPickFrom.containsAll(sortedTargetsToPickFrom) || !sortedTargetsToPickFrom.containsAll(targetsToPickFrom))
+		{
+			throw new IllegalStateException("sortedTargetsToPickFrom must contain the same units as targetsToPickFrom list");
+		}
+		final int totalHitpoints = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(sortedTargetsToPickFrom) : sortedTargetsToPickFrom.size());
 		final CasualtyDetails casualtySelection;
 		if (hitsRemaining >= totalHitpoints)
 		{
@@ -582,13 +589,13 @@ public class BattleCalculator
 		}
 		else
 		{
-			casualtySelection = tripleaPlayer.selectCasualties(targetsToPickFrom, dependents, hitsRemaining, text, dice, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
+			casualtySelection = tripleaPlayer.selectCasualties(sortedTargetsToPickFrom, dependents, hitsRemaining, text, dice, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
 						amphibiousLandAttackers, defaultCasualties, battleID, battlesite, allowMultipleHitsPerUnit);
 		}
 		List<Unit> killed = casualtySelection.getKilled();
 		// if partial retreat is possible, kill amphibious units first
 		if (isPartialAmphibiousRetreat(data))
-			killed = killAmphibiousFirst(killed, targetsToPickFrom);
+			killed = killAmphibiousFirst(killed, sortedTargetsToPickFrom);
 		final List<Unit> damaged = casualtySelection.getDamaged();
 		int numhits = killed.size();
 		if (!allowMultipleHitsPerUnit)
@@ -617,19 +624,20 @@ public class BattleCalculator
 				System.err.println("Possible Infinite Loop: Wrong number of casualties selected: number of hits on units " + (numhits + damaged.size()) + " != number of hits to take "
 							+ (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for " + casualtySelection.toString());
 			}
-			return selectCasualties(step, player, targetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice,
-						defending, battleID, headLess, extraHits, allowMultipleHitsPerUnit);
+			return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, territoryEffects, bridge, text,
+						dice, defending, battleID, headLess, extraHits, allowMultipleHitsPerUnit);
 		}
 		// check we have enough of each type
-		if (!targetsToPickFrom.containsAll(killed) || !targetsToPickFrom.containsAll(damaged))
+		if (!sortedTargetsToPickFrom.containsAll(killed) || !sortedTargetsToPickFrom.containsAll(damaged))
 		{
 			tripleaPlayer.reportError("Cannot remove enough units of those types");
 			if (headLess)
 			{
-				System.err.println("Possible Infinite Loop: Cannot remove enough units of those types: targets " + targetsToPickFrom + ", for " + casualtySelection.toString());
+				System.err.println("Possible Infinite Loop: Cannot remove enough units of those types: targets " + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for "
+							+ casualtySelection.toString());
 			}
-			return selectCasualties(step, player, targetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice,
-						defending, battleID, headLess, extraHits, allowMultipleHitsPerUnit);
+			return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite, territoryEffects, bridge, text,
+						dice, defending, battleID, headLess, extraHits, allowMultipleHitsPerUnit);
 		}
 		return casualtySelection;
 	}
@@ -714,14 +722,15 @@ public class BattleCalculator
 	 * @param data
 	 * @return
 	 */
-	private static CasualtyList getDefaultCasualties(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player, final Collection<Unit> friendlyUnits,
-				final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers, final Territory battlesite,
-				final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit, final boolean bonus)
+	private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
+				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
+				final boolean bonus)
 	{
 		final CasualtyList defaultCasualtySelection = new CasualtyList();
 		// Sort units by power and cost in ascending order
-		final List<Unit> sorted = new ArrayList<Unit>(sortUnitsForCasualtiesWithSupport(targetsToPickFrom, hits, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
-					amphibiousLandAttackers, battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, bonus));
+		final List<Unit> sorted = sortUnitsForCasualtiesWithSupport(targetsToPickFrom, hits, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
+					amphibiousLandAttackers, battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, bonus);
 		// Remove two hit bb's selecting them first for default casualties
 		int numSelectedCasualties = 0;
 		if (allowMultipleHitsPerUnit)
@@ -731,7 +740,7 @@ public class BattleCalculator
 				// Stop if we have already selected as many hits as there are targets
 				if (numSelectedCasualties >= hits)
 				{
-					return defaultCasualtySelection;
+					return new Tuple<CasualtyList, List<Unit>>(defaultCasualtySelection, sorted);
 				}
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				final int extraHP = Math.min((hits - numSelectedCasualties), (ua.getHitPoints() - (1 + unit.getHits())));
@@ -748,12 +757,12 @@ public class BattleCalculator
 			// Stop if we have already selected as many hits as there are targets
 			if (numSelectedCasualties >= hits)
 			{
-				return defaultCasualtySelection;
+				return new Tuple<CasualtyList, List<Unit>>(defaultCasualtySelection, sorted);
 			}
 			defaultCasualtySelection.addToKilled(unit);
 			numSelectedCasualties++;
 		}
-		return defaultCasualtySelection;
+		return new Tuple<CasualtyList, List<Unit>>(defaultCasualtySelection, sorted);
 	}
 	
 	/**
@@ -766,7 +775,7 @@ public class BattleCalculator
 	 * If you just return all infantry followed by all artillery, or the other way around, you will be missing out on some important support provided.
 	 * (Veqryn)
 	 */
-	public static Collection<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
+	public static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
 				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
 				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
 				final boolean bonus)
@@ -782,7 +791,7 @@ public class BattleCalculator
 		}
 	}
 	
-	private static Collection<Unit> sortUnitsForCasualtiesWithSupportBruteForce(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
+	private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForce(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
 				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
 				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
 				final boolean bonus)
@@ -845,7 +854,7 @@ public class BattleCalculator
 		return sortedWellEnoughUnitsList;
 	}
 	
-	private static Collection<Unit> sortUnitsForCasualtiesWithSupportLegacy(final Collection<Unit> targetsToPickFrom, final boolean defending, final PlayerID player, final IntegerMap<UnitType> costs,
+	private static List<Unit> sortUnitsForCasualtiesWithSupportLegacy(final Collection<Unit> targetsToPickFrom, final boolean defending, final PlayerID player, final IntegerMap<UnitType> costs,
 				final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus)
 	{
 		/*

@@ -409,8 +409,8 @@ public class ProNonCombatMoveAI
 			if (minDefendingUnitsAndNotAA.size() != defendingUnitsAndNotAA.size() && (result.getTUVSwing() - holdValue) < minResult.getTUVSwing())
 			{
 				LogUtils.log(Level.FINER, "Territory=" + t.getName() + ", CanHold=true" + ", MaxDefenders=" + defendingUnitsAndNotAA.size() + ", EnemyAttackers=" + enemyAttackingUnits.size()
-										+ ", minTUVSwing=" + minResult.getTUVSwing() + ", win%=" + result.getWinPercentage() + ", EnemyTUVSwing=" + result.getTUVSwing()
-										+ ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining() + ", holdValue=" + holdValue);
+							+ ", minTUVSwing=" + minResult.getTUVSwing() + ", win%=" + result.getWinPercentage() + ", EnemyTUVSwing=" + result.getTUVSwing()
+							+ ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining() + ", holdValue=" + holdValue);
 				continue;
 			}
 			

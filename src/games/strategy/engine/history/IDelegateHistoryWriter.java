@@ -13,7 +13,6 @@
  */
 package games.strategy.engine.history;
 
-
 /**
  * Has a subset of the historyWriters functionality.
  * Delegates should only have access to these functions.

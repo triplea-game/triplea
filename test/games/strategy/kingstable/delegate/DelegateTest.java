@@ -58,8 +58,10 @@ public class DelegateTest extends TestCase
 		black = m_data.getPlayerList().getPlayerID("Black");
 		white = m_data.getPlayerList().getPlayerID("White");
 		territories = new Territory[m_data.getMap().getXDimension()][m_data.getMap().getYDimension()];
-		for (int x = 0; x < m_data.getMap().getXDimension(); x++) {
-			for (int y = 0; y < m_data.getMap().getYDimension(); y++) {
+		for (int x = 0; x < m_data.getMap().getXDimension(); x++)
+		{
+			for (int y = 0; y < m_data.getMap().getYDimension(); y++)
+			{
 				territories[x][y] = m_data.getMap().getTerritoryFromCoordinates(x, y);
 			}
 		}

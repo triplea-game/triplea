@@ -9,6 +9,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -192,17 +193,47 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	}
 	
 	/*
-	 * 
-	 * 
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties
-	 *
-	 *      Added new collection autoKilled to handle killing units prior to casualty selection
 	 */
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
 				final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
 	{
-		return new CasualtyDetails(defaultCasualties, true);
+		if (defaultCasualties.size() != count)
+		{
+			throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
+		}
+		if (defaultCasualties.getKilled().size() <= 0)
+		{
+			return new CasualtyDetails(defaultCasualties, false);
+		}
+		final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0; // TODO: determine which planes we plan to fly to land afterwards (if we are the attacker or moving player)
+		final CasualtyDetails myCasualties = new CasualtyDetails(false);
+		myCasualties.addToDamaged(defaultCasualties.getDamaged());
+		final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom); // the list we receive should already be sorted
+		/* final List<Unit> selectFromSorted = new ArrayList<Unit>(); // defaultCasualties has already been sorted, and we accept this sort as a base and then want to modify it further by interleaving carriers with planes
+		selectFromSorted.addAll(defaultCasualties.getKilled()); // since redoing the sorting can take a long time, we will instead borrow the sorted list from the defaultCasualties
+		for (final Unit u : selectFrom)
+		{
+			if (!selectFromSorted.contains(u))
+			{
+				selectFromSorted.add(u);
+			}
+		}
+		if (selectFromSorted.size() != selectFrom.size() || !selectFromSorted.containsAll(selectFrom) || !selectFrom.containsAll(selectFromSorted))
+		{
+			throw new IllegalStateException("AI casualty sort failed");
+		}*/
+		final List<Unit> interleavedTargetList = new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers)); // TODO: if we are going to lose this battle by a wide margin, we may not want to interleave these units
+		for (int i = 0; i < defaultCasualties.getKilled().size(); ++i)
+		{
+			myCasualties.addToKilled(interleavedTargetList.get(i));
+		}
+		if (count != myCasualties.size())
+		{
+			throw new IllegalStateException("AI chose wrong number of casualties");
+		}
+		return myCasualties;
 	}
 	
 	/*

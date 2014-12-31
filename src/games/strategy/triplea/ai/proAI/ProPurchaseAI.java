@@ -1098,7 +1098,7 @@ public class ProPurchaseAI
 				{
 					setCantHoldPlaceTerritory(placeTerritory, purchaseTerritories);
 					LogUtils.log(Level.FINEST, t + ", can't defend TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage() + ", tried to placeDefenders="
-										+ unitsToPlace + ", enemyAttackers=" + enemyAttackMap.get(t).getMaxUnits());
+								+ unitsToPlace + ", enemyAttackers=" + enemyAttackMap.get(t).getMaxUnits());
 					continue;
 				}
 			}
@@ -1142,7 +1142,7 @@ public class ProPurchaseAI
 				alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
 			}
 			LogUtils.log(Level.FINEST, t + ", enemyDistance=" + enemyDistance + ", alliedDistance=" + alliedDistance + ", enemyAirUnits=" + enemyUnitsInLandTerritories
-							+ ", enemySeaUnits=" + enemyUnitsInSeaTerritories + ", mySeaUnits=" + myUnitsInSeaTerritories);
+						+ ", enemySeaUnits=" + enemyUnitsInSeaTerritories + ", mySeaUnits=" + myUnitsInSeaTerritories);
 			
 			// Purchase naval defenders until I have local naval superiority
 			final List<Unit> unitsToPlace = new ArrayList<Unit>();

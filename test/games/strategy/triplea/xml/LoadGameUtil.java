@@ -29,7 +29,8 @@ public class LoadGameUtil
 				}
 			}
 		}
-		if (is == null) {
+		if (is == null)
+		{
 			throw new IllegalStateException(game + " does not exist");
 		}
 		try

@@ -35,19 +35,14 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AirMovementValidator;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
@@ -9701,171 +9696,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			s_logger.fine("Attempt was at:" + where + " with:" + toPlace);
 		}
 		pause();
-	}
-	
-	/*
-	 *
-	 *
-	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String,
-	 *      java.util.Collection, java.util.Map, int, java.lang.String,
-	 *      games.strategy.triplea.delegate.DiceRoll,
-	 *      games.strategy.engine.data.PlayerID, java.util.List)
-	 */
-	@Override
-	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-				final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
-				final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
-	{
-		if (defaultCasualties.size() != count)
-			throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
-		final GameData data = getPlayerBridge().getGameData();
-		// TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
-		final List<Unit> rDamaged = new ArrayList<Unit>();
-		final List<Unit> rKilled = new ArrayList<Unit>();
-		int xCount = count; // how many the game is saying we should have
-		xCount -= defaultCasualties.getDamaged().size();
-		rDamaged.addAll(defaultCasualties.getDamaged());
-		// rKilled.addAll(defaultCasualties.getKilled());
-		/*for (Unit unitBB : selectFrom2)
-		{
-			if (Matches.UnitIsTwoHit.match(unitBB))
-			{
-				if (unitBB.getHits() == 0 && xCount > 0)
-				{
-					rDamaged.add(unitBB);
-					xCount--;
-				}
-			}
-		}*/
-		if (xCount == 0)
-		{
-			if (count != rKilled.size() + rDamaged.size())
-				throw new IllegalStateException("Moore AI selected wrong number of casualties");
-			return new CasualtyDetails(rKilled, rDamaged, false);
-		}
-		if (xCount < 0)
-		{
-			throw new IllegalStateException("Can not choose more casualties than the number of hits");
-		}
-		if (xCount >= selectFrom.size())
-		{
-			rKilled.addAll(selectFrom);
-			final CasualtyDetails m4 = new CasualtyDetails(rKilled, rDamaged, false);
-			if (count != rKilled.size() + rDamaged.size())
-				throw new IllegalStateException("Moore AI selected wrong number of casualties");
-			return m4;
-		}
-		final boolean defending = !get_onOffense();
-		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(hit, data);
-		final float canWinPercentage = 1.0F; // we need to run a battle calc or something to determine what the chance of us winning is
-		final boolean bonus = (canWinPercentage > .8);
-		final List<Unit> workUnits1 = new ArrayList<Unit>(BattleCalculator.sortUnitsForCasualtiesWithSupport(selectFrom, count, defending, hit, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
-					amphibiousLandAttackers, battlesite, costs, TerritoryEffectHelper.getEffects(battlesite), data, allowMultipleHitsPerUnit, bonus));
-		final List<Unit> workUnits2 = new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(workUnits1, 0));
-		for (int j = 0; j < xCount; j++)
-		{
-			rKilled.add(workUnits2.get(j));
-		}
-		final CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
-		if (count != rKilled.size() + rDamaged.size())
-			throw new IllegalStateException("Moore AI selected wrong number of casualties");
-		return m2;
-		/* this is the worst casualty picker known to man:
-		if (xCount > 0)
-		{
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsArtillerySupportable.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsArtillery.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitCanBlitz.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom) // empty transport
-			{
-				if (!Properties.getTransportCasualtiesRestricted(data) && Matches.UnitIsTransport.match(unitx) && !tracker.isTransporting(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsSub.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsDestroyer.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsCruiser.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsStrategicBomber.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsAir.match(unitx) && Matches.UnitIsNotStrategicBomber.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom) // loaded transport
-			{
-				if (!Properties.getTransportCasualtiesRestricted(data) && Matches.UnitIsTransport.match(unitx) && tracker.isTransporting(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsCarrier.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom) // any other unit, but make sure trannys are last if necessary
-			{
-				if (Matches.UnitIsNotTransport.match(unitx) && !workUnits.contains(unitx) && !Matches.UnitIsTwoHit.match(unitx))
-					workUnits.add(unitx);
-			}
-			for (Unit unitx : selectFrom)
-			{
-				if (Matches.UnitIsTwoHit.match(unitx))
-					workUnits.add(unitx);
-			}
-			
-			// add anything not selected above
-			Set<Unit> remainder = new HashSet<Unit>(selectFrom);
-			remainder.removeAll(workUnits);
-			workUnits.addAll(remainder);
-		}
-
-		for (int j = 0; j < xCount; j++)
-		{
-			rKilled.add(workUnits.get(j));
-		}
-		
-		CasualtyDetails m2 = new CasualtyDetails(rKilled, rDamaged, false);
-		
-		return m2;*/
-		/* Order:
-			SEA:
-			0) 1st hit battleship
-			1) Empty Transport
-			2) Submarine
-			3) Destroyer
-			4) Bomber
-			5) Fighter
-			6) Loaded Transport
-			7) Carrier (Fighter is better than 1 Carrier...need to check score in battle) implement later...
-			8) Battleship
-			9) anything else
-		*/
 	}
 	
 	/*

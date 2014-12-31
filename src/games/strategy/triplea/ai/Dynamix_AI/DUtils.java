@@ -1528,7 +1528,7 @@ public class DUtils
 					final int seekedCarrierIndex = GetIndexOfLastUnitMatching(result, CompMatchAnd(Matches.UnitIsCarrier, DMatches.unitIsNotInList(filledCarriers)), result.size() - 1);
 					if (seekedCarrierIndex == -1)
 						break; // No carriers left
-					seekedCarrier = units.get(seekedCarrierIndex);
+					seekedCarrier = result.get(seekedCarrierIndex);
 					indexToPlaceCarrierAt = i + 1; // Tell the code to insert carrier to the right of this plane
 					spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
 				}
