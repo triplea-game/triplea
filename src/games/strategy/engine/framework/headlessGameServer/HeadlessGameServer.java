@@ -73,8 +73,8 @@ public class HeadlessGameServer
 	private boolean m_shutDown = false;
 	@SuppressWarnings("deprecation")
 	private final String m_startDate = new Date().toGMTString();
-	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 21600;
-	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 43200;
+	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
+	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
 	private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 	
 	public static String[] getProperties()
@@ -100,7 +100,7 @@ public class HeadlessGameServer
 					+ "   " + GameRunner2.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
 					+ "   " + GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-					+ "   " + GameRunner2.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + "]>\n"
+					+ "   " + GameRunner2.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
 					+ "   " + GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
 					+ "   " + GameRunner2.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
 					+ "\n"
@@ -1037,13 +1037,13 @@ public class HeadlessGameServer
 				if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM)
 				{
 					System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-								+ " seconds.");
+								+ " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or " + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
 					printUsage = true;
 				}
 			} catch (final NumberFormatException e)
 			{
 				System.out.println("Invalid argument: " + GameRunner2.LOBBY_GAME_RECONNECTION + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-							+ " seconds.");
+							+ " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or " + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
 				printUsage = true;
 			}
 			// no passwords allowed for bots
