@@ -150,7 +150,10 @@ public class ProPurchaseUtils
 			
 			// Check PU cost and production
 			if (ppo.getCost() > PUsRemaining || ppo.getQuantity() > remainingUnitProduction)
+			{
 				it.remove();
+				continue;
+			}
 			
 			// Check max unit limits (-1 is unlimited)
 			final int maxBuilt = ppo.getMaxBuiltPerPlayer();
