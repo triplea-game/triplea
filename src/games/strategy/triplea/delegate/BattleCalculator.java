@@ -37,6 +37,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleA;
+import games.strategy.triplea.ai.proAI.ProDiceRoll;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
@@ -710,7 +711,7 @@ public class BattleCalculator
 	private static HashMap<Integer, List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
 	private static final Object s_cachedLock = new Object();
 	*/
-	
+
 	/**
 	 * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged. The second time they are listed, it is dead.
 	 * 
@@ -798,6 +799,165 @@ public class BattleCalculator
 	{
 		final List<Unit> sortedUnitsList = new ArrayList<Unit>(targetsToPickFrom);
 		Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
+		
+		// Determine if there are enough extra hit points or if all units are going to be killed
+		int numberOfUnitsWeMustSort = hits;
+		int extraHP = 0;
+		if (allowMultipleHitsPerUnit)
+		{
+			for (final Unit unit : sortedUnitsList)
+			{
+				extraHP += Math.max(0, UnitAttachment.get(unit.getType()).getHitPoints() - (1 + unit.getHits()));
+				if (extraHP >= hits)
+				{
+					return sortedUnitsList; // no units will be killed as we have enough extra hp, so who cares about doing the time-expensive sort when the UnitBattleComparator is good enough
+				}
+			}
+			numberOfUnitsWeMustSort = Math.max(extraHP, hits - extraHP); // if we have to take 6 hits, and we can damage 2 units, then we really only have to sort for the first 4 units to die (if we can damage 4 units, then we still have to sort those first 4 in case one of them will have to die)
+		}
+		if (hits > extraHP + sortedUnitsList.size())
+		{
+			return sortedUnitsList; // if we are going to lose all units, just return this list
+		}
+		
+		// Sort enough units to kill off
+		Collections.reverse(sortedUnitsList);
+		final UnitBattleComparator unitComparatorWithoutPrimaryPower = new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
+		final List<Unit> sortedWellEnoughUnitsList = new ArrayList<Unit>();
+		final Map<Unit, IntegerMap<Unit>> unitPowerSupportMap = new HashMap<Unit, IntegerMap<Unit>>();
+		final Map<Unit, IntegerMap<Unit>> unitRollsSupportMap = new HashMap<Unit, IntegerMap<Unit>>();
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = ProDiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits),
+					defending, false, player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, unitPowerSupportMap, unitRollsSupportMap);
+		Collections.reverse(sortedUnitsList);
+		for (int i = 0; i < numberOfUnitsWeMustSort; ++i)
+		{
+			// Loop through all target units to find the best unit to take as casualty
+			Unit worstUnit = null;
+			int minPower = Integer.MAX_VALUE;
+			final Set<UnitType> unitTypes = new HashSet<UnitType>();
+			for (final Unit u : sortedUnitsList)
+			{
+				if (unitTypes.contains(u.getType()))
+					continue;
+				unitTypes.add(u.getType());
+				
+				// Find unit power
+				final Map<Unit, Tuple<Integer, Integer>> currentUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
+				currentUnitMap.put(u, unitPowerAndRollsMap.get(u));
+				int power = DiceRoll.getTotalPowerAndRolls(currentUnitMap, data).getFirst();
+				
+				// Add any support power that it provides to other units
+				if (unitPowerSupportMap.containsKey(u))
+				{
+					for (final Unit supportedUnit : unitPowerSupportMap.get(u).keySet())
+					{
+						if (!unitPowerAndRollsMap.containsKey(supportedUnit))
+							continue;
+						
+						// If one roll then just add the power
+						if (unitPowerAndRollsMap.get(supportedUnit).getSecond() == 1)
+						{
+							power += unitPowerSupportMap.get(u).getInt(supportedUnit);
+							continue;
+						}
+						
+						// Find supported unit power with support
+						final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
+						final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+						supportedUnitMap.put(supportedUnit, strengthAndRolls);
+						final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Find supported unit power without support
+						final int strengthWithoutSupport = strengthAndRolls.getFirst() - unitPowerSupportMap.get(u).getInt(supportedUnit);
+						final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+						supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+						final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Add the actual power provided by the support
+						final int addedPower = powerWithSupport - powerWithoutSupport;
+						power += addedPower;
+					}
+				}
+				
+				// Add any power from support rolls that it provides to other units
+				if (unitRollsSupportMap.containsKey(u))
+				{
+					for (final Unit supportedUnit : unitRollsSupportMap.get(u).keySet())
+					{
+						if (!unitPowerAndRollsMap.containsKey(supportedUnit))
+							continue;
+						
+						// Find supported unit power with support
+						final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
+						final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+						supportedUnitMap.put(supportedUnit, strengthAndRolls);
+						final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Find supported unit power without support
+						final int rollsWithoutSupport = strengthAndRolls.getSecond() - unitRollsSupportMap.get(u).getInt(supportedUnit);
+						final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+						supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+						final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Add the actual power provided by the support
+						final int addedPower = powerWithSupport - powerWithoutSupport;
+						power += addedPower;
+					}
+				}
+				
+				// Check if unit has lower power
+				if (power < minPower || (power == minPower && unitComparatorWithoutPrimaryPower.compare(u, worstUnit) < 0))
+				{
+					worstUnit = u;
+					minPower = power;
+				}
+			}
+			
+			// Add worst unit to sorted list, update any units it supported, and remove from other collections
+			sortedWellEnoughUnitsList.add(worstUnit);
+			if (unitPowerSupportMap.containsKey(worstUnit))
+			{
+				for (final Unit supportedUnit : unitPowerSupportMap.get(worstUnit).keySet())
+				{
+					if (!unitPowerAndRollsMap.containsKey(supportedUnit))
+						continue;
+					
+					final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+					final int strengthWithoutSupport = strengthAndRolls.getFirst() - unitPowerSupportMap.get(worstUnit).getInt(supportedUnit);
+					final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+					unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+				}
+			}
+			if (unitRollsSupportMap.containsKey(worstUnit))
+			{
+				for (final Unit supportedUnit : unitRollsSupportMap.get(worstUnit).keySet())
+				{
+					if (!unitPowerAndRollsMap.containsKey(supportedUnit))
+						continue;
+					
+					final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+					final int rollsWithoutSupport = strengthAndRolls.getSecond() - unitRollsSupportMap.get(worstUnit).getInt(supportedUnit);
+					final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+					unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+				}
+			}
+			sortedUnitsList.remove(worstUnit);
+			unitPowerAndRollsMap.remove(worstUnit);
+			unitPowerSupportMap.remove(worstUnit);
+			unitRollsSupportMap.remove(worstUnit);
+		}
+		sortedWellEnoughUnitsList.addAll(sortedUnitsList);
+		return sortedWellEnoughUnitsList;
+	}
+	
+	private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForceOld(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
+				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
+				final boolean bonus)
+	{
+		final List<Unit> sortedUnitsList = new ArrayList<Unit>(targetsToPickFrom);
+		Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
+		
 		// Select optimal units to kill
 		int numberOfUnitsWeMustSort = hits;
 		int extraHP = 0;
@@ -830,15 +990,18 @@ public class BattleCalculator
 				if (unitTypes.contains(u.getType()))
 					continue; // Only check each unit type once
 				unitTypes.add(u.getType());
+				
 				// Find my power without current unit
 				final List<Unit> units = new ArrayList<Unit>(sortedUnitsList);
 				units.remove(u);
 				final List<Unit> enemyUnitList = new ArrayList<Unit>(enemyUnits);
 				final int power = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending, false,
 							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data).getFirst();
+				
 				// Find enemy power without current unit (need to consider this since supports can decrease enemy attack/defense)
 				final int enemyPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnitList, enemyUnitList, units, !defending, false,
 							enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data).getFirst();
+				
 				// Check if unit has higher power
 				final int powerDifference = power - enemyPower;
 				if (powerDifference > maxPowerDifference || (powerDifference == maxPowerDifference && unitComparatorWithoutPrimaryPower.compare(u, worstUnit) < 0))
