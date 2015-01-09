@@ -56,6 +56,12 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		m_values = new HashMap<T, Integer>(size, loadFactor);
 	}
 	
+	public IntegerMap(final T object, final int value)
+	{
+		this();
+		add(object, value);
+	}
+	
 	public IntegerMap(final Collection<T> objects, final int value)
 	{
 		this(objects.size());

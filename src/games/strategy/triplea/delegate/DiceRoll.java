@@ -31,6 +31,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
@@ -419,20 +420,42 @@ public class DiceRoll implements Externalizable
 		return rVal;
 	}
 	
+	/**
+	 * 
+	 * @param unitsGettingPowerFor
+	 *            should be sorted from weakest to strongest, before the method is called, for the actual battle
+	 * @param allFriendlyUnitsAliveOrWaitingToDie
+	 * @param allEnemyUnitsAliveOrWaitingToDie
+	 * @param defending
+	 * @param bombing
+	 * @param player
+	 * @param data
+	 * @param location
+	 * @param territoryEffects
+	 * @param isAmphibiousBattle
+	 * @param amphibiousLandAttackers
+	 * @param unitSupportPowerMap
+	 * @param unitSupportRollsMap
+	 * @return
+	 */
 	public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
 				final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing, final PlayerID player, final GameData data, final Territory location,
-				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle, final Collection<Unit> amphibiousLandAttackers)
+				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle, final Collection<Unit> amphibiousLandAttackers,
+				final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap, final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap)
 	{
 		final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<Unit, Tuple<Integer, Integer>>();
 		if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty())
 			return rVal;
+		
 		// get all supports, friendly and enemy
 		final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<List<UnitSupportAttachment>>();
 		final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<UnitSupportAttachment>();
-		getSupport(allFriendlyUnitsAliveOrWaitingToDie, supportRulesFriendly, supportLeftFriendly, data, defending, true);
+		final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly = new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+		getSupport(allFriendlyUnitsAliveOrWaitingToDie, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, data, defending, true);
 		final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<List<UnitSupportAttachment>>();
 		final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<UnitSupportAttachment>();
-		getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, data, !defending, false);
+		final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemy = new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+		getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data, !defending, false);
 		final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftFriendly); // copy for rolls
 		final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
 		final int diceSides = data.getDiceSides();
@@ -448,8 +471,8 @@ public class DiceRoll implements Externalizable
 				if (isFirstTurnLimitedRoll(current.getOwner(), data))
 					strength = Math.min(1, strength);
 				else
-					strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-				strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
+					strength += getSupport(current, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, unitSupportPowerMap, true, false);
+				strength += getSupport(current, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap, true, false);
 			}
 			else
 			{
@@ -463,11 +486,12 @@ public class DiceRoll implements Externalizable
 				{
 					strength = ua.getBombard(current.getOwner()); // change the strength to be bombard, not attack/defense, because this is a bombarding naval unit
 				}
-				strength += getSupport(current.getType(), supportRulesFriendly, supportLeftFriendly, true, false);
-				strength += getSupport(current.getType(), supportRulesEnemy, supportLeftEnemy, true, false);
+				strength += getSupport(current, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, unitSupportPowerMap, true, false);
+				strength += getSupport(current, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap, true, false);
 			}
 			strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
 			strength = Math.min(Math.max(strength, 0), diceSides);
+			
 			// now determine our rolls
 			int rolls;
 			if (!bombing && strength == 0)
@@ -478,8 +502,8 @@ public class DiceRoll implements Externalizable
 					rolls = ua.getDefenseRolls(current.getOwner());
 				else
 					rolls = ua.getAttackRolls(current.getOwner());
-				rolls += DiceRoll.getSupport(current.getType(), supportRulesFriendly, supportLeftFriendlyRolls, false, true);
-				rolls += DiceRoll.getSupport(current.getType(), supportRulesEnemy, supportLeftEnemyRolls, false, true);
+				rolls += getSupport(current, supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendly, unitSupportRollsMap, false, true);
+				rolls += getSupport(current, supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemy, unitSupportRollsMap, false, true);
 				rolls = Math.max(0, rolls);
 				if (rolls == 0)
 					strength = 0;
@@ -565,7 +589,7 @@ public class DiceRoll implements Externalizable
 		final boolean isAmphibiousBattle = battle.isAmphibious();
 		final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
 		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false, player, data,
-					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(), new HashMap<Unit, IntegerMap<Unit>>());
 		final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
 		final int power = totalPowerAndRolls.getFirst();
 		if (power == 0)
@@ -656,6 +680,8 @@ public class DiceRoll implements Externalizable
 	 *            an empty set that will be filled with all support rules grouped into lists of non-stacking rules
 	 * @param supportLeft
 	 *            an empty map that will be filled with all the support that can be given in the form of counters
+	 * @param supportUnitsLeft
+	 *            an empty map that will be filled with all the support that can be given in the form of counters
 	 * @param data
 	 * @param defence
 	 *            are the receiving units defending?
@@ -663,7 +689,7 @@ public class DiceRoll implements Externalizable
 	 *            are the receiving units allied to the giving units?
 	 */
 	public static void getSupport(final List<Unit> unitsGivingTheSupport, final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
-				final GameData data, final boolean defence, final boolean allies)
+				final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeft, final GameData data, final boolean defence, final boolean allies)
 	{
 		if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty())
 			return;
@@ -680,13 +706,17 @@ public class DiceRoll implements Externalizable
 			int numSupport = supporters.size();
 			if (numSupport <= 0)
 				continue;
+			final List<Unit> impArtTechUnits = new ArrayList<Unit>();
 			if (rule.getImpArtTech())
-				numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
-			final String bonusType = rule.getBonusType();
+				impArtTechUnits.addAll(Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()));
+			numSupport += impArtTechUnits.size();
 			supportLeft.put(rule, numSupport * rule.getNumber());
+			supportUnitsLeft.put(rule, new LinkedIntegerMap<Unit>(supporters, rule.getNumber()));
+			supportUnitsLeft.get(rule).addAll(impArtTechUnits, rule.getNumber());
 			final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
 			List<UnitSupportAttachment> ruleType = null;
 			boolean found = false;
+			final String bonusType = rule.getBonusType();
 			while (iter2.hasNext())
 			{
 				ruleType = iter2.next();
@@ -704,21 +734,23 @@ public class DiceRoll implements Externalizable
 			if (ruleType != null)
 				ruleType.add(rule);
 		}
-		sortSupportRules(supportsAvailable);
+		sortSupportRules(supportsAvailable, defence, allies);
 	}
 	
 	/**
 	 * Returns the support for this unit type, and decrements the supportLeft counters.
 	 * 
-	 * @param type
+	 * @param unit
 	 * @param supportsAvailable
 	 * @param supportLeft
+	 * @param supportUnitsLeft
+	 * @param unitSupportMap
 	 * @param strength
 	 * @param rolls
 	 * @return the bonus given to the unit
 	 */
-	public static int getSupport(final UnitType type, final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft, final boolean strength,
-				final boolean rolls)
+	public static int getSupport(final Unit unit, final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
+				final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeft, final Map<Unit, IntegerMap<Unit>> unitSupportMap, final boolean strength, final boolean rolls)
 	{
 		int givenSupport = 0;
 		for (final List<UnitSupportAttachment> bonusType : supportsAvailable)
@@ -728,10 +760,22 @@ public class DiceRoll implements Externalizable
 				if (!((strength && rule.getStrength()) || (rolls && rule.getRoll())))
 					continue;
 				final HashSet<UnitType> types = rule.getUnitType();
-				if (types != null && types.contains(type) && supportLeft.getInt(rule) > 0)
+				if (types != null && types.contains(unit.getType()) && supportLeft.getInt(rule) > 0)
 				{
 					givenSupport += rule.getBonus();
 					supportLeft.add(rule, -1);
+					final LinkedIntegerMap<Unit> supportersLeft = supportUnitsLeft.get(rule);
+					if (supportersLeft != null)
+					{
+						final Unit u = supportersLeft.keySet().iterator().next();
+						supportUnitsLeft.get(rule).add(u, -1);
+						if (supportUnitsLeft.get(rule).getInt(u) <= 0)
+							supportUnitsLeft.get(rule).removeKey(u);
+						if (unitSupportMap.containsKey(u))
+							unitSupportMap.get(u).add(unit, rule.getBonus());
+						else
+							unitSupportMap.put(u, new IntegerMap<Unit>(unit, rule.getBonus()));
+					}
 					break;
 				}
 			}
@@ -762,7 +806,7 @@ public class DiceRoll implements Externalizable
 		Collections.sort(units, comp);
 	}
 	
-	private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support)
+	private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense, final boolean friendly)
 	{
 		// first, sort the lists inside each set
 		final Comparator<UnitSupportAttachment> compList = new Comparator<UnitSupportAttachment>()
@@ -772,9 +816,10 @@ public class DiceRoll implements Externalizable
 				// we want to apply the biggest bonus first
 				final Integer v1 = Integer.valueOf(Math.abs(u1.getBonus()));
 				final Integer v2 = Integer.valueOf(Math.abs(u2.getBonus()));
-				final int compareTo = v2.compareTo(v1);
+				int compareTo = v2.compareTo(v1);
 				if (compareTo != 0)
 					return compareTo;
+				
 				// if the bonuses are the same, we want to make sure any support which only supports 1 single unittype goes first
 				// the reason being that we could have Support1 which supports both infantry and mech infantry, and Support2 which only supports mech infantry
 				// if the Support1 goes first, and the mech infantry is first in the unit list (highly probable), then Support1 will end up using all of itself up on the mech infantry
@@ -785,7 +830,52 @@ public class DiceRoll implements Externalizable
 				final HashSet<UnitType> types2 = u2.getUnitType();
 				final Integer s1 = types1 == null ? 0 : types1.size();
 				final Integer s2 = types2 == null ? 0 : types2.size();
-				return s1.compareTo(s2);
+				compareTo = s1.compareTo(s2);
+				if (compareTo != 0)
+					return compareTo;
+				
+				// Make sure stronger supports are ordered first if friendly, and worst are ordered first if enemy
+				final boolean u1CanBonus = defense ? u1.getDefence() : u1.getOffence();
+				final boolean u2CanBonus = defense ? u2.getDefence() : u2.getOffence();
+				if (friendly)
+				{
+					if (u1.getRoll() || u2.getRoll())
+					{
+						final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
+						final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+						compareTo = u2Bonus.compareTo(u1Bonus);
+						if (compareTo != 0)
+							return compareTo;
+					}
+					if (u1.getStrength() || u2.getStrength())
+					{
+						final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
+						final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+						compareTo = u2Bonus.compareTo(u1Bonus);
+						if (compareTo != 0)
+							return compareTo;
+					}
+				}
+				else
+				{
+					if (u1.getRoll() || u2.getRoll())
+					{
+						final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
+						final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+						compareTo = u1Bonus.compareTo(u2Bonus);
+						if (compareTo != 0)
+							return compareTo;
+					}
+					if (u1.getStrength() || u2.getStrength())
+					{
+						final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
+						final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+						compareTo = u1Bonus.compareTo(u2Bonus);
+						if (compareTo != 0)
+							return compareTo;
+					}
+				}
+				return 0;
 			}
 		};
 		final Iterator<List<UnitSupportAttachment>> iter = support.iterator();
@@ -940,7 +1030,7 @@ public class DiceRoll implements Externalizable
 		final boolean isAmphibiousBattle = battle.isAmphibious();
 		final Collection<Unit> amphibiousLandAttackers = battle.getAmphibiousLandAttackers();
 		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, allEnemyUnitsAliveOrWaitingToDie, defending, false, player, data,
-					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+					location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(), new HashMap<Unit, IntegerMap<Unit>>());
 		final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
 		final int rollCount = totalPowerAndRolls.getSecond();
 		if (rollCount == 0)

@@ -37,7 +37,6 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleA;
-import games.strategy.triplea.ai.proAI.ProDiceRoll;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
@@ -50,6 +49,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
@@ -711,7 +711,7 @@ public class BattleCalculator
 	private static HashMap<Integer, List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
 	private static final Object s_cachedLock = new Object();
 	*/
-
+	
 	/**
 	 * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged. The second time they are listed, it is dead.
 	 * 
@@ -826,7 +826,7 @@ public class BattleCalculator
 		final List<Unit> sortedWellEnoughUnitsList = new ArrayList<Unit>();
 		final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<Unit, IntegerMap<Unit>>();
 		final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<Unit, IntegerMap<Unit>>();
-		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = ProDiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits),
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits),
 					defending, false, player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
 		Collections.reverse(sortedUnitsList); // Sort units starting with weakest for finding the worst units
 		for (int i = 0; i < numberOfUnitsWeMustSort; ++i)
@@ -1000,11 +1000,13 @@ public class BattleCalculator
 				units.remove(u);
 				final List<Unit> enemyUnitList = new ArrayList<Unit>(enemyUnits);
 				final int power = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending, false,
-							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data).getFirst();
+							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(), new HashMap<Unit, IntegerMap<Unit>>()), data)
+							.getFirst();
 				
 				// Find enemy power without current unit (need to consider this since supports can decrease enemy attack/defense)
 				final int enemyPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnitList, enemyUnitList, units, !defending, false,
-							enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data).getFirst();
+							enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(), new HashMap<Unit, IntegerMap<Unit>>()), data)
+							.getFirst();
 				
 				// Check if unit has higher power
 				final int powerDifference = power - enemyPower;
@@ -1649,8 +1651,9 @@ public class BattleCalculator
 		else
 			rolls = unitAttachment.getAttackRolls(id);
 		
-		rolls += DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, false, true);
-		rolls += DiceRoll.getSupport(unit.getType(), supportRulesEnemy, supportLeftEnemyCopy, false, true);
+		final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> dummyEmptyMap = new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+		rolls += DiceRoll.getSupport(unit, supportRulesFriendly, supportLeftFriendlyCopy, dummyEmptyMap, null, false, true);
+		rolls += DiceRoll.getSupport(unit, supportRulesEnemy, supportLeftEnemyCopy, dummyEmptyMap, null, false, true);
 		rolls = Math.max(0, rolls);
 		
 		// if we are strategic bombing, we do not care what the strength of the unit is...
@@ -1663,8 +1666,8 @@ public class BattleCalculator
 		else
 			strength = unitAttachment.getAttack(unit.getOwner());
 		// TODO: we should add in isMarine bonus too...
-		strength += DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, true, false);
-		strength += DiceRoll.getSupport(unit.getType(), supportRulesEnemy, supportLeftEnemyCopy, true, false);
+		strength += DiceRoll.getSupport(unit, supportRulesFriendly, supportLeftFriendlyCopy, dummyEmptyMap, null, true, false);
+		strength += DiceRoll.getSupport(unit, supportRulesEnemy, supportLeftEnemyCopy, dummyEmptyMap, null, true, false);
 		strength += TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defend);
 		
 		if (strength <= 0)

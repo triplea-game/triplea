@@ -51,6 +51,12 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		m_values = new LinkedHashMap<T, Integer>(size, loadFactor);
 	}
 	
+	public LinkedIntegerMap(final T object, final int value)
+	{
+		this();
+		add(object, value);
+	}
+	
 	public LinkedIntegerMap(final Collection<T> objects, final int value)
 	{
 		this(objects.size());
