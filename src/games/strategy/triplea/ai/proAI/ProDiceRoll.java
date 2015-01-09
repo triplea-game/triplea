@@ -48,7 +48,7 @@ public class ProDiceRoll
 	public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
 				final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing, final PlayerID player, final GameData data, final Territory location,
 				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle, final Collection<Unit> amphibiousLandAttackers,
-				final Map<Unit, IntegerMap<Unit>> unitPowerSupportMap, final Map<Unit, IntegerMap<Unit>> unitRollsSupportMap)
+				final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap, final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap)
 	{
 		final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<Unit, Tuple<Integer, Integer>>();
 		if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty())
@@ -78,8 +78,8 @@ public class ProDiceRoll
 				if (isFirstTurnLimitedRoll(current.getOwner(), data))
 					strength = Math.min(1, strength);
 				else
-					strength += getSupport(current, current.getType(), supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, unitPowerSupportMap, strength, true, false);
-				strength += getSupport(current, current.getType(), supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitPowerSupportMap, strength, true, false);
+					strength += getSupport(current, current.getType(), supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, unitSupportPowerMap, strength, true, false);
+				strength += getSupport(current, current.getType(), supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap, strength, true, false);
 			}
 			else
 			{
@@ -93,8 +93,8 @@ public class ProDiceRoll
 				{
 					strength = ua.getBombard(current.getOwner()); // change the strength to be bombard, not attack/defense, because this is a bombarding naval unit
 				}
-				strength += getSupport(current, current.getType(), supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, unitPowerSupportMap, strength, true, false);
-				strength += getSupport(current, current.getType(), supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitPowerSupportMap, strength, true, false);
+				strength += getSupport(current, current.getType(), supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, unitSupportPowerMap, strength, true, false);
+				strength += getSupport(current, current.getType(), supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap, strength, true, false);
 			}
 			strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
 			strength = Math.min(Math.max(strength, 0), diceSides);
@@ -109,8 +109,8 @@ public class ProDiceRoll
 					rolls = ua.getDefenseRolls(current.getOwner());
 				else
 					rolls = ua.getAttackRolls(current.getOwner());
-				rolls += getSupport(current, current.getType(), supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendly, unitRollsSupportMap, strength, false, true);
-				rolls += getSupport(current, current.getType(), supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemy, unitRollsSupportMap, strength, false, true);
+				rolls += getSupport(current, current.getType(), supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendly, unitSupportRollsMap, strength, false, true);
+				rolls += getSupport(current, current.getType(), supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemy, unitSupportRollsMap, strength, false, true);
 				rolls = Math.max(0, rolls);
 				if (rolls == 0)
 					strength = 0;
@@ -138,15 +138,17 @@ public class ProDiceRoll
 			int numSupport = supporters.size();
 			if (numSupport <= 0)
 				continue;
+			List<Unit> impArtTechUnits = new ArrayList<Unit>();
 			if (rule.getImpArtTech())
-				numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
-			final String bonusType = rule.getBonusType();
+				impArtTechUnits = Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech());
+			numSupport += impArtTechUnits.size();
 			supportLeft.put(rule, numSupport * rule.getNumber());
-			// TODO: consider rule.getImpArtTech()
 			supportUnitsLeft.put(rule, new LinkedIntegerMap<Unit>(supporters, rule.getNumber()));
+			supportUnitsLeft.get(rule).addAll(impArtTechUnits, rule.getNumber());
 			final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
 			List<UnitSupportAttachment> ruleType = null;
 			boolean found = false;
+			final String bonusType = rule.getBonusType();
 			while (iter2.hasNext())
 			{
 				ruleType = iter2.next();
@@ -183,17 +185,14 @@ public class ProDiceRoll
 				{
 					givenSupport += rule.getBonus();
 					supportLeft.add(rule, -1);
-					if (supportUnitsLeft.get(rule).keySet().iterator().hasNext()) // shouldn't need this check but just in case
-					{
-						final Unit u = supportUnitsLeft.get(rule).keySet().iterator().next();
-						supportUnitsLeft.get(rule).add(u, -1);
-						if (supportUnitsLeft.get(rule).getInt(u) <= 0)
-							supportUnitsLeft.get(rule).removeKey(u);
-						if (unitSupportMap.containsKey(u))
-							unitSupportMap.get(u).add(unit, rule.getBonus());
-						else
-							unitSupportMap.put(u, new IntegerMap<Unit>(Collections.singletonList(unit), rule.getBonus()));
-					}
+					final Unit u = supportUnitsLeft.get(rule).keySet().iterator().next();
+					supportUnitsLeft.get(rule).add(u, -1);
+					if (supportUnitsLeft.get(rule).getInt(u) <= 0)
+						supportUnitsLeft.get(rule).removeKey(u);
+					if (unitSupportMap.containsKey(u))
+						unitSupportMap.get(u).add(unit, rule.getBonus());
+					else
+						unitSupportMap.put(u, new IntegerMap<Unit>(Collections.singletonList(unit), rule.getBonus()));
 					break;
 				}
 			}
