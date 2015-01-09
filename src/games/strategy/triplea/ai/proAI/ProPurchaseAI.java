@@ -238,7 +238,7 @@ public class ProPurchaseAI
 		PUsRemaining = purchaseAttackUnitsWithRemainingProduction(purchaseTerritories, PUsRemaining, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
 		PUsRemaining = upgradeUnitsWithRemainingPUs(purchaseTerritories, PUsRemaining, purchaseOptions);
 		
-		// Try to purchase land/sea factory with remaining PUs
+		// Try to purchase land/sea factory with extra PUs
 		PUsRemaining = purchaseFactory(factoryPurchaseTerritories, enemyAttackMap, PUsRemaining, purchaseTerritories, prioritizedLandTerritories, purchaseOptions, true);
 		
 		// Add factory purchase territory to list if not empty
@@ -786,11 +786,11 @@ public class ProPurchaseAI
 	
 	private int purchaseFactory(final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap, int PUsRemaining,
 				final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<ProPlaceTerritory> prioritizedLandTerritories,
-				final ProPurchaseOptionMap purchaseOptions, final boolean allowSeaFactoryPurchase)
+				final ProPurchaseOptionMap purchaseOptions, final boolean hasExtraPUs)
 	{
 		if (PUsRemaining == 0)
 			return PUsRemaining;
-		LogUtils.log(Level.FINE, "Purchase factory with PUsRemaining=" + PUsRemaining + ", purchaseSeaFactory=" + allowSeaFactoryPurchase);
+		LogUtils.log(Level.FINE, "Purchase factory with PUsRemaining=" + PUsRemaining + ", hasExtraPUs=" + hasExtraPUs);
 		
 		// Only try to purchase a factory if all production was used in prioritized land territories
 		for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories)
@@ -812,9 +812,9 @@ public class ProPurchaseAI
 		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
 		for (final Territory t : possibleFactoryTerritories)
 		{
-			// Only consider territories with production of 3 or more
+			// Only consider territories with production of atleast 3 unless there are still remaining PUs
 			final int production = TerritoryAttachment.get(t).getProduction();
-			if (production <= 2)
+			if ((production < 3 && !hasExtraPUs) || production < 2)
 				continue;
 			
 			// Check if no enemy attackers and that it wasn't conquered this turn
@@ -849,7 +849,7 @@ public class ProPurchaseAI
 		LogUtils.log(Level.FINER, "Possible factory territories: " + purchaseFactoryTerritories);
 		
 		// Remove any territories that don't have local land superiority
-		if (!allowSeaFactoryPurchase)
+		if (!hasExtraPUs)
 		{
 			for (final Iterator<Territory> it = purchaseFactoryTerritories.iterator(); it.hasNext();)
 			{
@@ -873,7 +873,7 @@ public class ProPurchaseAI
 			final int numNearbyEnemyTerritories = Match.countMatches(nearbyLandTerritories, Matches.isTerritoryEnemy(player, data));
 			LogUtils.log(Level.FINEST, t + ", strategic value=" + territoryValueMap.get(t) + ", value=" + value + ", numNearbyEnemyTerritories=" + numNearbyEnemyTerritories);
 			if (value > maxValue && ((numNearbyEnemyTerritories >= 4 && territoryValueMap.get(t) >= 0.25)
-						|| (isAdjacentToSea && allowSeaFactoryPurchase)))
+						|| (isAdjacentToSea && hasExtraPUs)))
 			{
 				maxValue = value;
 				maxTerritory = t;
