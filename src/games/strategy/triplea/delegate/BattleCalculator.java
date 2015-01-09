@@ -1000,12 +1000,12 @@ public class BattleCalculator
 				units.remove(u);
 				final List<Unit> enemyUnitList = new ArrayList<Unit>(enemyUnits);
 				final int power = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending, false,
-							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(), new HashMap<Unit, IntegerMap<Unit>>()), data)
+							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data)
 							.getFirst();
 				
 				// Find enemy power without current unit (need to consider this since supports can decrease enemy attack/defense)
 				final int enemyPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnitList, enemyUnitList, units, !defending, false,
-							enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, new HashMap<Unit, IntegerMap<Unit>>(), new HashMap<Unit, IntegerMap<Unit>>()), data)
+							enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data)
 							.getFirst();
 				
 				// Check if unit has higher power
