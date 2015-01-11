@@ -53,7 +53,7 @@ public class GameRunner2
 	public static final int PORT = 3300;
 	public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
 	public static final String DELAYED_PARSING = "DelayedParsing";
-	public static final String CASUALTY_SELECTION_BETA = "CasualtySelectionBeta";
+	public static final String CASUALTY_SELECTION_SLOW = "CasualtySelectionSlow";
 	public static final String PROXY_CHOICE = "proxy.choice";
 	public static final String HTTP_PROXYHOST = "http.proxyHost";
 	public static final String HTTP_PROXYPORT = "http.proxyPort";
@@ -743,25 +743,25 @@ public class GameRunner2
 	}
 	
 	// TODO: delete all this when we figure out the new casualty selection algorithm
-	public static boolean getCasualtySelectionBeta()
+	public static boolean getCasualtySelectionSlow()
 	{
-		if (s_checkedCasualtySelectionBetaPreference)
+		if (s_checkedCasualtySelectionSlowPreference)
 		{
-			return s_casualtySelectionBeta;
+			return s_casualtySelectionSlow;
 		}
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		s_casualtySelectionBeta = pref.getBoolean(CASUALTY_SELECTION_BETA, false);
-		s_checkedCasualtySelectionBetaPreference = true;
-		return s_casualtySelectionBeta;
+		s_casualtySelectionSlow = pref.getBoolean(CASUALTY_SELECTION_SLOW, false);
+		s_checkedCasualtySelectionSlowPreference = true;
+		return s_casualtySelectionSlow;
 	}
 	
-	private static boolean s_casualtySelectionBeta = false;
-	private static boolean s_checkedCasualtySelectionBetaPreference = false;
+	private static boolean s_casualtySelectionSlow = false;
+	private static boolean s_checkedCasualtySelectionSlowPreference = false;
 	
-	public static void setCasualtySelectionBeta(final boolean casualtySelectionBeta)
+	public static void setCasualtySelectionSlow(final boolean casualtySelectionBeta)
 	{
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		pref.putBoolean(CASUALTY_SELECTION_BETA, casualtySelectionBeta);
+		pref.putBoolean(CASUALTY_SELECTION_SLOW, casualtySelectionBeta);
 		try
 		{
 			pref.sync();

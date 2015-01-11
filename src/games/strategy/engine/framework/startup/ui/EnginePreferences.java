@@ -219,19 +219,19 @@ public class EnginePreferences extends JDialog
 			public void actionPerformed(final ActionEvent e)
 			{
 				// TODO: replace with 2 radio buttons
-				final boolean currentIsBeta = GameRunner2.getCasualtySelectionBeta();
-				final Object[] options = { "Default", "Beta", "Cancel" };
-				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Use *beta* default casualty selection method?" +
-							"<br><br>('" + options[0] + "' sorts by power, and takes legacy artillery support into account." +
-							"<br>'" + options[1] + "' will attempt to take all support attachments into account, but is very slow.)" +
-							"<br><br>Your current setting is: '" + (currentIsBeta ? options[1].toString() : options[0].toString()) + "'</html>"),
+				final boolean currentIsPerfectButSlow = GameRunner2.getCasualtySelectionSlow();
+				final Object[] options = { "Default", "Perfect but Slow", "Cancel" };
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Use 'Default' OR 'Perfect but Slow' default casualty selection method?" +
+							"<br><br>'" + options[0] + "' sorts by power, and takes most support into account." +
+							"<br>'" + options[1] + "' will attempt to take all support attachments into account, but is very slow." +
+							"<br><br>Your current setting is: '" + (currentIsPerfectButSlow ? options[1].toString() : options[0].toString()) + "'</html>"),
 							"Select Default Casualty Selection Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 				if (answer == JOptionPane.CANCEL_OPTION)
 					return;
-				final boolean useBeta = (answer != JOptionPane.YES_OPTION);
-				if (useBeta == currentIsBeta)
+				final boolean usePerfectButSlow = (answer != JOptionPane.YES_OPTION);
+				if (usePerfectButSlow == currentIsPerfectButSlow)
 					return;
-				GameRunner2.setCasualtySelectionBeta(useBeta);
+				GameRunner2.setCasualtySelectionSlow(usePerfectButSlow);
 				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA for this to take effect", new CountDownLatchHandler(true));
 			}
 		});

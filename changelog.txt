@@ -1,3 +1,8 @@
+Changes for 1.8.0.7
+* Bug fixes on unit casualty sorters, and switching approximate method in as the default. (veqryn)
+
+* Created a new prototype unit sorter for quicker approximate sorting, including support attachments. (redrum)
+
 Changes for 1.8.0.5
 * Created a prototype unit sorter for sorting units with support attachments (still in beta) and added it as an option in engine preferences. (veqryn & redrum)
 

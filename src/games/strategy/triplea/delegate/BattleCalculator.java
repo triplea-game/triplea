@@ -767,7 +767,7 @@ public class BattleCalculator
 	}
 	
 	/**
-	 * he purpose of this is to return a list in the PERFECT order of which units should be selected to die first,
+	 * The purpose of this is to return a list in the PERFECT order of which units should be selected to die first,
 	 * And that means that certain units MUST BE INTERLEAVED.
 	 * This list assumes that you have already taken any extra hit points away from any 2 hitpoint units.
 	 * Example: You have a 1 attack Artillery unit that supports, and a 1 attack infantry unit that can receive support.
@@ -781,18 +781,43 @@ public class BattleCalculator
 				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
 				final boolean bonus)
 	{
-		if (!GameRunner2.getCasualtySelectionBeta())
+		/*
+		if (s_enableCasualtySortingCaching)
 		{
-			return sortUnitsForCasualtiesWithSupportLegacy(targetsToPickFrom, defending, player, costs, territoryEffects, data, bonus);
+			synchronized (s_cachedLock)
+			{
+				//if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets)
+				//    		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
+				//	s_cachedSortedCasualties.clear();
+				//else
+				if (s_cachedSortedCasualties.containsKey(targets.hashCode()))
+					return s_cachedSortedCasualties.get(targets.hashCode());
+			}
+		}
+		*/
+		if (!GameRunner2.getCasualtySelectionSlow())
+		{
+			return sortUnitsForCasualtiesWithSupportNew(targetsToPickFrom, hits, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite,
+						costs, territoryEffects, data, allowMultipleHitsPerUnit, bonus);
 		}
 		else
 		{
 			return sortUnitsForCasualtiesWithSupportBruteForce(targetsToPickFrom, hits, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite,
 						costs, territoryEffects, data, allowMultipleHitsPerUnit, bonus);
 		}
+		/*
+		if (s_enableCasualtySortingCaching)
+		{
+			synchronized (s_cachedLock)
+			{
+				if (!s_cachedSortedCasualties.containsKey(targets.hashCode()))
+					s_cachedSortedCasualties.put(targets.hashCode(), perfectlySortedUnitsList);
+			}
+		}
+		*/
 	}
 	
-	private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForce(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
+	private static List<Unit> sortUnitsForCasualtiesWithSupportNew(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
 				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
 				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
 				final boolean bonus)
@@ -954,7 +979,7 @@ public class BattleCalculator
 		return sortedWellEnoughUnitsList;
 	}
 	
-	private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForceOld(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
+	private static List<Unit> sortUnitsForCasualtiesWithSupportBruteForce(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
 				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
 				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
 				final boolean bonus)
@@ -1000,13 +1025,11 @@ public class BattleCalculator
 				units.remove(u);
 				final List<Unit> enemyUnitList = new ArrayList<Unit>(enemyUnits);
 				final int power = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending, false,
-							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data)
-							.getFirst();
+							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data).getFirst();
 				
 				// Find enemy power without current unit (need to consider this since supports can decrease enemy attack/defense)
 				final int enemyPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnitList, enemyUnitList, units, !defending, false,
-							enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data)
-							.getFirst();
+							enemyPlayer, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data).getFirst();
 				
 				// Check if unit has higher power
 				final int powerDifference = power - enemyPower;
@@ -1023,23 +1046,10 @@ public class BattleCalculator
 		return sortedWellEnoughUnitsList;
 	}
 	
+	/*
 	private static List<Unit> sortUnitsForCasualtiesWithSupportLegacy(final Collection<Unit> targetsToPickFrom, final boolean defending, final PlayerID player, final IntegerMap<UnitType> costs,
 				final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus)
 	{
-		/*
-		if (s_enableCasualtySortingCaching)
-		{
-			synchronized (s_cachedLock)
-			{
-				//if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets)
-				//    		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
-				//	s_cachedSortedCasualties.clear();
-				//else
-				if (s_cachedSortedCasualties.containsKey(targets.hashCode()))
-					return s_cachedSortedCasualties.get(targets.hashCode());
-			}
-		}
-		*/
 		final List<Unit> sortedUnitsList = new ArrayList<Unit>(targetsToPickFrom);
 		Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
 		final List<Unit> perfectlySortedUnitsList = new ArrayList<Unit>();
@@ -1231,18 +1241,9 @@ public class BattleCalculator
 		if (perfectlySortedUnitsList.isEmpty() || !perfectlySortedUnitsList.containsAll(sortedUnitsList) || !sortedUnitsList.containsAll(perfectlySortedUnitsList)
 					|| perfectlySortedUnitsList.size() != sortedUnitsList.size())
 			throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
-		/*
-		if (s_enableCasualtySortingCaching)
-		{
-			synchronized (s_cachedLock)
-			{
-				if (!s_cachedSortedCasualties.containsKey(targets.hashCode()))
-					s_cachedSortedCasualties.put(targets.hashCode(), perfectlySortedUnitsList);
-			}
-		}
-		*/
 		return perfectlySortedUnitsList;
 	}
+	*/
 	
 	public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets, final GameData data)
 	{
