@@ -250,7 +250,9 @@ public class ProPurchaseAI
 		
 		// Purchase units
 		ProMetricUtils.collectPurchaseStats(purchaseMap);
-		purchaseDelegate.purchase(purchaseMap);
+		final String error = purchaseDelegate.purchase(purchaseMap);
+		if (error != null)
+			LogUtils.log(Level.WARNING, "Purchase error: " + error);
 		
 		return purchaseTerritories;
 	}
@@ -659,15 +661,20 @@ public class ProPurchaseAI
 			if (!enemyCanBomb || !territoryCanBeBombed || hasAABombingDefense)
 				continue;
 			
-			// Determine most cost efficient units that can be produced in this territory
+			// Remove options that cost too much PUs or production
 			final List<ProPurchaseOption> purchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, specialPurchaseOptions, t);
+			purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, purchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction,
+						new ArrayList<Unit>(), purchaseTerritories);
+			if (purchaseOptionsForTerritory.isEmpty())
+				continue;
+			
+			// Determine most cost efficient units that can be produced in this territory
 			ProPurchaseOption bestAAOption = null;
 			int minCost = Integer.MAX_VALUE;
 			for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
 			{
 				final boolean isAAForBombing = Matches.UnitTypeIsAAforBombingThisUnitOnly.match(ppo.getUnitType());
-				if (ppo.getCost() <= PUsRemaining && isAAForBombing && ppo.getQuantity() <= remainingUnitProduction && ppo.getCost() < minCost
-							&& !Matches.UnitTypeHasMaxBuildRestrictions.match(ppo.getUnitType()) && !Matches.UnitTypeConsumesUnitsOnCreation.match(ppo.getUnitType()))
+				if (isAAForBombing && ppo.getCost() < minCost && !Matches.UnitTypeConsumesUnitsOnCreation.match(ppo.getUnitType()))
 				{
 					bestAAOption = ppo;
 					minCost = ppo.getCost();
@@ -884,9 +891,6 @@ public class ProPurchaseAI
 		// Determine whether to purchase factory
 		if (maxTerritory != null)
 		{
-			// Determine units that can be produced in this territory
-			final List<ProPurchaseOption> purchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getFactoryOptions(), maxTerritory);
-			
 			// Find most expensive placed land unit to consider removing for a factory
 			int maxPlacedCost = 0;
 			ProPlaceTerritory maxPlacedTerritory = null;
@@ -907,18 +911,20 @@ public class ProPurchaseAI
 				}
 			}
 			
+			// Determine units that can be produced in this territory
+			final List<ProPurchaseOption> purchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getFactoryOptions(), maxTerritory);
+			purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, purchaseOptionsForTerritory, PUsRemaining + maxPlacedCost, 1, new ArrayList<Unit>(),
+						purchaseTerritories);
+			
 			// Determine most expensive factory option (currently doesn't buy mobile factories)
 			ProPurchaseOption bestFactoryOption = null;
 			double maxFactoryEfficiency = 0;
 			for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
 			{
-				if (ppo.getCost() <= (PUsRemaining + maxPlacedCost) && ppo.getMovement() == 0)
+				if (ppo.getMovement() == 0 && ppo.getCost() > maxFactoryEfficiency)
 				{
-					if (ppo.getCost() > maxFactoryEfficiency)
-					{
-						bestFactoryOption = ppo;
-						maxFactoryEfficiency = ppo.getCost();
-					}
+					bestFactoryOption = ppo;
+					maxFactoryEfficiency = ppo.getCost();
 				}
 			}
 			
@@ -1391,21 +1397,24 @@ public class ProPurchaseAI
 			int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
 			while (true)
 			{
+				// Remove options that cost too much PUs or production
+				purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, purchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction,
+							new ArrayList<Unit>(), purchaseTerritories);
+				if (purchaseOptionsForTerritory.isEmpty())
+					break;
+				
 				// Determine best long range attack option (prefer air units)
 				ProPurchaseOption bestAttackOption = null;
 				double maxAttackEfficiency = 0;
 				for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
 				{
-					if (ppo.getCost() <= PUsRemaining && ppo.getQuantity() <= remainingUnitProduction)
+					double attackEfficiency = ppo.getAttackEfficiency() * ppo.getMovement() / ppo.getQuantity();
+					if (ppo.isAir())
+						attackEfficiency *= 10;
+					if (attackEfficiency > maxAttackEfficiency)
 					{
-						double attackEfficiency = ppo.getAttackEfficiency() * ppo.getMovement() / ppo.getQuantity();
-						if (ppo.isAir())
-							attackEfficiency *= 10;
-						if (attackEfficiency > maxAttackEfficiency)
-						{
-							bestAttackOption = ppo;
-							maxAttackEfficiency = attackEfficiency;
-						}
+						bestAttackOption = ppo;
+						maxAttackEfficiency = attackEfficiency;
 					}
 				}
 				if (bestAttackOption == null)
@@ -1488,13 +1497,18 @@ public class ProPurchaseAI
 				if (maxPurchaseOption == null)
 					break;
 				
+				// Remove options that cost too much PUs or production
+				purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, purchaseOptionsForTerritory, PUsRemaining + maxPlacedCost, 1,
+							new ArrayList<Unit>(), purchaseTerritories);
+				if (purchaseOptionsForTerritory.isEmpty())
+					break;
+				
 				// Determine best long range attack option (prefer air units)
 				ProPurchaseOption bestAttackOption = null;
 				double maxAttackEfficiency = maxPurchaseOption.getAttackEfficiency() * maxPurchaseOption.getMovement() * maxPurchaseOption.getCost() / maxPurchaseOption.getQuantity();
 				for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
 				{
-					if (ppo.getCost() > maxPlacedCost && ppo.getCost() <= (PUsRemaining + maxPlacedCost) && ppo.getQuantity() == 1
-								&& (ppo.isAir() || placeTerritory.getStrategicValue() >= 0.25 || ppo.getTransportCost() <= maxPurchaseOption.getTransportCost()))
+					if (ppo.getCost() > maxPlacedCost && (ppo.isAir() || placeTerritory.getStrategicValue() >= 0.25 || ppo.getTransportCost() <= maxPurchaseOption.getTransportCost()))
 					{
 						double attackEfficiency = ppo.getAttackEfficiency() * ppo.getMovement() * ppo.getCost() / ppo.getQuantity();
 						if (ppo.isAir())
