@@ -1006,10 +1006,11 @@ public class ProNonCombatMoveAI
 						final List<Territory> territories = route.getAllTerritories();
 						territories.remove(territories.size() - 1);
 						final Territory moveToTerritory = territories.get(Math.min(territories.size() - 1, moves));
-						if (moveMap.get(moveToTerritory).isCanHold())
+						final ProAttackTerritoryData patd2 = moveMap.get(moveToTerritory);
+						if (patd2 != null && patd2.isCanHold())
 						{
 							LogUtils.log(Level.FINEST, transport + " moved towards best loading territory " + patd.getTerritory() + " and moved to " + moveToTerritory);
-							moveMap.get(moveToTerritory).addTempUnit(transport);
+							patd2.addTempUnit(transport);
 							territoriesToDefend.add(moveToTerritory);
 							it.remove();
 							movedTransport = true;
