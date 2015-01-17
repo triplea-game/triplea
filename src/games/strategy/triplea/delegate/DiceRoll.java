@@ -482,6 +482,12 @@ public class DiceRoll implements Externalizable
 		getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data, !defending, false);
 		final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftFriendly); // copy for rolls
 		final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
+		final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls = new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+		for (final UnitSupportAttachment usa : supportUnitsLeftFriendly.keySet())
+			supportUnitsLeftFriendlyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftFriendly.get(usa)));
+		final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls = new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
+		for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet())
+			supportUnitsLeftEnemyRolls.put(usa, new LinkedIntegerMap<Unit>(supportUnitsLeftEnemy.get(usa)));
 		final int diceSides = data.getDiceSides();
 		
 		for (final Unit current : unitsGettingPowerFor)
@@ -526,8 +532,8 @@ public class DiceRoll implements Externalizable
 					rolls = ua.getDefenseRolls(current.getOwner());
 				else
 					rolls = ua.getAttackRolls(current.getOwner());
-				rolls += getSupport(current, supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendly, unitSupportRollsMap, false, true);
-				rolls += getSupport(current, supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemy, unitSupportRollsMap, false, true);
+				rolls += getSupport(current, supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendlyRolls, unitSupportRollsMap, false, true);
+				rolls += getSupport(current, supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemyRolls, unitSupportRollsMap, false, true);
 				rolls = Math.max(0, rolls);
 				if (rolls == 0)
 					strength = 0;

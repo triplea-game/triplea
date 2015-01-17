@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -873,6 +874,9 @@ public class OddsCalculatorPanel extends JPanel
 			m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
 			final boolean isAmphibiousBattle = isAmphibiousBattle();
 			final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
+			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(getAttacker(), m_data);
+			Collections.sort(attackers, new UnitBattleComparator(false, costs, territoryEffects, m_data, false, false));
+			Collections.reverse(attackers);
 			final int attackPower = DiceRoll.getTotalPowerAndRolls(
 						DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, attackers, defenders, false, false, getAttacker(), m_data, m_location, territoryEffects, isAmphibiousBattle,
 									(isAmphibiousBattle ? attackers : new ArrayList<Unit>())), m_data).getFirst();

@@ -711,7 +711,7 @@ public class BattleCalculator
 	private static HashMap<Integer, List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
 	private static final Object s_cachedLock = new Object();
 	*/
-	
+
 	/**
 	 * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged. The second time they are listed, it is dead.
 	 * 
@@ -853,6 +853,7 @@ public class BattleCalculator
 		final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<Unit, IntegerMap<Unit>>();
 		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits),
 					defending, false, player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
+		
 		Collections.reverse(sortedUnitsList); // Sort units starting with weakest for finding the worst units
 		for (int i = 0; i < numberOfUnitsWeMustSort; ++i)
 		{
@@ -877,9 +878,14 @@ public class BattleCalculator
 				{
 					for (final Unit supportedUnit : unitSupportPowerMapForUnit.keySet())
 					{
-						final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+						Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
 						if (strengthAndRolls == null)
 							continue;
+						
+						// Remove any rolls provided by this support so they aren't counted twice
+						final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
+						if (unitSupportRollsMapForUnit != null)
+							strengthAndRolls = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit));
 						
 						// If one roll then just add the power
 						if (strengthAndRolls.getSecond() == 1)
@@ -953,6 +959,8 @@ public class BattleCalculator
 					final int strengthWithoutSupport = strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
 					final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
 					unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+					sortedUnitsList.remove(supportedUnit);
+					sortedUnitsList.add(0, supportedUnit);
 				}
 			}
 			final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(worstUnit);
@@ -967,6 +975,8 @@ public class BattleCalculator
 					final int rollsWithoutSupport = strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit);
 					final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
 					unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+					sortedUnitsList.remove(supportedUnit);
+					sortedUnitsList.add(0, supportedUnit);
 				}
 			}
 			sortedWellEnoughUnitsList.add(worstUnit);
@@ -1024,6 +1034,7 @@ public class BattleCalculator
 				final List<Unit> units = new ArrayList<Unit>(sortedUnitsList);
 				units.remove(u);
 				final List<Unit> enemyUnitList = new ArrayList<Unit>(enemyUnits);
+				Collections.reverse(units);
 				final int power = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(units, units, enemyUnitList, defending, false,
 							player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers), data).getFirst();
 				
@@ -1244,7 +1255,7 @@ public class BattleCalculator
 		return perfectlySortedUnitsList;
 	}
 	*/
-	
+
 	public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets, final GameData data)
 	{
 		// just worry about transports
