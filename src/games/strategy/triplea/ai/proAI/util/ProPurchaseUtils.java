@@ -128,10 +128,15 @@ public class ProPurchaseUtils
 	
 	public boolean canTerritoryUsePurchaseOption(final PlayerID player, final ProPurchaseOption ppo, final Territory t)
 	{
-		final GameData data = ai.getGameData();
 		if (ppo == null)
 			return false;
 		final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
+		return canUnitsBePlaced(units, player, t);
+	}
+	
+	public boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t)
+	{
+		final GameData data = ai.getGameData();
 		final AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
 		final IDelegateBridge bridge = new ProDummyDelegateBridge(ai, player, data);
 		placeDelegate.setDelegateBridgeAndPlayer(bridge);

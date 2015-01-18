@@ -175,6 +175,8 @@ public class ProPurchaseAI
 	public Map<Territory, ProPurchaseTerritory> purchase(int PUsRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data, final GameData startOfTurnData, final PlayerID player)
 	{
 		LogUtils.log(Level.FINE, "Starting purchase phase with PUsRemaining=" + PUsRemaining);
+		if (!player.getUnits().getUnits().isEmpty())
+			LogUtils.log(Level.FINE, "Starting purchase phase with unplaced units=" + player.getUnits().getUnits());
 		
 		// Current data fields
 		this.data = data;
@@ -703,6 +705,9 @@ public class ProPurchaseAI
 		if (PUsRemaining == 0)
 			return PUsRemaining;
 		LogUtils.log(Level.FINE, "Purchase land units with PUsRemaining=" + PUsRemaining);
+		final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
+		if (!unplacedUnits.isEmpty())
+			LogUtils.log(Level.FINE, "Purchase land units with unplaced units=" + unplacedUnits);
 		
 		// Loop through prioritized territories and purchase land units
 		for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories)
@@ -733,9 +738,22 @@ public class ProPurchaseAI
 			for (final Territory neighbor : neighbors)
 				ownedLocalUnits.addAll(neighbor.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
 			
+			// Check for unplaced units
+			final List<Unit> unitsToPlace = new ArrayList<Unit>();
+			for (final Iterator<Unit> it = unplacedUnits.iterator(); it.hasNext();)
+			{
+				final Unit u = it.next();
+				if (remainingUnitProduction > 0 && purchaseUtils.canUnitsBePlaced(Collections.singletonList(u), player, t))
+				{
+					remainingUnitProduction--;
+					unitsToPlace.add(u);
+					it.remove();
+					LogUtils.log(Level.FINEST, "Selected unplaced unit=" + u);
+				}
+			}
+			
 			// Purchase as many units as possible
 			int addedFodderUnits = 0;
-			final List<Unit> unitsToPlace = new ArrayList<Unit>();
 			double attackAndDefenseDifference = 0;
 			boolean selectFodderUnit = true;
 			while (true)
