@@ -1063,13 +1063,7 @@ public class ProPurchaseAI
 						+ enemyAttackMap.get(t).getMaxAmphibUnits() + ", defenders=" + placeTerritory.getDefendingUnits());
 			
 			// Find local owned units
-			Set<Territory> neighbors = data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveLandUnits(player, data, false));
-			if (!isLand)
-				neighbors = data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveSeaUnits(player, data, false));
-			neighbors.add(t);
-			final List<Unit> ownedLocalUnits = new ArrayList<Unit>();
-			for (final Territory neighbor : neighbors)
-				ownedLocalUnits.addAll(neighbor.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
+			final List<Unit> ownedLocalUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
 			
 			// Find all purchase territories for place territory
 			int PUsSpent = 0;
@@ -1321,27 +1315,27 @@ public class ProPurchaseAI
 				
 				// Select purchase option
 				ProPurchaseOption selectedOption = null;
-				if (selectFodderUnit && !landFodderOptions.isEmpty())
-				{
-					final Map<ProPurchaseOption, Double> fodderEfficiencies = new HashMap<ProPurchaseOption, Double>();
-					for (final ProPurchaseOption ppo : landFodderOptions)
-						fodderEfficiencies.put(ppo, ppo.getFodderEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
-					selectedOption = purchaseUtils.randomizePurchaseOption(fodderEfficiencies, "Land Fodder");
-					addedFodderUnits += selectedOption.getQuantity();
-				}
-				else if (attackAndDefenseDifference > 0 && !landDefenseOptions.isEmpty())
+				if (!selectFodderUnit && attackAndDefenseDifference > 0 && !landDefenseOptions.isEmpty())
 				{
 					final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<ProPurchaseOption, Double>();
 					for (final ProPurchaseOption ppo : landDefenseOptions)
 						defenseEfficiencies.put(ppo, ppo.getDefenseEfficiency2(enemyDistance, data, ownedLocalUnits, unitsToPlace));
 					selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
 				}
-				else if (!landAttackOptions.isEmpty())
+				else if (!selectFodderUnit && !landAttackOptions.isEmpty())
 				{
 					final Map<ProPurchaseOption, Double> attackEfficiencies = new HashMap<ProPurchaseOption, Double>();
 					for (final ProPurchaseOption ppo : landAttackOptions)
 						attackEfficiencies.put(ppo, ppo.getAttackEfficiency2(enemyDistance, data, ownedLocalUnits, unitsToPlace));
 					selectedOption = purchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack");
+				}
+				else if (!landFodderOptions.isEmpty())
+				{
+					final Map<ProPurchaseOption, Double> fodderEfficiencies = new HashMap<ProPurchaseOption, Double>();
+					for (final ProPurchaseOption ppo : landFodderOptions)
+						fodderEfficiencies.put(ppo, ppo.getFodderEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
+					selectedOption = purchaseUtils.randomizePurchaseOption(fodderEfficiencies, "Land Fodder");
+					addedFodderUnits += selectedOption.getQuantity();
 				}
 				else
 				{
@@ -1795,6 +1789,9 @@ public class ProPurchaseAI
 				if (remainingUnitProduction <= 0)
 					continue;
 				
+				// Find local owned units
+				final List<Unit> ownedLocalAmphibUnits = landTerritory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+				
 				// Determine sea and transport units that can be produced in this territory
 				final List<ProPurchaseOption> seaTransportPurchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getSeaTransportOptions(), t);
 				final List<ProPurchaseOption> amphibPurchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandOptions(), landTerritory);
@@ -1869,7 +1866,7 @@ public class ProPurchaseAI
 							for (final ProPurchaseOption ppo : amphibPurchaseOptionsForTerritory)
 							{
 								if (ppo.getTransportCost() <= transportCapacity)
-									amphibEfficiencies.put(ppo, ppo.getAmphibEfficiency(data));
+									amphibEfficiencies.put(ppo, ppo.getAmphibEfficiency(data, ownedLocalAmphibUnits, amphibUnitsToPlace));
 							}
 							if (amphibEfficiencies.isEmpty())
 								break;

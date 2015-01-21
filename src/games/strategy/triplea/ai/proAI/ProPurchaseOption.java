@@ -22,20 +22,31 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attatchments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.util.IntegerMap;
+import games.strategy.util.LinkedIntegerMap;
+import games.strategy.util.Match;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class ProPurchaseOption
 {
 	private final ProductionRule productionRule;
 	private final UnitType unitType;
+	private final PlayerID player;
 	private final int cost;
 	private final int movement;
 	private final int quantity;
 	private int hitPoints;
 	private final double attack;
-	private final boolean isArtillery;
 	private final double amphibAttack;
 	private final double defense;
 	private final int transportCost;
@@ -53,11 +64,15 @@ public class ProPurchaseOption
 	private final double attackEfficiency;
 	private final double defenseEfficiency;
 	private final int maxBuiltPerPlayer;
+	private final Set<UnitSupportAttachment> unitSupportAttachments;
+	private boolean isAttackSupport;
+	private boolean isDefenseSupport;
 	
 	public ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player, final GameData data)
 	{
 		this.productionRule = productionRule;
 		this.unitType = unitType;
+		this.player = player;
 		final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
 		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
 		cost = productionRule.getCosts().getInt(PUs);
@@ -68,7 +83,6 @@ public class ProPurchaseOption
 		if (isInfra)
 			hitPoints = 0;
 		attack = unitAttachment.getAttack(player) * quantity;
-		isArtillery = unitAttachment.getArtillery();
 		amphibAttack = attack + 0.5 * unitAttachment.getIsMarine() * quantity;
 		defense = unitAttachment.getDefense(player) * quantity;
 		transportCost = unitAttachment.getTransportCost() * quantity;
@@ -88,6 +102,18 @@ public class ProPurchaseOption
 		attackEfficiency = (1 + hitPoints) * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
 		defenseEfficiency = (1 + hitPoints) * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
 		maxBuiltPerPlayer = unitAttachment.getMaxBuiltPerPlayer();
+		
+		// Support fields
+		unitSupportAttachments = UnitSupportAttachment.get(unitType);
+		isAttackSupport = false;
+		isDefenseSupport = false;
+		for (final UnitSupportAttachment usa : unitSupportAttachments)
+		{
+			if (usa.getOffence())
+				isAttackSupport = true;
+			if (usa.getDefence())
+				isDefenseSupport = true;
+		}
 	}
 	
 	@Override
@@ -213,40 +239,56 @@ public class ProPurchaseOption
 		return maxBuiltPerPlayer;
 	}
 	
+	public boolean isAttackSupport()
+	{
+		return isAttackSupport;
+	}
+	
+	public boolean isDefenseSupport()
+	{
+		return isDefenseSupport;
+	}
+	
 	public double getFodderEfficiency(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
-		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
+		final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
+		final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
 		final double distanceFactor = Math.sqrt(calculateLandDistanceFactor(enemyDistance));
-		return calculateEfficiency(0.25, 0.25, artilleryFactor, distanceFactor, data);
+		return calculateEfficiency(0.25, 0.25, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
 	}
 	
 	public double getAttackEfficiency2(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
-		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
+		final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
+		final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
 		final double distanceFactor = calculateLandDistanceFactor(enemyDistance);
-		return calculateEfficiency(1.25, 0.75, artilleryFactor, distanceFactor, data);
+		return calculateEfficiency(1.25, 0.75, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
 	}
 	
 	public double getDefenseEfficiency2(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
-		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
+		final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
+		final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
 		final double distanceFactor = calculateLandDistanceFactor(enemyDistance);
-		return calculateEfficiency(0.75, 1.25, artilleryFactor, distanceFactor, data);
+		return calculateEfficiency(0.75, 1.25, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
 	}
 	
 	public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
-		final double artilleryFactor = calculateArtilleryFactor(ownedLocalUnits, unitsToPlace);
-		return calculateEfficiency(0.75, 1, artilleryFactor, movement, data);
+		final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
+		final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
+		return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, data);
 	}
 	
-	public double getAmphibEfficiency(final GameData data)
+	public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
 	{
+		final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
+		final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
 		final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
 		final double transportCostFactor = Math.pow(1.0 / transportCost, .2);
 		final double hitPointValue = 2 * hitPoints;
-		final double attackValue = amphibAttack * 6 / data.getDiceSides();
-		final double defenseValue = defense * 6 / data.getDiceSides();
+		final double attackValue = (amphibAttack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
+		final double defenseValue = (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
 		return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * transportCostFactor / cost, 30) / quantity;
 	}
 	
@@ -263,45 +305,70 @@ public class ProPurchaseOption
 		return distanceFactor;
 	}
 	
-	private double calculateArtilleryFactor(final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
+	// TODO: doesn't consider enemy support
+	private double calculateSupportFactor(final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace, final GameData data, final boolean defense)
 	{
-		if (!isArtillery)
+		if ((!isAttackSupport && !defense) || (!isDefenseSupport && defense))
 			return 0;
 		
-		int numLocalArtillery = 0;
-		int numLocalSupportable = 0;
-		for (final Unit u : ownedLocalUnits)
+		final List<Unit> units = new ArrayList<Unit>(ownedLocalUnits);
+		units.addAll(unitsToPlace);
+		units.addAll(unitType.create(1, player, true));
+		final Set<List<UnitSupportAttachment>> supportsAvailable = new HashSet<List<UnitSupportAttachment>>();
+		final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
+		DiceRoll.getSupport(units, supportsAvailable, supportLeft, new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>(), data, defense, true);
+		double totalSupportFactor = 0;
+		for (final UnitSupportAttachment usa : unitSupportAttachments)
 		{
-			if (UnitAttachment.get(u.getType()).getArtillery())
-				numLocalArtillery++;
-			if (UnitAttachment.get(u.getType()).getArtillerySupportable())
-				numLocalSupportable++;
+			for (final List<UnitSupportAttachment> bonusType : supportsAvailable)
+			{
+				if (!bonusType.contains(usa))
+					continue;
+				
+				// Find number of support provided and supportable units
+				int numAddedSupport = usa.getNumber();
+				if (usa.getImpArtTech() && TechTracker.hasImprovedArtillerySupport(player))
+					numAddedSupport *= 2;
+				int numSupportProvided = -numAddedSupport;
+				final Set<Unit> supportableUnits = new HashSet<Unit>();
+				for (final UnitSupportAttachment usa2 : bonusType)
+				{
+					numSupportProvided += supportLeft.getInt(usa2);
+					supportableUnits.addAll(Match.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
+				}
+				final int numSupportableUnits = supportableUnits.size();
+				
+				// Find ratio of supportable to support units (optimal 2 to 1)
+				final int numExtraSupportableUnits = Math.max(0, numSupportableUnits - numSupportProvided);
+				final double ratio = Math.min(1, 2.0 * numExtraSupportableUnits / (numSupportableUnits + numAddedSupport)); // ranges from 0 to 1
+				
+				// Find approximate strength bonus provided
+				double bonus = 0;
+				if (usa.getStrength())
+					bonus += usa.getBonus();
+				if (usa.getRoll())
+					bonus += (usa.getBonus() * data.getDiceSides() * 0.75);
+				
+				// Find support factor value
+				final double supportFactor = Math.pow(numAddedSupport * 0.9, 0.9) * bonus * ratio;
+				totalSupportFactor += supportFactor;
+				
+				LogUtils.log(Level.FINEST, unitType.getName() + ", bonusType=" + usa.getBonusType() + ", supportFactor=" + supportFactor + ", numSupportProvided=" + numSupportProvided
+							+ ", numSupportableUnits=" + numSupportableUnits + ", numAddedSupport=" + numAddedSupport + ", ratio=" + ratio + ", bonus=" + bonus);
+			}
 		}
-		final int numNeededLocalSupportable = Math.max(1, 2 * numLocalArtillery - numLocalSupportable);
-		int numPlaceArtillery = 0;
-		int numPlaceSupportable = 0;
-		for (final Unit u : unitsToPlace)
-		{
-			if (UnitAttachment.get(u.getType()).getArtillery())
-				numPlaceArtillery++;
-			if (UnitAttachment.get(u.getType()).getArtillerySupportable())
-				numPlaceSupportable++;
-		}
-		final double supportableRatio = (double) numPlaceSupportable / (2 * numPlaceArtillery + numNeededLocalSupportable);
-		final double artilleryFactor = 0.9 * Math.min(1.0, supportableRatio); // ranges from 0 to 0.9
+		LogUtils.log(Level.FINER, unitType.getName() + ", defense=" + defense + ", totalSupportFactor=" + totalSupportFactor);
 		
-		LogUtils.log(Level.FINEST, "artilleryFactor=" + artilleryFactor + ", numPlaceSupportable=" + numPlaceSupportable + ", numPlaceArtillery=" + numPlaceArtillery + ", numNeededLocalSupportable="
-					+ numNeededLocalSupportable);
-		
-		return artilleryFactor;
+		return totalSupportFactor;
 	}
 	
-	private double calculateEfficiency(final double attackFactor, final double defenseFactor, final double artilleryFactor, final double distanceFactor, final GameData data)
+	private double calculateEfficiency(final double attackFactor, final double defenseFactor, final double supportAttackFactor, final double supportDefenseFactor, final double distanceFactor,
+				final GameData data)
 	{
 		final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
 		final double hitPointValue = 2 * hitPoints;
-		final double attackValue = attackFactor * (attack + artilleryFactor * quantity) * 6 / data.getDiceSides();
-		final double defenseValue = defenseFactor * defense * 6 / data.getDiceSides();
+		final double attackValue = attackFactor * (attack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
+		final double defenseValue = defenseFactor * (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
 		return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor / cost, 30) / quantity;
 	}
 	

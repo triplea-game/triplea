@@ -74,50 +74,50 @@ public class ProPurchaseOptionMap
 						|| Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
 						|| UnitAttachment.get(unitType).getIsSuicide())
 			{
-				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				specialOptions.add(purchaseOption);
-				LogUtils.log(Level.FINER, "Special: " + purchaseOption);
+				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+				specialOptions.add(ppo);
+				LogUtils.log(Level.FINER, "Special: " + ppo);
 			}
 			else if (Matches.UnitTypeCanProduceUnits.match(unitType) && Matches.UnitTypeIsInfrastructure.match(unitType))
 			{
-				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				factoryOptions.add(purchaseOption);
-				LogUtils.log(Level.FINER, "Factory: " + purchaseOption);
+				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+				factoryOptions.add(ppo);
+				LogUtils.log(Level.FINER, "Factory: " + ppo);
 			}
 			else if (Matches.UnitTypeIsAAforBombingThisUnitOnly.match(unitType))
 			{
-				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				aaOptions.add(purchaseOption);
-				LogUtils.log(Level.FINER, "AA: " + purchaseOption);
+				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+				aaOptions.add(ppo);
+				LogUtils.log(Level.FINER, "AA: " + ppo);
 			}
 			else if (Matches.UnitTypeIsLand.match(unitType))
 			{
-				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				landFodderOptions.add(purchaseOption);
-				if (purchaseOption.getAttack() >= purchaseOption.getDefense() || purchaseOption.getMovement() > 1)
-					landAttackOptions.add(purchaseOption);
-				if (purchaseOption.getDefense() >= purchaseOption.getAttack())
-					landDefenseOptions.add(purchaseOption);
-				LogUtils.log(Level.FINER, "Land: " + purchaseOption);
+				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+				landFodderOptions.add(ppo);
+				if (ppo.getAttack() >= ppo.getDefense() || ppo.isAttackSupport() || ppo.getMovement() > 1)
+					landAttackOptions.add(ppo);
+				if (ppo.getDefense() >= ppo.getAttack() || ppo.isDefenseSupport() || ppo.getMovement() > 1)
+					landDefenseOptions.add(ppo);
+				LogUtils.log(Level.FINER, "Land: " + ppo);
 			}
 			else if (Matches.UnitTypeIsAir.match(unitType))
 			{
-				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				airOptions.add(purchaseOption);
-				LogUtils.log(Level.FINER, "Air: " + purchaseOption);
+				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+				airOptions.add(ppo);
+				LogUtils.log(Level.FINER, "Air: " + ppo);
 			}
 			else if (Matches.UnitTypeIsSea.match(unitType))
 			{
-				final ProPurchaseOption purchaseOption = new ProPurchaseOption(rule, unitType, player, data);
-				if (!purchaseOption.isSub())
-					seaDefenseOptions.add(purchaseOption);
-				if (purchaseOption.isTransport())
-					seaTransportOptions.add(purchaseOption);
-				if (purchaseOption.isCarrier())
-					seaCarrierOptions.add(purchaseOption);
-				if (purchaseOption.isSub())
-					seaSubOptions.add(purchaseOption);
-				LogUtils.log(Level.FINER, "Sea: " + purchaseOption);
+				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+				if (!ppo.isSub())
+					seaDefenseOptions.add(ppo);
+				if (ppo.isTransport())
+					seaTransportOptions.add(ppo);
+				if (ppo.isCarrier())
+					seaCarrierOptions.add(ppo);
+				if (ppo.isSub())
+					seaSubOptions.add(ppo);
+				LogUtils.log(Level.FINER, "Sea: " + ppo);
 			}
 		}
 		if (landAttackOptions.isEmpty())
