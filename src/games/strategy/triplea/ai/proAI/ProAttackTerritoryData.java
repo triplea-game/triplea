@@ -89,6 +89,36 @@ public class ProAttackTerritoryData
 		seaValue = 0;
 	}
 	
+	public ProAttackTerritoryData(final ProAttackTerritoryData patd)
+	{
+		this.territory = patd.getTerritory();
+		maxUnits = new ArrayList<Unit>(patd.getMaxUnits());
+		units = new ArrayList<Unit>(patd.getUnits());
+		cantMoveUnits = new ArrayList<Unit>(patd.getCantMoveUnits());
+		maxEnemyUnits = new ArrayList<Unit>(patd.getMaxEnemyUnits());
+		maxEnemyBombardUnits = new HashSet<Unit>(patd.getMaxEnemyBombardUnits());
+		TUVSwing = patd.getTUVSwing();
+		canHold = patd.isCanHold();
+		canAttack = patd.isCanAttack();
+		strengthEstimate = patd.getStrengthEstimate();
+		maxAmphibUnits = new ArrayList<Unit>(patd.getMaxAmphibUnits());
+		maxBombardUnits = new HashSet<Unit>(patd.getMaxBombardUnits());
+		needAmphibUnits = patd.isNeedAmphibUnits();
+		amphibAttackMap = new HashMap<Unit, List<Unit>>(patd.getAmphibAttackMap());
+		isTransportingMap = new HashMap<Unit, Boolean>(patd.getIsTransportingMap());
+		transportTerritoryMap = new HashMap<Unit, Territory>(patd.getTransportTerritoryMap());
+		bombardOptionsMap = new HashMap<Unit, Set<Territory>>(patd.getBombardOptionsMap());
+		bombardTerritoryMap = new HashMap<Unit, Territory>(patd.getBombardTerritoryMap());
+		currentlyWins = patd.isCurrentlyWins();
+		battleResult = patd.getBattleResult();
+		minBattleResult = patd.getMinBattleResult();
+		tempUnits = new ArrayList<Unit>(patd.getTempUnits());
+		tempAmphibAttackMap = new HashMap<Unit, List<Unit>>(patd.getTempAmphibAttackMap());
+		loadValue = patd.getLoadValue();
+		value = patd.getValue();
+		seaValue = patd.getSeaValue();
+	}
+	
 	public List<Unit> getAllDefenders()
 	{
 		final List<Unit> defenders = new ArrayList<Unit>(units);

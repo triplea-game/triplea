@@ -8,6 +8,7 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
@@ -132,12 +133,25 @@ public class ProTransportUtils
 			{
 				public int compare(final Unit o1, final Unit o2)
 				{
-					int attack1 = UnitAttachment.get(o1.getType()).getAttack(player);
-					if (UnitAttachment.get(o1.getType()).getArtillery())
-						attack1++;
-					int attack2 = UnitAttachment.get(o2.getType()).getAttack(player);
-					if (UnitAttachment.get(o2.getType()).getArtillery())
-						attack2++;
+					// Very rough way to add support power
+					final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
+					int maxSupport1 = 0;
+					for (final UnitSupportAttachment usa : supportAttachments1)
+					{
+						if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1)
+							maxSupport1 = usa.getBonus();
+					}
+					final int attack1 = UnitAttachment.get(o1.getType()).getAttack(player) + maxSupport1;
+					
+					final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
+					int maxSupport2 = 0;
+					for (final UnitSupportAttachment usa : supportAttachments2)
+					{
+						if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2)
+							maxSupport2 = usa.getBonus();
+					}
+					final int attack2 = UnitAttachment.get(o2.getType()).getAttack(player) + maxSupport2;
+					
 					return attack2 - attack1;
 				}
 			});

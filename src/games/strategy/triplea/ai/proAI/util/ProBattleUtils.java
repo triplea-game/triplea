@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
@@ -14,10 +15,13 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +62,12 @@ public class ProBattleUtils
 	public boolean checkForOverwhelmingWin(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
 	{
 		final GameData data = ai.getGameData();
-		final int attackPower = DiceRoll.getTotalPowerAndRolls(
-					DiceRoll.getUnitPowerAndRollsForNormalBattles(attackingUnits, attackingUnits, defendingUnits, false, false, player, data, t, null, false, null), data).getFirst();
+		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
+		final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackingUnits);
+		Collections.sort(sortedUnitsList, new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+		Collections.reverse(sortedUnitsList);
+		final int attackPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(
+					sortedUnitsList, sortedUnitsList, defendingUnits, false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data).getFirst();
 		final List<Unit> defendersWithHitPoints = Match.getMatches(defendingUnits, Matches.UnitIsInfrastructure.invert());
 		final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
 		
@@ -82,7 +90,7 @@ public class ProBattleUtils
 			return 100;
 		final double attackerStrength = estimateStrength(attackingUnits.get(0).getOwner(), t, attackingUnits, actualDefenders, true);
 		final double defenderStrength = estimateStrength(actualDefenders.get(0).getOwner(), t, actualDefenders, attackingUnits, false);
-		return ((attackerStrength - defenderStrength) / defenderStrength * 50 + 50);
+		return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.8) * 50 + 50);
 	}
 	
 	public double estimateStrength(final PlayerID player, final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits, final boolean attacking)
@@ -90,8 +98,12 @@ public class ProBattleUtils
 		final GameData data = ai.getGameData();
 		final List<Unit> unitsThatCanFight = Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
 		final int myHP = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
-		final int myPower = DiceRoll.getTotalPowerAndRolls(
-					DiceRoll.getUnitPowerAndRollsForNormalBattles(unitsThatCanFight, unitsThatCanFight, enemyUnits, !attacking, false, player, data, t, null, false, null), data).getFirst();
+		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
+		final List<Unit> sortedUnitsList = new ArrayList<Unit>(unitsThatCanFight);
+		Collections.sort(sortedUnitsList, new UnitBattleComparator(!attacking, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
+		Collections.reverse(sortedUnitsList);
+		final int myPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(
+					sortedUnitsList, sortedUnitsList, enemyUnits, !attacking, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data).getFirst();
 		return (2 * myHP) + (myPower * 6.0 / data.getDiceSides());
 	}
 	
@@ -148,7 +160,7 @@ public class ProBattleUtils
 		if (attackingUnits.size() == 0 || (Match.allMatch(attackingUnits, Matches.UnitIsAir) && !t.isWater()))
 			return new ProBattleResultData();
 		else if (defendingUnits.isEmpty() || hasNoDefenders)
-			return new ProBattleResultData(100, 1, true, attackingUnits, 0);
+			return new ProBattleResultData(100, 0.1, true, attackingUnits, 0);
 		else if (Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub) && Match.noneMatch(attackingUnits, Matches.UnitIsDestroyer))
 			return new ProBattleResultData();
 		return null;
@@ -163,14 +175,14 @@ public class ProBattleUtils
 		
 		// Use battle calculator (hasLandUnitRemaining is always true for naval territories)
 		AggregateResults results = null;
-		final int runCount = Math.max(10, 100 - (attackingUnits.size() + defendingUnits.size()));
+		final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
+		final int runCount = Math.max(16, 100 - minArmySize);
 		if (isAttacker)
 			results = ai.getCalc().setCalculateDataAndCalculate(player, t.getOwner(), t, attackingUnits, defendingUnits, new ArrayList<Unit>(bombardingUnits), TerritoryEffectHelper.getEffects(t),
 						runCount);
 		else
 			results = ai.getCalc().setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits, defendingUnits, new ArrayList<Unit>(bombardingUnits),
-						TerritoryEffectHelper.getEffects(t),
-						runCount);
+						TerritoryEffectHelper.getEffects(t), runCount);
 		
 		final double winPercentage = results.getAttackerWinPercent() * 100;
 		final List<Unit> mainCombatAttackers = Match.getMatches(attackingUnits, Matches.UnitCanBeInBattle(true, !t.isWater(), data, 1, false, true, true));
