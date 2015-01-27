@@ -38,6 +38,7 @@ import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.SUtils;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
@@ -162,6 +163,7 @@ public class ProAI extends AbstractAI
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
+		BattleCalculator.clearOOLCache();
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
 		{
@@ -186,6 +188,7 @@ public class ProAI extends AbstractAI
 	@Override
 	protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
+		BattleCalculator.clearOOLCache();
 		if (PUsToSpend <= 0)
 			return;
 		if (purchaseForBid)
@@ -270,6 +273,7 @@ public class ProAI extends AbstractAI
 	@Override
 	protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
+		BattleCalculator.clearOOLCache();
 		if (bid)
 		{
 			purchaseAI.bidPlace(storedPurchaseTerritories, placeDelegate, data, player);

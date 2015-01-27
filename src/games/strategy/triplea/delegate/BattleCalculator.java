@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -77,6 +78,13 @@ import java.util.Set;
  */
 public class BattleCalculator
 {
+	private static Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<String, List<UnitType>>();
+	
+	public static void clearOOLCache()
+	{
+		oolCache.clear();
+	}
+	
 	// private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged; //There is a problem with this variable, that it isn't being cleared out when we switch maps.
 	// we want to sort in a determined way so that those looking at the dice results
 	// can tell what dice is for who
@@ -797,7 +805,7 @@ public class BattleCalculator
 		*/
 		if (!GameRunner2.getCasualtySelectionSlow())
 		{
-			return sortUnitsForCasualtiesWithSupportNew(targetsToPickFrom, hits, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite,
+			return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, hits, defending, player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, battlesite,
 						costs, territoryEffects, data, allowMultipleHitsPerUnit, bonus);
 		}
 		else
@@ -815,6 +823,194 @@ public class BattleCalculator
 			}
 		}
 		*/
+	}
+	
+	private static List<Unit> sortUnitsForCasualtiesWithSupportNewWithCaching(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
+				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
+				final boolean bonus)
+	{
+		// Check OOL cache
+		int targetsHashCode = 1;
+		for (final Unit u : targetsToPickFrom)
+			targetsHashCode = 31 * targetsHashCode + u.getType().hashCode();
+		int amphibHashCode = 1;
+		for (final Unit u : amphibiousLandAttackers)
+			amphibHashCode = 31 * amphibHashCode + u.getType().hashCode();
+		final String key = player.getName() + "|" + battlesite.getName() + "|" + defending + "|" + amphibious + "|" + targetsHashCode + "|" + amphibHashCode;
+		final List<UnitType> stored = oolCache.get(key);
+		if (stored != null)
+		{
+			// System.out.println("Hit with cacheSize=" + oolCache.size() + ", key=" + key);
+			final List<Unit> result = new ArrayList<Unit>();
+			final List<Unit> selectFrom = new ArrayList<Unit>(targetsToPickFrom);
+			for (final UnitType ut : stored)
+			{
+				for (final Iterator<Unit> it = selectFrom.iterator(); it.hasNext();)
+				{
+					final Unit u = it.next();
+					if (ut.equals(u.getType()))
+					{
+						result.add(u);
+						it.remove();
+					}
+				}
+			}
+			return result;
+		}
+		// System.out.println("Miss with cacheSize=" + oolCache.size() + ", key=" + key);
+		
+		// Sort enough units to kill off
+		final List<Unit> sortedUnitsList = new ArrayList<Unit>(targetsToPickFrom);
+		Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
+		Collections.reverse(sortedUnitsList); // Sort units starting with strongest so that support gets added to them first
+		final UnitBattleComparator unitComparatorWithoutPrimaryPower = new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
+		final List<Unit> sortedWellEnoughUnitsList = new ArrayList<Unit>();
+		final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<Unit, IntegerMap<Unit>>();
+		final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<Unit, IntegerMap<Unit>>();
+		final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList, new ArrayList<Unit>(enemyUnits),
+					defending, false, player, data, battlesite, territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
+		
+		Collections.reverse(sortedUnitsList); // Sort units starting with weakest for finding the worst units
+		for (int i = 0; i < sortedUnitsList.size(); ++i)
+		{
+			// Loop through all target units to find the best unit to take as casualty
+			Unit worstUnit = null;
+			int minPower = Integer.MAX_VALUE;
+			final Set<UnitType> unitTypes = new HashSet<UnitType>();
+			for (final Unit u : sortedUnitsList)
+			{
+				if (unitTypes.contains(u.getType()))
+					continue;
+				unitTypes.add(u.getType());
+				
+				// Find unit power
+				final Map<Unit, Tuple<Integer, Integer>> currentUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
+				currentUnitMap.put(u, unitPowerAndRollsMap.get(u));
+				int power = DiceRoll.getTotalPowerAndRolls(currentUnitMap, data).getFirst();
+				
+				// Add any support power that it provides to other units
+				final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
+				if (unitSupportPowerMapForUnit != null)
+				{
+					for (final Unit supportedUnit : unitSupportPowerMapForUnit.keySet())
+					{
+						Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+						if (strengthAndRolls == null)
+							continue;
+						
+						// Remove any rolls provided by this support so they aren't counted twice
+						final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
+						if (unitSupportRollsMapForUnit != null)
+							strengthAndRolls = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit));
+						
+						// If one roll then just add the power
+						if (strengthAndRolls.getSecond() == 1)
+						{
+							power += unitSupportPowerMapForUnit.getInt(supportedUnit);
+							continue;
+						}
+						
+						// Find supported unit power with support
+						final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
+						supportedUnitMap.put(supportedUnit, strengthAndRolls);
+						final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Find supported unit power without support
+						final int strengthWithoutSupport = strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
+						final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+						supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+						final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Add the actual power provided by the support
+						final int addedPower = powerWithSupport - powerWithoutSupport;
+						power += addedPower;
+					}
+				}
+				
+				// Add any power from support rolls that it provides to other units
+				final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(u);
+				if (unitSupportRollsMapForUnit != null)
+				{
+					for (final Unit supportedUnit : unitSupportRollsMapForUnit.keySet())
+					{
+						final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+						if (strengthAndRolls == null)
+							continue;
+						
+						// Find supported unit power with support
+						final Map<Unit, Tuple<Integer, Integer>> supportedUnitMap = new HashMap<Unit, Tuple<Integer, Integer>>();
+						supportedUnitMap.put(supportedUnit, strengthAndRolls);
+						final int powerWithSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Find supported unit power without support
+						final int rollsWithoutSupport = strengthAndRolls.getSecond() - unitSupportRollsMap.get(u).getInt(supportedUnit);
+						final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+						supportedUnitMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+						final int powerWithoutSupport = DiceRoll.getTotalPowerAndRolls(supportedUnitMap, data).getFirst();
+						
+						// Add the actual power provided by the support
+						final int addedPower = powerWithSupport - powerWithoutSupport;
+						power += addedPower;
+					}
+				}
+				
+				// Check if unit has lower power
+				if (power < minPower || (power == minPower && unitComparatorWithoutPrimaryPower.compare(u, worstUnit) < 0))
+				{
+					worstUnit = u;
+					minPower = power;
+				}
+			}
+			
+			// Add worst unit to sorted list, update any units it supported, and remove from other collections
+			final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(worstUnit);
+			if (unitSupportPowerMapForUnit != null)
+			{
+				for (final Unit supportedUnit : unitSupportPowerMapForUnit.keySet())
+				{
+					final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+					if (strengthAndRolls == null)
+						continue;
+					
+					final int strengthWithoutSupport = strengthAndRolls.getFirst() - unitSupportPowerMapForUnit.getInt(supportedUnit);
+					final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthWithoutSupport, strengthAndRolls.getSecond());
+					unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+					sortedUnitsList.remove(supportedUnit);
+					sortedUnitsList.add(0, supportedUnit);
+				}
+			}
+			final IntegerMap<Unit> unitSupportRollsMapForUnit = unitSupportRollsMap.get(worstUnit);
+			if (unitSupportRollsMapForUnit != null)
+			{
+				for (final Unit supportedUnit : unitSupportRollsMapForUnit.keySet())
+				{
+					final Tuple<Integer, Integer> strengthAndRolls = unitPowerAndRollsMap.get(supportedUnit);
+					if (strengthAndRolls == null)
+						continue;
+					
+					final int rollsWithoutSupport = strengthAndRolls.getSecond() - unitSupportRollsMapForUnit.getInt(supportedUnit);
+					final Tuple<Integer, Integer> strengthAndRollsWithoutSupport = new Tuple<Integer, Integer>(strengthAndRolls.getFirst(), rollsWithoutSupport);
+					unitPowerAndRollsMap.put(supportedUnit, strengthAndRollsWithoutSupport);
+					sortedUnitsList.remove(supportedUnit);
+					sortedUnitsList.add(0, supportedUnit);
+				}
+			}
+			sortedWellEnoughUnitsList.add(worstUnit);
+			sortedUnitsList.remove(worstUnit);
+			unitPowerAndRollsMap.remove(worstUnit);
+			unitSupportPowerMap.remove(worstUnit);
+			unitSupportRollsMap.remove(worstUnit);
+		}
+		sortedWellEnoughUnitsList.addAll(sortedUnitsList);
+		
+		// Convert list of units to list of unit types
+		final List<UnitType> unitTypes = new ArrayList<UnitType>();
+		for (final Unit u : sortedWellEnoughUnitsList)
+			unitTypes.add(u.getType());
+		oolCache.put(key, unitTypes);
+		
+		return sortedWellEnoughUnitsList;
 	}
 	
 	private static List<Unit> sortUnitsForCasualtiesWithSupportNew(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
