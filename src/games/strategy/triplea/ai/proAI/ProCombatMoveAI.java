@@ -570,21 +570,17 @@ public class ProCombatMoveAI
 			}
 			
 			// Remove neutral and low value amphib land territories that can't be held
+			final boolean isNeutral = t.getOwner().isNull();
+			final double strengthDifference = battleUtils.estimateStrengthDifference(player, t, patd.getMaxUnits());
 			if (!patd.isCanHold() && enemyAttackMap.get(t) != null && !t.isWater())
 			{
-				final boolean isNeutral = t.getOwner().isNull();
-				
-				if (isNeutral)
+				if (isNeutral && strengthDifference <= 250)
 				{
 					// Remove any neutral territories that can't be held, can be counter attacked, and don't have overwhelming attack strength (more than 5 times)
-					final double strengthDifference = battleUtils.estimateStrengthDifference(player, t, patd.getMaxUnits());
-					if (strengthDifference <= 250)
-					{
-						LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + t.getName() + ", enemyAttackers="
+					LogUtils.log(Level.FINER, "Removing neutral territory that can't be held: " + t.getName() + ", enemyAttackers="
 									+ enemyAttackMap.get(t).getMaxUnits() + ", enemyAmphibAttackers=" + enemyAttackMap.get(t).getMaxAmphibUnits() + ", strengthDifference=" + strengthDifference);
-						it.remove();
-						continue;
-					}
+					it.remove();
+					continue;
 				}
 				else if (patd.isNeedAmphibUnits() && patd.getValue() < 2)
 				{
@@ -596,8 +592,8 @@ public class ProCombatMoveAI
 				}
 			}
 			
-			// Remove neutral territories that have attackers adjacent to enemy territories that aren't being attacked
-			if (t.getOwner().isNull() && !t.isWater())
+			// Remove neutral territories that have attackers adjacent to enemy territories that aren't being attacked and doesn't have overwhelming attack strength (more than 5 times)
+			if (isNeutral && !t.isWater() && strengthDifference <= 250)
 			{
 				// Get list of territories I'm attacking
 				final List<Territory> prioritizedTerritoryList = new ArrayList<Territory>();

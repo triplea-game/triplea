@@ -13,6 +13,7 @@ package games.strategy.triplea.ai.proAI;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
@@ -51,7 +52,7 @@ public class ProAmphibData
 		}
 	}
 	
-	public void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories)
+	public void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories, final GameData data)
 	{
 		for (final Territory attackTerritory : attackTerritories)
 		{
@@ -65,6 +66,7 @@ public class ProAmphibData
 				territories.addAll(myUnitsToLoadTerritories);
 				seaTransportMap.put(attackTerritory, territories);
 			}
+			seaTransportMap.get(attackTerritory).removeAll(data.getMap().getNeighbors(attackTerritory));
 		}
 	}
 	

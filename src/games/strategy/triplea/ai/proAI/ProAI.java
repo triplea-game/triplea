@@ -163,6 +163,7 @@ public class ProAI extends AbstractAI
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
+		final long start = System.currentTimeMillis();
 		BattleCalculator.clearOOLCache();
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
@@ -183,11 +184,13 @@ public class ProAI extends AbstractAI
 				storedCombatMoveMap = null;
 			}
 		}
+		LogUtils.log(Level.FINE, player.getName() + " time for nonCombat=" + nonCombat + " time=" + (System.currentTimeMillis() - start));
 	}
 	
 	@Override
 	protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
+		final long start = System.currentTimeMillis();
 		BattleCalculator.clearOOLCache();
 		if (PUsToSpend <= 0)
 			return;
@@ -268,11 +271,13 @@ public class ProAI extends AbstractAI
 				}
 			}
 		}
+		LogUtils.log(Level.FINE, player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
 	}
 	
 	@Override
 	protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
+		final long start = System.currentTimeMillis();
 		BattleCalculator.clearOOLCache();
 		if (bid)
 		{
@@ -282,6 +287,7 @@ public class ProAI extends AbstractAI
 		{
 			purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
 		}
+		LogUtils.log(Level.FINE, player.getName() + " time for place=" + (System.currentTimeMillis() - start));
 	}
 	
 	@Override

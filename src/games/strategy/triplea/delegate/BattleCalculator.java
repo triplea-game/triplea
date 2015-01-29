@@ -830,14 +830,26 @@ public class BattleCalculator
 				final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean allowMultipleHitsPerUnit,
 				final boolean bonus)
 	{
-		// Check OOL cache
-		int targetsHashCode = 1;
+		// Convert unit lists to unit type lists
+		final List<UnitType> targetTypes = new ArrayList<UnitType>();
 		for (final Unit u : targetsToPickFrom)
-			targetsHashCode = 31 * targetsHashCode + u.getType().hashCode();
-		int amphibHashCode = 1;
+			targetTypes.add(u.getType());
+		final List<UnitType> amphibTypes = new ArrayList<UnitType>();
 		for (final Unit u : amphibiousLandAttackers)
-			amphibHashCode = 31 * amphibHashCode + u.getType().hashCode();
-		final String key = player.getName() + "|" + battlesite.getName() + "|" + defending + "|" + amphibious + "|" + targetsHashCode + "|" + amphibHashCode;
+			amphibTypes.add(u.getType());
+		
+		// Calculate hashes and cache key
+		int targetsHashCode = 1;
+		for (final UnitType ut : targetTypes)
+			targetsHashCode += ut.hashCode();
+		targetsHashCode *= 31;
+		int amphibHashCode = 1;
+		for (final UnitType ut : amphibTypes)
+			amphibHashCode += ut.hashCode();
+		amphibHashCode *= 31;
+		String key = player.getName() + "|" + battlesite.getName() + "|" + defending + "|" + amphibious + "|" + targetsHashCode + "|" + amphibHashCode;
+		
+		// Check OOL cache
 		final List<UnitType> stored = oolCache.get(key);
 		if (stored != null)
 		{
@@ -1004,11 +1016,28 @@ public class BattleCalculator
 		}
 		sortedWellEnoughUnitsList.addAll(sortedUnitsList);
 		
-		// Convert list of units to list of unit types
+		// Cache result and all subsets of the result
 		final List<UnitType> unitTypes = new ArrayList<UnitType>();
 		for (final Unit u : sortedWellEnoughUnitsList)
 			unitTypes.add(u.getType());
-		oolCache.put(key, unitTypes);
+		for (final Iterator<UnitType> it = unitTypes.iterator(); it.hasNext();)
+		{
+			oolCache.put(key, new ArrayList<UnitType>(unitTypes));
+			final UnitType unitTypeToRemove = it.next();
+			targetTypes.remove(unitTypeToRemove);
+			if (Collections.frequency(targetTypes, unitTypeToRemove) < Collections.frequency(amphibTypes, unitTypeToRemove))
+				amphibTypes.remove(unitTypeToRemove);
+			targetsHashCode = 1;
+			for (final UnitType ut : targetTypes)
+				targetsHashCode += ut.hashCode();
+			targetsHashCode *= 31;
+			amphibHashCode = 1;
+			for (final UnitType ut : amphibTypes)
+				amphibHashCode += ut.hashCode();
+			amphibHashCode *= 31;
+			key = player.getName() + "|" + battlesite.getName() + "|" + defending + "|" + amphibious + "|" + targetsHashCode + "|" + amphibHashCode;
+			it.remove();
+		}
 		
 		return sortedWellEnoughUnitsList;
 	}

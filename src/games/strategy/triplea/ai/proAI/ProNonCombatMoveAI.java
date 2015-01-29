@@ -846,7 +846,10 @@ public class ProNonCombatMoveAI
 				// Get all units that have already moved
 				final List<Unit> alreadyMovedUnits = new ArrayList<Unit>();
 				for (final Territory t : moveMap.keySet())
-					alreadyMovedUnits.addAll(moveMap.get(t).getAllDefenders());
+				{
+					alreadyMovedUnits.addAll(moveMap.get(t).getUnits());
+					alreadyMovedUnits.addAll(moveMap.get(t).getTempUnits());
+				}
 				
 				// Transport amphib units to best land territory
 				Territory maxValueTerritory = null;

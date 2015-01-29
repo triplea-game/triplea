@@ -641,7 +641,7 @@ public class ProAttackOptionsUtils
 							
 							// Add to transport map
 							proTransportData.addTerritories(amphibTerritories, myUnitsToLoadTerritories);
-							proTransportData.addSeaTerritories(seaMoveTerritories, myUnitsToLoadTerritories);
+							proTransportData.addSeaTerritories(seaMoveTerritories, myUnitsToLoadTerritories, data);
 						}
 					}
 					currentTerritories.clear();
