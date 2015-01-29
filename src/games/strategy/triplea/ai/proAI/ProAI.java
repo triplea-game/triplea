@@ -168,7 +168,7 @@ public class ProAI extends AbstractAI
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
 		{
-			nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel, data, player);
+			nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel, data, player, false);
 			storedFactoryMoveMap = null;
 		}
 		else
@@ -176,11 +176,11 @@ public class ProAI extends AbstractAI
 			LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
 			if (storedCombatMoveMap == null)
 			{
-				combatMoveAI.doCombatMove(moveDel, data, player);
+				combatMoveAI.doCombatMove(moveDel, data, player, false);
 			}
 			else
 			{
-				combatMoveAI.doMove(storedCombatMoveMap, moveDel, data, player);
+				combatMoveAI.doMove(storedCombatMoveMap, moveDel, data, player, false);
 				storedCombatMoveMap = null;
 			}
 		}
@@ -249,13 +249,13 @@ public class ProAI extends AbstractAI
 				LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
 				if (stepName.endsWith("NonCombatMove"))
 				{
-					final Map<Territory, ProAttackTerritoryData> factoryMoveMap = nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy);
+					final Map<Territory, ProAttackTerritoryData> factoryMoveMap = nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
 					if (storedFactoryMoveMap == null)
 						storedFactoryMoveMap = simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
 				}
 				else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove"))
 				{
-					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy);
+					final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
 					if (storedCombatMoveMap == null)
 						storedCombatMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
 				}

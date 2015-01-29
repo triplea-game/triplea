@@ -98,7 +98,7 @@ public class ProCombatMoveAI
 		this.purchaseUtils = purchaseUtils;
 	}
 	
-	public Map<Territory, ProAttackTerritoryData> doCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+	public Map<Territory, ProAttackTerritoryData> doCombatMove(final IMoveDelegate moveDel, final GameData data, final PlayerID player, final boolean isSimulation)
 	{
 		LogUtils.log(Level.FINE, "Starting combat move phase");
 		
@@ -168,7 +168,7 @@ public class ProCombatMoveAI
 			determineIfCapitalCanBeHeld(attackMap, prioritizedTerritories, landPurchaseOptions);
 		
 		// Calculate attack routes and perform moves
-		doMove(attackMap, moveDel, data, player);
+		doMove(attackMap, moveDel, data, player, isSimulation);
 		
 		// Log results
 		LogUtils.log(Level.FINE, "Logging results");
@@ -177,7 +177,7 @@ public class ProCombatMoveAI
 		return attackMap;
 	}
 	
-	public void doMove(final Map<Territory, ProAttackTerritoryData> attackMap, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+	public void doMove(final Map<Territory, ProAttackTerritoryData> attackMap, final IMoveDelegate moveDel, final GameData data, final PlayerID player, final boolean isSimulation)
 	{
 		this.data = data;
 		this.player = player;
@@ -187,20 +187,20 @@ public class ProCombatMoveAI
 		final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
 		final List<Route> moveRoutes = new ArrayList<Route>();
 		moveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, attackMap, true);
-		moveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+		moveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
 		
 		// Calculate amphib attack routes and perform moves
 		moveUnits.clear();
 		moveRoutes.clear();
 		final List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
 		moveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
-		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
+		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel, isSimulation);
 		
 		// Calculate attack routes and perform moves
 		moveUnits.clear();
 		moveRoutes.clear();
 		moveUtils.calculateBombardMoveRoutes(player, moveUnits, moveRoutes, attackMap);
-		moveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+		moveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
 	}
 	
 	private List<ProAttackTerritoryData> prioritizeAttackOptions(final PlayerID player, final Map<Territory, ProAttackTerritoryData> attackMap, final Map<Unit, Set<Territory>> unitAttackMap,

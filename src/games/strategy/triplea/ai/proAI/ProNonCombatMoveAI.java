@@ -102,7 +102,7 @@ public class ProNonCombatMoveAI
 	}
 	
 	public Map<Territory, ProAttackTerritoryData> doNonCombatMove(Map<Territory, ProAttackTerritoryData> factoryMoveMap, final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-				final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+				final IMoveDelegate moveDel, final GameData data, final PlayerID player, final boolean isSimulation)
 	{
 		LogUtils.log(Level.FINE, "Starting non-combat move phase");
 		
@@ -221,7 +221,7 @@ public class ProNonCombatMoveAI
 		}
 		
 		// Calculate move routes and perform moves
-		doMove(moveMap, moveDel, data, player);
+		doMove(moveMap, moveDel, data, player, isSimulation);
 		
 		// Log results
 		LogUtils.log(Level.FINE, "Logging results");
@@ -230,7 +230,7 @@ public class ProNonCombatMoveAI
 		return factoryMoveMap;
 	}
 	
-	public void doMove(final Map<Territory, ProAttackTerritoryData> moveMap, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
+	public void doMove(final Map<Territory, ProAttackTerritoryData> moveMap, final IMoveDelegate moveDel, final GameData data, final PlayerID player, final boolean isSimulation)
 	{
 		this.data = data;
 		this.player = player;
@@ -240,14 +240,14 @@ public class ProNonCombatMoveAI
 		final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
 		final List<Route> moveRoutes = new ArrayList<Route>();
 		moveUtils.calculateMoveRoutes(player, areNeutralsPassableByAir, moveUnits, moveRoutes, moveMap, false);
-		moveUtils.doMove(moveUnits, moveRoutes, null, moveDel);
+		moveUtils.doMove(moveUnits, moveRoutes, null, moveDel, isSimulation);
 		
 		// Calculate amphib move routes and perform moves
 		moveUnits.clear();
 		moveRoutes.clear();
 		final List<Collection<Unit>> transportsToLoad = new ArrayList<Collection<Unit>>();
 		moveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, moveMap, false);
-		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
+		moveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel, isSimulation);
 	}
 	
 	private void findUnitsThatCantMove(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,

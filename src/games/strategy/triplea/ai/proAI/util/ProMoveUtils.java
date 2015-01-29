@@ -261,11 +261,12 @@ public class ProMoveUtils
 		}
 	}
 	
-	public void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel)
+	public void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel, final boolean isSimulation)
 	{
 		for (int i = 0; i < moveRoutes.size(); i++)
 		{
-			utils.pause();
+			if (!isSimulation)
+				utils.pause();
 			if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null)
 			{
 				LogUtils.log(Level.WARNING, "Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
