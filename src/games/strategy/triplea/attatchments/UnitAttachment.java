@@ -3108,7 +3108,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		return games.strategy.triplea.Properties.getWW2V3TechModel(data);
 	}*/
-	
+
 	private boolean playerHasRockets(final PlayerID player)
 	{
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
@@ -3174,7 +3174,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  isDestroyer:" + m_isDestroyer
 					+ "  canBombard:" + m_canBombard
 					+ "  bombard:" + m_bombard
-					
+
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
@@ -3190,7 +3190,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  targetsAA:" + (m_targetsAA != null ? (m_targetsAA.size() == 0 ? "empty" : m_targetsAA.toString()) : "all air units")
 					+ "  willNotFireIfPresent:" + (m_willNotFireIfPresent != null ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString()) : "null")
 					+ "  isRocket:" + m_isRocket
-					
+
 					+ "  canProduceUnits:" + m_canProduceUnits
 					+ "  canProduceXUnits:" + m_canProduceXUnits
 					+ "  createsUnitsList:" + (m_createsUnitsList != null ? (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString()) : "null")
@@ -3392,10 +3392,10 @@ public class UnitAttachment extends DefaultAttachment
 					{
 						if (support.getUnitType() == null || support.getUnitType().isEmpty())
 							continue;
-						stats.append("gives " + support.getBonus() + (support.getOffence() && support.getDefence() ? " Att/Def " : (support.getOffence() ? " Attack " : " Defense "))
-									+ (support.getStrength() && support.getRoll() ? "Power&Rolls " : (support.getStrength() ? "Power " : "Rolls "))
+						stats.append("gives " + support.getBonus() + (support.getStrength() && support.getRoll() ? " Power&Rolls" : (support.getStrength() ? " Power" : " Rolls"))
 									+ " to " + support.getNumber() + (support.getAllied() && support.getEnemy() ? " Allied&Enemy " : (support.getAllied() ? " Allied " : " Enemy "))
-									+ (support.getUnitType().size() > 4 ? "Units" : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false)) + ", ");
+									+ (support.getUnitType().size() > 4 ? "Units" : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false)) + " when "
+									+ (support.getOffence() && support.getDefence() ? "Att/Def" : (support.getOffence() ? "Attacking" : "Defending")) + ", ");
 					}
 				}
 			}
