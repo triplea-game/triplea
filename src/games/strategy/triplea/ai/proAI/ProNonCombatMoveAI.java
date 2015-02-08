@@ -162,7 +162,7 @@ public class ProNonCombatMoveAI
 			if (!moveMap.get(t).isCanHold())
 				territoriesThatCantBeHeld.add(t);
 		}
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld);
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
 		final Map<Territory, Double> seaTerritoryValueMap = territoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
 		
 		// Copy data in case capital defense needs increased
@@ -1115,7 +1115,10 @@ public class ProNonCombatMoveAI
 			for (final Territory t : moveMap.keySet())
 			{
 				for (final Unit u : moveMap.get(t).getTransportTerritoryMap().keySet())
-					moveMap.get(moveMap.get(t).getTransportTerritoryMap().get(u)).addTempUnit(u);
+				{
+					if (moveMap.get(moveMap.get(t).getTransportTerritoryMap().get(u)) != null) // Can rarely happen for canals
+						moveMap.get(moveMap.get(t).getTransportTerritoryMap().get(u)).addTempUnit(u);
+				}
 			}
 			
 			LogUtils.log(Level.FINER, "Move sea units");
@@ -1609,7 +1612,7 @@ public class ProNonCombatMoveAI
 		LogUtils.log(Level.FINER, "Prioritized territories:");
 		for (final ProAttackTerritoryData attackTerritoryData : prioritizedTerritories)
 		{
-			LogUtils.log(Level.FINEST, "  " + attackTerritoryData.getTUVSwing() + "  " + attackTerritoryData.getValue() + "  " + attackTerritoryData.getTerritory().getName());
+			LogUtils.log(Level.FINEST, "  " + attackTerritoryData.getValue() + "  " + attackTerritoryData.getTerritory().getName());
 		}
 		
 		// Print transport map

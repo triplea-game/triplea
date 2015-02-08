@@ -262,4 +262,17 @@ public class ProPurchaseUtils
 		return placeUnits;
 	}
 	
+	public double getMinCostPerHitPoint(final PlayerID player, final List<ProPurchaseOption> landPurchaseOptions)
+	{
+		// Determine most cost efficient defender that can be produced in this territory
+		double minCostPerHitPoint = Double.MAX_VALUE;
+		for (final ProPurchaseOption ppo : landPurchaseOptions)
+		{
+			if (ppo.getCostPerHitPoint() < minCostPerHitPoint)
+				minCostPerHitPoint = ppo.getCostPerHitPoint();
+		}
+		
+		return minCostPerHitPoint;
+	}
+	
 }

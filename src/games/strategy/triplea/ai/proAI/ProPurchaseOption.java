@@ -97,7 +97,7 @@ public class ProPurchaseOption
 		if (hitPoints == 0)
 			costPerHitPoint = Double.POSITIVE_INFINITY;
 		else
-			costPerHitPoint = (double) cost / hitPoints;
+			costPerHitPoint = ((double) cost) / hitPoints;
 		hitPointEfficiency = (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
 		attackEfficiency = (1 + hitPoints) * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
 		defenseEfficiency = (1 + hitPoints) * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;

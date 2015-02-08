@@ -29,7 +29,7 @@ public class ProAttackTerritoryData
 	private Territory territory;
 	private List<Unit> maxUnits;
 	private List<Unit> units;
-	private double TUVSwing;
+	private ProBattleResultData maxBattleResult;
 	private double value;
 	private double seaValue;
 	private boolean canHold;
@@ -67,7 +67,7 @@ public class ProAttackTerritoryData
 		cantMoveUnits = new ArrayList<Unit>();
 		maxEnemyUnits = new ArrayList<Unit>();
 		maxEnemyBombardUnits = new HashSet<Unit>();
-		TUVSwing = 0;
+		maxBattleResult = new ProBattleResultData();
 		canHold = true;
 		canAttack = false;
 		strengthEstimate = Double.POSITIVE_INFINITY;
@@ -97,7 +97,7 @@ public class ProAttackTerritoryData
 		cantMoveUnits = new ArrayList<Unit>(patd.getCantMoveUnits());
 		maxEnemyUnits = new ArrayList<Unit>(patd.getMaxEnemyUnits());
 		maxEnemyBombardUnits = new HashSet<Unit>(patd.getMaxEnemyBombardUnits());
-		TUVSwing = patd.getTUVSwing();
+		minBattleResult = patd.getMaxBattleResult();
 		canHold = patd.isCanHold();
 		canAttack = patd.isCanAttack();
 		strengthEstimate = patd.getStrengthEstimate();
@@ -177,16 +177,6 @@ public class ProAttackTerritoryData
 	public List<Unit> getMaxUnits()
 	{
 		return maxUnits;
-	}
-	
-	public double getTUVSwing()
-	{
-		return TUVSwing;
-	}
-	
-	public void setTUVSwing(final double tUVSwing)
-	{
-		TUVSwing = tUVSwing;
 	}
 	
 	public void setValue(final double value)
@@ -460,6 +450,16 @@ public class ProAttackTerritoryData
 	public Set<Unit> getMaxEnemyBombardUnits()
 	{
 		return maxEnemyBombardUnits;
+	}
+	
+	public void setMaxBattleResult(final ProBattleResultData maxBattleResult)
+	{
+		this.maxBattleResult = maxBattleResult;
+	}
+	
+	public ProBattleResultData getMaxBattleResult()
+	{
+		return maxBattleResult;
 	}
 	
 }

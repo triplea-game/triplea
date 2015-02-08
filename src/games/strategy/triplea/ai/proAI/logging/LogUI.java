@@ -29,6 +29,8 @@ public class LogUI
 {
 	private static TripleAFrame s_frame = null;
 	private static LogWindow s_settingsWindow = null;
+	private static String currentName = "";
+	private static int currentRound = 0;
 	
 	public static void initialize(final TripleAFrame frame)
 	{
@@ -65,7 +67,12 @@ public class LogUI
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
 			return;
-		s_settingsWindow.notifyNewRound(round, name);
+		if (round != currentRound || !name.equals(currentName))
+		{
+			currentRound = round;
+			currentName = name;
+			s_settingsWindow.notifyNewRound(round, name);
+		}
 	}
 	
 }

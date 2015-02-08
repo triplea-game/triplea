@@ -521,7 +521,7 @@ public class ProPurchaseAI
 		
 		// Find strategic value for each territory
 		LogUtils.log(Level.FINE, "Find strategic value for place territories");
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>());
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
 		for (final Territory t : purchaseTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
@@ -894,7 +894,7 @@ public class ProPurchaseAI
 		
 		// Find strategic value for each territory
 		LogUtils.log(Level.FINE, "Find strategic value for place territories");
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>());
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
 		for (final Territory t : placeNonConstructionTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : placeNonConstructionTerritories.get(t).getCanPlaceTerritories())
@@ -1436,7 +1436,7 @@ public class ProPurchaseAI
 		}
 		
 		// Find strategic value for each territory
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld);
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
 		double maxValue = 0.0;
 		Territory maxTerritory = null;
 		for (final Territory t : purchaseFactoryTerritories)

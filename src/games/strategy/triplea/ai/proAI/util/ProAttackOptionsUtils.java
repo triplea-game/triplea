@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -199,7 +200,12 @@ public class ProAttackOptionsUtils
 				final UnitAttachment ua1 = UnitAttachment.get(o1.getKey().getType());
 				if (ua1.getIsAir())
 					minPower1 *= 10;
-				final double attackEfficiency1 = minPower1 / playerCostMap.getInt(o1.getKey().getType());
+				double attackEfficiency1 = minPower1;
+				// TODO: move this warning to a centralized place
+				if (playerCostMap.getInt(o1.getKey().getType()) > 0)
+					attackEfficiency1 = minPower1 / playerCostMap.getInt(o1.getKey().getType());
+				else
+					LogUtils.log(Level.WARNING, "No unit cost defined for " + o1.getKey().getType() + ". Consider adding a production rule for this unit type.");
 				
 				int minPower2 = Integer.MAX_VALUE;
 				for (final Territory t : o2.getValue())
@@ -227,7 +233,11 @@ public class ProAttackOptionsUtils
 				final UnitAttachment ua2 = UnitAttachment.get(o2.getKey().getType());
 				if (ua2.getIsAir())
 					minPower2 *= 10;
-				final double attackEfficiency2 = minPower2 / playerCostMap.getInt(o2.getKey().getType());
+				double attackEfficiency2 = minPower2;
+				if (playerCostMap.getInt(o2.getKey().getType()) > 0)
+					attackEfficiency2 = minPower2 / playerCostMap.getInt(o2.getKey().getType());
+				else
+					LogUtils.log(Level.WARNING, "No unit cost defined for " + o2.getKey().getType() + ". Consider adding a production rule for this unit type.");
 				
 				if (attackEfficiency1 != attackEfficiency2)
 				{
@@ -358,17 +368,39 @@ public class ProAttackOptionsUtils
 				
 				for (final Territory potentialTerritory : potentialTerritories)
 				{
-					// Find route over water with no enemy units blocking
-					Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
-								ProMatches.territoryCanMoveSeaUnitsThroughOrCleared(player, data, isCombatMove, enemyTerritories));
-					if (isCheckingEnemyAttacks)
-						myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove));
-					if (myRoute == null)
-						continue;
-					if (MoveValidator.validateCanal(myRoute, Collections.singletonList(mySeaUnit), player, data) != null)
-						continue;
-					final int myRouteLength = myRoute.numberOfSteps();
-					if (myRouteLength > range)
+					// Find route over water
+					boolean hasNoRoute = true;
+					final List<Territory> eliminatedTerritories = new ArrayList<Territory>();
+					while (true) // Need a loop to consider different route combinations to avoid canals
+					{
+						Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
+									ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(player, data, isCombatMove, enemyTerritories, eliminatedTerritories));
+						if (isCheckingEnemyAttacks)
+						{
+							myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
+										ProMatches.territoryCanMoveSeaUnitsAndNotInList(player, data, isCombatMove, eliminatedTerritories));
+						}
+						if (myRoute == null)
+							break;
+						if (MoveValidator.validateCanal(myRoute, Collections.singletonList(mySeaUnit), player, data) != null)
+						{
+							if (!myRoute.getMiddleSteps().isEmpty())
+							{
+								eliminatedTerritories.addAll(myRoute.getMiddleSteps()); // Add failed canal territories to list
+								continue;
+							}
+							else
+							{
+								break;
+							}
+						}
+						final int myRouteLength = myRoute.numberOfSteps();
+						if (myRouteLength > range)
+							break;
+						hasNoRoute = false;
+						break;
+					}
+					if (hasNoRoute)
 						continue;
 					
 					// Populate territories with sea unit

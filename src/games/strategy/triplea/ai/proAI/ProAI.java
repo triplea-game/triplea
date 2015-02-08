@@ -105,7 +105,7 @@ public class ProAI extends AbstractAI
 		purchaseUtils = new ProPurchaseUtils(this);
 		attackOptionsUtils = new ProAttackOptionsUtils(this, utils, battleUtils, transportUtils, purchaseUtils);
 		moveUtils = new ProMoveUtils(this, utils);
-		territoryValueUtils = new ProTerritoryValueUtils(this, utils);
+		territoryValueUtils = new ProTerritoryValueUtils(this, utils, battleUtils);
 		simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
 		combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
@@ -165,6 +165,7 @@ public class ProAI extends AbstractAI
 	{
 		final long start = System.currentTimeMillis();
 		BattleCalculator.clearOOLCache();
+		LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
 		s_battleCalculator.setGameData(data);
 		if (nonCombat)
 		{
@@ -173,7 +174,6 @@ public class ProAI extends AbstractAI
 		}
 		else
 		{
-			LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
 			if (storedCombatMoveMap == null)
 			{
 				combatMoveAI.doCombatMove(moveDel, data, player, false);
@@ -192,6 +192,7 @@ public class ProAI extends AbstractAI
 	{
 		final long start = System.currentTimeMillis();
 		BattleCalculator.clearOOLCache();
+		LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
 		if (PUsToSpend <= 0)
 			return;
 		if (purchaseForBid)
@@ -279,6 +280,7 @@ public class ProAI extends AbstractAI
 	{
 		final long start = System.currentTimeMillis();
 		BattleCalculator.clearOOLCache();
+		LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
 		if (bid)
 		{
 			purchaseAI.bidPlace(storedPurchaseTerritories, placeDelegate, data, player);

@@ -21,6 +21,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -130,11 +131,23 @@ public class ProMatches
 							.territoryIsInList(enemyTerritories).invert());
 				if (isCombatMove && Matches.UnitCanBlitz.match(u))
 				{
-					final Match<Territory> alliedOrBlitzableMatch = new CompositeMatchOr<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsBlitzable(player, data));
+					final Match<Territory> alliedOrBlitzableMatch = new CompositeMatchOr<Territory>(Matches.isTerritoryAllied(player, data), territoryIsBlitzable(player, data, u));
 					match = new CompositeMatchAnd<Territory>(ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove), alliedOrBlitzableMatch, Matches.territoryIsInList(enemyTerritories)
 								.invert());
 				}
 				return match.match(t);
+			}
+		};
+	}
+	
+	public static Match<Territory> territoryIsBlitzable(final PlayerID player, final GameData data, final Unit u)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				return Matches.TerritoryIsBlitzable(player, data).match(t) && TerritoryEffectHelper.unitKeepsBlitz(u, t);
 			}
 		};
 	}
@@ -169,7 +182,21 @@ public class ProMatches
 		};
 	}
 	
-	public static Match<Territory> territoryCanMoveSeaUnitsThroughOrCleared(final PlayerID player, final GameData data, final boolean isCombatMove, final List<Territory> clearedTerritories)
+	public static Match<Territory> territoryCanMoveSeaUnitsAndNotInList(final PlayerID player, final GameData data, final boolean isCombatMove, final List<Territory> notTerritories)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				final Match<Territory> match = new CompositeMatchAnd<Territory>(territoryCanMoveSeaUnits(player, data, isCombatMove), Matches.territoryIsNotInList(notTerritories));
+				return match.match(t);
+			}
+		};
+	}
+	
+	public static Match<Territory> territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(final PlayerID player, final GameData data, final boolean isCombatMove,
+				final List<Territory> clearedTerritories, final List<Territory> notTerritories)
 	{
 		return new Match<Territory>()
 		{
@@ -177,7 +204,7 @@ public class ProMatches
 			public boolean match(final Territory t)
 			{
 				final Match<Territory> match = new CompositeMatchAnd<Territory>(territoryCanMoveSeaUnits(player, data, isCombatMove), territoryHasNoEnemyUnitsOrCleared(player, data,
-							clearedTerritories));
+							clearedTerritories), Matches.territoryIsNotInList(notTerritories));
 				return match.match(t);
 			}
 		};
@@ -592,6 +619,19 @@ public class ProMatches
 			public boolean match(final Unit u)
 			{
 				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsAAforAnything.invert());
+				return match.match(u);
+			}
+		};
+	}
+	
+	public static Match<Unit> unitIsEnemyAndNotInfa(final PlayerID player, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsNotInfrastructure);
 				return match.match(u);
 			}
 		};
