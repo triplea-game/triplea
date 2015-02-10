@@ -15,6 +15,7 @@ package games.strategy.triplea.ai.proAI.util;
  */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -131,6 +132,22 @@ public class ProUtils
 			return minDistance;
 		else
 			return -1;
+	}
+	
+	/**
+	 * Returns whether the game is a FFA based on whether any of the player's enemies
+	 * are enemies of each other.
+	 */
+	public boolean isFFA(final GameData data, final PlayerID player)
+	{
+		final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
+		final Set<PlayerID> enemies = relationshipTracker.getEnemies(player);
+		for (final PlayerID enemy : enemies)
+		{
+			if (relationshipTracker.isAtWarWithAnyOfThesePlayers(enemy, enemies))
+				return true;
+		}
+		return false;
 	}
 	
 	/**

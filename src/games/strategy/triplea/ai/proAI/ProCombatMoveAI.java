@@ -284,6 +284,7 @@ public class ProCombatMoveAI
 			final boolean isAdjacentToMyCapital = !data.getMap().getNeighbors(t, Matches.territoryIs(myCapital)).isEmpty();
 			final int isNotNeutralAdjacentToMyCapital = (isAdjacentToMyCapital && Matches.TerritoryIsNotNeutralButCouldBeWater.match(t)) ? 1 : 0;
 			final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t) ? 1 : 0;
+			final int isFFA = utils.isFFA(data, player) ? 1 : 0;
 			
 			// Determine production value and if it is an enemy capital
 			int production = 0;
@@ -297,13 +298,11 @@ public class ProCombatMoveAI
 			}
 			
 			// Calculate attack value for prioritization
-			final double TUVSwing = patd.getMaxBattleResult().getTUVSwing();
-			double defendingUnitsSizeMultiplier = (1.0 / (defendingUnits.size() + 1)) + 0.5; // Ratio used to consider how many attackers I need (1 to 0.5)
-			if (TUVSwing < 0)
-				defendingUnitsSizeMultiplier = 1;
-			final double territoryValue = (1 + isLand + isCanHold) * (1 + isEmptyLand) * (1 + isFactory) * (1 - 0.5 * isAmphib) * production;
-			double attackValue = (defendingUnitsSizeMultiplier * TUVSwing + territoryValue) * (1 + 4 * isEnemyCapital)
-						* (1 + 2 * isNotNeutralAdjacentToMyCapital) * (1 - 0.9 * isNeutral);
+			double TUVSwing = patd.getMaxBattleResult().getTUVSwing();
+			if (isFFA == 1 && TUVSwing > 0) // reduce TUV swing in FFAs
+				TUVSwing *= 0.5;
+			final double territoryValue = (1 + isLand + isCanHold * (1 + 2 * isFFA)) * (1 + isEmptyLand) * (1 + isFactory) * (1 - 0.5 * isAmphib) * production;
+			double attackValue = (TUVSwing + territoryValue) * (1 + 4 * isEnemyCapital) * (1 + 2 * isNotNeutralAdjacentToMyCapital) * (1 - 0.9 * isNeutral);
 			
 			// Check if a negative value neutral territory should be attacked
 			if (attackValue <= 0 && !patd.isNeedAmphibUnits() && !t.isWater() && t.getOwner().isNull())
@@ -844,13 +843,17 @@ public class ProCombatMoveAI
 				final int isLand = !t.isWater() ? 1 : 0;
 				final int isCanHold = canHold ? 1 : 0;
 				final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t) ? 1 : 0;
+				final int isFFA = utils.isFFA(data, player) ? 1 : 0;
 				final int production = TerritoryAttachment.getProduction(t);
 				double capitalValue = 0;
 				final TerritoryAttachment ta = TerritoryAttachment.get(t);
 				if (ta != null && ta.isCapital())
 					capitalValue = utils.getPlayerProduction(t.getOwner(), data);
-				final double territoryValue = (1 + isLand + isCanHold) * (1 + isFactory) * production + capitalValue;
-				final double attackValue = result.getTUVSwing() + territoryValue * result.getWinPercentage() / 100 - enemyCounterTUVSwing / 2;
+				final double territoryValue = (1 + isLand + isCanHold * (1 + 2 * isFFA)) * (1 + isFactory) * production + capitalValue;
+				double TUVSwing = result.getTUVSwing();
+				if (isFFA == 1 && TUVSwing > 0)
+					TUVSwing *= 0.5;
+				final double attackValue = TUVSwing + territoryValue * result.getWinPercentage() / 100 - enemyCounterTUVSwing / 2;
 				
 				// Determine whether to remove attack
 				if (result.getWinPercentage() < (WIN_PERCENTAGE - 5) || !result.isHasLandUnitRemaining() || (isNeutral && !canHold) || (!isNeutral && attackValue < 0))

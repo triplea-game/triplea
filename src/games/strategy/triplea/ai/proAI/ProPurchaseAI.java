@@ -1886,7 +1886,7 @@ public class ProPurchaseAI
 					{
 						// Remove options that cost too much PUs or production
 						purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, seaTransportPurchaseOptionsForTerritory, PUsRemaining, remainingUnitProduction,
-									transportsThatNeedUnits, purchaseTerritories);
+									transportUnitsToPlace, purchaseTerritories);
 						if (seaTransportPurchaseOptionsForTerritory.isEmpty())
 							break;
 						

@@ -55,7 +55,6 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +112,7 @@ public class ProAI extends AbstractAI
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		data = null;
 		storedCombatMoveMap = null;
-		storedPurchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
+		storedPurchaseTerritories = null;
 	}
 	
 	public static void Initialize(final TripleAFrame frame)
@@ -288,6 +287,7 @@ public class ProAI extends AbstractAI
 		else
 		{
 			purchaseAI.place(storedPurchaseTerritories, placeDelegate, data, player);
+			storedPurchaseTerritories = null;
 		}
 		LogUtils.log(Level.FINE, player.getName() + " time for place=" + (System.currentTimeMillis() - start));
 	}
