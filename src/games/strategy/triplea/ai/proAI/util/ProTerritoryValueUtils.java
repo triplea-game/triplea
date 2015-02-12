@@ -65,7 +65,7 @@ public class ProTerritoryValueUtils
 		return value;
 	}
 	
-	public Map<Territory, Double> findTerritoryValues(final PlayerID player, final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack)
+	public Map<Territory, Double> findTerritoryValues(final PlayerID player, final double minCostPerHitPoint, final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack)
 	{
 		final GameData data = ai.getGameData();
 		final List<Territory> allTerritories = data.getMap().getTerritories();
@@ -127,8 +127,13 @@ public class ProTerritoryValueUtils
 					final int distance = data.getMap().getDistance(t, nearbyEnemyTerritory, ProMatches.territoryCanMoveLandUnits(player, data, true));
 					if (distance > 0)
 					{
-						final int isNeutral = nearbyEnemyTerritory.getOwner().isNull() ? 1 : 0;
-						nearbyEnemyValue += TerritoryAttachment.getProduction(nearbyEnemyTerritory) / (isNeutral + 1) / Math.pow(2, distance);
+						double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
+						if (nearbyEnemyTerritory.getOwner().isNull())
+							value = findTerritoryAttackValue(player, nearbyEnemyTerritory, minCostPerHitPoint) / 3; // find neutral value
+						else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data).match(nearbyEnemyTerritory))
+							value *= 0.1; // reduce value for can't hold amphib allied territories
+						if (value > 0)
+							nearbyEnemyValue += (value / Math.pow(2, distance));
 					}
 				}
 				final double value = capitalOrFactoryValue + nearbyEnemyValue;
@@ -164,9 +169,13 @@ public class ProTerritoryValueUtils
 					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyLandTerritory, Matches.TerritoryIsWater);
 					if (distance > 0 && distance <= 3)
 					{
-						final int isNeutral = nearbyLandTerritory.getOwner().isNull() ? 1 : 0;
 						if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld).match(nearbyLandTerritory))
-							nearbyLandValue += (double) TerritoryAttachment.getProduction(nearbyLandTerritory) / (isNeutral + 1);
+						{
+							double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
+							if (nearbyLandTerritory.getOwner().isNull())
+								value = findTerritoryAttackValue(player, nearbyLandTerritory, minCostPerHitPoint);
+							nearbyLandValue += value;
+						}
 						nearbyLandValue += territoryValueMap.get(nearbyLandTerritory);
 					}
 				}

@@ -96,6 +96,7 @@ public class ProPurchaseAI
 	private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
 	private PlayerID player;
 	private Territory myCapital;
+	private double minCostPerHitPoint;
 	private List<Territory> allTerritories;
 	private Map<Unit, Territory> unitTerritoryMap;
 	
@@ -499,6 +500,7 @@ public class ProPurchaseAI
 		
 		// Find all purchase options
 		final ProPurchaseOptionMap purchaseOptions = new ProPurchaseOptionMap(player, data);
+		minCostPerHitPoint = purchaseUtils.getMinCostPerHitPoint(player, purchaseOptions.getLandOptions());
 		
 		// Find all purchase/place territories
 		final Map<Territory, ProPurchaseTerritory> purchaseTerritories = findPurchaseTerritories();
@@ -521,7 +523,7 @@ public class ProPurchaseAI
 		
 		// Find strategic value for each territory
 		LogUtils.log(Level.FINE, "Find strategic value for place territories");
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(), new ArrayList<Territory>());
 		for (final Territory t : purchaseTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
@@ -819,52 +821,55 @@ public class ProPurchaseAI
 	{
 		LogUtils.log(Level.FINE, "Starting place phase");
 		
-		// Place all units calculated during purchase phase (land then sea to reduce failed placements)
-		for (final Territory t : purchaseTerritories.keySet())
+		if (purchaseTerritories != null)
 		{
-			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
+			// Place all units calculated during purchase phase (land then sea to reduce failed placements)
+			for (final Territory t : purchaseTerritories.keySet())
 			{
-				if (!ppt.getTerritory().isWater())
+				for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
 				{
-					final Collection<Unit> myUnits = player.getUnits().getUnits();
-					final List<Unit> unitsToPlace = new ArrayList<Unit>();
-					for (final Unit placeUnit : ppt.getPlaceUnits())
+					if (!ppt.getTerritory().isWater())
 					{
-						for (final Unit myUnit : myUnits)
+						final Collection<Unit> myUnits = player.getUnits().getUnits();
+						final List<Unit> unitsToPlace = new ArrayList<Unit>();
+						for (final Unit placeUnit : ppt.getPlaceUnits())
 						{
-							if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit))
+							for (final Unit myUnit : myUnits)
 							{
-								unitsToPlace.add(myUnit);
-								break;
+								if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit))
+								{
+									unitsToPlace.add(myUnit);
+									break;
+								}
 							}
 						}
+						doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
+						LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
 					}
-					doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
-					LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
 				}
 			}
-		}
-		for (final Territory t : purchaseTerritories.keySet())
-		{
-			for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
+			for (final Territory t : purchaseTerritories.keySet())
 			{
-				if (ppt.getTerritory().isWater())
+				for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories())
 				{
-					final Collection<Unit> myUnits = player.getUnits().getUnits();
-					final List<Unit> unitsToPlace = new ArrayList<Unit>();
-					for (final Unit placeUnit : ppt.getPlaceUnits())
+					if (ppt.getTerritory().isWater())
 					{
-						for (final Unit myUnit : myUnits)
+						final Collection<Unit> myUnits = player.getUnits().getUnits();
+						final List<Unit> unitsToPlace = new ArrayList<Unit>();
+						for (final Unit placeUnit : ppt.getPlaceUnits())
 						{
-							if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit))
+							for (final Unit myUnit : myUnits)
 							{
-								unitsToPlace.add(myUnit);
-								break;
+								if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit))
+								{
+									unitsToPlace.add(myUnit);
+									break;
+								}
 							}
 						}
+						doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
+						LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
 					}
-					doPlace(data.getMap().getTerritory(ppt.getTerritory().getName()), unitsToPlace, placeDelegate);
-					LogUtils.log(Level.FINER, ppt.getTerritory() + " placed units: " + unitsToPlace);
 				}
 			}
 		}
@@ -894,7 +899,7 @@ public class ProPurchaseAI
 		
 		// Find strategic value for each territory
 		LogUtils.log(Level.FINE, "Find strategic value for place territories");
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, new ArrayList<Territory>(), new ArrayList<Territory>());
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, new ArrayList<Territory>(), new ArrayList<Territory>());
 		for (final Territory t : placeNonConstructionTerritories.keySet())
 		{
 			for (final ProPlaceTerritory ppt : placeNonConstructionTerritories.get(t).getCanPlaceTerritories())
@@ -1436,7 +1441,7 @@ public class ProPurchaseAI
 		}
 		
 		// Find strategic value for each territory
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, territoriesThatCantBeHeld, new ArrayList<Territory>());
 		double maxValue = 0.0;
 		Territory maxTerritory = null;
 		for (final Territory t : purchaseFactoryTerritories)

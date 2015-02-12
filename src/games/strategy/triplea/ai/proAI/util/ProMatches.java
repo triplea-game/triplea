@@ -331,6 +331,21 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Territory> territoryIsAlliedLandAndHasNoEnemyNeighbors(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				final Match<Territory> alliedLand = new CompositeMatchAnd<Territory>(territoryCanMoveLandUnits(player, data, false), Matches.isTerritoryAllied(player, data));
+				final Match<Territory> hasNoEnemyNeighbors = Matches.territoryHasNeighborMatching(data, ProMatches.territoryIsEnemyNotNeutralLand(player, data)).invert();
+				final Match<Territory> match = new CompositeMatchAnd<Territory>(alliedLand, hasNoEnemyNeighbors);
+				return match.match(t);
+			}
+		};
+	}
+	
 	public static Match<Territory> territoryIsEnemyLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -541,6 +556,19 @@ public class ProMatches
 				final Match<Unit> myUnitHasNoMovementMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft.invert());
 				final Match<Unit> alliedUnitMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data));
 				final Match<Unit> match = new CompositeMatchOr<Unit>(myUnitHasNoMovementMatch, alliedUnitMatch);
+				return match.match(u);
+			}
+		};
+	}
+	
+	public static Match<Unit> unitCantBeMovedAndIsAlliedDefenderAndNotInfra(final PlayerID player, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(unitCantBeMovedAndIsAlliedDefender(player, data), Matches.UnitIsNotInfrastructure);
 				return match.match(u);
 			}
 		};

@@ -88,6 +88,7 @@ public class ProNonCombatMoveAI
 	private List<Territory> allTerritories;
 	private Map<Unit, Territory> unitTerritoryMap;
 	private IntegerMap<UnitType> playerCostMap;
+	private double minCostPerHitPoint;
 	
 	public ProNonCombatMoveAI(final ProUtils utils, final ProBattleUtils battleUtils, final ProTransportUtils transportUtils, final ProAttackOptionsUtils attackOptionsUtils,
 				final ProMoveUtils moveUtils, final ProTerritoryValueUtils territoryValueUtils, final ProPurchaseUtils purchaseUtils)
@@ -132,6 +133,7 @@ public class ProNonCombatMoveAI
 		final List<ProPurchaseOption> airPurchaseOptions = new ArrayList<ProPurchaseOption>();
 		final List<ProPurchaseOption> seaPurchaseOptions = new ArrayList<ProPurchaseOption>();
 		purchaseUtils.findPurchaseOptions(player, landPurchaseOptions, airPurchaseOptions, seaPurchaseOptions, factoryPurchaseOptions, specialPurchaseOptions);
+		minCostPerHitPoint = purchaseUtils.getMinCostPerHitPoint(player, landPurchaseOptions);
 		
 		// Find the max number of units that can move to each allied territory
 		final Match<Territory> myUnitTerritoriesMatch = Matches.territoryHasUnitsThatMatch(ProMatches.unitCanBeMovedAndIsOwned(player));
@@ -153,7 +155,8 @@ public class ProNonCombatMoveAI
 		prioritizedTerritories = prioritizeDefendOptions(moveMap, factoryMoveMap);
 		
 		// Determine which territories to defend and how many units each one needs
-		moveUnitsToDefendTerritories(moveMap, unitMoveMap, prioritizedTerritories, transportMapList, transportMoveMap);
+		final int enemyDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, myCapital);
+		moveUnitsToDefendTerritories(moveMap, unitMoveMap, prioritizedTerritories, transportMapList, transportMoveMap, enemyDistance);
 		
 		// Get list of territories that can't be held and find move value for each territory
 		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
@@ -162,7 +165,7 @@ public class ProNonCombatMoveAI
 			if (!moveMap.get(t).isCanHold())
 				territoriesThatCantBeHeld.add(t);
 		}
-		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<Territory>());
+		final Map<Territory, Double> territoryValueMap = territoryValueUtils.findTerritoryValues(player, minCostPerHitPoint, territoriesThatCantBeHeld, new ArrayList<Territory>());
 		final Map<Territory, Double> seaTerritoryValueMap = territoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
 		
 		// Copy data in case capital defense needs increased
@@ -193,7 +196,6 @@ public class ProNonCombatMoveAI
 			moveUnitsToBestTerritories(moveMap, unitMoveMap, transportMapList, transportMoveMap);
 			
 			// Check if capital has local land superiority
-			final int enemyDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, myCapital);
 			LogUtils.log(Level.FINE, "Checking if capital has local land superiority with enemyDistance=" + enemyDistance);
 			if (enemyDistance >= 2 && enemyDistance <= 3 && defenseRange == -1 && !battleUtils.territoryHasLocalLandSuperiorityAfterMoves(myCapital, enemyDistance, player, moveMap))
 			{
@@ -346,7 +348,7 @@ public class ProNonCombatMoveAI
 					final TerritoryAttachment ta = TerritoryAttachment.get(t);
 					if (ta != null)
 						production = ta.getProduction();
-					if (territoriesToDefendWithOneUnit.contains(t) && unitValue <= (2 * production + 1))
+					if (territoriesToDefendWithOneUnit.contains(t) && unitValue <= (production + 3))
 					{
 						moveMap.get(t).addUnit(unit);
 						unitMoveMap.remove(unit);
@@ -540,12 +542,15 @@ public class ProNonCombatMoveAI
 	}
 	
 	private void moveUnitsToDefendTerritories(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
-				final List<ProAttackTerritoryData> prioritizedTerritories, final List<ProAmphibData> transportMapList, final Map<Unit, Set<Territory>> transportMoveMap)
+				final List<ProAttackTerritoryData> prioritizedTerritories, final List<ProAmphibData> transportMapList, final Map<Unit, Set<Territory>> transportMoveMap, final int enemyDistance)
 	{
 		LogUtils.log(Level.FINE, "Determine units to defend territories with");
 		
+		if (prioritizedTerritories.isEmpty())
+			return;
+		
 		// Assign units to territories by prioritization
-		int numToDefend = Math.min(1, prioritizedTerritories.size());
+		int numToDefend = 1;
 		while (true)
 		{
 			final List<ProAttackTerritoryData> territoriesToTryToDefend = prioritizedTerritories.subList(0, numToDefend);
@@ -750,15 +755,24 @@ public class ProNonCombatMoveAI
 					areSuccessful = false;
 				LogUtils.log(Level.FINEST, patd.getResultString() + ", defenders=" + defendingUnits + ", attackers=" + moveMap.get(t).getMaxEnemyUnits());
 			}
+			final Territory currentTerritory = prioritizedTerritories.get(numToDefend - 1).getTerritory();
+			if (!currentTerritory.isWater() && enemyDistance >= 2 && enemyDistance <= 3)
+			{
+				final int distance = data.getMap().getDistance(myCapital, currentTerritory, ProMatches.territoryCanMoveLandUnits(player, data, true));
+				if (distance > 0 && (enemyDistance == distance || enemyDistance == (distance - 1))
+							&& !battleUtils.territoryHasLocalLandSuperiorityAfterMoves(myCapital, enemyDistance, player, moveMap))
+				{
+					areSuccessful = false;
+					LogUtils.log(Level.FINEST, "Capital doesn't have local land superiority after defense moves with enemyDistance=" + enemyDistance);
+				}
+			}
 			
 			// Determine whether to try more territories, remove a territory, or end
 			if (areSuccessful)
 			{
-				for (final ProAttackTerritoryData patd : territoriesToTryToDefend)
-				{
-					patd.setCanAttack(true);
-				}
 				numToDefend++;
+				for (final ProAttackTerritoryData patd : territoriesToTryToDefend)
+					patd.setCanAttack(true);
 				
 				// Can defend all territories in list so end
 				if (numToDefend > prioritizedTerritories.size())
@@ -767,11 +781,13 @@ public class ProNonCombatMoveAI
 			else
 			{
 				// Remove territory last territory in prioritized list since we can't hold them all
-				LogUtils.log(Level.FINER, "Removing territory: " + prioritizedTerritories.get(numToDefend - 1).getTerritory().getName());
+				LogUtils.log(Level.FINER, "Removing territory: " + currentTerritory);
 				prioritizedTerritories.get(numToDefend - 1).setCanHold(false);
 				prioritizedTerritories.remove(numToDefend - 1);
 				if (numToDefend > prioritizedTerritories.size())
 					numToDefend--;
+				if (numToDefend <= 0)
+					break;
 			}
 		}
 		
