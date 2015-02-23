@@ -72,6 +72,18 @@ public class ProUtils
 		return enemyPlayers;
 	}
 	
+	public List<PlayerID> getAlliedPlayers(final PlayerID player)
+	{
+		final GameData data = ai.getGameData();
+		final List<PlayerID> alliedPlayers = new ArrayList<PlayerID>();
+		for (final PlayerID players : data.getPlayerList().getPlayers())
+		{
+			if (data.getRelationshipTracker().isAllied(player, players))
+				alliedPlayers.add(players);
+		}
+		return alliedPlayers;
+	}
+	
 	public double getPlayerProduction(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;
@@ -98,6 +110,19 @@ public class ProUtils
 		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
 		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryEnemy(player, data)));
 		return enemyCapitals;
+	}
+	
+	public List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerID player)
+	{ // generate a list of all allied capitals including player capital
+		final List<Territory> capitals = new ArrayList<Territory>();
+		final List<PlayerID> players = getAlliedPlayers(player);
+		for (final PlayerID alliedPlayer : players)
+		{
+			capitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data));
+		}
+		capitals.retainAll(Match.getMatches(capitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+		capitals.retainAll(Match.getMatches(capitals, Matches.isTerritoryAllied(player, data)));
+		return capitals;
 	}
 	
 	public int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t)

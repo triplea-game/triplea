@@ -2,14 +2,17 @@ package games.strategy.triplea.ai.proAI.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +75,7 @@ public class ProTerritoryValueUtils
 		
 		// Get all enemy factories and capitals (check if most territories have factories and if so remove them)
 		final Set<Territory> enemyCapitalsAndFactories = new HashSet<Territory>();
-		enemyCapitalsAndFactories.addAll(Match.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data)));
+		enemyCapitalsAndFactories.addAll(Match.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsEnemyLandOrCantBeHeld(player, data, territoriesThatCantBeHeld)));
 		final int numEnemyLandTerritories = Match.countMatches(allTerritories, ProMatches.territoryIsEnemyLand(player, data));
 		if (enemyCapitalsAndFactories.size() * 2 >= numEnemyLandTerritories)
 			enemyCapitalsAndFactories.clear();
@@ -85,7 +88,7 @@ public class ProTerritoryValueUtils
 		{
 			// Get factory production if factory
 			int factoryProduction = 0;
-			if (ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t))
+			if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t))
 				factoryProduction = TerritoryAttachment.getProduction(t);
 			
 			// Get player production if capital
@@ -98,7 +101,7 @@ public class ProTerritoryValueUtils
 			final int isNeutral = t.getOwner().isNull() ? 1 : 0;
 			
 			// Calculate value
-			final double value = factoryProduction * 4 / (1 + isNeutral) + playerProduction;
+			final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 16 / (1 + 3 * isNeutral);
 			enemyCapitalsAndFactoriesMap.put(t, value);
 		}
 		
@@ -109,13 +112,17 @@ public class ProTerritoryValueUtils
 			if (!t.isWater() && !territoriesThatCantBeHeld.contains(t))
 			{
 				// Determine value based on enemy factory land distance
-				double capitalOrFactoryValue = 0;
+				final List<Double> values = new ArrayList<Double>();
 				for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet())
 				{
 					final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory, ProMatches.territoryCanMoveLandUnits(player, data, true));
 					if (distance > 0)
-						capitalOrFactoryValue += (enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
+						values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
 				}
+				Collections.sort(values, Collections.reverseOrder());
+				double capitalOrFactoryValue = 0;
+				for (int i = 0; i < values.size(); i++)
+					capitalOrFactoryValue += values.get(i) / Math.pow(2, i); // Decrease each additional factory value by half
 				
 				// Determine value based on nearby territory production
 				double nearbyEnemyValue = 0;
@@ -136,7 +143,9 @@ public class ProTerritoryValueUtils
 							nearbyEnemyValue += (value / Math.pow(2, distance));
 					}
 				}
-				final double value = capitalOrFactoryValue + nearbyEnemyValue;
+				double value = capitalOrFactoryValue + nearbyEnemyValue;
+				if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t))
+					value *= 1.1; // prefer territories with factories
 				territoryValueMap.put(t, value);
 			}
 			else if (!t.isWater())
@@ -151,13 +160,22 @@ public class ProTerritoryValueUtils
 			if (!territoriesThatCantBeHeld.contains(t) && t.isWater() && !data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty())
 			{
 				// Determine value based on enemy factory distance
-				double capitalOrFactoryValue = 0;
+				final List<Double> values = new ArrayList<Double>();
 				for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet())
 				{
-					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, enemyCapitalOrFactory, Matches.TerritoryIsWater);
+					final Route route = data.getMap().getRoute_IgnoreEnd(t, enemyCapitalOrFactory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+					if (route == null)
+						continue;
+					if (MoveValidator.validateCanal(route, null, player, data) != null)
+						continue;
+					final int distance = route.numberOfSteps();
 					if (distance > 0)
-						capitalOrFactoryValue += (enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(3, distance));
+						values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(3, distance));
 				}
+				Collections.sort(values, Collections.reverseOrder());
+				double capitalOrFactoryValue = 0;
+				for (int i = 0; i < values.size(); i++)
+					capitalOrFactoryValue += values.get(i) / Math.pow(2, i); // Decrease each additional factory value by half
 				
 				// Determine value based on nearby territory production
 				double nearbyLandValue = 0;
@@ -166,7 +184,7 @@ public class ProTerritoryValueUtils
 				nearbyLandTerritories.removeAll(territoriesToAttack);
 				for (final Territory nearbyLandTerritory : nearbyLandTerritories)
 				{
-					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyLandTerritory, Matches.TerritoryIsWater);
+					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyLandTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
 					if (distance > 0 && distance <= 3)
 					{
 						if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld).match(nearbyLandTerritory))

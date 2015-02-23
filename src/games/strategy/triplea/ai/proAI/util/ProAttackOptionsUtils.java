@@ -33,7 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -144,7 +143,8 @@ public class ProAttackOptionsUtils
 		return sortedUnitAttackOptions;
 	}
 	
-	public Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerID player, final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProAttackTerritoryData> attackMap)
+	public Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerID player, final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProAttackTerritoryData> attackMap,
+				final Map<Unit, Territory> unitTerritoryMap)
 	{
 		final GameData data = ai.getGameData();
 		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
@@ -172,8 +172,10 @@ public class ProAttackOptionsUtils
 				}
 				if (numOptions1 != numOptions2)
 					return (numOptions1 - numOptions2);
+				if (numOptions1 == 0)
+					return 0;
 				
-				// Sort by attack efficiency then unit's hash code
+				// Sort by attack efficiency
 				int minPower1 = Integer.MAX_VALUE;
 				for (final Territory t : o1.getValue())
 				{
@@ -200,12 +202,7 @@ public class ProAttackOptionsUtils
 				final UnitAttachment ua1 = UnitAttachment.get(o1.getKey().getType());
 				if (ua1.getIsAir())
 					minPower1 *= 10;
-				double attackEfficiency1 = minPower1;
-				// TODO: move this warning to a centralized place
-				if (playerCostMap.getInt(o1.getKey().getType()) > 0)
-					attackEfficiency1 = minPower1 / playerCostMap.getInt(o1.getKey().getType());
-				else
-					LogUtils.log(Level.WARNING, "No unit cost defined for " + o1.getKey().getType() + ". Consider adding a production rule for this unit type.");
+				final double attackEfficiency1 = (double) minPower1 / playerCostMap.getInt(o1.getKey().getType());
 				
 				int minPower2 = Integer.MAX_VALUE;
 				for (final Territory t : o2.getValue())
@@ -233,12 +230,7 @@ public class ProAttackOptionsUtils
 				final UnitAttachment ua2 = UnitAttachment.get(o2.getKey().getType());
 				if (ua2.getIsAir())
 					minPower2 *= 10;
-				double attackEfficiency2 = minPower2;
-				if (playerCostMap.getInt(o2.getKey().getType()) > 0)
-					attackEfficiency2 = minPower2 / playerCostMap.getInt(o2.getKey().getType());
-				else
-					LogUtils.log(Level.WARNING, "No unit cost defined for " + o2.getKey().getType() + ". Consider adding a production rule for this unit type.");
-				
+				final double attackEfficiency2 = (double) minPower2 / playerCostMap.getInt(o2.getKey().getType());
 				if (attackEfficiency1 != attackEfficiency2)
 				{
 					if (attackEfficiency1 < attackEfficiency2)
@@ -246,7 +238,30 @@ public class ProAttackOptionsUtils
 					else
 						return -1;
 				}
-				return o1.getKey().hashCode() - o2.getKey().hashCode();
+				
+				// Check if unit types are equal and is air then sort by average distance
+				if (o1.getKey().getType().equals(o2.getKey().getType()))
+				{
+					final boolean isAirUnit = UnitAttachment.get(o1.getKey().getType()).getIsAir();
+					if (isAirUnit)
+					{
+						int distance1 = 0;
+						for (final Territory t : o1.getValue())
+						{
+							if (!attackMap.get(t).isCurrentlyWins())
+								distance1 += data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o1.getKey()), t, ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
+						}
+						int distance2 = 0;
+						for (final Territory t : o2.getValue())
+						{
+							if (!attackMap.get(t).isCurrentlyWins())
+								distance2 += data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o2.getKey()), t, ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
+						}
+						if (distance1 != distance2)
+							return distance1 - distance2;
+					}
+				}
+				return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
 			}
 		});
 		final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<Unit, Set<Territory>>();
@@ -337,8 +352,12 @@ public class ProAttackOptionsUtils
 						currentStrength = battleUtils.estimateStrength(currentUnits.iterator().next().getOwner(), t, new ArrayList<Unit>(currentUnits), new ArrayList<Unit>(), true);
 					final boolean currentHasLandUnits = Match.someMatch(currentUnits, Matches.UnitIsLand);
 					final boolean maxHasLandUnits = Match.someMatch(maxUnits, Matches.UnitIsLand);
-					if ((currentHasLandUnits && !maxHasLandUnits && !t.isWater()) || (currentStrength > maxStrength && (currentHasLandUnits || t.isWater())))
+					
+					if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
+								|| ((!maxHasLandUnits || t.isWater()) && currentStrength > maxStrength))
+					{
 						enemyAttackMap.put(t, attackMap2.get(t));
+					}
 				}
 			}
 		}
@@ -462,7 +481,7 @@ public class ProAttackOptionsUtils
 			for (final Unit myLandUnit : myLandUnits)
 			{
 				final int range = TripleAUnit.get(myLandUnit).getMovementLeft();
-				final Set<Territory> possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range, ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove));
+				final Set<Territory> possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range, ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, myLandUnit));
 				possibleMoveTerritories.add(myUnitTerritory);
 				final Set<Territory> potentialTerritories = new HashSet<Territory>(Match.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
 				for (final Territory potentialTerritory : potentialTerritories)

@@ -203,6 +203,14 @@ public class ProAI extends AbstractAI
 			// Repair factories
 			PUsToSpend = purchaseAI.repair(PUsToSpend, purchaseDelegate, data, player);
 			
+			// Check if any place territories exist
+			final Map<Territory, ProPurchaseTerritory> purchaseTerritories = purchaseUtils.findPurchaseTerritories(player);
+			if (purchaseTerritories.isEmpty())
+			{
+				LogUtils.log(Level.FINE, "No possible place territories owned so exiting purchase logic");
+				return;
+			}
+			
 			LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
 			
 			// Setup data copy and delegates

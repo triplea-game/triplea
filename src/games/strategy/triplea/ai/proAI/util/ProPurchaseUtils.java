@@ -16,6 +16,7 @@ import games.strategy.triplea.ai.proAI.ProPlaceTerritory;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.ProPurchaseTerritory;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -24,6 +25,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -273,6 +275,33 @@ public class ProPurchaseUtils
 		}
 		
 		return minCostPerHitPoint;
+	}
+	
+	public Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerID player)
+	{
+		LogUtils.log(Level.FINE, "Find all purchase territories");
+		
+		final GameData data = ai.getGameData();
+		
+		// Find all territories that I can place units on
+		final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+		List<Territory> ownedAndNotConqueredFactoryTerritories = new ArrayList<Territory>();
+		if (ra != null && ra.getPlacementAnyTerritory()) // make them all available for placing
+			ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
+		else
+			ownedAndNotConqueredFactoryTerritories = Match.getMatches(data.getMap().getTerritories(), ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+		ownedAndNotConqueredFactoryTerritories = Match.getMatches(ownedAndNotConqueredFactoryTerritories, ProMatches.territoryCanMoveLandUnits(player, data, false));
+		
+		// Create purchase territory holder for each factory territory
+		final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
+		for (final Territory t : ownedAndNotConqueredFactoryTerritories)
+		{
+			final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player);
+			purchaseTerritories.put(t, ppt);
+			LogUtils.log(Level.FINER, ppt.toString());
+		}
+		
+		return purchaseTerritories;
 	}
 	
 }

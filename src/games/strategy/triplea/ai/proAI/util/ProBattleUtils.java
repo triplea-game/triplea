@@ -164,10 +164,10 @@ public class ProBattleUtils
 	{
 		final GameData data = ai.getGameData();
 		
-		final boolean hasNoDefenders = Match.allMatch(defendingUnits, Matches.UnitIsInfrastructure);
-		if (attackingUnits.size() == 0 || (Match.allMatch(attackingUnits, Matches.UnitIsAir) && !t.isWater()))
+		final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.UnitIsNotInfrastructure);
+		if (attackingUnits.size() == 0)// || (Match.allMatch(attackingUnits, Matches.UnitIsAir) && !t.isWater()))
 			return new ProBattleResultData();
-		else if (defendingUnits.isEmpty() || hasNoDefenders)
+		else if (hasNoDefenders)
 			return new ProBattleResultData(100, 0.1, true, attackingUnits, 0);
 		else if (Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub) && Match.noneMatch(attackingUnits, Matches.UnitIsDestroyer))
 			return new ProBattleResultData();
@@ -192,18 +192,28 @@ public class ProBattleUtils
 			results = ai.getCalc().setCalculateDataAndCalculate(attackingUnits.get(0).getOwner(), player, t, attackingUnits, defendingUnits, new ArrayList<Unit>(bombardingUnits),
 						TerritoryEffectHelper.getEffects(t), runCount);
 		
+		// Find battle result statistics
 		final double winPercentage = results.getAttackerWinPercent() * 100;
 		final List<Unit> averageUnitsRemaining = results.GetAverageAttackingUnitsRemaining();
 		final List<Unit> mainCombatAttackers = Match.getMatches(attackingUnits, Matches.UnitCanBeInBattle(true, !t.isWater(), data, 1, false, true, true));
 		final List<Unit> mainCombatDefenders = Match.getMatches(defendingUnits, Matches.UnitCanBeInBattle(false, !t.isWater(), data, 1, false, true, true));
 		double TUVswing = results.getAverageTUVswing(player, mainCombatAttackers, t.getOwner(), mainCombatDefenders, data);
-		if (isAttacker && Matches.TerritoryIsNeutralButNotWater.match(t))
+		if (isAttacker && Matches.TerritoryIsNeutralButNotWater.match(t)) // Set TUV swing for neutrals
 		{
 			final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
 			final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, playerCostMap);
 			final double remainingUnitValue = results.getAverageTUVofUnitsLeftOver(playerCostMap, playerCostMap).getFirst();
 			TUVswing = remainingUnitValue - attackingUnitValue;
 		}
+		final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
+		if (t.isWater() && !defendingTransportedUnits.isEmpty()) // Add TUV swing for transported units
+		{
+			final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
+			final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, playerCostMap);
+			TUVswing += transportedUnitValue * winPercentage / 100;
+		}
+		
+		// Create battle result object
 		final List<Territory> tList = new ArrayList<Territory>();
 		tList.add(t);
 		if (Match.allMatch(tList, Matches.TerritoryIsLand))
