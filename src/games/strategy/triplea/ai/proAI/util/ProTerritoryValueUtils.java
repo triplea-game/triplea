@@ -101,7 +101,7 @@ public class ProTerritoryValueUtils
 			final int isNeutral = t.getOwner().isNull() ? 1 : 0;
 			
 			// Calculate value
-			final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 16 / (1 + 3 * isNeutral);
+			final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32 / (1 + 3 * isNeutral);
 			enemyCapitalsAndFactoriesMap.put(t, value);
 		}
 		

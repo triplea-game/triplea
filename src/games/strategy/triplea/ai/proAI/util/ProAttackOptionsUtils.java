@@ -84,20 +84,18 @@ public class ProAttackOptionsUtils
 		{
 			public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2)
 			{
-				// Sort by number of move options then cost of unit then unit's hash code
+				// Sort by number of move options then cost of unit then unit type
 				if (o1.getValue().size() != o2.getValue().size())
 					return (o1.getValue().size() - o2.getValue().size());
 				else if (playerCostMap.getInt(o1.getKey().getType()) != playerCostMap.getInt(o2.getKey().getType()))
 					return (playerCostMap.getInt(o1.getKey().getType()) - playerCostMap.getInt(o2.getKey().getType()));
-				else
-					return o1.getKey().hashCode() - o2.getKey().hashCode();
+				return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
 			}
 		});
 		final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<Unit, Set<Territory>>();
 		for (final Map.Entry<Unit, Set<Territory>> entry : list)
-		{
 			sortedUnitAttackOptions.put(entry.getKey(), entry.getValue());
-		}
+		
 		return sortedUnitAttackOptions;
 	}
 	
@@ -128,12 +126,12 @@ public class ProAttackOptionsUtils
 						numOptions2++;
 				}
 				
-				// Sort by number of move options then cost of unit then unit's hash code
+				// Sort by number of move options then cost of unit then unit type
 				if (numOptions1 != numOptions2)
 					return (numOptions1 - numOptions2);
 				if (playerCostMap.getInt(o1.getKey().getType()) != playerCostMap.getInt(o2.getKey().getType()))
 					return (playerCostMap.getInt(o1.getKey().getType()) - playerCostMap.getInt(o2.getKey().getType()));
-				return o1.getKey().hashCode() - o2.getKey().hashCode();
+				return o1.getKey().getType().getName().compareTo(o2.getKey().getType().getName());
 			}
 		});
 		final Map<Unit, Set<Territory>> sortedUnitAttackOptions = new LinkedHashMap<Unit, Set<Territory>>();
@@ -541,6 +539,20 @@ public class ProAttackOptionsUtils
 	{
 		final GameData data = ai.getGameData();
 		
+		// TODO: add carriers to landing possibilities for non-enemy
+		final Set<Territory> possibleCarrierTerritories = new HashSet<Territory>();
+		if (isCheckingEnemyAttacks)
+		{
+			final Map<Unit, Set<Territory>> unitMoveMap2 = new HashMap<Unit, Set<Territory>>();
+			findNavalMoveOptions(player, myUnitTerritories, new HashMap<Territory, ProAttackTerritoryData>(), unitMoveMap2, new HashMap<Unit, Set<Territory>>(), Matches.TerritoryIsWater,
+						enemyTerritories, false, true);
+			for (final Unit u : unitMoveMap2.keySet())
+			{
+				if (Matches.UnitIsCarrier.match(u))
+					possibleCarrierTerritories.addAll(unitMoveMap2.get(u));
+			}
+		}
+		
 		for (final Territory myUnitTerritory : myUnitTerritories)
 		{
 			// Find my air units that have movement left
@@ -570,12 +582,13 @@ public class ProAttackOptionsUtils
 					// If combat move and my remaining movement is less than the distance I already moved then need to check if I can land
 					if (isCombatMove && remainingMoves < myRouteLength)
 					{
-						// TODO: add carriers to landing possibilities
 						final Set<Territory> possibleLandingTerritories = data.getMap().getNeighbors(potentialTerritory, remainingMoves,
 									canFlyOverMatch);
-						final Set<Territory> landingTerritories = new HashSet<Territory>(Match.getMatches(possibleLandingTerritories,
-									ProMatches.territoryCanLandAirUnits(player, data, isCombatMove, enemyTerritories)));
-						if (landingTerritories.isEmpty())
+						final List<Territory> landingTerritories = Match.getMatches(possibleLandingTerritories, ProMatches.territoryCanLandAirUnits(player, data, isCombatMove, enemyTerritories));
+						List<Territory> carrierTerritories = new ArrayList<Territory>();
+						if (Matches.UnitCanLandOnCarrier.match(myAirUnit))
+							carrierTerritories = Match.getMatches(possibleLandingTerritories, Matches.territoryIsInList(possibleCarrierTerritories));
+						if (landingTerritories.isEmpty() && carrierTerritories.isEmpty())
 							continue;
 					}
 					

@@ -487,6 +487,21 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Territory> territoryIsWaterAndAdjacentToOwnedFactory(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				
+				final Match<Territory> hasOwnedFactoryNeighbor = Matches.territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player));
+				final Match<Territory> match = new CompositeMatchAnd<Territory>(hasOwnedFactoryNeighbor, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+				return match.match(t);
+			}
+		};
+	}
+	
 	public static Match<Unit> unitCanBeMovedAndIsOwned(final PlayerID player)
 	{
 		return new Match<Unit>()

@@ -875,7 +875,7 @@ public class ProCombatMoveAI
 				// Determine enemy counter attack results
 				boolean canHold = true;
 				double enemyCounterTUVSwing = 0;
-				if (enemyAttackMap.get(t) != null)
+				if (enemyAttackMap.get(t) != null && !ProMatches.territoryIsWaterAndAdjacentToOwnedFactory(player, data).match(t))
 				{
 					List<Unit> remainingUnitsToDefendWith = Match.getMatches(result.getAverageUnitsRemaining(), Matches.UnitIsAir.invert());
 					ProBattleResultData result2 = battleUtils.calculateBattleResults(player, t, patd.getMaxEnemyUnits(), remainingUnitsToDefendWith, patd.getMaxBombardUnits(), false);
