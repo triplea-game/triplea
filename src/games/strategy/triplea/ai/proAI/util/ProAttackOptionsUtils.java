@@ -6,6 +6,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAmphibData;
@@ -19,10 +20,12 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -112,17 +115,21 @@ public class ProAttackOptionsUtils
 				int numOptions1 = 0;
 				for (final Territory t : o1.getValue())
 				{
-					if (attackMap.get(t).getBattleResult() == null)
-						attackMap.get(t).setBattleResult(battleUtils.estimateAttackBattleResults(player, t, attackMap.get(t).getUnits(), attackMap.get(t).getBombardTerritoryMap().keySet()));
-					if (!attackMap.get(t).isCurrentlyWins())
+					final ProAttackTerritoryData patd = attackMap.get(t);
+					
+					if (patd.getBattleResult() == null)
+						patd.setBattleResult(battleUtils.estimateAttackBattleResults(player, t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+					if (!patd.isCurrentlyWins())
 						numOptions1++;
 				}
 				int numOptions2 = 0;
 				for (final Territory t : o2.getValue())
 				{
-					if (attackMap.get(t).getBattleResult() == null)
-						attackMap.get(t).setBattleResult(battleUtils.estimateAttackBattleResults(player, t, attackMap.get(t).getUnits(), attackMap.get(t).getBombardTerritoryMap().keySet()));
-					if (!attackMap.get(t).isCurrentlyWins())
+					final ProAttackTerritoryData patd = attackMap.get(t);
+					
+					if (patd.getBattleResult() == null)
+						patd.setBattleResult(battleUtils.estimateAttackBattleResults(player, t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+					if (!patd.isCurrentlyWins())
 						numOptions2++;
 				}
 				
@@ -155,17 +162,21 @@ public class ProAttackOptionsUtils
 				int numOptions1 = 0;
 				for (final Territory t : o1.getValue())
 				{
-					if (attackMap.get(t).getBattleResult() == null)
-						attackMap.get(t).setBattleResult(battleUtils.estimateAttackBattleResults(player, t, attackMap.get(t).getUnits(), attackMap.get(t).getBombardTerritoryMap().keySet()));
-					if (!attackMap.get(t).isCurrentlyWins())
+					final ProAttackTerritoryData patd = attackMap.get(t);
+					
+					if (patd.getBattleResult() == null)
+						patd.setBattleResult(battleUtils.estimateAttackBattleResults(player, t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+					if (!patd.isCurrentlyWins())
 						numOptions1++;
 				}
 				int numOptions2 = 0;
 				for (final Territory t : o2.getValue())
 				{
-					if (attackMap.get(t).getBattleResult() == null)
-						attackMap.get(t).setBattleResult(battleUtils.estimateAttackBattleResults(player, t, attackMap.get(t).getUnits(), attackMap.get(t).getBombardTerritoryMap().keySet()));
-					if (!attackMap.get(t).isCurrentlyWins())
+					final ProAttackTerritoryData patd = attackMap.get(t);
+					
+					if (patd.getBattleResult() == null)
+						patd.setBattleResult(battleUtils.estimateAttackBattleResults(player, t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+					if (!patd.isCurrentlyWins())
 						numOptions2++;
 				}
 				if (numOptions1 != numOptions2)
@@ -267,6 +278,97 @@ public class ProAttackOptionsUtils
 			sortedUnitAttackOptions.put(entry.getKey(), entry.getValue());
 		
 		return sortedUnitAttackOptions;
+	}
+	
+	public void findScrambleOptions(final PlayerID player, final Map<Territory, ProAttackTerritoryData> moveMap)
+	{
+		final GameData data = ai.getGameData();
+		
+		if (!Properties.getScramble_Rules_In_Effect(data))
+			return;
+		
+		// Find scramble properties
+		final boolean fromIslandOnly = Properties.getScramble_From_Island_Only(data);
+		final boolean toSeaOnly = Properties.getScramble_To_Sea_Only(data);
+		int maxScrambleDistance = 0;
+		final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
+		while (utIter.hasNext())
+		{
+			final UnitAttachment ua = UnitAttachment.get(utIter.next());
+			if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance())
+				maxScrambleDistance = ua.getMaxScrambleDistance();
+		}
+		final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.UnitIsAirBase, Matches.UnitIsNotDisabled,
+					Matches.unitIsBeingTransported().invert());
+		final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<Territory>(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(player, data)),
+					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitCanScramble, Matches.unitIsEnemyOf(data, player), Matches.UnitIsNotDisabled)),
+					Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
+		if (fromIslandOnly)
+			canScramble.add(Matches.TerritoryIsIsland);
+		
+		// Find potential territories to scramble from
+		final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<Territory, HashSet<Territory>>();
+		for (final Territory t : moveMap.keySet())
+		{
+			if (t.isWater() || !toSeaOnly)
+			{
+				final HashSet<Territory> canScrambleFrom = new HashSet<Territory>(Match.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScramble));
+				if (!canScrambleFrom.isEmpty())
+					scrambleTerrs.put(t, canScrambleFrom);
+			}
+		}
+		if (scrambleTerrs.isEmpty())
+			return;
+		
+		// Find potential max units that can be scrambled to each territory
+		for (final Territory to : scrambleTerrs.keySet())
+		{
+			for (final Territory from : scrambleTerrs.get(to))
+			{
+				// Find potential scramble units from territory
+				final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
+				final int maxCanScramble = getMaxScrambleCount(airbases);
+				final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
+				List<Unit> canScrambleAir = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.UnitCanScramble,
+							Matches.UnitIsNotDisabled, Matches.UnitWasScrambled.invert(), Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
+				
+				// Add max scramble units
+				if (maxCanScramble > 0 && !canScrambleAir.isEmpty())
+				{
+					if (maxCanScramble < canScrambleAir.size())
+					{
+						Collections.sort(canScrambleAir, new Comparator<Unit>()
+						{
+							public int compare(final Unit o1, final Unit o2)
+							{
+								final double strength1 = battleUtils.estimateStrength(player, to, Collections.singletonList(o1), new ArrayList<Unit>(), false);
+								final double strength2 = battleUtils.estimateStrength(player, to, Collections.singletonList(o2), new ArrayList<Unit>(), false);
+								return Double.compare(strength2, strength1);
+							}
+						});
+						canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
+					}
+					moveMap.get(to).getMaxScrambleUnits().addAll(canScrambleAir);
+				}
+			}
+		}
+	}
+	
+	private static int getMaxScrambleCount(final Collection<Unit> airbases)
+	{
+		if (!Match.allMatch(airbases, new CompositeMatchAnd<Unit>(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled)))
+			throw new IllegalStateException("All units must be viable airbases");
+		// find how many is the max this territory can scramble
+		int maxScrambled = 0;
+		for (final Unit base : airbases)
+		{
+			final UnitAttachment ua = UnitAttachment.get(base.getType());
+			final int baseMax = ua.getMaxScrambleCount();
+			if (baseMax == -1)
+				return Integer.MAX_VALUE;
+			maxScrambled += baseMax;
+		}
+		return maxScrambled;
 	}
 	
 	public void findAttackOptions(final PlayerID player, final List<Territory> myUnitTerritories, final Map<Territory, ProAttackTerritoryData> moveMap,

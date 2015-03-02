@@ -42,6 +42,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -52,9 +53,11 @@ import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +91,7 @@ public class ProAI extends AbstractAI
 	private final ProNonCombatMoveAI nonCombatMoveAI;
 	private final ProPurchaseAI purchaseAI;
 	private final ProRetreatAI retreatAI;
+	private final ProScrambleAI scrambleAI;
 	
 	// Data
 	private GameData data;
@@ -110,6 +114,7 @@ public class ProAI extends AbstractAI
 		nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		purchaseAI = new ProPurchaseAI(this, utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
+		scrambleAI = new ProScrambleAI(this, battleUtils, attackOptionsUtils);
 		data = null;
 		storedCombatMoveMap = null;
 		storedPurchaseTerritories = null;
@@ -386,4 +391,35 @@ public class ProAI extends AbstractAI
 		return rVal;
 	}
 	
+	/**
+	 * Ask the player which units, if any, they want to scramble to defend against the attacker.
+	 * 
+	 * @param scrambleTo
+	 *            - the territory we are scrambling to defend in, where the units will end up if scrambled
+	 * @param possibleScramblers
+	 *            - possible units which we could scramble, with where they are from and how many allowed from that location
+	 * @return a list of units to scramble mapped to where they are coming from
+	 */
+	@Override
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
+	{
+		// Get battle data
+		final GameData data = getGameData();
+		final PlayerID player = getPlayerID();
+		final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+		final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
+		
+		// If battle is null then don't scramble
+		if (battle == null)
+			return null;
+		
+		final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
+		final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+		LogUtils.log(Level.FINE, player.getName() + " checking scramble to " + scrambleTo + ", attackers=" + attackers.size() + ", defenders=" + defenders.size() + ", possibleScramblers="
+					+ possibleScramblers);
+		
+		s_battleCalculator.setGameData(getGameData());
+		
+		return scrambleAI.scrambleUnitsQuery(scrambleTo, possibleScramblers);
+	}
 }

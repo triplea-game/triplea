@@ -13,8 +13,11 @@ package games.strategy.triplea.ai.proAI;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 
 import java.util.ArrayList;
@@ -59,6 +62,9 @@ public class ProAttackTerritoryData
 	private final Map<Unit, List<Unit>> tempAmphibAttackMap;
 	private double loadValue;
 	
+	// Scramble variables
+	private List<Unit> maxScrambleUnits;
+	
 	public ProAttackTerritoryData(final Territory territory)
 	{
 		this.territory = territory;
@@ -87,6 +93,7 @@ public class ProAttackTerritoryData
 		loadValue = 0;
 		value = 0;
 		seaValue = 0;
+		maxScrambleUnits = new ArrayList<Unit>();
 	}
 	
 	public ProAttackTerritoryData(final ProAttackTerritoryData patd)
@@ -117,6 +124,7 @@ public class ProAttackTerritoryData
 		loadValue = patd.getLoadValue();
 		value = patd.getValue();
 		seaValue = patd.getSeaValue();
+		maxScrambleUnits = new ArrayList<Unit>(patd.getMaxScrambleUnits());
 	}
 	
 	public List<Unit> getAllDefenders()
@@ -131,6 +139,13 @@ public class ProAttackTerritoryData
 	{
 		final List<Unit> defenders = new ArrayList<Unit>(maxUnits);
 		defenders.addAll(cantMoveUnits);
+		return defenders;
+	}
+	
+	public List<Unit> getMaxEnemyDefenders(final PlayerID player, final GameData data)
+	{
+		final List<Unit> defenders = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
+		defenders.addAll(maxScrambleUnits);
 		return defenders;
 	}
 	
@@ -460,6 +475,16 @@ public class ProAttackTerritoryData
 	public ProBattleResultData getMaxBattleResult()
 	{
 		return maxBattleResult;
+	}
+	
+	public void setMaxScrambleUnits(final List<Unit> maxScrambleUnits)
+	{
+		this.maxScrambleUnits = maxScrambleUnits;
+	}
+	
+	public List<Unit> getMaxScrambleUnits()
+	{
+		return maxScrambleUnits;
 	}
 	
 }

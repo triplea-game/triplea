@@ -74,13 +74,6 @@ public class ProBattleUtils
 		return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
 	}
 	
-	public double estimateStrengthDifference(final PlayerID player, final Territory t, final List<Unit> attackingUnits)
-	{
-		final GameData data = ai.getGameData();
-		final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-		return estimateStrengthDifference(t, attackingUnits, defendingUnits);
-	}
-	
 	public double estimateStrengthDifference(final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
 	{
 		if (attackingUnits.size() == 0)
@@ -113,13 +106,6 @@ public class ProBattleUtils
 		final int myPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(
 					sortedUnitsList, sortedUnitsList, enemyUnits, !attacking, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data).getFirst();
 		return (myPower * 6.0 / data.getDiceSides());
-	}
-	
-	public ProBattleResultData estimateAttackBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final Set<Unit> bombardingUnits)
-	{
-		final GameData data = ai.getGameData();
-		final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
-		return estimateAttackBattleResults(player, t, attackingUnits, defendingUnits, bombardingUnits);
 	}
 	
 	public ProBattleResultData estimateAttackBattleResults(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits)
