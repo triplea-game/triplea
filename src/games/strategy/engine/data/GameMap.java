@@ -276,7 +276,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	/**
 	 * @param t
 	 *            referring territory
-	 * @return a territories neighbors
+	 * @return All adjacent neighbors of the starting territory.
+	 *         Does NOT include the original/starting territory in the returned Set.
 	 */
 	public Set<Territory> getNeighbors(final Territory t)
 	{
@@ -294,7 +295,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            referring territory
 	 * @param cond
 	 *            condition the neighboring territories have to match
-	 * @return a territories neighbors
+	 * @return All adjacent neighbors of the starting territory that match the condition.
+	 *         Does NOT include the original/starting territory in the returned Set.
 	 */
 	public Set<Territory> getNeighbors(final Territory t, final Match<Territory> cond)
 	{
@@ -317,7 +319,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            referring territory
 	 * @param distance
 	 *            maximal distance of the neighboring territories
-	 * @return a territories neighbors within a certain distance
+	 * @return All neighbors within a certain distance of the starting territory that match the condition.
+	 *         Does NOT include the original/starting territory in the returned Set.
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<Territory> getNeighbors(final Territory territory, int distance)
@@ -334,6 +337,13 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		return neighbors;
 	}
 	
+	/**
+	 * @param territory
+	 * @param distance
+	 * @param cond
+	 * @return All neighbors within a certain distance of the starting territory that match the condition.
+	 *         Does NOT include the original/starting territory in the returned Set.
+	 */
 	@SuppressWarnings("unchecked")
 	public Set<Territory> getNeighbors(final Territory territory, int distance, final Match<Territory> cond)
 	{
@@ -347,6 +357,33 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		final Set<Territory> neighbors = getNeighbors(start, new HashSet<Territory>(start), --distance, cond);
 		neighbors.remove(territory);
 		return neighbors;
+	}
+	
+	/**
+	 * @param frontier
+	 * @param distance
+	 * @param cond
+	 * @return All neighbors within a certain distance of the starting territory set that match the condition.
+	 *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each other.
+	 */
+	public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Match<Territory> cond)
+	{
+		final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance, cond);
+		rVal.removeAll(frontier);
+		return rVal;
+	}
+	
+	/**
+	 * @param frontier
+	 * @param distance
+	 * @return All neighbors within a certain distance of the starting territory set.
+	 *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each other.
+	 */
+	public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance)
+	{
+		final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance);
+		rVal.removeAll(frontier);
+		return rVal;
 	}
 	
 	private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance, final Match<Territory> cond)

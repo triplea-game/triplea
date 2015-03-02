@@ -1,4 +1,6 @@
 Changes for 1.8.0.7
+* Fixed bug with movement validation for fighters launching from a carrier and flying into enemy land territory then returning. (veqryn)
+
 * Bug fixes on unit casualty sorters, and switching approximate method in as the default. (veqryn)
 
 * Created a new prototype unit sorter for quicker approximate sorting, including support attachments. (redrum)

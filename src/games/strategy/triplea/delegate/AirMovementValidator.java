@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -94,14 +95,14 @@ public class AirMovementValidator
 		// we still have air left, so begin calling carriers to come here to pick up the air
 		final int maxMovementLeftForTheseAirUnitsBeingValidated = maxMovementLeftForTheseAirUnitsBeingValidated(airThatMustLandOnCarriers, route, player); // figure out what is the max distance of our remaining air units
 		final int maxMovementLeftForAllOwnedCarriers = maxMovementLeftForAllOwnedCarriers(player, data); // figure out what is the max distance of our remaining carrier units
-		final List<Territory> landingSpots = new ArrayList<Territory>(data.getMap().getNeighbors(routeEnd, maxMovementLeftForTheseAirUnitsBeingValidated, Matches.seaCanMoveOver(player, data)));
-		landingSpots.add(routeEnd);
-		// landingSpots.remove(routeEnd);
+		final List<Territory> landingSpots = new ArrayList<Territory>(Collections.singleton(routeEnd));
+		landingSpots.addAll(data.getMap().getNeighbors(routeEnd, maxMovementLeftForTheseAirUnitsBeingValidated, Matches.airCanFlyOver(player, data, areNeutralsPassableByAir(data)))); // where can we fly to?
+		landingSpots.removeAll(Match.getMatches(landingSpots, Matches.seaCanMoveOver(player, data).invert())); // we only want to consider places we can move carriers to
 		Collections.sort(landingSpots, getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data)));
-		List<Territory> potentialCarrierOrigins = new ArrayList<Territory>(data.getMap().getNeighbors(routeEnd,
-					maxMovementLeftForTheseAirUnitsBeingValidated + maxMovementLeftForAllOwnedCarriers, Matches.seaCanMoveOver(player, data)));
+		final Collection<Territory> potentialCarrierOrigins = new LinkedHashSet<Territory>(landingSpots);
+		potentialCarrierOrigins.addAll(data.getMap().getNeighbors(new HashSet<Territory>(landingSpots), maxMovementLeftForAllOwnedCarriers, Matches.seaCanMoveOver(player, data)));
 		potentialCarrierOrigins.remove(routeEnd);
-		potentialCarrierOrigins = Match.getMatches(potentialCarrierOrigins, Matches.TerritoryHasOwnedCarrier(player));
+		potentialCarrierOrigins.removeAll(Match.getMatches(potentialCarrierOrigins, Matches.TerritoryHasOwnedCarrier(player).invert()));
 		// now see if we can move carriers there to pick up
 		validateAirCaughtByMovingCarriersAndOwnedAndAlliedAir(result, landingSpots, potentialCarrierOrigins, movedCarriersAndTheirFighters, airThatMustLandOnCarriers,
 					airNotToConsiderBecauseWeAreValidatingThem, player, route, data);
@@ -166,7 +167,7 @@ public class AirMovementValidator
 	}
 	
 	private static void validateAirCaughtByMovingCarriersAndOwnedAndAlliedAir(final MoveValidationResult result, final List<Territory> landingSpots,
-				final List<Territory> potentialCarrierOrigins, final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters, final Collection<Unit> airThatMustLandOnCarriers,
+				final Collection<Territory> potentialCarrierOrigins, final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters, final Collection<Unit> airThatMustLandOnCarriers,
 				final Collection<Unit> airNotToConsider, final PlayerID player, final Route route, final GameData data)
 	{
 		final Match<Unit> ownedCarrierMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier);
@@ -581,7 +582,7 @@ public class AirMovementValidator
 	{
 		if (!Match.allMatch(airUnits, Matches.UnitIsAir))
 			throw new IllegalArgumentException("can only test if air will land");
-		if (!territory.isWater() && MoveDelegate.getBattleTracker(data).wasConquered(territory))
+		if (!territory.isWater() && AbstractMoveDelegate.getBattleTracker(data).wasConquered(territory))
 			return false;
 		if (territory.isWater())
 		{
