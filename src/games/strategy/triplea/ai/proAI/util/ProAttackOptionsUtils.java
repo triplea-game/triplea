@@ -571,6 +571,7 @@ public class ProAttackOptionsUtils
 				final boolean isCombatMove)
 	{
 		final GameData data = ai.getGameData();
+		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
 		
 		for (final Territory myUnitTerritory : myUnitTerritories)
 		{
@@ -580,6 +581,7 @@ public class ProAttackOptionsUtils
 			// Check each land unit individually since they can have different ranges
 			for (final Unit myLandUnit : myLandUnits)
 			{
+				final Territory startTerritory = unitTerritoryMap.get(myLandUnit);
 				final int range = TripleAUnit.get(myLandUnit).getMovementLeft();
 				final Set<Territory> possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range, ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, myLandUnit));
 				possibleMoveTerritories.add(myUnitTerritory);
@@ -588,9 +590,12 @@ public class ProAttackOptionsUtils
 				{
 					// Find route over land checking whether unit can blitz
 					final Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
-								ProMatches.territoryCanMoveLandUnitsThrough(player, data, myLandUnit, isCombatMove, enemyTerritories));
+								ProMatches.territoryCanMoveLandUnitsThrough(player, data, myLandUnit, startTerritory, isCombatMove, enemyTerritories));
 					if (myRoute == null)
 						continue;
+					if (myRoute.hasMoreThenOneStep() && Match.someMatch(myRoute.getMiddleSteps(), Matches.isTerritoryEnemy(player, data))
+								&& Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories())).match(myLandUnit))
+						continue; // If blitzing then make sure none of the territories cause blitz ability to be lost
 					final int myRouteLength = myRoute.numberOfSteps();
 					if (myRouteLength > range)
 						continue;

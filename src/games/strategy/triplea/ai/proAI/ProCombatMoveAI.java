@@ -756,6 +756,7 @@ public class ProCombatMoveAI
 					LogUtils.log(Level.FINER, "Removing amphib territory: " + patd.getTerritory() + ", totalEnemyTUVSwing=" + totalEnemyTUVSwing + ", attackValue=" + attackValue);
 					attackMap.get(t).getUnits().clear();
 					attackMap.get(t).getAmphibAttackMap().clear();
+					attackMap.get(t).getBombardTerritoryMap().clear();
 				}
 				else
 				{

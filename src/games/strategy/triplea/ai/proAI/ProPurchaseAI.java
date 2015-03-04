@@ -892,7 +892,7 @@ public class ProPurchaseAI
 		attackOptionsUtils.findMaxEnemyAttackUnits(player, new ArrayList<Territory>(), new ArrayList<Territory>(placeNonConstructionTerritories.keySet()), enemyAttackMap);
 		findDefendersInPlaceTerritories(placeNonConstructionTerritories);
 		
-		// Prioritize land territories that need defended and purchase additional defenders
+		// Prioritize land territories that need defended and place additional defenders
 		final List<ProPlaceTerritory> needToDefendLandTerritories = prioritizeTerritoriesToDefend(placeNonConstructionTerritories, enemyAttackMap, true);
 		placeDefenders(placeNonConstructionTerritories, enemyAttackMap, needToDefendLandTerritories, placeDelegate);
 		
@@ -919,7 +919,12 @@ public class ProPurchaseAI
 					prioritizedLandTerritories.add(placeTerritory);
 			}
 		}
-		placeLandUnits(placeNonConstructionTerritories, enemyAttackMap, prioritizedLandTerritories, placeDelegate);
+		
+		// Place regular land units
+		placeLandUnits(placeNonConstructionTerritories, enemyAttackMap, prioritizedLandTerritories, placeDelegate, false);
+		
+		// Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle them combined)
+		placeLandUnits(placeNonConstructionTerritories, enemyAttackMap, prioritizedLandTerritories, placeDelegate, true);
 	}
 	
 	private void findDefendersInPlaceTerritories(final Map<Territory, ProPurchaseTerritory> purchaseTerritories)
@@ -1231,10 +1236,10 @@ public class ProPurchaseAI
 	private int purchaseLandUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
 				final List<ProPlaceTerritory> prioritizedLandTerritories, int PUsRemaining, final ProPurchaseOptionMap purchaseOptions)
 	{
-		if (PUsRemaining == 0)
+		final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
+		if (PUsRemaining == 0 && unplacedUnits.isEmpty())
 			return PUsRemaining;
 		LogUtils.log(Level.FINE, "Purchase land units with PUsRemaining=" + PUsRemaining);
-		final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
 		if (!unplacedUnits.isEmpty())
 			LogUtils.log(Level.FINE, "Purchase land units with unplaced units=" + unplacedUnits);
 		
@@ -2174,6 +2179,7 @@ public class ProPurchaseAI
 	{
 		LogUtils.log(Level.FINE, "Populate production rule map");
 		
+		final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
 		final IntegerMap<ProductionRule> purchaseMap = new IntegerMap<ProductionRule>();
 		for (final ProPurchaseOption ppo : purchaseOptions.getAllOptions())
 		{
@@ -2184,7 +2190,7 @@ public class ProPurchaseAI
 				{
 					for (final Unit u : ppt.getPlaceUnits())
 					{
-						if (u.getUnitType().equals(ppo.getUnitType()))
+						if (u.getUnitType().equals(ppo.getUnitType()) && !unplacedUnits.contains(u))
 							numUnits++;
 					}
 				}
@@ -2212,7 +2218,7 @@ public class ProPurchaseAI
 						+ enemyAttackMap.get(t).getMaxAmphibUnits() + ", defenders=" + placeTerritory.getDefendingUnits());
 			
 			// Check if any units can be placed
-			final PlaceableUnits placeableUnits = placeDelegate.getPlaceableUnits(player.getUnits().getUnits(), t);
+			final PlaceableUnits placeableUnits = placeDelegate.getPlaceableUnits(player.getUnits().getMatches(Matches.UnitIsNotConstruction), t);
 			if (placeableUnits.isError())
 			{
 				LogUtils.log(Level.FINEST, t + " can't place units with error: " + placeableUnits.getErrorMessage());
@@ -2264,18 +2270,22 @@ public class ProPurchaseAI
 	}
 	
 	private void placeLandUnits(final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
-				final List<ProPlaceTerritory> prioritizedLandTerritories, final IAbstractPlaceDelegate placeDelegate)
+				final List<ProPlaceTerritory> prioritizedLandTerritories, final IAbstractPlaceDelegate placeDelegate, final boolean isConstruction)
 	{
-		LogUtils.log(Level.FINE, "Place land units=" + player.getUnits().getUnits());
+		LogUtils.log(Level.FINE, "Place land with isConstruction=" + isConstruction + ", units=" + player.getUnits().getUnits());
 		
-		// Loop through prioritized territories and purchase land units
+		Match<Unit> unitMatch = Matches.UnitIsNotConstruction;
+		if (isConstruction)
+			unitMatch = Matches.UnitIsConstruction;
+		
+		// Loop through prioritized territories and place land units
 		for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories)
 		{
 			final Territory t = placeTerritory.getTerritory();
 			LogUtils.log(Level.FINER, "Checking land place for " + t.getName());
 			
 			// Check if any units can be placed
-			final PlaceableUnits placeableUnits = placeDelegate.getPlaceableUnits(player.getUnits().getUnits(), t);
+			final PlaceableUnits placeableUnits = placeDelegate.getPlaceableUnits(player.getUnits().getMatches(unitMatch), t);
 			if (placeableUnits.isError())
 			{
 				LogUtils.log(Level.FINEST, t + " can't place units with error: " + placeableUnits.getErrorMessage());
@@ -2288,7 +2298,7 @@ public class ProPurchaseAI
 				remainingUnitProduction = Integer.MAX_VALUE;
 			LogUtils.log(Level.FINEST, t + ", remainingUnitProduction=" + remainingUnitProduction);
 			
-			// Purchase as many units as possible
+			// Place as many units as possible
 			final List<Unit> unitsThatCanBePlaced = new ArrayList<Unit>(placeableUnits.getUnits());
 			final int landPlaceCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
 			final List<Unit> unitsToPlace = unitsThatCanBePlaced.subList(0, landPlaceCount);

@@ -99,7 +99,7 @@ public class ProMoveUtils
 				else if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove))) // && (!Matches.UnitCanBlitz.match(u) || !isCombatMove))
 				{
 					// Land unit
-					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveLandUnitsThrough(player, data, u, isCombatMove, new ArrayList<Territory>()));
+					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<Territory>()));
 				}
 				else if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedAir(player, isCombatMove)))
 				{

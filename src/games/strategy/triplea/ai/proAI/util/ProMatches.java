@@ -135,20 +135,22 @@ public class ProMatches
 		};
 	}
 	
-	public static Match<Territory> territoryCanMoveLandUnitsThrough(final PlayerID player, final GameData data, final Unit u, final boolean isCombatMove, final List<Territory> enemyTerritories)
+	public static Match<Territory> territoryCanMoveLandUnitsThrough(final PlayerID player, final GameData data, final Unit u, final Territory startTerritory, final boolean isCombatMove,
+				final List<Territory> enemyTerritories)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory t)
 			{
-				Match<Territory> match = new CompositeMatchAnd<Territory>(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u), Matches.isTerritoryAllied(player, data), Matches
-							.territoryIsInList(enemyTerritories).invert());
-				if (isCombatMove && Matches.UnitCanBlitz.match(u))
+				Match<Territory> match = new CompositeMatchAnd<Territory>(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u), Matches.isTerritoryAllied(player, data),
+							Matches.territoryHasNoEnemyUnits(player, data), Matches.territoryIsInList(enemyTerritories).invert());
+				if (isCombatMove && Matches.UnitCanBlitz.match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory))
 				{
-					final Match<Territory> alliedOrBlitzableMatch = new CompositeMatchOr<Territory>(Matches.isTerritoryAllied(player, data), territoryIsBlitzable(player, data, u));
-					match = new CompositeMatchAnd<Territory>(ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove), alliedOrBlitzableMatch, Matches.territoryIsInList(enemyTerritories)
-								.invert());
+					final Match<Territory> alliedWithNoEnemiesMatch = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.territoryHasNoEnemyUnits(player, data));
+					final Match<Territory> alliedOrBlitzableMatch = new CompositeMatchOr<Territory>(alliedWithNoEnemiesMatch, territoryIsBlitzable(player, data, u));
+					match = new CompositeMatchAnd<Territory>(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u), alliedOrBlitzableMatch,
+								Matches.territoryIsInList(enemyTerritories).invert());
 				}
 				return match.match(t);
 			}
