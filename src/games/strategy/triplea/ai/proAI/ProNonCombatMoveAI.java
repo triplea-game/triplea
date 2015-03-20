@@ -1507,7 +1507,7 @@ public class ProNonCombatMoveAI
 			if (Matches.UnitIsNotAir.match(u))
 				continue;
 			
-			int maxNumAttackTerritories = 0;
+			double maxAirValue = 0;
 			Territory maxTerritory = null;
 			for (final Territory t : unitMoveMap.get(u))
 			{
@@ -1529,6 +1529,13 @@ public class ProNonCombatMoveAI
 					continue;
 				}
 				
+				// Determine if territory can be held with owned units
+				final List<Unit> myDefenders = Match.getMatches(defendingUnits, Matches.unitIsOwnedBy(player));
+				final ProBattleResultData result2 = battleUtils.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), myDefenders, moveMap.get(t).getMaxEnemyBombardUnits(), false);
+				int cantHoldWithoutAllies = 0;
+				if (result2.getWinPercentage() >= MIN_WIN_PERCENTAGE || result2.getTUVSwing() > 0)
+					cantHoldWithoutAllies = 1;
+				
 				// Find number of potential attack options next turn
 				final int range = TripleAUnit.get(u).getMaxMovementAllowed();
 				final Set<Territory> possibleAttackTerritories = data.getMap().getNeighbors(t, range / 2, ProMatches.territoryCanMoveAirUnits(player, data, true));
@@ -1540,18 +1547,20 @@ public class ProNonCombatMoveAI
 				final int numNearbyEnemyTerritories = Match.countMatches(possibleMoveTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player, data));
 				
 				// Check if number of attack territories and value are max
-				final int numAttackTerritories = 200 * numSeaAttackTerritories + 100 * numLandAttackTerritories + 10 * numEnemyAttackTerritories + numNearbyEnemyTerritories;
-				if (numAttackTerritories > maxNumAttackTerritories)
+				final int isntFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t) ? 0 : 1;
+				final double airValue = (200.0 * numSeaAttackTerritories + 100 * numLandAttackTerritories + 10 * numEnemyAttackTerritories + numNearbyEnemyTerritories)
+							/ (1 + cantHoldWithoutAllies) / (1 + cantHoldWithoutAllies * isntFactory);
+				if (airValue > maxAirValue)
 				{
-					maxNumAttackTerritories = numAttackTerritories;
+					maxAirValue = airValue;
 					maxTerritory = t;
 				}
-				LogUtils.log(Level.FINEST, "Safe territory: " + t + " with numLandAttackOptions=" + numLandAttackTerritories + ", numSeaAttackTerritories=" + numSeaAttackTerritories
-							+ ", numEnemyAttackTerritories=" + numEnemyAttackTerritories);
+				LogUtils.log(Level.FINEST, "Safe territory: " + t + ", airValue=" + airValue + ", numLandAttackOptions=" + numLandAttackTerritories + ", numSeaAttackTerritories="
+							+ numSeaAttackTerritories + ", numEnemyAttackTerritories=" + numEnemyAttackTerritories);
 			}
 			if (maxTerritory != null)
 			{
-				LogUtils.log(Level.FINER, u.getType().getName() + " added to safe territory with most attack options " + maxTerritory + ", attackTerritories=" + maxNumAttackTerritories);
+				LogUtils.log(Level.FINER, u.getType().getName() + " added to safe territory with most attack options " + maxTerritory + ", maxAirValue=" + maxAirValue);
 				moveMap.get(maxTerritory).addUnit(u);
 				moveMap.get(maxTerritory).setBattleResult(null);
 				it.remove();
@@ -1612,6 +1621,9 @@ public class ProNonCombatMoveAI
 					double maxValue = 0;
 					for (final Territory t : infraUnitMoveMap.get(u))
 					{
+						if (!moveMap.get(t).isCanHold())
+							continue;
+						
 						// Find value by checking if territory is not conquered and doesn't already have a factory
 						final List<Unit> units = new ArrayList<Unit>(moveMap.get(t).getCantMoveUnits());
 						units.addAll(moveMap.get(t).getUnits());

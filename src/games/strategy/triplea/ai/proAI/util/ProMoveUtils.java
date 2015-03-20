@@ -5,6 +5,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
@@ -263,13 +264,39 @@ public class ProMoveUtils
 	
 	public void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel, final boolean isSimulation)
 	{
+		final GameData data = ai.getGameData();
+		
+		// Group non-amphib units of the same type moving on the same route
+		if (transportsToLoad == null)
+		{
+			for (int i = 0; i < moveRoutes.size(); i++)
+			{
+				final Route r = moveRoutes.get(i);
+				final UnitType ut = moveUnits.get(i).iterator().next().getType();
+				for (int j = i + 1; j < moveRoutes.size(); j++)
+				{
+					final Route r2 = moveRoutes.get(j);
+					final UnitType ut2 = moveUnits.get(j).iterator().next().getType();
+					if (r.equals(r2) && ut.equals(ut2))
+					{
+						moveUnits.get(j).addAll(moveUnits.get(i));
+						moveUnits.remove(i);
+						moveRoutes.remove(i);
+						i--;
+						break;
+					}
+				}
+			}
+		}
+		
+		// Move units
 		for (int i = 0; i < moveRoutes.size(); i++)
 		{
 			if (!isSimulation)
 				utils.pause();
 			if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null)
 			{
-				LogUtils.log(Level.WARNING, "Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
+				LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName() + ": route not valid " + moveRoutes.get(i) + " units: " + moveUnits.get(i));
 				continue;
 			}
 			String result;
@@ -279,7 +306,8 @@ public class ProMoveUtils
 				result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
 			if (result != null)
 			{
-				LogUtils.log(Level.WARNING, "could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result + "\n");
+				LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName() + ": could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i)
+							+ " because: " + result);
 			}
 		}
 	}

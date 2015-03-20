@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,11 +94,6 @@ public class ProRetreatAI
 		if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(battleTerritory))
 			isFactory = 1;
 		
-		// Determine if it has an AA
-		int hasAA = 0;
-		if (battleTerritory.getUnits().someMatch(Matches.UnitIsAAforAnything))
-			hasAA = 1;
-		
 		// Determine production value and if it is a capital
 		int production = 0;
 		int isCapital = 0;
@@ -110,7 +106,10 @@ public class ProRetreatAI
 		}
 		
 		// Calculate current attack value
-		double battleValue = result.getTUVSwing() + result.getWinPercentage() / 100 * (2 * production + 5 * isFactory + 3 * hasAA + 10 * isCapital);
+		double territoryValue = 0;
+		if (result.isHasLandUnitRemaining() || Match.noneMatch(attackers, Matches.UnitIsAir))
+			territoryValue = result.getWinPercentage() / 100 * (2 * production * (1 + isFactory) * (1 + isCapital));
+		double battleValue = result.getTUVSwing() + territoryValue;
 		if (!isAttacker)
 			battleValue = -battleValue;
 		
