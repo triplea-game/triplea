@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
@@ -272,12 +271,12 @@ public class ProMoveUtils
 			for (int i = 0; i < moveRoutes.size(); i++)
 			{
 				final Route r = moveRoutes.get(i);
-				final UnitType ut = moveUnits.get(i).iterator().next().getType();
+				// final UnitType ut = moveUnits.get(i).iterator().next().getType();
 				for (int j = i + 1; j < moveRoutes.size(); j++)
 				{
 					final Route r2 = moveRoutes.get(j);
-					final UnitType ut2 = moveUnits.get(j).iterator().next().getType();
-					if (r.equals(r2) && ut.equals(ut2))
+					// final UnitType ut2 = moveUnits.get(j).iterator().next().getType();
+					if (r.equals(r2))// && ut.equals(ut2))
 					{
 						moveUnits.get(j).addAll(moveUnits.get(i));
 						moveUnits.remove(i);

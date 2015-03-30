@@ -112,6 +112,7 @@ public class ProSimulateTurnUtils
 				if (!checkIfCapturedTerritoryIsAlliedCapital(t, data, player, delegateBridge))
 					delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
 				battleDelegate.getBattleTracker().getConquered().add(t);
+				battleDelegate.getBattleTracker().removeBattle(battle);
 				final Territory updatedTerritory = data.getMap().getTerritory(t.getName());
 				LogUtils.log(Level.FINER, "after changes owner=" + updatedTerritory.getOwner() + ", units=" + updatedTerritory.getUnits().getUnits());
 			}

@@ -554,8 +554,6 @@ public class ProNonCombatMoveAI
 		int numToDefend = 1;
 		while (true)
 		{
-			final List<ProAttackTerritoryData> territoriesToTryToDefend = prioritizedTerritories.subList(0, numToDefend);
-			
 			// Reset lists
 			for (final Territory t : moveMap.keySet())
 			{
@@ -564,6 +562,11 @@ public class ProNonCombatMoveAI
 				moveMap.get(t).getTransportTerritoryMap().clear();
 				moveMap.get(t).setBattleResult(null);
 			}
+			
+			// Determine number of territories to defend
+			if (numToDefend <= 0)
+				break;
+			final List<ProAttackTerritoryData> territoriesToTryToDefend = prioritizedTerritories.subList(0, numToDefend);
 			
 			// Loop through all units and determine defend options
 			final Map<Unit, Set<Territory>> unitDefendOptions = new HashMap<Unit, Set<Territory>>();
@@ -712,7 +715,8 @@ public class ProNonCombatMoveAI
 								final Set<Territory> territoriesToMoveTransport = data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, false));
 								for (final Territory territoryToMoveTransport : territoriesToMoveTransport)
 								{
-									if (transportMoveMap.get(transport).contains(territoryToMoveTransport) && moveMap.get(territoryToMoveTransport) != null)
+									if (transportMoveMap.get(transport).contains(territoryToMoveTransport) && moveMap.get(territoryToMoveTransport) != null
+												&& (moveMap.get(territoryToMoveTransport).isCanHold() || hasFactory))
 									{
 										final List<Unit> attackers = moveMap.get(territoryToMoveTransport).getMaxEnemyUnits();
 										final List<Unit> defenders = moveMap.get(territoryToMoveTransport).getAllDefenders();
@@ -726,17 +730,18 @@ public class ProNonCombatMoveAI
 									}
 								}
 								if (minTerritory != null)
+								{
+									// Add amphib defense
 									moveMap.get(t).getTransportTerritoryMap().put(transport, minTerritory);
-								
-								// Add amphib defense
-								moveMap.get(t).addTempUnits(amphibUnitsToAdd);
-								moveMap.get(t).putTempAmphibAttackMap(transport, amphibUnitsToAdd);
-								moveMap.get(t).setBattleResult(null);
-								for (final Unit unit : amphibUnitsToAdd)
-									sortedUnitMoveOptions.remove(unit);
-								LogUtils.log(Level.FINER, "Adding amphibious defense to: " + t + ", units=" + amphibUnitsToAdd + ", unloadTerritory=" + minTerritory);
-								addedAmphibUnits = true;
-								break;
+									moveMap.get(t).addTempUnits(amphibUnitsToAdd);
+									moveMap.get(t).putTempAmphibAttackMap(transport, amphibUnitsToAdd);
+									moveMap.get(t).setBattleResult(null);
+									for (final Unit unit : amphibUnitsToAdd)
+										sortedUnitMoveOptions.remove(unit);
+									LogUtils.log(Level.FINER, "Adding amphibious defense to: " + t + ", units=" + amphibUnitsToAdd + ", unloadTerritory=" + minTerritory);
+									addedAmphibUnits = true;
+									break;
+								}
 							}
 						}
 						if (addedAmphibUnits)
@@ -819,8 +824,6 @@ public class ProNonCombatMoveAI
 				prioritizedTerritories.remove(numToDefend - 1);
 				if (numToDefend > prioritizedTerritories.size())
 					numToDefend--;
-				if (numToDefend <= 0)
-					break;
 			}
 		}
 		
