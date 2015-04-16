@@ -16,11 +16,8 @@ package games.strategy.triplea.ai.proAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
-import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 
 import java.util.ArrayList;
@@ -32,13 +29,10 @@ public class ProPurchaseTerritory
 	private int unitProduction;
 	private List<ProPlaceTerritory> canPlaceTerritories;
 	
-	public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player)
+	public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player, final int unitProduction)
 	{
 		this.territory = territory;
-		unitProduction = TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(), territory, player, data, true, true);
-		final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-		if (ra != null && ra.getPlacementAnyTerritory())
-			unitProduction = Integer.MAX_VALUE;
+		this.unitProduction = unitProduction;
 		canPlaceTerritories = new ArrayList<ProPlaceTerritory>();
 		canPlaceTerritories.add(new ProPlaceTerritory(territory));
 		if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(territory))

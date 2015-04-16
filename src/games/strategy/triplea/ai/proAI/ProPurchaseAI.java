@@ -969,7 +969,8 @@ public class ProPurchaseAI
 							+ ", enemyAttackers=" + enemyAttackingUnits + ", defenders=" + placeTerritory.getDefendingUnits());
 				
 				// If it can't currently be held then add to list
-				if (result.isHasLandUnitRemaining() || result.getTUVSwing() > 0 || (t.equals(myCapital) && result.getWinPercentage() > (100 - WIN_PERCENTAGE)))
+				final boolean isLandAndCanOnlyBeAttackedByAir = !t.isWater() && Match.allMatch(enemyAttackingUnits, Matches.UnitIsAir);
+				if (result.isHasLandUnitRemaining() || result.getTUVSwing() > 0 || (t.equals(myCapital) && !isLandAndCanOnlyBeAttackedByAir && result.getWinPercentage() > (100 - WIN_PERCENTAGE)))
 					needToDefendTerritories.add(placeTerritory);
 			}
 		}
@@ -1137,7 +1138,7 @@ public class ProPurchaseAI
 			for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories())
 			{
 				final Territory t = placeTerritory.getTerritory();
-				if (!t.isWater() && placeTerritory.getStrategicValue() >= 0.25 && placeTerritory.isCanHold())
+				if (!t.isWater() && placeTerritory.getStrategicValue() >= 1 && placeTerritory.isCanHold())
 				{
 					final boolean hasEnemyNeighbors = !data.getMap().getNeighbors(t, ProMatches.territoryIsEnemyLand(player, data)).isEmpty();
 					final Set<Territory> nearbyLandTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
@@ -1371,7 +1372,7 @@ public class ProPurchaseAI
 		final List<Territory> territoriesThatCantBeHeld = new ArrayList<Territory>();
 		for (final Territory t : possibleFactoryTerritories)
 		{
-			// Only consider territories with production of atleast 3 unless there are still remaining PUs
+			// Only consider territories with production of at least 3 unless there are still remaining PUs
 			final int production = TerritoryAttachment.get(t).getProduction();
 			if ((production < 3 && !hasExtraPUs) || production < 2)
 				continue;
@@ -1431,7 +1432,7 @@ public class ProPurchaseAI
 			final Set<Territory> nearbyLandTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
 			final int numNearbyEnemyTerritories = Match.countMatches(nearbyLandTerritories, Matches.isTerritoryEnemy(player, data));
 			LogUtils.log(Level.FINEST, t + ", strategic value=" + territoryValueMap.get(t) + ", value=" + value + ", numNearbyEnemyTerritories=" + numNearbyEnemyTerritories);
-			if (value > maxValue && ((numNearbyEnemyTerritories >= 4 && territoryValueMap.get(t) >= 0.25)
+			if (value > maxValue && ((numNearbyEnemyTerritories >= 4 && territoryValueMap.get(t) >= 1)
 						|| (isAdjacentToSea && hasExtraPUs)))
 			{
 				maxValue = value;
@@ -1485,7 +1486,7 @@ public class ProPurchaseAI
 			{
 				LogUtils.log(Level.FINER, "Best factory unit: " + bestFactoryOption.getUnitType().getName());
 				
-				final ProPurchaseTerritory factoryPurchaseTerritory = new ProPurchaseTerritory(maxTerritory, data, player);
+				final ProPurchaseTerritory factoryPurchaseTerritory = new ProPurchaseTerritory(maxTerritory, data, player, 0);
 				factoryPurchaseTerritories.put(maxTerritory, factoryPurchaseTerritory);
 				for (final ProPlaceTerritory ppt : factoryPurchaseTerritory.getCanPlaceTerritories())
 				{

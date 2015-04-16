@@ -37,6 +37,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
@@ -1685,6 +1686,14 @@ public class ProNonCombatMoveAI
 				for (final Territory t : infraUnitMoveMap.get(u))
 				{
 					if (!moveMap.get(t).isCanHold())
+						continue;
+					
+					// Consider max stack of 1 AA in classic
+					final Route r = data.getMap().getRoute_IgnoreEnd(currentTerritory, t,
+								ProMatches.territoryCanMoveLandUnitsThrough(player, data, u, currentTerritory, false, new ArrayList<Territory>()));
+					final MoveValidationResult mvr = MoveValidator
+								.validateMove(Collections.singletonList(u), r, player, new ArrayList<Unit>(), new HashMap<Unit, Collection<Unit>>(), true, null, data);
+					if (!mvr.isMoveValid())
 						continue;
 					
 					// Find value and try to move to territory that doesn't already have AA

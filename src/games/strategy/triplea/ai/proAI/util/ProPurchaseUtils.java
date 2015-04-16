@@ -17,14 +17,17 @@ import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.ProPurchaseTerritory;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -245,7 +248,7 @@ public class ProPurchaseUtils
 		{
 			LogUtils.log(Level.FINER, "Best defense option: " + bestDefenseOption.getUnitType().getName());
 			
-			int remainingUnitProduction = TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, player, data, true, true);
+			int remainingUnitProduction = getUnitProduction(t, data, player);
 			int PUsSpent = 0;
 			while (true)
 			{
@@ -296,12 +299,59 @@ public class ProPurchaseUtils
 		final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
 		for (final Territory t : ownedAndNotConqueredFactoryTerritories)
 		{
-			final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player);
+			final int unitProduction = getUnitProduction(t, data, player);
+			final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, unitProduction);
 			purchaseTerritories.put(t, ppt);
 			LogUtils.log(Level.FINER, ppt.toString());
 		}
 		
 		return purchaseTerritories;
+	}
+	
+	public int getUnitProduction(final Territory territory, final GameData data, final PlayerID player)
+	{
+		final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player),
+					Matches.unitIsBeingTransported().invert());
+		if (territory.isWater())
+			factoryMatch.add(Matches.UnitIsLand.invert());
+		else
+			factoryMatch.add(Matches.UnitIsSea.invert());
+		final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		final boolean originalFactory = (ta == null ? false : ta.getOriginalFactory());
+		final boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? player.equals(getOriginalFactoryOwner(territory, player)) : false;
+		final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+		if (originalFactory && playerIsOriginalOwner)
+		{
+			if (ra != null && ra.getMaxPlacePerTerritory() != -1)
+			{
+				return Math.max(0, ra.getMaxPlacePerTerritory());
+			}
+			return Integer.MAX_VALUE;
+		}
+		if (ra != null && ra.getPlacementAnyTerritory())
+			return Integer.MAX_VALUE;
+		return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(), territory, player, data, true, true);
+	}
+	
+	private PlayerID getOriginalFactoryOwner(final Territory territory, final PlayerID player)
+	{
+		final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitCanProduceUnits);
+		if (factoryUnits.size() == 0)
+		{
+			throw new IllegalStateException("No factory in territory:" + territory);
+		}
+		final Iterator<Unit> iter = factoryUnits.iterator();
+		while (iter.hasNext())
+		{
+			final Unit factory2 = iter.next();
+			if (player.equals(OriginalOwnerTracker.getOriginalOwner(factory2)))
+			{
+				return OriginalOwnerTracker.getOriginalOwner(factory2);
+			}
+		}
+		final Unit factory = factoryUnits.iterator().next();
+		return OriginalOwnerTracker.getOriginalOwner(factory);
 	}
 	
 }

@@ -537,7 +537,7 @@ public class ProCombatMoveAI
 			else
 			{
 				attackMap.get(t).setCanHold(true);
-				LogUtils.log(Level.FINER, t + ", CanHold=true since no enemy counter attackers");
+				LogUtils.log(Level.FINER, t + ", CanHold=true since no enemy counter attackers, value=" + territoryValueMap.get(t) + ", averageAttackFromValue=" + averageValue);
 			}
 		}
 	}
@@ -924,15 +924,36 @@ public class ProCombatMoveAI
 				if (isFFA == 1 && TUVSwing > 0)
 					TUVSwing *= 0.5;
 				final double attackValue = TUVSwing + territoryValue * result.getWinPercentage() / 100 - enemyCounterTUVSwing * 2 / 3;
+				boolean allUnitsCanAttackOtherTerritory = true;
+				if (isNeutral && attackValue < 0)
+				{
+					for (final Unit u : patd.getUnits())
+					{
+						boolean canAttackOtherTerritory = false;
+						for (final ProAttackTerritoryData patd2 : prioritizedTerritories)
+						{
+							if (!patd.equals(patd2) && unitAttackMap.get(u) != null && unitAttackMap.get(u).contains(patd2.getTerritory()))
+							{
+								canAttackOtherTerritory = true;
+								break;
+							}
+						}
+						if (!canAttackOtherTerritory)
+						{
+							allUnitsCanAttackOtherTerritory = false;
+							break;
+						}
+					}
+				}
 				
 				// Determine whether to remove attack
-				if (result.getWinPercentage() < MIN_WIN_PERCENTAGE || !result.isHasLandUnitRemaining() || (isNeutral && !canHold) || (!isNeutral && attackValue < 0))
+				if (result.getWinPercentage() < MIN_WIN_PERCENTAGE || !result.isHasLandUnitRemaining() || (isNeutral && !canHold)
+							|| (attackValue < 0 && (!isNeutral || allUnitsCanAttackOtherTerritory || result.getBattleRounds() >= 4)))
+				{
 					territoryToRemove = patd;
-				LogUtils.log(Level.FINER, patd.getResultString() + ", attackValue=" + attackValue + ", territoryValue=" + territoryValue + " with attackers=" + patd.getUnits());
-				
-				// if ((isNeutral && !canHold) || (!isNeutral && attackValue < 0))
-				// System.out.println(data.getSequence().getRound() + ". " + patd.getResultString() + ", attackValue=" + attackValue + ", territoryValue=" + territoryValue + " with attackers="
-				// + patd.getUnits());
+				}
+				LogUtils.log(Level.FINER, patd.getResultString() + ", attackValue=" + attackValue + ", territoryValue=" + territoryValue
+							+ ", allUnitsCanAttackOtherTerritory=" + allUnitsCanAttackOtherTerritory + " with attackers=" + patd.getUnits());
 			}
 			
 			// Determine whether all attacks are successful or try to hold fewer territories
@@ -1015,6 +1036,9 @@ public class ProCombatMoveAI
 			final TreeMap<Double, Territory> estimatesMap = new TreeMap<Double, Territory>();
 			for (final Territory t : sortedUnitAttackOptions.get(unit))
 			{
+				if (t.isWater() && !attackMap.get(t).isCanHold())
+					continue; // ignore sea territories that can't be held
+					
 				final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
 				double estimate = battleUtils.estimateStrengthDifference(t, attackMap.get(t).getUnits(), defendingUnits);
 				final boolean hasAA = Match.someMatch(defendingUnits, Matches.UnitIsAAforAnything);
@@ -1022,7 +1046,7 @@ public class ProCombatMoveAI
 					estimate -= 10;
 				estimatesMap.put(estimate, t);
 			}
-			if (estimatesMap.firstKey() < 40)
+			if (!estimatesMap.isEmpty() && estimatesMap.firstKey() < 40)
 			{
 				final Territory minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
 				LogUtils.log(Level.FINEST, minWinTerritory + ", 1. adding unit=" + unit);

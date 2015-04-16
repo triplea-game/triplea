@@ -151,7 +151,10 @@ public class ProBattleUtils
 		final GameData data = ai.getGameData();
 		
 		final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.UnitIsNotInfrastructure);
-		if (attackingUnits.size() == 0)// || (Match.allMatch(attackingUnits, Matches.UnitIsAir) && !t.isWater()))
+		final boolean isLandAndCanOnlyBeAttackedByAir = !t.isWater() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
+		if (attackingUnits.size() == 0)
+			return new ProBattleResultData();
+		else if (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir)
 			return new ProBattleResultData();
 		else if (hasNoDefenders)
 			return new ProBattleResultData(100, 0.1, true, attackingUnits, 0);
