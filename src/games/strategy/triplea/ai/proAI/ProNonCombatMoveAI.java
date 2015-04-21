@@ -758,6 +758,12 @@ public class ProNonCombatMoveAI
 			{
 				final Territory t = patd.getTerritory();
 				
+				if (moveMap.get(t).getAllDefenders().size() == moveMap.get(t).getCantMoveUnits().size())
+				{
+					areSuccessful = false;
+					break;
+				}
+				
 				// Find defense result and hold value based on used defenders TUV
 				final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
 				moveMap.get(t).setBattleResult(battleUtils.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits(), false));
@@ -788,7 +794,7 @@ public class ProNonCombatMoveAI
 				}
 				
 				// Check if its worth defending
-				if ((result.getTUVSwing() - holdValue) >= patd.getMinBattleResult().getTUVSwing()
+				if ((result.getTUVSwing() - holdValue) > patd.getMinBattleResult().getTUVSwing()
 							|| (!hasHigherStrategicValue && (result.getTUVSwing() + extraUnitValue / 2) >= patd.getMinBattleResult().getTUVSwing()))
 					areSuccessful = false;
 				LogUtils.log(Level.FINEST, patd.getResultString() + ", holdValue=" + holdValue + ", hasHighStrategicValue=" + hasHigherStrategicValue + ", defenders=" + defendingUnits
