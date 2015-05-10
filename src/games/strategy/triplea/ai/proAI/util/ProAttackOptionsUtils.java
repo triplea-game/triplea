@@ -650,7 +650,7 @@ public class ProAttackOptionsUtils
 		
 		// TODO: add carriers to landing possibilities for non-enemy
 		final Set<Territory> possibleCarrierTerritories = new HashSet<Territory>();
-		if (isCheckingEnemyAttacks)
+		if (isCheckingEnemyAttacks || !isCombatMove)
 		{
 			final Map<Unit, Set<Territory>> unitMoveMap2 = new HashMap<Unit, Set<Territory>>();
 			findNavalMoveOptions(player, myUnitTerritories, new HashMap<Territory, ProAttackTerritoryData>(), unitMoveMap2, new HashMap<Unit, Set<Territory>>(), Matches.TerritoryIsWater,
@@ -659,6 +659,11 @@ public class ProAttackOptionsUtils
 			{
 				if (Matches.UnitIsCarrier.match(u))
 					possibleCarrierTerritories.addAll(unitMoveMap2.get(u));
+			}
+			for (final Territory t : data.getMap().getTerritories())
+			{
+				if (t.getUnits().someMatch(Matches.UnitIsAlliedCarrier(player, data)))
+					possibleCarrierTerritories.add(t);
 			}
 		}
 		
@@ -674,6 +679,8 @@ public class ProAttackOptionsUtils
 				final Set<Territory> possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range, ProMatches.territoryCanMoveAirUnits(player, data, isCombatMove));
 				possibleMoveTerritories.add(myUnitTerritory);
 				final Set<Territory> potentialTerritories = new HashSet<Territory>(Match.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
+				if (!isCombatMove && Matches.UnitCanLandOnCarrier.match(myAirUnit))
+					potentialTerritories.addAll(Match.getMatches(possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
 				for (final Territory potentialTerritory : potentialTerritories)
 				{
 					// Find route ignoring impassable and territories with AA

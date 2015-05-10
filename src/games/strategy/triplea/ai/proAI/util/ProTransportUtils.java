@@ -9,11 +9,13 @@ import games.strategy.triplea.ai.proAI.ProAttackTerritoryData;
 import games.strategy.triplea.ai.proAI.ProPurchaseOption;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.AirMovementValidator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -188,6 +190,25 @@ public class ProTransportUtils
 		for (final Unit unit : units)
 			transportCost += UnitAttachment.get(unit.getType()).getTransportCost();
 		return transportCost;
+	}
+	
+	public boolean validateCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> existingUnits, final Unit newUnit)
+	{
+		final GameData data = ai.getGameData();
+		
+		int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
+		final Collection<Unit> airUnits = Match.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
+		airUnits.add(newUnit);
+		for (final Unit airUnit : airUnits)
+		{
+			final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
+			final int cost = ua.getCarrierCost();
+			if (cost != -1)
+				capacity -= cost;
+		}
+		if (capacity < 0)
+			return false;
+		return true;
 	}
 	
 }

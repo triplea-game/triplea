@@ -586,7 +586,40 @@ public class ProNonCombatMoveAI
 			// Sort units by number of defend options and cost
 			final Map<Unit, Set<Territory>> sortedUnitMoveOptions = attackOptionsUtils.sortUnitMoveOptions(player, unitDefendOptions);
 			
-			// Set units in territories
+			// Set non-air units in territories
+			for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();)
+			{
+				final Unit unit = it.next();
+				if (Matches.UnitCanLandOnCarrier.match(unit))
+					continue;
+				Territory maxWinTerritory = null;
+				double maxWinPercentage = -1;
+				for (final Territory t : sortedUnitMoveOptions.get(unit))
+				{
+					List<Unit> defendingUnits = Match.getMatches(moveMap.get(t).getAllDefenders(), ProMatches.unitIsAlliedNotOwnedAir(player, data).invert());
+					if (t.isWater())
+						defendingUnits = moveMap.get(t).getAllDefenders();
+					if (moveMap.get(t).getBattleResult() == null)
+						moveMap.get(t).setBattleResult(battleUtils.estimateDefendBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
+					final ProBattleResultData result = moveMap.get(t).getBattleResult();
+					final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t);
+					if (result.getWinPercentage() > maxWinPercentage && ((t.equals(myCapital) && result.getWinPercentage() > (100 - WIN_PERCENTAGE))
+								|| (hasFactory && result.getWinPercentage() > (100 - MIN_WIN_PERCENTAGE)) || result.getTUVSwing() >= 0))
+					{
+						maxWinTerritory = t;
+						maxWinPercentage = result.getWinPercentage();
+					}
+				}
+				if (maxWinTerritory != null)
+				{
+					LogUtils.log(Level.FINEST, maxWinTerritory + " added unit " + unit);
+					moveMap.get(maxWinTerritory).addTempUnit(unit);
+					moveMap.get(maxWinTerritory).setBattleResult(null);
+					it.remove();
+				}
+			}
+			
+			// Set air units in territories
 			for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();)
 			{
 				final Unit unit = it.next();
@@ -594,7 +627,14 @@ public class ProNonCombatMoveAI
 				double maxWinPercentage = -1;
 				for (final Territory t : sortedUnitMoveOptions.get(unit))
 				{
-					final List<Unit> defendingUnits = Match.getMatches(moveMap.get(t).getAllDefenders(), ProMatches.unitIsAlliedNotOwnedAir(player, data).invert());
+					if (t.isWater() && Matches.UnitIsAir.match(unit))
+					{
+						if (!transportUtils.validateCarrierCapacity(player, t, moveMap.get(t).getAllDefenders(), unit))
+							continue;
+					}
+					List<Unit> defendingUnits = Match.getMatches(moveMap.get(t).getAllDefenders(), ProMatches.unitIsAlliedNotOwnedAir(player, data).invert());
+					if (t.isWater())
+						defendingUnits = moveMap.get(t).getAllDefenders();
 					if (moveMap.get(t).getBattleResult() == null)
 						moveMap.get(t).setBattleResult(battleUtils.estimateDefendBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
 					final ProBattleResultData result = moveMap.get(t).getBattleResult();
@@ -1187,6 +1227,7 @@ public class ProNonCombatMoveAI
 			LogUtils.log(Level.FINER, "Move sea units");
 			
 			// Move sea units to defend transports
+			// TODO: use air units to defend as well
 			for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext();)
 			{
 				final Unit u = it.next();
@@ -1524,6 +1565,12 @@ public class ProNonCombatMoveAI
 				if (!moveMap.get(t).isCanHold())
 					continue;
 				
+				if (t.isWater() && !transportUtils.validateCarrierCapacity(player, t, moveMap.get(t).getAllDefenders(), u))
+				{
+					LogUtils.log(Level.FINEST, t + " already at MAX carrier capacity");
+					continue;
+				}
+				
 				// Check to see if the territory is safe
 				final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
 				defendingUnits.add(u);
@@ -1558,8 +1605,9 @@ public class ProNonCombatMoveAI
 				
 				// Check if number of attack territories and value are max
 				final int isntFactory = ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t) ? 0 : 1;
+				final int isWater = t.isWater() ? 1 : 0;
 				final double airValue = (200.0 * numSeaAttackTerritories + 100 * numLandAttackTerritories + 10 * numEnemyAttackTerritories + numNearbyEnemyTerritories)
-							/ (1 + cantHoldWithoutAllies) / (1 + cantHoldWithoutAllies * isntFactory);
+							/ (1 + cantHoldWithoutAllies) / (1 + cantHoldWithoutAllies * isntFactory) * (1 + isWater);
 				if (airValue > maxAirValue)
 				{
 					maxAirValue = airValue;
@@ -1588,6 +1636,12 @@ public class ProNonCombatMoveAI
 			Territory minTerritory = null;
 			for (final Territory t : unitMoveMap.get(u))
 			{
+				if (t.isWater() && !transportUtils.validateCarrierCapacity(player, t, moveMap.get(t).getAllDefenders(), u))
+				{
+					LogUtils.log(Level.FINEST, t + " already at MAX carrier capacity");
+					continue;
+				}
+				
 				final List<Unit> attackers = moveMap.get(t).getMaxEnemyUnits();
 				final List<Unit> defenders = moveMap.get(t).getAllDefenders();
 				defenders.add(u);

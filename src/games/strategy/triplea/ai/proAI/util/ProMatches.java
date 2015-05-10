@@ -685,6 +685,19 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Unit> unitIsAlliedAir(final PlayerID player, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(player, data), Matches.UnitIsAir);
+				return match.match(u);
+			}
+		};
+	}
+	
 	public static Match<Unit> unitIsEnemyAir(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
