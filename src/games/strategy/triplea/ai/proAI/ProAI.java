@@ -386,8 +386,8 @@ public class ProAI extends AbstractAI
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		final List<Unit> rVal = new ArrayList<Unit>();
-		for (final Unit fighter : fightersThatCanBeMoved)
-			rVal.add(fighter);
+		// for (final Unit fighter : fightersThatCanBeMoved)
+		// rVal.add(fighter);
 		return rVal;
 	}
 	

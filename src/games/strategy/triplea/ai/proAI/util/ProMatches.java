@@ -19,6 +19,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -803,6 +804,19 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Unit> unitIsOwnedAir(final PlayerID player)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(player), Matches.UnitIsAir);
+				return match.match(u);
+			}
+		};
+	}
+	
 	public static Match<Unit> unitIsOwnedAndMatchesTypeAndIsTransporting(final PlayerID player, final UnitType unitType)
 	{
 		return new Match<Unit>()
@@ -825,6 +839,19 @@ public class ProMatches
 			{
 				final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(unitType), Matches.unitIsTransporting().invert());
 				return match.match(u);
+			}
+		};
+	}
+	
+	public static final Match<Unit> UnitIsOwnedCarrier(final PlayerID player)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final UnitAttachment ua = UnitAttachment.get(u.getType());
+				return ua.getCarrierCapacity() != -1 && Matches.unitIsOwnedBy(player).match(u);
 			}
 		};
 	}

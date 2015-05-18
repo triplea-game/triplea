@@ -629,7 +629,7 @@ public class ProNonCombatMoveAI
 				{
 					if (t.isWater() && Matches.UnitIsAir.match(unit))
 					{
-						if (!transportUtils.validateCarrierCapacity(player, t, moveMap.get(t).getAllDefenders(), unit))
+						if (!transportUtils.validateCarrierCapacity(player, t, moveMap.get(t).getAllDefendersForCarrierCalcs(data, player), unit))
 							continue;
 					}
 					List<Unit> defendingUnits = Match.getMatches(moveMap.get(t).getAllDefenders(), ProMatches.unitIsAlliedNotOwnedAir(player, data).invert());
@@ -815,7 +815,15 @@ public class ProNonCombatMoveAI
 				if (t.equals(myCapital))
 					isMyCapital = 1;
 				final double extraUnitValue = BattleCalculator.getTUV(moveMap.get(t).getTempUnits(), playerCostMap);
-				final double holdValue = extraUnitValue / 8 * (1 + isFactory) * (1 + isMyCapital);
+				final List<Unit> unsafeTransports = new ArrayList<Unit>();
+				for (final Unit transport : moveMap.get(t).getTransportTerritoryMap().keySet())
+				{
+					final Territory transportTerritory = moveMap.get(t).getTransportTerritoryMap().get(transport);
+					if (!moveMap.get(transportTerritory).isCanHold())
+						unsafeTransports.add(transport);
+				}
+				final int unsafeTransportValue = BattleCalculator.getTUV(unsafeTransports, playerCostMap);
+				final double holdValue = extraUnitValue / 8 * (1 + isFactory) * (1 + isMyCapital) - unsafeTransportValue;
 				
 				// Find strategic value
 				boolean hasHigherStrategicValue = true;
@@ -837,7 +845,8 @@ public class ProNonCombatMoveAI
 				if ((result.getTUVSwing() - holdValue) > patd.getMinBattleResult().getTUVSwing()
 							|| (!hasHigherStrategicValue && (result.getTUVSwing() + extraUnitValue / 2) >= patd.getMinBattleResult().getTUVSwing()))
 					areSuccessful = false;
-				LogUtils.log(Level.FINEST, patd.getResultString() + ", holdValue=" + holdValue + ", hasHighStrategicValue=" + hasHigherStrategicValue + ", defenders=" + defendingUnits
+				LogUtils.log(Level.FINEST, patd.getResultString() + ", holdValue=" + holdValue + ", minTUVSwing=" + patd.getMinBattleResult().getTUVSwing() + ", hasHighStrategicValue="
+							+ hasHigherStrategicValue + ", defenders=" + defendingUnits
 							+ ", attackers=" + moveMap.get(t).getMaxEnemyUnits());
 			}
 			final Territory currentTerritory = prioritizedTerritories.get(numToDefend - 1).getTerritory();
@@ -1227,7 +1236,6 @@ public class ProNonCombatMoveAI
 			LogUtils.log(Level.FINER, "Move sea units");
 			
 			// Move sea units to defend transports
-			// TODO: use air units to defend as well
 			for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext();)
 			{
 				final Unit u = it.next();
@@ -1246,7 +1254,40 @@ public class ProNonCombatMoveAI
 										+ moveMap.get(t).getMaxEnemyUnits().size() + ", defenders=" + defendingUnits.size());
 							if (result.getWinPercentage() > (100 - WIN_PERCENTAGE) || result.getTUVSwing() > 0)
 							{
-								LogUtils.log(Level.FINEST, u + " added to defend transport at " + t);
+								LogUtils.log(Level.FINEST, u + " added sea to defend transport at " + t);
+								moveMap.get(t).addTempUnit(u);
+								moveMap.get(t).setBattleResult(null);
+								territoriesToDefend.add(t);
+								it.remove();
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			// Move air units to defend transports
+			for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext();)
+			{
+				final Unit u = it.next();
+				if (Matches.UnitCanLandOnCarrier.match(u))
+				{
+					for (final Territory t : currentUnitMoveMap.get(u))
+					{
+						if (t.isWater() && moveMap.get(t).isCanHold() && !moveMap.get(t).getAllDefenders().isEmpty())
+						{
+							if (!transportUtils.validateCarrierCapacity(player, t, moveMap.get(t).getAllDefendersForCarrierCalcs(data, player), u))
+								continue;
+							final List<Unit> defendingUnits = Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
+							if (moveMap.get(t).getBattleResult() == null)
+								moveMap.get(t).setBattleResult(
+											battleUtils.estimateDefendBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
+							final ProBattleResultData result = moveMap.get(t).getBattleResult();
+							LogUtils.log(Level.FINEST, t.getName() + " TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage() + ", enemyAttackers="
+										+ moveMap.get(t).getMaxEnemyUnits().size() + ", defenders=" + defendingUnits.size());
+							if (result.getWinPercentage() > (100 - WIN_PERCENTAGE) || result.getTUVSwing() > 0)
+							{
+								LogUtils.log(Level.FINEST, u + " added air to defend transport at " + t);
 								moveMap.get(t).addTempUnit(u);
 								moveMap.get(t).setBattleResult(null);
 								territoriesToDefend.add(t);

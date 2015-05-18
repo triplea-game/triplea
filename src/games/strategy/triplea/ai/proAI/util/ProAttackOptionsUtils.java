@@ -648,7 +648,7 @@ public class ProAttackOptionsUtils
 	{
 		final GameData data = ai.getGameData();
 		
-		// TODO: add carriers to landing possibilities for non-enemy
+		// TODO: add carriers to landing possibilities for non-enemy attacks
 		final Set<Territory> possibleCarrierTerritories = new HashSet<Territory>();
 		if (isCheckingEnemyAttacks || !isCombatMove)
 		{
@@ -696,7 +696,7 @@ public class ProAttackOptionsUtils
 						continue;
 					
 					// If combat move and my remaining movement is less than the distance I already moved then need to check if I can land
-					if (isCombatMove && remainingMoves < myRouteLength)
+					if (isCombatMove && (remainingMoves < myRouteLength || myUnitTerritory.isWater()))
 					{
 						final Set<Territory> possibleLandingTerritories = data.getMap().getNeighbors(potentialTerritory, remainingMoves,
 									canFlyOverMatch);

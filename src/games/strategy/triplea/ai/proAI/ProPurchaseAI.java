@@ -124,7 +124,7 @@ public class ProPurchaseAI
 		
 		if (PUsToSpend == 0 && player.getResources().getQuantity(data.getResourceList().getResource(Constants.PUS)) == 0) // Check whether the player has ANY PU's to spend...
 			return;
-		// TODO: lot of tweaks have gone into this routine without good organization...need to cleanup
+		
 		// breakdown Rules by type and cost
 		int highPrice = 0;
 		final List<ProductionRule> rules = player.getProductionFrontier().getRules();
@@ -518,7 +518,7 @@ public class ProPurchaseAI
 		
 		// Prioritize land territories that need defended and purchase additional defenders
 		final List<ProPlaceTerritory> needToDefendLandTerritories = prioritizeTerritoriesToDefend(purchaseTerritories, enemyAttackMap, true);
-		PUsRemaining = purchaseDefenders(purchaseTerritories, enemyAttackMap, needToDefendLandTerritories, PUsRemaining, purchaseOptions.getLandFodderOptions(), true);
+		PUsRemaining = purchaseDefenders(purchaseTerritories, enemyAttackMap, needToDefendLandTerritories, PUsRemaining, purchaseOptions.getLandFodderOptions(), purchaseOptions.getAirOptions(), true);
 		
 		// Find strategic value for each territory
 		LogUtils.log(Level.FINE, "Find strategic value for place territories");
@@ -539,7 +539,7 @@ public class ProPurchaseAI
 		
 		// Prioritize sea territories that need defended and purchase additional defenders
 		final List<ProPlaceTerritory> needToDefendSeaTerritories = prioritizeTerritoriesToDefend(purchaseTerritories, enemyAttackMap, false);
-		PUsRemaining = purchaseDefenders(purchaseTerritories, enemyAttackMap, needToDefendSeaTerritories, PUsRemaining, purchaseOptions.getSeaDefenseOptions(), false);
+		PUsRemaining = purchaseDefenders(purchaseTerritories, enemyAttackMap, needToDefendSeaTerritories, PUsRemaining, purchaseOptions.getSeaDefenseOptions(), purchaseOptions.getAirOptions(), false);
 		
 		// Determine whether to purchase new land factory
 		final Map<Territory, ProPurchaseTerritory> factoryPurchaseTerritories = new HashMap<Territory, ProPurchaseTerritory>();
@@ -572,6 +572,7 @@ public class ProPurchaseAI
 		return purchaseTerritories;
 	}
 	
+	// TODO: Rewrite this as its from the Moore AI
 	public void bidPlace(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
 		LogUtils.log(Level.FINE, "Starting bid place phase");
@@ -673,7 +674,7 @@ public class ProPurchaseAI
 			}
 			placeSeaUnits(true, data, bidSeaTerr, bidSeaTerr, placeDelegate, player);
 		}
-		if (player.getUnits().someMatch(Matches.UnitIsNotSea)) // TODO: Match fighters with carrier purchase
+		if (player.getUnits().someMatch(Matches.UnitIsNotSea))
 		{
 			ourSemiRankedBidTerrs.addAll(ourTerrWithEnemyNeighbors);
 			ourTerrs.removeAll(ourTerrWithEnemyNeighbors);
@@ -1034,7 +1035,8 @@ public class ProPurchaseAI
 	}
 	
 	private int purchaseDefenders(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
-				final List<ProPlaceTerritory> needToDefendTerritories, int PUsRemaining, final List<ProPurchaseOption> defensePurchaseOptions, final boolean isLand)
+				final List<ProPlaceTerritory> needToDefendTerritories, int PUsRemaining, final List<ProPurchaseOption> defensePurchaseOptions, final List<ProPurchaseOption> airPurchaseOptions,
+				final boolean isLand)
 	{
 		if (PUsRemaining == 0)
 			return PUsRemaining;
@@ -1049,6 +1051,18 @@ public class ProPurchaseAI
 			
 			// Find local owned units
 			final List<Unit> ownedLocalUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+			Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false));
+			nearbyTerritories = new HashSet<Territory>(Match.getMatches(nearbyTerritories, Matches.TerritoryIsLand));
+			nearbyTerritories.add(t);
+			final List<Unit> ownedNearbyUnits = new ArrayList<Unit>();
+			for (final Territory nearbyTerritory : nearbyTerritories)
+				ownedNearbyUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
+			int unusedCarrierCapacity = Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, ownedNearbyUnits));
+			
+			// Determine if need destroyer
+			boolean needDestroyer = false;
+			if (Match.someMatch(enemyAttackMap.get(t).getMaxUnits(), Matches.UnitIsSub) && Match.noneMatch(ownedLocalUnits, Matches.UnitIsDestroyer))
+				needDestroyer = true;
 			
 			// Find all purchase territories for place territory
 			int PUsSpent = 0;
@@ -1065,6 +1079,7 @@ public class ProPurchaseAI
 				
 				// Find defenders that can be produced in this territory
 				final List<ProPurchaseOption> purchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, defensePurchaseOptions, t);
+				purchaseOptionsForTerritory.addAll(airPurchaseOptions);
 				
 				// Purchase necessary defenders
 				while (true)
@@ -1082,14 +1097,22 @@ public class ProPurchaseAI
 						if (isLand)
 							defenseEfficiencies.put(ppo, ppo.getDefenseEfficiency2(1, data, ownedLocalUnits, unitsToPlace));
 						else
-							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace));
+							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity));
 					}
 					final ProPurchaseOption selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
+					if (selectedOption.isDestroyer())
+						needDestroyer = false;
 					
 					// Create new temp units
 					PUsSpent += selectedOption.getCost();
 					remainingUnitProduction -= selectedOption.getQuantity();
 					unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+					if (selectedOption.isCarrier() || selectedOption.isAir())
+					{
+						final List<Unit> nearbyOwnedAndPlaceUnits = new ArrayList<Unit>(ownedNearbyUnits);
+						nearbyOwnedAndPlaceUnits.addAll(unitsToPlace);
+						unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, nearbyOwnedAndPlaceUnits);
+					}
 					LogUtils.log(Level.FINEST, "Selected unit=" + selectedOption.getUnitType().getName());
 					
 					// Find current battle result
@@ -1585,11 +1608,22 @@ public class ProPurchaseAI
 			final List<Unit> ownedLocalUnits = new ArrayList<Unit>();
 			for (final Territory neighbor : neighbors)
 				ownedLocalUnits.addAll(neighbor.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
+			Set<Territory> nearbyAirTerritories = data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false));
+			nearbyAirTerritories = new HashSet<Territory>(Match.getMatches(nearbyAirTerritories, Matches.TerritoryIsLand));
+			nearbyAirTerritories.add(t);
+			final List<Unit> ownedNearbyUnits = new ArrayList<Unit>();
+			for (final Territory nearbyTerritory : nearbyAirTerritories)
+				ownedNearbyUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
+			int unusedCarrierCapacity = Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, ownedNearbyUnits));
+			boolean needDestroyer = false;
 			
 			// If any enemy attackers then purchase sea defenders until it can be held
 			if (enemyAttackMap.get(t) != null)
 			{
-				LogUtils.log(Level.FINEST, t + ", checking defense since has enemy attackers: " + enemyAttackMap.get(t).getMaxUnits());
+				// Determine if need destroyer
+				if (Match.someMatch(enemyAttackMap.get(t).getMaxUnits(), Matches.UnitIsSub) && Match.noneMatch(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), Matches.UnitIsDestroyer))
+					needDestroyer = true;
+				LogUtils.log(Level.FINEST, t + ", needDestroyer=" + needDestroyer + ", checking defense since has enemy attackers: " + enemyAttackMap.get(t).getMaxUnits());
 				
 				int PUsSpent = 0;
 				final List<Unit> unitsToPlace = new ArrayList<Unit>();
@@ -1609,6 +1643,7 @@ public class ProPurchaseAI
 					
 					// Determine sea and transport units that can be produced in this territory
 					final List<ProPurchaseOption> seaPurchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getSeaDefenseOptions(), t);
+					seaPurchaseOptionsForTerritory.addAll(purchaseOptions.getAirOptions());
 					
 					// Purchase enough sea defenders to hold territory
 					while (true)
@@ -1626,15 +1661,23 @@ public class ProPurchaseAI
 						// Select purchase option
 						final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<ProPurchaseOption, Double>();
 						for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory)
-							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace));
+							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity));
 						final ProPurchaseOption selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
+						if (selectedOption.isDestroyer())
+							needDestroyer = false;
 						
 						// Create new temp defenders
 						PUsSpent += selectedOption.getCost();
 						remainingUnitProduction -= selectedOption.getQuantity();
 						unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+						if (selectedOption.isCarrier() || selectedOption.isAir())
+						{
+							final List<Unit> nearbyOwnedAndPlaceUnits = new ArrayList<Unit>(ownedNearbyUnits);
+							nearbyOwnedAndPlaceUnits.addAll(unitsToPlace);
+							unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, nearbyOwnedAndPlaceUnits);
+						}
 						LogUtils.log(Level.FINEST, t + ", added sea defender for defense: " + selectedOption.getUnitType().getName() + ", TUVSwing=" + result.getTUVSwing() + ", win%="
-									+ result.getWinPercentage());
+									+ result.getWinPercentage() + ", unusedCarrierCapacity=" + unusedCarrierCapacity);
 						
 						// Find current battle result
 						final List<Unit> defendingUnits = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
@@ -1715,6 +1758,7 @@ public class ProPurchaseAI
 				
 				// Determine sea and transport units that can be produced in this territory
 				final List<ProPurchaseOption> seaPurchaseOptionsForTerritory = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getSeaDefenseOptions(), t);
+				seaPurchaseOptionsForTerritory.addAll(purchaseOptions.getAirOptions());
 				
 				while (true)
 				{
@@ -1747,14 +1791,22 @@ public class ProPurchaseAI
 					// Select purchase option
 					final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<ProPurchaseOption, Double>();
 					for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory)
-						defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace));
+						defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity));
 					final ProPurchaseOption selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
+					if (selectedOption.isDestroyer())
+						needDestroyer = false;
 					
 					// Create new temp units
-					unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
 					PUsRemaining -= selectedOption.getCost();
 					remainingUnitProduction -= selectedOption.getQuantity();
-					LogUtils.log(Level.FINEST, t + ", added sea defender for naval superiority: " + selectedOption.getUnitType().getName());
+					unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
+					if (selectedOption.isCarrier() || selectedOption.isAir())
+					{
+						final List<Unit> nearbyOwnedAndPlaceUnits = new ArrayList<Unit>(ownedNearbyUnits);
+						nearbyOwnedAndPlaceUnits.addAll(unitsToPlace);
+						unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, nearbyOwnedAndPlaceUnits);
+					}
+					LogUtils.log(Level.FINEST, t + ", added sea defender for naval superiority: " + selectedOption.getUnitType().getName() + ", unusedCarrierCapacity=" + unusedCarrierCapacity);
 				}
 			}
 			

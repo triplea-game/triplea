@@ -17,8 +17,11 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,6 +136,21 @@ public class ProAttackTerritoryData
 		defenders.addAll(cantMoveUnits);
 		defenders.addAll(tempUnits);
 		return defenders;
+	}
+	
+	public List<Unit> getAllDefendersForCarrierCalcs(final GameData data, final PlayerID player)
+	{
+		if (Properties.getProduceNewFightersOnOldCarriers(data))
+		{
+			return getAllDefenders();
+		}
+		else
+		{
+			final List<Unit> defenders = Match.getMatches(cantMoveUnits, ProMatches.UnitIsOwnedCarrier(player).invert());
+			defenders.addAll(units);
+			defenders.addAll(tempUnits);
+			return defenders;
+		}
 	}
 	
 	public List<Unit> getMaxDefenders()

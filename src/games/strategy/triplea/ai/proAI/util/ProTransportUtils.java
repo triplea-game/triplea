@@ -211,4 +211,18 @@ public class ProTransportUtils
 		return true;
 	}
 	
+	public int getUnusedCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> existingUnits)
+	{
+		int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
+		final Collection<Unit> airUnits = Match.getMatches(existingUnits, ProMatches.unitIsOwnedAir(player));
+		for (final Unit airUnit : airUnits)
+		{
+			final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
+			final int cost = ua.getCarrierCost();
+			if (cost != -1)
+				capacity -= cost;
+		}
+		return capacity;
+	}
+	
 }

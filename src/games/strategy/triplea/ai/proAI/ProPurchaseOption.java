@@ -50,8 +50,10 @@ public class ProPurchaseOption
 	private final double amphibAttack;
 	private final double defense;
 	private final int transportCost;
+	private final int carrierCost;
 	private final boolean isAir;
 	private final boolean isSub;
+	private final boolean isDestroyer;
 	private final boolean isTransport;
 	private final boolean isCarrier;
 	private final boolean isInfra;
@@ -86,8 +88,10 @@ public class ProPurchaseOption
 		amphibAttack = attack + 0.5 * unitAttachment.getIsMarine() * quantity;
 		defense = unitAttachment.getDefense(player) * quantity;
 		transportCost = unitAttachment.getTransportCost() * quantity;
+		carrierCost = unitAttachment.getCarrierCost() * quantity;
 		isAir = unitAttachment.getIsAir();
 		isSub = unitAttachment.getIsSub();
+		isDestroyer = unitAttachment.getIsDestroyer();
 		isTransport = unitAttachment.getTransportCapacity() > 0;
 		isCarrier = unitAttachment.getCarrierCapacity() > 0;
 		transportCapacity = unitAttachment.getTransportCapacity() * quantity;
@@ -164,6 +168,11 @@ public class ProPurchaseOption
 		return isSub;
 	}
 	
+	public boolean isDestroyer()
+	{
+		return isDestroyer;
+	}
+	
 	public boolean isTransport()
 	{
 		return isTransport;
@@ -217,6 +226,11 @@ public class ProPurchaseOption
 	public int getTransportCost()
 	{
 		return transportCost;
+	}
+	
+	public int getCarrierCost()
+	{
+		return carrierCost;
 	}
 	
 	public boolean isAir()
@@ -273,11 +287,20 @@ public class ProPurchaseOption
 		return calculateEfficiency(0.75, 1.25, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
 	}
 	
-	public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
+	public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity)
 	{
+		if (isAir && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity))
+			return 0;
 		final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
 		final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
-		return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, data);
+		double seaFactor = 1;
+		if (needDestroyer && isDestroyer)
+			seaFactor = 8;
+		if (carrierCost > 0)
+			seaFactor = 4;
+		if (carrierCapacity > 0 && unusedCarrierCapacity <= 0)
+			seaFactor = 2;
+		return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);
 	}
 	
 	public double getAmphibEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace)
@@ -365,11 +388,17 @@ public class ProPurchaseOption
 	private double calculateEfficiency(final double attackFactor, final double defenseFactor, final double supportAttackFactor, final double supportDefenseFactor, final double distanceFactor,
 				final GameData data)
 	{
+		return calculateEfficiency(attackFactor, defenseFactor, supportAttackFactor, supportDefenseFactor, distanceFactor, 1, data);
+	}
+	
+	private double calculateEfficiency(final double attackFactor, final double defenseFactor, final double supportAttackFactor, final double supportDefenseFactor, final double distanceFactor,
+				final double seaFactor, final GameData data)
+	{
 		final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
 		final double hitPointValue = 2 * hitPoints;
 		final double attackValue = attackFactor * (attack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
 		final double defenseValue = defenseFactor * (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
-		return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor / cost, 30) / quantity;
+		return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor / cost, 30) / quantity;
 	}
 	
 }
