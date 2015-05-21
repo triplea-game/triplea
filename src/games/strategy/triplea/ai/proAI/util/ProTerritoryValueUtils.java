@@ -164,13 +164,11 @@ public class ProTerritoryValueUtils
 				for (final Territory enemyCapitalOrFactory : enemyCapitalsAndFactoriesMap.keySet())
 				{
 					final Route route = data.getMap().getRoute_IgnoreEnd(t, enemyCapitalOrFactory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
-					if (route == null)
-						continue;
-					if (MoveValidator.validateCanal(route, null, player, data) != null)
+					if (route == null || MoveValidator.validateCanal(route, null, player, data) != null)
 						continue;
 					final int distance = route.numberOfSteps();
 					if (distance > 0)
-						values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(3, distance));
+						values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
 				}
 				Collections.sort(values, Collections.reverseOrder());
 				double capitalOrFactoryValue = 0;
@@ -184,7 +182,10 @@ public class ProTerritoryValueUtils
 				nearbyLandTerritories.removeAll(territoriesToAttack);
 				for (final Territory nearbyLandTerritory : nearbyLandTerritories)
 				{
-					final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, nearbyLandTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+					final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyLandTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+					if (route == null || MoveValidator.validateCanal(route, null, player, data) != null)
+						continue;
+					final int distance = route.numberOfSteps();
 					if (distance > 0 && distance <= 3)
 					{
 						if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld).match(nearbyLandTerritory))
@@ -198,7 +199,7 @@ public class ProTerritoryValueUtils
 					}
 				}
 				
-				final double value = capitalOrFactoryValue + nearbyLandValue;
+				final double value = capitalOrFactoryValue / 100 + nearbyLandValue / 10;
 				territoryValueMap.put(t, value);
 			}
 			else if (t.isWater())
@@ -221,18 +222,35 @@ public class ProTerritoryValueUtils
 			if (!territoriesThatCantBeHeld.contains(t) && t.isWater() && !data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty())
 			{
 				// Determine sea value based on nearby convoy production
-				double nearbySeaValue = 0;
+				double nearbySeaProductionValue = 0;
 				final Set<Territory> nearbySeaTerritories = data.getMap().getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(player, data, true));
 				final List<Territory> nearbyEnemySeaTerritories = Match.getMatches(nearbySeaTerritories, ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
 				for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaTerritories)
 				{
-					final int distance = data.getMap().getDistance(t, nearbyEnemySeaTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+					final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyEnemySeaTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+					if (route == null || MoveValidator.validateCanal(route, null, player, data) != null)
+						continue;
+					final int distance = route.numberOfSteps();
 					if (distance > 0)
-						nearbySeaValue += TerritoryAttachment.getProduction(nearbyEnemySeaTerritory) / Math.pow(2, distance);
+						nearbySeaProductionValue += TerritoryAttachment.getProduction(nearbyEnemySeaTerritory) / Math.pow(2, distance);
+				}
+				
+				// Determine sea value based on nearby enemy sea units
+				double nearbyEnemySeaUnitValue = 0;
+				final List<Territory> nearbyEnemySeaUnitTerritories = Match.getMatches(nearbySeaTerritories, Matches.territoryHasEnemyUnits(player, data));
+				for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaUnitTerritories)
+				{
+					final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyEnemySeaTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+					if (route == null || MoveValidator.validateCanal(route, null, player, data) != null)
+						continue;
+					final int distance = route.numberOfSteps();
+					if (distance > 0)
+						nearbyEnemySeaUnitValue += nearbyEnemySeaTerritory.getUnits().countMatches(Matches.unitIsEnemyOf(data, player)) / Math.pow(2, distance);
 				}
 				
 				// Set final values
-				territoryValueMap.put(t, nearbySeaValue);
+				final double value = 100 * nearbySeaProductionValue + nearbyEnemySeaUnitValue;
+				territoryValueMap.put(t, value);
 			}
 			else if (t.isWater())
 			{

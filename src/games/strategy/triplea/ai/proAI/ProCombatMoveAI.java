@@ -68,7 +68,7 @@ import java.util.logging.Level;
 public class ProCombatMoveAI
 {
 	public static double WIN_PERCENTAGE = 95;
-	public static double MIN_WIN_PERCENTAGE = 80;
+	public static double MIN_WIN_PERCENTAGE = 75;
 	
 	// Utilities
 	private final ProUtils utils;
@@ -773,6 +773,7 @@ public class ProCombatMoveAI
 		LogUtils.log(Level.FINE, "Determine units to attack each territory with");
 		
 		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
+		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
 		
 		// Assign units to territories by prioritization
 		while (true)
@@ -862,6 +863,38 @@ public class ProCombatMoveAI
 					attackMap.get(minWinTerritory).addUnit(unit);
 					attackMap.get(minWinTerritory).setBattleResult(null);
 					it.remove();
+				}
+			}
+			
+			// Re-sort attack options
+			sortedUnitAttackOptions = attackOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions, attackMap, unitTerritoryMap);
+			
+			// Add sea units to any territory that significantly increases TUV gain
+			for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();)
+			{
+				final Unit unit = it.next();
+				final boolean isSeaUnit = UnitAttachment.get(unit.getType()).getIsSea();
+				if (!isSeaUnit)
+					continue; // skip non-sea units
+				for (final Territory t : sortedUnitAttackOptions.get(unit))
+				{
+					final ProAttackTerritoryData patd = attackMap.get(t);
+					
+					if (attackMap.get(t).getBattleResult() == null)
+						attackMap.get(t).setBattleResult(
+										battleUtils.estimateAttackBattleResults(player, t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+					final ProBattleResultData result = attackMap.get(t).getBattleResult();
+					final List<Unit> attackers = new ArrayList<Unit>(patd.getUnits());
+					attackers.add(unit);
+					final ProBattleResultData result2 = battleUtils.estimateAttackBattleResults(player, t, attackers, patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet());
+					final double unitValue = playerCostMap.getInt(unit.getType());
+					if ((result2.getTUVSwing() - unitValue / 3) > result.getTUVSwing())
+					{
+						attackMap.get(t).addUnit(unit);
+						attackMap.get(t).setBattleResult(null);
+						it.remove();
+						break;
+					}
 				}
 			}
 			
