@@ -324,7 +324,7 @@ public class ProPurchaseOption
 	{
 		final double distance = Math.max(0, enemyDistance - 1.5);
 		final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1); // 1, 2, 2.5, 2.75, etc
-		final double distanceFactor = Math.pow(moveFactor, distance / 7.5);
+		final double distanceFactor = Math.pow(moveFactor, distance / 5);
 		return distanceFactor;
 	}
 	

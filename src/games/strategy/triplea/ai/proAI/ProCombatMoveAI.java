@@ -55,13 +55,6 @@ import java.util.logging.Level;
 /**
  * Pro combat move AI.
  * 
- * <ol>
- * <li>Consider which territories to hold better</li>
- * <li>Consider leaving 1 unit in each territory</li>
- * <li>Consider scramble defenses</li>
- * <li>Consider objective value</li>
- * </ol>
- * 
  * @author Ron Murhammer
  * @since 2014
  */

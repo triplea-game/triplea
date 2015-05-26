@@ -25,6 +25,7 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AbstractAI;
+import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.ai.proAI.logging.LogUI;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
@@ -41,10 +42,13 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -57,6 +61,7 @@ import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -389,6 +394,75 @@ public class ProAI extends AbstractAI
 		// for (final Unit fighter : fightersThatCanBeMoved)
 		// rVal.add(fighter);
 		return rVal;
+	}
+	
+	@Override
+	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+				final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
+				final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
+	{
+		if (defaultCasualties.size() != count)
+			throw new IllegalStateException("Select Casualties showing different numbers for number of hits to take vs total size of default casualty selections");
+		if (defaultCasualties.getKilled().size() <= 0)
+			return new CasualtyDetails(defaultCasualties, false);
+		
+		// Consider unit cost
+		final CasualtyDetails myCasualties = new CasualtyDetails(false);
+		myCasualties.addToDamaged(defaultCasualties.getDamaged());
+		final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom);
+		if (enemyUnits.isEmpty())
+		{
+			Collections.sort(selectFromSorted, ProPurchaseUtils.getCostComparator());
+		}
+		else
+		{
+			// Get battle data
+			final GameData data = getGameData();
+			final PlayerID player = getPlayerID();
+			final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+			final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
+			
+			// If defender and less strength then don't consider unit cost as just trying to survive
+			boolean needToCheck = true;
+			final boolean isAttacker = player.equals(battle.getAttacker());
+			if (!isAttacker)
+			{
+				final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
+				final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+				final double strengthDifference = battleUtils.estimateStrengthDifference(battlesite, attackers, defenders);
+				if (strengthDifference > 50)
+					needToCheck = false;
+			}
+			
+			// Use bubble sort to save expensive units
+			while (needToCheck)
+			{
+				needToCheck = false;
+				for (int i = 0; i < selectFromSorted.size() - 1; i++)
+				{
+					final Unit unit1 = selectFromSorted.get(i);
+					final Unit unit2 = selectFromSorted.get(i + 1);
+					final double unitCost1 = ProPurchaseUtils.getCost(unit1.getType(), unit1.getOwner(), unit1.getData());
+					final double unitCost2 = ProPurchaseUtils.getCost(unit2.getType(), unit2.getOwner(), unit2.getData());
+					if (unitCost1 > 1.5 * unitCost2)
+					{
+						selectFromSorted.set(i, unit2);
+						selectFromSorted.set(i + 1, unit1);
+						needToCheck = true;
+					}
+				}
+			}
+		}
+		
+		// Interleave carriers and planes
+		final List<Unit> interleavedTargetList = new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
+		for (int i = 0; i < defaultCasualties.getKilled().size(); ++i)
+			myCasualties.addToKilled(interleavedTargetList.get(i));
+		
+		if (count != myCasualties.size())
+			throw new IllegalStateException("AI chose wrong number of casualties");
+		
+		return myCasualties;
 	}
 	
 	/**

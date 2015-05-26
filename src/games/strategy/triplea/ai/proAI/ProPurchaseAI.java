@@ -68,11 +68,6 @@ import java.util.logging.Level;
 /**
  * Pro purchase AI.
  * 
- * <ol>
- * <li>Add logic to consider 2 turn transport attacks</li>
- * <li>Consider V1 rules (unlimited production)</li>
- * </ol>
- * 
  * @author Ron Murhammer
  * @since 2014
  */
@@ -535,7 +530,7 @@ public class ProPurchaseAI
 		// Prioritize land place options purchase AA then land units
 		final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
 		PUsRemaining = purchaseAAUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, purchaseOptions.getAAOptions());
-		PUsRemaining = purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, purchaseOptions);
+		PUsRemaining = purchaseLandUnits(purchaseTerritories, enemyAttackMap, prioritizedLandTerritories, PUsRemaining, purchaseOptions, territoryValueMap);
 		
 		// Prioritize sea territories that need defended and purchase additional defenders
 		final List<ProPlaceTerritory> needToDefendSeaTerritories = prioritizeTerritoriesToDefend(purchaseTerritories, enemyAttackMap, false);
@@ -1258,7 +1253,7 @@ public class ProPurchaseAI
 	}
 	
 	private int purchaseLandUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final Map<Territory, ProAttackTerritoryData> enemyAttackMap,
-				final List<ProPlaceTerritory> prioritizedLandTerritories, int PUsRemaining, final ProPurchaseOptionMap purchaseOptions)
+				final List<ProPlaceTerritory> prioritizedLandTerritories, int PUsRemaining, final ProPurchaseOptionMap purchaseOptions, final Map<Territory, Double> territoryValueMap)
 	{
 		final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
 		if (PUsRemaining == 0 && unplacedUnits.isEmpty())
@@ -1285,7 +1280,7 @@ public class ProPurchaseAI
 			final List<ProPurchaseOption> landDefenseOptions = purchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandDefenseOptions(), t);
 			
 			// Determine enemy distance and locally owned units
-			int enemyDistance = utils.getClosestEnemyLandTerritoryDistance(data, player, t);
+			int enemyDistance = utils.getClosestEnemyOrNeutralLandTerritoryDistance(data, player, t, territoryValueMap);
 			if (enemyDistance <= 0)
 				enemyDistance = 10;
 			final int fodderPercent = 80 - enemyDistance * 5;

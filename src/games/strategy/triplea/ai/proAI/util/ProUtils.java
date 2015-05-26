@@ -142,6 +142,27 @@ public class ProUtils
 			return -1;
 	}
 	
+	public int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t, final Map<Territory, Double> territoryValueMap)
+	{
+		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, true));
+		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, ProMatches.territoryIsEnemyLand(player, data));
+		int minDistance = 10;
+		for (final Territory enemyLandTerritory : enemyLandTerritories)
+		{
+			if (territoryValueMap.get(enemyLandTerritory) <= 0)
+				continue;
+			int distance = data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanMoveLandUnits(player, data, true));
+			if (enemyLandTerritory.getOwner().isNull())
+				distance++;
+			if (distance < minDistance)
+				minDistance = distance;
+		}
+		if (minDistance < 10)
+			return minDistance;
+		else
+			return -1;
+	}
+	
 	public int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerID player, final Territory t)
 	{
 		final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);

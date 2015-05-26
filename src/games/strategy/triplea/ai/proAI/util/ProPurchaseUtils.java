@@ -3,6 +3,7 @@ package games.strategy.triplea.ai.proAI.util;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -28,6 +29,7 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -352,6 +354,69 @@ public class ProPurchaseUtils
 		}
 		final Unit factory = factoryUnits.iterator().next();
 		return OriginalOwnerTracker.getOriginalOwner(factory);
+	}
+	
+	/**
+	 * 
+	 * @return a comparator that sorts cheaper units before expensive ones
+	 */
+	public static Comparator<Unit> getCostComparator()
+	{
+		return new Comparator<Unit>()
+		{
+			public int compare(final Unit o1, final Unit o2)
+			{
+				return Double.compare(getCost(o1.getType(), o1.getOwner(), o1.getData()), getCost(o2.getType(), o2.getOwner(), o2.getData()));
+			}
+		};
+	}
+	
+	/**
+	 * How many PU's does it cost the given player to produce the given unit type.
+	 * <p>
+	 * 
+	 * If the player cannot produce the given unit, return Integer.MAX_VALUE
+	 * <p>
+	 */
+	public static double getCost(final UnitType unitType, final PlayerID player, final GameData data)
+	{
+		if (unitType == null)
+			throw new IllegalArgumentException("null unit type");
+		if (player == null)
+			throw new IllegalArgumentException("null player id");
+		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+		final ProductionRule rule = getProductionRule(unitType, player, data);
+		if (rule == null)
+		{
+			System.out.println("DIDN'T FIND UNIT: " + unitType);
+			return Double.MAX_VALUE;
+		}
+		else
+		{
+			return ((double) rule.getCosts().getInt(PUs)) / rule.getResults().totalValues();
+		}
+	}
+	
+	/**
+	 * Get the production rule for the given player, for the given unit type.
+	 * <p>
+	 * If no such rule can be found, then return null.
+	 */
+	public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player, final GameData data)
+	{
+		if (unitType == null)
+			throw new IllegalArgumentException("null unit type");
+		if (player == null)
+			throw new IllegalArgumentException("null player id");
+		final ProductionFrontier frontier = player.getProductionFrontier();
+		if (frontier == null)
+			return null;
+		for (final ProductionRule rule : frontier)
+		{
+			if (rule.getResults().getInt(unitType) > 0)
+				return rule;
+		}
+		return null;
 	}
 	
 }

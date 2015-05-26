@@ -60,10 +60,6 @@ import java.util.logging.Level;
 /**
  * Pro non-combat move AI.
  * 
- * <ol>
- * <li>Consider moving infra units (AA, etc)</li>
- * </ol>
- * 
  * @author Ron Murhammer
  * @since 2014
  */
@@ -689,8 +685,11 @@ public class ProNonCombatMoveAI
 					if (t.isWater() && Matches.UnitIsAir.match(unit))
 					{
 						if (!transportUtils.validateCarrierCapacity(player, t, moveMap.get(t).getAllDefendersForCarrierCalcs(data, player), unit))
-							continue;
+							continue; // skip moving air to water if not enough carrier capacity
 					}
+					if (!t.isWater() && !t.getOwner().equals(player) && Matches.UnitIsAir.match(unit) && !ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t))
+						continue; // skip moving air units to allied land without a factory
+						
 					List<Unit> defendingUnits = Match.getMatches(moveMap.get(t).getAllDefenders(), ProMatches.unitIsAlliedNotOwnedAir(player, data).invert());
 					if (t.isWater())
 						defendingUnits = moveMap.get(t).getAllDefenders();
