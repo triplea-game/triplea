@@ -1,4 +1,6 @@
 Changes for 1.8.0.7
+* Allow capture or destruction of enemy infrastructure on unowned water. (redrum)
+
 * Fixed bug with movement validation for fighters launching from a carrier and flying into enemy land territory then returning. (veqryn)
 
 * Bug fixes on unit casualty sorters, and switching approximate method in as the default. (veqryn)

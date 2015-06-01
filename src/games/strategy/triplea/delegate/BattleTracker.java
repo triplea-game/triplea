@@ -65,10 +65,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
- * 
+ *
  *          Used to keep track of where battles have occurred
  */
 public class BattleTracker implements java.io.Serializable
@@ -355,7 +355,7 @@ public class BattleTracker implements java.io.Serializable
 	{
 		addBombingBattle(route, units, attacker, data, null);
 	}*/
-	
+
 	private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
@@ -436,7 +436,8 @@ public class BattleTracker implements java.io.Serializable
 		final CompositeMatch<Territory> conquerable = new CompositeMatchAnd<Territory>();
 		conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
 		conquerable.add(new CompositeMatchOr<Territory>(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
-					Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data)));
+					// Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data),
+					new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(id, data), Matches.TerritoryIsPassableAndNotRestricted(id, data))));
 		final Collection<Territory> conquered = new ArrayList<Territory>();
 		if (canConquerMiddleSteps)
 		{
@@ -545,9 +546,7 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits)
 	{
-		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-		if (ta == null)
-			return;
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory); // This could be NULL if unowned water
 		final GameData data = bridge.getData();
 		final Collection<Unit> arrivedUnits = (arrivingUnits == null ? null : new ArrayList<Unit>(arrivingUnits));
 		// final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
@@ -575,7 +574,7 @@ public class BattleTracker implements java.io.Serializable
 				return;
 		}
 		// If it was a Convoy Route- check ownership of the associated neighboring territory and set message
-		if (ta.getConvoyRoute())
+		if (ta != null && ta.getConvoyRoute())
 		{
 			// we could be part of a convoy route for another territory
 			final Collection<Territory> attachedConvoyTo = TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
@@ -624,7 +623,7 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// if its a capital we take the money
 		// NOTE: this is not checking to see if it is an enemy. instead it is relying on the fact that the capital should be owned by the person it is attached to
-		if (isTerritoryOwnerAnEnemy && ta.getCapital() != null)
+		if (ta != null && isTerritoryOwnerAnEnemy && ta.getCapital() != null)
 		{
 			// if the capital is owned by the capitols player
 			// take the money
@@ -705,7 +704,7 @@ public class BattleTracker implements java.io.Serializable
 			}
 		}
 		// if we have specially set this territory to have whenCapturedByGoesTo, then we set that here (except we don't set it if we are liberating allied owned territory)
-		if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
+		if (ta != null && isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
 		{
 			for (final String value : ta.getWhenCapturedByGoesTo())
 			{
@@ -721,25 +720,25 @@ public class BattleTracker implements java.io.Serializable
 				}
 			}
 		}
-		if (isTerritoryOwnerAnEnemy)
+		if (isTerritoryOwnerAnEnemy && ta != null)
 		{
 			final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
 			bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
 			bridge.addChange(takeOver);
-			// play a sound
-			if (territory.isWater())
-				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName());
-			else if (ta.getCapital() != null)
-				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
-			else if (m_blitzed.contains(territory) && Match.someMatch(arrivedUnits, Matches.UnitCanBlitz))
-				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id.getName());
-			else
-				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id.getName());
 			if (changeTracker != null)
 			{
 				changeTracker.addChange(takeOver);
 				changeTracker.addToConquered(territory);
 			}
+			// play a sound
+			if (territory.isWater())
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName()); // should probably see if there is something actually happening for water
+			else if (ta != null && ta.getCapital() != null)
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
+			else if (m_blitzed.contains(territory) && Match.someMatch(arrivedUnits, Matches.UnitCanBlitz))
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id.getName());
+			else
+				bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id.getName());
 		}
 		// Remove any bombing raids against captured territory
 		// TODO: see if necessary
@@ -758,7 +757,8 @@ public class BattleTracker implements java.io.Serializable
 		captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker, arrivedUnits);
 		// is this territory our capitol or a capitol of our ally
 		// Also check to make sure playerAttachment even HAS a capital to fix abend
-		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
+		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta != null && ta.getCapital() != null
+					&& TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
 					&& relationshipTracker.isAllied(terrOrigOwner, id))
 		{
 			// if it is give it back to the original owner
@@ -888,15 +888,18 @@ public class BattleTracker implements java.io.Serializable
 				}
 			}
 		}
-		// FYI: a dummy delegate will not do anything with this change, meaning that the battle calculator will think this unit lived even though it died or was captured, etc!
-		final Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
-		bridge.addChange(capture);
-		if (changeTracker != null)
-			changeTracker.addChange(capture);
-		final Change noMovementChange = ChangeFactory.markNoMovementChange(nonCom);
-		bridge.addChange(noMovementChange);
-		if (changeTracker != null)
-			changeTracker.addChange(noMovementChange);
+		if (!nonCom.isEmpty())
+		{
+			// FYI: a dummy delegate will not do anything with this change, meaning that the battle calculator will think this unit lived even though it died or was captured, etc!
+			final Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
+			bridge.addChange(capture);
+			if (changeTracker != null)
+				changeTracker.addChange(capture);
+			final Change noMovementChange = ChangeFactory.markNoMovementChange(nonCom);
+			bridge.addChange(noMovementChange);
+			if (changeTracker != null)
+				changeTracker.addChange(noMovementChange);
+		}
 	}
 	
 	private Change addMustFightBattleChange(final Route route, final Collection<Unit> units, final PlayerID id, final GameData data)
@@ -1092,7 +1095,7 @@ public class BattleTracker implements java.io.Serializable
 	/**
 	 * Marks the set of territories as having been the source of a naval
 	 * bombardment.
-	 * 
+	 *
 	 * @param territories
 	 *            a collection of territories
 	 */
@@ -1224,5 +1227,5 @@ public class BattleTracker implements java.io.Serializable
 	        }
 	    }
 	}
-	*/
+	 */
 }
