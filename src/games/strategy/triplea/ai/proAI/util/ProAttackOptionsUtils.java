@@ -382,7 +382,7 @@ public class ProAttackOptionsUtils
 		findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, ProMatches.territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(player, data, territoriesThatCantBeHeld),
 					enemyTerritories, true, isCheckingEnemyAttacks);
 		findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap, ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld),
-					enemyTerritories, true);
+					enemyTerritories, true, isCheckingEnemyAttacks);
 		findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, ProMatches.territoryHasEnemyUnitsOrCantBeHeld(player, data, territoriesThatCantBeHeld),
 					enemyTerritories, true, isCheckingEnemyAttacks);
 		findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap, ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld),
@@ -397,7 +397,7 @@ public class ProAttackOptionsUtils
 		final GameData data = ai.getGameData();
 		findNavalMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, ProMatches.territoryHasNoEnemyUnitsOrCleared(player, data, clearedTerritories),
 					clearedTerritories, false, false);
-		findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap, Matches.isTerritoryAllied(player, data), new ArrayList<Territory>(), false);
+		findLandMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, landRoutesMap, Matches.isTerritoryAllied(player, data), new ArrayList<Territory>(), false, false);
 		findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap, ProMatches.territoryIsNotConqueredAlliedLand(player, data), new ArrayList<Territory>(), false, false);
 		findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap, Matches.isTerritoryAllied(player, data), new ArrayList<Territory>(), false,
 					false);
@@ -477,6 +477,14 @@ public class ProAttackOptionsUtils
 			// Check each sea unit individually since they can have different ranges
 			for (final Unit mySeaUnit : mySeaUnits)
 			{
+				// If my combat move and carrier has dependent allied fighters then skip it
+				if (isCombatMove && !isCheckingEnemyAttacks)
+				{
+					final Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator.carrierMustMoveWith(myUnitTerritory.getUnits().getUnits(), myUnitTerritory, data, player);
+					if (carrierMustMoveWith.containsKey(mySeaUnit) && !carrierMustMoveWith.get(mySeaUnit).isEmpty())
+						continue;
+				}
+				
 				// Find list of potential territories to move to
 				final int range = TripleAUnit.get(mySeaUnit).getMovementLeft();
 				final Set<Territory> possibleMoveTerritories = data.getMap().getNeighbors(myUnitTerritory, range, ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove));
@@ -568,7 +576,7 @@ public class ProAttackOptionsUtils
 	
 	private void findLandMoveOptions(final PlayerID player, final List<Territory> myUnitTerritories, final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
 				final Map<Territory, Set<Territory>> landRoutesMap, final Match<Territory> moveToTerritoryMatch, final List<Territory> enemyTerritories,
-				final boolean isCombatMove)
+				final boolean isCombatMove, final boolean isCheckingEnemyAttacks)
 	{
 		final GameData data = ai.getGameData();
 		final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(player);
@@ -591,8 +599,13 @@ public class ProAttackOptionsUtils
 				for (final Territory potentialTerritory : potentialTerritories)
 				{
 					// Find route over land checking whether unit can blitz
-					final Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
+					Route myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
 								ProMatches.territoryCanMoveLandUnitsThrough(player, data, myLandUnit, startTerritory, isCombatMove, enemyTerritories));
+					if (isCheckingEnemyAttacks)
+					{
+						myRoute = data.getMap().getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory,
+									ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(player, data, myLandUnit, startTerritory, isCombatMove, enemyTerritories));
+					}
 					if (myRoute == null)
 						continue;
 					if (myRoute.hasMoreThenOneStep() && Match.someMatch(myRoute.getMiddleSteps(), Matches.isTerritoryEnemy(player, data))
@@ -773,21 +786,24 @@ public class ProAttackOptionsUtils
 						
 						// Get loaded units or get units that can be loaded into current territory if no enemies present
 						final List<Unit> units = new ArrayList<Unit>();
-						Set<Territory> myUnitsToLoadTerritories = new HashSet<Territory>();
+						final Set<Territory> myUnitsToLoadTerritories = new HashSet<Territory>();
 						if (TransportTracker.isTransporting(myTransportUnit))
 						{
 							units.addAll(TransportTracker.transporting(myTransportUnit));
 						}
 						else if (Matches.territoryHasEnemySeaUnits(player, data).invert().match(currentTerritory))
 						{
-							myUnitsToLoadTerritories = data.getMap().getNeighbors(currentTerritory);
-							for (final Territory myUnitsToLoadTerritory : myUnitsToLoadTerritories)
+							final Set<Territory> possibleLoadTerritories = data.getMap().getNeighbors(currentTerritory);
+							for (final Territory possibleLoadTerritory : possibleLoadTerritories)
 							{
-								final List<Unit> possibleUnits = myUnitsToLoadTerritory.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, isCombatMove));
+								final List<Unit> possibleUnits = possibleLoadTerritory.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, isCombatMove));
 								for (final Unit possibleUnit : possibleUnits)
 								{
 									if (UnitAttachment.get(possibleUnit.getType()).getTransportCost() <= UnitAttachment.get(myTransportUnit.getType()).getTransportCapacity())
+									{
 										units.add(possibleUnit);
+										myUnitsToLoadTerritories.add(possibleLoadTerritory);
+									}
 								}
 							}
 						}

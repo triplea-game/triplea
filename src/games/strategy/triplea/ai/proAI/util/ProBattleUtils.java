@@ -131,7 +131,10 @@ public class ProBattleUtils
 		// Determine if defenders have no chance
 		final double strengthDifference = estimateStrengthDifference(t, attackingUnits, defendingUnits);
 		if (strengthDifference > 55)
-			return new ProBattleResultData(100, 999, true, attackingUnits, 1);
+		{
+			final boolean isLandAndCanOnlyBeAttackedByAir = !t.isWater() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
+			return new ProBattleResultData(100, 999, !isLandAndCanOnlyBeAttackedByAir, attackingUnits, 1);
+		}
 		
 		return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
 	}

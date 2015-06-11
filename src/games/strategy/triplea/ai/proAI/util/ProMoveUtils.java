@@ -89,14 +89,22 @@ public class ProMoveUtils
 				unitList.add(u);
 				moveUnits.add(unitList);
 				
+				// If carrier has dependent allied fighters then move them too
+				if (Matches.UnitIsCarrier.match(u))
+				{
+					final Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator.carrierMustMoveWith(startTerritory.getUnits().getUnits(), startTerritory, data, player);
+					if (carrierMustMoveWith.containsKey(u))
+						unitList.addAll(carrierMustMoveWith.get(u));
+				}
+				
 				// Determine route and add to move list
 				Route route = null;
-				if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedSea(player, isCombatMove)))
+				if (Match.someMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedSea(player, isCombatMove)))
 				{
-					// Naval unit
+					// Sea unit (including carriers with planes)
 					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
 				}
-				else if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove))) // && (!Matches.UnitCanBlitz.match(u) || !isCombatMove))
+				else if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove)))
 				{
 					// Land unit
 					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<Territory>()));
@@ -209,6 +217,9 @@ public class ProMoveUtils
 					}
 					movesLeft--;
 				}
+				
+				if (!remainingUnitsToLoad.isEmpty())
+					LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName() + ": " + t + ", remainingUnitsToLoad=" + remainingUnitsToLoad);
 				
 				// Set territory transport is moving to
 				attackMap.get(t).getTransportTerritoryMap().put(transport, transportTerritory);

@@ -630,7 +630,7 @@ public class ProCombatMoveAI
 		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
 		for (final Territory t : myUnitTerritories)
 		{
-			final boolean hasAlliedLandUnits = Match.someMatch(t.getUnits().getUnits(), ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(player, data));
+			final boolean hasAlliedLandUnits = Match.someMatch(t.getUnits().getUnits(), ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(player, data, t));
 			final Set<Territory> enemyNeighbors = data.getMap().getNeighbors(t, Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitIsLand));
 			enemyNeighbors.removeAll(territoriesToAttack);
 			if (!t.isWater() && !hasAlliedLandUnits && !enemyNeighbors.isEmpty())
@@ -1324,9 +1324,13 @@ public class ProCombatMoveAI
 						{
 							if (proTransportData.getTransport().equals(transport))
 							{
+								LogUtils.log(Level.FINEST,
+											t + ", transport=" + transport + ", transportMap=" + proTransportData.getTransportMap() + ", seaTransportMap=" + proTransportData.getSeaTransportMap());
+								
 								// Find units to load
 								final Set<Territory> territoriesCanLoadFrom = proTransportData.getTransportMap().get(t);
 								final List<Unit> amphibUnitsToAdd = transportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesCanLoadFrom, alreadyAttackedWithUnits);
+								LogUtils.log(Level.FINEST, "amphibUnitsToAdd=" + amphibUnitsToAdd);
 								if (amphibUnitsToAdd.isEmpty())
 									continue;
 								
@@ -1334,9 +1338,14 @@ public class ProCombatMoveAI
 								double minStrengthDifference = Double.POSITIVE_INFINITY;
 								minUnloadFromTerritory = null;
 								final Set<Territory> territoriesToMoveTransport = data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, false));
+								final Set<Territory> loadFromTerritories = new HashSet<Territory>();
+								for (final Unit u : amphibUnitsToAdd)
+									loadFromTerritories.add(unitTerritoryMap.get(u));
+								LogUtils.log(Level.FINEST, "loadFromTerritories=" + loadFromTerritories);
 								for (final Territory territoryToMoveTransport : territoriesToMoveTransport)
 								{
-									if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport))
+									if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport)
+												&& proTransportData.getSeaTransportMap().get(territoryToMoveTransport).containsAll(loadFromTerritories))
 									{
 										List<Unit> attackers = new ArrayList<Unit>();
 										if (enemyAttackMap.get(territoryToMoveTransport) != null)

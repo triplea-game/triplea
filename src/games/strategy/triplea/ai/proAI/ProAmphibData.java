@@ -66,7 +66,7 @@ public class ProAmphibData
 				territories.addAll(myUnitsToLoadTerritories);
 				seaTransportMap.put(attackTerritory, territories);
 			}
-			seaTransportMap.get(attackTerritory).removeAll(data.getMap().getNeighbors(attackTerritory));
+			// seaTransportMap.get(attackTerritory).removeAll(data.getMap().getNeighbors(attackTerritory));
 		}
 	}
 	

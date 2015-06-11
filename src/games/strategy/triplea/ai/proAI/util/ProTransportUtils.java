@@ -111,6 +111,7 @@ public class ProTransportUtils
 		return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnoreOrHaveBetterLandMove);
 	}
 	
+	// TODO: this needs fixed to consider whether a valid route exists to load all units
 	public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore)
 	{
 		final List<Unit> selectedUnits = new ArrayList<Unit>();

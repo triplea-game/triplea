@@ -75,7 +75,7 @@ public class ProTerritoryValueUtils
 		
 		// Get all enemy factories and capitals (check if most territories have factories and if so remove them)
 		final Set<Territory> enemyCapitalsAndFactories = new HashSet<Territory>();
-		enemyCapitalsAndFactories.addAll(Match.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsEnemyLandOrCantBeHeld(player, data, territoriesThatCantBeHeld)));
+		enemyCapitalsAndFactories.addAll(Match.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsEnemyLandOrOwnedCantBeHeld(player, data, territoriesThatCantBeHeld)));
 		final int numEnemyLandTerritories = Match.countMatches(allTerritories, ProMatches.territoryIsEnemyLand(player, data));
 		if (enemyCapitalsAndFactories.size() * 2 >= numEnemyLandTerritories)
 			enemyCapitalsAndFactories.clear();
@@ -107,6 +107,7 @@ public class ProTerritoryValueUtils
 		
 		// Determine value for land territories
 		final Map<Territory, Double> territoryValueMap = new HashMap<Territory, Double>();
+		int maxLandMassSize = 1;
 		for (final Territory t : allTerritories)
 		{
 			if (!t.isWater() && !territoriesThatCantBeHeld.contains(t))
@@ -143,7 +144,10 @@ public class ProTerritoryValueUtils
 							nearbyEnemyValue += (value / Math.pow(2, distance));
 					}
 				}
-				double value = capitalOrFactoryValue + nearbyEnemyValue;
+				final int landMassSize = 1 + data.getMap().getNeighbors(t, 6, ProMatches.territoryCanMoveLandUnits(player, data, true)).size();
+				if (landMassSize > maxLandMassSize)
+					maxLandMassSize = landMassSize;
+				double value = (capitalOrFactoryValue + nearbyEnemyValue) * landMassSize;
 				if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t))
 					value *= 1.1; // prefer territories with factories
 				territoryValueMap.put(t, value);
@@ -153,6 +157,8 @@ public class ProTerritoryValueUtils
 				territoryValueMap.put(t, 0.0);
 			}
 		}
+		for (final Territory t : territoryValueMap.keySet())
+			territoryValueMap.put(t, territoryValueMap.get(t) / maxLandMassSize);
 		
 		// Determine value for water territories
 		for (final Territory t : allTerritories)
