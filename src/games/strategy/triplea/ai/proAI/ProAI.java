@@ -25,7 +25,6 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AbstractAI;
-import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.ai.proAI.logging.LogUI;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
@@ -455,7 +454,7 @@ public class ProAI extends AbstractAI
 		}
 		
 		// Interleave carriers and planes
-		final List<Unit> interleavedTargetList = new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
+		final List<Unit> interleavedTargetList = new ArrayList<Unit>(ProTransportUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
 		for (int i = 0; i < defaultCasualties.getKilled().size(); ++i)
 			myCasualties.addToKilled(interleavedTargetList.get(i));
 		

@@ -1046,13 +1046,9 @@ public class ProPurchaseAI
 			
 			// Find local owned units
 			final List<Unit> ownedLocalUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
-			Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false));
-			nearbyTerritories = new HashSet<Territory>(Match.getMatches(nearbyTerritories, Matches.TerritoryIsLand));
-			nearbyTerritories.add(t);
-			final List<Unit> ownedNearbyUnits = new ArrayList<Unit>();
-			for (final Territory nearbyTerritory : nearbyTerritories)
-				ownedNearbyUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
-			int unusedCarrierCapacity = Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, ownedNearbyUnits));
+			int unusedCarrierCapacity = Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<Unit>()));
+			int unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<Unit>());
+			LogUtils.log(Level.FINEST, t + ", unusedCarrierCapacity=" + unusedCarrierCapacity + ", unusedLocalCarrierCapacity=" + unusedLocalCarrierCapacity);
 			
 			// Determine if need destroyer
 			boolean needDestroyer = false;
@@ -1092,7 +1088,7 @@ public class ProPurchaseAI
 						if (isLand)
 							defenseEfficiencies.put(ppo, ppo.getDefenseEfficiency2(1, data, ownedLocalUnits, unitsToPlace));
 						else
-							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity));
+							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity, unusedLocalCarrierCapacity));
 					}
 					final ProPurchaseOption selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
 					if (selectedOption.isDestroyer())
@@ -1104,11 +1100,11 @@ public class ProPurchaseAI
 					unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
 					if (selectedOption.isCarrier() || selectedOption.isAir())
 					{
-						final List<Unit> nearbyOwnedAndPlaceUnits = new ArrayList<Unit>(ownedNearbyUnits);
-						nearbyOwnedAndPlaceUnits.addAll(unitsToPlace);
-						unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, nearbyOwnedAndPlaceUnits);
+						unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
+						unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
 					}
-					LogUtils.log(Level.FINEST, "Selected unit=" + selectedOption.getUnitType().getName());
+					LogUtils.log(Level.FINEST, "Selected unit=" + selectedOption.getUnitType().getName() + ", unusedCarrierCapacity=" + unusedCarrierCapacity + ", unusedLocalCarrierCapacity="
+								+ unusedLocalCarrierCapacity);
 					
 					// Find current battle result
 					final Set<Unit> enemyAttackingUnits = new HashSet<Unit>(enemyAttackMap.get(t).getMaxUnits());
@@ -1603,14 +1599,10 @@ public class ProPurchaseAI
 			final List<Unit> ownedLocalUnits = new ArrayList<Unit>();
 			for (final Territory neighbor : neighbors)
 				ownedLocalUnits.addAll(neighbor.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
-			Set<Territory> nearbyAirTerritories = data.getMap().getNeighbors(t, 2, ProMatches.territoryCanMoveAirUnits(player, data, false));
-			nearbyAirTerritories = new HashSet<Territory>(Match.getMatches(nearbyAirTerritories, Matches.TerritoryIsLand));
-			nearbyAirTerritories.add(t);
-			final List<Unit> ownedNearbyUnits = new ArrayList<Unit>();
-			for (final Territory nearbyTerritory : nearbyAirTerritories)
-				ownedNearbyUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
-			int unusedCarrierCapacity = Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, ownedNearbyUnits));
+			int unusedCarrierCapacity = Math.min(0, transportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<Unit>()));
+			int unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<Unit>());
 			boolean needDestroyer = false;
+			LogUtils.log(Level.FINEST, t + ", unusedCarrierCapacity=" + unusedCarrierCapacity + ", unusedLocalCarrierCapacity=" + unusedLocalCarrierCapacity);
 			
 			// If any enemy attackers then purchase sea defenders until it can be held
 			if (enemyAttackMap.get(t) != null)
@@ -1656,7 +1648,7 @@ public class ProPurchaseAI
 						// Select purchase option
 						final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<ProPurchaseOption, Double>();
 						for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory)
-							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity));
+							defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity, unusedLocalCarrierCapacity));
 						final ProPurchaseOption selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
 						if (selectedOption.isDestroyer())
 							needDestroyer = false;
@@ -1667,12 +1659,11 @@ public class ProPurchaseAI
 						unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
 						if (selectedOption.isCarrier() || selectedOption.isAir())
 						{
-							final List<Unit> nearbyOwnedAndPlaceUnits = new ArrayList<Unit>(ownedNearbyUnits);
-							nearbyOwnedAndPlaceUnits.addAll(unitsToPlace);
-							unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, nearbyOwnedAndPlaceUnits);
+							unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
+							unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
 						}
 						LogUtils.log(Level.FINEST, t + ", added sea defender for defense: " + selectedOption.getUnitType().getName() + ", TUVSwing=" + result.getTUVSwing() + ", win%="
-									+ result.getWinPercentage() + ", unusedCarrierCapacity=" + unusedCarrierCapacity);
+									+ result.getWinPercentage() + ", unusedCarrierCapacity=" + unusedCarrierCapacity + ", unusedLocalCarrierCapacity=" + unusedLocalCarrierCapacity);
 						
 						// Find current battle result
 						final List<Unit> defendingUnits = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
@@ -1786,7 +1777,7 @@ public class ProPurchaseAI
 					// Select purchase option
 					final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<ProPurchaseOption, Double>();
 					for (final ProPurchaseOption ppo : seaPurchaseOptionsForTerritory)
-						defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity));
+						defenseEfficiencies.put(ppo, ppo.getSeaDefenseEfficiency(data, ownedLocalUnits, unitsToPlace, needDestroyer, unusedCarrierCapacity, unusedLocalCarrierCapacity));
 					final ProPurchaseOption selectedOption = purchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
 					if (selectedOption.isDestroyer())
 						needDestroyer = false;
@@ -1797,11 +1788,11 @@ public class ProPurchaseAI
 					unitsToPlace.addAll(selectedOption.getUnitType().create(selectedOption.getQuantity(), player, true));
 					if (selectedOption.isCarrier() || selectedOption.isAir())
 					{
-						final List<Unit> nearbyOwnedAndPlaceUnits = new ArrayList<Unit>(ownedNearbyUnits);
-						nearbyOwnedAndPlaceUnits.addAll(unitsToPlace);
-						unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, nearbyOwnedAndPlaceUnits);
+						unusedCarrierCapacity = transportUtils.getUnusedCarrierCapacity(player, t, unitsToPlace);
+						unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, unitsToPlace);
 					}
-					LogUtils.log(Level.FINEST, t + ", added sea defender for naval superiority: " + selectedOption.getUnitType().getName() + ", unusedCarrierCapacity=" + unusedCarrierCapacity);
+					LogUtils.log(Level.FINEST, t + ", added sea defender for naval superiority: " + selectedOption.getUnitType().getName() + ", unusedCarrierCapacity=" + unusedCarrierCapacity
+								+ ", unusedLocalCarrierCapacity=" + unusedLocalCarrierCapacity);
 				}
 			}
 			

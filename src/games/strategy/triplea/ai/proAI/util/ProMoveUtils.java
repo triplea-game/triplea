@@ -114,6 +114,8 @@ public class ProMoveUtils
 					// Air unit
 					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove));
 				}
+				if (route == null)
+					LogUtils.log(Level.WARNING, data.getSequence().getRound() + "-" + data.getSequence().getStep().getName() + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
 				moveRoutes.add(route);
 			}
 		}

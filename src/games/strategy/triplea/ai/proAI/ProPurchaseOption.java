@@ -287,7 +287,8 @@ public class ProPurchaseOption
 		return calculateEfficiency(0.75, 1.25, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
 	}
 	
-	public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity)
+	public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity,
+				final int unusedLocalCarrierCapacity)
 	{
 		if (isAir && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity))
 			return 0;
@@ -296,10 +297,10 @@ public class ProPurchaseOption
 		double seaFactor = 1;
 		if (needDestroyer && isDestroyer)
 			seaFactor = 8;
-		if (carrierCost > 0)
+		if (isAir)
 			seaFactor = 4;
-		if (carrierCapacity > 0 && unusedCarrierCapacity <= 0)
-			seaFactor = 2;
+		else if (carrierCapacity > 0 && unusedLocalCarrierCapacity <= 0)
+			seaFactor = 4;
 		return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);
 	}
 	
