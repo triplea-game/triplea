@@ -294,7 +294,7 @@ public class ProTransportUtils
 				}
 				if (ua.getCarrierCost() > 0)
 					spaceLeftOnSeekedCarrier -= ua.getCarrierCost();
-				if (spaceLeftOnSeekedCarrier <= 0 || i == 0) // If the carrier has been filled or overflowed or last unit
+				if (indexToPlaceCarrierAt > 0 && (spaceLeftOnSeekedCarrier <= 0 || i == 0)) // If the carrier has been filled or overflowed or last unit
 				{
 					if (spaceLeftOnSeekedCarrier < 0) // If we over-filled the old carrier
 						i++; // Move current unit index up one, so we re-process this unit (since it can't fit on the current seeked carrier)
