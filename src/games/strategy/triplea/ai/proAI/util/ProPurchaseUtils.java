@@ -21,10 +21,12 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -388,8 +390,8 @@ public class ProPurchaseUtils
 		final ProductionRule rule = getProductionRule(unitType, player, data);
 		if (rule == null)
 		{
-			System.out.println("DIDN'T FIND UNIT: " + unitType);
-			return Double.MAX_VALUE;
+			final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
+			return playerCostMap.getInt(unitType);
 		}
 		else
 		{

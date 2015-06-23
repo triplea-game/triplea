@@ -1075,7 +1075,6 @@ public class ProCombatMoveAI
 			if (!estimatesMap.isEmpty() && estimatesMap.firstKey() < 40)
 			{
 				final Territory minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
-				LogUtils.log(Level.FINEST, minWinTerritory + ", 1. adding unit=" + unit);
 				attackMap.get(minWinTerritory).addUnit(unit);
 				it.remove();
 			}
@@ -1112,8 +1111,6 @@ public class ProCombatMoveAI
 			}
 			if (minWinTerritory != null)
 			{
-				LogUtils.log(Level.FINEST, minWinTerritory + ", 2. adding unit=" + unit + ", win%=" + attackMap.get(minWinTerritory).getBattleResult().getWinPercentage() + ", isHasLandUnitRemaining="
-							+ attackMap.get(minWinTerritory).getBattleResult().isHasLandUnitRemaining());
 				attackMap.get(minWinTerritory).addUnit(unit);
 				attackMap.get(minWinTerritory).setBattleResult(null);
 				it.remove();
@@ -1139,12 +1136,12 @@ public class ProCombatMoveAI
 				if (!patd.isCurrentlyWins() && !patd.isCanHold())
 				{
 					// Check if air unit should avoid this territory due to no guaranteed safe landing location
-					final boolean isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t);
+					final boolean isEnemyCapital = utils.getLiveEnemyCapitals(data, player).contains(t);
 					final boolean isAdjacentToAlliedCapital = Matches.territoryHasNeighborMatching(data, Matches.territoryIsInList(utils.getLiveAlliedCapitals(data, player))).match(t);
 					final int range = TripleAUnit.get(unit).getMovementLeft();
 					final int distance = data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(unit), t, ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
 					final boolean usesMoreThanHalfOfRange = distance > range / 2;
-					if (isAirUnit && !isEnemyFactory && !isAdjacentToAlliedCapital && usesMoreThanHalfOfRange)
+					if (isAirUnit && !isEnemyCapital && !isAdjacentToAlliedCapital && usesMoreThanHalfOfRange)
 						continue;
 					
 					if (patd.getBattleResult() == null)
@@ -1166,8 +1163,6 @@ public class ProCombatMoveAI
 			}
 			if (minWinTerritory != null)
 			{
-				LogUtils.log(Level.FINEST, minWinTerritory + ", 3. adding unit=" + unit + ", win%=" + attackMap.get(minWinTerritory).getBattleResult().getWinPercentage() + ", isHasLandUnitRemaining="
-							+ attackMap.get(minWinTerritory).getBattleResult().isHasLandUnitRemaining());
 				attackMap.get(minWinTerritory).addUnit(unit);
 				attackMap.get(minWinTerritory).setBattleResult(null);
 				it.remove();
@@ -1191,13 +1186,12 @@ public class ProCombatMoveAI
 				if (!patd.isCurrentlyWins())
 				{
 					// Check if air unit should avoid this territory due to no guaranteed safe landing location
-					final boolean isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t);
 					final boolean isAdjacentToAlliedFactory = Matches.territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data)).match(t);
 					final int range = TripleAUnit.get(unit).getMovementLeft();
 					final int distance = data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(unit), t, ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
 					final boolean usesMoreThanHalfOfRange = distance > range / 2;
 					final boolean territoryValueIsLessThanUnitValue = patd.getValue() < playerCostMap.getInt(unit.getType());
-					if (isAirUnit && !isEnemyFactory && !isAdjacentToAlliedFactory && usesMoreThanHalfOfRange && territoryValueIsLessThanUnitValue)
+					if (isAirUnit && !isAdjacentToAlliedFactory && usesMoreThanHalfOfRange && (territoryValueIsLessThanUnitValue || !patd.isCanHold()))
 						continue;
 					
 					if (patd.getBattleResult() == null)
@@ -1219,8 +1213,6 @@ public class ProCombatMoveAI
 			}
 			if (minWinTerritory != null)
 			{
-				LogUtils.log(Level.FINEST, minWinTerritory + ", 4. adding unit=" + unit + ", win%=" + attackMap.get(minWinTerritory).getBattleResult().getWinPercentage() + ", isHasLandUnitRemaining="
-							+ attackMap.get(minWinTerritory).getBattleResult().isHasLandUnitRemaining());
 				attackMap.get(minWinTerritory).addUnit(unit);
 				attackMap.get(minWinTerritory).setBattleResult(null);
 				it.remove();
@@ -1268,7 +1260,7 @@ public class ProCombatMoveAI
 							patd.addUnit(transport);
 							patd.setBattleResult(null);
 							alreadyAttackedWithTransports.add(transport);
-							LogUtils.log(Level.FINER, "Adding attack transport to: " + t.getName());
+							LogUtils.log(Level.FINEST, "Adding attack transport to: " + t.getName());
 							break;
 						}
 					}
@@ -1324,13 +1316,9 @@ public class ProCombatMoveAI
 						{
 							if (proTransportData.getTransport().equals(transport))
 							{
-								LogUtils.log(Level.FINEST,
-											t + ", transport=" + transport + ", transportMap=" + proTransportData.getTransportMap() + ", seaTransportMap=" + proTransportData.getSeaTransportMap());
-								
 								// Find units to load
 								final Set<Territory> territoriesCanLoadFrom = proTransportData.getTransportMap().get(t);
 								final List<Unit> amphibUnitsToAdd = transportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesCanLoadFrom, alreadyAttackedWithUnits);
-								LogUtils.log(Level.FINEST, "amphibUnitsToAdd=" + amphibUnitsToAdd);
 								if (amphibUnitsToAdd.isEmpty())
 									continue;
 								
@@ -1341,7 +1329,6 @@ public class ProCombatMoveAI
 								final Set<Territory> loadFromTerritories = new HashSet<Territory>();
 								for (final Unit u : amphibUnitsToAdd)
 									loadFromTerritories.add(unitTerritoryMap.get(u));
-								LogUtils.log(Level.FINEST, "loadFromTerritories=" + loadFromTerritories);
 								for (final Territory territoryToMoveTransport : territoriesToMoveTransport)
 								{
 									if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport)
@@ -1378,7 +1365,7 @@ public class ProCombatMoveAI
 				attackMap.get(minWinTerritory).setBattleResult(null);
 				for (final Unit unit : minAmphibUnitsToAdd)
 					sortedUnitAttackOptions.remove(unit);
-				LogUtils.log(Level.FINER, "Adding amphibious attack to " + minWinTerritory + ", units=" + minAmphibUnitsToAdd.size() + ", unloadFrom=" + minUnloadFromTerritory);
+				LogUtils.log(Level.FINEST, "Adding amphibious attack to " + minWinTerritory + ", units=" + minAmphibUnitsToAdd.size() + ", unloadFrom=" + minUnloadFromTerritory);
 			}
 		}
 		
@@ -1447,7 +1434,7 @@ public class ProCombatMoveAI
 				attackMap.get(minWinTerritory).getBombardTerritoryMap().put(u, minBombardFromTerritory);
 				attackMap.get(minWinTerritory).setBattleResult(null);
 				sortedUnitAttackOptions.remove(u);
-				LogUtils.log(Level.FINER, "Adding bombard to " + minWinTerritory + ", units=" + u + ", bombardFrom=" + minBombardFromTerritory);
+				LogUtils.log(Level.FINEST, "Adding bombard to " + minWinTerritory + ", units=" + u + ", bombardFrom=" + minBombardFromTerritory);
 			}
 		}
 		

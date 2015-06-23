@@ -635,7 +635,6 @@ public class ProNonCombatMoveAI
 				if (!estimatesMap.isEmpty() && estimatesMap.lastKey() > 60)
 				{
 					final Territory minWinTerritory = estimatesMap.lastEntry().getValue();
-					LogUtils.log(Level.FINEST, minWinTerritory + ", 1. added unit " + unit);
 					moveMap.get(minWinTerritory).addTempUnit(unit);
 					it.remove();
 				}
@@ -667,7 +666,6 @@ public class ProNonCombatMoveAI
 				}
 				if (maxWinTerritory != null)
 				{
-					LogUtils.log(Level.FINEST, maxWinTerritory + ", 2. added unit " + unit);
 					moveMap.get(maxWinTerritory).addTempUnit(unit);
 					moveMap.get(maxWinTerritory).setBattleResult(null);
 					it.remove();
@@ -715,7 +713,6 @@ public class ProNonCombatMoveAI
 				}
 				if (maxWinTerritory != null)
 				{
-					LogUtils.log(Level.FINEST, maxWinTerritory + ", 3. added unit " + unit);
 					moveMap.get(maxWinTerritory).addTempUnit(unit);
 					moveMap.get(maxWinTerritory).setBattleResult(null);
 					it.remove();
@@ -758,7 +755,7 @@ public class ProNonCombatMoveAI
 								moveMap.get(t).addTempUnit(transport);
 								moveMap.get(t).setBattleResult(null);
 								alreadyMovedTransports.add(transport);
-								LogUtils.log(Level.FINER, "Adding defend transport to: " + t.getName());
+								LogUtils.log(Level.FINEST, "Adding defend transport to: " + t.getName());
 								break;
 							}
 						}
@@ -851,7 +848,7 @@ public class ProNonCombatMoveAI
 									moveMap.get(t).setBattleResult(null);
 									for (final Unit unit : amphibUnitsToAdd)
 										sortedUnitMoveOptions.remove(unit);
-									LogUtils.log(Level.FINER, "Adding amphibious defense to: " + t + ", units=" + amphibUnitsToAdd + ", unloadTerritory=" + minTerritory);
+									LogUtils.log(Level.FINEST, "Adding amphibious defense to: " + t + ", units=" + amphibUnitsToAdd + ", unloadTerritory=" + minTerritory);
 									addedAmphibUnits = true;
 									break;
 								}
@@ -917,7 +914,7 @@ public class ProNonCombatMoveAI
 				if ((result.getTUVSwing() - holdValue) > patd.getMinBattleResult().getTUVSwing()
 							|| (!hasHigherStrategicValue && (result.getTUVSwing() + extraUnitValue / 2) >= patd.getMinBattleResult().getTUVSwing()))
 					areSuccessful = false;
-				LogUtils.log(Level.FINEST, patd.getResultString() + ", holdValue=" + holdValue + ", minTUVSwing=" + patd.getMinBattleResult().getTUVSwing() + ", hasHighStrategicValue="
+				LogUtils.log(Level.FINER, patd.getResultString() + ", holdValue=" + holdValue + ", minTUVSwing=" + patd.getMinBattleResult().getTUVSwing() + ", hasHighStrategicValue="
 							+ hasHigherStrategicValue + ", defenders=" + defendingUnits + ", attackers=" + moveMap.get(t).getMaxEnemyUnits());
 			}
 			final Territory currentTerritory = prioritizedTerritories.get(numToDefend - 1).getTerritory();
@@ -928,7 +925,7 @@ public class ProNonCombatMoveAI
 							&& !battleUtils.territoryHasLocalLandSuperiorityAfterMoves(myCapital, enemyDistance, player, moveMap))
 				{
 					areSuccessful = false;
-					LogUtils.log(Level.FINEST, "Capital doesn't have local land superiority after defense moves with enemyDistance=" + enemyDistance);
+					LogUtils.log(Level.FINER, "Capital doesn't have local land superiority after defense moves with enemyDistance=" + enemyDistance);
 				}
 			}
 			

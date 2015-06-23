@@ -99,17 +99,17 @@ public class ProMoveUtils
 				
 				// Determine route and add to move list
 				Route route = null;
-				if (Match.someMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedSea(player, isCombatMove)))
+				if (Match.someMatch(unitList, Matches.UnitIsSea))
 				{
 					// Sea unit (including carriers with planes)
 					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
 				}
-				else if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove)))
+				else if (Match.allMatch(unitList, Matches.UnitIsLand))
 				{
 					// Land unit
 					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<Territory>()));
 				}
-				else if (Match.allMatch(unitList, ProMatches.unitCanBeMovedAndIsOwnedAir(player, isCombatMove)))
+				else if (Match.allMatch(unitList, Matches.UnitIsAir))
 				{
 					// Air unit
 					route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove));

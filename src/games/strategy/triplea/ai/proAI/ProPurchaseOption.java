@@ -20,6 +20,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
@@ -290,7 +291,7 @@ public class ProPurchaseOption
 	public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity,
 				final int unusedLocalCarrierCapacity)
 	{
-		if (isAir && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity))
+		if (isAir && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity || !Properties.getProduceFightersOnCarriers(data)))
 			return 0;
 		final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
 		final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);

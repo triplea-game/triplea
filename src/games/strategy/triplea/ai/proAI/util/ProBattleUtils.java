@@ -62,6 +62,16 @@ public class ProBattleUtils
 	public boolean checkForOverwhelmingWin(final PlayerID player, final Territory t, final List<Unit> attackingUnits, final List<Unit> defendingUnits)
 	{
 		final GameData data = ai.getGameData();
+		
+		if (defendingUnits.isEmpty() && !attackingUnits.isEmpty())
+			return true;
+		
+		// Check that defender has at least 1 power
+		final double power = estimatePower(defendingUnits.get(0).getOwner(), t, defendingUnits, attackingUnits, false);
+		if (power == 0 && !attackingUnits.isEmpty())
+			return true;
+		
+		// Determine if enough attack power to win in 1 round
 		final IntegerMap<UnitType> playerCostMap = BattleCalculator.getCostsForTUV(player, data);
 		final List<Unit> sortedUnitsList = new ArrayList<Unit>(attackingUnits);
 		Collections.sort(sortedUnitsList, new UnitBattleComparator(false, playerCostMap, TerritoryEffectHelper.getEffects(t), data, false, false));
