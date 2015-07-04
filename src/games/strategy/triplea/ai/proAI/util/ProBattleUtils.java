@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.proAI.util;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -14,6 +15,7 @@ import games.strategy.triplea.ai.proAI.ProPurchaseTerritory;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
@@ -99,7 +101,9 @@ public class ProBattleUtils
 	public double estimateStrength(final PlayerID player, final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits, final boolean attacking)
 	{
 		final GameData data = ai.getGameData();
-		final List<Unit> unitsThatCanFight = Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
+		List<Unit> unitsThatCanFight = Match.getMatches(myUnits, Matches.UnitCanBeInBattle(attacking, !t.isWater(), data, 1, false, true, true));
+		if (Properties.getTransportCasualtiesRestricted(data)) // Remove transports if they can't take casualties
+			unitsThatCanFight = Match.getMatches(unitsThatCanFight, Matches.UnitIsTransportButNotCombatTransport.invert());
 		final int myHP = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
 		final double myPower = estimatePower(player, t, myUnits, enemyUnits, attacking);
 		return (2 * myHP) + myPower;
@@ -294,4 +298,69 @@ public class ProBattleUtils
 			return true;
 	}
 	
+	public boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerID player, final List<Unit> placedUnits, final List<Unit> unitsToPlace)
+	{
+		final GameData data = ai.getGameData();
+		
+		int landDistance = utils.getClosestEnemyLandTerritoryDistanceOverWater(data, player, t);
+		if (landDistance <= 0)
+			landDistance = 10;
+		final int enemyDistance = Math.max(3, (landDistance + 1));
+		final int alliedDistance = (enemyDistance + 1) / 2;
+		final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, enemyDistance);
+		final List<Territory> nearbyLandTerritories = Match.getMatches(nearbyTerritories, Matches.TerritoryIsLand);
+		final Set<Territory> nearbyEnemySeaTerritories = data.getMap().getNeighbors(t, enemyDistance, Matches.TerritoryIsWater);
+		nearbyEnemySeaTerritories.add(t);
+		final Set<Territory> nearbyAlliedSeaTerritories = data.getMap().getNeighbors(t, alliedDistance, Matches.TerritoryIsWater);
+		nearbyAlliedSeaTerritories.add(t);
+		final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<Unit>();
+		final List<Unit> enemyUnitsInLandTerritories = new ArrayList<Unit>();
+		final List<Unit> myUnitsInSeaTerritories = new ArrayList<Unit>();
+		final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<Unit>();
+		for (final Territory nearbyLandTerritory : nearbyLandTerritories)
+			enemyUnitsInLandTerritories.addAll(nearbyLandTerritory.getUnits().getMatches(ProMatches.unitIsEnemyAir(player, data)));
+		for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories)
+		{
+			final List<Unit> enemySeaUnits = nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotLand(player, data));
+			if (enemySeaUnits.isEmpty())
+				continue;
+			final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbySeaTerritory, Matches.TerritoryIsWater);
+			if (route == null)
+				continue;
+			if (MoveValidator.validateCanal(route, enemySeaUnits, enemySeaUnits.get(0).getOwner(), data) != null)
+				continue;
+			final int routeLength = route.numberOfSteps();
+			if (routeLength <= enemyDistance)
+				enemyUnitsInSeaTerritories.addAll(enemySeaUnits);
+		}
+		for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories)
+		{
+			myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
+			myUnitsInSeaTerritories.addAll(placedUnits);
+			alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
+		}
+		LogUtils.log(Level.FINEST, t + ", enemyDistance=" + enemyDistance + ", alliedDistance=" + alliedDistance + ", enemyAirUnits=" + enemyUnitsInLandTerritories
+					+ ", enemySeaUnits=" + enemyUnitsInSeaTerritories + ", mySeaUnits=" + myUnitsInSeaTerritories);
+		
+		// Find current naval defense strength
+		final List<Unit> myUnits = new ArrayList<Unit>(myUnitsInSeaTerritories);
+		myUnits.addAll(unitsToPlace);
+		myUnits.addAll(alliedUnitsInSeaTerritories);
+		final List<Unit> enemyAttackers = new ArrayList<Unit>(enemyUnitsInSeaTerritories);
+		enemyAttackers.addAll(enemyUnitsInLandTerritories);
+		final double defenseStrengthDifference = estimateStrengthDifference(t, enemyAttackers, myUnits);
+		LogUtils.log(Level.FINEST, t + ", current enemy naval attack strengthDifference=" + defenseStrengthDifference + ", enemySize=" + enemyAttackers.size() + ", alliedSize="
+					+ myUnits.size());
+		
+		// Find current naval attack strength
+		double attackStrengthDifference = estimateStrengthDifference(t, myUnits, enemyUnitsInSeaTerritories);
+		attackStrengthDifference += 0.5 * estimateStrengthDifference(t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
+		LogUtils.log(Level.FINEST, t + ", current allied naval attack strengthDifference=" + attackStrengthDifference + ", alliedSize=" + myUnits.size() + ", enemySize="
+					+ enemyUnitsInSeaTerritories.size());
+		
+		// If I have naval attack/defense superiority then break
+		return (defenseStrengthDifference < 50 && attackStrengthDifference > 50);
+		
+		// return Math.min(100, Math.min(200 - 2 * defenseStrengthDifference, 2 * attackStrengthDifference)); // 100 is good while anything less needs more units
+	}
 }

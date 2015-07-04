@@ -113,8 +113,14 @@ public class ProTransportUtils
 		return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnoreOrHaveBetterLandMove);
 	}
 	
-	// TODO: this needs fixed to consider whether a valid route exists to load all units
 	public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore)
+	{
+		return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnore, ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true));
+	}
+	
+	// TODO: this needs fixed to consider whether a valid route exists to load all units
+	public List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport, final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
+				final Match<Unit> validUnitMatch)
 	{
 		final List<Unit> selectedUnits = new ArrayList<Unit>();
 		
@@ -129,7 +135,7 @@ public class ProTransportUtils
 			final List<Unit> units = new ArrayList<Unit>();
 			for (final Territory loadFrom : territoriesToLoadFrom)
 			{
-				units.addAll(loadFrom.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
+				units.addAll(loadFrom.getUnits().getMatches(validUnitMatch));
 			}
 			units.removeAll(unitsToIgnore);
 			

@@ -439,6 +439,21 @@ public class ProMatches
 		};
 	}
 	
+	public static Match<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				final Match<Territory> isMatch = new CompositeMatchAnd<Territory>(territoryIsEnemyLand(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
+				final Match<Territory> adjacentMatch = new CompositeMatchAnd<Territory>(territoryCanMoveLandUnits(player, data, false), Matches.territoryHasNeighborMatching(data, isMatch));
+				final Match<Territory> match = new CompositeMatchOr<Territory>(isMatch, adjacentMatch);
+				return match.match(t);
+			}
+		};
+	}
+	
 	public static Match<Territory> territoryIsEnemyNotNeutralOrAllied(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()

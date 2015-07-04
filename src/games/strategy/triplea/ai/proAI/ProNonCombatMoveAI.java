@@ -145,7 +145,7 @@ public class ProNonCombatMoveAI
 		attackOptionsUtils.findDefendOptions(player, myUnitTerritories, moveMap, unitMoveMap, transportMoveMap, landRoutesMap, transportMapList, new ArrayList<Territory>());
 		
 		// Find number of units in each move territory that can't move and all infra units
-		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions);
+		findUnitsThatCantMove(moveMap, unitMoveMap, purchaseTerritories, landPurchaseOptions, transportMapList);
 		infraUnitMoveMap = findInfraUnitsThatCanMove(unitMoveMap);
 		
 		// Try to have one land unit in each territory that is bordering an enemy territory
@@ -257,13 +257,42 @@ public class ProNonCombatMoveAI
 	}
 	
 	private void findUnitsThatCantMove(final Map<Territory, ProAttackTerritoryData> moveMap, final Map<Unit, Set<Territory>> unitMoveMap,
-				final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<ProPurchaseOption> landPurchaseOptions)
+				final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<ProPurchaseOption> landPurchaseOptions, final List<ProAmphibData> transportMapList)
 	{
 		LogUtils.log(Level.FINE, "Find units that can't move");
 		
 		// Add all units that can't move (allied units, 0 move units, etc)
 		for (final Territory t : moveMap.keySet())
 			moveMap.get(t).getCantMoveUnits().addAll(t.getUnits().getMatches(ProMatches.unitCantBeMovedAndIsAlliedDefender(player, data, t)));
+		
+		// Add all units that only have 1 move option and can't be transported
+		for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();)
+		{
+			final Unit u = it.next();
+			if (unitMoveMap.get(u).size() == 1)
+			{
+				final Territory currentTerritory = unitMoveMap.get(u).iterator().next();
+				boolean canBeTransported = false;
+				for (final ProAmphibData pad : transportMapList)
+				{
+					for (final Territory t : pad.getTransportMap().keySet())
+					{
+						if (pad.getTransportMap().get(t).contains(currentTerritory))
+							canBeTransported = true;
+					}
+					for (final Territory t : pad.getSeaTransportMap().keySet())
+					{
+						if (pad.getSeaTransportMap().get(t).contains(currentTerritory))
+							canBeTransported = true;
+					}
+				}
+				if (!canBeTransported)
+				{
+					moveMap.get(currentTerritory).getCantMoveUnits().add(u);
+					it.remove();
+				}
+			}
+		}
 		
 		// Check if purchase units are known yet
 		if (purchaseTerritories != null)
@@ -416,7 +445,7 @@ public class ProNonCombatMoveAI
 			final List<Unit> extraUnits = new ArrayList<Unit>(defendingUnitsAndNotAA);
 			extraUnits.removeAll(minDefendingUnitsAndNotAA);
 			final double extraUnitValue = BattleCalculator.getTUV(extraUnits, playerCostMap);
-			final double holdValue = extraUnitValue / 8 * (1 + isFactory) * (1 + isMyCapital);
+			final double holdValue = extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2 * isMyCapital);
 			if (minDefendingUnitsAndNotAA.size() != defendingUnitsAndNotAA.size() && (result.getTUVSwing() - holdValue) < minResult.getTUVSwing())
 			{
 				LogUtils.log(Level.FINER, "Territory=" + t.getName() + ", CanHold=true" + ", MaxDefenders=" + defendingUnitsAndNotAA.size() + ", EnemyAttackers=" + enemyAttackingUnits.size()
@@ -428,7 +457,8 @@ public class ProNonCombatMoveAI
 			// Can't hold territory
 			patd.setCanHold(false);
 			LogUtils.log(Level.FINER, "Can't hold Territory=" + t.getName() + ", MaxDefenders=" + defendingUnitsAndNotAA.size() + ", EnemyAttackers=" + enemyAttackingUnits.size()
-						+ ", win%=" + result.getWinPercentage() + ", EnemyTUVSwing=" + result.getTUVSwing() + ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining() + ", holdValue=" + holdValue);
+									+ ", minTUVSwing=" + minResult.getTUVSwing() + ", win%=" + result.getWinPercentage() + ", EnemyTUVSwing=" + result.getTUVSwing() + ", hasLandUnitRemaining="
+									+ result.isHasLandUnitRemaining() + ", holdValue=" + holdValue);
 		}
 	}
 	
@@ -867,12 +897,6 @@ public class ProNonCombatMoveAI
 			{
 				final Territory t = patd.getTerritory();
 				
-				// if (moveMap.get(t).getAllDefenders().size() == moveMap.get(t).getCantMoveUnits().size())
-				// {
-				// areSuccessful = false;
-				// break;
-				// }
-				
 				// Find defense result and hold value based on used defenders TUV
 				final List<Unit> defendingUnits = moveMap.get(t).getAllDefenders();
 				moveMap.get(t).setBattleResult(battleUtils.calculateBattleResults(player, t, moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits(), false));
@@ -892,7 +916,7 @@ public class ProNonCombatMoveAI
 						unsafeTransports.add(transport);
 				}
 				final int unsafeTransportValue = BattleCalculator.getTUV(unsafeTransports, playerCostMap);
-				final double holdValue = extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + isMyCapital) - unsafeTransportValue;
+				final double holdValue = extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2 * isMyCapital) - unsafeTransportValue;
 				
 				// Find strategic value
 				boolean hasHigherStrategicValue = true;

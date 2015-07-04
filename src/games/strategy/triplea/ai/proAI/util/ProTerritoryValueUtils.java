@@ -82,6 +82,18 @@ public class ProTerritoryValueUtils
 		enemyCapitalsAndFactories.addAll(utils.getLiveEnemyCapitals(data, player));
 		enemyCapitalsAndFactories.removeAll(territoriesToAttack);
 		
+		// Find max land mass size
+		int maxLandMassSize = 1;
+		for (final Territory t : allTerritories)
+		{
+			if (!t.isWater())
+			{
+				final int landMassSize = 1 + data.getMap().getNeighbors(t, 6, ProMatches.territoryCanMoveLandUnits(player, data, true)).size();
+				if (landMassSize > maxLandMassSize)
+					maxLandMassSize = landMassSize;
+			}
+		}
+		
 		// Loop through factories/capitals and find value
 		final Map<Territory, Double> enemyCapitalsAndFactoriesMap = new HashMap<Territory, Double>();
 		for (final Territory t : enemyCapitalsAndFactories)
@@ -101,13 +113,13 @@ public class ProTerritoryValueUtils
 			final int isNeutral = t.getOwner().isNull() ? 1 : 0;
 			
 			// Calculate value
-			final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32 / (1 + 3 * isNeutral);
+			final int landMassSize = 1 + data.getMap().getNeighbors(t, 6, ProMatches.territoryCanMoveLandUnits(player, data, true)).size();
+			final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32 / (1 + 3 * isNeutral) * landMassSize / maxLandMassSize;
 			enemyCapitalsAndFactoriesMap.put(t, value);
 		}
 		
 		// Determine value for land territories
 		final Map<Territory, Double> territoryValueMap = new HashMap<Territory, Double>();
-		int maxLandMassSize = 1;
 		for (final Territory t : allTerritories)
 		{
 			if (!t.isWater() && !territoriesThatCantBeHeld.contains(t))
@@ -145,9 +157,7 @@ public class ProTerritoryValueUtils
 					}
 				}
 				final int landMassSize = 1 + data.getMap().getNeighbors(t, 6, ProMatches.territoryCanMoveLandUnits(player, data, true)).size();
-				if (landMassSize > maxLandMassSize)
-					maxLandMassSize = landMassSize;
-				double value = (capitalOrFactoryValue + nearbyEnemyValue) * landMassSize;
+				double value = nearbyEnemyValue * landMassSize / maxLandMassSize + capitalOrFactoryValue;
 				if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(t))
 					value *= 1.1; // prefer territories with factories
 				territoryValueMap.put(t, value);
@@ -157,8 +167,6 @@ public class ProTerritoryValueUtils
 				territoryValueMap.put(t, 0.0);
 			}
 		}
-		for (final Territory t : territoryValueMap.keySet())
-			territoryValueMap.put(t, territoryValueMap.get(t) / maxLandMassSize);
 		
 		// Determine value for water territories
 		for (final Territory t : allTerritories)
@@ -204,7 +212,6 @@ public class ProTerritoryValueUtils
 						nearbyLandValue += territoryValueMap.get(nearbyLandTerritory);
 					}
 				}
-				
 				final double value = capitalOrFactoryValue / 100 + nearbyLandValue / 10;
 				territoryValueMap.put(t, value);
 			}

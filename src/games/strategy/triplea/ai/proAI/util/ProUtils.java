@@ -166,9 +166,9 @@ public class ProUtils
 	public int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerID player, final Territory t)
 	{
 		final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);
-		final List<Territory> enemyLandTerritories = Match.getMatches(neighborTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player, data));
+		final List<Territory> enemyOrAdjacentLandTerritories = Match.getMatches(neighborTerritories, ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data));
 		int minDistance = 10;
-		for (final Territory enemyLandTerritory : enemyLandTerritories)
+		for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories)
 		{
 			final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.TerritoryIsWater);
 			if (distance > 0 && distance < minDistance)
