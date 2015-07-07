@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -495,4 +496,32 @@ public class ProAI extends AbstractAI
 		
 		return scrambleAI.scrambleUnitsQuery(scrambleTo, possibleScramblers);
 	}
+	
+	@Override
+	public boolean selectAttackSubs(final Territory unitTerritory)
+	{
+		// Get battle data
+		final GameData data = getGameData();
+		final PlayerID player = getPlayerID();
+		final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
+		final IBattle battle = delegate.getBattleTracker().getPendingBattle(unitTerritory, false, BattleType.NORMAL);
+		
+		// If battle is null then don't attack
+		if (battle == null)
+			return false;
+		
+		final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
+		final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+		LogUtils.log(Level.FINE, player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers + ", defenders=" + defenders);
+		
+		s_battleCalculator.setGameData(getGameData());
+		
+		// Calculate battle results
+		final ProBattleResultData result = battleUtils.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<Unit>(), true);
+		LogUtils.log(Level.FINER, player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
+		if (result.getTUVSwing() > 0)
+			return true;
+		return false;
+	}
+	
 }

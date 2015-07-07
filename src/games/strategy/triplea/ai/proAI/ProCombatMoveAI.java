@@ -182,6 +182,9 @@ public class ProCombatMoveAI
 		if (myCapital.getOwner().equals(player))
 			determineIfCapitalCanBeHeld(attackMap, prioritizedTerritories, landPurchaseOptions);
 		
+		// Check if any subs in contested territory that's not being attacked
+		checkContestedSeaTerritories(attackMap, myUnitTerritories);
+		
 		// Calculate attack routes and perform moves
 		doMove(attackMap, moveDel, data, player, isSimulation);
 		
@@ -1541,6 +1544,34 @@ public class ProCombatMoveAI
 			{
 				LogUtils.log(Level.FINER, "Can hold capital: " + myCapital.getName());
 				break;
+			}
+		}
+	}
+	
+	private void checkContestedSeaTerritories(final Map<Territory, ProAttackTerritoryData> attackMap, final List<Territory> myUnitTerritories)
+	{
+		for (final Territory t : myUnitTerritories)
+		{
+			if (t.isWater() && Matches.territoryHasEnemyUnits(player, data).match(t) && (attackMap.get(t) == null || attackMap.get(t).getUnits().isEmpty()))
+			{
+				// Move into random adjacent safe sea territory
+				final Set<Territory> possibleMoveTerritories = data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
+				if (!possibleMoveTerritories.isEmpty())
+				{
+					final Territory moveToTerritory = possibleMoveTerritories.iterator().next();
+					final List<Unit> mySeaUnits = t.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true));
+					if (attackMap.containsKey(moveToTerritory))
+					{
+						attackMap.get(moveToTerritory).addUnits(mySeaUnits);
+					}
+					else
+					{
+						final ProAttackTerritoryData moveTerritoryData = new ProAttackTerritoryData(moveToTerritory);
+						moveTerritoryData.addUnits(mySeaUnits);
+						attackMap.put(moveToTerritory, moveTerritoryData);
+					}
+					LogUtils.log(Level.FINE, t + " is a contested territory so moving subs to " + moveToTerritory);
+				}
 			}
 		}
 	}
