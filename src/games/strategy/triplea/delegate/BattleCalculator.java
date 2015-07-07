@@ -835,8 +835,11 @@ public class BattleCalculator
 		for (final Unit u : targetsToPickFrom)
 			targetTypes.add(u.getType());
 		final List<UnitType> amphibTypes = new ArrayList<UnitType>();
-		for (final Unit u : amphibiousLandAttackers)
-			amphibTypes.add(u.getType());
+		if (amphibiousLandAttackers != null)
+		{
+			for (final Unit u : amphibiousLandAttackers)
+				amphibTypes.add(u.getType());
+		}
 		
 		// Calculate hashes and cache key
 		int targetsHashCode = 1;
