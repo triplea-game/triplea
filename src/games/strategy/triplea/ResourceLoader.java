@@ -31,8 +31,18 @@ public class ResourceLoader
 	public static ResourceLoader getMapResourceLoader(final String mapName, final boolean allowNoneFound)
 	{
 		final List<String> dirs = getPaths(mapName, allowNoneFound);
-		dirs.add(new File(GameRunner2.getRootFolder(), RESOURCE_FOLDER).getAbsolutePath());
-		return new ResourceLoader(dirs.toArray(new String[0]));
+		addAssets(dirs);
+		return new ResourceLoader(dirs.toArray(new String[dirs.size()]));
+	}
+
+	private static void addAssets(List<String> dirs) {
+		File atFolder = GameRunner2.getRootFolder();
+		File resourceFolder;
+		do {
+			resourceFolder = new File(atFolder, RESOURCE_FOLDER);
+			atFolder = atFolder.getParentFile();
+		} while (!resourceFolder.exists() && !resourceFolder.isDirectory());
+		dirs.add(resourceFolder.getAbsolutePath());
 	}
 	
 	private static List<String> getPaths(final String mapName, final boolean allowNoneFound)
@@ -156,9 +166,7 @@ public class ResourceLoader
 	public boolean hasPath(final String path)
 	{
 		final URL rVal = m_loader.getResource(path);
-		if (rVal == null)
-			return false;
-		return true;
+		return rVal != null;
 	}
 	
 	/**

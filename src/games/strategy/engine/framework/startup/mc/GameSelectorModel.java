@@ -415,7 +415,7 @@ public class GameSelectorModel extends Observable
 		final String user = GameRunner2.getUserRootFolder().toURI().toString();
 		final String root = GameRunner2.getRootFolder().toURI().toString();
 		if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0
-					&& (userPreferredDefaultGameURI.indexOf(root) != -1 || userPreferredDefaultGameURI.indexOf(user) != -1))
+				&& (userPreferredDefaultGameURI.contains(root) || userPreferredDefaultGameURI.contains(user)))
 		{
 			// if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole game model list
 			boolean refreshedAlready = false;

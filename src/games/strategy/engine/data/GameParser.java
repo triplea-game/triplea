@@ -48,6 +48,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -300,15 +301,32 @@ public class GameParser
 		}
 	}
 	
+	public static List<InputStream> loadResources(final String name, final ClassLoader classLoader) throws IOException
+	{
+		final List<InputStream> list = new ArrayList<InputStream>();
+		final Enumeration<URL> systemResources = (classLoader == null ? ClassLoader.getSystemClassLoader() : classLoader).getResources(name);
+		while (systemResources.hasMoreElements())
+		{
+			list.add(systemResources.nextElement().openStream());
+		}
+		return list;
+	}
+	
 	private Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException
 	{
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(true);
 		// get the dtd location
-		final URL url = GameParser.class.getResource("/games/strategy/engine/xml/");
-		final String system = url.toExternalForm();
+		final String dtdFile = "/games/strategy/engine/xml/game.dtd";
+		final URL url = GameParser.class.getResource(dtdFile);
+		if (url == null)
+		{
+			throw new RuntimeException(String.format("Could not find in classpath %s", dtdFile));
+		}
+		final String dtdSystem = url.toExternalForm();
+		final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
 		final DocumentBuilder builder = factory.newDocumentBuilder();
-		final ErrorHandler myErrorHandler = new ErrorHandler()
+		builder.setErrorHandler(new ErrorHandler()
 		{
 			public void fatalError(final SAXParseException exception) throws SAXException
 			{
@@ -324,8 +342,7 @@ public class GameParser
 			{
 				errorsSAX.add(exception);
 			}
-		};
-		builder.setErrorHandler(myErrorHandler);
+		});
 		return builder.parse(input, system);
 	}
 	

@@ -45,6 +45,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.apache.commons.codec.CharEncoding;
 import org.apache.commons.httpclient.HostConfiguration;
 
 public class GameRunner2
@@ -227,21 +228,21 @@ public class GameRunner2
 		}
 		
 		boolean usagePrinted = false;
-		for (int argIndex = 0; argIndex < args.length; argIndex++)
+		for (final String arg1 : args)
 		{
 			boolean found = false;
-			String arg = args[argIndex];
+			String arg = arg1;
 			final int indexOf = arg.indexOf('=');
 			if (indexOf > 0)
 			{
 				arg = arg.substring(0, indexOf);
-				for (int propIndex = 0; propIndex < properties.length; propIndex++)
+				for (final String property : properties)
 				{
-					if (arg.equals(properties[propIndex]))
+					if (arg.equals(property))
 					{
-						final String value = getValue(args[argIndex]);
-						System.getProperties().setProperty(properties[propIndex], value);
-						System.out.println(properties[propIndex] + ":" + value);
+						final String value = getValue(arg1);
+						System.getProperties().setProperty(property, value);
+						System.out.println(property + ":" + value);
 						found = true;
 						break;
 					}
@@ -249,7 +250,7 @@ public class GameRunner2
 			}
 			if (!found)
 			{
-				System.out.println("Unrecogized:" + args[argIndex]);
+				System.out.println("Unrecogized:" + arg1);
 				if (!usagePrinted)
 				{
 					usagePrinted = true;
@@ -1031,7 +1032,7 @@ public class GameRunner2
 			e.printStackTrace();
 		}
 		final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-		if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1)
+		if (fileName.contains(tripleaJarNameWithEngineVersion))
 		{
 			final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
 			final File f = new File(subString);
@@ -1047,7 +1048,7 @@ public class GameRunner2
 			{
 				path = f.getPath();
 			}
-			return path.indexOf("old") != -1;
+			return path.contains("old");
 		}
 		return false;
 	}
@@ -1112,58 +1113,64 @@ public class GameRunner2
 	 */
 	public static File getRootFolder()
 	{
-		// we know that the class file is in a directory one above the games root folder
-		// so navigate up from the class file, and we have root.
-		// find the url of our class
-		final URL url = GameRunner2.class.getResource("GameRunner2.class");
-		// we want to move up 1 directory for each
-		// package
-		final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
-		String fileName = url.getFile();
+		String pathOfThisClass = GameRunner2.class.getResource(GameRunner2.class.getSimpleName() + ".class").getFile();
 		try
 		{
-			// deal with spaces in the file name which would be url encoded
-			fileName = URLDecoder.decode(fileName, "UTF-8");
+			pathOfThisClass = URLDecoder.decode(pathOfThisClass, CharEncoding.UTF_8);
 		} catch (final UnsupportedEncodingException e)
 		{
-			e.printStackTrace();
+			throw new RuntimeException("Non " + CharEncoding.UTF_8 + " encoding in path is not supported", e);
 		}
-		final String tripleaJarName = "triplea.jar!";
-		final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-		// we are in a jar file
-		if (fileName.indexOf(tripleaJarName) != -1)
+		
+		final String insideJar = ".jar!";
+		final int jarIndex = pathOfThisClass.indexOf(insideJar);
+		File f;
+		if (jarIndex != -1)
 		{
-			final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
-			final File f = new File(subString).getParentFile();
-			if (!f.exists())
+			final int protocolUntil = "file:".length();
+			final String jarPath = pathOfThisClass.substring(protocolUntil, jarIndex + insideJar.length() - 1);
+			f = new File(jarPath).getParentFile();
+			if (f.getName().equals("libs"))
 			{
-				throw new IllegalStateException("File not found:" + f);
+				// gradle build
+				f = f.getParentFile();
+				if (f.getName().equals("build"))
+					f = f.getParentFile();
 			}
-			return f;
-		}
-		else if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1)
-		{
-			final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
-			final File f = new File(subString).getParentFile();
-			if (!f.exists())
+			else if (f.getName().equals("bin"))
 			{
-				throw new IllegalStateException("File not found:" + f);
+				// ant build
+				f = f.getParentFile();
 			}
-			return f;
 		}
 		else
 		{
-			File f = new File(fileName);
+			final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1; // one level above the class
+			f = new File(pathOfThisClass);
 			for (int i = 0; i < moveUpCount; i++)
 			{
 				f = f.getParentFile();
 			}
+			if (f.getName().equals("classes"))
+			{
+				f = f.getParentFile();
+				if (f.getName().equals("build"))
+				{
+					f = f.getParentFile();
+				}
+			}
 			if (!f.exists())
 			{
-				System.err.println("Could not find root folder, does  not exist:" + f);
-				return new File(System.getProperties().getProperty("user.dir"));
+				final File fallback = new File(System.getProperties().getProperty("user.dir"));
+				System.err.println(String.format("Could not find root folder %s fallback to %s (env variable user.dir)", f.getAbsolutePath(), fallback.getAbsolutePath()));
+				f = fallback;
 			}
-			return f;
 		}
+		if (!f.exists())
+		{
+			throw new IllegalStateException(String.format("Root folder %s does not exist", f.getAbsolutePath()));
+		}
+		
+		return f;
 	}
 }

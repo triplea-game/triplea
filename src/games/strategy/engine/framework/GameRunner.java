@@ -34,12 +34,12 @@ public class GameRunner
 {
 	public static boolean isWindows()
 	{
-		return System.getProperties().getProperty("os.name").toLowerCase().indexOf("windows") != -1;
+		return System.getProperties().getProperty("os.name").toLowerCase().contains("windows");
 	}
 	
 	public static boolean isMac()
 	{
-		return System.getProperties().getProperty("os.name").toLowerCase().indexOf("mac") != -1;
+		return System.getProperties().getProperty("os.name").toLowerCase().contains("mac");
 	}
 	
 	/**
@@ -52,10 +52,10 @@ public class GameRunner
 		// note - this method should not use any new language features (this includes string concatention using +
 		// since this method must run on older vms.
 		final String version = System.getProperties().getProperty("java.version");
-		final boolean v12 = version.indexOf("1.2") != -1;
-		final boolean v13 = version.indexOf("1.3") != -1;
-		final boolean v14 = version.indexOf("1.4") != -1;
-		final boolean v15 = version.indexOf("1.5") != -1;
+		final boolean v12 = version.contains("1.2");
+		final boolean v13 = version.contains("1.3");
+		final boolean v14 = version.contains("1.4");
+		final boolean v15 = version.contains("1.5");
 		if (v15 || v14 || v13 || v12)
 		{
 			if (isMac())
