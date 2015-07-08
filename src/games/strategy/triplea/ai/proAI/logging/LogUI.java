@@ -53,7 +53,6 @@ public class LogUI
 		if (s_settingsWindow == null) // Shouldn't happen
 			return;
 		s_settingsWindow.setVisible(true);
-		s_settingsWindow.setLocationRelativeTo(s_frame);
 	}
 	
 	public static void notifyAILogMessage(final Level level, final String message)

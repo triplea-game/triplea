@@ -57,6 +57,8 @@ public class LogWindow extends javax.swing.JDialog
 	
 	private void initComponents()
 	{
+		final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		
 		java.awt.GridBagConstraints gridBagConstraints;
 		jPanel7 = new javax.swing.JPanel();
 		v_restoreDefaultsButton = new javax.swing.JButton();
@@ -195,7 +197,7 @@ public class LogWindow extends javax.swing.JDialog
 		
 		v_tabPaneMain.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 		v_tabPaneMain.setName("v_tabPaneMain");
-		v_tabPaneMain.setPreferredSize(new java.awt.Dimension(500, 250));
+		v_tabPaneMain.setPreferredSize(new java.awt.Dimension(500, screenSize.height - 200));
 		
 		jPanel8.setName("jPanel8");
 		jPanel8.setPreferredSize(new java.awt.Dimension(500, 314));
@@ -318,8 +320,7 @@ public class LogWindow extends javax.swing.JDialog
 		gridBagConstraints.insets = new java.awt.Insets(7, 7, 0, 7);
 		getContentPane().add(v_tabPaneMain, gridBagConstraints);
 		
-		final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width - 775) / 2, (screenSize.height - 401) / 2, 775, 401);
+		setBounds((screenSize.width - 800), 25, 775, 401);
 	}
 	
 	private void formWindowOpened(final java.awt.event.WindowEvent evt)
