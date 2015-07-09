@@ -422,15 +422,19 @@ public class ProAI extends AbstractAI
 			final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
 			final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
 			
-			// If defender and less strength then don't consider unit cost as just trying to survive
+			// If defender and could lose battle then don't consider unit cost as just trying to survive
 			boolean needToCheck = true;
 			final boolean isAttacker = player.equals(battle.getAttacker());
 			if (!isAttacker)
 			{
 				final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
 				final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+				defenders.removeAll(defaultCasualties.getKilled());
 				final double strengthDifference = battleUtils.estimateStrengthDifference(battlesite, attackers, defenders);
-				if (strengthDifference > 50)
+				int minStrengthDifference = 60;
+				if (!games.strategy.triplea.Properties.getLow_Luck(data))
+					minStrengthDifference = 55;
+				if (strengthDifference > minStrengthDifference)
 					needToCheck = false;
 			}
 			

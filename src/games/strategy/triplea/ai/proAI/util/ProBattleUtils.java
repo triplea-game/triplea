@@ -147,7 +147,7 @@ public class ProBattleUtils
 		if (strengthDifference > 55)
 		{
 			final boolean isLandAndCanOnlyBeAttackedByAir = !t.isWater() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
-			return new ProBattleResultData(100, 999, !isLandAndCanOnlyBeAttackedByAir, attackingUnits, 1);
+			return new ProBattleResultData(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir, attackingUnits, 1);
 		}
 		
 		return callBattleCalculator(player, t, attackingUnits, defendingUnits, bombardingUnits, false);
@@ -237,35 +237,41 @@ public class ProBattleUtils
 	{
 		final GameData data = ai.getGameData();
 		
-		// Find enemy strength
-		final Set<Territory> nearbyTerritoriesForEnemy = data.getMap().getNeighbors(t, distance, ProMatches.territoryCanMoveLandUnits(player, data, false));
-		nearbyTerritoriesForEnemy.add(t);
-		final List<Unit> enemyUnits = new ArrayList<Unit>();
-		for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy)
-			enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
-		
-		// Find allied strength
-		final Set<Territory> nearbyTerritoriesForAllied = data.getMap().getNeighbors(t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
-		nearbyTerritoriesForAllied.add(t);
-		final List<Unit> alliedUnits = new ArrayList<Unit>();
-		for (final Territory nearbyTerritory : nearbyTerritoriesForAllied)
-			alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.isUnitAllied(player, data)));
-		for (final Territory purchaseTerritory : purchaseTerritories.keySet())
-		{
-			for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
-			{
-				if (nearbyTerritoriesForAllied.contains(ppt.getTerritory()))
-					alliedUnits.addAll(ppt.getPlaceUnits());
-			}
-		}
-		
-		// Determine strength difference
-		final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
-		LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
-		if (strengthDifference > 50)
+		if (distance < 2)
 			return false;
-		else
-			return true;
+		
+		for (int i = 2; i <= distance; i++)
+		{
+			// Find enemy strength
+			final Set<Territory> nearbyTerritoriesForEnemy = data.getMap().getNeighbors(t, i, ProMatches.territoryCanMoveLandUnits(player, data, false));
+			nearbyTerritoriesForEnemy.add(t);
+			final List<Unit> enemyUnits = new ArrayList<Unit>();
+			for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy)
+				enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
+			
+			// Find allied strength
+			final Set<Territory> nearbyTerritoriesForAllied = data.getMap().getNeighbors(t, i - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
+			nearbyTerritoriesForAllied.add(t);
+			final List<Unit> alliedUnits = new ArrayList<Unit>();
+			for (final Territory nearbyTerritory : nearbyTerritoriesForAllied)
+				alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.isUnitAllied(player, data)));
+			for (final Territory purchaseTerritory : purchaseTerritories.keySet())
+			{
+				for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
+				{
+					if (nearbyTerritoriesForAllied.contains(ppt.getTerritory()))
+						alliedUnits.addAll(ppt.getPlaceUnits());
+				}
+			}
+			
+			// Determine strength difference
+			final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
+			LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", distance=" + i + ", enemySize=" + enemyUnits.size()
+						+ ", alliedSize=" + alliedUnits.size());
+			if (strengthDifference > 50)
+				return false;
+		}
+		return true;
 	}
 	
 	public boolean territoryHasLocalLandSuperiorityAfterMoves(final Territory t, final int distance, final PlayerID player, final Map<Territory, ProAttackTerritoryData> moveMap)

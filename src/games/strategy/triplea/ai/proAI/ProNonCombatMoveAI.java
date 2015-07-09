@@ -892,6 +892,7 @@ public class ProNonCombatMoveAI
 			
 			// Determine if all defenses are successful
 			boolean areSuccessful = true;
+			boolean containsCapital = false;
 			LogUtils.log(Level.FINER, "Current number of territories: " + numToDefend);
 			for (final ProAttackTerritoryData patd : territoriesToTryToDefend)
 			{
@@ -906,7 +907,10 @@ public class ProNonCombatMoveAI
 					isFactory = 1;
 				int isMyCapital = 0;
 				if (t.equals(myCapital))
+				{
 					isMyCapital = 1;
+					containsCapital = true;
+				}
 				final double extraUnitValue = BattleCalculator.getTUV(moveMap.get(t).getTempUnits(), playerCostMap);
 				final List<Unit> unsafeTransports = new ArrayList<Unit>();
 				for (final Unit transport : moveMap.get(t).getTransportTerritoryMap().keySet())
@@ -941,7 +945,19 @@ public class ProNonCombatMoveAI
 				LogUtils.log(Level.FINER, patd.getResultString() + ", holdValue=" + holdValue + ", minTUVSwing=" + patd.getMinBattleResult().getTUVSwing() + ", hasHighStrategicValue="
 							+ hasHigherStrategicValue + ", defenders=" + defendingUnits + ", attackers=" + moveMap.get(t).getMaxEnemyUnits());
 			}
+			
+			// Check capital defense
 			final Territory currentTerritory = prioritizedTerritories.get(numToDefend - 1).getTerritory();
+			if (containsCapital && !currentTerritory.equals(myCapital) && moveMap.get(myCapital).getBattleResult().getWinPercentage() > (100 - WIN_PERCENTAGE))
+			{
+				if (!Collections.disjoint(moveMap.get(currentTerritory).getAllDefenders(), moveMap.get(myCapital).getMaxDefenders()))
+				{
+					areSuccessful = false;
+					LogUtils.log(Level.FINER, "Capital isn't safe after defense moves with winPercentage=" + moveMap.get(myCapital).getBattleResult().getWinPercentage());
+				}
+			}
+			
+			// Check capital local superiority
 			if (!currentTerritory.isWater() && enemyDistance >= 2 && enemyDistance <= 3)
 			{
 				final int distance = data.getMap().getDistance(myCapital, currentTerritory, ProMatches.territoryCanMoveLandUnits(player, data, true));

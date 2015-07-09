@@ -2161,38 +2161,44 @@ public class ProPurchaseAI
 					break;
 				
 				// Find cheapest placed purchase option
-				int maxPlacedCost = Integer.MIN_VALUE;
-				ProPurchaseOption maxPurchaseOption = null;
+				int minPlacedCost = Integer.MAX_VALUE;
+				ProPurchaseOption minPurchaseOption = null;
 				for (final Unit u : placeTerritory.getPlaceUnits())
 				{
 					for (final ProPurchaseOption ppo : airAndLandPurchaseOptions)
 					{
-						if (u.getType().equals(ppo.getUnitType()) && ppo.getCost() > maxPlacedCost)
+						if (u.getType().equals(ppo.getUnitType()) && ppo.getCost() < minPlacedCost)
 						{
-							maxPlacedCost = ppo.getCost();
-							maxPurchaseOption = ppo;
+							minPlacedCost = ppo.getCost();
+							minPurchaseOption = ppo;
 						}
 					}
 				}
-				if (maxPurchaseOption == null)
+				if (minPurchaseOption == null)
 					break;
 				
 				// Remove options that cost too much PUs or production
-				purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, purchaseOptionsForTerritory, PUsRemaining + maxPlacedCost, 1,
+				purchaseUtils.removePurchaseOptionsByCostAndProductionAndLimits(player, startOfTurnData, purchaseOptionsForTerritory, PUsRemaining + minPlacedCost, 1,
 							new ArrayList<Unit>(), purchaseTerritories);
 				if (purchaseOptionsForTerritory.isEmpty())
 					break;
 				
 				// Determine best long range attack option (prefer air units)
 				ProPurchaseOption bestAttackOption = null;
-				double maxAttackEfficiency = maxPurchaseOption.getAttackEfficiency() * maxPurchaseOption.getMovement() * maxPurchaseOption.getCost() / maxPurchaseOption.getQuantity();
+				double maxAttackEfficiency = minPurchaseOption.getAttackEfficiency() * minPurchaseOption.getMovement() * minPurchaseOption.getCost() / minPurchaseOption.getQuantity();
 				for (final ProPurchaseOption ppo : purchaseOptionsForTerritory)
 				{
-					if (ppo.getCost() > maxPlacedCost && (ppo.isAir() || placeTerritory.getStrategicValue() >= 0.25 || ppo.getTransportCost() <= maxPurchaseOption.getTransportCost()))
+					if (ppo.getCost() > minPlacedCost && (ppo.isAir() || placeTerritory.getStrategicValue() >= 0.25 || ppo.getTransportCost() <= minPurchaseOption.getTransportCost()))
 					{
 						double attackEfficiency = ppo.getAttackEfficiency() * ppo.getMovement() * ppo.getCost() / ppo.getQuantity();
 						if (ppo.isAir())
 							attackEfficiency *= 10;
+						if (ppo.getCarrierCost() > 0)
+						{
+							final int unusedLocalCarrierCapacity = transportUtils.getUnusedLocalCarrierCapacity(player, t, placeTerritory.getPlaceUnits());
+							final int neededFighters = unusedLocalCarrierCapacity / ppo.getCarrierCost();
+							attackEfficiency *= (1 + neededFighters);
+						}
 						if (attackEfficiency > maxAttackEfficiency)
 						{
 							bestAttackOption = ppo;
@@ -2202,18 +2208,18 @@ public class ProPurchaseAI
 				}
 				if (bestAttackOption == null)
 				{
-					airAndLandPurchaseOptions.remove(maxPurchaseOption);
+					airAndLandPurchaseOptions.remove(minPurchaseOption);
 					continue;
 				}
 				
 				// Find units to remove
 				final List<Unit> unitsToRemove = new ArrayList<Unit>();
-				int numUnitsToRemove = maxPurchaseOption.getQuantity();
+				int numUnitsToRemove = minPurchaseOption.getQuantity();
 				for (final Unit u : placeTerritory.getPlaceUnits())
 				{
 					if (numUnitsToRemove <= 0)
 						break;
-					if (u.getType().equals(maxPurchaseOption.getUnitType()))
+					if (u.getType().equals(minPurchaseOption.getUnitType()))
 					{
 						unitsToRemove.add(u);
 						numUnitsToRemove--;
@@ -2221,13 +2227,13 @@ public class ProPurchaseAI
 				}
 				if (numUnitsToRemove > 0)
 				{
-					airAndLandPurchaseOptions.remove(maxPurchaseOption);
+					airAndLandPurchaseOptions.remove(minPurchaseOption);
 					continue;
 				}
 				
 				// Replace units
-				PUsRemaining += maxPurchaseOption.getCost();
-				remainingUpgradeUnits -= maxPurchaseOption.getQuantity();
+				PUsRemaining += minPurchaseOption.getCost();
+				remainingUpgradeUnits -= minPurchaseOption.getQuantity();
 				placeTerritory.getPlaceUnits().removeAll(unitsToRemove);
 				LogUtils.log(Level.FINEST, t + ", removedUnits=" + unitsToRemove);
 				for (int i = 0; i < unitsToRemove.size(); i++)
