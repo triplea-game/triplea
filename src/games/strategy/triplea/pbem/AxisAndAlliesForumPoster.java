@@ -306,19 +306,20 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 				} finally
 				{
 					post.releaseConnection();
-					final GetMethod logout = new GetMethod("http://www.axisandallies.org/forums/index.php?action=logout;sesc=" + sc);
-					try
-					{
-						status = m_client.executeMethod(m_hostConfiguration, logout, m_httpState);
-						// site responds with a 200 + Refresh header to redirect to index.php
-						if (status != 200)
-						{
-							// nothing we can do if this fails
-						}
-					} finally
-					{
-						logout.releaseConnection();
-					}
+					// Commented out log out call since it was causing all of a user's sessions to be logged out and doesn't appear to be needed
+					// final GetMethod logout = new GetMethod("http://www.axisandallies.org/forums/index.php?action=logout;sesc=" + sc);
+					// try
+					// {
+					// status = m_client.executeMethod(m_hostConfiguration, logout, m_httpState);
+					// // site responds with a 200 + Refresh header to redirect to index.php
+					// if (status != 200)
+					// {
+					// // nothing we can do if this fails
+					// }
+					// } finally
+					// {
+					// logout.releaseConnection();
+					// }
 				}
 			}
 			else
