@@ -44,23 +44,15 @@ public class Console extends JFrame
 	private static final long serialVersionUID = -3489030525309243438L;
 	private static Console s_console;
 	
+	private final JTextArea m_text = new JTextArea(20, 50);
+	private final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
+	
 	public static Console getConsole()
 	{
 		if (s_console == null)
 			s_console = new Console();
 		return s_console;
 	}
-	
-	public static void main(final String[] args)
-	{
-		final Console c = getConsole();
-		c.displayStandardError();
-		c.displayStandardOutput();
-		c.setVisible(true);
-	}
-	
-	private final JTextArea m_text = new JTextArea(20, 50);
-	private final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
 	
 	/** Creates a new instance of Console */
 	public Console()
@@ -132,6 +124,7 @@ public class Console extends JFrame
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
 		}
 	};
+	
 	private final AbstractAction m_threadDiagnoseAction = new AbstractAction("Enumerate Threads")
 	{
 		private static final long serialVersionUID = 4414139104815149199L;
@@ -141,6 +134,7 @@ public class Console extends JFrame
 			System.out.println(DebugUtils.getThreadDumps());
 		}
 	};
+	
 	private final AbstractAction m_memoryAction = new AbstractAction("Memory")
 	{
 		private static final long serialVersionUID = 1053036985791697566L;
@@ -166,6 +160,7 @@ public class Console extends JFrame
 
 class ThreadReader implements Runnable
 {
+	private static final int CONSOLE_UPDATE_INTERVAL_MS = 100;
 	private final JTextArea m_text;
 	private final SynchedByteArrayOutputStream m_in;
 	private final boolean m_displayConsoleOnWrite;
@@ -182,8 +177,17 @@ class ThreadReader implements Runnable
 		while (true)
 		{
 			m_text.append(m_in.readFully());
-			if (m_displayConsoleOnWrite)
+			if (m_displayConsoleOnWrite && !Console.getConsole().isVisible())
+			{
 				Console.getConsole().setVisible(true);
+			}
+			try
+			{
+				Thread.sleep(CONSOLE_UPDATE_INTERVAL_MS);
+			} catch (final InterruptedException e)
+			{
+				ClientLogger.logQuietly(e);
+			}
 		}
 	}
 }
