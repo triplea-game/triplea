@@ -8,11 +8,16 @@ public class ClientLogger
 	
 	public static void logQuietly(final Exception e)
 	{
-		developerOutputStream.println("Exception: " + e.getMessage());
+		logQuietly("Exception: " + e.getMessage());
 		for (final StackTraceElement stackTraceElement : e.getStackTrace())
 		{
 			developerOutputStream.println(stackTraceElement.toString());
 		}
+	}
+	
+	public static void logQuietly(String msg)
+	{
+		developerOutputStream.println(msg);
 	}
 	
 }
