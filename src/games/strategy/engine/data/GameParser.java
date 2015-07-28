@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -129,8 +130,9 @@ public class GameParser
 		{
 			for (final SAXParseException error : errorsSAX)
 			{
-				System.err.println("SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
-							+ error.getColumnNumber() + ", error: " + error.getMessage());
+				String msg = "SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
+							+ error.getColumnNumber() + ", error: " + error.getMessage();
+				ClientLogger.logQuietly(msg);
 			}
 		}
 		parseDiceSides(getSingleChild("diceSides", root, true));
