@@ -6,12 +6,20 @@ public class ClientLogger
 {
 	private static final PrintStream developerOutputStream = System.out;
 
+	public static void logQuietly(String msg)
+	{
+		logQuietly(msg, null);
+	}
+	
 	public static void logQuietly(String msg , Exception e)
 	{
 		developerOutputStream.println(msg);
-		for (final StackTraceElement stackTraceElement : e.getStackTrace())
+		if( e != null )
 		{
-			developerOutputStream.println(stackTraceElement.toString());
+			for (final StackTraceElement stackTraceElement : e.getStackTrace())
+			{
+				developerOutputStream.println(stackTraceElement.toString());
+			}
 		}
 		
 	}

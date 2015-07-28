@@ -130,7 +130,7 @@ public class GameParser
 			{
 				String msg = "SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
 						+ error.getColumnNumber() + ", error: " + error.getMessage();
-				ClientLogger.logQuietly(msg, error);
+				ClientLogger.logQuietly(msg);
 			}
 		}
 		parseDiceSides(getSingleChild("diceSides", root, true));
