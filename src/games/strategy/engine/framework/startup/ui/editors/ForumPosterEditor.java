@@ -29,7 +29,7 @@ import javax.swing.event.DocumentListener;
 
 /**
  * A class for selecting which Forum poster to use
- * 
+ *
  * @author Klaus Groenbaek
  */
 public class ForumPosterEditor extends EditorPanel
@@ -40,27 +40,27 @@ public class ForumPosterEditor extends EditorPanel
 	// -----------------------------------------------------------------------
 	private final JButton m_viewPosts = new JButton("View Forum");
 	private final JButton m_testForum = new JButton("Test Post");
-	
+
 	private final JLabel m_loginLabel = new JLabel("Login:");
 	private final JLabel m_passwordLabel = new JLabel("Password:");
 	private final JTextField m_login = new JTextField();
 	private final JTextField m_password = new JPasswordField();
-	
+
 	private final JTextField m_topicIdField = new JTextField();
 	private final JLabel m_topicIdLabel = new JLabel("Topic Id:");
-	
+
 	private final JCheckBox m_includeSaveGame = new JCheckBox("Attach save game to summary");
 	private final JCheckBox m_alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
 	private final IForumPoster m_bean;
-	
+
 	// -----------------------------------------------------------------------
 	// constructors
 	// -----------------------------------------------------------------------
-	
+
 	public ForumPosterEditor(final IForumPoster bean)
 	{
 		m_bean = bean;
-		
+
 		final int bottomSpace = 1;
 		final int labelSpace = 2;
 		int row = 0;
@@ -72,17 +72,17 @@ public class ForumPosterEditor extends EditorPanel
 			add(m_viewPosts, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 2, bottomSpace, 0), 0, 0));
 			row++;
 		}
-		
+
 		add(m_loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
 		add(m_login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
 		m_login.setText(m_bean.getUsername());
 		row++;
-		
+
 		add(m_passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
 		add(m_password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
 		m_password.setText(m_bean.getPassword());
 		row++;
-		
+
 		if (m_bean.supportsSaveGame())
 		{
 			add(m_includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -94,23 +94,23 @@ public class ForumPosterEditor extends EditorPanel
 			add(m_testForum, new GridBagConstraints(3, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 		}
 		row++;
-		
+
 		add(m_alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 		m_alsoPostAfterCombatMove.setSelected(m_bean.getAlsoPostAfterCombatMove());
-		
+
 		setupListeners();
 	}
-	
+
 	// -----------------------------------------------------------------------
 	// instance methods
 	// -----------------------------------------------------------------------
-	
+
 	/**
 	 * Configures the listeners for the gui components
 	 */
 	private void setupListeners()
 	{
-		
+
 		m_viewPosts.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -118,7 +118,7 @@ public class ForumPosterEditor extends EditorPanel
 				((IForumPoster) getBean()).viewPosted();
 			}
 		});
-		
+
 		m_testForum.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -126,14 +126,14 @@ public class ForumPosterEditor extends EditorPanel
 				testForum();
 			}
 		});
-		
+
 		// add a document listener which will validate input when the content of any input field is changed
 		final DocumentListener docListener = new EditorChangedFiringDocumentListener();
 		m_login.getDocument().addDocumentListener(docListener);
 		m_password.getDocument().addDocumentListener(docListener);
 		m_topicIdField.getDocument().addDocumentListener(docListener);
 	}
-	
+
 	/**
 	 * Tests the Forum poster
 	 */
@@ -142,26 +142,26 @@ public class ForumPosterEditor extends EditorPanel
 		final IForumPoster poster = (IForumPoster) getBean();
 		final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
 		progressWindow.setVisible(true);
-		
+
 		final Runnable runnable = new Runnable()
 		{
 			public void run()
 			{
-				
+
 				if (poster.getIncludeSaveGame())
 				{
 					try
 					{
 						final File f = File.createTempFile("123", "test");
 						f.deleteOnExit();
-						
+
 						/* For .txt use this:
 						final FileOutputStream fout = new FileOutputStream(f);
 						fout.write("Test upload".getBytes());
 						fout.close();
 						poster.addSaveGame(f, "test.txt");
 						*/
-						
+
 						// For .jpg use this:
 						final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
 						final Graphics g = image.getGraphics();
@@ -173,18 +173,18 @@ public class ForumPosterEditor extends EditorPanel
 						{
 							// ignore
 						}
-						
+
 						poster.addSaveGame(f, "Test.jpg");
 					} catch (final IOException e)
 					{
 						// ignore
 					}
-					
+
 				}
 				poster.postTurnSummary("Test summary from TripleA, engine version: " + games.strategy.engine.EngineVersion.VERSION.toString()
 							+ ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()), "Testing Forum poster");
 				progressWindow.setVisible(false);
-				
+
 				// now that we have a result, marshall it back unto the swing thread
 				SwingUtilities.invokeLater(new Runnable()
 				{
@@ -205,7 +205,7 @@ public class ForumPosterEditor extends EditorPanel
 		final Thread t = new Thread(runnable);
 		t.start();
 	}
-	
+
 	@Override
 	public boolean isBeanValid()
 	{
@@ -215,7 +215,7 @@ public class ForumPosterEditor extends EditorPanel
 		}
 		final boolean loginValid = validateTextFieldNotEmpty(m_login, m_loginLabel);
 		final boolean passwordValid = validateTextFieldNotEmpty(m_password, m_passwordLabel);
-		
+
 		boolean idValid = true;
 		if (m_bean.getCanViewPosted())
 		{
@@ -227,12 +227,12 @@ public class ForumPosterEditor extends EditorPanel
 			m_topicIdLabel.setForeground(m_labelColor);
 			m_viewPosts.setEnabled(false);
 		}
-		
+
 		final boolean allValid = loginValid && passwordValid && idValid;
 		m_testForum.setEnabled(allValid);
 		return allValid;
 	}
-	
+
 	@Override
 	public IBean getBean()
 	{

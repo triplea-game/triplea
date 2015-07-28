@@ -20,7 +20,7 @@ public class UnitBattleComparator implements Comparator<Unit>
 	private final boolean m_ignorePrimaryPower;
 	private final Collection<TerritoryEffect> m_territoryEffects;
 	private final Collection<UnitType> m_multiHitpointCanRepair = new HashSet<UnitType>();
-	
+
 	public UnitBattleComparator(final boolean defending, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus,
 				final boolean ignorePrimaryPower)
 	{
@@ -42,7 +42,7 @@ public class UnitBattleComparator implements Comparator<Unit>
 			// TODO: check if there are units in the game that can repair this unit
 		}
 	}
-	
+
 	public int compare(final Unit u1, final Unit u2)
 	{
 		if (u1.equals(u2))

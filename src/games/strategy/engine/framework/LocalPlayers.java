@@ -10,17 +10,17 @@ import java.util.Set;
 public class LocalPlayers
 {
 	protected final Set<IGamePlayer> m_localPlayers;
-	
+
 	public LocalPlayers(final Set<IGamePlayer> localPlayers)
 	{
 		m_localPlayers = localPlayers;
 	}
-	
+
 	public Set<IGamePlayer> getLocalPlayers()
 	{
 		return Collections.unmodifiableSet(m_localPlayers);
 	}
-	
+
 	public boolean playing(final PlayerID id)
 	{
 		if (id == null)

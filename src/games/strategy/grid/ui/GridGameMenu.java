@@ -29,9 +29,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  * @param <CustomGridGameFrame>
  */
 public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> extends BasicGameMenuBar<GridGameFrame>
@@ -39,18 +39,18 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 	private static final long serialVersionUID = -8512774312859744827L;
 	protected CurrentEditAction m_currentEditAction = CurrentEditAction.None;
 	protected JMenu m_editOptionsMenu;
-	
-	
+
+
 	protected enum CurrentEditAction
 	{
 		None, AddUnits, RemoveUnits, ChangeTerritoryOwnership
 	}
-	
+
 	public GridGameMenu(final CustomGridGameFrame frame)
 	{
 		super(frame);
 	}
-	
+
 	@Override
 	protected void createGameSpecificMenus(final JMenuBar menuBar)
 	{
@@ -58,13 +58,13 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		createGameMenu(menuBar);
 		createExportMenu(menuBar);
 	}
-	
+
 	@Override
 	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
 	{
 		addHowToPlayHelpMenu(helpMenu);
 	}
-	
+
 	protected void createGameMenu(final JMenuBar menuBar)
 	{
 		final JMenu menuGame = new JMenu("Game");
@@ -78,14 +78,14 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		addGameOptionsMenu(menuGame);
 		addAISleepDuration(menuGame);
 	}
-	
+
 	protected void addEditMode(final JMenu parentMenu)
 	{
 		// checkbox for edit mode
 		final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
 		editMode.setModel(m_frame.getEditModeButtonModel());
 		parentMenu.add(editMode).setMnemonic(KeyEvent.VK_E);
-		
+
 		// and edit mode actions:
 		m_frame.getMapPanel().addMapSelectionListener(getMapSelectionListener());
 		m_editOptionsMenu = new JMenu();
@@ -95,7 +95,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		// addEditChangeTerritoryOwnershipMode(editOptionsMenu);
 		parentMenu.add(m_editOptionsMenu);
 	}
-	
+
 	public void enableEditOptionsMenu()
 	{
 		m_editOptionsMenu.setEnabled(true);
@@ -104,7 +104,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 			item.setEnabled(true);
 		}
 	}
-	
+
 	public void disableEditOptionsMenu()
 	{
 		m_editOptionsMenu.setEnabled(false);
@@ -113,7 +113,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 			item.setEnabled(false);
 		}
 	}
-	
+
 	protected void addEditAddUnitsMode(final JMenu parentMenu)
 	{
 		final JMenuItem addUnitsItem = new JMenuItem("Add Units...");
@@ -128,7 +128,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		addUnitsItem.setMnemonic(KeyEvent.VK_A);
 		parentMenu.add(addUnitsItem);
 	}
-	
+
 	protected void addEditRemoveUnitsMode(final JMenu parentMenu)
 	{
 		final JMenuItem removeUnitsItem = new JMenuItem("Remove Units...");
@@ -143,7 +143,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		removeUnitsItem.setMnemonic(KeyEvent.VK_R);
 		parentMenu.add(removeUnitsItem);
 	}
-	
+
 	protected void addEditChangeTerritoryOwnershipMode(final JMenu parentMenu)
 	{
 		final JMenuItem changeTerritoryOwnerItem = new JMenuItem("Change Territory Owner...");
@@ -158,7 +158,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		changeTerritoryOwnerItem.setMnemonic(KeyEvent.VK_T);
 		parentMenu.add(changeTerritoryOwnerItem);
 	}
-	
+
 	protected final MapSelectionListener getMapSelectionListener()
 	{
 		return new DefaultMapSelectionListener()
@@ -173,7 +173,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 					final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), territory.getOwner(), null, false);
 					final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
 					dialog.setVisible(true);
-					
+
 					final PlayerID player = playerChooser.getSelected();
 					if (player != null)
 					{
@@ -206,7 +206,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 					final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), defaultPlayer, null, true);
 					final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory for " + territory.getName());
 					dialog.setVisible(true);
-					
+
 					final PlayerID player = playerChooser.getSelected();
 					if (player != null)
 					{
@@ -219,13 +219,13 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 			}
 		};
 	}
-	
+
 	protected void addSoundsToMenu(final JMenu parentMenu)
 	{
 		SoundOptions.addGlobalSoundSwitchMenu(parentMenu);
 		SoundOptions.addToMenu(parentMenu, SoundPath.SoundType.GENERAL);
 	}
-	
+
 	protected void createExportMenu(final JMenuBar menuBar)
 	{
 		final JMenu menuGame = new JMenu("Export");
@@ -234,7 +234,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		addExportXML(menuGame);
 		addSaveScreenshot(menuGame);
 	}
-	
+
 	protected void createViewMenu(final JMenuBar menuBar)
 	{
 		final JMenu menuView = new JMenu("View");
@@ -244,11 +244,11 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		addShowGameUuid(menuView);
 		addSetLookAndFeel(menuView);
 	}
-	
+
 	protected void addSaveScreenshot(final JMenu parentMenu)
 	{
 		parentMenu.add(m_frame.getSaveScreenshotAction()).setMnemonic(KeyEvent.VK_E);
 	}
-	
+
 	protected abstract void addHowToPlayHelpMenu(final JMenu parentMenu);
 }

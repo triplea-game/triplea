@@ -13,16 +13,16 @@
  */
 /*
  * IPoliticsDelegate.java
- * 
+ *
  * Created on July 13th, 2011
  */
 /**
- * 
- * 
- * 
+ *
+ *
+ *
  * @author Edwin van der Wal
  * @version 1.0
- * 
+ *
  */
 package games.strategy.triplea.delegate.remote;
 
@@ -35,6 +35,6 @@ import java.util.Collection;
 public interface IPoliticsDelegate extends IRemote, IDelegate
 {
 	public void attemptAction(PoliticalActionAttachment actionChoice);
-	
+
 	public Collection<PoliticalActionAttachment> getValidActions();
 }

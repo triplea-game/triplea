@@ -14,34 +14,34 @@ public class GridEndTurnData implements IGridEndTurnData
 	protected final PlayerID m_player;
 	protected final Set<Territory> m_territoryUnitsRemovalAdjustment;
 	protected final boolean m_wantToContinuePlaying;
-	
+
 	public GridEndTurnData(final Collection<Territory> territoryUnitsRemovalAdjustment, final boolean wantToContinuePlaying, final PlayerID player)
 	{
 		m_player = player;
 		m_territoryUnitsRemovalAdjustment = (territoryUnitsRemovalAdjustment == null ? null : new HashSet<Territory>(territoryUnitsRemovalAdjustment));
 		m_wantToContinuePlaying = wantToContinuePlaying;
 	}
-	
+
 	public GridEndTurnData(final IGridEndTurnData groupsThatShouldDie)
 	{
 		this(groupsThatShouldDie.getTerritoryUnitsRemovalAdjustment(), groupsThatShouldDie.getWantToContinuePlaying(), groupsThatShouldDie.getPlayer());
 	}
-	
+
 	public Set<Territory> getTerritoryUnitsRemovalAdjustment()
 	{
 		return (m_territoryUnitsRemovalAdjustment == null ? null : new HashSet<Territory>(m_territoryUnitsRemovalAdjustment));
 	}
-	
+
 	public boolean getWantToContinuePlaying()
 	{
 		return m_wantToContinuePlaying;
 	}
-	
+
 	public PlayerID getPlayer()
 	{
 		return m_player;
 	}
-	
+
 	@Override
 	public String toString()
 	{

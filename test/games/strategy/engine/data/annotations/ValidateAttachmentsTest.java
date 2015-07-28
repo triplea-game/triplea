@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 /**
  * A test that validates that all attachment classes have properties with valid setters and getters
- * 
+ *
  * @author Klaus Groenbaek
  */
 public class ValidateAttachmentsTest extends TestCase
@@ -30,7 +30,7 @@ public class ValidateAttachmentsTest extends TestCase
 	// -----------------------------------------------------------------------
 	// instance methods
 	// -----------------------------------------------------------------------
-	
+
 	/**
 	 * Test that the Example Attachment is valid
 	 */
@@ -39,7 +39,7 @@ public class ValidateAttachmentsTest extends TestCase
 		final String errors = validateAttachment(ExampleAttachment.class);
 		assertTrue(errors.length() == 0);
 	}
-	
+
 	/**
 	 * Tests that the algorithm finds invalidly named field
 	 */
@@ -49,7 +49,7 @@ public class ValidateAttachmentsTest extends TestCase
 		assertTrue(errors.length() > 0);
 		assertTrue(errors.contains("missing field for setter"));
 	}
-	
+
 	/**
 	 * tests that the algorithm will find invalid annotation on a getters
 	 */
@@ -59,7 +59,7 @@ public class ValidateAttachmentsTest extends TestCase
 		assertTrue(errors.length() > 0);
 		assertTrue(errors.contains("begins with 'set' so must have either InternalDoNotExport or GameProperty annotation"));
 	}
-	
+
 	/**
 	 * Tests that the algorithm will find invalid return types
 	 */
@@ -69,7 +69,7 @@ public class ValidateAttachmentsTest extends TestCase
 		assertTrue(errors.length() > 0);
 		assertTrue(errors.contains("property field is type"));
 	}
-	
+
 	/**
 	 * Tests that the algorithm will find invalid clear method
 	 */
@@ -79,7 +79,7 @@ public class ValidateAttachmentsTest extends TestCase
 		assertTrue(errors.length() > 0);
 		assertTrue(errors.contains("doesn't have a clear method"));
 	}
-	
+
 	/**
 	 * Tests that the algorithm will find invalid clear method
 	 */
@@ -89,7 +89,7 @@ public class ValidateAttachmentsTest extends TestCase
 		assertTrue(errors.length() > 0);
 		assertTrue(errors.contains("doesn't have a resetter method"));
 	}
-	
+
 	/**
 	 * Tests that the algorithm will find adders that doesn't have type IntegerMap
 	 */
@@ -99,7 +99,7 @@ public class ValidateAttachmentsTest extends TestCase
 		assertTrue(errors.length() > 0);
 		assertTrue(errors.contains("is not a Collection or Map or IntegerMap"));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static Class<? extends IAttachment>[] getKnownAttachmentClasses()
 	{
@@ -125,7 +125,7 @@ public class ValidateAttachmentsTest extends TestCase
 		// games.strategy.triplea.attatchments.AbstractRulesAttachment.class
 		// games.strategy.triplea.attatchments.AbstractTriggerAttachment.class
 	}
-	
+
 	/**
 	 * When testAllAttachments doesn't work, we can test specific attachments here.
 	 */
@@ -142,7 +142,7 @@ public class ValidateAttachmentsTest extends TestCase
 			// fail(sb.toString());
 		}
 	}
-	
+
 	/**
 	 * Scans the compiled /classes folder and finds all classes that implement IAttachment to verify that
 	 * all @GameProperty have valid setters and getters
@@ -168,7 +168,7 @@ public class ValidateAttachmentsTest extends TestCase
 			// fail("\n" + errors);
 		}
 	}
-	
+
 	// file to find classes or directory
 	static FileFilter s_classOrDirectory = new FileFilter()
 	{
@@ -177,11 +177,11 @@ public class ValidateAttachmentsTest extends TestCase
 			return file.isDirectory() || file.getName().endsWith(".class");
 		}
 	};
-	
+
 	/**
 	 * Recursive method to find all classes that implement IAttachment and validate that they use the @GameProperty
 	 * annotation correctly
-	 * 
+	 *
 	 * @param file
 	 *            the file or directory
 	 */
@@ -204,12 +204,12 @@ public class ValidateAttachmentsTest extends TestCase
 			String className = fileName.substring(index);
 			className = className.replace(File.separator, ".");
 			className = className.substring(0, className.lastIndexOf(".class"));
-			
+
 			if (isSkipClass(className))
 			{
 				return "";
 			}
-			
+
 			Class<?> clazz;
 			try
 			{
@@ -231,21 +231,21 @@ public class ValidateAttachmentsTest extends TestCase
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * todo(kg) fix this
 	 * ReliefImageBreaker and TileImageBreaker has a static field that opens a save dialog!!!
 	 * "InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample" are skipped because they are purposely invalid, and use to test the validation algorithm
-	 * 
+	 *
 	 */
 	public static final List<String> SKIPCLASSES = Arrays.asList("ReliefImageBreaker", "TileImageBreaker",
 				"InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample", "InvalidClearExample", "InvalidFieldTypeExample",
 				"ChatPlayerPanel", "GUID", "Node");
-	
+
 	/**
 	 * Contains a list of classes which has static initializes, unfortunately you can't reflect this, since loading the class triggers
 	 * the initializer
-	 * 
+	 *
 	 * @param className
 	 *            the class name
 	 * @return true if this class has a static initializer
@@ -261,7 +261,7 @@ public class ValidateAttachmentsTest extends TestCase
 		}
 		return false;
 	}
-	
+
 	private static String validateAttachment(final Class<? extends IAttachment> clazz)
 	{
 		final StringBuilder sb = new StringBuilder("");
@@ -301,22 +301,22 @@ public class ValidateAttachmentsTest extends TestCase
 			{
 				sb.append("Class " + clazz.getCanonicalName() + " has " + setter.getName() + " and it doesn't have the GameProperty annotation on it\n");
 			}
-			
+
 			if (!setter.getReturnType().equals(void.class))
 			{
 				sb.append("Class " + clazz.getCanonicalName() + " has " + setter.getName() + " and it doesn't return void\n");
 			}
-			
+
 			// the property name must be derived from the method name
 			final String propertyName = getPropertyName(setter);
-			
+
 			// For debug purposes only
 			// sb.append("TESTING: Class " + clazz.getCanonicalName() + ", setter property " + propertyName + "\n");
-			
+
 			// if this is a deprecated setter, we skip it now
 			if (setter.getAnnotation(Deprecated.class) != null)
 				continue;
-			
+
 			// validate that there is a field and a getter
 			Field field = null;
 			try
@@ -336,7 +336,7 @@ public class ValidateAttachmentsTest extends TestCase
 				sb.append("Class " + clazz.getCanonicalName() + " is missing field for setter " + setter.getName() + " with @GameProperty\n");
 				continue;
 			}
-			
+
 			final String resetterName = "reset" + capitalizeFirstLetter(propertyName);
 			Method resetterMethod = null;
 			try
@@ -351,13 +351,13 @@ public class ValidateAttachmentsTest extends TestCase
 				sb.append("Class " + clazz.getCanonicalName() + " doesn't have a resetter method for property: " + propertyName + "\n");
 				continue;
 			}
-			
+
 			final String getterName = "get" + capitalizeFirstLetter(propertyName);
 			try
 			{
 				// getter must return same type as the field
 				final Class<?> type = field.getType();
-				
+
 				getter = clazz.getMethod(getterName);
 				if (!type.equals(getter.getReturnType()))
 				{
@@ -369,7 +369,7 @@ public class ValidateAttachmentsTest extends TestCase
 				sb.append("Class " + clazz.getCanonicalName() + " doesn't have a valid getter method for property: " + propertyName + "\n");
 				continue;
 			}
-			
+
 			if (annotation.adds())
 			{
 				// check that there is a clear method
@@ -395,7 +395,7 @@ public class ValidateAttachmentsTest extends TestCase
 				String method = null;
 				try
 				{
-					
+
 					final Constructor<? extends IAttachment> constructor = clazz.getConstructor(IAttachment.attachmentConstructorParameter);
 					method = constructor.toString();
 					final IAttachment attachment = constructor.newInstance("testAttachment", null, null);
@@ -426,7 +426,7 @@ public class ValidateAttachmentsTest extends TestCase
 					{
 						setter.invoke(attachment, value);
 					}
-					
+
 					method = getter.toString();
 					final Object getterValue = getter.invoke(attachment);
 					if (!value.equals(getterValue))
@@ -440,7 +440,7 @@ public class ValidateAttachmentsTest extends TestCase
 						sb.append("Class " + clazz.getCanonicalName() + ", " + getterName + " returns type " + getterValue.getClass().getName() + " but field is of type "
 									+ fieldValue.getClass().getName());
 					}
-					
+
 				} catch (final NoSuchMethodException e)
 				{
 					sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName + "', has no default constructor\n");
@@ -462,7 +462,7 @@ public class ValidateAttachmentsTest extends TestCase
 		}
 		return sb.toString();
 	}
-	
+
 	private static String getPropertyName(final Method method)
 	{
 		final String propertyName = method.getName().substring("set".length());
@@ -470,14 +470,14 @@ public class ValidateAttachmentsTest extends TestCase
 		first = Character.toLowerCase(first);
 		return first + propertyName.substring(1);
 	}
-	
+
 	private static String capitalizeFirstLetter(final String aString)
 	{
 		char first = aString.charAt(0);
 		first = Character.toUpperCase(first);
 		return first + aString.substring(1);
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		System.out.println("All attachment property options which 'add' when set:\n\n");

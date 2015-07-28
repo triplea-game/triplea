@@ -17,15 +17,15 @@ import javax.swing.SwingUtilities;
 
 /**
  * Wrapper for properties selection window.
- * 
+ *
  * @author Frigoref
- * 
+ *
  */
 public class PropertiesSelector
 {
-	
+
 	/**
-	 * 
+	 *
 	 * @param parent
 	 *            parent component
 	 * @param properties
@@ -60,20 +60,20 @@ public class PropertiesSelector
 			return showDialog(parent, title, properties, buttonOptions);
 		}
 	}
-	
+
 	private static Object showDialog(final JComponent parent, final String title, final ArrayList<IEditableProperty> properties, final Object... buttonOptions)
 	{
 		final PropertiesUI panel = new PropertiesUI(properties, true);
 		final JScrollPane scroll = new JScrollPane(panel);
 		scroll.setBorder(null);
 		scroll.getViewport().setBorder(null);
-		
+
 		final JOptionPane pane = new JOptionPane(scroll, JOptionPane.PLAIN_MESSAGE);
 		pane.setOptions(buttonOptions);
 		final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(parent), title);
 		window.setVisible(true);
-		
+
 		return pane.getValue();
 	}
-	
+
 }

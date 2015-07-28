@@ -11,9 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class ChangeToAutosaveClientAction extends AbstractAction
 {
@@ -21,7 +21,7 @@ public class ChangeToAutosaveClientAction extends AbstractAction
 	private final Component m_parent;
 	private final IClientMessenger m_clientMessenger;
 	private final SaveGameFileChooser.AUTOSAVE_TYPE m_typeOfAutosave;
-	
+
 	public ChangeToAutosaveClientAction(final Component parent, final IClientMessenger clientMessenger, final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave)
 	{
 		super("Change To " + typeOfAutosave.toString().toLowerCase() + "...");
@@ -29,7 +29,7 @@ public class ChangeToAutosaveClientAction extends AbstractAction
 		m_clientMessenger = clientMessenger;
 		m_typeOfAutosave = typeOfAutosave;
 	}
-	
+
 	public void actionPerformed(final ActionEvent e)
 	{
 		final int rVal = JOptionPane.showConfirmDialog(m_parent, new JLabel("Change Game To: " + m_typeOfAutosave.toString().toLowerCase()), "Change Game To: "

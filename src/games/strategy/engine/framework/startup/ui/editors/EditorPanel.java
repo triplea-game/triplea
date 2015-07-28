@@ -18,7 +18,7 @@ import javax.swing.event.DocumentListener;
 /**
  * Base class for editors.
  * Editors fire property Events in response when changed, so other editors or GUI can be notified
- * 
+ *
  * @author Klaus Groenbaek
  */
 public abstract class EditorPanel extends JPanel
@@ -29,7 +29,7 @@ public abstract class EditorPanel extends JPanel
 	// instance fields
 	// -----------------------------------------------------------------------
 	protected final Color m_labelColor;
-	
+
 	// -----------------------------------------------------------------------
 	// constructor
 	// -----------------------------------------------------------------------
@@ -38,30 +38,30 @@ public abstract class EditorPanel extends JPanel
 		super(new GridBagLayout());
 		m_labelColor = new JLabel().getForeground();
 	}
-	
+
 	// -----------------------------------------------------------------------
 	// instance methods
 	// -----------------------------------------------------------------------
-	
+
 	/**
 	 * registers a listener for editor changes
-	 * 
+	 *
 	 * @param listener
 	 *            the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
 	 *            will both be null
 	 * @see java.beans.PropertyChangeEvent#getOldValue()
 	 * @see java.beans.PropertyChangeEvent#getOldValue()
-	 * 
+	 *
 	 */
 	@Override
 	public void addPropertyChangeListener(final PropertyChangeListener listener)
 	{
 		super.addPropertyChangeListener(EDITOR_CHANGE, listener);
 	}
-	
+
 	/**
 	 * Validates that a text field is not empty. if the content is not valid the associated label is marked in red
-	 * 
+	 *
 	 * @param field
 	 *            the field to validate
 	 * @param label
@@ -72,10 +72,10 @@ public abstract class EditorPanel extends JPanel
 	{
 		return validateTextField(field, label, new NonEmptyValidator());
 	}
-	
+
 	/**
 	 * Validates a the contents of a text field using a specified validator. if the content is not valid the associated label is marked in red
-	 * 
+	 *
 	 * @param field
 	 *            the field to validate
 	 * @param label
@@ -88,10 +88,10 @@ public abstract class EditorPanel extends JPanel
 	{
 		return validateText(field.getText(), label, IValidator);
 	}
-	
+
 	/**
 	 * Validates a the contents of textusing a specified validator. if the content is not valid the associated label is marked in red
-	 * 
+	 *
 	 * @param text
 	 *            the text to validate
 	 * @param label
@@ -110,32 +110,32 @@ public abstract class EditorPanel extends JPanel
 			color = Color.RED;
 			label.setForeground(color);
 		}
-		
+
 		if (label != null)
 		{
 			label.setForeground(color);
 		}
 		return valid;
 	}
-	
+
 	/**
 	 * called to see if the bean that is edited is in a valid state.
 	 * This is typically called by editor listeners in response to a change in the editor
-	 * 
+	 *
 	 * @return true if valid
 	 */
 	public abstract boolean isBeanValid();
-	
+
 	/**
 	 * Get the bean that is being edited. You should only call this when #isBeanValid return true
-	 * 
+	 *
 	 * @return the bean modified by the editor
 	 */
 	public abstract IBean getBean();
-	
+
 	/**
 	 * Returns the Label width, this can be used by wrapping editors to try to align label sizes
-	 * 
+	 *
 	 * @return the size of the largest label in the first column
 	 */
 	public int getLabelWidth()
@@ -156,11 +156,11 @@ public abstract class EditorPanel extends JPanel
 		}
 		return width;
 	}
-	
+
 	/**
 	 * Sets the label with for labels in the first column of the gridBagLayout.
 	 * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
-	 * 
+	 *
 	 * @see SelectAndViewEditor
 	 * @param width
 	 *            the new width of the labels
@@ -181,7 +181,7 @@ public abstract class EditorPanel extends JPanel
 			}
 		}
 	}
-	
+
 	/**
 	 * Fires the EDITOR_CHANGE property change, to notify propertyChangeListeners which have registered to be
 	 * notified when the editor modifies the bean
@@ -190,8 +190,8 @@ public abstract class EditorPanel extends JPanel
 	{
 		firePropertyChange(EDITOR_CHANGE, null, null);
 	}
-	
-	
+
+
 	// -----------------------------------------------------------------------
 	// inner classes
 	// -----------------------------------------------------------------------
@@ -204,12 +204,12 @@ public abstract class EditorPanel extends JPanel
 		{
 			fireEditorChanged();
 		}
-		
+
 		public void insertUpdate(final DocumentEvent e)
 		{
 			fireEditorChanged();
 		}
-		
+
 		public void removeUpdate(final DocumentEvent e)
 		{
 			fireEditorChanged();

@@ -48,9 +48,9 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * Class for holding various engine related options and preferences.
- * 
+ *
  * @author Veqryn
- * 
+ *
  */
 public class EnginePreferences extends JDialog
 {
@@ -69,7 +69,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_userFolder;
 	private JButton m_programFolder;
 	private JButton m_readme;
-	
+
 	private EnginePreferences(final Frame parentFrame)
 	{
 		super(parentFrame, "Edit TripleA Engine Preferences", true);
@@ -88,7 +88,7 @@ public class EnginePreferences extends JDialog
 			}
 		});
 	}
-	
+
 	private void createComponents()
 	{
 		m_okButton = new JButton("OK");
@@ -105,7 +105,7 @@ public class EnginePreferences extends JDialog
 		m_programFolder = new JButton("Open Installed Program Folder");
 		m_readme = new JButton("Open Readme / User Manual");
 	}
-	
+
 	private void layoutCoponents()
 	{
 		setLayout(new BorderLayout());
@@ -152,13 +152,13 @@ public class EnginePreferences extends JDialog
 		main.add(m_okButton);
 		add(main, BorderLayout.SOUTH);
 	}
-	
+
 	private void setupListeners()
 	{
 		m_okButton.addActionListener(new AbstractAction("OK")
 		{
 			private static final long serialVersionUID = 8014389179875584858L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
@@ -167,7 +167,7 @@ public class EnginePreferences extends JDialog
 		m_lookAndFeel.addActionListener(new AbstractAction("Set Look And Feel")
 		{
 			private static final long serialVersionUID = -6524988343523615143L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				final Triple<JList, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
@@ -193,14 +193,14 @@ public class EnginePreferences extends JDialog
 		m_gameParser.addActionListener(new AbstractAction("Enable/Disable Delayed Parsing of Game XML's")
 		{
 			private static final long serialVersionUID = -6223524865968800051L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				// TODO: replace with 2 radio buttons
 				final boolean current = GameRunner2.getDelayedParsing();
 				final Object[] options = { "Parse Selected", "Parse All", "Cancel" };
-				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" +
-							"<br><br>'" + options[1] + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid)." +
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?"
+							"<br><br>'" + options[1] + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid)."
 							"<br><br>Your current setting is: '" + (current ? options[0].toString() : options[1].toString()) + "'</html>"),
 							"Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 				if (answer == JOptionPane.CANCEL_OPTION)
@@ -215,15 +215,15 @@ public class EnginePreferences extends JDialog
 		m_casualtySelection.addActionListener(new AbstractAction("Set Default Casualty Selection Method")
 		{
 			private static final long serialVersionUID = -6223524865968825151L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				// TODO: replace with 2 radio buttons
 				final boolean currentIsPerfectButSlow = GameRunner2.getCasualtySelectionSlow();
 				final Object[] options = { "Default", "Perfect but Slow", "Cancel" };
-				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Use 'Default' OR 'Perfect but Slow' default casualty selection method?" +
-							"<br><br>'" + options[0] + "' sorts by power, and takes most support into account." +
-							"<br>'" + options[1] + "' will attempt to take all support attachments into account, but is very slow." +
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Use 'Default' OR 'Perfect but Slow' default casualty selection method?"
+							"<br><br>'" + options[0] + "' sorts by power, and takes most support into account."
+							"<br>'" + options[1] + "' will attempt to take all support attachments into account, but is very slow."
 							"<br><br>Your current setting is: '" + (currentIsPerfectButSlow ? options[1].toString() : options[0].toString()) + "'</html>"),
 							"Select Default Casualty Selection Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 				if (answer == JOptionPane.CANCEL_OPTION)
@@ -238,7 +238,7 @@ public class EnginePreferences extends JDialog
 		m_setupProxies.addActionListener(new AbstractAction("Setup Network and Proxy Settings")
 		{
 			private static final long serialVersionUID = 1673056396542959597L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
@@ -282,7 +282,7 @@ public class EnginePreferences extends JDialog
 		m_hostWaitTime.addActionListener(new AbstractAction("Set Max Host Wait Time for Clients and Observers")
 		{
 			private static final long serialVersionUID = 1262782782389758914L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				final NumberProperty clientWait = new NumberProperty("Max seconds to wait for all clients to sync data on game start",
@@ -310,7 +310,7 @@ public class EnginePreferences extends JDialog
 		m_setMaxMemory.addActionListener(new AbstractAction("Set Max Memory Usage")
 		{
 			private static final long serialVersionUID = 1262782782917758914L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				final AtomicBoolean tested = new AtomicBoolean();
@@ -334,7 +334,7 @@ public class EnginePreferences extends JDialog
 				test.addActionListener(new AbstractAction("Test User Settings")
 				{
 					private static final long serialVersionUID = -4398183978989504112L;
-					
+
 					public void actionPerformed(final ActionEvent e)
 					{
 						tested.set(true);
@@ -405,7 +405,7 @@ public class EnginePreferences extends JDialog
 		m_runAutoHost.addActionListener(new AbstractAction("Run an Automated Game Host Bot")
 		{
 			private static final long serialVersionUID = -3582932190184978286L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				final List<String> commands = new ArrayList<String>();
@@ -422,7 +422,7 @@ public class EnginePreferences extends JDialog
 		m_mapCreator.addActionListener(new AbstractAction("Run the Map Creator")
 		{
 			private static final long serialVersionUID = -3588932790184974286L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				final List<String> commands = new ArrayList<String>();
@@ -435,7 +435,7 @@ public class EnginePreferences extends JDialog
 		m_console.addActionListener(new AbstractAction("Show Console")
 		{
 			private static final long serialVersionUID = 5333381081739176723L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				Console.getConsole().setVisible(true);
@@ -445,7 +445,7 @@ public class EnginePreferences extends JDialog
 		m_userFolder.addActionListener(new AbstractAction("Open User Maps and Savegames Folder")
 		{
 			private static final long serialVersionUID = -3882256687728469915L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -460,7 +460,7 @@ public class EnginePreferences extends JDialog
 		m_programFolder.addActionListener(new AbstractAction("Open Installed Program Folder")
 		{
 			private static final long serialVersionUID = 3621594954694705711L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -475,7 +475,7 @@ public class EnginePreferences extends JDialog
 		m_readme.addActionListener(new AbstractAction("Open Readme / User Manual")
 		{
 			private static final long serialVersionUID = 7125025575496119585L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -488,7 +488,7 @@ public class EnginePreferences extends JDialog
 			}
 		});
 	}
-	
+
 	private void reportMemoryUsageToConsole()
 	{
 		final int mb = 1024 * 1024;
@@ -502,11 +502,11 @@ public class EnginePreferences extends JDialog
 		if (currentMaxSetting > 0)
 			System.out.println("Max Memory user setting within 20% of: " + currentMaxSetting);
 	}
-	
+
 	private void setWidgetActivation()
 	{
 	}
-	
+
 	public static void showEnginePreferences(final JComponent parent)
 	{
 		final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
@@ -515,7 +515,7 @@ public class EnginePreferences extends JDialog
 		enginePrefs.setLocationRelativeTo(parentFrame);
 		enginePrefs.setVisible(true);
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		showEnginePreferences(null);

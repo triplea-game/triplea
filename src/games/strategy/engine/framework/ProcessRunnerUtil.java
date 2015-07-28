@@ -11,9 +11,9 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * To hold various static utility methods for running a java program.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class ProcessRunnerUtil
 {
@@ -21,12 +21,12 @@ public class ProcessRunnerUtil
 	{
 		populateBasicJavaArgs(commands, System.getProperty("java.class.path"));
 	}
-	
+
 	public static void populateBasicJavaArgs(final List<String> commands, final long maxMemory)
 	{
 		populateBasicJavaArgs(commands, System.getProperty("java.class.path"), maxMemory);
 	}
-	
+
 	public static void populateBasicJavaArgs(final List<String> commands, final String newClasspath)
 	{
 		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
@@ -35,7 +35,7 @@ public class ProcessRunnerUtil
 		System.out.println("Setting memory for new triplea process to: " + (maxMemory / (1024 * 1024)) + "m");
 		populateBasicJavaArgs(commands, newClasspath, maxMemory);
 	}
-	
+
 	public static void populateBasicJavaArgs(final List<String> commands, final String classpath, final long maxMemory)
 	{
 		final String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
@@ -84,7 +84,7 @@ public class ProcessRunnerUtil
 		}
 		commands.add("-D" + GameRunner2.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString()); // since we are setting the xmx already, we need to make sure this property is set so that triplea doesn't restart
 	}
-	
+
 	public static void exec(final List<String> commands)
 	{
 		// System.out.println("Commands: " + commands);
@@ -120,7 +120,7 @@ public class ProcessRunnerUtil
 			ioe.printStackTrace();
 		}
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		final int mb = 1024 * 1024;

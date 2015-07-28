@@ -13,7 +13,7 @@
  */
 /*
  * Territory.java
- * 
+ *
  * Created on October 12, 2001, 1:50 PM
  */
 package games.strategy.engine.data;
@@ -21,7 +21,7 @@ package games.strategy.engine.data;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
@@ -33,7 +33,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 	private final UnitCollection m_units;
 	// In a grid-based game, stores the coordinate of the Territory
 	int[] m_coordinate = null;
-	
+
 	/** Creates new Territory */
 	public Rule(final String name, final boolean water, final GameData data)
 	{
@@ -41,7 +41,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		m_water = water;
 		m_units = new UnitCollection(this, getData());
 	}
-	
+
 	/** Creates new Territory */
 	public Rule(final String name, final boolean water, final GameData data, final int... coordinate)
 	{
@@ -53,12 +53,12 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		else
 			throw new IllegalArgumentException("Invalid coordinate: " + coordinate[0] + "," + coordinate[1]);
 	}
-	
+
 	public boolean isWater()
 	{
 		return m_water;
 	}
-	
+
 	/**
 	 * May be null if not owned.
 	 */
@@ -66,7 +66,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 	{
 		return m_owner;
 	}
-	
+
 	/**
 	 * Get the units in this territory
 	 */
@@ -74,27 +74,27 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 	{
 		return m_units;
 	}
-	
+
 	public void notifyChanged()
 	{
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return getName();
 	}
-	
+
 	public int compareTo(final Rule r)
 	{
 		return getName().compareTo(r.getName());
 	}
-	
+
 	public String getType()
 	{
 		return UnitHolder.TERRITORY;
 	}
-	
+
 	public boolean matchesCoordinates(final int... coordinate)
 	{
 		if (coordinate.length != m_coordinate.length)
@@ -109,7 +109,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		}
 		return true;
 	}
-	
+
 	public int getX()
 	{
 		try
@@ -120,7 +120,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 			throw new RuntimeException("Territory " + this.getName() + " doesn't have a defined x coordinate");
 		}
 	}
-	
+
 	public int getY()
 	{
 		try

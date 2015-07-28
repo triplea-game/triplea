@@ -11,22 +11,22 @@ import java.util.regex.Pattern;
 
 /**
  * @author veqryn
- * 
+ *
  */
 public class LocalizeHTML
 {
 	public static final String ASSET_IMAGE_FOLDER = "doc/images/";
 	public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
 	/*
-	 * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a> tags.  
+	 * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a> tags.
 	 * But there isn't, and the internet seems to give million different answers, none of which work perfectly.
 	 * So here are the best one I could find.
 	 * Regex's found at http://www.mkyong.com/
 	 */
-	
+
 	// frigoref suggested we use this one instead, however it is overly complicated:
 	// private static final String PATTERN_HTML_IMG_SRC_URL = ".*<img [^>\"]*src\\s*=\\s*\"((https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})[^\"]*)\".*";
-	
+
 	/* Match an <a></a> tag.
 		(							#	start of group #1
 		 ?i							#		all checking are case insensive
@@ -40,7 +40,7 @@ public class LocalizeHTML
 		                   </a>		#					end with "</a>
 	*/
 	public static final String PATTERN_HTML_A_TAG = "(?i)<a([^>]+)>(.*?)</a>";
-	
+
 	/* Match the href attribute.
 		\s*													#	can start with whitespace
 		   (?i)												#		all checking are case insensive
@@ -55,13 +55,13 @@ public class LocalizeHTML
 			                                          )		#					end of group #1
 	*/
 	public static final String PATTERN_HTML_A_HREF_TAG = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
-	
+
 	/* Match the <img /> tag */
 	public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
-	
+
 	/* Match the src attribute */
 	public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
-	
+
 	public static List<String> getAllAhrefLinksFromHTML(final String htmlText)
 	{
 		final List<String> result = new ArrayList<String>();
@@ -85,7 +85,7 @@ public class LocalizeHTML
 		}
 		return result;
 	}
-	
+
 	public static List<String> getAllImgSrcLinksFromHTML(final String htmlText)
 	{
 		final List<String> result = new ArrayList<String>();
@@ -107,10 +107,10 @@ public class LocalizeHTML
 		}
 		return result;
 	}
-	
+
 	/**
 	 * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be the last game's resource loader.
-	 * 
+	 *
 	 * @param htmlText
 	 * @return
 	 */
@@ -118,7 +118,7 @@ public class LocalizeHTML
 	{
 		return localizeImgLinksInHTML(htmlText, AbstractUIContext.getResourceLoader(), null);
 	}
-	
+
 	public static String localizeImgLinksInHTML(final String htmlText, final ResourceLoader resourceLoader, final String mapNameDir)
 	{
 		if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) // comment out when testing
@@ -167,7 +167,7 @@ public class LocalizeHTML
 		// System.out.println(rVal + "\r\n");
 		return rVal;
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		final String htmlText = "<br><img src=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview0.png\" alt=\"blah, blah\"/>"

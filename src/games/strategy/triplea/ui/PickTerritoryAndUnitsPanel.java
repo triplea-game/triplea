@@ -27,9 +27,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * For choosing territories and units for them, during RandomStartDelegate.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class PickTerritoryAndUnitsPanel extends ActionPanel
 {
@@ -46,19 +46,19 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 	private int m_unitsPerPick = 1;
 	private Action m_currentAction = null;
 	private Territory m_currentHighlightedTerritory = null;
-	
+
 	public PickTerritoryAndUnitsPanel(final GameData data, final MapPanel map, final TripleAFrame parent)
 	{
 		super(data, map);
 		m_parent = parent;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "Pick Territory and Units";
 	}
-	
+
 	@Override
 	public void display(final PlayerID id)
 	{
@@ -90,7 +90,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 			}
 		});
 	}
-	
+
 	public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
 	{
 		m_territoryChoices = territoryChoices;
@@ -120,7 +120,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 		waitForRelease();
 		return new Tuple<Territory, Set<Unit>>(this.m_pickedTerritory, this.m_pickedUnits);
 	}
-	
+
 	private void setWidgetActivation()
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -143,11 +143,11 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 			}
 		});
 	}
-	
+
 	private final Action DoneAction = new AbstractAction("Done")
 	{
 		private static final long serialVersionUID = -2376988913511268803L;
-		
+
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currentAction = DoneAction;
@@ -209,11 +209,11 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 			release();
 		}
 	};
-	
+
 	private final Action SelectUnitsAction = new AbstractAction("Select Units")
 	{
 		private static final long serialVersionUID = 4745335350716395600L;
-		
+
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currentAction = SelectUnitsAction;
@@ -229,11 +229,11 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 			setWidgetActivation();
 		}
 	};
-	
+
 	private final Action SelectTerritoryAction = new AbstractAction("Select Territory")
 	{
 		private static final long serialVersionUID = -8003634505955439651L;
-		
+
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currentAction = SelectTerritoryAction;
@@ -272,7 +272,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 				System.err.println("Should not be able to select a territory outside of the SelectTerritoryAction.");
 			}
 		}
-		
+
 		@Override
 		public void mouseMoved(final Territory territory, final MouseDetails md)
 		{

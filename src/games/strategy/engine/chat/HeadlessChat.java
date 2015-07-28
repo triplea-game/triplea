@@ -21,9 +21,9 @@ import javax.swing.DefaultListCellRenderer;
 
 /**
  * Headless version of ChatPanel.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class HeadlessChat implements IChatListener, IChatPanel
 {
@@ -43,58 +43,58 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		{ // nothing for now
 		}
 	};
-	
+
 	public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile)
 	{
 		final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
 		setChat(chat);
 	}
-	
+
 	public HeadlessChat(final Chat chat)
 	{
 		setChat(chat);
 	}
-	
+
 	public Set<INode> getAllChatters()
 	{
 		return new HashSet<INode>(m_players);
 	}
-	
+
 	public void setPrintStream(final PrintStream out)
 	{
 		m_out = out;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return m_allText.toString();
 	}
-	
+
 	public String getAllText()
 	{
 		return m_allText.toString();
 	}
-	
+
 	public String getLastText()
 	{
 		return m_lastText;
 	}
-	
+
 	public Chat getChat()
 	{
 		return m_chat;
 	}
-	
+
 	public void setShowChatTime(final boolean showTime)
 	{
 		m_showTime = showTime;
 	}
-	
+
 	public void setPlayerRenderer(final DefaultListCellRenderer renderer)
 	{ // nothing
 	}
-	
+
 	public synchronized void updatePlayerList(final Collection<INode> players)
 	{
 		m_players.clear();
@@ -104,12 +104,12 @@ public class HeadlessChat implements IChatListener, IChatPanel
 				m_players.add(name);
 		}
 	}
-	
+
 	public void addHiddenPlayerName(final String name)
 	{
 		m_hiddenPlayers.add(name);
 	}
-	
+
 	public void shutDown()
 	{
 		if (m_chat != null)
@@ -120,7 +120,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		}
 		m_chat = null;
 	}
-	
+
 	public void setChat(final Chat chat)
 	{
 		if (m_chat != null)
@@ -168,13 +168,13 @@ public class HeadlessChat implements IChatListener, IChatPanel
 			updatePlayerList(Collections.<INode> emptyList());
 		}
 	}
-	
+
 	/** thread safe */
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
 		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
 	}
-	
+
 	/** thread safe */
 	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
 	{
@@ -210,7 +210,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		});
 		t.start();
 	}
-	
+
 	private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson)
 	{
 		final String message = trimMessage(originalMessage);
@@ -230,7 +230,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		{
 		}
 	}
-	
+
 	public void addServerMessage(final String message)
 	{
 		final String fullMessage = "Server Message: \n" + message + "\n";
@@ -247,7 +247,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		{
 		}
 	}
-	
+
 	public void addStatusMessage(final String message)
 	{
 		final String fullMessage = "--- " + message + " ---\n";
@@ -264,7 +264,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		{
 		}
 	}
-	
+
 	private String trimMessage(final String originalMessage)
 	{
 		// dont allow messages that are too long
@@ -277,7 +277,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 			return originalMessage;
 		}
 	}
-	
+
 	public String getPlayerDisplayString(final INode node)
 	{
 		if (m_chat == null)
@@ -314,26 +314,26 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		}
 		return node.getName() + extra;
 	}
-	
+
 	public void ignorePlayer(final INode player)
 	{
 		final boolean isIgnored = m_chat.isIgnored(player);
 		if (!isIgnored)
 			m_chat.setIgnored(player, true);
 	}
-	
+
 	public void stopIgnoringPlayer(final INode player)
 	{
 		final boolean isIgnored = m_chat.isIgnored(player);
 		if (isIgnored)
 			m_chat.setIgnored(player, false);
 	}
-	
+
 	public void slapPlayer(final INode player)
 	{
 		m_chat.sendSlap(player.getName());
 	}
-	
+
 	public void slapPlayer(final String playerName)
 	{
 		m_chat.sendSlap(playerName);

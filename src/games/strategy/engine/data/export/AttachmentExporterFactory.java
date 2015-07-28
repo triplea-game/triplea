@@ -13,7 +13,7 @@
  */
 /*
  * AttachmentExporterFactory.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -22,14 +22,14 @@ import games.strategy.engine.data.IAttachment;
 
 /**
  * This class returns the right AttachmentExporter based on the
- * 
+ *
  * @author Edwin van der Wal
- * 
+ *
  */
 public class AttachmentExporterFactory
 {
 	/**
-	 * 
+	 *
 	 * @param attachment
 	 *            the attachment to base the exporter on
 	 * @return an Exporter to export the attachment

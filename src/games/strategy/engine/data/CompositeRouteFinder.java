@@ -28,25 +28,25 @@ import java.util.logging.Logger;
 public class CompositeRouteFinder
 {
 	private final static Logger s_logger = Logger.getLogger(CompositeRouteFinder.class.getName());
-	
+
 	public static Logger GetStaticLogger()
 	{
 		return s_logger;
 	}
-	
+
 	private final GameMap m_map;
 	private final HashMap<Match<Territory>, Integer> m_matches;
-	
+
 	/**
 	 * This class can find composite routes between two territories.
-	 * 
+	 *
 	 * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
-	 * 
+	 *
 	 * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2 length neutral route.
 	 * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
-	 * 
+	 *
 	 * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
-	 * 
+	 *
 	 * @param map
 	 *            - Game map found through <gamedata>.getMap()
 	 * @param matches
@@ -58,7 +58,7 @@ public class CompositeRouteFinder
 		m_matches = matches;
 		s_logger.finer("Initializing CompositeRouteFinderClass...");
 	}
-	
+
 	private HashSet<Territory> ToHashSet(final Collection<Territory> ters)
 	{
 		final HashSet<Territory> result = new HashSet<Territory>();
@@ -66,7 +66,7 @@ public class CompositeRouteFinder
 			result.add(ter);
 		return result;
 	}
-	
+
 	public Route findRoute(final Territory start, final Territory end)
 	{
 		final HashSet<Territory> allMatchingTers = ToHashSet(Match.getMatches(m_map.getTerritories(), new CompositeMatchOr<Territory>(m_matches.keySet())));
@@ -115,7 +115,7 @@ public class CompositeRouteFinder
 			return null;
 		return AssembleRoute(start, end, previous);
 	}
-	
+
 	private Route AssembleRoute(final Territory start, final Territory end, final HashMap<Territory, Territory> previous)
 	{
 		final List<Territory> routeTers = new ArrayList<Territory>();
@@ -129,7 +129,7 @@ public class CompositeRouteFinder
 		Collections.reverse(routeTers);
 		return new Route(routeTers);
 	}
-	
+
 	private HashMap<Territory, Integer> CreateScoreMap(final Collection<Territory> ters, final Territory startTer)
 	{
 		final HashMap<Territory, Integer> result = new HashMap<Territory, Integer>();
@@ -139,7 +139,7 @@ public class CompositeRouteFinder
 		}
 		return result;
 	}
-	
+
 	/*
 	 * Returns the score of the best match that matches this territory
 	 */

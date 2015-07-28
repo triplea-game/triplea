@@ -26,21 +26,21 @@ import java.util.prefs.Preferences;
 
 /**
  * Class to manage log settings.
- * 
+ *
  * @author Ron Murhammer
  * @since 2014
  */
 public class LogSettings implements Serializable
 {
 	private static final long serialVersionUID = 2696071717784800413L;
-	
+
 	public boolean LimitLogHistory = true;
 	public int LimitLogHistoryTo = 5;
 	public boolean EnableAILogging = true;
 	public Level AILoggingDepth = Level.FINEST;
 	private static LogSettings s_lastSettings = null;
 	private static String PROGRAM_SETTINGS = "Program Settings";
-	
+
 	public static LogSettings loadSettings()
 	{
 		if (s_lastSettings == null)
@@ -66,7 +66,7 @@ public class LogSettings implements Serializable
 		else
 			return s_lastSettings;
 	}
-	
+
 	public static void saveSettings(final LogSettings settings)
 	{
 		s_lastSettings = settings;

@@ -13,9 +13,9 @@ import javax.swing.JComponent;
 
 /**
  * Basically creates a map of other properties.
- * 
+ *
  * @author veqryn
- * 
+ *
  * @param <T>
  *            String or something with a valid toString()
  * @param <U>
@@ -26,14 +26,14 @@ public class MapProperty<T, U> extends AEditableProperty
 	private static final long serialVersionUID = -8021039503574228146L;
 	private Map<T, U> m_map;
 	final List<IEditableProperty> m_properties = new ArrayList<IEditableProperty>();
-	
+
 	public MapProperty(final String name, final String description, final Map<T, U> map)
 	{
 		super(name, description);
 		m_map = map;
 		resetProperties(map, m_properties, name, description);
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void resetProperties(final Map<T, U> map, final List<IEditableProperty> properties, final String name, final String description)
 	{
@@ -60,49 +60,49 @@ public class MapProperty<T, U> extends AEditableProperty
 				throw new IllegalArgumentException("Can not instantiate MapProperty with: " + value.getClass().getCanonicalName());
 		}
 	}
-	
+
 	@Override
 	public int getRowsNeeded()
 	{
 		return Math.max(1, m_properties.size());
 	}
-	
+
 	public Object getValue()
 	{
 		return m_map;
 	}
-	
+
 	public Map<T, U> getValueT()
 	{
 		return m_map;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_map = (Map<T, U>) value;
 		resetProperties(m_map, m_properties, this.getName(), this.getDescription());
 	}
-	
+
 	public void setValueT(final Map<T, U> value)
 	{
 		m_map = value;
 		resetProperties(m_map, m_properties, this.getName(), this.getDescription());
 	}
-	
+
 	public JComponent getEditorComponent()
 	{
 		final PropertiesUI ui = new PropertiesUI(m_properties, true);
 		return ui;
 	}
-	
+
 	@Override
 	public JComponent getViewComponent()
 	{
 		final PropertiesUI ui = new PropertiesUI(m_properties, false);
 		return ui;
 	}
-	
+
 	public boolean validate(final Object value)
 	{
 		if (value == null)

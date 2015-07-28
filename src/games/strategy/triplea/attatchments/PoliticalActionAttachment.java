@@ -35,19 +35,19 @@ import java.util.Set;
 /**
  * An attachment, attached to a player that will describe which political
  * actions a player may take.
- * 
+ *
  * @author Edwin van der Wal
- * 
+ *
  */
 public class PoliticalActionAttachment extends AbstractUserActionAttachment implements ICondition
 {
 	private static final long serialVersionUID = 4392770599777282477L;
-	
+
 	public PoliticalActionAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
 	}
-	
+
 	public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerID player)
 	{
 		final ArrayList<PoliticalActionAttachment> returnList = new ArrayList<PoliticalActionAttachment>();
@@ -61,12 +61,12 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
 		}
 		return returnList;
 	}
-	
+
 	public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment)
 	{
 		return get(player, nameOfAttachment, null);
 	}
-	
+
 	public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment, final Collection<PlayerID> playersToSearch)
 	{
 		PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
@@ -91,13 +91,13 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
 		}
 		return rVal;
 	}
-	
+
 	// list of relationship changes to be performed if this action is performed sucessfully
 	private ArrayList<String> m_relationshipChange = new ArrayList<String>();
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param relChange
 	 * @throws GameParseException
 	 */
@@ -115,30 +115,30 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
 			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName() + thisErrorMsg());
 		m_relationshipChange.add(relChange);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipChange(final ArrayList<String> value)
 	{
 		m_relationshipChange = value;
 	}
-	
+
 	public ArrayList<String> getRelationshipChange()
 	{
 		return m_relationshipChange;
 	}
-	
+
 	public void clearRelationshipChange()
 	{
 		m_relationshipChange.clear();
 	}
-	
+
 	public void resetRelationshipChange()
 	{
 		m_relationshipChange = new ArrayList<String>();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return a set of all other players involved in this PoliticalAction
 	 */
 	public Set<PlayerID> getOtherPlayers()
@@ -153,7 +153,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
 		otherPlayers.remove((getAttachedTo()));
 		return otherPlayers;
 	}
-	
+
 	/**
 	 * @param player
 	 * @return gets the valid actions for this player.
@@ -165,7 +165,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
 		return Match.getMatches(getPoliticalActionAttachments(player), new CompositeMatchAnd<PoliticalActionAttachment>(
 					Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions), Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
 	}
-	
+
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

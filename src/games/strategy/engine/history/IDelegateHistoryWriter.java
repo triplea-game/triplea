@@ -22,12 +22,12 @@ package games.strategy.engine.history;
 public interface IDelegateHistoryWriter
 {
 	public void startEvent(String eventName);
-	
+
 	public void startEvent(String eventName, Object renderingData);
-	
+
 	public void addChildToEvent(String child);
-	
+
 	public void addChildToEvent(String child, Object renderingData);
-	
+
 	// public void setRenderingData(Object renderingData);
 }

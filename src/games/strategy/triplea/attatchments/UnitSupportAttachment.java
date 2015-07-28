@@ -12,9 +12,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * 
  *
- * 
+ *
+ *
  */
 package games.strategy.triplea.attatchments;
 
@@ -37,9 +37,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Squid
- * 
+ *
  */
 public class UnitSupportAttachment extends DefaultAttachment
 {
@@ -49,20 +49,20 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private boolean m_offence = false; // Do Not Export
 	@InternalDoNotExport
 	private boolean m_defence = false; // Do Not Export
-	
+
 	@InternalDoNotExport
 	private boolean m_roll = false;
 	@InternalDoNotExport
 	private boolean m_strength = false;
-	
+
 	private int m_bonus = 0;
 	private int m_number = 0;
-	
+
 	@InternalDoNotExport
 	private boolean m_allied = false;
 	@InternalDoNotExport
 	private boolean m_enemy = false;
-	
+
 	private String m_bonusType = null;
 	private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
 	private boolean m_impArtTech = false;
@@ -70,12 +70,12 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private String m_dice = null; // roll or strength
 	private String m_faction = null; // allied or enemy
 	private String m_side = null; // offence or defence
-	
+
 	public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
 	}
-	
+
 	public static Set<UnitSupportAttachment> get(final UnitType u)
 	{
 		final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
@@ -92,7 +92,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		return supports;
 	}
-	
+
 	public static UnitSupportAttachment get(final UnitType u, final String nameOfAttachment)
 	{
 		final UnitSupportAttachment rVal = (UnitSupportAttachment) u.getAttachment(nameOfAttachment);
@@ -100,7 +100,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 			throw new IllegalStateException("No unit type attachment for:" + u.getName() + " with name:" + nameOfAttachment);
 		return rVal;
 	}
-	
+
 	public static Set<UnitSupportAttachment> get(final GameData data)
 	{
 		final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
@@ -118,7 +118,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		return supports;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitType(final String names) throws GameParseException
 	{
@@ -137,18 +137,18 @@ public class UnitSupportAttachment extends DefaultAttachment
 			m_unitType.add(type);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitType(final HashSet<UnitType> value)
 	{
 		m_unitType = value;
 	}
-	
+
 	public void resetUnitType()
 	{
 		m_unitType = null;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFaction(final String faction) throws GameParseException
 	{
@@ -171,19 +171,19 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		m_faction = faction;
 	}
-	
+
 	public String getFaction()
 	{
 		return m_faction;
 	}
-	
+
 	public void resetFaction()
 	{
 		m_faction = null;
 		m_allied = false;
 		m_enemy = false;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setSide(final String side) throws GameParseException
 	{
@@ -206,19 +206,19 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		m_side = side;
 	}
-	
+
 	public String getSide()
 	{
 		return m_side;
 	}
-	
+
 	public void resetSide()
 	{
 		m_side = null;
 		m_offence = false;
 		m_defence = false;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDice(final String dice) throws GameParseException
 	{
@@ -241,53 +241,53 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		m_dice = dice;
 	}
-	
+
 	public String getDice()
 	{
 		return m_dice;
 	}
-	
+
 	public void resetDice()
 	{
 		m_dice = null;
 		m_roll = false;
 		m_strength = false;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonus(final String bonus)
 	{
 		m_bonus = getInt(bonus);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonus(final Integer bonus)
 	{
 		m_bonus = bonus;
 	}
-	
+
 	public void resetBonus()
 	{
 		m_bonus = 0;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNumber(final String number)
 	{
 		m_number = getInt(number);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNumber(final Integer number)
 	{
 		m_number = number;
 	}
-	
+
 	public void resetNumber()
 	{
 		m_number = 0;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonusType(final String type)
 	{
@@ -298,15 +298,15 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		m_bonusType = type;
 	}
-	
+
 	public void resetBonusType()
 	{
 		m_bonusType = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param names
 	 * @throws GameParseException
 	 */
@@ -323,100 +323,100 @@ public class UnitSupportAttachment extends DefaultAttachment
 				m_players.add(player);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlayers(final ArrayList<PlayerID> value)
 	{
 		m_players = value;
 	}
-	
+
 	public ArrayList<PlayerID> getPlayers()
 	{
 		return m_players;
 	}
-	
+
 	public void clearPlayers()
 	{
 		m_players.clear();
 	}
-	
+
 	public void resetPlayers()
 	{
 		m_players = new ArrayList<PlayerID>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setImpArtTech(final String tech)
 	{
 		m_impArtTech = getBool(tech);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setImpArtTech(final Boolean tech)
 	{
 		m_impArtTech = tech;
 	}
-	
+
 	public void resetImpArtTech()
 	{
 		m_impArtTech = false;
 	}
-	
+
 	public HashSet<UnitType> getUnitType()
 	{
 		return m_unitType;
 	}
-	
+
 	public int getNumber()
 	{
 		return m_number;
 	}
-	
+
 	public int getBonus()
 	{
 		return m_bonus;
 	}
-	
+
 	public boolean getAllied()
 	{
 		return m_allied;
 	}
-	
+
 	public boolean getEnemy()
 	{
 		return m_enemy;
 	}
-	
+
 	public boolean getRoll()
 	{
 		return m_roll;
 	}
-	
+
 	public boolean getStrength()
 	{
 		return m_strength;
 	}
-	
+
 	public boolean getDefence()
 	{
 		return m_defence;
 	}
-	
+
 	public boolean getOffence()
 	{
 		return m_offence;
 	}
-	
+
 	public String getBonusType()
 	{
 		return m_bonusType;
 	}
-	
+
 	public boolean getImpArtTech()
 	{
 		return m_impArtTech;
 	}
-	
+
 	/*
 	 * following are all to support old artillery flags.
 	 * boolean first is a cheat, adds a bogus support to a unit
@@ -445,7 +445,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 			rule.setPlayers(new ArrayList<PlayerID>(data.getPlayerList().getPlayers()));
 		type.addAttachment(attachmentName, rule);
 	}
-	
+
 	@InternalDoNotExport
 	private static Set<UnitType> getTargets(final GameData data)
 	{
@@ -466,7 +466,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		return types;
 	}
-	
+
 	@InternalDoNotExport
 	private void addUnitTypes(final Set<UnitType> types)
 	{
@@ -476,7 +476,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 			m_unitType = new HashSet<UnitType>();
 		m_unitType.addAll(types);
 	}
-	
+
 	@InternalDoNotExport
 	public static void setOldSupportCount(final UnitType type, final GameData data, final String count)
 	{
@@ -486,7 +486,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 				rule.setNumber(count);
 		}
 	}
-	
+
 	@InternalDoNotExport
 	public static void addTarget(final UnitType type, final GameData data) throws GameParseException
 	{
@@ -505,7 +505,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		if (first)
 			addRule(type, data, first);
 	}
-	
+
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

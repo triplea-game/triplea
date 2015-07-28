@@ -24,7 +24,7 @@ public class RandomAI extends GridAbstractAI
 	{
 		super(name, type);
 	}
-	
+
 	@Override
 	protected void play()
 	{
@@ -51,7 +51,7 @@ public class RandomAI extends GridAbstractAI
 			error = playDel.play(iter.next().getFirst());
 		} while (error != null && iter.hasNext());
 	}
-	
+
 	static Comparator<Tuple<GridPlayData, Collection<Territory>>> getBestCaptureComparator(final PlayerID player, final GameData data)
 	{
 		return new Comparator<Tuple<GridPlayData, Collection<Territory>>>()
@@ -86,7 +86,7 @@ public class RandomAI extends GridAbstractAI
 			}
 		};
 	}
-	
+
 	static int getPointsForUnits(final Collection<Unit> capturedUnits)
 	{
 		int points = 0;

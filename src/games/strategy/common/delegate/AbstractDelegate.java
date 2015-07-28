@@ -27,7 +27,7 @@ import java.io.Serializable;
 /**
  * Base class designed to make writing custom delegates simpler.
  * Code common to all delegates is implemented here.
- * 
+ *
  * @author Lane Schwartz (abstracted by Chris Duncan)
  */
 public abstract class AbstractDelegate implements IDelegate
@@ -36,20 +36,20 @@ public abstract class AbstractDelegate implements IDelegate
 	protected String m_displayName;
 	protected PlayerID m_player;
 	protected IDelegateBridge m_bridge;
-	
+
 	/**
 	 * Creates a new instance of the Delegate
 	 */
 	public AbstractDelegate()
 	{
 	}
-	
+
 	public void initialize(final String name, final String displayName)
 	{
 		m_name = name;
 		m_displayName = displayName;
 	}
-	
+
 	/**
 	 * Called before the delegate will run, AND before "start" is called.
 	 */
@@ -58,7 +58,7 @@ public abstract class AbstractDelegate implements IDelegate
 		m_bridge = iDelegateBridge;
 		m_player = iDelegateBridge.getPlayerID();
 	}
-	
+
 	/**
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
@@ -67,7 +67,7 @@ public abstract class AbstractDelegate implements IDelegate
 	{
 		// nothing to do here
 	}
-	
+
 	/**
 	 * Called before the delegate will stop running.
 	 * All classes should call super.end if they override this.
@@ -76,17 +76,17 @@ public abstract class AbstractDelegate implements IDelegate
 	{
 		// nothing to do here
 	}
-	
+
 	public String getName()
 	{
 		return m_name;
 	}
-	
+
 	public String getDisplayName()
 	{
 		return m_displayName;
 	}
-	
+
 	/**
 	 * Returns the state of the Delegate.
 	 * All classes should super.saveState if they override this.
@@ -95,7 +95,7 @@ public abstract class AbstractDelegate implements IDelegate
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Loads the delegates state
 	 */
@@ -103,53 +103,53 @@ public abstract class AbstractDelegate implements IDelegate
 	{
 		// nothing to save
 	}
-	
+
 	/**
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
 	public abstract Class<? extends IRemote> getRemoteType();
-	
+
 	public IDelegateBridge getBridge()
 	{
 		return m_bridge;
 	}
-	
+
 	protected GameData getData()
 	{
 		return m_bridge.getData();
 	}
-	
+
 	protected IDisplay getDisplay()
 	{
 		return getDisplay(m_bridge);
 	}
-	
+
 	protected static IDisplay getDisplay(final IDelegateBridge bridge)
 	{
 		return bridge.getDisplayChannelBroadcaster();
 	}
-	
+
 	protected ISound getSoundChannel()
 	{
 		return getSoundChannel(m_bridge);
 	}
-	
+
 	protected static ISound getSoundChannel(final IDelegateBridge bridge)
 	{
 		return bridge.getSoundChannelBroadcaster();
 	}
-	
+
 	protected IRemotePlayer getRemotePlayer()
 	{
 		return getRemotePlayer(m_bridge);
 	}
-	
+
 	protected static IRemotePlayer getRemotePlayer(final IDelegateBridge bridge)
 	{
 		return bridge.getRemotePlayer();
 	}
-	
+
 	/**
 	 * You should override this class with some variation of the following code (changing the AI to be something meaningful if needed)
 	 * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote:
@@ -160,7 +160,7 @@ public abstract class AbstractDelegate implements IDelegate
 	protected IRemotePlayer getRemotePlayer(final PlayerID player)
 	{
 		// you should over ride this. (also, do not make a static version of this, in this class.)
-		
+
 		// if its the null player, return a do nothing proxy
 		// if (player.isNull())
 		// return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);

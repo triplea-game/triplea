@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Tony Clayton
- * 
+ *
  *         Provides some static methods for validating game edits.
  */
 public class EditValidator
@@ -47,7 +47,7 @@ public class EditValidator
 	{
 		return validateTerritoryBasic(data, territory, null);
 	}
-	
+
 	private static String validateTerritoryBasic(final GameData data, final Territory territory, final PlayerID player)
 	{
 		final String result = null;
@@ -69,7 +69,7 @@ public class EditValidator
 		}
 		return result;
 	}
-	
+
 	public static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player)
 	{
 		String result = null;
@@ -79,7 +79,7 @@ public class EditValidator
 			return result;
 		return result;
 	}
-	
+
 	public static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -135,7 +135,7 @@ public class EditValidator
 			return result;
 		return result;
 	}
-	
+
 	public static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -165,7 +165,7 @@ public class EditValidator
 		// TODO: if carried planes selected, carrier must be deleted too
 		return result;
 	}
-	
+
 	public static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player)
 	{
 		final String result = null;
@@ -186,7 +186,7 @@ public class EditValidator
 		}
 		return result;
 	}
-	
+
 	public static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player)
 	{
 		final String result = null;
@@ -209,7 +209,7 @@ public class EditValidator
 		}
 		return result;
 	}
-	
+
 	public static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory)
 	{
 		String result = null;
@@ -234,7 +234,7 @@ public class EditValidator
 		}
 		return result;
 	}
-	
+
 	public static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory)
 	{
 		String result = null;
@@ -261,7 +261,7 @@ public class EditValidator
 		}
 		return result;
 	}
-	
+
 	public static String validateChangePoliticalRelationships(final GameData data, final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges)
 	{
 		final String result = null;

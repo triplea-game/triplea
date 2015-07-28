@@ -13,7 +13,7 @@
  */
 /*
  * ProductionRepairPanel.java
- * 
+ *
  * Created on November 7, 2001, 10:19 AM
  */
 package games.strategy.triplea.ui;
@@ -61,11 +61,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
- * 
- * 
+ *
+ *
  */
 public class ProductionRepairPanel extends JPanel
 {
@@ -81,13 +81,13 @@ public class ProductionRepairPanel extends JPanel
 	private Collection<PlayerID> m_allowedPlayersToRepair;
 	private GameData m_data;
 	private static HashMap<Unit, Integer> m_repairCount = new HashMap<Unit, Integer>();
-	
+
 	public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id, final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data,
 				final boolean bid, final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext)
 	{
 		return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
 	}
-	
+
 	/**
 	 * Shows the production panel, and returns a map of selected rules.
 	 */
@@ -117,18 +117,18 @@ public class ProductionRepairPanel extends JPanel
 		m_dialog.dispose();
 		return getProduction();
 	}
-	
+
 	// this method can be accessed by subclasses
 	public List<Rule> getRules()
 	{
 		return this.m_rules;
 	};
-	
+
 	public static HashMap<Unit, Integer> getUnitRepairs()
 	{
 		return m_repairCount;
 	}
-	
+
 	private void initDialog(final JFrame root)
 	{
 		m_dialog = new JDialog(root, "Repair", true);
@@ -136,7 +136,7 @@ public class ProductionRepairPanel extends JPanel
 		final Action closeAction = new AbstractAction("")
 		{
 			private static final long serialVersionUID = 2832491642574528614L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -149,14 +149,14 @@ public class ProductionRepairPanel extends JPanel
 		m_dialog.getRootPane().getActionMap().put(key, closeAction);
 		m_dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
 	}
-	
+
 	/** Creates new ProductionRepairPanel */
 	// the constructor can be accessed by subclasses
 	public ProductionRepairPanel(final IUIContext uiContext)
 	{
 		m_uiContext = uiContext;
 	}
-	
+
 	private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data, final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase)
 	{
 		if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
@@ -195,7 +195,7 @@ public class ProductionRepairPanel extends JPanel
 			m_data.releaseReadLock();
 		}
 	}
-	
+
 	private void initLayout(final PlayerID id)
 	{
 		final Insets nullInsets = new Insets(0, 0, 0, 0);
@@ -212,23 +212,23 @@ public class ProductionRepairPanel extends JPanel
 		m_done = new JButton(m_done_action);
 		add(m_done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 8, 0), 0, 0));
 	}
-	
+
 	protected void setLeft(final ResourceCollection left)
 	{
 		final ResourceCollection total = getResources();
 		m_left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
 	}
-	
+
 	Action m_done_action = new AbstractAction("Done")
 	{
 		private static final long serialVersionUID = 8547016018558520143L;
-		
+
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_dialog.setVisible(false);
 		}
 	};
-	
+
 	private HashMap<Unit, IntegerMap<RepairRule>> getProduction()
 	{
 		final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<Unit, IntegerMap<RepairRule>>();
@@ -246,7 +246,7 @@ public class ProductionRepairPanel extends JPanel
 		}
 		return prod;
 	}
-	
+
 	protected void calculateLimits()
 	{
 		// final IntegerMap<Resource> cost;
@@ -272,7 +272,7 @@ public class ProductionRepairPanel extends JPanel
 			current.setMax(max);
 		}
 	}
-	
+
 	private ResourceCollection getResources()
 	{
 		if (m_bid)
@@ -294,8 +294,8 @@ public class ProductionRepairPanel extends JPanel
 		else
 			return m_id.getResources();
 	}
-	
-	
+
+
 	public class Rule extends JPanel
 	{
 		private static final long serialVersionUID = -6781214135310064908L;
@@ -305,7 +305,7 @@ public class ProductionRepairPanel extends JPanel
 		private final Unit m_unit;
 		private final int m_maxRepairAmount;
 		private final int m_repairResults;
-		
+
 		Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit, final Territory territoryUnitIsIn)
 		{
 			setLayout(new GridBagLayout());
@@ -332,43 +332,43 @@ public class ProductionRepairPanel extends JPanel
 			m_text.addChangeListener(m_listener);
 			setBorder(new EtchedBorder());
 		}
-		
+
 		public int getRepairResults()
 		{
 			return m_repairResults;
 		}
-		
+
 		IntegerMap<Resource> getCost()
 		{
 			return m_cost;
 		}
-		
+
 		public int getQuantity()
 		{
 			return m_text.getValue();
 		}
-		
+
 		void setQuantity(final int quantity)
 		{
 			m_text.setValue(quantity);
 		}
-		
+
 		RepairRule getProductionRule()
 		{
 			return m_rule;
 		}
-		
+
 		void setMax(final int max)
 		{
 			m_text.setMax((int) (Math.ceil(((double) Math.min(max, m_maxRepairAmount) / (double) m_repairResults))));
 		}
-		
+
 		public Unit getUnit()
 		{
 			return m_unit;
 		}
 	}
-	
+
 	private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
 		public void changedValue(final ScrollableTextField stf)

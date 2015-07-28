@@ -46,7 +46,7 @@ public class HistoryLog extends JFrame
 	private final JTextArea m_textArea;
 	private final StringWriter m_stringWriter;
 	private final PrintWriter m_printWriter;
-	
+
 	public HistoryLog()
 	{
 		m_textArea = new JTextArea(40, 80);
@@ -64,24 +64,24 @@ public class HistoryLog extends JFrame
 		this.pack();
 		this.setLocationRelativeTo(null);
 	}
-	
+
 	public PrintWriter getWriter()
 	{
 		return m_printWriter;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return m_stringWriter.toString();
 	}
-	
+
 	public void clear()
 	{
 		m_stringWriter.getBuffer().delete(0, m_stringWriter.getBuffer().length());
 		m_textArea.setText("");
 	}
-	
+
 	@SuppressWarnings("null")
 	public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed)
 	{
@@ -125,7 +125,7 @@ public class HistoryLog extends JFrame
 		else
 			System.err.println("No Step node found!");
 	}
-	
+
 	private static PlayerID getPlayerID(final HistoryNode printNode)
 	{
 		DefaultMutableTreeNode curNode = printNode;
@@ -167,7 +167,7 @@ public class HistoryLog extends JFrame
 		} while ((curNode instanceof Step) && ((Step) curNode).getPlayerID().equals(curPlayer));
 		return curPlayer;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides, final Collection<PlayerID> playersAllowed)
 	{
@@ -225,7 +225,7 @@ public class HistoryLog extends JFrame
 				if (node instanceof Renderable)
 				{
 					final Object details = ((Renderable) node).getRenderingData();
-					
+
 					// TODO: why is this here when the one above seems to take care of it just fine? I am commenting out because it is causing MAJOR issues with PBEM posts (fatal error, because if the person does some moves, then for example turns on edit mode and does something then turns it off, then later undo's a move, and the move list is now empty, then we are have a fatal crash at end of the turn when we try to make the history post)
 					// flush move list (but support conquering territory on combat move)
 					/*if (moving && (title.equals(MoveDelegate.CLEANING_UP_AFTER_MOVEMENT_PHASES)) && !(details instanceof MoveDescription)) // && !title.matches("\\w+ takes? .*? from \\w+") && !title.indexOf(EditDelegate.EDITMODE_ON) != -1 && title.indexOf(EditDelegate.EDITMODE_OFF) != -1))
@@ -492,7 +492,7 @@ public class HistoryLog extends JFrame
 		logWriter.println();
 		m_textArea.setText(m_stringWriter.toString());
 	}
-	
+
 	public void printTerritorySummary(final HistoryNode printNode, final GameData data)
 	{
 		Collection<Territory> territories;
@@ -509,7 +509,7 @@ public class HistoryLog extends JFrame
 		players.add(player);
 		printTerritorySummary(data, players, territories);
 	}
-	
+
 	public void printTerritorySummary(final GameData data)
 	{
 		Collection<Territory> territories;
@@ -527,7 +527,7 @@ public class HistoryLog extends JFrame
 		players.add(player);
 		printTerritorySummary(data, players, territories);
 	}
-	
+
 	public void printTerritorySummary(final GameData data, final Collection<PlayerID> allowedPlayers)
 	{
 		if (allowedPlayers == null || allowedPlayers.isEmpty())
@@ -546,7 +546,7 @@ public class HistoryLog extends JFrame
 		}
 		printTerritorySummary(data, allowedPlayers, territories);
 	}
-	
+
 	private void printTerritorySummary(final GameData data, final Collection<PlayerID> players, final Collection<Territory> territories)
 	{
 		if (players == null || players.isEmpty() || territories == null || territories.isEmpty())
@@ -581,7 +581,7 @@ public class HistoryLog extends JFrame
 		logWriter.println();
 		m_textArea.setText(m_stringWriter.toString());
 	}
-	
+
 	public void printDiceStatistics(final GameData data, final IRandomStats randomStats)
 	{
 		final PrintWriter logWriter = m_printWriter;
@@ -595,7 +595,7 @@ public class HistoryLog extends JFrame
 		}
 		m_textArea.setText(m_stringWriter.toString());
 	}
-	
+
 	public void printProductionSummary(final GameData data)
 	{
 		final PrintWriter logWriter = m_printWriter;
@@ -623,7 +623,7 @@ public class HistoryLog extends JFrame
 		logWriter.println();
 		m_textArea.setText(m_stringWriter.toString());
 	}
-	
+
 	// copied from StatPanel
 	private int getProduction(final PlayerID player, final GameData data)
 	{

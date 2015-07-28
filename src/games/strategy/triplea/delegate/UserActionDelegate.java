@@ -27,7 +27,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	public UserActionDelegate()
 	{
 	}
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -36,14 +36,14 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	{
 		super.start();
 	}
-	
+
 	@Override
 	public void end()
 	{
 		super.end();
 		resetAttempts();
 	}
-	
+
 	@Override
 	public Serializable saveState()
 	{
@@ -53,7 +53,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		// add other variables to state here:
 		return state;
 	}
-	
+
 	@Override
 	public void loadState(final Serializable state)
 	{
@@ -62,7 +62,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		// m_testedConditions = s.m_testedConditions;
 		// load other variables from state here:
 	}
-	
+
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// if (!m_player.amNotDeadYet(getData()))
@@ -71,13 +71,13 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 			return false;
 		return true;
 	}
-	
+
 	public HashMap<ICondition, Boolean> getTestedConditions()
 	{
 		final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(UserActionAttachment.getUserActionAttachments(m_player)), null);
 		return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
-	
+
 	public Collection<UserActionAttachment> getValidActions()
 	{
 		final GameData data = m_bridge.getData();
@@ -92,7 +92,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		}
 		return UserActionAttachment.getValidActions(m_player, testedConditions, data);
 	}
-	
+
 	public void attemptAction(final UserActionAttachment actionChoice)
 	{
 		if (actionChoice.canPerform(getTestedConditions()))
@@ -128,7 +128,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 			notifyNoValidAction(actionChoice); // notify the player the action isn't valid anymore (shouldn't happen)
 		}
 	}
-	
+
 	/**
 	 * @param uaa
 	 *            The UserActionAttachment the player should be charged for
@@ -141,10 +141,10 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
 		return has >= cost;
 	}
-	
+
 	/**
 	 * Subtract money from the players wallet
-	 * 
+	 *
 	 * @param uaa
 	 *            the UserActionAttachment this the money is charged for.
 	 */
@@ -167,7 +167,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 			m_bridge.getHistoryWriter().startEvent(transcriptText); // we must start an event anyway
 		}
 	}
-	
+
 	/**
 	 * @param uaa
 	 *            the action to check if it succeeds
@@ -195,11 +195,11 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		sendNotification(notificationMessage);
 		return success;
 	}
-	
+
 	/**
 	 * Get a list of players that should accept this action and then ask each
 	 * player if it accepts this action.
-	 * 
+	 *
 	 * @param uaa
 	 *            the UserActionAttachment that should be accepted
 	 * @return
@@ -213,10 +213,10 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Fire triggers
-	 * 
+	 *
 	 * @param uaa
 	 *            the UserActionAttachment to activate triggers for
 	 */
@@ -224,10 +224,10 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	{
 		UserActionAttachment.fireTriggers(uaa, getTestedConditions(), m_bridge);
 	}
-	
+
 	/**
 	 * Let all players involved in this action know the action was successful
-	 * 
+	 *
 	 * @param uaa
 	 *            the UserActionAttachment that just succeeded.
 	 */
@@ -238,23 +238,23 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		sendNotification(UserActionText.getInstance().getNotificationSucccess(uaa.getText()));
 		notifyOtherPlayers(uaa, UserActionText.getInstance().getNotificationSuccessOthers(uaa.getText()));
 	}
-	
+
 	/**
 	 * Send a notification to the current player
-	 * 
+	 *
 	 * @param text
 	 *            if NONE don't send a notification
 	 */
 	private void sendNotification(final String text)
 	{
 		if (!"NONE".equals(text))
-			this.getRemotePlayer().reportMessage(text, text); // "To " + m_player.getName() + ": " +
+			this.getRemotePlayer().reportMessage(text, text); // "To " + m_player.getName() + ": "
 	}
-	
+
 	/**
 	 * Send a notification to the other players involved in this action (all
 	 * players except the player starting the action)
-	 * 
+	 *
 	 * @param uaa
 	 * @param notification
 	 */
@@ -270,10 +270,10 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 			this.getDisplay().reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
 		}
 	}
-	
+
 	/**
 	 * Let all players involved in this action know the action has failed.
-	 * 
+	 *
 	 * @param uaa
 	 *            the UserActionAttachment that just failed.
 	 */
@@ -286,11 +286,11 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		sendNotification(UserActionText.getInstance().getNotificationFailure(uaa.getText()));
 		notifyOtherPlayers(uaa, UserActionText.getInstance().getNotificationFailureOthers(uaa.getText()));
 	}
-	
+
 	/**
 	 * Let the player know he is being charged for money or that he hasn't got
 	 * enough money
-	 * 
+	 *
 	 * @param uaa
 	 *            the UserActionAttachment the player is notified about
 	 * @param enough
@@ -307,23 +307,23 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 			sendNotification("You don't have ennough money, you need " + uaa.getCostPU() + " PU's to perform this action");
 		}
 	}
-	
+
 	/**
 	 * Let the player know this action isn't valid anymore, this shouldn't
 	 * happen as the player shouldn't get an option to push the button on
 	 * non-valid actions.
-	 * 
+	 *
 	 * @param uaa
 	 */
 	private void notifyNoValidAction(final UserActionAttachment uaa)
 	{
 		sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
 	}
-	
+
 	/**
 	 * Reset the attempts-counter for this action, so next round the player can
 	 * try again for a number of attempts.
-	 * 
+	 *
 	 */
 	private void resetAttempts()
 	{
@@ -332,7 +332,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 			uaa.resetAttempts(getBridge());
 		}
 	}
-	
+
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */

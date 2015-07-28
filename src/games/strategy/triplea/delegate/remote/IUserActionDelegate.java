@@ -9,6 +9,6 @@ import java.util.Collection;
 public interface IUserActionDelegate extends IRemote, IDelegate
 {
 	public void attemptAction(UserActionAttachment actionChoice);
-	
+
 	public Collection<UserActionAttachment> getValidActions();
 }

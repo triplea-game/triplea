@@ -36,12 +36,12 @@ import java.util.List;
 
 /**
  * Some notes on the matches in this class:
- * 
+ *
  * First, to keep the matches organized, I would like all the matches to be put into their section, which should be created if not yet existing.
  * All unit matches in one section, all territory matches in another, etc.
- * 
+ *
  * Also, make sure there are markers to show the start and end of each section, as well as ten lines of blank space between each section.
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings({ "unchecked", "deprecation" })
@@ -62,7 +62,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<UnitGroup> UnitGroupCanReach_All(final Territory target)
 	{
 		return new Match<UnitGroup>()
@@ -77,7 +77,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<UnitGroup> UnitGroupHasEnoughMovement_Some(final int minMovement)
 	{
 		return new Match<UnitGroup>()
@@ -89,7 +89,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<UnitGroup> UnitGroupHasEnoughMovement_All(final int minMovement)
 	{
 		return new Match<UnitGroup>()
@@ -101,7 +101,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<UnitGroup> UnitGroupUnitsMatchX_All(final Match<Unit> match)
 	{
 		return new Match<UnitGroup>()
@@ -113,7 +113,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static final Match<UnitGroup> UnitGroupIsSeaOrAir = new Match<UnitGroup>()
 	{
 		@Override
@@ -132,7 +132,7 @@ public class DMatches
 			return !ua.getIsSea();
 		}
 	};
-	
+
 	// /////////////////////////////////////////////End Unit Group Matches///////////////////////////////////////////////
 	// /////////////////////////////////////////////Unit Matches///////////////////////////////////////////////
 	public static Match<Unit> unitIs(final Unit u1)
@@ -146,7 +146,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsNotInList(final List<Unit> list)
 	{
 		return new Match<Unit>()
@@ -158,7 +158,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsInList(final List<Unit> list)
 	{
 		return new Match<Unit>()
@@ -170,7 +170,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsNNEnemyOf(final GameData data, final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -184,7 +184,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static final Match<Unit> UnitIsMoveableType = new Match<Unit>()
 	{
 		@Override
@@ -229,7 +229,7 @@ public class DMatches
 			return true;
 		}
 	};
-	
+
 	// /////////////////////////////////////////////End Unit Matches///////////////////////////////////////////////
 	// /////////////////////////////////////////////Territory Matches///////////////////////////////////////////////
 	public static Match<Territory> terIsFriendlyEmptyAndWithoutEnemyNeighbors(final GameData data, final PlayerID player)
@@ -249,7 +249,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> TerritoryHasVulnerabilityEqualToOrMoreThan(final GameData data, final PlayerID player, final float minVulnerability, final int runCount)
 	{
 		return new Match<Territory>()
@@ -264,7 +264,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> TerritoryHasSurvivalChanceEqualToOrMoreThan(final GameData data, final PlayerID player, final float minSurvivalChance, final int runCount)
 	{
 		return new Match<Territory>()
@@ -279,7 +279,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsInList(final List<Territory> list)
 	{
 		return new Match<Territory>()
@@ -291,7 +291,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsNotInList(final List<Territory> list)
 	{
 		return new Match<Territory>()
@@ -303,7 +303,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsWithinXLMovesOfATerInList(final List<Territory> list, final int maxJumpDist, final GameData data)
 	{
 		return new Match<Territory>()
@@ -322,7 +322,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsOwnedByEnemy(final GameData data, final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -337,7 +337,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsOwnedByNNEnemy(final GameData data, final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -351,7 +351,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsOwnedBy(final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -363,9 +363,9 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static final Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
-	
+
 	public static Match<Territory> territoryIsLandAndPassableTo(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -386,7 +386,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsWaterAndPassableTo(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -400,7 +400,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsLandAndOwnedBy(final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -412,7 +412,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsOwnedByXOrAlly(final GameData data, final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -424,7 +424,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryMatchesDMatch(final GameData data, final PlayerID player, final Match<TerritoryStatus> DMatch)
 	{
 		return new Match<Territory>()
@@ -436,7 +436,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasNNEnemyLandUnits(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -448,7 +448,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryContainsMultipleAlliances(final GameData data)
 	{
 		return new Match<Territory>()
@@ -468,7 +468,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static final Match<Territory> territoryIsCapital = new Match<Territory>()
 	{
 		@Override
@@ -480,17 +480,17 @@ public class DMatches
 			return false;
 		}
 	};
-	
+
 	public static Match<Territory> territoryIsCapitalAndOwnedBy(final GameData data, final PlayerID player)
 	{
 		return DUtils.CompMatchAnd(territoryIsCapital, Matches.isTerritoryOwnedBy(player));
 	}
-	
+
 	public static Match<Territory> territoryIsCapitalAndOwnedByEnemy(final GameData data, final PlayerID player)
 	{
 		return DUtils.CompMatchAnd(territoryIsCapital, Matches.isTerritoryEnemy(player, data));
 	}
-	
+
 	public static Match<Territory> territoryCanHaveUnitsPlacedOnIt(final GameData data, final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -513,12 +513,12 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsIsolated(final GameData data)
 	{
 		return territoryIsNotIsolated(data).invert();
 	}
-	
+
 	public static Match<Territory> territoryIsNotIsolated(final GameData data)
 	{
 		return new Match<Territory>()
@@ -532,12 +532,12 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsOnSmallIsland(final GameData data)
 	{
 		return territoryIsNotOnSmallIsland(data).invert();
 	}
-	
+
 	public static Match<Territory> territoryIsNotOnSmallIsland(final GameData data)
 	{
 		return new Match<Territory>()
@@ -556,7 +556,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasRouteMatchingXToTerritoryMatchingY(final GameData data, final Match<Territory> routeMatch, final Match<Territory> targetMatch)
 	{
 		return new Match<Territory>()
@@ -571,7 +571,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasUnitsMatchingXThatCanReach(final PlayerID player, final GameData data, final Match<Territory> terMatch, final Match<Unit> unitMatch)
 	{
 		return new Match<Territory>()
@@ -583,7 +583,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasNNEnemyUnitsThatCanReach(final PlayerID player, final GameData data, final Match<Territory> terMatch)
 	{
 		return new Match<Territory>()
@@ -595,7 +595,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsConsideredSafeToNCMInto(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -617,7 +617,7 @@ public class DMatches
 			}
 		};
 	}
-	
+
 	// /////////////////////////////////////////////End Territory Matches///////////////////////////////////////////////
 	// /////////////////////////////////////////////Territory Status Matches///////////////////////////////////////////////
 	public static final Match<TerritoryStatus> TS_WasAttacked = new Match<TerritoryStatus>()

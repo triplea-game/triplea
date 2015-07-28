@@ -54,7 +54,7 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /**
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings("unchecked")
@@ -81,7 +81,7 @@ public class DoNonCombatMove
 			}
 		}
 	}
-	
+
 	public static void doNonCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover, final PlayerID player)
 	{
 		if (DSettings.LoadSettings().AIC_disableAllUnitMovements)
@@ -258,7 +258,7 @@ public class DoNonCombatMove
 				DUtils.Log(Level.FINER, "      Some errors occurred while performing moves: {0}", errors);
 		}
 	}
-	
+
 	private static List<NCM_Task> GenerateTasks(final MovePackage pack)
 	{
 		final List<NCM_Task> result = new ArrayList<NCM_Task>();
@@ -396,7 +396,7 @@ public class DoNonCombatMove
 		}
 		return result;
 	}
-	
+
 	private static boolean considerAndPerformWorthwhileTasks(final MovePackage pack, final List<NCM_Task> tasks)
 	{
 		@SuppressWarnings("unused")
@@ -440,7 +440,7 @@ public class DoNonCombatMove
 		else
 			return false;
 	}
-	
+
 	private static List<NCM_Call> GenerateCalls(final MovePackage pack)
 	{
 		final List<NCM_Call> result = new ArrayList<NCM_Call>();
@@ -549,7 +549,7 @@ public class DoNonCombatMove
 		}
 		return result;
 	}
-	
+
 	private static boolean considerAndPerformWorthwhileCalls(final MovePackage pack, final List<NCM_Call> calls)
 	{
 		@SuppressWarnings("unused")
@@ -592,7 +592,7 @@ public class DoNonCombatMove
 		else
 			return false;
 	}
-	
+
 	/**
 	 * This method calculates and moves a group of units to its ncm target, if the move is acceptable.
 	 */

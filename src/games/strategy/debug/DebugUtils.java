@@ -15,13 +15,13 @@ import java.util.Properties;
 
 /**
  * Moved out of Console class, so that we don't need swing.
- * 
+ *
  * @author veqryn
  */
 public class DebugUtils
 {
 	private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
-	
+
 	public static String getThreadDumps()
 	{
 		final StringBuilder result = new StringBuilder();
@@ -68,7 +68,7 @@ public class DebugUtils
 		}
 		return result.toString();
 	}
-	
+
 	public static String getMemory()
 	{
 		System.gc();
@@ -88,7 +88,7 @@ public class DebugUtils
 		}
 		return buf.toString();
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String getProperties()
 	{
@@ -105,7 +105,7 @@ public class DebugUtils
 		}
 		return buf.toString();
 	}
-	
+
 	public static String getDebugReportHeadless()
 	{
 		final StringBuilder result = new StringBuilder(500);
@@ -115,7 +115,7 @@ public class DebugUtils
 		result.append("ENGINE VERSION: ").append(EngineVersion.VERSION).append("\n");
 		return result.toString();
 	}
-	
+
 	public static String getDebugReportWithFramesAndWindows()
 	{
 		final StringBuilder result = new StringBuilder(500);
@@ -129,7 +129,7 @@ public class DebugUtils
 		result.append("ENGINE VERSION: ").append(EngineVersion.VERSION).append("\n");
 		return result.toString();
 	}
-	
+
 	public static String getOpenAppWindows()
 	{
 		final StringBuilder builder = new StringBuilder("WINDOWS\n");

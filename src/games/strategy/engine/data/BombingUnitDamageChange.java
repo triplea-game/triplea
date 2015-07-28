@@ -8,27 +8,27 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class BombingUnitDamageChange extends Change
 {
 	private static final long serialVersionUID = -6425858423179501847L;
 	private final IntegerMap<Unit> m_hits;
 	private final IntegerMap<Unit> m_undoHits;
-	
+
 	private BombingUnitDamageChange(final IntegerMap<Unit> hits, final IntegerMap<Unit> undoHits)
 	{
 		m_hits = hits;
 		m_undoHits = undoHits;
 	}
-	
+
 	public Collection<Unit> getUnits()
 	{
 		return m_hits.keySet();
 	}
-	
+
 	BombingUnitDamageChange(final IntegerMap<Unit> hits)
 	{
 		for (final Unit u : hits.keySet())
@@ -43,7 +43,7 @@ public class BombingUnitDamageChange extends Change
 			m_undoHits.put(item, item.getHits());
 		}
 	}
-	
+
 	@Override
 	protected void perform(final GameData data)
 	{
@@ -60,7 +60,7 @@ public class BombingUnitDamageChange extends Change
 			}
 		}
 	}
-	
+
 	@Override
 	public Change invert()
 	{

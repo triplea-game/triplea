@@ -20,7 +20,7 @@ public class DoubleTextField extends JTextField
 	private double m_min = Double.MIN_VALUE;
 	private String m_terr = null;
 	private final ListenerList<DoubleTextFieldChangeListener> m_listeners = new ListenerList<DoubleTextFieldChangeListener>();
-	
+
 	public static void main(final String[] args)
 	{
 		final JFrame frame = new JFrame();
@@ -35,39 +35,39 @@ public class DoubleTextField extends JTextField
 		frame.setSize(400, 60);
 		frame.setVisible(true);
 	}
-	
+
 	/** Creates new IntTextBox */
 	public DoubleTextField()
 	{
 		super(10);
 		initTextField();
 	}
-	
+
 	public DoubleTextField(final double min)
 	{
 		this();
 		setMin(min);
 	}
-	
+
 	public DoubleTextField(final double min, final double max)
 	{
 		this();
 		setMin(min);
 		setMax(max);
 	}
-	
+
 	private void initTextField()
 	{
 		setDocument(new DoubleDocument());
 		setText(String.valueOf(m_min));
 		addFocusListener(new LostFocus());
 	}
-	
+
 	public double getValue()
 	{
 		return Double.parseDouble(getText());
 	}
-	
+
 	private void checkValue()
 	{
 		if (getText().trim().equals("-"))
@@ -90,7 +90,7 @@ public class DoubleTextField extends JTextField
 			setText(String.valueOf(m_min));
 		}
 	}
-	
+
 	public void setValue(final double value)
 	{
 		if (isGood(value))
@@ -98,7 +98,7 @@ public class DoubleTextField extends JTextField
 			setText(String.valueOf(value));
 		}
 	}
-	
+
 	public void setMax(final double max)
 	{
 		if (max < m_min)
@@ -111,12 +111,12 @@ public class DoubleTextField extends JTextField
 			setText(String.valueOf(max));
 		}
 	}
-	
+
 	public void setTerr(final String terr)
 	{
 		m_terr = terr;
 	}
-	
+
 	public void setMin(final double min)
 	{
 		if (min > m_max)
@@ -129,35 +129,35 @@ public class DoubleTextField extends JTextField
 			setText(String.valueOf(min));
 		}
 	}
-	
+
 	public double getMax()
 	{
 		return m_max;
 	}
-	
+
 	public String getTerr()
 	{
 		return m_terr;
 	}
-	
+
 	public double getMin()
 	{
 		return m_min;
 	}
-	
+
 	private final boolean isGood(final double value)
 	{
 		return value <= m_max && value >= m_min;
 	}
-	
-	
+
+
 	/**
 	 * Make sure that no non numeric data is typed.
 	 */
 	private class DoubleDocument extends PlainDocument
 	{
 		private static final long serialVersionUID = 64683753745223443L;
-		
+
 		@Override
 		public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException
 		{
@@ -184,7 +184,7 @@ public class DoubleTextField extends JTextField
 				}
 			}
 		}
-		
+
 		@Override
 		public void remove(final int offs, final int len) throws BadLocationException
 		{
@@ -199,17 +199,17 @@ public class DoubleTextField extends JTextField
 			}
 		}
 	}
-	
+
 	public void addChangeListener(final DoubleTextFieldChangeListener listener)
 	{
 		m_listeners.add(listener);
 	}
-	
+
 	public void removeChangeListener(final DoubleTextFieldChangeListener listener)
 	{
 		m_listeners.remove(listener);
 	}
-	
+
 	private void notifyListeners()
 	{
 		for (final DoubleTextFieldChangeListener listener : m_listeners)
@@ -217,8 +217,8 @@ public class DoubleTextField extends JTextField
 			listener.changedValue(this);
 		}
 	}
-	
-	
+
+
 	private class LostFocus extends FocusAdapter
 	{
 		@Override

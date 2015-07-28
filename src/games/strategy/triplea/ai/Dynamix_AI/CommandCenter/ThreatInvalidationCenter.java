@@ -27,59 +27,59 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class ThreatInvalidationCenter
 {
 	private static HashMap<PlayerID, ThreatInvalidationCenter> s_TICInstances = new HashMap<PlayerID, ThreatInvalidationCenter>();
-	
+
 	public static ThreatInvalidationCenter get(final GameData data, final PlayerID player)
 	{
 		if (!s_TICInstances.containsKey(player))
 			s_TICInstances.put(player, create(data, player));
 		return s_TICInstances.get(player);
 	}
-	
+
 	private static ThreatInvalidationCenter create(final GameData data, final PlayerID player)
 	{
 		return new ThreatInvalidationCenter(data, player);
 	}
-	
+
 	public static void ClearStaticInstances()
 	{
 		s_TICInstances.clear();
 	}
-	
+
 	public static void NotifyStartOfRound()
 	{
 		s_TICInstances.clear();
 	}
-	
+
 	private GameData m_data = null;
 	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
-	
+
 	public ThreatInvalidationCenter(final GameData data, final PlayerID player)
 	{
 		m_data = data;
 		m_player = player;
 	}
-	
+
 	private boolean ThreatInvalidationSuspended = false;
-	
+
 	public void SuspendThreatInvalidation()
 	{
 		ThreatInvalidationSuspended = true;
 	}
-	
+
 	public void ResumeThreatInvalidation()
 	{
 		ThreatInvalidationSuspended = false;
 	}
-	
+
 	private final HashMap<Territory, List<Unit>> InvalidatedEnemyUnits = new HashMap<Territory, List<Unit>>();
-	
+
 	@SuppressWarnings("unchecked")
 	public void InvalidateThreats(List<Unit> threats, final Territory hotspot)
 	{
@@ -102,7 +102,7 @@ public class ThreatInvalidationCenter
 			DUtils.AddObjectsToListValueForKeyInMap(InvalidatedEnemyUnits, ter, threats);
 		DUtils.Log(Level.FINER, "          Invalidating threats. Units: {0} Hotspot: {1} Ters: {2}", DUtils.UnitList_ToString(threats), hotspot.getName(), tersWereInvalidatingThreatsFor);
 	}
-	
+
 	public boolean IsUnitInvalidatedForTer(final Unit unit, final Territory ter)
 	{
 		if (ThreatInvalidationSuspended)
@@ -111,7 +111,7 @@ public class ThreatInvalidationCenter
 			return false;
 		return InvalidatedEnemyUnits.get(ter).contains(unit);
 	}
-	
+
 	public void ClearInvalidatedThreats()
 	{
 		DUtils.Log(Level.FINE, "    Clearing invalidated threats.");

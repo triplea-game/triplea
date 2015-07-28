@@ -32,7 +32,7 @@ import javax.swing.JOptionPane;
  * <p>
  * Description: Responsible for loading saved games, new games from xml, and saving games
  * </p>
- * 
+ *
  * @author Sean Bridges
  */
 public class GameDataManager
@@ -40,11 +40,11 @@ public class GameDataManager
 	private final static String DELEGATE_START = "<DelegateStart>";
 	private final static String DELEGATE_DATA_NEXT = "<DelegateData>";
 	private final static String DELEGATE_LIST_END = "<EndDelegateList>";
-	
+
 	public GameDataManager()
 	{
 	}
-	
+
 	public GameData loadGame(final File savedGameFile) throws IOException
 	{
 		InputStream input = null;
@@ -71,12 +71,12 @@ public class GameDataManager
 			}
 		}
 	}
-	
+
 	public GameData loadGame(final InputStream input, final String path) throws IOException
 	{
 		return loadGame(new ObjectInputStream(new GZIPInputStream(input)), path);
 	}
-	
+
 	public GameData loadGame(final ObjectInputStream input, final String savegamePath) throws IOException
 	{
 		try
@@ -97,7 +97,7 @@ public class GameDataManager
 							+ "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
 				if (savegamePath == null)
 					throw new IOException(error);
-				
+
 				// so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used for this savegame, and if so try to run it
 				try
 				{
@@ -112,7 +112,7 @@ public class GameDataManager
 								+ "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
 								+ "<br><b>You may choose to either Close or Keep the current instance of TripleA!</b> (If hosting, you must close it). Please report any bugs or issues."
 								+ "<br><br>Do you wish to continue?</html>";
-					
+
 					final String yesClose = "Yes & Close Current";
 					final String yesOpen = "Yes & Do Not Close";
 					final String cancel = "Cancel";
@@ -141,8 +141,8 @@ public class GameDataManager
 				{
 					if (GameRunner2.areWeOldExtraJar())
 					{
-						throw new IOException("<html>Please run the default TripleA and try to open this game again. " +
-									"<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: " +
+						throw new IOException("<html>Please run the default TripleA and try to open this game again. "
+									"<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: "
 									EngineVersion.VERSION.toStringFull("_", true) + "</html>");
 					}
 					else
@@ -176,15 +176,15 @@ public class GameDataManager
 			throw new IOException(cnfe.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Use this to keep compatibility between savegames when it is easy to do so.
 	 * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for triplea.
-	 * 
+	 *
 	 * FYI: Engine version numbers work like this with regards to savegames:
 	 * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
 	 * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
-	 * 
+	 *
 	 * @param originalEngineVersion
 	 * @param data
 	 */
@@ -211,7 +211,7 @@ public class GameDataManager
 			}
 		}*/
 	}
-	
+
 	private void loadDelegates(final ObjectInputStream input, final GameData data) throws ClassNotFoundException, IOException
 	{
 		for (Object endMarker = input.readObject(); !endMarker.equals(DELEGATE_LIST_END); endMarker = input.readObject())
@@ -237,7 +237,7 @@ public class GameDataManager
 			}
 		}
 	}
-	
+
 	public void saveGame(final File destination, final GameData data) throws IOException
 	{
 		BufferedOutputStream out = null;
@@ -258,12 +258,12 @@ public class GameDataManager
 			}
 		}
 	}
-	
+
 	public void saveGame(final OutputStream sink, final GameData data) throws IOException
 	{
 		saveGame(sink, data, true);
 	}
-	
+
 	public void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo) throws IOException
 	{
 		// write internally first in case of error
@@ -288,7 +288,7 @@ public class GameDataManager
 		zippedOut.flush();
 		zippedOut.close();
 	}
-	
+
 	private void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException
 	{
 		final Iterator<IDelegate> iter = data.getDelegateList().iterator();
@@ -306,7 +306,7 @@ public class GameDataManager
 		// mark end of delegate section
 		out.writeObject(DELEGATE_LIST_END);
 	}
-	
+
 	/**
 	 * Test if a game save works. Also a good way to dump a gamesave in memory to a hprof file, without all the background stuff.
 	 */

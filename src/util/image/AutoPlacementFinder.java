@@ -57,12 +57,12 @@ public class AutoPlacementFinder
 	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
 	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
 	private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null, "AutoPlacementFinder Log\r\n\r\n", "", "AutoPlacementFinder Log", null, 500, 300, true, 1, null);
-	
+
 	public static String[] getProperties()
 	{
 		return new String[] { TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT };
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		handleCommandLineArgs(args);
@@ -82,10 +82,10 @@ public class AutoPlacementFinder
 					+ "</html>"));
 		calculate();
 	}
-	
+
 	/**
 	 * calculate()
-	 * 
+	 *
 	 * Will calculate the placements on the map automatically.
 	 */
 	static void calculate()
@@ -116,7 +116,7 @@ public class AutoPlacementFinder
 					final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
 					final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
 					final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-					
+
 					final FileReader reader = new FileReader(file);
 					final LineNumberReader reader2 = new LineNumberReader(reader);
 					int i = 0;
@@ -162,9 +162,9 @@ public class AutoPlacementFinder
 					if (found)
 					{
 						final int result = JOptionPane.showConfirmDialog(new JPanel(),
-									"A map.properties file was found in the map's folder, " +
-												"\r\n do you want to use the file to supply the info for the placement box size? " +
-												"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height +
+									"A map.properties file was found in the map's folder, "
+												"\r\n do you want to use the file to supply the info for the placement box size? "
+												"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height
 												",    Result = (" + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")", "File Suggestion", 1);
 						// if (result == 2)
 						// return;
@@ -182,7 +182,7 @@ public class AutoPlacementFinder
 			}
 		}
 		if (!placeDimensionsSet
-					|| JOptionPane.showConfirmDialog(new JPanel(), "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), " +
+					|| JOptionPane.showConfirmDialog(new JPanel(), "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), "
 								"do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.", "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1)
 		{
 			try
@@ -278,7 +278,7 @@ public class AutoPlacementFinder
 		textOptionPane.dispose();
 		System.exit(0); // shut down program when done.
 	}
-	
+
 	/**
 	 * we need the exact map name as indicated in the XML game file
 	 * ie. "revised" "classic" "pact_of_steel"
@@ -296,7 +296,7 @@ public class AutoPlacementFinder
 			return null;
 		}
 	}
-	
+
 	private static String getUnitsScale()
 	{
 		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
@@ -309,10 +309,10 @@ public class AutoPlacementFinder
 			return "1";
 		}
 	}
-	
+
 	/**
 	 * java.util.List getPlacementsStartingAtMiddle(java.util.Collection, java.awt.Rectangle, java.awt.Point)
-	 * 
+	 *
 	 * @param java
 	 *            .util.Collection
 	 * @param java
@@ -376,10 +376,10 @@ public class AutoPlacementFinder
 		}
 		return placementPoints;
 	}
-	
+
 	/**
 	 * java.util.List getPlacementsStartingAtTopLeft(java.util.Collection, java.awt.Rectangle, java.awt.Point, java.util.Collection)
-	 * 
+	 *
 	 * @param java
 	 *            .util.Collection
 	 * @param java
@@ -412,10 +412,10 @@ public class AutoPlacementFinder
 		}
 		return placementPoints;
 	}
-	
+
 	/**
 	 * isPlacement(java.util.Collection, java.util.Collection, java.util.List, java.util.List, java.awt.geom.Rectangle2D, java.lang.int, java.lang.int)
-	 * 
+	 *
 	 * @param java
 	 *            .util.Collection countryPolygons
 	 * @param java
@@ -445,14 +445,14 @@ public class AutoPlacementFinder
 			placementRects.add(newRect);
 		}// if
 	}
-	
+
 	/**
 	 * java.lang.boolean containedIn(java.awt.geom.Rectangle2D, java.util.Collection)
-	 * 
+	 *
 	 * Function to test if the given 2D rectangle
 	 * is contained in any of the given shapes
 	 * in the collection.
-	 * 
+	 *
 	 * @param java
 	 *            .awt.geom.Rectangle2D r
 	 * @param java
@@ -469,14 +469,14 @@ public class AutoPlacementFinder
 		}
 		return false;
 	}
-	
+
 	/**
 	 * java.lang.boolean intersectsOneOf(java.awt.geom.Rectangle2D, java.util.Collection)
-	 * 
+	 *
 	 * Function to test if the given 2D rectangle
 	 * intersects any of the shapes given in the
 	 * collection.
-	 * 
+	 *
 	 * @param java
 	 *            .awt.geom.Rectangle2D r
 	 * @param java
@@ -497,7 +497,7 @@ public class AutoPlacementFinder
 		}
 		return false;
 	}
-	
+
 	private static String getValue(final String arg)
 	{
 		final int index = arg.indexOf('=');
@@ -505,7 +505,7 @@ public class AutoPlacementFinder
 			return "";
 		return arg.substring(index + 1);
 	}
-	
+
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		final String[] properties = getProperties();
@@ -546,7 +546,7 @@ public class AutoPlacementFinder
 			} catch (final Exception ex)
 			{
 			}
-			
+
 			String value1;
 			if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT))
 			{
@@ -564,7 +564,7 @@ public class AutoPlacementFinder
 			{
 			}
 		}
-		
+
 		boolean usagePrinted = false;
 		for (int argIndex = 0; argIndex < args.length; argIndex++)
 		{

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings({ "unchecked", "deprecation" })
@@ -50,19 +50,19 @@ public class UnitGroup
 	private HashMap<Match<Territory>, Integer> m_ncmCRouteMatches = null;
 	private GameData m_data = null;
 	private int m_moveIndex = -1;
-	
+
 	public static void clearCachedInstances()
 	{
 		movesCount = 0;
 		s_isBufferring = false;
 		s_bufferedMoves = new HashMap<Route, List<UnitGroup>>();
 	}
-	
+
 	public UnitGroup(final Unit unit, final Territory startTer, final GameData data)
 	{
 		this(Collections.singleton(unit), startTer, data);
 	}
-	
+
 	public UnitGroup(final Collection<Unit> units, final Territory startTer, final GameData data)
 	{
 		TacticalCenter.get(data, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups.add(this);
@@ -73,14 +73,14 @@ public class UnitGroup
 		m_data = data;
 		GenerateRouteMatches();
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		final String hashString = m_units.hashCode() + "" + m_fromTer.getName();
 		return hashString.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -103,7 +103,7 @@ public class UnitGroup
 		}
 		return true;
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void GenerateRouteMatches()
 	{
@@ -167,30 +167,30 @@ public class UnitGroup
 			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand), 1000); // Finally, we add the any-land match, which we unfortunately can't get through...
 		}
 	}
-	
+
 	public Collection<Unit> GetUnits()
 	{
 		return m_units;
 	}
-	
+
 	public List<Unit> GetUnitsAsList()
 	{
 		return new ArrayList<Unit>(m_units);
 	}
-	
+
 	public Territory GetFromTerritory()
 	{
 		return m_fromTer;
 	}
-	
+
 	public Unit GetFirstUnit()
 	{
 		return ((Unit) m_units.toArray()[0]);
 	}
-	
+
 	/**
 	 * Attempts to find a cm route from this unit group's start location to the target specified
-	 * 
+	 *
 	 * @param target
 	 *            - The target to find a route to
 	 * @return null if move failed. If successful, returns the calculated ncm route.
@@ -217,10 +217,10 @@ public class UnitGroup
 			return null;
 		return route;
 	}
-	
+
 	/**
 	 * Attempts to find an ncm route from this unit group's start location to the target specified
-	 * 
+	 *
 	 * @param target
 	 *            - The target to find a route to
 	 * @return null if move failed. If successful, returns the calculated ncm route.
@@ -229,10 +229,10 @@ public class UnitGroup
 	{
 		return GetNCMRoute(target, false);
 	}
-	
+
 	/**
 	 * Attempts to find an ncm route from this unit group's start location to the target specified
-	 * 
+	 *
 	 * @param target
 	 *            - The target to find a route to
 	 * @param extraChecks
@@ -265,10 +265,10 @@ public class UnitGroup
 			return null;
 		return route;
 	}
-	
+
 	/**
 	 * Attempts to move the units given during initialization as far as possible to the target specified.
-	 * 
+	 *
 	 * @param target
 	 *            - The territory for the units in this unit group to move to
 	 * @param mover
@@ -301,10 +301,10 @@ public class UnitGroup
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Attempts to move the units given during initialization as far as possible to the target specified.
-	 * 
+	 *
 	 * @param target
 	 *            - The territory for the units in this unit group to move to
 	 * @param mover
@@ -315,10 +315,10 @@ public class UnitGroup
 	{
 		return MoveAsFarTo_NCM(target, mover, false);
 	}
-	
+
 	/**
 	 * Attempts to move the units given during initialization as far as possible to the target specified.
-	 * 
+	 *
 	 * @param target
 	 *            - The territory for the units in this unit group to move to
 	 * @param mover
@@ -353,10 +353,10 @@ public class UnitGroup
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Attempts to move the units given during initialization as far as possible along the route given.
-	 * 
+	 *
 	 * @param fullRoute
 	 *            - The route that the units in this unit group will follow
 	 * @param mover
@@ -367,10 +367,10 @@ public class UnitGroup
 	{
 		return MoveAsFarAlongRoute_NCM(mover, fullRoute, false);
 	}
-	
+
 	/**
 	 * Attempts to move the units given during initialization as far as possible along the route given.
-	 * 
+	 *
 	 * @param fullRoute
 	 *            - The route that the units in this unit group will follow
 	 * @param mover
@@ -423,10 +423,10 @@ public class UnitGroup
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Attempts to move the units given on the route given.
-	 * 
+	 *
 	 * @param mover
 	 *            - The move delegate that performs the move
 	 * @param route
@@ -457,32 +457,32 @@ public class UnitGroup
 			return DUtils.Format("Move failed(units are not at destination), though no errors occurred. Route: {0} Units: {1}", route, DUtils.UnitList_ToString(units));
 		return null;
 	}
-	
+
 	private void NotifySuccessfulMove(final Territory movedTo)
 	{
 		m_moveIndex = movesCount;
 		movesCount++;
 		m_movedTo = movedTo;
 	}
-	
+
 	private void NotifySuccessfulBufferedMove(final Territory movedTo, final int moveIndex)
 	{
 		m_moveIndex = moveIndex;
 		m_movedTo = movedTo;
 	}
-	
+
 	public Territory GetMovedTo()
 	{
 		return m_movedTo;
 	}
-	
+
 	public void ClearMovedTo()
 	{
 		m_movedTo = null;
 	}
-	
+
 	public static int movesCount = 0;
-	
+
 	public static void UndoMove_NotifyAllUGs(final IMoveDelegate mover, final int moveIndex)
 	{
 		if (moveIndex == -1)
@@ -512,17 +512,17 @@ public class UnitGroup
 			ug.NotifyMoveUndo(moveIndex);
 		DUtils.Log(Level.FINER, "          Move undone. Initial Locations: {0} Target: {1} Units: {2}", fromTers, target, unitsMoved);
 	}
-	
+
 	public int GetMoveIndex()
 	{
 		return m_moveIndex;
 	}
-	
+
 	public void SetMoveIndex(final int moveIndex)
 	{
 		m_moveIndex = moveIndex;
 	}
-	
+
 	public void NotifyMoveUndo(final int undoneMoveIndex)
 	{
 		if (GetMoveIndex() > undoneMoveIndex)
@@ -534,30 +534,30 @@ public class UnitGroup
 			m_moveIndex = -1;
 		}
 	}
-	
+
 	public Match<Territory> GetRouteMatch()
 	{
 		return m_cmRouteMatch;
 	}
-	
+
 	private static boolean s_isBufferring = false;
 	private static HashMap<Route, List<UnitGroup>> s_bufferedMoves = new HashMap<Route, List<UnitGroup>>();
-	
+
 	public static boolean IsBufferringMoves()
 	{
 		return s_isBufferring;
 	}
-	
+
 	public static void EnableMoveBuffering()
 	{
 		s_isBufferring = true;
 	}
-	
+
 	public static void ClearBufferedMoves()
 	{
 		s_bufferedMoves.clear();
 	}
-	
+
 	/**
 	 * @param mover
 	 * @return a list of errors that occurred, if any. If there were not errors, null is returned.
@@ -570,7 +570,7 @@ public class UnitGroup
 		TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).PerformBufferedFreezes();
 		return errors;
 	}
-	
+
 	private static String performBufferedMoves(final HashMap<Route, List<UnitGroup>> moves, final IMoveDelegate mover)
 	{
 		final StringBuilder errors = new StringBuilder();
@@ -596,7 +596,7 @@ public class UnitGroup
 		else
 			return errors.toString().substring(0, errors.length() - 2);
 	}
-	
+
 	@Override
 	public String toString()
 	{

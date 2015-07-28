@@ -13,25 +13,25 @@ import java.util.Collection;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
 public class ChangeTripleATest extends TestCase
 {
 	private GameData m_data;
-	
+
 	public ChangeTripleATest(final String name)
 	{
 		super(name);
 	}
-	
+
 	@Override
 	public void setUp() throws Exception
 	{
 		m_data = LoadGameUtil.loadGame("Big World : 1942", "big_world" + File.separator + "games" + File.separator + "big_world_1942.xml");
 	}
-	
+
 	private Change serialize(final Change aChange) throws Exception
 	{
 		final ByteArrayOutputStream sink = new ByteArrayOutputStream();
@@ -46,7 +46,7 @@ public class ChangeTripleATest extends TestCase
 		output.close();
 		return newChange;
 	}
-	
+
 	public void testUnitsAddTerritory()
 	{
 		// make sure we know where we are starting
@@ -61,7 +61,7 @@ public class ChangeTripleATest extends TestCase
 		changePerformer.perform(change.invert());
 		assertEquals(can.getUnits().getUnitCount(), 2);
 	}
-	
+
 	public void testUnitsRemoveTerritory()
 	{
 		// make sure we now where we are starting
@@ -77,7 +77,7 @@ public class ChangeTripleATest extends TestCase
 		changePerformer.perform(change.invert());
 		assertEquals(can.getUnits().getUnitCount(), 2);
 	}
-	
+
 	public void testSerializeUnitsRemoteTerritory() throws Exception
 	{
 		// make sure we now where we are starting

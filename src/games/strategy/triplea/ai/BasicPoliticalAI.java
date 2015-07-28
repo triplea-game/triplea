@@ -32,9 +32,9 @@ import java.util.List;
  * tries to get from Neutral to War with state if it is free with everyone this
  * AI will not go through a different Neutral state to reach a War state. (ie go
  * from NAP to Peace to War)
- * 
+ *
  * @author Edwin van der Wal
- * 
+ *
  */
 public class BasicPoliticalAI
 {
@@ -50,7 +50,7 @@ public class BasicPoliticalAI
 		}
 		return acceptableActions;
 	}
-	
+
 	public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id, final HashMap<ICondition, Boolean> testedConditions, final GameData data)
 	{
 		final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
@@ -80,12 +80,12 @@ public class BasicPoliticalAI
 		}
 		return acceptableActions;
 	}
-	
+
 	private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID id, final GameData data)
 	{
 		return isFree(nextAction) && goesTowardsWar(nextAction, id, data);
 	}
-	
+
 	// this code has a rare risk of circular loop actions.. depending on the map
 	// designer
 	// only switches from a Neutral to an War state... won't go through
@@ -109,7 +109,7 @@ public class BasicPoliticalAI
 		}
 		return false;
 	}
-	
+
 	private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0, final GameData data)
 	{
 		for (final String relationshipChangeString : nextAction.getRelationshipChange())
@@ -128,12 +128,12 @@ public class BasicPoliticalAI
 		}
 		return false;
 	}
-	
+
 	private static boolean isFree(final PoliticalActionAttachment nextAction)
 	{
 		return nextAction.getCostPU() <= 0;
 	}
-	
+
 	private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player, final GameData data)
 	{
 		// if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable price.

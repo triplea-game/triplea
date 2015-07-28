@@ -30,26 +30,26 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class DUtilsTest extends TestCase
 {
 	private GameData m_data;
 	private final IOddsCalculator m_calc = new Dynamix_AI("Superior", "Dynamix (AI)").getCalc();
-	
+
 	@Override
 	protected void setUp() throws Exception
 	{
 		m_data = LoadGameUtil.loadGame("Great Lakes War Test", "Great Lakes War v1.4 test.xml");
 	}
-	
+
 	@Override
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
 	}
-	
+
 	@SuppressWarnings("unused")
 	public void testBattleCalculator()
 	{
@@ -71,7 +71,7 @@ public class DUtilsTest extends TestCase
 		// actually zero (0.0) rounds are fought, however the getAverageBattleRoundsFought() method will return 1.0 if there are zero or empty rounds
 		assertEquals(1.0D, results.getAverageBattleRoundsFought());
 	}
-	
+
 	public void testTemp()
 	{
 		if (true) // Return now, as the developer is not currently using this for anything... :)

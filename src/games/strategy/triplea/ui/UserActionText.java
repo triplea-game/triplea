@@ -9,9 +9,9 @@ import java.util.Properties;
 
 /**
  * Same as PoliticsText but for user actions.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class UserActionText
 {
@@ -27,7 +27,7 @@ public class UserActionText
 	private final static String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
 	private final static String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
 	private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
-	
+
 	protected UserActionText()
 	{
 		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
@@ -47,7 +47,7 @@ public class UserActionText
 			}
 		}
 	}
-	
+
 	public static UserActionText getInstance()
 	{
 		if (s_text == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000)
@@ -57,47 +57,47 @@ public class UserActionText
 		}
 		return s_text;
 	}
-	
+
 	private String getString(final String value)
 	{
 		return m_properties.getProperty(value, "NO: " + value + " set.");
 	}
-	
+
 	private String getMessage(final String actionKey, final String messageKey)
 	{
 		return getString(actionKey + "." + messageKey);
 	}
-	
+
 	public String getButtonText(final String actionKey)
 	{
 		return getMessage(actionKey, BUTTON);
 	}
-	
+
 	public String getDescription(final String actionKey)
 	{
 		return getMessage(actionKey, DESCRIPTION);
 	}
-	
+
 	public String getNotificationSucccess(final String actionKey)
 	{
 		return getMessage(actionKey, NOTIFICATION_SUCCESS);
 	}
-	
+
 	public String getNotificationSuccessOthers(final String actionKey)
 	{
 		return getMessage(actionKey, OTHER_NOTIFICATION_SUCCESS);
 	}
-	
+
 	public String getNotificationFailure(final String actionKey)
 	{
 		return getMessage(actionKey, NOTIFICATION_FAILURE);
 	}
-	
+
 	public String getNotificationFailureOthers(final String actionKey)
 	{
 		return getMessage(actionKey, OTHER_NOTIFICATION_FAILURE);
 	}
-	
+
 	public String getAcceptanceQuestion(final String actionKey)
 	{
 		return getMessage(actionKey, ACCEPT_QUESTION);

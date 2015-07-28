@@ -34,9 +34,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * Similar to PoliticsPanel, but for UserActionAttachment/Delegate.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class UserActionPanel extends ActionPanel
 {
@@ -48,19 +48,19 @@ public class UserActionPanel extends ActionPanel
 	private final TripleAFrame m_parent;
 	private boolean m_firstRun = true;
 	protected List<UserActionAttachment> m_validUserActions = null;
-	
+
 	public UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent)
 	{
 		super(data, map);
 		m_parent = parent;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "Actions and Operations Panel";
 	}
-	
+
 	@Override
 	public void display(final PlayerID id)
 	{
@@ -89,12 +89,12 @@ public class UserActionPanel extends ActionPanel
 			}
 		});
 	}
-	
+
 	/**
 	 * waits till someone calls release() and then returns the action chosen
-	 * 
+	 *
 	 * @param firstRun
-	 * 
+	 *
 	 * @return the choice of action
 	 */
 	public UserActionAttachment waitForUserActionAction(final boolean firstRun, final IUserActionDelegate iUserActionsDelegate)
@@ -128,7 +128,7 @@ public class UserActionPanel extends ActionPanel
 		waitForRelease();
 		return m_choice;
 	}
-	
+
 	/**
 	 * Fires up a JDialog showing valid actions,
 	 * choosing an action will release this model and trigger waitForRelease()
@@ -136,7 +136,7 @@ public class UserActionPanel extends ActionPanel
 	private final Action SelectUserActionAction = new AbstractAction("Take Action...")
 	{
 		private static final long serialVersionUID = 2389485901611958851L;
-		
+
 		public void actionPerformed(final ActionEvent event)
 		{
 			final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -157,27 +157,27 @@ public class UserActionPanel extends ActionPanel
 			overviewScroll.setBorder(BorderFactory.createEmptyBorder());
 			// add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong (again)...
 			// add 20 to either when the opposite needs scroll bars, because that is how big scroll bars are..
-			overviewScroll.setPreferredSize(new Dimension((overviewScroll.getPreferredSize().width > availWidth ? availWidth : (overviewScroll.getPreferredSize().width +
+			overviewScroll.setPreferredSize(new Dimension((overviewScroll.getPreferredSize().width > availWidth ? availWidth : (overviewScroll.getPreferredSize().width
 						(overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
 						(overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview :
 									(overviewScroll.getPreferredSize().height + (m_validUserActions.isEmpty() ? 26 : 0)
 									+ (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
 			final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
 			choiceScroll.setBorder(BorderFactory.createEtchedBorder());
-			choiceScroll.setPreferredSize(new Dimension((choiceScroll.getPreferredSize().width > availWidth ? availWidth : (choiceScroll.getPreferredSize().width +
+			choiceScroll.setPreferredSize(new Dimension((choiceScroll.getPreferredSize().width > availWidth ? availWidth : (choiceScroll.getPreferredSize().width
 						(choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
-						(choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice : (choiceScroll.getPreferredSize().height) +
+						(choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice : (choiceScroll.getPreferredSize().height)
 									(choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
-			
+
 			final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
 			splitPane.setOneTouchExpandable(false);
 			splitPane.setDividerSize(8);
 			userChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
-			
+
 			final JButton noActionButton = new JButton(new AbstractAction("No Actions")
 			{
 				private static final long serialVersionUID = -807175594221278068L;
-				
+
 				public void actionPerformed(final ActionEvent arg0)
 				{
 					userChoiceDialog.setVisible(false);
@@ -199,7 +199,7 @@ public class UserActionPanel extends ActionPanel
 			userChoiceDialog.dispose();
 		}
 	};
-	
+
 	private JPanel getUserActionButtonPanel(final JDialog parent)
 	{
 		final JPanel userActionButtonPanel = new JPanel();
@@ -228,15 +228,15 @@ public class UserActionPanel extends ActionPanel
 		}
 		return userActionButtonPanel;
 	}
-	
+
 	/**
 	 * This will stop the user action Phase
-	 * 
+	 *
 	 */
 	private final Action DontBotherAction = new AbstractAction("Done")
 	{
 		private static final long serialVersionUID = 2835948679299520899L;
-		
+
 		public void actionPerformed(final ActionEvent event)
 		{
 			if (!m_firstRun || youSureDoNothing())
@@ -245,7 +245,7 @@ public class UserActionPanel extends ActionPanel
 				release();
 			}
 		}
-		
+
 		private boolean youSureDoNothing()
 		{
 			final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this), "Are you sure you dont want to do anything?", "End Actions",
@@ -253,11 +253,11 @@ public class UserActionPanel extends ActionPanel
 			return rVal == JOptionPane.YES_OPTION;
 		}
 	};
-	
+
 	/**
 	 * Convenient method to get a JCompenent showing the flags involved in this
 	 * action.
-	 * 
+	 *
 	 * @param uaa
 	 *            the User action attachment to get the "otherflags" for
 	 * @return a JComponent with the flags involved.
@@ -271,13 +271,13 @@ public class UserActionPanel extends ActionPanel
 		}
 		return panel;
 	}
-	
+
 	private String getActionButtonText(final UserActionAttachment paa)
 	{
 		final String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
 		return costString + UserActionText.getInstance().getButtonText(paa.getText());
 	}
-	
+
 	private JLabel getActionDescriptionLabel(final UserActionAttachment paa)
 	{
 		final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? "" : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
@@ -291,7 +291,7 @@ class UserActionComparator implements Comparator<UserActionAttachment>
 	public UserActionComparator(final PlayerID currentPlayer, final GameData data)
 	{
 	}
-	
+
 	public int compare(final UserActionAttachment uaa1, final UserActionAttachment uaa2)
 	{
 		if (uaa1.equals(uaa2))

@@ -50,7 +50,7 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /**
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings("unchecked")
@@ -269,7 +269,7 @@ public class Place
 		}
 		GlobalCenter.PUsAtEndOfLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource());
 	}
-	
+
 	private static boolean doPlace(final Dynamix_AI ai, Territory ter, final Collection<Unit> units, final GameData data, final IAbstractPlaceDelegate placer)
 	{
 		DUtils.Log(Level.FINER, "    Placing units. Territory: {0} Units: {1}", ter, DUtils.UnitList_ToString(units));
@@ -296,7 +296,7 @@ public class Place
 			return true;
 		}
 	}
-	
+
 	private static List<Unit> GetPlayerUnitsMatchingUnitsInList(final List<Unit> units, final PlayerID player)
 	{
 		final List<Unit> result = new ArrayList<Unit>();
@@ -315,7 +315,7 @@ public class Place
 		}
 		return result;
 	}
-	
+
 	private static Territory CalculateBestFactoryBuildTerritory(final GameData data, final PlayerID player)
 	{
 		final List<Territory> ourCapitals = TerritoryAttachment.getAllCapitals(player, data);

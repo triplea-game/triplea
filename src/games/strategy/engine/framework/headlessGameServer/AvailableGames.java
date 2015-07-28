@@ -29,7 +29,7 @@ import java.util.zip.ZipInputStream;
 
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
  */
 public class AvailableGames
@@ -38,7 +38,7 @@ public class AvailableGames
 	private static final String ZIP_EXTENSION = ".zip";
 	private final TreeMap<String, URI> m_availableGames = new TreeMap<String, URI>();
 	private final Set<String> m_availableMapFolderOrZipNames = new HashSet<String>();
-	
+
 	public AvailableGames()
 	{
 		final Set<String> mapNamePropertyList = new HashSet<String>();
@@ -48,17 +48,17 @@ public class AvailableGames
 		m_availableMapFolderOrZipNames.retainAll(mapNamePropertyList);
 		// System.out.println(m_availableMapFolderOrZipNames);
 	}
-	
+
 	public List<String> getGameNames()
 	{
 		return new ArrayList<String>(m_availableGames.keySet());
 	}
-	
+
 	public Set<String> getAvailableMapFolderOrZipNames()
 	{
 		return new HashSet<String>(m_availableMapFolderOrZipNames);
 	}
-	
+
 	/**
 	 * Can return null.
 	 */
@@ -66,17 +66,17 @@ public class AvailableGames
 	{
 		return getGameDataFromXML(m_availableGames.get(gameName));
 	}
-	
+
 	public URI getGameURI(final String gameName)
 	{
 		return m_availableGames.get(gameName);
 	}
-	
+
 	public String getGameFilePath(final String gameName)
 	{
 		return getGameXMLLocation(m_availableGames.get(gameName));
 	}
-	
+
 	private static void populateAvailableGames(final Map<String, URI> availableGames, final Set<String> availableMapFolderOrZipNames,
 				final Set<String> mapNamePropertyList)
 	{
@@ -94,7 +94,7 @@ public class AvailableGames
 		}
 		System.out.println("Finished parsing all available game xmls. ");
 	}
-	
+
 	private static List<File> allMapFiles()
 	{
 		final List<File> rVal = new ArrayList<File>();
@@ -103,7 +103,7 @@ public class AvailableGames
 		rVal.addAll(safeListFiles(NewGameChooserModel.getDefaultMapsDir()));
 		return rVal;
 	}
-	
+
 	private static List<File> safeListFiles(final File f)
 	{
 		final File[] files = f.listFiles();
@@ -113,7 +113,7 @@ public class AvailableGames
 		}
 		return Arrays.asList(files);
 	}
-	
+
 	private static void populateFromDirectory(final File mapDir, final Map<String, URI> availableGames,
 				final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList)
 	{
@@ -134,7 +134,7 @@ public class AvailableGames
 			}
 		}
 	}
-	
+
 	private static void populateFromZip(final File map, final Map<String, URI> availableGames,
 				final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList)
 	{
@@ -183,7 +183,7 @@ public class AvailableGames
 			ioe.printStackTrace();
 		}
 	}
-	
+
 	public static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames, final Set<String> mapNamePropertyList)
 	{
 		if (uri == null)
@@ -231,7 +231,7 @@ public class AvailableGames
 		}
 		return false;
 	}
-	
+
 	public static String getGameXMLLocation(final URI uri)
 	{
 		if (uri == null)
@@ -250,7 +250,7 @@ public class AvailableGames
 		}
 		return raw;
 	}
-	
+
 	public static GameData getGameDataFromXML(final URI uri)
 	{
 		if (uri == null)

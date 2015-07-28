@@ -3,17 +3,17 @@ package games.strategy.util;
 /**
  * Designed to remove/replace<br>
  * / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
- * 
+ *
  * @author Mark Christopher Duncan (veqryn)
- * 
+ *
  */
 public class IllegalCharacterRemover
 {
 	private static final char[] ILLEGAL_CHARACTERS = { '/', '\b', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', '\'', ':', '.', ',', '^', '[', ']', '=', '+', ';' };
-	
+
 	/**
 	 * Designed to remove / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
-	 * 
+	 *
 	 * @param text
 	 * @return
 	 */
@@ -27,10 +27,10 @@ public class IllegalCharacterRemover
 		}
 		return rVal.toString();
 	}
-	
+
 	/**
 	 * Designed to replace / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
-	 * 
+	 *
 	 * @param text
 	 * @param replacement
 	 * @return
@@ -47,7 +47,7 @@ public class IllegalCharacterRemover
 		}
 		return rVal.toString();
 	}
-	
+
 	private static boolean isIllegalFileNameChar(final char c)
 	{
 		boolean isIllegal = false;

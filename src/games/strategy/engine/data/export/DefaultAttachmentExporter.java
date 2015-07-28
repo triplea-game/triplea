@@ -13,7 +13,7 @@
  */
 /*
  * AbstractAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -32,10 +32,10 @@ import java.util.Iterator;
  * Base class for all attachment exporter classes, if you create a new attachment extend this class,
  * and configure the AttachmentExporterFactory to include your new exporter. Or if your new Attachment
  * is very standard you can use this one directly. Configure the same in AttachmentExporterFactory
- * 
+ *
  * @see AttachmentExporterFactory
  * @author Edwin van der Wal
- * 
+ *
  */
 public class DefaultAttachmentExporter implements IAttachmentExporter
 {
@@ -60,7 +60,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 		}
 		return xmlfile.toString();
 	}
-	
+
 	/**
 	 * @param field
 	 *            the field indicating the reference in the attachment to the option.
@@ -142,7 +142,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 		}
 		return "";
 	}
-	
+
 	private String printUnitTypeOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
@@ -159,7 +159,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	private String printPlayerIDOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		PlayerID value;
@@ -177,7 +177,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 		}
 		return printDefaultOption(option, value.getName());
 	}
-	
+
 	private String printStringArrayOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		String[] valueArray;
@@ -201,7 +201,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	protected String printIntegerOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue) throws AttachmentExportException
 	{
 		int value;
@@ -226,17 +226,17 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for printIntegerOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	protected String printIntegerOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printIntegerOption(field, option, attachment, false);
 	}
-	
+
 	protected String printStringOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printStringOption(field, option, attachment, false);
 	}
-	
+
 	protected String printStringOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue) throws AttachmentExportException
 	{
 		String value;
@@ -263,12 +263,12 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for printStringOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	protected String printBooleanOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printBooleanOption(field, option, attachment, false);
 	}
-	
+
 	protected String printBooleanOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue) throws AttachmentExportException
 	{
 		boolean value = false;
@@ -293,17 +293,17 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for printBooleanOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	protected String printDefaultOption(final String option, final String value)
 	{
 		return "            <option name=\"" + option + "\" value=\"" + value + "\"/>\n";
 	}
-	
+
 	protected String printCountOption(final String option, final String value, final String count)
 	{
 		return "            <option name=\"" + option + "\" value=\"" + value + "\" count=\"" + count + "\"/>\n";
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected String printPlayerList(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -330,7 +330,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected String printUnitIntegerMap(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{

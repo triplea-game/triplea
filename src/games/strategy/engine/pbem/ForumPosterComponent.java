@@ -47,10 +47,10 @@ public class ForumPosterComponent extends JPanel
 	protected Action m_showDetailsAction;
 	protected Action m_showDiceStatisticsAction;
 	protected Action m_doneAction;
-	
+
 	protected String m_title;
 	protected IAbstractForumPosterDelegate m_forumPosterDelegate;
-	
+
 	public ForumPosterComponent(final GameData data, final Action doneAction, final String title)
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -61,7 +61,7 @@ public class ForumPosterComponent extends JPanel
 		m_viewAction = new AbstractAction("View " + m_title)
 		{
 			private static final long serialVersionUID = -2619980789206699839L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_historyLog.setVisible(true);
@@ -70,7 +70,7 @@ public class ForumPosterComponent extends JPanel
 		m_postAction = new AbstractAction("Post " + m_title)
 		{
 			private static final long serialVersionUID = 8317441736305744524L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_postButton.setEnabled(false);
@@ -82,7 +82,7 @@ public class ForumPosterComponent extends JPanel
 		m_includeTerritoryAction = new AbstractAction("Include territory summary")
 		{
 			private static final long serialVersionUID = 207279881318712095L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -91,7 +91,7 @@ public class ForumPosterComponent extends JPanel
 		m_includeTerritoryAllPlayersAction = new AbstractAction("Include full territory summary")
 		{
 			private static final long serialVersionUID = 207279881318712095L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -100,7 +100,7 @@ public class ForumPosterComponent extends JPanel
 		m_includeProductionAction = new AbstractAction("Include production summary")
 		{
 			private static final long serialVersionUID = 2298448099326090293L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -109,7 +109,7 @@ public class ForumPosterComponent extends JPanel
 		m_showDetailsAction = new AbstractAction("Show dice/battle details")
 		{
 			private static final long serialVersionUID = -4248518090232071926L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -118,7 +118,7 @@ public class ForumPosterComponent extends JPanel
 		m_showDiceStatisticsAction = new AbstractAction("Include overall dice statistics")
 		{
 			private static final long serialVersionUID = 1431745626173286692L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -127,7 +127,7 @@ public class ForumPosterComponent extends JPanel
 		m_repostAction = new AbstractAction("Repost " + m_title)
 		{
 			private static final long serialVersionUID = -67455254243579500L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				if (m_repostTurnSummaryCheckBox.isSelected())
@@ -148,7 +148,7 @@ public class ForumPosterComponent extends JPanel
 		m_includeSavegameCheckBox = new JCheckBox("Include SaveGame");
 		m_repostTurnSummaryCheckBox = new JCheckBox(m_repostAction);
 	}
-	
+
 	public ForumPosterComponent layoutComponents(final PBEMMessagePoster poster, final IAbstractForumPosterDelegate forumPosterDelegate, final IPlayerBridge bridge, final MainGameFrame frame,
 				final boolean hasPosted, final boolean allowIncludeTerritorySummary, final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary,
 				final boolean allowDiceBattleDetails,
@@ -163,7 +163,7 @@ public class ForumPosterComponent extends JPanel
 		// return;
 		// if (skipPosting() || Boolean.parseBoolean(m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))
 		// return;
-		
+
 		// SwingUtilities.invokeLater(new Runnable()
 		// {
 		// public void run()
@@ -199,7 +199,7 @@ public class ForumPosterComponent extends JPanel
 		// waitForRelease();
 		return this;
 	}
-	
+
 	private void updateHistoryLog()
 	{
 		final Collection<PlayerID> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(m_data);
@@ -217,14 +217,14 @@ public class ForumPosterComponent extends JPanel
 		}
 		else if (m_includeTerritoryCheckbox.isSelected())
 			m_historyLog.printTerritorySummary(m_data, allowedIDs);
-		
+
 		if (m_includeProductionCheckbox.isSelected())
 			m_historyLog.printProductionSummary(m_data);
 		if (m_showDiceStatisticsCheckbox.isSelected())
 			m_historyLog.printDiceStatistics(m_data, (IRandomStats) m_frame.getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
 		m_historyLog.requestFocus();
 	}
-	
+
 	/*
 	private int getRound()
 	{
@@ -249,20 +249,20 @@ public class ForumPosterComponent extends JPanel
 		return round;
 	}
 	*/
-	
+
 	// abstract protected boolean allowIncludeTerritorySummary();
-	
+
 	// abstract protected boolean allowIncludeProductionSummary();
-	
+
 	// abstract protected boolean allowDiceBattleDetails();
-	
+
 	// abstract protected boolean allowDiceStatistics();
-	
+
 	// abstract protected boolean postTurnSummary(final PBEMMessagePoster poster);
-	
+
 	// abstract protected boolean getHasPostedTurnSummary();
-	
+
 	// abstract protected void setHasPostedTurnSummary(boolean posted);
-	
+
 	// abstract protected boolean skipPosting();
 }

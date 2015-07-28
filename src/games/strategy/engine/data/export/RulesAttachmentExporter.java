@@ -13,7 +13,7 @@
  */
 /*
  * RulesAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -56,7 +56,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 			return ""; // techCount is part of m_techs
 		return super.printOption(field, attachment);
 	}
-	
+
 	private String territoryCountListHandler(final Field field, final IAttachment attachment, final String fieldName) throws AttachmentExportException
 	{
 		String[] valueArray;
@@ -88,7 +88,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mAtWarPlayersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -122,17 +122,17 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	private String mUnitPresenceHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
-	
+
 	private String mProductionPerXTerritoriesHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mTurnsHandler(final Field field, final IAttachment attachment)
 	{
@@ -168,7 +168,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 		}
 		return printDefaultOption("turns", intList);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mTechsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{

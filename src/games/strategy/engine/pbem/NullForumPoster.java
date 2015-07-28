@@ -26,122 +26,122 @@ import java.io.File;
 public class NullForumPoster implements IForumPoster
 {
 	private static final long serialVersionUID = 6465230505089142268L;
-	
+
 	public NullForumPoster()
 	{
 	}
-	
+
 	public String getDisplayName()
 	{
 		return "disabled";
 	}
-	
+
 	public boolean getCanViewPosted()
 	{
 		return false;
 	}
-	
+
 	public void setTopicId(final String forumId)
 	{
 	}
-	
+
 	public void setUsername(final String s)
 	{
 	}
-	
+
 	public void setPassword(final String s)
 	{
 	}
-	
+
 	public String getTopicId()
 	{
 		return null;
 	}
-	
+
 	public String getUsername()
 	{
 		return null;
 	}
-	
+
 	public String getPassword()
 	{
 		return null;
 	}
-	
+
 	public void viewPosted()
 	{
 	}
-	
+
 	public void clearSensitiveInfo()
 	{
-		
+
 	}
-	
+
 	public String getTestMessage()
 	{
 		return "You should not be able to test a Null Poster";
 	}
-	
+
 	public String getHelpText()
 	{
 		return "Will never be called";
 	}
-	
+
 	public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 	{
 	}
-	
+
 	public void gameDataChanged(final Change change)
 	{
 	}
-	
+
 	public boolean postTurnSummary(final String summary, final String subject)
 	{
 		return false;
 	}
-	
+
 	public String getTurnSummaryRef()
 	{
 		return null;
 	}
-	
+
 	public boolean getIncludeSaveGame()
 	{
 		return false;
 	}
-	
+
 	public void setIncludeSaveGame(final boolean include)
 	{
 	}
-	
+
 	public boolean getAlsoPostAfterCombatMove()
 	{
 		return false;
 	}
-	
+
 	public void setAlsoPostAfterCombatMove(final boolean include)
 	{
 	}
-	
+
 	public void addSaveGame(final File saveGame, final String fileName)
 	{
 	}
-	
+
 	public IForumPoster doClone()
 	{
 		return null;
 	}
-	
+
 	public boolean supportsSaveGame()
 	{
 		return false;
 	}
-	
+
 	public EditorPanel getEditor()
 	{
 		return null;
 	}
-	
+
 	public boolean sameType(final IBean other)
 	{
 		return other.getClass() == NullForumPoster.class;

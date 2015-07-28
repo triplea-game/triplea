@@ -27,48 +27,48 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class TacticalCenter
 {
 	private static HashMap<PlayerID, TacticalCenter> s_TCInstances = new HashMap<PlayerID, TacticalCenter>();
-	
+
 	public static TacticalCenter get(final GameData data, final PlayerID player)
 	{
 		if (!s_TCInstances.containsKey(player))
 			s_TCInstances.put(player, create(data, player));
 		return s_TCInstances.get(player);
 	}
-	
+
 	private static TacticalCenter create(final GameData data, final PlayerID player)
 	{
 		return new TacticalCenter(data, player);
 	}
-	
+
 	public static void ClearStaticInstances()
 	{
 		s_TCInstances.clear();
 	}
-	
+
 	public static void NotifyStartOfRound()
 	{
 		s_TCInstances.clear();
 	}
-	
+
 	private GameData m_data = null;
 	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
-	
+
 	public TacticalCenter(final GameData data, final PlayerID player)
 	{
 		m_data = data;
 		m_player = player;
 	}
-	
+
 	public List<UnitGroup> AllDelegateUnitGroups = new ArrayList<UnitGroup>();
 	private final HashSet<Unit> UnitsToFreezeSoon = new HashSet<Unit>();
-	
+
 	public void PerformBufferedFreezes()
 	{
 		if (UnitsToFreezeSoon.isEmpty())
@@ -77,9 +77,9 @@ public class TacticalCenter
 		DUtils.Log(Level.FINER, "          Freezing buffered units for the rest of this phase. Units: {0} New Total Size: {1}", DUtils.UnitList_ToString(UnitsToFreezeSoon), FrozenUnits.size());
 		UnitsToFreezeSoon.clear();
 	}
-	
+
 	private final HashSet<Unit> FrozenUnits = new HashSet<Unit>();
-	
+
 	public void FreezeUnits(final List<Unit> units)
 	{
 		if (UnitGroup.IsBufferringMoves())
@@ -90,35 +90,35 @@ public class TacticalCenter
 			DUtils.Log(Level.FINER, "          Freezing units for the rest of this phase. Units: {0} New Total Size: {1}", DUtils.UnitList_ToString(units), FrozenUnits.size());
 		}
 	}
-	
+
 	public HashSet<Unit> GetFrozenUnits()
 	{
 		return FrozenUnits;
 	}
-	
+
 	public void ClearFrozenUnits()
 	{
 		DUtils.Log(Level.FINER, "          Clearing frozen units. Frozen Units: {0}", DUtils.UnitList_ToString(FrozenUnits));
 		FrozenUnits.clear();
 	}
-	
+
 	public HashMap<Territory, Float> BattleRetreatChanceAssignments = new HashMap<Territory, Float>();
 	private final HashMap<Unit, Territory> UnitLocationsAtStartOfTurn = new HashMap<Unit, Territory>();
-	
+
 	public void SetUnitStartLocation_IfNotAlreadySet(final Unit unit, final Territory startTer)
 	{
 		if (UnitLocationsAtStartOfTurn.containsKey(unit))
 			return;
 		UnitLocationsAtStartOfTurn.put(unit, startTer);
 	}
-	
+
 	public Territory GetUnitLocationAtStartOfTurn(final Unit unit)
 	{
 		if (!UnitLocationsAtStartOfTurn.containsKey(unit))
 			UnitLocationsAtStartOfTurn.put(unit, DUtils.GetUnitLocation(m_data, unit)); // If it's not set, we must not have moved it yet
 		return UnitLocationsAtStartOfTurn.get(unit);
 	}
-	
+
 	public void ClearStartOfTurnUnitLocations()
 	{
 		UnitLocationsAtStartOfTurn.clear();

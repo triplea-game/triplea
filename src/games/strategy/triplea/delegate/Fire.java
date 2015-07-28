@@ -49,7 +49,7 @@ public class Fire implements IExecutable
 	private final Collection<Unit> m_allEnemyUnitsNotIncludingWaitingToDie;
 	private final boolean m_isAmphibious;
 	private final Collection<Unit> m_amphibiousLandAttackers;
-	
+
 	public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire, final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits,
 				final String stepName, final String text, final MustFightBattle battle, final boolean defending, final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack,
 				final boolean headless, final Territory battleSite, final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie)
@@ -78,7 +78,7 @@ public class Fire implements IExecutable
 		m_isAmphibious = m_battle.isAmphibious();
 		m_amphibiousLandAttackers = m_battle.getAmphibiousLandAttackers();
 	}
-	
+
 	private void rollDice(final IDelegateBridge bridge)
 	{
 		if (m_dice != null)
@@ -91,7 +91,7 @@ public class Fire implements IExecutable
 			annotation = DiceRoll.getAnnotation(units, m_firingPlayer, m_battle);
 		m_dice = DiceRoll.rollDice(units, m_defending, m_firingPlayer, bridge, m_battle, annotation, m_territoryEffects, m_allEnemyUnitsAliveOrWaitingToDie);
 	}
-	
+
 	private void selectCasualties(final IDelegateBridge bridge)
 	{
 		final int hitCount = m_dice.getHits();
@@ -182,7 +182,7 @@ public class Fire implements IExecutable
 			}
 		}
 	}
-	
+
 	private void notifyCasualties(final IDelegateBridge bridge)
 	{
 		if (m_isHeadless)
@@ -226,7 +226,7 @@ public class Fire implements IExecutable
 			bridge.enterDelegateExecution();
 		}
 	}
-	
+
 	/**
 	 * We must execute in atomic steps, push these steps onto the stack, and let them execute
 	 */
@@ -238,7 +238,7 @@ public class Fire implements IExecutable
 		final IExecutable rollDice = new IExecutable()
 		{
 			private static final long serialVersionUID = 7578210876028725797L;
-			
+
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				rollDice(bridge);
@@ -247,7 +247,7 @@ public class Fire implements IExecutable
 		final IExecutable selectCasualties = new IExecutable()
 		{
 			private static final long serialVersionUID = -7687053541570519623L;
-			
+
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				selectCasualties(bridge);
@@ -257,7 +257,7 @@ public class Fire implements IExecutable
 		{
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = -9173385989239225660L;
-			
+
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				notifyCasualties(bridge);
@@ -271,7 +271,7 @@ public class Fire implements IExecutable
 		stack.push(rollDice);
 		return;
 	}
-	
+
 	/**
 	 * @return
 	 */

@@ -1,8 +1,8 @@
 /**
- * 
+ *
  * @author Edwin van der Wal
  * @version 0.1
- * 
+ *
  *          A Type of Relationship between PlayerIDs
  */
 /*
@@ -27,10 +27,10 @@ import java.io.Serializable;
 public class RelationshipType extends NamedAttachable implements Serializable
 {
 	private static final long serialVersionUID = 5348310616624709971L;
-	
+
 	/**
 	 * create new RelationshipType
-	 * 
+	 *
 	 * @param name
 	 *            name of the relationshipType
 	 * @param data
@@ -40,17 +40,17 @@ public class RelationshipType extends NamedAttachable implements Serializable
 	{
 		super(name, data);
 	}
-	
+
 	/**
 	 * convenience method to get the relationshipTypeAttachment of this relationshipType
-	 * 
+	 *
 	 * @return the relationshipTypeAttachment of this relationshipType
 	 */
 	public RelationshipTypeAttachment getRelationshipTypeAttachment()
 	{
 		return RelationshipTypeAttachment.get(this);
 	}
-	
+
 	@Override
 	public String toString()
 	{

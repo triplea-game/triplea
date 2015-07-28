@@ -73,23 +73,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author Stephen (Wisconsin)
  *         2010-2011
  */
 public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 {
 	private final static Logger s_logger = Logger.getLogger(Dynamix_AI.class.getName());
-	
+
 	private static final IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("Dynamix_AI"); // if non-static, then only need 1 for the entire AI instance and must be shutdown when AI is gc'ed.
-	
+
 	/**
 	 * Some notes on using the Dynamix logger:
-	 * 
+	 *
 	 * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down in the call stack to mean more log message indentation.
 	 * For example, these base logs have no indentation before them, but the base logs in the DoCombatMove class will have two spaces inserted at the start, and the level below that, four spaces.
 	 * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the indentation.
-	 * 
+	 *
 	 * Just keep these things in mind while adding new logging code.
 	 * (P.S. For multiple reasons, it is strongly suggested that you use DUtils.Log instead of writing directly to the logger returned by this method.)
 	 */
@@ -97,42 +97,42 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	{
 		return s_logger;
 	}
-	
+
 	public Dynamix_AI(final String name, final String type)
 	{
 		super(name, type);
 	}
-	
+
 	// These static dynamix AI instances are going to be used by the settings window to let the player change AI goals, aggresiveness, etc.
 	private static final List<Dynamix_AI> s_dAIInstances = new ArrayList<Dynamix_AI>();
-	
+
 	public static void ClearAIInstancesMemory()
 	{
 		DUtils.Log(Level.FINE, "Clearing static Dynamix_AI instances.");
 		s_dAIInstances.clear();
 	}
-	
+
 	public static void AddDynamixAIIntoAIInstancesMemory(final Dynamix_AI ai)
 	{
 		DUtils.Log(Level.FINE, "Adding Dynamix_AI named {0} to static instances.", ai.getName());
 		s_dAIInstances.add(ai);
 	}
-	
+
 	public static List<Dynamix_AI> GetDynamixAIInstancesMemory()
 	{
 		return s_dAIInstances;
 	}
-	
+
 	static IOddsCalculator getCalculator()
 	{
 		return s_battleCalculator;
 	}
-	
+
 	public IOddsCalculator getCalc()
 	{
 		return s_battleCalculator;
 	}
-	
+
 	/**
 	 * Only call after we have left or quit a game.
 	 */
@@ -142,7 +142,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		UI.clearCachedInstances();
 		clearStaticInstances();
 	}
-	
+
 	/**
 	 * Call before starting a game, and after leaving.
 	 */
@@ -162,7 +162,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		CachedCalculationCenter.clearCachedStaticData();
 		UnitGroup.clearCachedInstances();
 	}
-	
+
 	public static void Initialize(final TripleAFrame frame)
 	{
 		UI.Initialize(frame); // Must be done first
@@ -171,13 +171,13 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		GlobalCenter.Initialize(CachedInstanceCenter.CachedGameData);
 		CachedInstanceCenter.CachedBattleTracker = DelegateFinder.battleDelegate(CachedInstanceCenter.CachedGameData).getBattleTracker();
 	}
-	
+
 	public static void ShowSettingsWindow()
 	{
 		DUtils.Log(Level.FINE, "Showing Dynamix_AI settings window.");
 		UI.ShowSettingsWindow();
 	}
-	
+
 	/**
 	 * Please call this right before an action is displayed to the user.
 	 */
@@ -186,9 +186,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	{
 		Pause();
 	}
-	
+
 	private static long s_lastActionDisplayTime = new Date().getTime();
-	
+
 	/**
 	 * Please call this right before an action is displayed to the user.
 	 */
@@ -206,7 +206,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			DUtils.Log(Level.SEVERE, "InterruptedException occured while trying to perform AI pausing. Exception: {0}", ex);
 		}
 	}
-	
+
 	public static long GetTimeTillNextScheduledActionDisplay()
 	{
 		// If we're not in a phase that has pausing enabled
@@ -233,7 +233,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		timeTill = Math.max(timeTill, 0);
 		return timeTill;
 	}
-	
+
 	private void NotifyGameRound(final GameData data)
 	{
 		if (GlobalCenter.GameRound != data.getSequence().getRound())
@@ -250,7 +250,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			GlobalCenter.CurrentPlayer = PlayerID.NULL_PLAYERID; // Reset current player to re-enable trigger in NotifyPlayer method
 		}
 	}
-	
+
 	private void NotifyPlayer(final PlayerID player)
 	{
 		if (GlobalCenter.FirstDynamixPlayer == null)
@@ -264,7 +264,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			GlobalCenter.CurrentPhaseType = PhaseType.Unknown; // Reset current phase type to re-enable trigger in NotifyPhaseType method
 		}
 	}
-	
+
 	private void NotifyPhaseType(final PhaseType phaseType)
 	{
 		if (GlobalCenter.FirstDynamixPhase == null)
@@ -275,7 +275,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			DUtils.Log(Level.FINE, "-----Start of phase notification sent out. Phase: {0}-----", phaseType);
 		}
 	}
-	
+
 	@Override
 	protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
@@ -286,9 +286,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		if (bid) // We don't want info from the bid phase spilling over into first real round
 			FactoryCenter.NotifyStartOfRound(); // So clear data
 	}
-	
+
 	int m_moveLastType = -1;
-	
+
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
@@ -325,7 +325,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			// Put finalize code here that should run after combat and non-combat move have both completed
 			m_moveLastType = 0;
 	}
-	
+
 	@Override
 	protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player)
 	{
@@ -334,7 +334,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		NotifyPhaseType(PhaseType.Tech);
 		Tech.tech(this, techDelegate, data, player);
 	}
-	
+
 	@Override
 	protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaser, final GameData data, final PlayerID player)
 	{
@@ -343,7 +343,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		NotifyPhaseType(PhaseType.Purchase);
 		Purchase.purchase(this, purchaseForBid, PUsToSpend, purchaser, data, player);
 	}
-	
+
 	@Override
 	protected void battle(final IBattleDelegate battleDelegate, final GameData data, final PlayerID player)
 	{
@@ -373,30 +373,30 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			setBattleInfo(null);
 		}
 	}
-	
+
 	private void setBattleInfo(final Territory bTerr)
 	{
 		m_battleTer = bTerr;
 	}
-	
+
 	private Territory getBattleTerritory()
 	{
 		return m_battleTer;
 	}
-	
+
 	Territory m_battleTer = null;
-	
+
 	/*public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
 		return null;
 	}*/
-	
+
 	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return null;
 	}
-	
+
 	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
@@ -456,20 +456,20 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		// Hmmm... Atm, true and false are both bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter thinking it has air support, which never comes.
 		return true;
 	}
-	
+
 	@Override
 	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		return candidates.iterator().next();
 	}
-	
+
 	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
@@ -480,7 +480,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		}
 		return result;
 	}
-	
+
 	@Override
 	public boolean shouldBomberBomb(final Territory territory)
 	{
@@ -491,7 +491,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		else
 			return false;
 	}
-	
+
 	@Override
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
@@ -502,7 +502,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			return potentialTargets.iterator().next();
 		return factories.iterator().next();
 	}
-	
+
 	@Override
 	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
 	{
@@ -513,7 +513,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		}
 		return dice;
 	}
-	
+
 	@Override
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
@@ -522,7 +522,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		DUtils.Log(Level.FINE, "Select casualties method called. Message: {0}", message);
 		return SelectCasualties.selectCasualties(this, getGameData(), selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID, allowMultipleHitsPerUnit);
 	}
-	
+
 	@Override
 	public void reportError(final String error)
 	{
@@ -532,7 +532,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			SelectCasualties.NotifyCasualtySelectionError(error);
 		}
 	}
-	
+
 	@Override
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{

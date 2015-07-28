@@ -26,13 +26,13 @@ import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete banned macs (there is no update).
- * 
+ *
  * @author Wisconsin
  */
 public class BannedMacController
 {
 	private static final Logger s_logger = Logger.getLogger(BannedMacController.class.getName());
-	
+
 	/**
 	 * Ban the mac permanently
 	 */
@@ -40,11 +40,11 @@ public class BannedMacController
 	{
 		addBannedMac(mac, null);
 	}
-	
+
 	/**
 	 * Ban the given mac. If banTill is not null, the ban will expire when banTill is reached.
 	 * <p>
-	 * 
+	 *
 	 * If this mac is already banned, this call will update the ban_end.
 	 */
 	public void addBannedMac(final String mac, final Date banTill)
@@ -84,7 +84,7 @@ public class BannedMacController
 			DbUtil.closeConnection(con);
 		}
 	}
-	
+
 	public void removeBannedMac(final String mac)
 	{
 		s_logger.fine("Removing banned mac:" + mac);
@@ -105,7 +105,7 @@ public class BannedMacController
 			DbUtil.closeConnection(con);
 		}
 	}
-	
+
 	/**
 	 * Is the given mac banned? This may have the side effect of removing from the
 	 * database any mac's whose ban has expired

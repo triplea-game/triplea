@@ -22,7 +22,7 @@ public class NotesPanel extends JPanel
 	protected final SoftJEditorPane m_gameNotesPane;
 	protected final GameData m_data;
 	final JButton m_refresh = new JButton("Refresh Notes");
-	
+
 	// we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of it in memory for all the different ways the user can access the game notes
 	// so instead we keep the main copy in the BasicGameMenuBar, and then give it to the notes tab. this prevents out of memory errors for maps with large images in their games notes.
 	public NotesPanel(final GameData data, final SoftJEditorPane gameNotesPane)
@@ -31,16 +31,16 @@ public class NotesPanel extends JPanel
 		m_gameNotesPane = gameNotesPane;
 		initLayout();
 	}
-	
+
 	protected void initLayout()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
+
 		m_refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
 		m_refresh.addActionListener(new AbstractAction("Refresh Notes")
 		{
 			private static final long serialVersionUID = 8439704398303765832L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				SwingUtilities.invokeLater(new Runnable()
@@ -55,7 +55,7 @@ public class NotesPanel extends JPanel
 		// layoutNotes();
 		removeNotes();
 	}
-	
+
 	void removeNotes()
 	{
 		NotesPanel.this.removeAll();
@@ -64,7 +64,7 @@ public class NotesPanel extends JPanel
 		NotesPanel.this.add(new JLabel(" "));
 		// NotesPanel.this.invalidate();
 	}
-	
+
 	void layoutNotes()
 	{
 		if (m_gameNotesPane == null)
@@ -79,7 +79,7 @@ public class NotesPanel extends JPanel
 		NotesPanel.this.add(scroll);
 		// NotesPanel.this.invalidate();
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return m_gameNotesPane == null || m_gameNotesPane.getText() == null || m_gameNotesPane.getText().length() <= 0;

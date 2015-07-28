@@ -41,11 +41,11 @@ public class ProPurchaseOptionMap
 	private final List<ProPurchaseOption> aaOptions;
 	private final List<ProPurchaseOption> factoryOptions;
 	private final List<ProPurchaseOption> specialOptions;
-	
+
 	public ProPurchaseOptionMap(final PlayerID player, final GameData data)
 	{
 		LogUtils.log(Level.FINE, "Purchase Options");
-		
+
 		// Initialize lists
 		landFodderOptions = new ArrayList<ProPurchaseOption>();
 		landAttackOptions = new ArrayList<ProPurchaseOption>();
@@ -58,7 +58,7 @@ public class ProPurchaseOptionMap
 		aaOptions = new ArrayList<ProPurchaseOption>();
 		factoryOptions = new ArrayList<ProPurchaseOption>();
 		specialOptions = new ArrayList<ProPurchaseOption>();
-		
+
 		// Add each production rule to appropriate list(s)
 		final List<ProductionRule> rules = player.getProductionFrontier().getRules();
 		for (final ProductionRule rule : rules)
@@ -68,7 +68,7 @@ public class ProPurchaseOptionMap
 			if (!(resourceOrUnit instanceof UnitType))
 				continue;
 			final UnitType unitType = (UnitType) resourceOrUnit;
-			
+
 			// Add rule to appropriate purchase option list
 			if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
 						|| Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
@@ -124,7 +124,7 @@ public class ProPurchaseOptionMap
 			landAttackOptions.addAll(landDefenseOptions);
 		if (landDefenseOptions.isEmpty())
 			landDefenseOptions.addAll(landAttackOptions);
-		
+
 		// Print categorized options
 		LogUtils.log(Level.FINE, "Purchase Categories");
 		logOptions(landFodderOptions, "Land Fodder Options: ");
@@ -139,7 +139,7 @@ public class ProPurchaseOptionMap
 		logOptions(factoryOptions, "Factory Options: ");
 		logOptions(specialOptions, "Special Options: ");
 	}
-	
+
 	public List<ProPurchaseOption> getAllOptions()
 	{
 		final Set<ProPurchaseOption> allOptions = new HashSet<ProPurchaseOption>();
@@ -151,7 +151,7 @@ public class ProPurchaseOptionMap
 		allOptions.addAll(specialOptions);
 		return new ArrayList<ProPurchaseOption>(allOptions);
 	}
-	
+
 	public List<ProPurchaseOption> getLandOptions()
 	{
 		final Set<ProPurchaseOption> landOptions = new HashSet<ProPurchaseOption>();
@@ -160,7 +160,7 @@ public class ProPurchaseOptionMap
 		landOptions.addAll(landDefenseOptions);
 		return new ArrayList<ProPurchaseOption>(landOptions);
 	}
-	
+
 	public List<ProPurchaseOption> getSeaOptions()
 	{
 		final Set<ProPurchaseOption> seaOptions = new HashSet<ProPurchaseOption>();
@@ -170,62 +170,62 @@ public class ProPurchaseOptionMap
 		seaOptions.addAll(seaSubOptions);
 		return new ArrayList<ProPurchaseOption>(seaOptions);
 	}
-	
+
 	public List<ProPurchaseOption> getLandFodderOptions()
 	{
 		return landFodderOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getLandAttackOptions()
 	{
 		return landAttackOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getLandDefenseOptions()
 	{
 		return landDefenseOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getAirOptions()
 	{
 		return airOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getSeaDefenseOptions()
 	{
 		return seaDefenseOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getSeaTransportOptions()
 	{
 		return seaTransportOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getSeaCarrierOptions()
 	{
 		return seaCarrierOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getSeaSubOptions()
 	{
 		return seaSubOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getAAOptions()
 	{
 		return aaOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getFactoryOptions()
 	{
 		return factoryOptions;
 	}
-	
+
 	public List<ProPurchaseOption> getSpecialOptions()
 	{
 		return specialOptions;
 	}
-	
+
 	private void logOptions(final List<ProPurchaseOption> purchaseOptions, final String name)
 	{
 		final StringBuilder sb = new StringBuilder(name);
@@ -237,5 +237,5 @@ public class ProPurchaseOptionMap
 		sb.delete(sb.length() - 2, sb.length());
 		LogUtils.log(Level.FINER, sb.toString());
 	}
-	
+
 }

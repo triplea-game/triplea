@@ -26,7 +26,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class DSettings implements Serializable
@@ -99,7 +99,7 @@ public class DSettings implements Serializable
 	public int AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = 75;
 	private static DSettings s_lastSettings = null;
 	private static String PROGRAM_SETTINGS = "Program Settings";
-	
+
 	public static DSettings LoadSettings()
 	{
 		if (s_lastSettings == null)
@@ -125,7 +125,7 @@ public class DSettings implements Serializable
 		else
 			return s_lastSettings;
 	}
-	
+
 	public static void SaveSettings(final DSettings settings)
 	{
 		s_lastSettings = settings;

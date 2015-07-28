@@ -13,7 +13,7 @@
  */
 /*
  * RepairPanel.java
- * 
+ *
  * Created on December 4, 2001, 7:00 PM
  */
 package games.strategy.triplea.ui;
@@ -40,7 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
- * 
+ *
  * @author Kevin Comcowich
  * @version 1.0
  */
@@ -56,7 +56,7 @@ public class RepairPanel extends ActionPanel
 	private final JButton m_buyButton;
 	private final String BUY = "Repair...";
 	private final String CHANGE = "Change...";
-	
+
 	/** Creates new RepairPanel */
 	public RepairPanel(final GameData data, final MapPanel map)
 	{
@@ -65,7 +65,7 @@ public class RepairPanel extends ActionPanel
 		m_buyButton = new JButton(BUY);
 		m_buyButton.addActionListener(PURCHASE_ACTION);
 	}
-	
+
 	@Override
 	public void display(final PlayerID id)
 	{
@@ -92,7 +92,7 @@ public class RepairPanel extends ActionPanel
 			}
 		});
 	}
-	
+
 	private void refreshActionLabelText()
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -103,7 +103,7 @@ public class RepairPanel extends ActionPanel
 			}
 		});
 	}
-	
+
 	public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid, final Collection<PlayerID> allowedPlayersToRepair)
 	{
 		m_bid = bid;
@@ -120,11 +120,11 @@ public class RepairPanel extends ActionPanel
 		waitForRelease();
 		return m_repair;
 	}
-	
+
 	private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
 	{
 		private static final long serialVersionUID = 5572043262815077402L;
-		
+
 		public void actionPerformed(final ActionEvent e)
 		{
 			final PlayerID player = getCurrentPlayer();
@@ -144,7 +144,7 @@ public class RepairPanel extends ActionPanel
 			}
 		}
 	};
-	
+
 	// Spin through the territories to get this.
 	private int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> m_repair)
 	{
@@ -158,11 +158,11 @@ public class RepairPanel extends ActionPanel
 		}
 		return totalValues;
 	}
-	
+
 	private final Action DoneAction = new AbstractAction("Done")
 	{
 		private static final long serialVersionUID = -2002286381161651398L;
-		
+
 		public void actionPerformed(final ActionEvent event)
 		{
 			final boolean hasPurchased = getTotalValues(m_repair) != 0;
@@ -189,7 +189,7 @@ public class RepairPanel extends ActionPanel
 			    	    PlayerID player = getCurrentPlayer();
 			    	    if(isIncreasedFactoryProduction(player))
 			    	        addedProd = 2;
-			    	    
+			    
 			    		for(Territory t : Match.getMatches(getData().getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer())))
 			            {
 			    		    TerritoryAttachment ta = TerritoryAttachment.get(t);
@@ -219,7 +219,7 @@ public class RepairPanel extends ActionPanel
 			release();
 		}
 	};
-	
+
 	/*
 	private boolean isIncreasedFactoryProduction(PlayerID player)
 	{

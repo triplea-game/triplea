@@ -10,12 +10,12 @@ public class CompositeIcon implements Icon
 {
 	private static final int GAP = 2;
 	private final List<Icon> m_incons;
-	
+
 	CompositeIcon(final List<Icon> icons)
 	{
 		m_incons = icons;
 	}
-	
+
 	public void paintIcon(final Component c, final Graphics g, final int x, final int y)
 	{
 		int dx = 0;
@@ -26,7 +26,7 @@ public class CompositeIcon implements Icon
 			dx += icon.getIconWidth();
 		}
 	}
-	
+
 	public int getIconWidth()
 	{
 		int sum = 0;
@@ -37,7 +37,7 @@ public class CompositeIcon implements Icon
 		}
 		return sum;
 	}
-	
+
 	public int getIconHeight()
 	{
 		int max = 0;

@@ -14,7 +14,7 @@
 package games.strategy.triplea.ai.Dynamix_AI;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class DConstants

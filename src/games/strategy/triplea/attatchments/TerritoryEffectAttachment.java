@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * 
+ *
  * @author Edwin van der Wal
  * @version 1.0
  */
@@ -43,7 +43,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
 	private ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();
 	private ArrayList<UnitType> m_unitsNotAllowed = new ArrayList<UnitType>();
-	
+
 	/**
 	 * Creates new TerritoryEffectAttachment
 	 */
@@ -51,10 +51,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	{
 		super(name, attachable, gameData);
 	}
-	
+
 	/**
 	 * Convenience method.
-	 * 
+	 *
 	 * @return TerritoryEffectAttachment belonging to the RelationshipType pr
 	 */
 	public static TerritoryEffectAttachment get(final TerritoryEffect te)
@@ -64,7 +64,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 			throw new IllegalStateException("No territoryEffect attachment for:" + te.getName());
 		return rVal;
 	}
-	
+
 	public static TerritoryEffectAttachment get(final TerritoryEffect te, final String nameOfAttachment)
 	{
 		final TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
@@ -72,10 +72,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 			throw new IllegalStateException("No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
 		return rVal;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param combatDefenseEffect
 	 * @throws GameParseException
 	 */
@@ -84,31 +84,31 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	{
 		setCombatEffect(combatDefenseEffect, true);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCombatDefenseEffect(final IntegerMap<UnitType> value)
 	{
 		m_combatDefenseEffect = value;
 	}
-	
+
 	public IntegerMap<UnitType> getCombatDefenseEffect()
 	{
 		return new IntegerMap<UnitType>(m_combatDefenseEffect);
 	}
-	
+
 	public void clearCombatDefenseEffect()
 	{
 		m_combatDefenseEffect.clear();
 	}
-	
+
 	public void resetCombatDefenseEffect()
 	{
 		m_combatDefenseEffect = new IntegerMap<UnitType>();
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param combatOffenseEffect
 	 * @throws GameParseException
 	 */
@@ -117,28 +117,28 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	{
 		setCombatEffect(combatOffenseEffect, false);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCombatOffenseEffect(final IntegerMap<UnitType> value)
 	{
 		m_combatOffenseEffect = value;
 	}
-	
+
 	public IntegerMap<UnitType> getCombatOffenseEffect()
 	{
 		return new IntegerMap<UnitType>(m_combatOffenseEffect);
 	}
-	
+
 	public void clearCombatOffenseEffect()
 	{
 		m_combatOffenseEffect.clear();
 	}
-	
+
 	public void resetCombatOffenseEffect()
 	{
 		m_combatOffenseEffect = new IntegerMap<UnitType>();
 	}
-	
+
 	@InternalDoNotExport
 	private void setCombatEffect(final String combatEffect, final boolean defending) throws GameParseException
 	{
@@ -159,7 +159,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 				m_combatOffenseEffect.put(ut, effect);
 		}
 	}
-	
+
 	public int getCombatEffect(final UnitType aType, final boolean defending)
 	{
 		if (defending)
@@ -171,10 +171,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 			return m_combatOffenseEffect.getInt(aType);
 		}
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param noBlitzUnitTypes
 	 * @throws GameParseException
 	 */
@@ -192,31 +192,31 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 			m_noBlitz.add(ut);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNoBlitz(final ArrayList<UnitType> value)
 	{
 		m_noBlitz = value;
 	}
-	
+
 	public ArrayList<UnitType> getNoBlitz()
 	{
 		return new ArrayList<UnitType>(m_noBlitz);
 	}
-	
+
 	public void clearNoBlitz()
 	{
 		m_noBlitz.clear();
 	}
-	
+
 	public void resetNoBlitz()
 	{
 		m_noBlitz = new ArrayList<UnitType>();
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param unitsNotAllowedUnitTypes
 	 * @throws GameParseException
 	 */
@@ -234,28 +234,28 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 			m_unitsNotAllowed.add(ut);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitsNotAllowed(final ArrayList<UnitType> value)
 	{
 		m_unitsNotAllowed = value;
 	}
-	
+
 	public ArrayList<UnitType> getUnitsNotAllowed()
 	{
 		return new ArrayList<UnitType>(m_unitsNotAllowed);
 	}
-	
+
 	public void clearUnitsNotAllowed()
 	{
 		m_unitsNotAllowed.clear();
 	}
-	
+
 	public void resetUnitsNotAllowed()
 	{
 		m_unitsNotAllowed = new ArrayList<UnitType>();
 	}
-	
+
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

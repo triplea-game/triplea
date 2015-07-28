@@ -62,7 +62,7 @@ public class InstallMapDialog extends JDialog
 	private JLabel m_urlLabel;
 	private JLabel m_mapVersion;
 	private final List<String> m_outOfDateMaps = new ArrayList<String>();
-	
+
 	private InstallMapDialog(final Frame owner, final List<DownloadFileDescription> games)
 	{
 		super(owner, "Select game to install", true);
@@ -73,7 +73,7 @@ public class InstallMapDialog extends JDialog
 		setWidgetActivation();
 		informUserOfOutOfDateMaps(owner);
 	}
-	
+
 	private void informUserOfOutOfDateMaps(final Frame owner)
 	{
 		// tell the user if there are any out of date maps that they should update
@@ -89,7 +89,7 @@ public class InstallMapDialog extends JDialog
 			JOptionPane.showMessageDialog(owner, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-	
+
 	public static void populateOutOfDateMapsListing(final Collection<String> listingToBeAddedTo, final Collection<DownloadFileDescription> gamesDownloadFileDescriptions)
 	{
 		if (listingToBeAddedTo == null)
@@ -112,7 +112,7 @@ public class InstallMapDialog extends JDialog
 			}
 		}
 	}
-	
+
 	private void createComponents()
 	{
 		m_installButton = new JButton("Install Games");
@@ -185,7 +185,7 @@ public class InstallMapDialog extends JDialog
 		m_urlLabel = new JLabel(DOWNLOAD_URL_PREFIX);
 		m_mapVersion = new JLabel(MAP_VERSION_PREFIX);
 	}
-	
+
 	private void layoutCoponents()
 	{
 		setLayout(new BorderLayout());
@@ -219,13 +219,13 @@ public class InstallMapDialog extends JDialog
 		main.add(extraPanel, BorderLayout.SOUTH);
 		add(main, BorderLayout.CENTER);
 	}
-	
+
 	private void setupListeners()
 	{
 		m_cancelButton.addActionListener(new AbstractAction()
 		{
 			private static final long serialVersionUID = -2437255215905705911L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
@@ -234,7 +234,7 @@ public class InstallMapDialog extends JDialog
 		m_installButton.addActionListener(new AbstractAction()
 		{
 			private static final long serialVersionUID = -2202445889252381183L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				boolean installed = false;
@@ -247,7 +247,7 @@ public class InstallMapDialog extends JDialog
 					final File destination = new File(GameRunner2.getUserMapsFolder(), map.getMapName() + ".zip");
 					if (destination.exists())
 					{
-						final String msg = "<html>Replace map: " + map.getMapName() + " ?" +
+						final String msg = "<html>Replace map: " + map.getMapName() + " ?"
 									"<br>You have version " + getVersionString(getVersion(destination)) + " installed, replace with version " + getVersionString(map.getVersion()) + "?</html>";
 						if (replaceOldQuestion(msg))
 							toDownload.add(map);
@@ -263,7 +263,7 @@ public class InstallMapDialog extends JDialog
 					install(map, i++, toDownload.size());
 					installed = true;
 				}
-				
+
 				if (installed)
 				{
 					// TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
@@ -282,7 +282,7 @@ public class InstallMapDialog extends JDialog
 			}
 		});
 	}
-	
+
 	private boolean replaceOldQuestion(final String message)
 	{
 		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, message, "Overwrite?", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true));
@@ -290,12 +290,12 @@ public class InstallMapDialog extends JDialog
 			return false;
 		return true;
 	}
-	
+
 	/*private boolean isDefaultMap(final DownloadFileDescription selected)
 	{
 		return NewGameChooserModel.getDefaultMapNames().contains(selected.getMapName());
 	}*/
-	
+
 	private void install(final DownloadFileDescription selected, final int count, final int total)
 	{
 		/* we no longer stop people from downloading, because we can handle having multiple copies of a map in the different directories triplea uses for maps
@@ -404,7 +404,7 @@ public class InstallMapDialog extends JDialog
 			}
 		}
 	}
-	
+
 	private void validateZip(final DownloadRunnable download) throws IOException
 	{
 		// try to unzip it to make sure it is valid
@@ -423,7 +423,7 @@ public class InstallMapDialog extends JDialog
 			throw new IOException("zip file could not be opened, it may have been corrupted during the download, please try again");
 		}
 	}
-	
+
 	public static void copy(final OutputStream sink, final InputStream is) throws IOException
 	{
 		final byte[] b = new byte[8192];
@@ -433,7 +433,7 @@ public class InstallMapDialog extends JDialog
 			sink.write(b, 0, read);
 		}
 	}
-	
+
 	private void setWidgetActivation()
 	{
 		if (m_gamesList.isSelectionEmpty())
@@ -473,7 +473,7 @@ public class InstallMapDialog extends JDialog
 			}
 		}
 	}
-	
+
 	private List<DownloadFileDescription> getSelected()
 	{
 		final List<DownloadFileDescription> selected = new ArrayList<DownloadFileDescription>();
@@ -487,7 +487,7 @@ public class InstallMapDialog extends JDialog
 		}
 		return selected;
 	}
-	
+
 	public static void installGames(final Component parent, final List<DownloadFileDescription> games)
 	{
 		final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
@@ -496,7 +496,7 @@ public class InstallMapDialog extends JDialog
 		dia.setLocationRelativeTo(parentFrame);
 		dia.setVisible(true);
 	}
-	
+
 	private static String getVersionString(final Version v)
 	{
 		if (v == null)
@@ -505,7 +505,7 @@ public class InstallMapDialog extends JDialog
 		}
 		return v.toString();
 	}
-	
+
 	private static Version getVersion(final File zipFile)
 	{
 		final DownloadFileProperties props = DownloadFileProperties.loadForZip(zipFile);

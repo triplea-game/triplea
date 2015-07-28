@@ -9,20 +9,20 @@ import java.awt.Component;
 
 /**
  * Setup panel model for headless server.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
- * 
+ *
  */
 public class HeadlessServerSetupPanelModel extends SetupPanelModel
 {
 	protected final Component m_ui;
-	
+
 	public HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel, final Component ui)
 	{
 		super(gameSelectorModel);
 		m_ui = ui;
 	}
-	
+
 	@Override
 	public void showSelectType()
 	{

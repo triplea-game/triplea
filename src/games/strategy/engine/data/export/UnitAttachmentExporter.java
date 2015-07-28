@@ -13,7 +13,7 @@
  */
 /*
  * UnitAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -47,37 +47,37 @@ public class UnitAttachmentExporter extends DefaultAttachmentExporter
 			return mCanBeCapturedOnEnteringByHandler(field, attachment);
 		return super.printOption(field, attachment);
 	}
-	
+
 	private String consumesUnitsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
-	
+
 	private String mCanBeCapturedOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
-	
+
 	private String mCreatesUnitsListHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
-	
+
 	private String mGivesMovementHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
-	
+
 	private String mDestroyedWhenCapturedByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
-	
+
 	private String mCanBeGivenByTerritoryToHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mRequiresUnitsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{

@@ -58,7 +58,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * This class really needs a rewrite...
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings({ "unchecked", "deprecation" })
@@ -225,7 +225,7 @@ public class Purchase
 			}
 		}
 	}
-	
+
 	public static int purchaseFactoryRepairs(final Dynamix_AI ai, final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaser, final GameData data, final PlayerID player)
 	{
 		final int origPUs = PUsToSpend;
@@ -281,13 +281,13 @@ public class Purchase
 		}
 		return 0;
 	}
-	
+
 	public static void calculateFactoriesToBuildOn(final Dynamix_AI ai, final boolean purchaseForBid, final GameData data, final PlayerID player)
 	{
 		final List<Territory> sortedLocations = Purchase_UnitPlacementLocationSorter.CalculateAndSortUnitPlacementLocations(ai, purchaseForBid, data, player);
 		FactoryCenter.get(data, player).ChosenFactoryTerritories = sortedLocations;
 	}
-	
+
 	public static int purchaseFactoryUnits(final Territory ter, final Dynamix_AI ai, final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaser, final GameData data,
 				final PlayerID player)
 	{
@@ -351,7 +351,7 @@ public class Purchase
 		}
 		return result;
 	}
-	
+
 	private static PurchaseGroup CalculateBestPurchaseGroup(final Territory ter, final GameData data, final PlayerID player, final IPurchaseDelegate purchaser, float PUsLeftToSpend,
 				final boolean purchaseForBid)
 	{

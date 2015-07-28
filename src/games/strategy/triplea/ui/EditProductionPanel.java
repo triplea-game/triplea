@@ -36,31 +36,31 @@ import java.util.Set;
 import javax.swing.JFrame;
 
 /**
- * 
+ *
  * @author Tony Clayton
- * 
- * 
+ *
+ *
  */
 public class EditProductionPanel extends ProductionPanel
 {
 	private static final long serialVersionUID = 5826523459539469173L;
-	
+
 	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final IUIContext uiContext)
 	{
 		return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<ProductionRule>());
 	}
-	
+
 	/** Creates new ProductionPanel */
 	private EditProductionPanel(final IUIContext uiContext)
 	{
 		super(uiContext);
 	}
-	
+
 	protected void setLeft(final int left)
 	{
 		// no limits, so do nothing here
 	}
-	
+
 	@Override
 	protected void calculateLimits()
 	{
@@ -69,7 +69,7 @@ public class EditProductionPanel extends ProductionPanel
 			current.setMax(99);
 		}
 	}
-	
+
 	@Override
 	protected void initRules(final PlayerID player, final GameData data, final IntegerMap<ProductionRule> initialPurchase)
 	{

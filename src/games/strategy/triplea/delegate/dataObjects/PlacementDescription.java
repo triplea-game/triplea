@@ -13,7 +13,7 @@
  */
 /*
  * BuyMessage.java
- * 
+ *
  * Created on November 6, 2001, 8:26 PM
  */
 package games.strategy.triplea.delegate.dataObjects;
@@ -24,25 +24,25 @@ import games.strategy.engine.data.Unit;
 import java.util.Collection;
 
 /**
- * 
+ *
  * @author Erik von der Osten
  */
 public class PlacementDescription extends AbstractMoveDescription
 {
 	private static final long serialVersionUID = -3141153168992624631L;
 	private final Territory m_territory;
-	
+
 	public PlacementDescription(final Collection<Unit> units, final Territory territory)
 	{
 		super(units);
 		m_territory = territory;
 	}
-	
+
 	public Territory getTerritory()
 	{
 		return m_territory;
 	}
-	
+
 	@Override
 	public String toString()
 	{

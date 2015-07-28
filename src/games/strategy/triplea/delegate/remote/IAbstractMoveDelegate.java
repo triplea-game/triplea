@@ -20,22 +20,22 @@ import java.util.List;
 
 /**
  * Remote interface for MoveDelegate and PlaceDelegate
- * 
+ *
  * @author Sean Bridges
  */
 public interface IAbstractMoveDelegate extends IRemote, IDelegate
 {
 	/**
 	 * Get the moves already made
-	 * 
+	 *
 	 * @return a list of UndoableMoves
 	 */
 	@SuppressWarnings("rawtypes")
 	// need to be able to handle different Move types e.g. Placement and Movement
 	public abstract List getMovesMade();
-	
+
 	/**
-	 * 
+	 *
 	 * @param moveIndex
 	 *            - an index in the list getMovesMade
 	 * @return an error string if the move could not be undone, null otherwise

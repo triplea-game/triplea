@@ -13,7 +13,7 @@
  */
 /*
  * TabbedProductionPanel.java
- * 
+ *
  * Created on June 11, 2011
  */
 package games.strategy.triplea.ui;
@@ -48,29 +48,29 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 /**
- * 
+ *
  * @author Edwin van der Wal
  * @version 1.0
- * 
- * 
+ *
+ *
  */
 public class TabbedProductionPanel extends ProductionPanel
 {
 	private static final long serialVersionUID = 3481282212500641144L;
 	private int m_rows;
 	private int m_columns;
-	
+
 	protected TabbedProductionPanel(final IUIContext uiContext)
 	{
 		super(uiContext);
 	}
-	
+
 	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid, final IntegerMap<ProductionRule> initialPurchase,
 				final IUIContext uiContext)
 	{
 		return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
 	}
-	
+
 	@Override
 	protected void initLayout(final PlayerID id)
 	{
@@ -113,7 +113,7 @@ public class TabbedProductionPanel extends ProductionPanel
 		tabs.validate();
 		this.validate();
 	}
-	
+
 	private void calculateXY(final ProductionTabsProperties properties, final int largestList)
 	{
 		if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0 || properties.getRows() * properties.getColumns() < largestList)
@@ -134,7 +134,7 @@ public class TabbedProductionPanel extends ProductionPanel
 			m_columns = Math.max(3, properties.getColumns()); // There are small display problems if the size is less than 2x3 cells.
 		}
 	}
-	
+
 	private int largestList(final List<Tuple<String, List<Rule>>> ruleLists)
 	{
 		int largestList = 0;
@@ -145,7 +145,7 @@ public class TabbedProductionPanel extends ProductionPanel
 		}
 		return largestList;
 	}
-	
+
 	private void checkLists(final List<Tuple<String, List<Rule>>> ruleLists)
 	{
 		final List<Rule> rulesCopy = new ArrayList<Rule>(m_rules);
@@ -159,7 +159,7 @@ public class TabbedProductionPanel extends ProductionPanel
 		if (rulesCopy.size() > 0)
 			throw new IllegalStateException("production_tabs: must include all player production rules/units");
 	}
-	
+
 	private List<Tuple<String, List<Rule>>> getRuleLists(final ProductionTabsProperties properties)
 	{
 		if (properties != null && !properties.useDefaultTabs())
@@ -173,7 +173,7 @@ public class TabbedProductionPanel extends ProductionPanel
 			return getDefaultRuleLists();
 		}
 	}
-	
+
 	private List<Tuple<String, List<Rule>>> getDefaultRuleLists()
 	{
 		final List<Tuple<String, List<Rule>>> ruleLists = new ArrayList<Tuple<String, List<Rule>>>();
@@ -227,7 +227,7 @@ public class TabbedProductionPanel extends ProductionPanel
 		ruleLists.add(new Tuple<String, List<Rule>>("Resources", resourceRules));
 		return ruleLists;
 	}
-	
+
 	private JPanel getRulesPanel(final List<Rule> rules)
 	{
 		final JPanel panel = new JPanel();

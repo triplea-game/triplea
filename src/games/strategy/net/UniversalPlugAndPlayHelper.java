@@ -20,9 +20,9 @@ import net.sbbi.upnp.impls.InternetGatewayDevice;
 import net.sbbi.upnp.messages.UPNPResponseException;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class UniversalPlugAndPlayHelper
 {
@@ -30,22 +30,22 @@ public class UniversalPlugAndPlayHelper
 	private InetAddress m_local = null;
 	private InternetGatewayDevice m_device = null;
 	private static UniversalPlugAndPlayHelper s_lastInstance = null;
-	
+
 	public static void main(final String[] args)
 	{
 		UniversalPlugAndPlayHelper.attemptAddingPortForwarding(null, 3300);
 	}
-	
+
 	public UniversalPlugAndPlayHelper(final int port)
 	{
 		m_port = port;
 	}
-	
+
 	public static UniversalPlugAndPlayHelper getLastInstance()
 	{
 		return s_lastInstance;
 	}
-	
+
 	public static boolean attemptAddingPortForwarding(final Component parent, final int port)
 	{
 		final UniversalPlugAndPlayHelper upnpHelper = new UniversalPlugAndPlayHelper(port);
@@ -74,7 +74,7 @@ public class UniversalPlugAndPlayHelper
 		JOptionPane.showMessageDialog(parent, new JScrollPane(textArea), "Setting Port Forwarding with UPnP", JOptionPane.INFORMATION_MESSAGE);
 		return worked;
 	}
-	
+
 	public String attemptAddingPortForwarding(final JTextArea textArea)
 	{
 		System.out.println("Starting Universal Plug and Play (UPnP) add port forward map script.");
@@ -112,7 +112,7 @@ public class UniversalPlugAndPlayHelper
 		s_lastInstance = this;
 		return null;
 	}
-	
+
 	public String testConnection()
 	{
 		System.out.println("Waiting for a connection");
@@ -165,7 +165,7 @@ public class UniversalPlugAndPlayHelper
 		System.out.println("Connection made!");
 		return null;
 	}
-	
+
 	public String removePortForwardUPNP()
 	{
 		System.out.println("Attempting to remove Port Forwarding");
@@ -191,7 +191,7 @@ public class UniversalPlugAndPlayHelper
 		System.out.println("Success. Port Forwarding map removed.");
 		return null;
 	}
-	
+
 	private String addPortForwardUPNP()
 	{
 		final int internalPort = m_port;
@@ -229,7 +229,7 @@ public class UniversalPlugAndPlayHelper
 		System.out.println("Success. Port Forwarding map added.");
 		return null;
 	}
-	
+
 	private String findInternetGatewayDevice()
 	{
 		System.out.println("Attempting to find internet gateway device (normally a router).");
@@ -251,7 +251,7 @@ public class UniversalPlugAndPlayHelper
 		System.out.println("Device found!");
 		return null;
 	}
-	
+
 	private String findLocalInetAddress()
 	{
 		m_local = null;
@@ -263,7 +263,7 @@ public class UniversalPlugAndPlayHelper
 			{
 				final NetworkInterface iface = ifaces.nextElement();
 				final Enumeration<InetAddress> addresses = iface.getInetAddresses();
-				
+
 				while (addresses.hasMoreElements() && m_local == null)
 				{
 					final InetAddress addr = addresses.nextElement();

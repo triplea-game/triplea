@@ -39,55 +39,55 @@ import javax.swing.SwingUtilities;
 
 /**
  * Abstract Game Loader for grid games.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 {
 	private static final long serialVersionUID = -7194416906783331148L;
 	// When serializing, do not save transient member variables
 	protected transient IGridGameDisplay m_display;
-	
+
 	abstract public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames);
-	
+
 	abstract protected Class<? extends GridMapPanel> getGridMapPanelClass();
-	
+
 	abstract protected Class<? extends GridMapData> getGridMapDataClass();
-	
+
 	abstract protected Class<? extends GridGameMenu<GridGameFrame>> getGridTableMenuClass();
-	
+
 	/**
 	 * Should be evenly divided by 2, or else your map might get drawn funny.
 	 * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
-	 * 
+	 *
 	 * @return
 	 */
 	public int getSquareWidth()
 	{
 		return 50;
 	}
-	
+
 	/**
 	 * Should be evenly divided by 2, or else your map might get drawn funny.
 	 * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
-	 * 
+	 *
 	 * @return
 	 */
 	public int getSquareHeight()
 	{
 		return 50;
 	}
-	
+
 	public int getBevelSize()
 	{
 		return 25;
 	}
-	
+
 	protected void initializeGame()
 	{
 	}
-	
+
 	public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception
 	{
 		try
@@ -187,7 +187,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 			}
 		}
 	}
-	
+
 	private void connectPlayers(final Set<IGamePlayer> players, final GridGameFrame frame)
 	{
 		for (final IGamePlayer player : players)
@@ -196,7 +196,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 				((GridGamePlayer) player).setFrame(frame);
 		}
 	}
-	
+
 	@Override
 	public void shutDown()
 	{
@@ -208,7 +208,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 			m_display = null;
 		}
 	}
-	
+
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
@@ -216,22 +216,22 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 	{
 		return IGridGameDisplay.class;
 	}
-	
+
 	public Class<? extends IChannelSubscribor> getSoundType()
 	{
 		return ISound.class;
 	}
-	
+
 	public Class<? extends IRemote> getRemotePlayerType()
 	{
 		return IGridGamePlayer.class;
 	}
-	
+
 	public IUnitFactory getUnitFactory()
 	{
 		return new DefaultUnitFactory();
 	}
-	
+
 	/**
 	 * Only use this method from WITHIN a non-static Delegate class method.
 	 * (Because only the host has the delegates)

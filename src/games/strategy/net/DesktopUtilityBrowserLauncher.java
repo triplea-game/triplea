@@ -16,17 +16,17 @@ import javax.swing.JOptionPane;
  *    BareBonesBrowserLaunch.openURL(url);<br></code> Latest Version: <a href="http://www.centerkey.com/java/browser/">www.centerkey.com/java/browser</a><br>
  * Author: Dem Pilafian<br>
  * Public Domain Software -- Free to Use as You Like
- * 
+ *
  * @version 3.1, June 6, 2010
  */
 public class DesktopUtilityBrowserLauncher
 {
 	static final String[] browsers = { "firefox", "google-chrome", "opera", "epiphany", "konqueror", "conkeror", "midori", "kazehakase", "mozilla", "netscape" };
 	static final String errMsg = "Error attempting to launch web browser";
-	
+
 	/**
 	 * Opens a specific file on the user's computer, using whatever default program is used to open such files, using the local computer's file associations. (veqryn)
-	 * 
+	 *
 	 * @param file
 	 */
 	public static void openFile(final File file)
@@ -83,10 +83,10 @@ public class DesktopUtilityBrowserLauncher
 			}
 		}
 	}
-	
+
 	/**
 	 * Opens the specified web page in the user's default browser
-	 * 
+	 *
 	 * @param url
 	 *            A web address (URL) of a web page (ex: "http://www.google.com/")
 	 */

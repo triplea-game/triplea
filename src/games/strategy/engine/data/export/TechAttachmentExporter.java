@@ -13,7 +13,7 @@
  */
 /*
  * TechAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -33,7 +33,7 @@ public class TechAttachmentExporter extends DefaultAttachmentExporter
 		// return mGenericTechHandler(field,attachment);
 		return super.printOption(field, attachment);
 	}
-	
+
 	@Override
 	protected String printBooleanOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{

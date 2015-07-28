@@ -19,9 +19,9 @@ import java.util.Set;
 
 /**
  * Main class responsible for Chess game.
- * 
+ *
  * @author Mark Christopher Duncan (veqryn)
- * 
+ *
  */
 public class Chess extends GridGame implements IGameLoader
 {
@@ -31,13 +31,13 @@ public class Chess extends GridGame implements IGameLoader
 	private static final String HEURISTIC_COMPUTER_PLAYER_TYPE = "Mostly Random AI"; // the heuristic ai is basically random, so no need to have two random AIs
 	// private static final String ALPHA_BETA_COMPUTER_PLAYER_TYPE = "Alpha-Beta AI"; // this ai was an experiment, and it didn't turn out well.
 	public static final String AI_SEARCH_DEPTH_PROPERTY = "AI Search Depth";
-	
+
 	@Override
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, HEURISTIC_COMPUTER_PLAYER_TYPE, };
 	}
-	
+
 	@Override
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
@@ -76,25 +76,25 @@ public class Chess extends GridGame implements IGameLoader
 		}
 		return iplayers;
 	}
-	
+
 	@Override
 	protected Class<? extends GridMapPanel> getGridMapPanelClass()
 	{
 		return ChessMapPanel.class;
 	}
-	
+
 	@Override
 	protected Class<? extends GridMapData> getGridMapDataClass()
 	{
 		return GridMapData.class;
 	}
-	
+
 	@Override
 	protected Class<? extends GridGameMenu<GridGameFrame>> getGridTableMenuClass()
 	{
 		return ChessMenu.class;
 	}
-	
+
 	@Override
 	public IUnitFactory getUnitFactory()
 	{

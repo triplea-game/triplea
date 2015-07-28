@@ -20,7 +20,7 @@ public class DoesNothingAI extends AbstractAI
 	{
 		super(name, type);
 	}
-	
+
 	@Override
 	protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
@@ -29,19 +29,19 @@ public class DoesNothingAI extends AbstractAI
 			(new WeakAI(this.getName(), this.getType())).purchase(purchaseForBid, PUsToSpend, purchaseDelegate, data, player);
 		pause();
 	}
-	
+
 	@Override
 	protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player)
 	{
 		pause();
 	}
-	
+
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
 		pause();
 	}
-	
+
 	@Override
 	protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
@@ -50,13 +50,13 @@ public class DoesNothingAI extends AbstractAI
 			(new WeakAI(this.getName(), this.getType())).place(placeForBid, placeDelegate, data, player);
 		pause();
 	}
-	
+
 	@Override
 	public void politicalActions()
 	{
 		pause();
 	}
-	
+
 	@Override
 	protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data, final PlayerID player)
 	{
@@ -68,13 +68,13 @@ public class DoesNothingAI extends AbstractAI
 		bridge.getHistoryWriter().startEvent(player.getName() + " removes resources: " + resourceCollection, null); // resourceCollection is not yet a valid renderingObject
 		bridge.addChange(removeChange);
 	}
-	
+
 	@Override
 	public boolean shouldBomberBomb(final Territory territory)
 	{
 		return false;
 	}
-	
+
 	@Override
 	public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics)
 	{

@@ -19,22 +19,22 @@ import java.util.Set;
 
 /**
  * Main class responsible for Go game.
- * 
+ *
  * @author Mark Christopher Duncan (veqryn)
- * 
+ *
  */
 public class Go extends GridGame implements IGameLoader
 {
 	private static final long serialVersionUID = 2560802787325950593L;
 	private static final String HUMAN_PLAYER_TYPE = "Human";
 	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-	
+
 	@Override
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
 	}
-	
+
 	@Override
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
@@ -59,43 +59,43 @@ public class Go extends GridGame implements IGameLoader
 		}
 		return iplayers;
 	}
-	
+
 	@Override
 	protected Class<? extends GridMapPanel> getGridMapPanelClass()
 	{
 		return GoMapPanel.class;
 	}
-	
+
 	@Override
 	protected Class<? extends GridMapData> getGridMapDataClass()
 	{
 		return GridMapData.class;
 	}
-	
+
 	@Override
 	protected Class<? extends GridGameMenu<GridGameFrame>> getGridTableMenuClass()
 	{
 		return GoMenu.class;
 	}
-	
+
 	@Override
 	public int getSquareWidth()
 	{
 		return 30;
 	}
-	
+
 	@Override
 	public int getSquareHeight()
 	{
 		return 30;
 	}
-	
+
 	@Override
 	public int getBevelSize()
 	{
 		return 10;
 	}
-	
+
 	/**
 	 * Only use this method from within a non-static Delegate class method.
 	 * (Because only the host has the delegates)
@@ -104,7 +104,7 @@ public class Go extends GridGame implements IGameLoader
 	{
 		return (games.strategy.grid.go.delegate.PlayDelegate) findDelegate(data, "play");
 	}
-	
+
 	/**
 	 * Only use this method from within a non-static Delegate class method.
 	 * (Because only the host has the delegates)

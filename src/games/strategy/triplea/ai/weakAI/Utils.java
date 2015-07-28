@@ -39,7 +39,7 @@ public class Utils
 		}
 		return rVal;
 	}
-	
+
 	public static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units, final boolean attacking, final boolean sea)
 	{
 		if (AIUtils.strength(units, attacking, sea) < maxStrength)
@@ -53,7 +53,7 @@ public class Utils
 		}
 		return rVal;
 	}
-	
+
 	public static float getStrengthOfPotentialAttackers(final Territory location, final GameData data)
 	{
 		float strength = 0;
@@ -64,7 +64,7 @@ public class Utils
 		}
 		return strength;
 	}
-	
+
 	public static Route findNearest(final Territory start, final Match<Territory> endCondition, final Match<Territory> routeCondition, final GameData data)
 	{
 		Route shortestRoute = null;
@@ -83,7 +83,7 @@ public class Utils
 		}
 		return shortestRoute;
 	}
-	
+
 	public static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID us, final GameData data)
 	{
 		for (final PlayerID player : Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data)))
@@ -98,7 +98,7 @@ public class Utils
 		}
 		return false;
 	}
-	
+
 	// returns all territories that are water territories (veqryn)
 	public static List<Territory> onlyWaterTerr(final GameData data, final List<Territory> allTerr)
 	{
@@ -112,7 +112,7 @@ public class Utils
 		}
 		return water;
 	}
-	
+
 	/**
 	 * Return Territories containing any unit depending on unitCondition
 	 * Differs from findCertainShips because it doesn't require the units be owned

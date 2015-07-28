@@ -22,17 +22,17 @@ import javax.swing.table.TableColumn;
 
 public class EconomyPanel extends AbstractStatPanel
 {
-	
+
 	private static final long serialVersionUID = -7713792841831042952L;
 	private IStat[] m_statsResource;
 	private ResourceTableModel m_resourceModel;
-	
+
 	public EconomyPanel(final GameData data)
 	{
 		super(data);
 		initLayout();
 	}
-	
+
 	@Override
 	protected void initLayout()
 	{
@@ -45,21 +45,21 @@ public class EconomyPanel extends AbstractStatPanel
 		final JScrollPane scroll = new JScrollPane(table);
 		add(scroll);
 	}
-	
-	
+
+
 	class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener
 	{
 		private static final long serialVersionUID = 5197895788633898324L;
 		private boolean m_isDirty = true;
 		private String[][] m_collectedData;
-		
+
 		public ResourceTableModel()
 		{
 			setResourceCollums();
 			m_data.addDataChangeListener(this);
 			m_isDirty = true;
 		}
-		
+
 		private void setResourceCollums()
 		{
 			final List<IStat> statList = new ArrayList<IStat>();
@@ -71,7 +71,7 @@ public class EconomyPanel extends AbstractStatPanel
 			}
 			m_statsResource = statList.toArray(new IStat[statList.size()]);
 		}
-		
+
 		public synchronized Object getValueAt(final int row, final int col)
 		{
 			if (m_isDirty)
@@ -80,9 +80,9 @@ public class EconomyPanel extends AbstractStatPanel
 				m_isDirty = false;
 			}
 			return m_collectedData[row][col];
-			
+
 		}
-		
+
 		private synchronized void loadData()
 		{
 			m_data.acquireReadLock();
@@ -117,7 +117,7 @@ public class EconomyPanel extends AbstractStatPanel
 				m_data.releaseReadLock();
 			}
 		}
-		
+
 		public void gameDataChanged(final Change aChange)
 		{
 			synchronized (this)
@@ -132,7 +132,7 @@ public class EconomyPanel extends AbstractStatPanel
 				}
 			});
 		}
-		
+
 		@Override
 		public String getColumnName(final int col)
 		{
@@ -140,12 +140,12 @@ public class EconomyPanel extends AbstractStatPanel
 				return "Player";
 			return m_statsResource[col - 1].getName();
 		}
-		
+
 		public int getColumnCount()
 		{
 			return m_statsResource.length + 1;
 		}
-		
+
 		public synchronized int getRowCount()
 		{
 			if (!m_isDirty)
@@ -162,7 +162,7 @@ public class EconomyPanel extends AbstractStatPanel
 				}
 			}
 		}
-		
+
 		public synchronized void setGameData(final GameData data)
 		{
 			synchronized (this)
@@ -175,7 +175,7 @@ public class EconomyPanel extends AbstractStatPanel
 			repaint();
 		}
 	}
-	
+
 	@Override
 	public void setGameData(final GameData data)
 	{

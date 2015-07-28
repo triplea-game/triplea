@@ -15,9 +15,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * Abstract class for launching a game.
- * 
+ *
  * @author Abstraction done by Frigoref, Original code by Sean Bridges
- * 
+ *
  */
 abstract public class AbstractLauncher implements ILauncher
 {
@@ -25,12 +25,12 @@ abstract public class AbstractLauncher implements ILauncher
 	protected final GameSelectorModel m_gameSelectorModel;
 	protected final WaitWindow m_gameLoadingWindow;
 	protected final boolean m_headless;
-	
+
 	protected AbstractLauncher(final GameSelectorModel gameSelectorModel)
 	{
 		this(gameSelectorModel, false);
 	}
-	
+
 	protected AbstractLauncher(final GameSelectorModel gameSelectorModel, final boolean headless)
 	{
 		m_headless = headless;
@@ -41,7 +41,7 @@ abstract public class AbstractLauncher implements ILauncher
 		m_gameSelectorModel = gameSelectorModel;
 		m_gameData = gameSelectorModel.getGameData();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.framework.startup.launcher.ILauncher#launch(java.awt.Component)
 	 */
@@ -68,7 +68,7 @@ abstract public class AbstractLauncher implements ILauncher
 			JOptionPane.getFrameForComponent(parent).setVisible(false);
 		t.start();
 	}
-	
+
 	abstract protected void launchInNewThread(Component parent);
-	
+
 }

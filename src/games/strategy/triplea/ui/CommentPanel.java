@@ -13,7 +13,7 @@ package games.strategy.triplea.ui;
  */
 /*
  * CommentPanel.java Swing ui for comment logging.
- * 
+ *
  * Created on September 24, 2007
  */
 import games.strategy.engine.data.GameData;
@@ -57,7 +57,7 @@ import javax.swing.tree.TreeNode;
 
 /**
  * A Comment logging window.
- * 
+ *
  * @author Tony Clayton
  */
 public class CommentPanel extends JPanel
@@ -73,14 +73,14 @@ public class CommentPanel extends JPanel
 	private final SimpleAttributeSet bold = new SimpleAttributeSet();
 	private final SimpleAttributeSet italic = new SimpleAttributeSet();
 	private final SimpleAttributeSet normal = new SimpleAttributeSet();
-	
+
 	public CommentPanel(final TripleAFrame frame, final GameData data)
 	{
 		m_frame = frame;
 		m_data = data;
 		init();
 	}
-	
+
 	private void init()
 	{
 		createComponents();
@@ -92,7 +92,7 @@ public class CommentPanel extends JPanel
 		loadHistory();
 		setupListeners();
 	}
-	
+
 	private void layoutComponents()
 	{
 		final Container content = this;
@@ -106,7 +106,7 @@ public class CommentPanel extends JPanel
 		savePanel.add(m_save, BorderLayout.WEST);
 		content.add(savePanel, BorderLayout.SOUTH);
 	}
-	
+
 	private void createComponents()
 	{
 		m_text = new JTextPane();
@@ -125,7 +125,7 @@ public class CommentPanel extends JPanel
 			m_iconMap.put(playerId, new ImageIcon(m_frame.getUIContext().getFlagImageFactory().getSmallFlag(playerId)));
 		}
 	}
-	
+
 	private void setupListeners()
 	{
 		m_data.getHistory().addTreeModelListener(new TreeModelListener()
@@ -133,23 +133,23 @@ public class CommentPanel extends JPanel
 			public void treeNodesChanged(final TreeModelEvent e)
 			{
 			}
-			
+
 			public void treeNodesInserted(final TreeModelEvent e)
 			{
 				readHistoryTreeEvent(e);
 			}
-			
+
 			public void treeNodesRemoved(final TreeModelEvent e)
 			{
 			}
-			
+
 			public void treeStructureChanged(final TreeModelEvent e)
 			{
 				readHistoryTreeEvent(e);
 			}
 		});
 	}
-	
+
 	private void readHistoryTreeEvent(final TreeModelEvent e)
 	{
 		final TreeModelEvent tme = e;
@@ -196,19 +196,19 @@ public class CommentPanel extends JPanel
 		else
 			SwingUtilities.invokeLater(runner);
 	}
-	
+
 	private void setupKeyMap()
 	{
 		final InputMap nextMessageKeymap = m_nextMessage.getInputMap();
 		nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), m_saveAction);
 	}
-	
+
 	private void cleanupKeyMap()
 	{
 		final InputMap nextMessageKeymap = m_nextMessage.getInputMap();
 		nextMessageKeymap.remove(KeyStroke.getKeyStroke('\n'));
 	}
-	
+
 	private void loadHistory()
 	{
 		final Document doc = m_text.getDocument();
@@ -257,7 +257,7 @@ public class CommentPanel extends JPanel
 			}
 		}
 	}
-	
+
 	/** thread safe */
 	public void addMessage(final String message)
 	{
@@ -293,7 +293,7 @@ public class CommentPanel extends JPanel
 		else
 			SwingUtilities.invokeLater(runner);
 	}
-	
+
 	/**
 	 * Show only the first n lines
 	 */
@@ -322,11 +322,11 @@ public class CommentPanel extends JPanel
 			e.printStackTrace();
 		}
 	}
-	
+
 	private final Action m_saveAction = new AbstractAction("Add Comment")
 	{
 		private static final long serialVersionUID = -5771971912942033713L;
-		
+
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_nextMessage.getText().trim().length() == 0)
@@ -335,7 +335,7 @@ public class CommentPanel extends JPanel
 			m_nextMessage.setText("");
 		}
 	};
-	
+
 	public void cleanUp()
 	{
 		cleanupKeyMap();

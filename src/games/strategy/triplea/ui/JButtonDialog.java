@@ -9,15 +9,15 @@ import javax.swing.JOptionPane;
 /**
  * A Dialog window which has a single component, and a number of buttons.
  * Thi is a wrapper around JOptionPane.showOptionDialog, that allows you to use any names for the button
- * 
+ *
  * @author Klaus Groenbaek
  */
 public class JButtonDialog
 {
-	
+
 	/**
 	 * Show a new modal dialog and block until the user press a button of closes the dialog
-	 * 
+	 *
 	 * @param frame
 	 *            the frame owner
 	 * @param title
@@ -32,10 +32,10 @@ public class JButtonDialog
 	{
 		return showDialog(frame, title, message, JOptionPane.PLAIN_MESSAGE, buttons);
 	}
-	
+
 	/**
 	 * Show a new modal dialog and block until the user press a button of closes the dialog
-	 * 
+	 *
 	 * @param component
 	 *            the component owner
 	 * @param title
@@ -50,10 +50,10 @@ public class JButtonDialog
 	{
 		return showDialog(JOptionPane.getFrameForComponent(component), title, message, JOptionPane.PLAIN_MESSAGE, buttons);
 	}
-	
+
 	/**
 	 * Show a new modal dialog and block until the user press a button of closes the dialog
-	 * 
+	 *
 	 * @param frame
 	 *            the frame owner
 	 * @param title
@@ -73,18 +73,18 @@ public class JButtonDialog
 		{
 			options[i] = buttons[i];
 		}
-		
+
 		final JOptionPane pane = new JOptionPane(message, messageType);
 		pane.setOptions(options);
 		final JDialog window = pane.createDialog(frame, title);
 		window.setVisible(true);
 		return (String) pane.getValue();
 	}
-	
+
 	// -----------------------------------------------------------------------
 	// constructor
 	// -----------------------------------------------------------------------
-	
+
 	private JButtonDialog()
 	{
 	}

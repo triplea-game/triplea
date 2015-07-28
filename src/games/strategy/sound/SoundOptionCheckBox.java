@@ -7,18 +7,18 @@ import games.strategy.engine.data.properties.BooleanProperty;
 
 /**
  * Checkbox wrapper for a sound option.
- * 
+ *
  * @author Frigoref
- * 
+ *
  */
 class SoundOptionCheckBox extends BooleanProperty
 {
 	private static final long serialVersionUID = 5774074488487286103L;
-	
+
 	final String m_clipName;
-	
+
 	/**
-	 * 
+	 *
 	 * @param clipName
 	 *            sound file name
 	 * @param title
@@ -31,12 +31,12 @@ class SoundOptionCheckBox extends BooleanProperty
 			setValue(false);
 		m_clipName = clipName;
 	}
-	
+
 	public String getClip()
 	{
 		return m_clipName;
 	}
-	
+
 	public String getClipName()
 	{
 		return m_clipName;

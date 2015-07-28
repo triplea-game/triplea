@@ -34,9 +34,9 @@ import javax.swing.border.EtchedBorder;
 
 /**
  * Main panel for headless server.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
- * 
+ *
  */
 public class HeadlessServerMainPanel extends JPanel implements Observer
 {
@@ -55,7 +55,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 	private JSplitPane m_chatSplit;
 	private static final Dimension m_initialSize = new Dimension(685, 620);
 	private boolean m_isChatShowing;
-	
+
 	public HeadlessServerMainPanel(final SetupPanelModel typePanelModel, final AvailableGames availableGames)
 	{
 		m_gameTypePanelModel = typePanelModel;
@@ -69,12 +69,12 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 			setGameSetupPanel(typePanelModel.getPanel());
 		}
 	}
-	
+
 	public JButton getDefaultButton()
 	{
 		return m_playButton;
 	}
-	
+
 	private void createComponents(final AvailableGames availableGames)
 	{
 		m_playButton = new JButton("Play");
@@ -94,7 +94,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		m_chatSplit.setOneTouchExpandable(false);
 		m_chatSplit.setDividerSize(5);
 	}
-	
+
 	private void layoutComponents()
 	{
 		final JPanel buttonsPanel = new JPanel();
@@ -112,7 +112,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		add(buttonsPanel, BorderLayout.SOUTH);
 		setPreferredSize(m_initialSize);
 	}
-	
+
 	private void addChat()
 	{
 		remove(m_mainPanel);
@@ -138,7 +138,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		}
 		m_isChatShowing = chat != null;
 	}
-	
+
 	public void setGameSetupPanel(final ISetupPanel panel)
 	{
 		SetupPanel setupPanel = null;
@@ -172,7 +172,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		invalidate();
 		revalidate();
 	}
-	
+
 	private void createUserActionMenu(final JPanel cancelPanel)
 	{
 		if (m_gameSetupPanel.getUserActions() == null)
@@ -197,7 +197,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		});
 		cancelPanel.add(button);
 	}
-	
+
 	private void setupListeners()
 	{
 		m_gameTypePanelModel.addObserver(new Observer()
@@ -236,7 +236,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		});*/
 		m_gameSelectorModel.addObserver(this);
 	}
-	
+
 	private void play()
 	{
 		ErrorHandler.setGameOver(false);
@@ -247,7 +247,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 			launcher.launch(this);
 		m_gameSetupPanel.postStartGame();
 	}
-	
+
 	private void setWidgetActivation()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -271,7 +271,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 			m_playButton.setEnabled(false);
 		}
 	}
-	
+
 	public void update(final Observable o, final Object arg)
 	{
 		setWidgetActivation();

@@ -56,9 +56,9 @@ import javax.swing.KeyStroke;
  * the size of the unit images, and how zoomed out they are, etc. <br>
  * To use, just fill in the information in the fields below, and click on 'Show More' to
  * show other, optional, fields.
- * 
+ *
  * @author veqryn [Mark Christopher Duncan]
- * 
+ *
  */
 public class MapPropertiesMaker extends JFrame
 {
@@ -70,12 +70,12 @@ public class MapPropertiesMaker extends JFrame
 	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
 	private static final MapProperties s_mapProperties = new MapProperties();
 	private static JPanel s_playerColorChooser = new JPanel();
-	
+
 	public static String[] getProperties()
 	{
 		return new String[] { TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT };
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		handleCommandLineArgs(args);
@@ -107,7 +107,7 @@ public class MapPropertiesMaker extends JFrame
 			System.exit(0);
 		}
 	}// end main
-	
+
 	public MapPropertiesMaker()
 	{
 		super("Map Properties Maker");
@@ -119,7 +119,7 @@ public class MapPropertiesMaker extends JFrame
 		final Action openAction = new AbstractAction("Load Properties")
 		{
 			private static final long serialVersionUID = -3135749471880991185L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadProperties();
@@ -129,7 +129,7 @@ public class MapPropertiesMaker extends JFrame
 		final Action saveAction = new AbstractAction("Save Properties")
 		{
 			private static final long serialVersionUID = -5608941822299486808L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				saveProperties();
@@ -139,7 +139,7 @@ public class MapPropertiesMaker extends JFrame
 		final Action exitAction = new AbstractAction("Exit")
 		{
 			private static final long serialVersionUID = -9212762817640498442L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -163,7 +163,7 @@ public class MapPropertiesMaker extends JFrame
 		fileMenu.add(exitItem);
 		menuBar.add(fileMenu);
 	}
-	
+
 	private JPanel createPropertiesPanel()
 	{
 		final JPanel panel = new JPanel();
@@ -179,7 +179,7 @@ public class MapPropertiesMaker extends JFrame
 					+ "<br>show other, optional, fields. "
 					+ "</html>"),
 					new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
-		
+
 		panel.add(new JLabel("The Width in Pixels of your map: "), new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 		final IntTextField widthField = new IntTextField(0, Integer.MAX_VALUE);
 		widthField.setText("" + s_mapProperties.getMAP_WIDTH());
@@ -188,7 +188,7 @@ public class MapPropertiesMaker extends JFrame
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -201,7 +201,7 @@ public class MapPropertiesMaker extends JFrame
 			}
 		});
 		panel.add(widthField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-		
+
 		panel.add(new JLabel("The Height in Pixels of your map: "), new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 		final IntTextField heightField = new IntTextField(0, Integer.MAX_VALUE);
 		heightField.setText("" + s_mapProperties.getMAP_HEIGHT());
@@ -210,7 +210,7 @@ public class MapPropertiesMaker extends JFrame
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -223,7 +223,7 @@ public class MapPropertiesMaker extends JFrame
 			}
 		});
 		panel.add(heightField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-		
+
 		panel.add(new JLabel("<html>The initial Scale (zoom) of your unit images: "
 					+ "<br>Must be one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5</html>"),
 					new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
@@ -234,7 +234,7 @@ public class MapPropertiesMaker extends JFrame
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -248,7 +248,7 @@ public class MapPropertiesMaker extends JFrame
 			}
 		});
 		panel.add(scaleField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-		
+
 		panel.add(new JLabel("Create Players and Click on the Color to set their Color: "),
 					new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 50, 20, 50), 0, 0));
 		createPlayerColorChooser();
@@ -257,7 +257,7 @@ public class MapPropertiesMaker extends JFrame
 		showMore.addActionListener(new AbstractAction("Show All Options")
 		{
 			private static final long serialVersionUID = -794092512377464803L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				@SuppressWarnings("rawtypes")
@@ -272,7 +272,7 @@ public class MapPropertiesMaker extends JFrame
 		panel.add(showMore, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 		return panel;
 	}
-	
+
 	private void createPlayerColorChooser()
 	{
 		s_playerColorChooser.removeAll();
@@ -284,7 +284,7 @@ public class MapPropertiesMaker extends JFrame
 			final JLabel label = new JLabel(entry.getKey())
 			{
 				private static final long serialVersionUID = 5624227155029721033L;
-				
+
 				@Override
 				public void paintComponent(final Graphics g)
 				{
@@ -305,19 +305,19 @@ public class MapPropertiesMaker extends JFrame
 					MapPropertiesMaker.this.validate();
 					MapPropertiesMaker.this.repaint();
 				}
-				
+
 				public void mouseEntered(final MouseEvent e)
 				{
 				}
-				
+
 				public void mouseExited(final MouseEvent e)
 				{
 				}
-				
+
 				public void mousePressed(final MouseEvent e)
 				{
 				}
-				
+
 				public void mouseReleased(final MouseEvent e)
 				{
 				}
@@ -327,7 +327,7 @@ public class MapPropertiesMaker extends JFrame
 			removePlayer.addActionListener(new AbstractAction("Remove " + entry.getKey())
 			{
 				private static final long serialVersionUID = -3593575469168341735L;
-				
+
 				public void actionPerformed(final ActionEvent e)
 				{
 					s_mapProperties.getCOLOR_MAP().remove(removePlayer.getText().replaceFirst("Remove ", ""));
@@ -347,7 +347,7 @@ public class MapPropertiesMaker extends JFrame
 		addPlayer.addActionListener(new AbstractAction("Add Another Player")
 		{
 			private static final long serialVersionUID = -794092512377464803L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				s_mapProperties.getCOLOR_MAP().put(nameTextField.getText(), Color.GREEN);
@@ -359,7 +359,7 @@ public class MapPropertiesMaker extends JFrame
 		s_playerColorChooser.add(addPlayer, new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 		s_playerColorChooser.add(nameTextField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 	}
-	
+
 	private void loadProperties()
 	{
 		final Properties properties = new Properties();
@@ -397,7 +397,7 @@ public class MapPropertiesMaker extends JFrame
 		validate();
 		repaint();
 	}
-	
+
 	private void saveProperties()
 	{
 		try
@@ -428,7 +428,7 @@ public class MapPropertiesMaker extends JFrame
 			ex.printStackTrace();
 		}
 	}
-	
+
 	private String getOutPutString()
 	{
 		final StringBuilder outString = new StringBuilder();
@@ -453,7 +453,7 @@ public class MapPropertiesMaker extends JFrame
 		}
 		return outString.toString();
 	}
-	
+
 	private static String getValue(final String arg)
 	{
 		final int index = arg.indexOf('=');
@@ -461,7 +461,7 @@ public class MapPropertiesMaker extends JFrame
 			return "";
 		return arg.substring(index + 1);
 	}
-	
+
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		final String[] properties = getProperties();

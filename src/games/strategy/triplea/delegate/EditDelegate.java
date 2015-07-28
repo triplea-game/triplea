@@ -39,9 +39,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * 
+ *
  * Edit game state
- * 
+ *
  * @author Tony Clayton
  */
 public class EditDelegate extends BaseEditDelegate implements IEditDelegate
@@ -54,12 +54,12 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 	{
 		super.start();
 	}
-	
+
 	@Override
 	public void end()
 	{
 	}
-	
+
 	public String removeUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -82,7 +82,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		}
 		return null;
 	}
-	
+
 	public String addUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -131,7 +131,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @return gets the production of the territory, ignores whether the territory was an original factory
 	 */
@@ -142,7 +142,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			return ta.getProduction();
 		return 0;
 	}
-	
+
 	public String changeTerritoryOwner(final Territory territory, final PlayerID player)
 	{
 		String result = null;
@@ -180,7 +180,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		m_bridge.addChange(ChangeFactory.changeOwner(territory, player));
 		return null;
 	}
-	
+
 	public String changePUs(final PlayerID player, final int newTotal)
 	{
 		String result = null;
@@ -196,7 +196,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(player, PUs, (newTotal - oldTotal)));
 		return null;
 	}
-	
+
 	public String changeTechTokens(final PlayerID player, final int newTotal)
 	{
 		String result = null;
@@ -212,7 +212,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
 		return null;
 	}
-	
+
 	public String addTechAdvance(final PlayerID player, final Collection<TechAdvance> advances)
 	{
 		String result = null;
@@ -227,7 +227,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		}
 		return null;
 	}
-	
+
 	public String removeTechAdvance(final PlayerID player, final Collection<TechAdvance> advances)
 	{
 		String result = null;
@@ -242,7 +242,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		}
 		return null;
 	}
-	
+
 	public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory)
 	{
 		String result = null;
@@ -267,7 +267,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		// territory.notifyChanged();
 		return null;
 	}
-	
+
 	public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory)
 	{
 		String result = null;
@@ -294,7 +294,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		// territory.notifyChanged();
 		return null;
 	}
-	
+
 	public String changePoliticalRelationships(final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges)
 	{
 		String result = null;
@@ -310,7 +310,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 			final RelationshipType currentRelation = getData().getRelationshipTracker().getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());
 			if (!currentRelation.equals(relationshipChange.getThird()))
 			{
-				logEvent("Editing Political Relationship for " + relationshipChange.getFirst().getName() + " and " + relationshipChange.getSecond().getName() + " from " +
+				logEvent("Editing Political Relationship for " + relationshipChange.getFirst().getName() + " and " + relationshipChange.getSecond().getName() + " from "
 							currentRelation.getName() + " to " + relationshipChange.getThird().getName(), null);
 				m_bridge.addChange(ChangeFactory.relationshipChange(relationshipChange.getFirst(), relationshipChange.getSecond(), currentRelation, relationshipChange.getThird()));
 				battleTracker.addRelationshipChangesThisTurn(relationshipChange.getFirst(), relationshipChange.getSecond(), currentRelation, relationshipChange.getThird());
@@ -318,7 +318,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		}
 		return null;
 	}
-	
+
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */

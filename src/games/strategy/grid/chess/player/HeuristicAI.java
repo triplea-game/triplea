@@ -25,9 +25,9 @@ import java.util.Random;
 
 /**
  * A not good AI for Chess that uses some heuristics to be slightly better than random.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class HeuristicAI extends GridAbstractAI
 {
@@ -35,7 +35,7 @@ public class HeuristicAI extends GridAbstractAI
 	{
 		super(name, type);
 	}
-	
+
 	@Override
 	protected void play()
 	{
@@ -73,7 +73,7 @@ public class HeuristicAI extends GridAbstractAI
 		doMove(ourMove.getFirst(), ourMove.getSecond(), data, playDel, me);
 		return;
 	}
-	
+
 	static Triple<Territory, Territory, Integer> getMoveWithPoints(final Territory start, final Territory end, final Collection<Territory> captures, final PlayerID me, final PlayerID enemy,
 				final GameData data, final boolean returnEarlyIfWin)
 	{
@@ -86,7 +86,7 @@ public class HeuristicAI extends GridAbstractAI
 			return null;
 		return new Triple<Territory, Territory, Integer>(start, end, points);
 	}
-	
+
 	static int getPointsForBoardSituation(final PlayerID me, final PlayerID enemy, final Collection<Territory> captures, final GameData data, final boolean returnEarlyIfWin)
 	{
 		int points = 0;
@@ -115,7 +115,7 @@ public class HeuristicAI extends GridAbstractAI
 		}
 		return points;
 	}
-	
+
 	static List<Triple<Territory, Territory, Collection<Territory>>> getAllAvailableMoves(final PlayerID player, final GameData data, final boolean shuffle)
 	{
 		final List<Territory> allTerritories1 = new ArrayList<Territory>(data.getMap().getTerritories());
@@ -140,7 +140,7 @@ public class HeuristicAI extends GridAbstractAI
 		}
 		return availableMoves;
 	}
-	
+
 	static Comparator<Triple<Territory, Territory, Integer>> getBestPointsComparatorInt()
 	{
 		return new Comparator<Triple<Territory, Territory, Integer>>()
@@ -163,7 +163,7 @@ public class HeuristicAI extends GridAbstractAI
 			}
 		};
 	}
-	
+
 	static int getPointsForUnits(final Collection<Unit> capturedUnits)
 	{
 		int points = 0;
@@ -184,7 +184,7 @@ public class HeuristicAI extends GridAbstractAI
 		}
 		return points;
 	}
-	
+
 	static Comparator<Triple<Territory, Territory, Collection<Territory>>> getBestCaptureComparator(final PlayerID player, final GameData data)
 	{
 		return new Comparator<Triple<Territory, Territory, Collection<Territory>>>()
@@ -219,7 +219,7 @@ public class HeuristicAI extends GridAbstractAI
 			}
 		};
 	}
-	
+
 	static final void doMove(final Territory start, final Territory end, final GameData data, final IGridPlayDelegate playDel, final PlayerID me)
 	{
 		String error;
@@ -231,7 +231,7 @@ public class HeuristicAI extends GridAbstractAI
 			doRandomMove(data, playDel, me);
 		}
 	}
-	
+
 	static void doRandomMove(final GameData data, final IGridPlayDelegate playDel, final PlayerID me)
 	{
 		// Get the collection of territories from the map

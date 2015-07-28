@@ -21,9 +21,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel
 {
@@ -32,7 +32,7 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
 	protected final JTextArea m_title = new JTextArea();
 	protected final JScrollPane m_scroll = new JScrollPane(m_title);
 	protected final GridMapPanel m_mapPanel;
-	
+
 	public GridHistoryDetailsPanel(final GameData data, final GridMapPanel mapPanel)
 	{
 		m_data = data;
@@ -45,7 +45,7 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
 		m_scroll.setBorder(null);
 		m_mapPanel = mapPanel;
 	}
-	
+
 	public void render(final HistoryNode node)
 	{
 		removeAll();
@@ -85,7 +85,7 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
 		validate();
 		repaint();
 	}
-	
+
 	private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units)
 	{
 		final JPanel panel = new JPanel();
@@ -98,5 +98,5 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
 		}
 		add(panel, mainConstraints);
 	}
-	
+
 }

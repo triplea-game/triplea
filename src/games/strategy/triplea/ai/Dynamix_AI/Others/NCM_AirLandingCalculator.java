@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class NCM_AirLandingCalculator

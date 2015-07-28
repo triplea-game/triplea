@@ -13,7 +13,7 @@
  */
 /*
  * NotificationMessages.java
- * 
+ *
  * Created on August 3, 2011
  */
 package games.strategy.triplea.ui;
@@ -33,7 +33,7 @@ public class NotificationMessages
 	private static NotificationMessages s_nm = null;
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
-	
+
 	protected NotificationMessages()
 	{
 		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
@@ -53,7 +53,7 @@ public class NotificationMessages
 			}
 		}
 	}
-	
+
 	public static NotificationMessages getInstance()
 	{
 		if (s_nm == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000)
@@ -63,7 +63,7 @@ public class NotificationMessages
 		}
 		return s_nm;
 	}
-	
+
 	/**
 	 * Can be null if none exist.
 	 */
@@ -71,7 +71,7 @@ public class NotificationMessages
 	{
 		return m_properties.getProperty(notificationMessageKey);
 	}
-	
+
 	/**
 	 * Can be null if none exist.
 	 */

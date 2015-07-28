@@ -22,10 +22,10 @@ import javax.swing.SwingUtilities;
  * A new instance is created at end of turn, based on the Email and a forum poster stored in the game data.
  * The needs to be serialized since it is invoked through the IAbstractEndTurnDelegate which require all objects to be serializable
  * although the PBEM games will always be local
- * 
+ *
  * @author unascribed
  * @author Klaus Groenbaek
- * 
+ *
  */
 public class PBEMMessagePoster implements Serializable
 {
@@ -37,7 +37,7 @@ public class PBEMMessagePoster implements Serializable
 	public static final String WEB_POSTER_PROP_NAME = "games.strategy.engine.pbem.IWebPoster";
 	public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PBEMMessagePoster";
 	private static final long serialVersionUID = 2256265436928530566L;
-	
+
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
@@ -54,11 +54,11 @@ public class PBEMMessagePoster implements Serializable
 	private transient final GameData m_gameData;
 	private transient int m_roundNumber;
 	private transient String m_gameNameAndInfo;
-	
+
 	// -----------------------------------------------------------------------
 	// Constructors
 	// -----------------------------------------------------------------------
-	
+
 	public PBEMMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber, final String title)
 	{
 		m_gameData = gameData;
@@ -69,7 +69,7 @@ public class PBEMMessagePoster implements Serializable
 		m_webSitePoster = (IWebPoster) gameData.getProperties().get(WEB_POSTER_PROP_NAME);
 		m_gameNameAndInfo = "TripleA " + title + " for game: " + gameData.getGameName() + ", version: " + gameData.getGameVersion();
 	}
-	
+
 	// -----------------------------------------------------------------------
 	// instance methods
 	// -----------------------------------------------------------------------
@@ -77,7 +77,7 @@ public class PBEMMessagePoster implements Serializable
 	{
 		return (m_forumPoster != null || m_emailSender != null || m_webSitePoster != null);
 	}
-	
+
 	public static boolean GameDataHasPlayByEmailOrForumMessengers(final GameData gameData)
 	{
 		if (gameData == null)
@@ -88,45 +88,45 @@ public class PBEMMessagePoster implements Serializable
 		final boolean isPBEM = gameData.getProperties().get(PBEM_GAME_PROP_NAME, false);
 		return (isPBEM && (forumPoster != null || emailSender != null || webPoster != null));
 	}
-	
+
 	/* public void setForumPoster(final IForumPoster msgr)
 	{
 		m_forumPoster = msgr;
 	}*/
-	
+
 	public IForumPoster getForumPoster()
 	{
 		return m_forumPoster;
 	}
-	
+
 	public IWebPoster getWebPoster()
 	{
 		return m_webSitePoster;
 	}
-	
+
 	public void setTurnSummary(final String turnSummary)
 	{
 		m_turnSummary = turnSummary;
 	}
-	
+
 	public void setSaveGame(final File saveGameFile) throws FileNotFoundException
 	{
 		m_saveGameFile = saveGameFile;
 	}
-	
+
 	public String getTurnSummaryRef()
 	{
 		return m_turnSummaryRef;
 	}
-	
+
 	public String getSaveGameRef()
 	{
 		return m_saveGameRef;
 	}
-	
+
 	/**
 	 * Post summary to form and/or email, and writes the action performed to the history writer
-	 * 
+	 *
 	 * @param historyWriter
 	 *            the history writer (which has no effect since save game has already be generated...) // todo (kg)
 	 * @return true if all posts were successful
@@ -134,14 +134,14 @@ public class PBEMMessagePoster implements Serializable
 	public boolean post(final IDelegateHistoryWriter historyWriter, final String title, final boolean includeSaveGame)
 	{
 		boolean forumSuccess = true;
-		
+
 		final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
 		if (m_forumPoster != null)
 		{
 			saveGameSb.append(m_forumPoster.getTopicId()).append("_");
 		}
 		saveGameSb.append(m_currentPlayer.getName().substring(0, Math.min(3, m_currentPlayer.getName().length() - 1))).append(m_roundNumber).append(".tsvg");
-		
+
 		final String saveGameName = saveGameSb.toString();
 		if (m_forumPoster != null)
 		{
@@ -162,7 +162,7 @@ public class PBEMMessagePoster implements Serializable
 				e.printStackTrace();
 			}
 		}
-		
+
 		boolean emailSuccess = true;
 		if (m_emailSender != null)
 		{
@@ -172,7 +172,7 @@ public class PBEMMessagePoster implements Serializable
 			{
 				m_emailSender.sendEmail(subjectPostFix.toString(), convertToHtml((m_gameNameAndInfo + "\n\n" + m_turnSummary)), m_saveGameFile, saveGameName);
 				m_emailSendStatus = "Success, sent to " + m_emailSender.getToAddress();
-				
+
 			} catch (final IOException e)
 			{
 				emailSuccess = false;
@@ -180,7 +180,7 @@ public class PBEMMessagePoster implements Serializable
 				e.printStackTrace();
 			}
 		}
-		
+
 		boolean webSiteSuccess = true;
 		if (m_webSitePoster != null)
 		{
@@ -199,7 +199,7 @@ public class PBEMMessagePoster implements Serializable
 				e.printStackTrace();
 			}
 		}
-		
+
 		if (historyWriter != null)
 		{
 			final StringBuilder sb = new StringBuilder("Post Turn Summary");
@@ -221,13 +221,13 @@ public class PBEMMessagePoster implements Serializable
 			}
 			historyWriter.startEvent(sb.toString());
 		}
-		
+
 		return forumSuccess && emailSuccess && webSiteSuccess;
 	}
-	
+
 	/**
 	 * Converts text to html, by transforming \n to <br/>
-	 * 
+	 *
 	 * @param string
 	 *            the string to transform
 	 * @return the transformed string
@@ -236,32 +236,32 @@ public class PBEMMessagePoster implements Serializable
 	{
 		return "<pre><br/>" + string.replaceAll("\n", "<br/>") + "<br/></pre>";
 	}
-	
+
 	/**
 	 * Get the configured email sender
-	 * 
+	 *
 	 * @return return an email sender or null
 	 */
 	public IEmailSender getEmailSender()
 	{
 		return m_emailSender;
 	}
-	
+
 	/**
 	 * Return the status string from sending the email.
-	 * 
+	 *
 	 * @return a success of failure string, or null if no email sender was configured
 	 */
 	public String getEmailSendStatus()
 	{
 		return m_emailSendStatus;
 	}
-	
+
 	public String getWebPostStatus()
 	{
 		return m_webPostStatus;
 	}
-	
+
 	public boolean alsoPostMoveSummary()
 	{
 		if (m_forumPoster != null)
@@ -270,13 +270,13 @@ public class PBEMMessagePoster implements Serializable
 			return m_emailSender.getAlsoPostAfterCombatMove();
 		return false;
 	}
-	
+
 	public static void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame, final PBEMMessagePoster posterPBEM, final IAbstractForumPosterDelegate postingDelegate,
 				final MainGameFrame mainGameFrame, final JComponent postButton)
 	{
 		String message = "";
 		final IForumPoster turnSummaryMsgr = posterPBEM.getForumPoster();
-		
+
 		final StringBuilder sb = new StringBuilder();
 		if (turnSummaryMsgr != null)
 		{
@@ -287,19 +287,19 @@ public class PBEMMessagePoster implements Serializable
 			}
 			sb.append("to ").append(turnSummaryMsgr.getDisplayName()).append("?\n");
 		}
-		
+
 		final IEmailSender emailSender = posterPBEM.getEmailSender();
 		if (emailSender != null)
 		{
 			sb.append("Send email to ").append(emailSender.getToAddress()).append("?\n");
 		}
-		
+
 		final IWebPoster webPoster = posterPBEM.getWebPoster();
 		if (webPoster != null)
 		{
 			sb.append("Send game state of '" + webPoster.getGameName() + "' to " + webPoster.getHost() + "?\n");
 		}
-		
+
 		message = sb.toString();
 		final int choice = JOptionPane.showConfirmDialog(mainGameFrame, message, "Post " + title + "?", 2, -1, null);
 		if (choice != 0)
@@ -317,11 +317,11 @@ public class PBEMMessagePoster implements Serializable
 				public void run()
 				{
 					boolean postOk = true;
-					
+
 					File saveGameFile = null;
 					if (postingDelegate != null)
 						postingDelegate.setHasPostedTurnSummary(true);
-					
+
 					try
 					{
 						saveGameFile = File.createTempFile("triplea", ".tsvg");
@@ -335,9 +335,9 @@ public class PBEMMessagePoster implements Serializable
 						postOk = false;
 						e.printStackTrace();
 					}
-					
+
 					posterPBEM.setTurnSummary(historyLog.toString());
-					
+
 					try
 					{
 						// forward the poster to the delegate which invokes post() on the poster
@@ -358,13 +358,13 @@ public class PBEMMessagePoster implements Serializable
 					}
 					if (postingDelegate != null)
 						postingDelegate.setHasPostedTurnSummary(postOk);
-					
+
 					final StringBuilder sb = new StringBuilder();
 					if (posterPBEM.getForumPoster() != null)
 					{
 						final String saveGameRef = posterPBEM.getSaveGameRef();
 						final String turnSummaryRef = posterPBEM.getTurnSummaryRef();
-						
+
 						if (saveGameRef != null)
 							sb.append("\nSave Game : ").append(saveGameRef);
 						if (turnSummaryRef != null)
@@ -378,9 +378,9 @@ public class PBEMMessagePoster implements Serializable
 					{
 						sb.append("\nWeb Site Post: ").append(posterPBEM.getWebPostStatus());
 					}
-					
+
 					historyLog.getWriter().println(sb.toString());
-					
+
 					if (historyLog.isVisible()) // todo(kg) I think this is a brain fart, unless is is a workaround for some bug
 						historyLog.setVisible(true);
 					try
@@ -394,7 +394,7 @@ public class PBEMMessagePoster implements Serializable
 					progressWindow.setVisible(false);
 					progressWindow.removeAll();
 					progressWindow.dispose();
-					
+
 					final boolean finalPostOk = postOk;
 					final String finalMessage = sb.toString();
 					final Runnable runnable = new Runnable()

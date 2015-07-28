@@ -22,14 +22,14 @@ import javax.swing.JPanel;
 
 /**
  * Sound option window framework.
- * 
+ *
  * @author Frigoref
- * 
+ *
  */
 public final class SoundOptions
 {
 	final ClipPlayer m_clipPlayer;
-	
+
 	/**
 	 * @param parentMenu
 	 *            menu where to add the menu item "Sound Options..."
@@ -47,7 +47,7 @@ public final class SoundOptions
 		});
 		parentMenu.add(soundOptions);
 	}
-	
+
 	public static void addToPanel(final JPanel parentPanel, final SoundType soundType)
 	{
 		final JButton soundOptions = new JButton("Sound Options...");
@@ -60,7 +60,7 @@ public final class SoundOptions
 		});
 		parentPanel.add(soundOptions);
 	}
-	
+
 	public SoundOptions(final JComponent parent, final SoundType soundType)
 	{
 		m_clipPlayer = ClipPlayer.getInstance();
@@ -97,7 +97,7 @@ public final class SoundOptions
 			}
 		}
 	}
-	
+
 	public static void addGlobalSoundSwitchMenu(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
@@ -112,7 +112,7 @@ public final class SoundOptions
 		});
 		parentMenu.add(soundCheckBox);
 	}
-	
+
 	public static void addGlobalSoundSwitchCheckbox(final JPanel parentPanel)
 	{
 		final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");

@@ -22,21 +22,21 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A simple alpha-beta pruning AI.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class AlphaBeta extends HeuristicAI
 {
 	// private static final double PRUNE_PERCENT = 0.5d; // remove this % of the worst nodes
 	// private static final int SKIP_PRUNING_START_DEPTH = 1; // skip this number of turns before we start pruning
 	// private static final int SEARCH_DEPTH = 3; // how many turns to search out
-	
+
 	public AlphaBeta(final String name, final String type)
 	{
 		super(name, type);
 	}
-	
+
 	@Override
 	protected void play()
 	{
@@ -61,7 +61,7 @@ public class AlphaBeta extends HeuristicAI
 		doMove(ourMove.getFirst(), ourMove.getSecond(), data, playDel, me);
 		return;
 	}
-	
+
 	static List<Triple<Territory, Territory, Long>> getPointsForBoardSituationStartBranches(final PlayerID theAI, final PlayerID enemy, final GameData data, final int branchesLeftToDo)
 	{
 		final List<Thread> threads = new ArrayList<Thread>();
@@ -104,7 +104,7 @@ public class AlphaBeta extends HeuristicAI
 		}
 		return movesWithPoints;
 	}
-	
+
 	static Tuple<Long, Integer> getPointsForBoardSituationBranch(final PlayerID theAI, final PlayerID currentPlayer, final PlayerID currentEnemy, final GameData data, final int branchesLeftToDo)
 	{
 		if (branchesLeftToDo > 0)
@@ -130,9 +130,9 @@ public class AlphaBeta extends HeuristicAI
 			return new Tuple<Long, Integer>((400 + getPointsForBoardPieces(theAI, data)), 1);
 		return new Tuple<Long, Integer>(getPointsForBoardSituationTotal(theAI, data), 1);
 	}
-	
+
 	/*
-	
+
 	static List<Triple<Territory, Territory, Long>> getPointsForBoardSituationStartBranches(final PlayerID theAI, final PlayerID enemy, final GameData data, final int branchesLeftToDo)
 	{
 		final List<Triple<Territory, Territory, Long>> movesWithPoints = new ArrayList<Triple<Territory, Territory, Long>>();
@@ -147,7 +147,7 @@ public class AlphaBeta extends HeuristicAI
 		}
 		return movesWithPoints;
 	}
-	
+
 	static Tuple<Long, Integer> getPointsForBoardSituationBranch(final PlayerID theAI, final PlayerID currentPlayer, final PlayerID currentEnemy, final GameData data, final int branchesLeftToDo)
 	{
 		if (branchesLeftToDo > 0)
@@ -172,7 +172,7 @@ public class AlphaBeta extends HeuristicAI
 		return new Tuple<Long, Integer>(getPointsForBoardSituationTotal(theAI, data), 0);
 	}
 	*/
-	
+
 	static long getPointsForBoardSituationTotal(final PlayerID theAI, final GameData data)
 	{
 		long points = 0;
@@ -193,7 +193,7 @@ public class AlphaBeta extends HeuristicAI
 		points += getPointsForBoardPieces(theAI, data);
 		return points;
 	}
-	
+
 	static long getPointsForBoardPieces(final PlayerID theAI, final GameData data)
 	{
 		long points = 0;
@@ -206,7 +206,7 @@ public class AlphaBeta extends HeuristicAI
 		}
 		return points;
 	}
-	
+
 	static Comparator<Triple<Territory, Territory, Long>> getBestPointsComparatorLong()
 	{
 		return new Comparator<Triple<Territory, Territory, Long>>()
@@ -229,7 +229,7 @@ public class AlphaBeta extends HeuristicAI
 			}
 		};
 	}
-	
+
 	static void printMovesSet(final List<Triple<Territory, Territory, Long>> movesWithPoints)
 	{
 		System.out.println("\n\rMoves Available:");
@@ -238,7 +238,7 @@ public class AlphaBeta extends HeuristicAI
 			System.out.println(move1.getFirst().getX() + "," + move1.getFirst().getY() + " -> " + move1.getSecond().getX() + "," + move1.getSecond().getY() + "  == " + move1.getThird());
 		}
 	}
-	
+
 	public static int getAISearchDepthProperty(final GameData data)
 	{
 		return data.getProperties().get(Chess.AI_SEARCH_DEPTH_PROPERTY, 3);

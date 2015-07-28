@@ -10,18 +10,18 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  * @param <T>
  */
 public class CollectionProperty<T> extends AEditableProperty
 {
 	private static final long serialVersionUID = 5338055034530377261L;
 	private List<T> m_values;
-	
+
 	/**
-	 * 
+	 *
 	 * @param name
 	 *            name of the property
 	 * @param defaultValue
@@ -34,34 +34,34 @@ public class CollectionProperty<T> extends AEditableProperty
 		super(name, description);
 		m_values = new ArrayList<T>(values);
 	}
-	
+
 	public Object getValue()
 	{
 		return m_values;
 	}
-	
+
 	public List<T> getValueT()
 	{
 		return m_values;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_values = (List<T>) value;
 	}
-	
+
 	public void setValueT(final List<T> value)
 	{
 		m_values = value;
 	}
-	
+
 	@Override
 	public int getRowsNeeded()
 	{
 		return (m_values == null ? 1 : Math.max(1, m_values.size()));
 	}
-	
+
 	public JComponent getEditorComponent()
 	{
 		if (m_values == null)
@@ -77,7 +77,7 @@ public class CollectionProperty<T> extends AEditableProperty
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				// TODO: change m_values
@@ -85,7 +85,7 @@ public class CollectionProperty<T> extends AEditableProperty
 		});
 		return table;
 	}
-	
+
 	public boolean validate(final Object value)
 	{
 		if (value == null)
