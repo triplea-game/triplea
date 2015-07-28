@@ -81,6 +81,7 @@ public class TechPanel extends ActionPanel
 		super.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -146,6 +147,7 @@ public class TechPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -5077755928034508263L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			TechAdvance advance = null;
@@ -197,6 +199,7 @@ public class TechPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -7065334229434684387L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_techRoll = null;
@@ -207,6 +210,7 @@ public class TechPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 6541224254805479410L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			final PlayerID currentPlayer = getCurrentPlayer();
@@ -266,6 +270,7 @@ public class TechPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -4709625797723985960L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
@@ -365,6 +370,7 @@ class TechRollPanel extends JPanel
 	
 	private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
+		@Override
 		public void changedValue(final ScrollableTextField stf)
 		{
 			setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
@@ -514,6 +520,7 @@ class TechTokenPanel extends JPanel
 	
 	private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
+		@Override
 		public void changedValue(final ScrollableTextField stf)
 		{
 			setLabel(TechTracker.getTechCost(m_player) * m_textField.getValue());
@@ -525,6 +532,7 @@ class TechTokenPanel extends JPanel
 	{
 		return new ScrollableTextFieldListener()
 		{
+			@Override
 			public void changedValue(final ScrollableTextField stf)
 			{
 				setWidgetActivation();

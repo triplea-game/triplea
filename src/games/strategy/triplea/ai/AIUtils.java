@@ -69,6 +69,7 @@ public class AIUtils
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit o1, final Unit o2)
 			{
 				return getCost(o1.getType(), o1.getOwner(), o1.getData()) - getCost(o2.getType(), o2.getOwner(), o2.getData());

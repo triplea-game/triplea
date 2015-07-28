@@ -132,6 +132,7 @@ public class OddsCalculatorPanel extends JPanel
 	private JList m_territoryEffectsJList;
 	private final WidgetChangedListener m_listenerPlayerUnitsPanel = new WidgetChangedListener()
 	{
+		@Override
 		public void widgetChanged()
 		{
 			setWidgetActivation();
@@ -139,6 +140,7 @@ public class OddsCalculatorPanel extends JPanel
 	};
 	private final OddsCalculatorListener m_listenerOddsCalculator = new OddsCalculatorListener()
 	{
+		@Override
 		public void dataReady()
 		{
 			m_calculateButton.setText("Calculate Odds");
@@ -263,6 +265,7 @@ public class OddsCalculatorPanel extends JPanel
 	{
 		m_defenderCombo.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_data.acquireReadLock();
@@ -282,6 +285,7 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_attackerCombo.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_data.acquireReadLock();
@@ -301,6 +305,7 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_amphibiousCheckBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				setWidgetActivation();
@@ -308,6 +313,7 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_landBattleCheckBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_attackerOrderOfLosses = null;
@@ -319,10 +325,12 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_calculateButton.addMouseMotionListener(new MouseMotionListener()
 		{
+			@Override
 			public void mouseDragged(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseMoved(final MouseEvent e)
 			{
 				final String memoryAvailable = "<br/>Percentage of memory available: " + String.format("%.2f", (percentageOfFreeMemoryAvailable() * 100))
@@ -342,6 +350,7 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_calculateButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				updateStats();
@@ -349,6 +358,7 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_closeButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_attackerOrderOfLosses = null;
@@ -360,6 +370,7 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_clearButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_defendingUnitsPanel.clear();
@@ -369,6 +380,7 @@ public class OddsCalculatorPanel extends JPanel
 		});
 		m_SwapSidesButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_attackerOrderOfLosses = null;
@@ -388,6 +400,7 @@ public class OddsCalculatorPanel extends JPanel
 		m_orderOfLossesButton.addActionListener(new ActionListener()
 		{
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final OrderOfLossesInputPanel oolPanel = new OrderOfLossesInputPanel(m_attackerOrderOfLosses, m_defenderOrderOfLosses, m_attackingUnitsPanel.getCategories(),
@@ -406,6 +419,7 @@ public class OddsCalculatorPanel extends JPanel
 		{
 			m_territoryEffectsJList.addListSelectionListener(new ListSelectionListener()
 			{
+				@Override
 				public void valueChanged(final ListSelectionEvent e)
 				{
 					setWidgetActivation();
@@ -464,6 +478,7 @@ public class OddsCalculatorPanel extends JPanel
 		{
 			private static final long serialVersionUID = -2148507015083214974L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_calculator.cancel();
@@ -475,6 +490,7 @@ public class OddsCalculatorPanel extends JPanel
 		dialog.setLocationRelativeTo(this);
 		final Thread calcThread = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -532,6 +548,7 @@ public class OddsCalculatorPanel extends JPanel
 				{
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							dialog.setVisible(false);
@@ -942,6 +959,7 @@ class PlayerUnitsPanel extends JPanel
 	private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<WidgetChangedListener>();
 	private final WidgetChangedListener m_listenerUnitPanel = new WidgetChangedListener()
 	{
+		@Override
 		public void widgetChanged()
 		{
 			notifyListeners();
@@ -987,6 +1005,7 @@ class PlayerUnitsPanel extends JPanel
 		m_categories = new ArrayList<UnitCategory>(categorize(id, units));
 		Collections.sort(m_categories, new Comparator<UnitCategory>()
 		{
+			@Override
 			public int compare(final UnitCategory o1, final UnitCategory o2)
 			{
 				final UnitType ut1 = o1.getType();
@@ -1130,6 +1149,7 @@ class UnitPanel extends JPanel
 	private final ListenerList<WidgetChangedListener> m_listeners = new ListenerList<WidgetChangedListener>();
 	private final ScrollableTextFieldListener m_listenerTextField = new ScrollableTextFieldListener()
 	{
+		@Override
 		public void changedValue(final ScrollableTextField field)
 		{
 			notifyListeners();
@@ -1241,6 +1261,7 @@ class OrderOfLossesInputPanel extends JPanel
 		m_attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
 		m_attackerTextField.getDocument().addDocumentListener(new DocumentListener()
 		{
+			@Override
 			public void insertUpdate(final DocumentEvent e)
 			{
 				if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data))
@@ -1249,6 +1270,7 @@ class OrderOfLossesInputPanel extends JPanel
 					m_attackerLabel.setForeground(null);
 			}
 			
+			@Override
 			public void removeUpdate(final DocumentEvent e)
 			{
 				if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data))
@@ -1257,6 +1279,7 @@ class OrderOfLossesInputPanel extends JPanel
 					m_attackerLabel.setForeground(null);
 			}
 			
+			@Override
 			public void changedUpdate(final DocumentEvent e)
 			{
 				if (!OddsCalculator.isValidOOL(m_attackerTextField.getText(), m_data))
@@ -1268,6 +1291,7 @@ class OrderOfLossesInputPanel extends JPanel
 		m_defenderTextField = new JTextField(defenderOrder == null ? "" : defenderOrder);
 		m_defenderTextField.getDocument().addDocumentListener(new DocumentListener()
 		{
+			@Override
 			public void insertUpdate(final DocumentEvent e)
 			{
 				if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data))
@@ -1276,6 +1300,7 @@ class OrderOfLossesInputPanel extends JPanel
 					m_defenderLabel.setForeground(null);
 			}
 			
+			@Override
 			public void removeUpdate(final DocumentEvent e)
 			{
 				if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data))
@@ -1284,6 +1309,7 @@ class OrderOfLossesInputPanel extends JPanel
 					m_defenderLabel.setForeground(null);
 			}
 			
+			@Override
 			public void changedUpdate(final DocumentEvent e)
 			{
 				if (!OddsCalculator.isValidOOL(m_defenderTextField.getText(), m_data))
@@ -1295,6 +1321,7 @@ class OrderOfLossesInputPanel extends JPanel
 		m_clear = new JButton("Clear");
 		m_clear.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_attackerTextField.setText("");
@@ -1367,6 +1394,7 @@ class OrderOfLossesInputPanel extends JPanel
 				button.setToolTipText(toolTipText);
 				button.addActionListener(new ActionListener()
 				{
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						textField.setText((textField.getText().length() > 0 ? (textField.getText() + OddsCalculator.OOL_SEPARATOR) : "") + unitName);

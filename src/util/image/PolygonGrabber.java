@@ -236,6 +236,7 @@ public class PolygonGrabber extends JFrame
 		{
 			private static final long serialVersionUID = -9093814781969488946L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadPolygons();
@@ -246,6 +247,7 @@ public class PolygonGrabber extends JFrame
 		{
 			private static final long serialVersionUID = -6886417728606754296L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				savePolygons();
@@ -256,6 +258,7 @@ public class PolygonGrabber extends JFrame
 		{
 			private static final long serialVersionUID = -1294988703454116227L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -266,6 +269,7 @@ public class PolygonGrabber extends JFrame
 		{
 			private static final long serialVersionUID = 9135123964960352915L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				JOptionPane.showMessageDialog(null, new JLabel("<html>"
@@ -324,6 +328,7 @@ public class PolygonGrabber extends JFrame
 		modeItem = new JCheckBoxMenuItem("Island Mode", false);
 		modeItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				s_islandMode = modeItem.getState();

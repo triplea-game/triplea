@@ -61,6 +61,7 @@ public class DoCombatMove
 			DUtils.Log(Level.FINE, message);
 			final Runnable runner = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);

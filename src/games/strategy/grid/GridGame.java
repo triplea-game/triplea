@@ -49,6 +49,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 	// When serializing, do not save transient member variables
 	protected transient IGridGameDisplay m_display;
 	
+	@Override
 	abstract public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames);
 	
 	abstract protected Class<? extends GridMapPanel> getGridMapPanelClass();
@@ -88,6 +89,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 	{
 	}
 	
+	@Override
 	public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception
 	{
 		try
@@ -134,6 +136,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						final GridGameFrame frame = new GridGameFrame(game, localPlayers, getGridMapPanelClass(), getGridMapDataClass(), getGridTableMenuClass(), getSquareWidth(), getSquareHeight(),
@@ -146,6 +149,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 						connectPlayers(players, frame);
 						SwingUtilities.invokeLater(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -212,21 +216,25 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
+	@Override
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return IGridGameDisplay.class;
 	}
 	
+	@Override
 	public Class<? extends IChannelSubscribor> getSoundType()
 	{
 		return ISound.class;
 	}
 	
+	@Override
 	public Class<? extends IRemote> getRemotePlayerType()
 	{
 		return IGridGamePlayer.class;
 	}
 	
+	@Override
 	public IUnitFactory getUnitFactory()
 	{
 		return new DefaultUnitFactory();

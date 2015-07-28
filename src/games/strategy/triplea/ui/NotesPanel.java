@@ -41,10 +41,12 @@ public class NotesPanel extends JPanel
 		{
 			private static final long serialVersionUID = 8439704398303765832L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						layoutNotes();

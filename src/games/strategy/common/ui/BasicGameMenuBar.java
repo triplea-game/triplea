@@ -137,10 +137,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				private static final long serialVersionUID = -1817640666359299617L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							final JEditorPane pane = m_gameNotesPane.getComponent();
@@ -156,6 +158,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							{
 								private static final long serialVersionUID = -6628015175043647980L;
 								
+								@Override
 								public void actionPerformed(final ActionEvent e)
 								{
 									dialog.setVisible(false);
@@ -331,6 +334,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				private static final long serialVersionUID = 5687214685515140202L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					PlayersPanel.showPlayers(getGame(), m_frame);
@@ -382,6 +386,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		guidesLink.setMnemonic(KeyEvent.VK_G);
 		hostingLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -396,6 +401,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		mapLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -410,6 +416,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		bugReport.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -424,6 +431,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		lobbyRules.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -438,6 +446,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		warClub.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -452,6 +461,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		devForum.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -466,6 +476,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		donateLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -480,6 +491,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		});
 		guidesLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -512,6 +524,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			private static final long serialVersionUID = 6303760092518795718L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				Console.getConsole().setVisible(true);
@@ -544,6 +557,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				private static final long serialVersionUID = 2861657714227435945L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
@@ -592,6 +606,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
 			fileDialog.setFilenameFilter(new FilenameFilter()
 			{
+				@Override
 				public boolean accept(final File dir, final String name)
 				{ // the extension should be .tsvg, but find svg extensions as well
 					return name.endsWith(".tsvg") || name.endsWith(".svg");
@@ -678,6 +693,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			private static final long serialVersionUID = -8835148465905355231L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final File f = getSaveGameLocationDialog(m_frame);
@@ -701,6 +717,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			private static final long serialVersionUID = 5197939183318847906L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final GameData data = getGame().getData();
@@ -738,6 +755,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			private static final long serialVersionUID = 5438496165424252930L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_frame.leaveGame();
@@ -766,6 +784,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				private static final long serialVersionUID = 2801394552918725137L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					m_frame.shutdown();
@@ -906,6 +925,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			private static final long serialVersionUID = 379919988820952164L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
@@ -936,6 +956,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			private static final long serialVersionUID = 119615303846107510L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String id = (String) getData().getProperties().get(GameData.GAME_UUID);
@@ -957,6 +978,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		chatTimeBox.setMnemonic(KeyEvent.VK_T);
 		chatTimeBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_frame.setShowChatTime(chatTimeBox.isSelected());
@@ -973,6 +995,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
 		AISleepDurationBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final IntTextField text = new IntTextField(50, 10000);
@@ -1002,6 +1025,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				private static final long serialVersionUID = 8937205081994328616L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
@@ -1019,6 +1043,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			private static final long serialVersionUID = 8379478036021948990L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				exportXMLFile();

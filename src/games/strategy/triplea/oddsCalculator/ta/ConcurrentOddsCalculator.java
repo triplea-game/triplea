@@ -57,6 +57,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		s_logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
 	}
 	
+	@Override
 	public void setGameData(final GameData data)
 	{
 		m_latchSetData.increment(); // increment so that a new calc doesn't take place (since they all wait on this latch)
@@ -85,6 +86,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 				m_latchWorkerThreadsCreation.increment();// increment our token, so that we can set the data in a different thread and return from this one
 				m_executor.submit(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						createWorkers(data);
@@ -94,6 +96,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public int getThreadCount()
 	{
 		return m_currentThreads;
@@ -149,6 +152,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 						++i;
 						m_executor.submit(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								if (m_cancelCurrentOperation >= 0)
@@ -187,6 +191,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		s_logger.fine("Initialized worker thread pool with size: " + m_workers.size());
 	}
 	
+	@Override
 	public void shutdown()
 	{
 		m_isShutDown = true;
@@ -216,6 +221,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
 				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, int runCount)
 	{
@@ -245,6 +251,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	/**
 	 * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits for all the future results and combines them together.
 	 */
+	@Override
 	public AggregateResults calculate() throws IllegalStateException
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -319,6 +326,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
 				final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
 	{
@@ -329,11 +337,13 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public boolean getIsReady()
 	{
 		return m_isDataSet && m_isCalcSet && !m_isShutDown;
 	}
 	
+	@Override
 	public int getRunCount()
 	{
 		int totalRunCount = 0;
@@ -344,6 +354,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		return totalRunCount;
 	}
 	
+	@Override
 	public void setKeepOneAttackingLandUnit(final boolean bool)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -356,6 +367,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setAmphibious(final boolean bool)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -368,6 +380,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setRetreatAfterRound(final int value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -380,6 +393,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setRetreatAfterXUnitsLeft(final int value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -392,6 +406,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setRetreatWhenOnlyAirLeft(final boolean value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -404,6 +419,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setRetreatWhenMetaPowerIsLower(final boolean value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -416,6 +432,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setAttackerOrderOfLosses(final String attackerOrderOfLosses)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -428,6 +445,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void setDefenderOrderOfLosses(final String defenderOrderOfLosses)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -441,6 +459,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	}
 	
 	// not on purpose, we need to be able to cancel at any time
+	@Override
 	public void cancel()
 	{
 		for (final OddsCalculator worker : m_workers)
@@ -449,6 +468,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void addOddsCalculatorListener(final OddsCalculatorListener listener)
 	{
 		synchronized (m_listeners)
@@ -457,6 +477,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 	}
 	
+	@Override
 	public void removeOddsCalculatorListener(final OddsCalculatorListener listener)
 	{
 		synchronized (m_listeners)
@@ -500,6 +521,7 @@ class DaemonThreadFactory implements ThreadFactory
 		namePrefix = name + ": pool-" + poolNumber.getAndIncrement() + "-thread-";
 	}
 	
+	@Override
 	public Thread newThread(final Runnable r)
 	{
 		final Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);

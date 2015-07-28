@@ -41,11 +41,13 @@ public class NumberProperty extends AEditableProperty
 		m_value = def;
 	}
 	
+	@Override
 	public Integer getValue()
 	{
 		return m_value;
 	}
 	
+	@Override
 	public void setValue(final Object value) throws ClassCastException
 	{
 		if (value instanceof String)
@@ -61,12 +63,14 @@ public class NumberProperty extends AEditableProperty
 		}
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final IntTextField field = new IntTextField(m_min, m_max);
 		field.setValue(m_value);
 		field.addChangeListener(new IntTextFieldChangeListener()
 		{
+			@Override
 			public void changedValue(final IntTextField aField)
 			{
 				m_value = aField.getValue();
@@ -75,6 +79,7 @@ public class NumberProperty extends AEditableProperty
 		return field;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value instanceof Integer)

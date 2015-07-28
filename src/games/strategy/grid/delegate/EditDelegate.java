@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 {
+	@Override
 	public String removeUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -60,6 +61,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		return result;
 	}
 	
+	@Override
 	public String addUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -84,6 +86,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		return result;
 	}
 	
+	@Override
 	public String changeTerritoryOwner(final Territory territory, final PlayerID player)
 	{
 		String result = null;

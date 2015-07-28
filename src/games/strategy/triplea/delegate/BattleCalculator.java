@@ -94,6 +94,7 @@ public class BattleCalculator
 	{
 		final Comparator<Unit> comparator = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				if (u1.getUnitType().equals(u2.getUnitType()))

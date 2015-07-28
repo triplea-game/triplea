@@ -70,6 +70,7 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
 		return m_cachedRules;
 	}
 	
+	@Override
 	public Iterator<ProductionRule> iterator()
 	{
 		return getRules().iterator();

@@ -156,6 +156,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		m_techs = s.m_techs;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!games.strategy.triplea.Properties.getTechDevelopment(getData()))
@@ -217,6 +218,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 		return games.strategy.triplea.Properties.getLL_TECH_ONLY(getData());
 	}
 	
+	@Override
 	public TechResults rollTech(final int techRolls, final TechnologyFrontier techToRollFor, final int newTokens, final IntegerMap<PlayerID> whoPaysHowMuch)
 	{
 		int rollCount = techRolls;

@@ -61,6 +61,7 @@ public interface IWebPoster extends IBean
 	 * 
 	 * @return
 	 */
+	@Override
 	public String getDisplayName();
 	
 	/**

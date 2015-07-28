@@ -71,6 +71,7 @@ public class DiceRoll implements Externalizable
 	{
 		final Comparator<Unit> comparator = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
@@ -821,6 +822,7 @@ public class DiceRoll implements Externalizable
 	{
 		final Comparator<Unit> comp = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				Integer v1, v2;
@@ -845,6 +847,7 @@ public class DiceRoll implements Externalizable
 		// first, sort the lists inside each set
 		final Comparator<UnitSupportAttachment> compList = new Comparator<UnitSupportAttachment>()
 		{
+			@Override
 			public int compare(final UnitSupportAttachment u1, final UnitSupportAttachment u2)
 			{
 				int compareTo = 0;
@@ -1288,6 +1291,7 @@ public class DiceRoll implements Externalizable
 		return m_rolls.get(index);
 	}
 	
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		final int[] dice = new int[m_rolls.size()];
@@ -1299,6 +1303,7 @@ public class DiceRoll implements Externalizable
 		out.writeInt(m_hits);
 	}
 	
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		final int[] dice = (int[]) in.readObject();

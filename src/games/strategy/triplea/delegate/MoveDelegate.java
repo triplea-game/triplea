@@ -279,6 +279,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		m_PUsLost = s.m_PUsLost;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
@@ -796,6 +797,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		int transportIndex = 0;
 		final Comparator<Unit> transportCostComparator = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit o1, final Unit o2)
 			{
 				final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
@@ -810,6 +812,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 		final Comparator<Unit> transportCapacityComparator = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit o1, final Unit o2)
 			{
 				final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
@@ -864,6 +867,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit t1, final Unit t2)
 			{
 				if (t1 == t2 || t1.equals(t2))
@@ -883,6 +887,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 	{
 		final Comparator<Unit> c = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit o1, final Unit o2)
 			{
 				final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();

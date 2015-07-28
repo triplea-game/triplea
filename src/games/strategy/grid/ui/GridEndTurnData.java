@@ -27,16 +27,19 @@ public class GridEndTurnData implements IGridEndTurnData
 		this(groupsThatShouldDie.getTerritoryUnitsRemovalAdjustment(), groupsThatShouldDie.getWantToContinuePlaying(), groupsThatShouldDie.getPlayer());
 	}
 	
+	@Override
 	public Set<Territory> getTerritoryUnitsRemovalAdjustment()
 	{
 		return (m_territoryUnitsRemovalAdjustment == null ? null : new HashSet<Territory>(m_territoryUnitsRemovalAdjustment));
 	}
 	
+	@Override
 	public boolean getWantToContinuePlaying()
 	{
 		return m_wantToContinuePlaying;
 	}
 	
+	@Override
 	public PlayerID getPlayer()
 	{
 		return m_player;

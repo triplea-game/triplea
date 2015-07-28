@@ -102,6 +102,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		}
 	}
 	
+	@Override
 	public void setGameData(final GameData data)
 	{
 		if (m_isRunning)
@@ -128,6 +129,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 	/**
 	 * Calculates odds using the stored game data.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
 				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException
@@ -154,6 +156,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		m_isCalcSet = true;
 	}
 	
+	@Override
 	public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
 				final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
 	{
@@ -161,6 +164,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		return calculate();
 	}
 	
+	@Override
 	public AggregateResults calculate()
 	{
 		if (!getIsReady())
@@ -170,66 +174,79 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		return calculate(m_runCount);
 	}
 	
+	@Override
 	public AggregateResults call() throws Exception
 	{
 		return calculate();
 	}
 	
+	@Override
 	public boolean getIsReady()
 	{
 		return m_isDataSet && m_isCalcSet;
 	}
 	
+	@Override
 	public int getRunCount()
 	{
 		return m_runCount;
 	}
 	
+	@Override
 	public void setKeepOneAttackingLandUnit(final boolean bool)
 	{
 		m_keepOneAttackingLandUnit = bool;
 	}
 	
+	@Override
 	public void setAmphibious(final boolean bool)
 	{
 		m_amphibious = bool;
 	}
 	
+	@Override
 	public void setRetreatAfterRound(final int value)
 	{
 		m_retreatAfterRound = value;
 	}
 	
+	@Override
 	public void setRetreatAfterXUnitsLeft(final int value)
 	{
 		m_retreatAfterXUnitsLeft = value;
 	}
 	
+	@Override
 	public void setRetreatWhenOnlyAirLeft(final boolean value)
 	{
 		m_retreatWhenOnlyAirLeft = value;
 	}
 	
+	@Override
 	public void setRetreatWhenMetaPowerIsLower(final boolean value)
 	{
 		m_retreatWhenMetaPowerIsLower = value;
 	}
 	
+	@Override
 	public void setAttackerOrderOfLosses(final String attackerOrderOfLosses)
 	{
 		m_attackerOrderOfLosses = attackerOrderOfLosses;
 	}
 	
+	@Override
 	public void setDefenderOrderOfLosses(final String defenderOrderOfLosses)
 	{
 		m_defenderOrderOfLosses = defenderOrderOfLosses;
 	}
 	
+	@Override
 	public void cancel()
 	{
 		m_cancelled = true;
 	}
 	
+	@Override
 	public void shutdown()
 	{
 		cancel();
@@ -239,6 +256,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		}
 	}
 	
+	@Override
 	public int getThreadCount()
 	{
 		return 1;
@@ -374,6 +392,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		return order;
 	}
 	
+	@Override
 	public void addOddsCalculatorListener(final OddsCalculatorListener listener)
 	{
 		synchronized (m_listeners)
@@ -382,6 +401,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
 		}
 	}
 	
+	@Override
 	public void removeOddsCalculatorListener(final OddsCalculatorListener listener)
 	{
 		synchronized (m_listeners)
@@ -429,25 +449,30 @@ class DummyDelegateBridge implements IDelegateBridge
 		m_changePerformer = new ChangePerformer(m_data);
 	}
 	
+	@Override
 	public GameData getData()
 	{
 		return m_data;
 	}
 	
+	@Override
 	public void leaveDelegateExecution()
 	{
 	}
 	
+	@Override
 	public Properties getStepProperties()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public String getStepName()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		if (id.equals(m_attacker))
@@ -456,46 +481,55 @@ class DummyDelegateBridge implements IDelegateBridge
 			return m_defendingPlayer;
 	}
 	
+	@Override
 	public IRemotePlayer getRemotePlayer()
 	{
 		// the current player is attacker
 		return m_attackingPlayer;
 	}
 	
+	@Override
 	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
 	}
 	
+	@Override
 	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}
 	
+	@Override
 	public PlayerID getPlayerID()
 	{
 		return m_attacker;
 	}
 	
+	@Override
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_writer;
 	}
 	
+	@Override
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
 	}
 	
+	@Override
 	public ISound getSoundChannelBroadcaster()
 	{
 		return m_soundChannel;
 	}
 	
+	@Override
 	public void enterDelegateExecution()
 	{
 	}
 	
+	@Override
 	public void addChange(final Change aChange)
 	{
 		if (!(aChange instanceof UnitHitsChange))
@@ -504,6 +538,7 @@ class DummyDelegateBridge implements IDelegateBridge
 		m_changePerformer.perform(aChange);
 	}
 	
+	@Override
 	public void stopGameSequence()
 	{
 	}
@@ -522,10 +557,12 @@ class DummyDelegateBridge implements IDelegateBridge
 
 class DummyGameModifiedChannel implements IGameModifiedChannel
 {
+	@Override
 	public void addChildToEvent(final String text, final Object renderingData)
 	{
 	}
 	
+	@Override
 	public void gameDataChanged(final Change aChange)
 	{
 	}
@@ -534,18 +571,22 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	{
 	}*/
 	
+	@Override
 	public void shutDown()
 	{
 	}
 	
+	@Override
 	public void startHistoryEvent(final String event)
 	{
 	}
 	
+	@Override
 	public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
 	{
 	}
 	
+	@Override
 	public void startHistoryEvent(final String event, final Object renderingData)
 	{
 	}

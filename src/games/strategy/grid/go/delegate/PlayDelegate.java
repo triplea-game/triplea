@@ -97,18 +97,21 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		this.m_capturedUnits = s.m_capturedUnits;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return !haveTwoPassedInARow() && (m_firstPlayerToPass == null || m_passesInARow == 1 || m_firstPlayerToPass.equals(m_player))
 					&& (m_player.getName().equalsIgnoreCase("Black") || m_blackHandicap <= 0);
 	}
 	
+	@Override
 	public void signalStatus(final String status)
 	{
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 	}
 	
+	@Override
 	public String play(final IGridPlayData play)
 	{
 		if (!delegateCurrentlyRequiresUserInput())
@@ -291,11 +294,13 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		return state;
 	}
 	
+	@Override
 	public List<Map<Territory, PlayerID>> getPreviousMapStates()
 	{
 		return m_previousMapStates;
 	}
 	
+	@Override
 	public boolean haveTwoPassedInARow()
 	{
 		return m_passesInARow >= 2;
@@ -311,6 +316,7 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 		m_passesInARow = passesInARow;
 	}
 	
+	@Override
 	public Set<Unit> getCapturedUnits()
 	{
 		return m_capturedUnits;

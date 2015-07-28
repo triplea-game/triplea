@@ -200,16 +200,19 @@ public abstract class EditorPanel extends JPanel
 	 */
 	protected class EditorChangedFiringDocumentListener implements DocumentListener
 	{
+		@Override
 		public void changedUpdate(final DocumentEvent e)
 		{
 			fireEditorChanged();
 		}
 		
+		@Override
 		public void insertUpdate(final DocumentEvent e)
 		{
 			fireEditorChanged();
 		}
 		
+		@Override
 		public void removeUpdate(final DocumentEvent e)
 		{
 			fireEditorChanged();

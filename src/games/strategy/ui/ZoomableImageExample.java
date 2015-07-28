@@ -82,6 +82,7 @@ public class ZoomableImageExample extends JFrame
 	{
 		private static final long serialVersionUID = 4825071800322928852L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			final String input = JOptionPane.showInputDialog("Get Zoom Factor");

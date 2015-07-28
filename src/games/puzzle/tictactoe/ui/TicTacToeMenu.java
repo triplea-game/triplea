@@ -48,6 +48,7 @@ public class TicTacToeMenu extends GridGameMenu<GridGameFrame>
 		{
 			private static final long serialVersionUID = 3734484281045120725L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

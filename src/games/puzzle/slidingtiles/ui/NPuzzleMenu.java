@@ -50,6 +50,7 @@ public class NPuzzleMenu extends GridGameMenu<GridGameFrame>
 		{
 			private static final long serialVersionUID = -7535795861423393750L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

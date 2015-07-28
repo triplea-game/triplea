@@ -165,6 +165,7 @@ public class GameRunner2
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					s_waitWindow = new WaitWindow("TripleA is starting...");
@@ -186,6 +187,7 @@ public class GameRunner2
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final MainFrame frame = new MainFrame();
@@ -297,6 +299,7 @@ public class GameRunner2
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					try
@@ -830,6 +833,7 @@ public class GameRunner2
 	{
 		final Thread t = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				// do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
@@ -909,6 +913,7 @@ public class GameRunner2
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(false), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false,
@@ -924,6 +929,7 @@ public class GameRunner2
 				{
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(), "What is New?", JOptionPane.INFORMATION_MESSAGE, false,
@@ -1001,6 +1007,7 @@ public class GameRunner2
 				text.append("</ul><br><br>You can update them by clicking on the 'Download Maps' button on the start screen of TripleA.</html>");
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						EventThreadJOptionPane.showMessageDialog(null, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));

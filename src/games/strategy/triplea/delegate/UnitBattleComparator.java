@@ -43,6 +43,7 @@ public class UnitBattleComparator implements Comparator<Unit>
 		}
 	}
 	
+	@Override
 	public int compare(final Unit u1, final Unit u2)
 	{
 		if (u1.equals(u2))

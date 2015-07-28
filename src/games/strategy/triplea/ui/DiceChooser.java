@@ -128,6 +128,7 @@ public class DiceChooser extends JPanel
 			{
 				private static final long serialVersionUID = 8900816143434068634L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent event)
 				{
 					addDie(dieNum);
@@ -142,6 +143,7 @@ public class DiceChooser extends JPanel
 		{
 			private static final long serialVersionUID = 9096980607403511853L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				removeLastDie();

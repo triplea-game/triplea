@@ -31,11 +31,13 @@ public class BooleanProperty extends AEditableProperty
 		mValue = defaultValue;
 	}
 	
+	@Override
 	public Object getValue()
 	{
 		return mValue ? Boolean.TRUE : Boolean.FALSE;
 	}
 	
+	@Override
 	public void setValue(final Object value) throws IllegalArgumentException
 	{
 		mValue = (Boolean) value;
@@ -50,12 +52,14 @@ public class BooleanProperty extends AEditableProperty
 	 * 
 	 * @return component used to edit this property
 	 */
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final JCheckBox box = new JCheckBox("");
 		box.setSelected(mValue);
 		box.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				mValue = box.isSelected();
@@ -64,6 +68,7 @@ public class BooleanProperty extends AEditableProperty
 		return box;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value instanceof Boolean)

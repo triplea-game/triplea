@@ -94,6 +94,7 @@ public interface IDrawable
 
 class DrawableComparator implements Comparator<IDrawable>
 {
+	@Override
 	public int compare(final IDrawable o1, final IDrawable o2)
 	{
 		return o1.getLevel() - o2.getLevel();
@@ -112,6 +113,7 @@ class TerritoryNameDrawable implements IDrawable
 		this.m_uiContext = context;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
@@ -238,6 +240,7 @@ class TerritoryNameDrawable implements IDrawable
 		}
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return TERRITORY_TEXT_LEVEL;
@@ -254,12 +257,14 @@ class VCDrawable implements IDrawable
 		m_location = location;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Point point = mapData.getVCPlacementPoint(m_location);
 		graphics.drawImage(mapData.getVCImage(), point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return VC_MARKER_LEVEL;
@@ -279,11 +284,13 @@ class DecoratorDrawable implements IDrawable
 		m_image = image;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		graphics.drawImage(m_image, m_point.x - bounds.x, m_point.y - bounds.y, null);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return DECORATOR_LEVEL;
@@ -309,6 +316,7 @@ class CapitolMarkerDrawable implements IDrawable
 		m_uiContext = uiContext;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		// Changed back to use Large flags
@@ -317,6 +325,7 @@ class CapitolMarkerDrawable implements IDrawable
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return CAPITOL_MARKER_LEVEL;
@@ -344,6 +353,7 @@ abstract class MapTileDrawable implements IDrawable
 	
 	protected abstract Image getImage();
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Image img = getImage();
@@ -411,6 +421,7 @@ class ReliefMapDrawable extends MapTileDrawable
 		return rVal;
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return RELIEF_LEVEL;
@@ -448,6 +459,7 @@ class BaseMapDrawable extends MapTileDrawable
 		return rVal;
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return BASE_MAP_LEVEL;
@@ -470,6 +482,7 @@ class ConvoyZoneDrawable implements IDrawable
 		m_uiContext = uiContext;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		Image img;
@@ -481,6 +494,7 @@ class ConvoyZoneDrawable implements IDrawable
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return CAPITOL_MARKER_LEVEL;
@@ -501,6 +515,7 @@ class KamikazeZoneDrawable implements IDrawable
 		m_uiContext = uiContext2;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		// Change so only original owner gets the kamikazi zone marker
@@ -531,6 +546,7 @@ class KamikazeZoneDrawable implements IDrawable
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return CAPITOL_MARKER_LEVEL;
@@ -550,6 +566,7 @@ class BlockadeZoneDrawable implements IDrawable
 		// m_uiContext = uiContext;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		// Find blockade.png from misc folder
@@ -557,6 +574,7 @@ class BlockadeZoneDrawable implements IDrawable
 		graphics.drawImage(mapData.getBlockadeImage(), point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return CAPITOL_MARKER_LEVEL;
@@ -576,11 +594,13 @@ class TerritoryEffectDrawable implements IDrawable
 		m_point = point;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		graphics.drawImage(mapData.getTerritoryEffectImage(m_effect.getName()), m_point.x - bounds.x, m_point.y - bounds.y, null);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return TERRITORY_EFFECT_LEVEL;
@@ -599,6 +619,7 @@ class OptionalExtraTerritoryBordersDrawable implements IDrawable
 		m_level = level;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
@@ -618,6 +639,7 @@ class OptionalExtraTerritoryBordersDrawable implements IDrawable
 		}
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		if (m_level == OptionalExtraBorderLevel.HIGH)
@@ -636,6 +658,7 @@ class SeaZoneOutlineDrawable implements IDrawable
 		m_territoryName = territoryName;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
@@ -655,6 +678,7 @@ class SeaZoneOutlineDrawable implements IDrawable
 		}
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return POLYGONS_LEVEL;
@@ -694,6 +718,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 		m_territoryName = territoryName;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Set<PlayerID> players = new HashSet<PlayerID>();
@@ -764,6 +789,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 		}
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return BATTLE_HIGHLIGHT_LEVEL;
@@ -780,6 +806,7 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 		m_territoryName = territoryName;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
@@ -796,6 +823,7 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 		draw(bounds, graphics, mapData, unscaled, scaled, territory, territoryColor);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return POLYGONS_LEVEL;

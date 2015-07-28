@@ -224,6 +224,7 @@ public class Database
 			// shut the database down on finish
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					shutDownDB();
@@ -234,6 +235,7 @@ public class Database
 		// we want to backup the database on occassion
 		final Thread backupThread = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				while (true)

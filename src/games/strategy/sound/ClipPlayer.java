@@ -320,6 +320,7 @@ public class ClipPlayer
 		// run in a new thread, so that we do not delay the game
 		final Runnable loadSounds = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try

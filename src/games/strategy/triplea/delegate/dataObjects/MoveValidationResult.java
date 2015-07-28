@@ -228,6 +228,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
 					removeUnresolvedUnit(warning, unit);
 	}
 	
+	@Override
 	public int compareTo(final MoveValidationResult other)
 	{
 		if (!hasError() && other.hasError())

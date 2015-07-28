@@ -124,6 +124,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		}
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// nothing to place
@@ -188,6 +189,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return rVal;
 	}
 	
+	@Override
 	public int getPlacementsMade()
 	{
 		return m_placements.size();
@@ -207,11 +209,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	}
 	
 	// returns List<AbstractUndoableMove>
+	@Override
 	public List<UndoablePlacement> getMovesMade()
 	{
 		return m_placements;
 	}
 	
+	@Override
 	public String undoMove(final int moveIndex)
 	{
 		if (moveIndex < m_placements.size() && moveIndex >= 0)
@@ -232,6 +236,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		}
 	}
 	
+	@Override
 	public PlaceableUnits getPlaceableUnits(final Collection<Unit> units, final Territory to)
 	{
 		final String error = canProduce(to, units, m_player);
@@ -244,6 +249,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 		return new PlaceableUnits(placeableUnits, maxUnits);
 	}
 	
+	@Override
 	public String placeUnits(final Collection<Unit> units, final Territory at)
 	{
 		if (units == null || units.isEmpty())
@@ -1736,6 +1742,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	{
 		return new Comparator<Territory>()
 		{
+			@Override
 			public int compare(final Territory t1, final Territory t2)
 			{
 				if (t1 == t2 || t1.equals(t2))
@@ -1779,6 +1786,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final boolean construction1 = Matches.UnitIsConstruction.match(u1);
@@ -1803,6 +1811,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			@SuppressWarnings("null")
 			public int compare(final Unit u1, final Unit u2)
 			{
@@ -1959,6 +1968,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 	 * 
 	 * @return a list of Territories with air units that must move
 	 */
+	@Override
 	public Collection<Territory> getTerritoriesWhereAirCantLand()
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);

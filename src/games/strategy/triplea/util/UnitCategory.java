@@ -220,6 +220,7 @@ public class UnitCategory implements Comparable
 		return m_type;
 	}
 	
+	@Override
 	public int compareTo(final Object o)
 	{
 		if (o == null)

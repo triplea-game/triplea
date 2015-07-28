@@ -70,11 +70,13 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 	/**
 	 * Get the units in this territory
 	 */
+	@Override
 	public UnitCollection getUnits()
 	{
 		return m_units;
 	}
 	
+	@Override
 	public void notifyChanged()
 	{
 	}
@@ -85,11 +87,13 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		return getName();
 	}
 	
+	@Override
 	public int compareTo(final Rule r)
 	{
 		return getName().compareTo(r.getName());
 	}
 	
+	@Override
 	public String getType()
 	{
 		return UnitHolder.TERRITORY;

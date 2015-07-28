@@ -34,6 +34,7 @@ public class DummyDisplay implements IGridGameDisplay
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#performPlay(Territory,Territory,Collection<Territory>)
 	 */
+	@Override
 	public void refreshTerritories(final Collection<Territory> territories)
 	{
 	}
@@ -41,6 +42,7 @@ public class DummyDisplay implements IGridGameDisplay
 	/**
 	 * @see games.strategy.grid.ui.display.IGridGameDisplay#setGameOver()
 	 */
+	@Override
 	public void setGameOver()// CountDownLatch waiting) {
 	{
 	}
@@ -48,6 +50,7 @@ public class DummyDisplay implements IGridGameDisplay
 	/**
 	 * @see games.strategy.grid.ui.display.IGridGameDisplay#setStatus(String)
 	 */
+	@Override
 	public void setStatus(final String status)
 	{
 	}
@@ -55,6 +58,7 @@ public class DummyDisplay implements IGridGameDisplay
 	/**
 	 * @see games.strategy.grid.ui.display.IGridGameDisplay#initialize(IDisplayBridge)
 	 */
+	@Override
 	public void initialize(final IDisplayBridge bridge)
 	{
 	}
@@ -62,23 +66,28 @@ public class DummyDisplay implements IGridGameDisplay
 	/**
 	 * @see games.strategy.grid.ui.display.IGridGameDisplay#shutDown()
 	 */
+	@Override
 	public void shutDown()
 	{
 	}
 	
+	@Override
 	public void initializeGridMapData(final GameMap map)
 	{
 	}
 	
+	@Override
 	public GridGameFrame getGridGameFrame()
 	{
 		return null;
 	}
 	
+	@Override
 	public void showGridPlayDataMove(final IGridPlayData move)
 	{
 	}
 	
+	@Override
 	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
 	{
 	}

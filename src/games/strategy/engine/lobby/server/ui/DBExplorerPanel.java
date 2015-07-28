@@ -70,6 +70,7 @@ public class DBExplorerPanel extends JPanel
 	{
 		m_execute.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				execute();

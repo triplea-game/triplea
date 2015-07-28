@@ -159,6 +159,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = 8014389179875584858L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
@@ -168,6 +169,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = -6524988343523615143L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				final Triple<JList, Map<String, String>, String> lookAndFeel = BasicGameMenuBar.getLookAndFeelList();
@@ -194,6 +196,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = -6223524865968800051L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// TODO: replace with 2 radio buttons
@@ -216,6 +219,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = -6223524865968825151L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// TODO: replace with 2 radio buttons
@@ -239,6 +243,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = 1673056396542959597L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
@@ -283,6 +288,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = 1262782782389758914L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final NumberProperty clientWait = new NumberProperty("Max seconds to wait for all clients to sync data on game start",
@@ -311,6 +317,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = 1262782782917758914L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final AtomicBoolean tested = new AtomicBoolean();
@@ -335,6 +342,7 @@ public class EnginePreferences extends JDialog
 				{
 					private static final long serialVersionUID = -4398183978989504112L;
 					
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						tested.set(true);
@@ -423,6 +431,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = -3588932790184974286L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final List<String> commands = new ArrayList<String>();
@@ -436,6 +445,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = 5333381081739176723L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				Console.getConsole().setVisible(true);
@@ -446,6 +456,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = -3882256687728469915L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -461,6 +472,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = 3621594954694705711L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -476,6 +488,7 @@ public class EnginePreferences extends JDialog
 		{
 			private static final long serialVersionUID = 7125025575496119585L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try

@@ -374,6 +374,7 @@ public class TripleAFrame extends MainGameFrame
 		m_tabsPanel.addChangeListener(new ChangeListener()
 		{
 			// This method is called whenever the selected tab changes
+			@Override
 			public void stateChanged(final ChangeEvent evt)
 			{
 				final JTabbedPane pane = (JTabbedPane) evt.getSource();
@@ -459,6 +460,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = -7565304172320049817L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (getScale() < 100)
@@ -476,6 +478,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = 7677111833274819304L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (getScale() > 16)
@@ -663,6 +666,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
 	{
+		@Override
 		public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me)
 		{
 			m_unitsBeingMousedOver = units;
@@ -834,6 +838,7 @@ public class TripleAFrame extends MainGameFrame
 				{
 					SwingUtilities.invokeAndWait(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							requestFocusInWindow();
@@ -911,6 +916,7 @@ public class TripleAFrame extends MainGameFrame
 		}
 		m_messageAndDialogThreadPool.runTask(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error", JOptionPane.ERROR_MESSAGE, true,
@@ -957,6 +963,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			m_messageAndDialogThreadPool.runTask(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true,
@@ -1058,6 +1065,7 @@ public class TripleAFrame extends MainGameFrame
 		}
 		m_messageAndDialogThreadPool.runTask(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<TechResultsDisplay>();
@@ -1065,6 +1073,7 @@ public class TripleAFrame extends MainGameFrame
 				{
 					SwingUtilities.invokeAndWait(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							final TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext, m_data);
@@ -1123,6 +1132,7 @@ public class TripleAFrame extends MainGameFrame
 		final String message = "Select bombing target in " + territory.getName();
 		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
+			@Override
 			public Tuple<JPanel, JList> run()
 			{
 				final JList list = new JList(new Vector<Unit>(potentialTargets));
@@ -1162,6 +1172,7 @@ public class TripleAFrame extends MainGameFrame
 		m_messageAndDialogThreadPool.waitForAll();
 		final DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>()
 		{
+			@Override
 			public DiceChooser run()
 			{
 				return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides, m_data);
@@ -1188,6 +1199,7 @@ public class TripleAFrame extends MainGameFrame
 		m_messageAndDialogThreadPool.waitForAll();
 		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
+			@Override
 			public Tuple<JPanel, JList> run()
 			{
 				m_mapPanel.centerOn(currentTerritory);
@@ -1230,6 +1242,7 @@ public class TripleAFrame extends MainGameFrame
 			final CountDownLatch latch1 = new CountDownLatch(1);
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (!m_inGame)
@@ -1260,6 +1273,7 @@ public class TripleAFrame extends MainGameFrame
 			final CountDownLatch latch2 = new CountDownLatch(1);
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (m_tabsPanel != null)
@@ -1303,6 +1317,7 @@ public class TripleAFrame extends MainGameFrame
 		final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<IndividualUnitPanelGrouped>();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final HashMap<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<String, Collection<Unit>>();
@@ -1338,6 +1353,7 @@ public class TripleAFrame extends MainGameFrame
 				// final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " + attackResourceToken.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
 				optionPane.addPropertyChangeListener(new PropertyChangeListener()
 				{
+					@Override
 					public void propertyChange(final PropertyChangeEvent e)
 					{
 						if (!dialog.isVisible())
@@ -1425,6 +1441,7 @@ public class TripleAFrame extends MainGameFrame
 		final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<Tuple<Territory, UnitChooser>>();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_mapPanel.centerOn(scrambleTo);
@@ -1474,6 +1491,7 @@ public class TripleAFrame extends MainGameFrame
 				// final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
 				optionPane.addPropertyChangeListener(new PropertyChangeListener()
 				{
+					@Override
 					public void propertyChange(final PropertyChangeEvent e)
 					{
 						if (!dialog.isVisible())
@@ -1552,6 +1570,7 @@ public class TripleAFrame extends MainGameFrame
 		final Collection<Unit> selection = new ArrayList<Unit>();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_mapPanel.centerOn(current);
@@ -1592,6 +1611,7 @@ public class TripleAFrame extends MainGameFrame
 				// final int option = JOptionPane.showOptionDialog(getParent(), panel, message, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
 				optionPane.addPropertyChangeListener(new PropertyChangeListener()
 				{
+					@Override
 					public void propertyChange(final PropertyChangeEvent e)
 					{
 						if (!dialog.isVisible())
@@ -1665,6 +1685,7 @@ public class TripleAFrame extends MainGameFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						requestFocusInWindow();
@@ -1699,6 +1720,7 @@ public class TripleAFrame extends MainGameFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						requestFocusInWindow();
@@ -1733,6 +1755,7 @@ public class TripleAFrame extends MainGameFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						requestFocusInWindow();
@@ -1765,6 +1788,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					final JList list = new JList(new Vector<Territory>(candidates));
@@ -1838,6 +1862,7 @@ public class TripleAFrame extends MainGameFrame
 	
 	GameStepListener m_stepListener = new GameStepListener()
 	{
+		@Override
 		public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
 					final String stepDisplayName)
 		{
@@ -1873,6 +1898,7 @@ public class TripleAFrame extends MainGameFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						updateStep();
@@ -1959,6 +1985,7 @@ public class TripleAFrame extends MainGameFrame
 			}
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					final Boolean play = m_requiredTurnSeries.get(player);
@@ -1996,12 +2023,14 @@ public class TripleAFrame extends MainGameFrame
 	
 	GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
 	{
+		@Override
 		public void gameDataChanged(final Change change)
 		{
 			try
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						if (m_uiContext == null)
@@ -2061,6 +2090,7 @@ public class TripleAFrame extends MainGameFrame
 	{
 		final int diffPixel = 50;
 		
+		@Override
 		public void keyPressed(final KeyEvent e)
 		{
 			// scroll map according to wasd/arrowkeys
@@ -2127,6 +2157,7 @@ public class TripleAFrame extends MainGameFrame
 					popup.show();
 					final Runnable disposePopup = new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							try
@@ -2146,10 +2177,12 @@ public class TripleAFrame extends MainGameFrame
 			m_actionButtons.keyPressed(e);
 		}
 		
+		@Override
 		public void keyTyped(final KeyEvent e)
 		{
 		}
 		
+		@Override
 		public void keyReleased(final KeyEvent e)
 		{
 		}
@@ -2261,6 +2294,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = -6730966512179268157L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
@@ -2275,6 +2309,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = -8709762764495294671L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
@@ -2289,6 +2324,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = 1222760138263428443L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent ae)
 			{
 				saveScreenshot(m_historyPanel.getCurrentPopupNode());
@@ -2299,6 +2335,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = 1430512376199927896L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent ae)
 			{
 				JOptionPane
@@ -2734,6 +2771,7 @@ public class TripleAFrame extends MainGameFrame
 			final File file = f;
 			final Runnable t = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (saveScreenshot(node, file))
@@ -2765,6 +2803,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					setWidgetActivation();
@@ -2856,6 +2895,7 @@ public class TripleAFrame extends MainGameFrame
 	{
 		private static final long serialVersionUID = 3964381772343872268L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent ae)
 		{
 			if (((ButtonModel) ae.getSource()).isSelected())
@@ -2908,6 +2948,7 @@ public class TripleAFrame extends MainGameFrame
 	{
 		private static final long serialVersionUID = -3960551522512897374L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			showHistory();
@@ -2922,6 +2963,7 @@ public class TripleAFrame extends MainGameFrame
 			setEnabled(false);
 		}
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			showGame();
@@ -2932,6 +2974,7 @@ public class TripleAFrame extends MainGameFrame
 	{
 		private static final long serialVersionUID = -6621157075878333141L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			showMapOnly();
@@ -2942,6 +2985,7 @@ public class TripleAFrame extends MainGameFrame
 	{
 		private static final long serialVersionUID = -5908032486008953815L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			HistoryNode curNode = null;
@@ -2971,6 +3015,7 @@ public class TripleAFrame extends MainGameFrame
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					final JPanel panel = new JPanel();

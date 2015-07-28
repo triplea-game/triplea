@@ -72,6 +72,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;
@@ -83,6 +84,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
+	@Override
 	public String play(final IGridPlayData play)
 	{
 		final Territory from = play.getStart();
@@ -109,6 +111,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return null;
 	}
 	
+	@Override
 	public void signalStatus(final String status)
 	{
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();

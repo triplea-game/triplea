@@ -44,6 +44,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	/**
 	 * Anything that overrides this MUST call super.initialize(iPlayerBridge, playerID);
 	 */
+	@Override
 	public void initialize(final IPlayerBridge iPlayerBridge, final PlayerID playerID)
 	{
 		m_iPlayerBridge = iPlayerBridge;
@@ -67,16 +68,19 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 		return m_iPlayerBridge;
 	}
 	
+	@Override
 	public final String getName()
 	{
 		return m_name;
 	}
 	
+	@Override
 	public final String getType()
 	{
 		return m_type;
 	}
 	
+	@Override
 	public final PlayerID getPlayerID()
 	{
 		return m_playerID;
@@ -92,6 +96,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	/**
 	 * The given phase has started. We parse the phase name and call the appropriate method.
 	 */
+	@Override
 	public void start(final String stepName)
 	{
 		if (stepName != null)
@@ -129,6 +134,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 		}
 	}
 	
+	@Override
 	public void stopGame()
 	{
 		m_stoppedGame = true;

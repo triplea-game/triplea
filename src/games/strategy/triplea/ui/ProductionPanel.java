@@ -106,6 +106,7 @@ public class ProductionPanel extends JPanel
 		m_dialog.setLocationRelativeTo(parent);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_done.requestFocusInWindow();
@@ -130,6 +131,7 @@ public class ProductionPanel extends JPanel
 		{
 			private static final long serialVersionUID = -3984693668306307869L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -235,6 +237,7 @@ public class ProductionPanel extends JPanel
 	{
 		private static final long serialVersionUID = -72826856616395760L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_dialog.setVisible(false);
@@ -431,6 +434,7 @@ public class ProductionPanel extends JPanel
 		
 		private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 		{
+			@Override
 			public void changedValue(final ScrollableTextField stf)
 			{
 				if (stf.getValue() != m_quantity)

@@ -39,6 +39,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 	private PrintStream m_out = null;
 	private final IStatusListener m_statusListener = new IStatusListener()
 	{
+		@Override
 		public void statusChanged(final INode node, final String newStatus)
 		{ // nothing for now
 		}
@@ -71,6 +72,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		return m_allText.toString();
 	}
 	
+	@Override
 	public String getAllText()
 	{
 		return m_allText.toString();
@@ -81,20 +83,24 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		return m_lastText;
 	}
 	
+	@Override
 	public Chat getChat()
 	{
 		return m_chat;
 	}
 	
+	@Override
 	public void setShowChatTime(final boolean showTime)
 	{
 		m_showTime = showTime;
 	}
 	
+	@Override
 	public void setPlayerRenderer(final DefaultListCellRenderer renderer)
 	{ // nothing
 	}
 	
+	@Override
 	public synchronized void updatePlayerList(final Collection<INode> players)
 	{
 		m_players.clear();
@@ -110,6 +116,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		m_hiddenPlayers.add(name);
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		if (m_chat != null)
@@ -121,6 +128,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		m_chat = null;
 	}
 	
+	@Override
 	public void setChat(final Chat chat)
 	{
 		if (m_chat != null)
@@ -170,17 +178,20 @@ public class HeadlessChat implements IChatListener, IChatPanel
 	}
 	
 	/** thread safe */
+	@Override
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
 		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
 	}
 	
 	/** thread safe */
+	@Override
 	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
 	{
 		// TODO: I don't really think we need a new thread for this...
 		final Thread t = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (from.equals(m_chat.getServerNode().getName()))
@@ -248,6 +259,7 @@ public class HeadlessChat implements IChatListener, IChatPanel
 		}
 	}
 	
+	@Override
 	public void addStatusMessage(final String message)
 	{
 		final String fullMessage = "--- " + message + " ---\n";

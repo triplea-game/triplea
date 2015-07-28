@@ -119,6 +119,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		final JMenuItem addUnitsItem = new JMenuItem("Add Units...");
 		addUnitsItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_frame.getEditModeButtonModel().isSelected())
@@ -134,6 +135,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		final JMenuItem removeUnitsItem = new JMenuItem("Remove Units...");
 		removeUnitsItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_frame.getEditModeButtonModel().isSelected())
@@ -149,6 +151,7 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
 		final JMenuItem changeTerritoryOwnerItem = new JMenuItem("Change Territory Owner...");
 		changeTerritoryOwnerItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_frame.getEditModeButtonModel().isSelected())

@@ -58,6 +58,7 @@ public class RandomStats implements IRandomStats
 		m_randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
 	}
 	
+	@Override
 	public synchronized RandomStatsDetails getRandomStats(final int diceSides)
 	{
 		return new RandomStatsDetails(m_randomStats, diceSides);

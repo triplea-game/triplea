@@ -109,6 +109,7 @@ public interface IForumPoster extends IBean
 	 * 
 	 * @return
 	 */
+	@Override
 	public String getDisplayName();
 	
 	/**

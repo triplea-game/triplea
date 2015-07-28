@@ -44,6 +44,7 @@ public abstract class AbstractDelegate implements IDelegate
 	{
 	}
 	
+	@Override
 	public void initialize(final String name, final String displayName)
 	{
 		m_name = name;
@@ -53,6 +54,7 @@ public abstract class AbstractDelegate implements IDelegate
 	/**
 	 * Called before the delegate will run, AND before "start" is called.
 	 */
+	@Override
 	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
 	{
 		m_bridge = iDelegateBridge;
@@ -63,6 +65,7 @@ public abstract class AbstractDelegate implements IDelegate
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
 	 */
+	@Override
 	public void start()
 	{
 		// nothing to do here
@@ -72,16 +75,19 @@ public abstract class AbstractDelegate implements IDelegate
 	 * Called before the delegate will stop running.
 	 * All classes should call super.end if they override this.
 	 */
+	@Override
 	public void end()
 	{
 		// nothing to do here
 	}
 	
+	@Override
 	public String getName()
 	{
 		return m_name;
 	}
 	
+	@Override
 	public String getDisplayName()
 	{
 		return m_displayName;
@@ -91,6 +97,7 @@ public abstract class AbstractDelegate implements IDelegate
 	 * Returns the state of the Delegate.
 	 * All classes should super.saveState if they override this.
 	 */
+	@Override
 	public Serializable saveState()
 	{
 		return null;
@@ -99,6 +106,7 @@ public abstract class AbstractDelegate implements IDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	@Override
 	public void loadState(final Serializable state)
 	{
 		// nothing to save
@@ -108,8 +116,10 @@ public abstract class AbstractDelegate implements IDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
+	@Override
 	public abstract Class<? extends IRemote> getRemoteType();
 	
+	@Override
 	public IDelegateBridge getBridge()
 	{
 		return m_bridge;

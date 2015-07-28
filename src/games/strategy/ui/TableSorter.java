@@ -68,6 +68,7 @@ public class TableSorter extends AbstractTableModel
 	private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
 	public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator()
 	{
+		@Override
 		public int compare(final Object o1, final Object o2)
 		{
 			return ((Comparable<Object>) o1).compareTo(o2);
@@ -75,6 +76,7 @@ public class TableSorter extends AbstractTableModel
 	};
 	public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator()
 	{
+		@Override
 		public int compare(final Object o1, final Object o2)
 		{
 			return o1.toString().compareTo(o2.toString());
@@ -285,11 +287,13 @@ public class TableSorter extends AbstractTableModel
 	}
 	
 	// TableModel interface methods
+	@Override
 	public int getRowCount()
 	{
 		return (tableModel == null) ? 0 : tableModel.getRowCount();
 	}
 	
+	@Override
 	public int getColumnCount()
 	{
 		return (tableModel == null) ? 0 : tableModel.getColumnCount();
@@ -318,6 +322,7 @@ public class TableSorter extends AbstractTableModel
 		return modelIndex(row);
 	}
 	
+	@Override
 	public Object getValueAt(final int row, final int column)
 	{
 		return tableModel.getValueAt(modelIndex(row), column);
@@ -350,6 +355,7 @@ public class TableSorter extends AbstractTableModel
 			this.modelIndex = index;
 		}
 		
+		@Override
 		public int compareTo(final Object o)
 		{
 			final int row1 = modelIndex;
@@ -390,6 +396,7 @@ public class TableSorter extends AbstractTableModel
 	
 	private class TableModelHandler implements TableModelListener
 	{
+		@Override
 		public void tableChanged(final TableModelEvent e)
 		{
 			// If we're not sorting by anything, just pass the event along.
@@ -480,6 +487,7 @@ public class TableSorter extends AbstractTableModel
 			this.priority = priority;
 		}
 		
+		@Override
 		public void paintIcon(final Component c, final Graphics g, final int x, int y)
 		{
 			final Color color = c == null ? Color.GRAY : c.getBackground();
@@ -513,11 +521,13 @@ public class TableSorter extends AbstractTableModel
 			g.translate(-x, -y);
 		}
 		
+		@Override
 		public int getIconWidth()
 		{
 			return size;
 		}
 		
+		@Override
 		public int getIconHeight()
 		{
 			return size;
@@ -534,6 +544,7 @@ public class TableSorter extends AbstractTableModel
 			this.tableCellRenderer = tableCellRenderer;
 		}
 		
+		@Override
 		public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 		{
 			final Component c = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

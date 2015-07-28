@@ -140,11 +140,13 @@ public class ObjectivePanel extends AbstractStatPanel
 		{
 			private static final long serialVersionUID = -5217040341132623172L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_objectiveModel.loadData();
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						table.repaint();
@@ -322,6 +324,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			}
 		}
 		
+		@Override
 		public synchronized Object getValueAt(final int row, final int col)
 		{
 			// do not refresh too often, or else it will slow the game down seriously
@@ -430,6 +433,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_dummyDelegate);
 		}
 		
+		@Override
 		public void gameDataChanged(final Change aChange)
 		{
 			synchronized (this)
@@ -438,6 +442,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			}
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -454,11 +459,13 @@ public class ObjectivePanel extends AbstractStatPanel
 				return "Objective Name";
 		}
 		
+		@Override
 		public int getColumnCount()
 		{
 			return COLUMNS_TOTAL;
 		}
 		
+		@Override
 		public synchronized int getRowCount()
 		{
 			if (!m_isDirty)
@@ -615,35 +622,42 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 		m_data = data;
 	}
 	
+	@Override
 	public GameData getData()
 	{
 		return m_data;
 	}
 	
+	@Override
 	public void leaveDelegateExecution()
 	{
 	}
 	
+	@Override
 	public Properties getStepProperties()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public String getStepName()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		return m_dummyAI;
 	}
 	
+	@Override
 	public IRemotePlayer getRemotePlayer()
 	{
 		return m_dummyAI;
 	}
 	
+	@Override
 	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		if (count <= 0)
@@ -658,39 +672,47 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 		return numbers;
 	}
 	
+	@Override
 	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return 0;
 	}
 	
+	@Override
 	public PlayerID getPlayerID()
 	{
 		return PlayerID.NULL_PLAYERID;
 	}
 	
+	@Override
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_writer;
 	}
 	
+	@Override
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
 	}
 	
+	@Override
 	public ISound getSoundChannelBroadcaster()
 	{
 		return m_soundChannel;
 	}
 	
+	@Override
 	public void enterDelegateExecution()
 	{
 	}
 	
+	@Override
 	public void addChange(final Change aChange)
 	{
 	}
 	
+	@Override
 	public void stopGameSequence()
 	{
 	}
@@ -699,26 +721,32 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 
 class DummyGameModifiedChannel implements IGameModifiedChannel
 {
+	@Override
 	public void addChildToEvent(final String text, final Object renderingData)
 	{
 	}
 	
+	@Override
 	public void gameDataChanged(final Change aChange)
 	{
 	}
 	
+	@Override
 	public void shutDown()
 	{
 	}
 	
+	@Override
 	public void startHistoryEvent(final String event)
 	{
 	}
 	
+	@Override
 	public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
 	{
 	}
 	
+	@Override
 	public void startHistoryEvent(final String event, final Object renderingData)
 	{
 	}
@@ -904,6 +932,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 		setContentType("text/html");
 	}
 	
+	@Override
 	public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 	{
 		// set the colors, etc. using the standard for that platform

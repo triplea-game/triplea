@@ -64,6 +64,7 @@ public class Place
 			DUtils.Log(Level.FINE, message);
 			final Runnable runner = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
@@ -122,6 +123,7 @@ public class Place
 				DUtils.Log(Level.FINE, message);
 				final Runnable runner = new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message, fHackedUnits); // Let the user see the hacked units in the sidebar
@@ -214,6 +216,7 @@ public class Place
 					final Dynamix_AI fAI = ai;
 					final Runnable runner = new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(
@@ -249,6 +252,7 @@ public class Place
 				DUtils.Log(Level.FINE, message);
 				final Runnable runner = new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);

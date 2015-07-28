@@ -52,6 +52,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Send a message to the given node. Returns immediately.
 	 */
+	@Override
 	public void send(final Serializable msg, final INode to)
 	{
 	}
@@ -59,6 +60,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Send a message to all nodes.
 	 */
+	@Override
 	public void broadcast(final Serializable msg)
 	{
 	}
@@ -66,6 +68,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Listen for messages of a certain type.
 	 */
+	@Override
 	public void addMessageListener(final IMessageListener listener)
 	{
 	}
@@ -73,6 +76,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Stop listening to messages.
 	 */
+	@Override
 	public void removeMessageListener(final IMessageListener listener)
 	{
 	}
@@ -80,6 +84,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Listen for messages of a certain type.
 	 */
+	@Override
 	public void addErrorListener(final IMessengerErrorListener listener)
 	{
 	}
@@ -87,6 +92,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Stop listening to messages.
 	 */
+	@Override
 	public void removeErrorListener(final IMessengerErrorListener listener)
 	{
 	}
@@ -96,6 +102,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Get the local node
 	 */
+	@Override
 	public INode getLocalNode()
 	{
 		return m_node;
@@ -104,6 +111,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Get a list of nodes.
 	 */
+	@Override
 	public Set<INode> getNodes()
 	{
 		return new HashSet<INode>();
@@ -112,6 +120,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * test the connection.
 	 */
+	@Override
 	public boolean isConnected()
 	{
 		return true;
@@ -120,6 +129,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Shut the connection down.
 	 */
+	@Override
 	public void shutDown()
 	{
 	}
@@ -127,6 +137,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Add a listener for change in connection status.
 	 */
+	@Override
 	public void addConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionChangeListeners.add(listener);
@@ -135,6 +146,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Remove a listener for change in connection status.
 	 */
+	@Override
 	public void removeConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionChangeListeners.remove(listener);
@@ -149,6 +161,7 @@ public class DummyMessenger implements IServerMessenger
 	{
 	}
 	
+	@Override
 	public void setAcceptNewConnections(final boolean accept)
 	{
 	}
@@ -157,16 +170,19 @@ public class DummyMessenger implements IServerMessenger
 	{
 	}
 	
+	@Override
 	public boolean isServer()
 	{
 		return true;
 	}
 	
+	@Override
 	public boolean isAcceptNewConnections()
 	{
 		return false;
 	}
 	
+	@Override
 	public void removeConnection(final INode node)
 	{
 		for (final IConnectionChangeListener listener : m_connectionChangeListeners)
@@ -175,70 +191,84 @@ public class DummyMessenger implements IServerMessenger
 		}
 	}
 	
+	@Override
 	public INode getServerNode()
 	{
 		return m_node;
 	}
 	
+	@Override
 	public void setLoginValidator(final ILoginValidator loginValidator)
 	{
 	}
 	
+	@Override
 	public ILoginValidator getLoginValidator()
 	{
 		return null;
 	}
 	
+	@Override
 	public InetSocketAddress getRemoteServerSocketAddress()
 	{
 		return m_node.getSocketAddress();
 	}
 	
+	@Override
 	public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires)
 	{
 		
 	}
 	
+	@Override
 	public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires)
 	{
 		
 	}
 	
+	@Override
 	public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires)
 	{
 		
 	}
 	
+	@Override
 	public String GetPlayerMac(final String name)
 	{
 		return "DummyMacAddress";
 	}
 	
+	@Override
 	public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires)
 	{
 		
 	}
 	
+	@Override
 	public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires)
 	{
 		
 	}
 	
+	@Override
 	public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires)
 	{
 		
 	}
 	
+	@Override
 	public boolean IsUsernameMiniBanned(final String username)
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean IsIpMiniBanned(final String ip)
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean IsMacMiniBanned(final String mac)
 	{
 		return false;

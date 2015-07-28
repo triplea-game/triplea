@@ -93,6 +93,7 @@ public class NPuzzleMapPanel extends GridMapPanel
 		// Ask Swing to repaint this panel when it's convenient
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();

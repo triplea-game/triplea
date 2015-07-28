@@ -159,6 +159,7 @@ public class PoliticalStateOverview extends JPanel
 			{
 				private static final long serialVersionUID = 629987410235293178L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					final List<RelationshipType> types = new ArrayList<RelationshipType>(m_data.getRelationshipTypeList().getAllRelationshipTypes());

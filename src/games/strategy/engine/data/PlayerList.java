@@ -104,6 +104,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 	/**
 	 * an iterator of a new arraylist copy of the players
 	 */
+	@Override
 	public Iterator<PlayerID> iterator()
 	{
 		return getPlayers().iterator();

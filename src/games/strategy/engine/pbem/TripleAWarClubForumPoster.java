@@ -114,6 +114,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 	 *            the forum subject
 	 * @return true if the post was successful
 	 */
+	@Override
 	public boolean postTurnSummary(final String summary, final String subject)
 	{
 		try
@@ -228,16 +229,19 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		return stringPart;
 	}
 	
+	@Override
 	public String getTestMessage()
 	{
 		return "Testing, this will take a couple of seconds...";
 	}
 	
+	@Override
 	public String getHelpText()
 	{
 		return HelpSupport.loadHelp("tripleAWarClubForum.html");
 	}
 	
+	@Override
 	public IForumPoster doClone()
 	{
 		final TripleAWarClubForumPoster clone = new TripleAWarClubForumPoster();
@@ -249,16 +253,19 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		return clone;
 	}
 	
+	@Override
 	public boolean supportsSaveGame()
 	{
 		return true;
 	}
 	
+	@Override
 	public String getDisplayName()
 	{
 		return "TripleaWarClub.org";
 	}
 	
+	@Override
 	public void viewPosted()
 	{
 		final String url = "http://" + m_host + "/modules/newbb/viewtopic.php?topic_id=" + m_topicId;

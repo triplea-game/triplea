@@ -471,6 +471,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return true;
 	}
 	
+	@Override
 	public Iterator<Territory> iterator()
 	{
 		return Collections.unmodifiableList(getAllTerritories()).iterator();

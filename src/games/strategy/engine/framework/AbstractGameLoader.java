@@ -16,8 +16,10 @@ abstract public class AbstractGameLoader implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
+	@Override
 	abstract public String[] getServerPlayerTypes();
 	
+	@Override
 	public void shutDown()
 	{
 		if (m_soundChannel != null)

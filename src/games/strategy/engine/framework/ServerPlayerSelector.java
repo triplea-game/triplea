@@ -107,6 +107,7 @@ public class ServerPlayerSelector extends JFrame
 	{
 		private static final long serialVersionUID = -6315754845837738689L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (!isVisible())

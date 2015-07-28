@@ -992,6 +992,7 @@ public class RevisedTest extends TestCase
 		// fail if we are called
 		final InvocationHandler handler = new InvocationHandler()
 		{
+			@Override
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				return null;

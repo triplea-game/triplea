@@ -98,6 +98,7 @@ public class EngineVersionProperties
 		final CountDownLatch latch = new CountDownLatch(1);
 		final Runnable r = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				for (int i = 0; i < 5; i++)
@@ -127,6 +128,7 @@ public class EngineVersionProperties
 			{
 				final Thread t1 = new Thread(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						ref.set(new EngineVersionProperties(engineversionPropsURL));
@@ -257,6 +259,7 @@ public class EngineVersionProperties
 		intro.setBorder(BorderFactory.createEmptyBorder());
 		final HyperlinkListener hyperlinkListener = new HyperlinkListener()
 		{
+			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e)
 			{
 				if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType()))
@@ -306,6 +309,7 @@ public class EngineVersionProperties
 		intro.setBorder(BorderFactory.createEmptyBorder());
 		final HyperlinkListener hyperlinkListener = new HyperlinkListener()
 		{
+			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e)
 			{
 				if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType()))

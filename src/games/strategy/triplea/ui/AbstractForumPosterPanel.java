@@ -58,6 +58,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -3658752576117043053L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				release();
@@ -95,6 +96,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		super.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionLabel.setText(id.getName() + " " + getTitle());
@@ -142,6 +144,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		final boolean hasPosted = getHasPostedTurnSummary();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();

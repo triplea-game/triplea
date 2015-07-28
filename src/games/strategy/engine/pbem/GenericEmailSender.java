@@ -79,6 +79,7 @@ public class GenericEmailSender implements IEmailSender
 	// instance methods
 	// -----------------------------------------------------------------------
 	
+	@Override
 	public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName) throws IOException
 	{
 		// this is the last step and we create the email to send
@@ -186,6 +187,7 @@ public class GenericEmailSender implements IEmailSender
 	 * 
 	 * @return the userName or null if no authentication is required
 	 */
+	@Override
 	public String getUserName()
 	{
 		return m_userName;
@@ -197,6 +199,7 @@ public class GenericEmailSender implements IEmailSender
 	 * @param userName
 	 *            the userName or null if no authentication is required
 	 */
+	@Override
 	public void setUserName(final String userName)
 	{
 		m_userName = userName;
@@ -207,6 +210,7 @@ public class GenericEmailSender implements IEmailSender
 	 * 
 	 * @return the password or null
 	 */
+	@Override
 	public String getPassword()
 	{
 		if (USE_TRANSITIVE_PASSWORD.equals(m_password))
@@ -222,6 +226,7 @@ public class GenericEmailSender implements IEmailSender
 	 * @param password
 	 *            the password or null
 	 */
+	@Override
 	public void setPassword(final String password)
 	{
 		m_password = password;
@@ -330,16 +335,19 @@ public class GenericEmailSender implements IEmailSender
 	 * 
 	 * @return the to address, or multiple separated by space
 	 */
+	@Override
 	public String getToAddress()
 	{
 		return m_toAddress;
 	}
 	
+	@Override
 	public void clearSensitiveInfo()
 	{
 		m_password = USE_TRANSITIVE_PASSWORD;
 	}
 	
+	@Override
 	public IEmailSender doClone()
 	{
 		final GenericEmailSender sender = new GenericEmailSender();
@@ -355,11 +363,13 @@ public class GenericEmailSender implements IEmailSender
 		return sender;
 	}
 	
+	@Override
 	public boolean getAlsoPostAfterCombatMove()
 	{
 		return m_alsoPostAfterCombatMove;
 	}
 	
+	@Override
 	public void setAlsoPostAfterCombatMove(final boolean postAlso)
 	{
 		m_alsoPostAfterCombatMove = postAlso;
@@ -375,21 +385,25 @@ public class GenericEmailSender implements IEmailSender
 		m_subjectPrefix = subjectPrefix;
 	}
 	
+	@Override
 	public String getDisplayName()
 	{
 		return "Generic SMTP";
 	}
 	
+	@Override
 	public EditorPanel getEditor()
 	{
 		return new EmailSenderEditor(this, new EmailSenderEditor.EditorConfiguration(true, true, true));
 	}
 	
+	@Override
 	public boolean sameType(final IBean other)
 	{
 		return other.getClass() == GenericEmailSender.class;
 	}
 	
+	@Override
 	public String getHelpText()
 	{
 		return HelpSupport.loadHelp("genericEmailSender.html");

@@ -109,12 +109,14 @@ public class GameObjectStreamData implements Externalizable
 		}
 	}
 	
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_name = (String) in.readObject();
 		m_type = GameType.values()[in.readByte()];
 	}
 	
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.writeObject(m_name);

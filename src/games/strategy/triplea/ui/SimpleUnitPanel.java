@@ -130,6 +130,7 @@ public class SimpleUnitPanel extends JPanel
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
+		@Override
 		public int compare(final ProductionRule o1, final ProductionRule o2)
 		{
 			if (o1.getResults().size() == 1 && o2.getResults().size() == 1)
@@ -180,6 +181,7 @@ public class SimpleUnitPanel extends JPanel
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
+		@Override
 		public int compare(final RepairRule o1, final RepairRule o2)
 		{
 			if (o1.getResults().size() == 1 && o2.getResults().size() == 1)

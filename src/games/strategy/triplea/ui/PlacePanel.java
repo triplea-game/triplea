@@ -78,6 +78,7 @@ public class PlacePanel extends AbstractMovePanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));

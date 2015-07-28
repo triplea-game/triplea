@@ -72,23 +72,28 @@ public class HistoryPanel extends JPanel
 		m_mouseWasOverPanel = false;
 		final MouseListener mouseFocusListener = new MouseListener()
 		{
+			@Override
 			public void mouseReleased(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mousePressed(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseExited(final MouseEvent e)
 			{
 				m_mouseOverPanel = false;
 			}
 			
+			@Override
 			public void mouseEntered(final MouseEvent e)
 			{
 				m_mouseOverPanel = true;
@@ -109,15 +114,18 @@ public class HistoryPanel extends JPanel
 		m_tree.add(m_popup);
 		m_popup.addPopupMenuListener(new PopupMenuListener()
 		{
+			@Override
 			public void popupMenuCanceled(final PopupMenuEvent pme)
 			{
 				m_currentPopupNode = null;
 			}
 			
+			@Override
 			public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme)
 			{
 			}
 			
+			@Override
 			public void popupMenuWillBecomeVisible(final PopupMenuEvent pme)
 			{
 			}
@@ -146,6 +154,7 @@ public class HistoryPanel extends JPanel
 		previousButton.addMouseListener(mouseFocusListener);
 		previousButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				previous();
@@ -155,6 +164,7 @@ public class HistoryPanel extends JPanel
 		nextButton.addMouseListener(mouseFocusListener);
 		nextButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				next();
@@ -167,6 +177,7 @@ public class HistoryPanel extends JPanel
 		add(buttons, BorderLayout.SOUTH);
 		m_tree.addMouseListener(new MouseListener()
 		{
+			@Override
 			public void mouseClicked(final MouseEvent me)
 			{
 				if (SwingUtilities.isRightMouseButton(me))
@@ -195,26 +206,31 @@ public class HistoryPanel extends JPanel
 				}
 			}
 			
+			@Override
 			public void mouseEntered(final MouseEvent me)
 			{
 				m_mouseOverPanel = true;
 			}
 			
+			@Override
 			public void mouseExited(final MouseEvent me)
 			{
 				m_mouseOverPanel = false;
 			}
 			
+			@Override
 			public void mousePressed(final MouseEvent me)
 			{
 			}
 			
+			@Override
 			public void mouseReleased(final MouseEvent me)
 			{
 			}
 		});
 		m_tree.addTreeSelectionListener(new TreeSelectionListener()
 		{
+			@Override
 			public void valueChanged(final TreeSelectionEvent e)
 			{
 				treeSelectionChanged(e);

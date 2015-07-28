@@ -68,6 +68,7 @@ public class UnifiedMessenger
 	private UnifiedMessengerHub m_hub;
 	private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
 	{
+		@Override
 		public void messengerInvalid(final IMessenger messenger, final Exception reason)
 		{
 			UnifiedMessenger.this.messengerInvalid();
@@ -320,6 +321,7 @@ public class UnifiedMessenger
 	
 	private final IMessageListener m_messageListener = new IMessageListener()
 	{
+		@Override
 		public void messageReceived(final Serializable msg, final INode from)
 		{
 			UnifiedMessenger.this.messageReceived(msg, from);
@@ -370,6 +372,7 @@ public class UnifiedMessenger
 			final EndPoint localFinal = local;
 			final Runnable task = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					final List<RemoteMethodCallResults> results = localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
@@ -773,6 +776,7 @@ abstract class Invoke implements Externalizable
 		this.call = call;
 	}
 	
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		needReturnValues = in.read() == 1;
@@ -782,6 +786,7 @@ abstract class Invoke implements Externalizable
 		call.readExternal(in);
 	}
 	
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.write(needReturnValues ? 1 : 0);
@@ -819,12 +824,14 @@ abstract class InvocationResults implements Externalizable
 		return "Invocation results for method id:" + methodCallID + " results:" + results;
 	}
 	
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		results.writeExternal(out);
 		methodCallID.writeExternal(out);
 	}
 	
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		results = new RemoteMethodCallResults();

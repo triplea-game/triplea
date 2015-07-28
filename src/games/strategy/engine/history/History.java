@@ -314,6 +314,7 @@ class ChangeSerializationWriter implements SerializationWriter
 		aChange = change;
 	}
 	
+	@Override
 	public void write(final HistoryWriter writer)
 	{
 		writer.addChange(aChange);

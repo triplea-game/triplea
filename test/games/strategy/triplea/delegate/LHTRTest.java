@@ -113,6 +113,7 @@ public class LHTRTest extends TestCase
 		// fail if we are called
 		final InvocationHandler handler = new InvocationHandler()
 		{
+			@Override
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				fail("method called:" + method);
@@ -169,6 +170,7 @@ public class LHTRTest extends TestCase
 		// fail if we are called
 		final InvocationHandler handler = new InvocationHandler()
 		{
+			@Override
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				return null;
@@ -207,6 +209,7 @@ public class LHTRTest extends TestCase
 		// fail if we are called
 		final InvocationHandler handler = new InvocationHandler()
 		{
+			@Override
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				return null;
@@ -231,11 +234,13 @@ public class LHTRTest extends TestCase
  */
 class ThrowingRandomSource implements IRandomSource
 {
+	@Override
 	public int getRandom(final int max, final String annotation)
 	{
 		throw new IllegalStateException("not allowed");
 	}
 	
+	@Override
 	public int[] getRandom(final int max, final int count, final String annotation)
 	{
 		throw new IllegalStateException("not allowed");

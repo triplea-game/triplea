@@ -99,6 +99,7 @@ public class MainFrame extends JFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						clientLeftGame();
@@ -150,6 +151,7 @@ public class MainFrame extends JFrame
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");

@@ -48,6 +48,7 @@ public class KingsTableMenu extends GridGameMenu<GridGameFrame>
 		{
 			private static final long serialVersionUID = -8254472400396140575L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

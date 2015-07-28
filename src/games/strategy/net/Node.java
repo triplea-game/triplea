@@ -72,6 +72,7 @@ public class Node implements INode, Externalizable
 		m_port = port;
 	}
 	
+	@Override
 	public String getName()
 	{
 		return m_name;
@@ -106,16 +107,19 @@ public class Node implements INode, Externalizable
 		return m_name + " port:" + m_port + " ip:" + m_address.getHostAddress();
 	}
 	
+	@Override
 	public int getPort()
 	{
 		return m_port;
 	}
 	
+	@Override
 	public InetAddress getAddress()
 	{
 		return m_address;
 	}
 	
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_name = in.readUTF();
@@ -129,6 +133,7 @@ public class Node implements INode, Externalizable
 		m_address = InetAddress.getByAddress(bytes);
 	}
 	
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.writeUTF(m_name);
@@ -137,6 +142,7 @@ public class Node implements INode, Externalizable
 		out.write(m_address.getAddress());
 	}
 	
+	@Override
 	public int compareTo(final INode o)
 	{
 		if (o == null)
@@ -156,6 +162,7 @@ public class Node implements INode, Externalizable
 		System.out.println("1000 nodes is:" + sink.toByteArray().length);
 	}
 	
+	@Override
 	public InetSocketAddress getSocketAddress()
 	{
 		return new InetSocketAddress(m_address, m_port);

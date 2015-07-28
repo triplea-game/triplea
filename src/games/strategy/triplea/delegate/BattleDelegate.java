@@ -203,6 +203,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		m_currentBattle = s.m_currentBattle;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		final BattleListing battles = getBattles();
@@ -231,6 +232,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		battleTracker.clearEmptyAirBattleAttacks(aBridge); // these are air battle and air raids where there is no defender, probably because no air is in range to defend
 	}
 	
+	@Override
 	public String fightCurrentBattle()
 	{
 		if (m_currentBattle == null)
@@ -242,6 +244,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		return null;
 	}
 	
+	@Override
 	public String fightBattle(final Territory territory, final boolean bombing, final BattleType type)
 	{
 		final IBattle battle = m_battleTracker.getPendingBattle(territory, bombing, type);
@@ -273,6 +276,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		return battle.getBattleType().toString();
 	}
 	
+	@Override
 	public BattleListing getBattles()
 	{
 		return m_battleTracker.getPendingBattleSites();
@@ -1680,6 +1684,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		return IBattleDelegate.class;
 	}
 	
+	@Override
 	public Territory getCurrentBattleTerritory()
 	{
 		final IBattle b = m_currentBattle;
@@ -1693,6 +1698,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 		}
 	}
 	
+	@Override
 	public IBattle getCurrentBattle()
 	{
 		return m_currentBattle;

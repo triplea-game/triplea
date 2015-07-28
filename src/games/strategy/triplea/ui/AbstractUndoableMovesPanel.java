@@ -51,6 +51,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		m_moves = moves;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				initLayout();
@@ -119,6 +120,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		add(scroll, BorderLayout.CENTER);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				validate();
@@ -186,6 +188,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 			m_moveIndex = index;
 		}
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			// Record position of scroll bar as percentage.
@@ -210,6 +213,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 			m_move = move;
 		}
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_movePanel.cancelMove();

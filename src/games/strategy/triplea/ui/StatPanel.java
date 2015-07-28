@@ -241,6 +241,7 @@ public class StatPanel extends AbstractStatPanel
 	
 	class JComponentTableCellRenderer implements TableCellRenderer
 	{
+		@Override
 		public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 		{
 			return (JComponent) value;
@@ -322,6 +323,7 @@ public class StatPanel extends AbstractStatPanel
 			}
 		}
 		
+		@Override
 		public void gameDataChanged(final Change aChange)
 		{
 			synchronized (this)
@@ -330,6 +332,7 @@ public class StatPanel extends AbstractStatPanel
 			}
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -341,6 +344,7 @@ public class StatPanel extends AbstractStatPanel
 		 * Recalcs the underlying data in a lazy manner Limitation: This is not
 		 * a threadsafe implementation
 		 */
+		@Override
 		public synchronized Object getValueAt(final int row, final int col)
 		{
 			if (m_isDirty)
@@ -360,11 +364,13 @@ public class StatPanel extends AbstractStatPanel
 			return m_stats[col - 1].getName();
 		}
 		
+		@Override
 		public int getColumnCount()
 		{
 			return m_stats.length + 1;
 		}
 		
+		@Override
 		public synchronized int getRowCount()
 		{
 			if (!m_isDirty)
@@ -550,6 +556,7 @@ public class StatPanel extends AbstractStatPanel
 		 * Recalcs the underlying data in a lazy manner Limitation: This is not
 		 * a threadsafe implementation
 		 */
+		@Override
 		public Object getValueAt(final int row, final int col)
 		{
 			if (isDirty)
@@ -561,21 +568,25 @@ public class StatPanel extends AbstractStatPanel
 		}
 		
 		// Trivial implementations of required methods
+		@Override
 		public int getColumnCount()
 		{
 			return colList.length + 1;
 		}
 		
+		@Override
 		public int getRowCount()
 		{
 			return data.length;
 		}
 		
+		@Override
 		public void gameDataChanged(final Change aChange)
 		{
 			isDirty = true;
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -595,11 +606,13 @@ public class StatPanel extends AbstractStatPanel
 	
 	class ProductionStat extends AbstractStat
 	{
+		@Override
 		public String getName()
 		{
 			return "Production";
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int rVal = 0;
@@ -628,11 +641,13 @@ public class StatPanel extends AbstractStatPanel
 	
 	class UnitsStat extends AbstractStat
 	{
+		@Override
 		public String getName()
 		{
 			return "Units";
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int rVal = 0;
@@ -648,11 +663,13 @@ public class StatPanel extends AbstractStatPanel
 	
 	class TUVStat extends AbstractStat
 	{
+		@Override
 		public String getName()
 		{
 			return "TUV";
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
@@ -670,11 +687,13 @@ public class StatPanel extends AbstractStatPanel
 	
 	class VictoryCityStat extends AbstractStat
 	{
+		@Override
 		public String getName()
 		{
 			return "VC";
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int rVal = 0;
@@ -697,11 +716,13 @@ public class StatPanel extends AbstractStatPanel
 	
 	class VPStat extends AbstractStat
 	{
+		@Override
 		public String getName()
 		{
 			return "VPs";
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			final PlayerAttachment pa = PlayerAttachment.get(player);

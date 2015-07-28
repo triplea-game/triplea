@@ -76,6 +76,7 @@ public class RemoteInterfaceHelper
 	 */
 	private static Comparator<Method> methodComparator = new Comparator<Method>()
 	{
+		@Override
 		public int compare(final Method o1, final Method o2)
 		{
 			if (o1 == o2)

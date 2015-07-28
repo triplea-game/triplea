@@ -150,42 +150,50 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	 * but in general won't
 	 * 
 	 *******************************************/
+	@Override
 	public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
 	{
 		// return the first one
 		return territories.iterator().next();
 	}
 	
+	@Override
 	public boolean selectAttackSubs(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
+	@Override
 	public boolean selectAttackTransports(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
+	@Override
 	public boolean selectAttackUnits(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
+	@Override
 	public boolean selectShoreBombard(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
+	@Override
 	public boolean confirmMoveKamikaze()
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean confirmMoveHariKari()
 	{
 		return false;
 	}
 	
+	@Override
 	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
 	{
 		// just use the first one
@@ -195,6 +203,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties
 	 */
+	@Override
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
 				final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
@@ -239,6 +248,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
+	@Override
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
 		if (potentialTargets == null || potentialTargets.isEmpty())
@@ -252,6 +262,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
 	 */
+	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		final List<Unit> rVal = new ArrayList<Unit>();
@@ -266,33 +277,40 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
+	@Override
 	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		return candidates.iterator().next();
 	}
 	
+	@Override
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		return true;
 	}
 	
+	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		return null;
 	}
 	
+	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return null;
 	}
 	
+	@Override
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{
 		return null;
 	}
 	
+	@Override
 	public abstract boolean shouldBomberBomb(final Territory territory);
 	
+	@Override
 	public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics)
 	{
 		// we are dead, just accept
@@ -321,6 +339,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		return false;
 	}
 	
+	@Override
 	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
 	{
 		final PlayerID id = getPlayerID();
@@ -380,6 +399,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	{
 	}
 	
+	@Override
 	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 	}
@@ -388,14 +408,17 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	{
 	}
 	
+	@Override
 	public void reportError(final String error)
 	{
 	}
 	
+	@Override
 	public void reportMessage(final String message, final String title)
 	{
 	}
 	
+	@Override
 	public void confirmOwnCasualties(final GUID battleId, final String message)
 	{
 		pause();
@@ -404,6 +427,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
+	@Override
 	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
 	{
 		final int[] dice = new int[numRolls];
@@ -597,6 +621,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 	}
 	
+	@Override
 	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
 	{
 		pause();

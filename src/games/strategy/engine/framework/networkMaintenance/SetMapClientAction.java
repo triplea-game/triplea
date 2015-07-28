@@ -34,6 +34,7 @@ public class SetMapClientAction extends AbstractAction
 		Collections.sort(m_availableGames);
 	}
 	
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final INode serverNode = m_clientMessenger.getServerNode();

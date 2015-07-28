@@ -35,6 +35,7 @@ public class CollectionProperty<T> extends AEditableProperty
 		m_values = new ArrayList<T>(values);
 	}
 	
+	@Override
 	public Object getValue()
 	{
 		return m_values;
@@ -45,6 +46,7 @@ public class CollectionProperty<T> extends AEditableProperty
 		return m_values;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void setValue(final Object value) throws ClassCastException
 	{
@@ -62,6 +64,7 @@ public class CollectionProperty<T> extends AEditableProperty
 		return (m_values == null ? 1 : Math.max(1, m_values.size()));
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		if (m_values == null)
@@ -74,10 +77,12 @@ public class CollectionProperty<T> extends AEditableProperty
 		final JTable table = new JTable(tableD, new Object[] { "Values: " });
 		table.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusGained(final FocusEvent e)
 			{
 			}
 			
+			@Override
 			public void focusLost(final FocusEvent e)
 			{
 				// TODO: change m_values
@@ -86,6 +91,7 @@ public class CollectionProperty<T> extends AEditableProperty
 		return table;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value == null)

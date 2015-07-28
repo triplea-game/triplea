@@ -56,6 +56,7 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 		updateAllImages();
 		m_gameData.addDataChangeListener(new GameDataChangeListener()
 		{
+			@Override
 			public void gameDataChanged(final Change change)
 			{
 				updateAllImages();

@@ -46,6 +46,7 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
 		m_mapPanel = mapPanel;
 	}
 	
+	@Override
 	public void render(final HistoryNode node)
 	{
 		removeAll();

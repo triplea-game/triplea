@@ -96,11 +96,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		t.start();
 	}
 	
+	@Override
 	public void setLoginValidator(final ILoginValidator loginValidator)
 	{
 		m_loginValidator = loginValidator;
 	}
 	
+	@Override
 	public ILoginValidator getLoginValidator()
 	{
 		return m_loginValidator;
@@ -115,6 +117,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#addMessageListener(Class, IMessageListener)
 	 */
+	@Override
 	public void addMessageListener(final IMessageListener listener)
 	{
 		m_listeners.add(listener);
@@ -123,6 +126,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#removeMessageListener(Class, IMessageListener)
 	 */
+	@Override
 	public void removeMessageListener(final IMessageListener listener)
 	{
 		m_listeners.remove(listener);
@@ -131,6 +135,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/**
 	 * Get a list of nodes.
 	 */
+	@Override
 	public Set<INode> getNodes()
 	{
 		final Set<INode> rVal = new HashSet<INode>(m_nodeToChannel.keySet());
@@ -138,6 +143,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		return rVal;
 	}
 	
+	@Override
 	public synchronized void shutDown()
 	{
 		if (!m_shutdown)
@@ -161,6 +167,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		return m_shutdown;
 	}
 	
+	@Override
 	public boolean isConnected()
 	{
 		return !m_shutdown;
@@ -169,6 +176,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/**
 	 * Send a message to the given node.
 	 */
+	@Override
 	public void send(final Serializable msg, final INode to)
 	{
 		if (m_shutdown)
@@ -195,6 +203,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/**
 	 * Send a message to all nodes.
 	 */
+	@Override
 	public void broadcast(final Serializable msg)
 	{
 		final MessageHeader header = new MessageHeader(m_node, msg);
@@ -214,6 +223,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	private final Object m_cachedListLock = new Object();
 	private final HashMap<String, String> m_cachedMacAddresses = new HashMap<String, String>();
 	
+	@Override
 	public String GetPlayerMac(final String name)
 	{
 		synchronized (m_cachedListLock)
@@ -236,6 +246,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires)
 	{
 		synchronized (m_cachedListLock)
@@ -257,6 +268,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires)
 	{
 		synchronized (m_cachedListLock)
@@ -278,6 +290,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires)
 	{
 		synchronized (m_cachedListLock)
@@ -367,6 +380,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	public static final String YOU_HAVE_BEEN_MUTED_LOBBY = "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; // Special character to stop spoofing by server
 	public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; // Special character to stop spoofing by host
 	
+	@Override
 	public void messageReceived(final MessageHeader msg, final SocketChannel channel)
 	{
 		final INode expectedReceive = m_channelToNode.get(channel);
@@ -449,6 +463,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	// The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
 	private final List<String> m_miniBannedUsernames = new ArrayList<String>();
 	
+	@Override
 	public boolean IsUsernameMiniBanned(final String username)
 	{
 		synchronized (m_cachedListLock)
@@ -457,6 +472,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires)
 	{
 		synchronized (m_cachedListLock)
@@ -483,6 +499,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	
 	private final List<String> m_miniBannedIpAddresses = new ArrayList<String>();
 	
+	@Override
 	public boolean IsIpMiniBanned(final String ip)
 	{
 		synchronized (m_cachedListLock)
@@ -491,6 +508,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires)
 	{
 		synchronized (m_cachedListLock)
@@ -517,6 +535,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	
 	private final List<String> m_miniBannedMacAddresses = new ArrayList<String>();
 	
+	@Override
 	public boolean IsMacMiniBanned(final String mac)
 	{
 		synchronized (m_cachedListLock)
@@ -525,6 +544,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires)
 	{
 		synchronized (m_cachedListLock)
@@ -626,21 +646,25 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void addErrorListener(final IMessengerErrorListener listener)
 	{
 		m_errorListeners.add(listener);
 	}
 	
+	@Override
 	public void removeErrorListener(final IMessengerErrorListener listener)
 	{
 		m_errorListeners.remove(listener);
 	}
 	
+	@Override
 	public void addConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionListeners.add(listener);
 	}
 	
+	@Override
 	public void removeConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionListeners.remove(listener);
@@ -662,11 +686,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
+	@Override
 	public void setAcceptNewConnections(final boolean accept)
 	{
 		m_acceptNewConnection = accept;
 	}
 	
+	@Override
 	public boolean isAcceptNewConnections()
 	{
 		return m_acceptNewConnection;
@@ -675,6 +701,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/**
 	 * Get the local node
 	 */
+	@Override
 	public INode getLocalNode()
 	{
 		return m_node;
@@ -683,6 +710,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	
 	private class ConnectionHandler implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try
@@ -816,11 +844,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		};
 	}
 	
+	@Override
 	public boolean isServer()
 	{
 		return true;
 	}
 	
+	@Override
 	public void removeConnection(final INode node)
 	{
 		if (node.equals(m_node))
@@ -842,11 +872,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		s_logger.info("Connection removed:" + node);
 	}
 	
+	@Override
 	public INode getServerNode()
 	{
 		return m_node;
 	}
 	
+	@Override
 	public void socketError(final SocketChannel channel, final Exception error)
 	{
 		if (channel == null)
@@ -857,6 +889,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 			removeConnection(node);
 	}
 	
+	@Override
 	public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation conversation)
 	{
 		final ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
@@ -871,11 +904,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		s_logger.info("Connection added to:" + remote);
 	}
 	
+	@Override
 	public INode getRemoteNode(final SocketChannel channel)
 	{
 		return m_channelToNode.get(channel);
 	}
 	
+	@Override
 	public InetSocketAddress getRemoteServerSocketAddress()
 	{
 		return m_node.getSocketAddress();

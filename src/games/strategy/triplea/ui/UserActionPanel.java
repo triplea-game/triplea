@@ -68,6 +68,7 @@ public class UserActionPanel extends ActionPanel
 		m_choice = null;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -80,6 +81,7 @@ public class UserActionPanel extends ActionPanel
 				m_doneButton.setEnabled(false);
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						m_doneButton.requestFocusInWindow();
@@ -116,6 +118,7 @@ public class UserActionPanel extends ActionPanel
 			}
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					m_selectUserActionButton.setEnabled(true);
@@ -137,6 +140,7 @@ public class UserActionPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 2389485901611958851L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -178,6 +182,7 @@ public class UserActionPanel extends ActionPanel
 			{
 				private static final long serialVersionUID = -807175594221278068L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent arg0)
 				{
 					userChoiceDialog.setVisible(false);
@@ -185,6 +190,7 @@ public class UserActionPanel extends ActionPanel
 			});
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					noActionButton.requestFocusInWindow();
@@ -212,6 +218,7 @@ public class UserActionPanel extends ActionPanel
 			final JButton button = new JButton(getActionButtonText(uaa));
 			button.addActionListener(new ActionListener()
 			{
+				@Override
 				public void actionPerformed(final ActionEvent ae)
 				{
 					m_selectUserActionButton.setEnabled(false);
@@ -237,6 +244,7 @@ public class UserActionPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 2835948679299520899L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			if (!m_firstRun || youSureDoNothing())
@@ -292,6 +300,7 @@ class UserActionComparator implements Comparator<UserActionAttachment>
 	{
 	}
 	
+	@Override
 	public int compare(final UserActionAttachment uaa1, final UserActionAttachment uaa2)
 	{
 		if (uaa1.equals(uaa2))

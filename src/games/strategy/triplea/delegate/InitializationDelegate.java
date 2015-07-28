@@ -107,6 +107,7 @@ public class InitializationDelegate extends BaseTripleADelegate
 		this.m_needToInitialize = s.m_needToInitialize;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

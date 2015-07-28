@@ -119,46 +119,55 @@ abstract public class AbstractGame implements IGame
 		m_data.getGameLoader().shutDown();
 	}*/
 	
+	@Override
 	public GameData getData()
 	{
 		return m_data;
 	}
 	
+	@Override
 	public Vault getVault()
 	{
 		return m_vault;
 	}
 	
+	@Override
 	public boolean isGameOver()
 	{
 		return m_isGameOver;
 	}
 	
+	@Override
 	public IRemoteMessenger getRemoteMessenger()
 	{
 		return m_remoteMessenger;
 	}
 	
+	@Override
 	public IChannelMessenger getChannelMessenger()
 	{
 		return m_channelMessenger;
 	}
 	
+	@Override
 	public IMessenger getMessenger()
 	{
 		return m_messenger;
 	}
 	
+	@Override
 	public PlayerManager getPlayerManager()
 	{
 		return m_playerManager;
 	}
 	
+	@Override
 	public void addGameStepListener(final GameStepListener listener)
 	{
 		m_gameStepListeners.add(listener);
 	}
 	
+	@Override
 	public void removeGameStepListener(final GameStepListener listener)
 	{
 		m_gameStepListeners.remove(listener);
@@ -169,12 +178,14 @@ abstract public class AbstractGame implements IGame
 		return new RemoteName(DISPLAY_CHANNEL, data.getGameLoader().getDisplayType());
 	}
 	
+	@Override
 	public void addDisplay(final IDisplay display)
 	{
 		display.initialize(new DefaultDisplayBridge(m_data));
 		m_channelMessenger.registerChannelSubscriber(display, getDisplayChannel(getData()));
 	}
 	
+	@Override
 	public void removeDisplay(final IDisplay display)
 	{
 		m_channelMessenger.unregisterChannelSubscriber(display, getDisplayChannel(getData()));
@@ -185,12 +196,14 @@ abstract public class AbstractGame implements IGame
 		return new RemoteName(SOUND_CHANNEL, data.getGameLoader().getSoundType());
 	}
 	
+	@Override
 	public void addSoundChannel(final ISound soundChannel)
 	{
 		soundChannel.initialize();
 		m_channelMessenger.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
 	}
 	
+	@Override
 	public void removeSoundChannel(final ISound soundChannel)
 	{
 		m_channelMessenger.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));

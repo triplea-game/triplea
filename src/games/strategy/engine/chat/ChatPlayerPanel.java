@@ -88,6 +88,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 		setWidgetActivation();
 		m_statusListener = new IStatusListener()
 		{
+			@Override
 			public void statusChanged(final INode node, final String newStatus)
 			{
 				repaint();
@@ -159,6 +160,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 		m_players.setFocusable(false);
 		m_players.setCellRenderer(new ListCellRenderer()
 		{
+			@Override
 			public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
 			{
 				if (m_setCellRenderer == null)
@@ -210,6 +212,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 		});
 		m_actionFactories.add(new IPlayerActionFactory()
 		{
+			@Override
 			public List<Action> mouseOnPlayer(final INode clickedOn)
 			{
 				// you can't slap or ignore yourself
@@ -220,6 +223,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 				{
 					private static final long serialVersionUID = 6877883646085664875L;
 					
+					@Override
 					public void actionPerformed(final ActionEvent event)
 					{
 						m_chat.setIgnored(clickedOn, !isIgnored);
@@ -230,6 +234,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 				{
 					private static final long serialVersionUID = -5514772068903406263L;
 					
+					@Override
 					public void actionPerformed(final ActionEvent event)
 					{
 						m_chat.sendSlap(clickedOn.getName());
@@ -288,10 +293,12 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 	 * @param players
 	 *            - a collection of Strings representing player names.
 	 */
+	@Override
 	public synchronized void updatePlayerList(final Collection<INode> players)
 	{
 		final Runnable runner = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_listModel.clear();
@@ -309,10 +316,12 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 			SwingUtilities.invokeLater(runner);
 	}
 	
+	@Override
 	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
 	{
 	}
 	
+	@Override
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
 	}
@@ -354,6 +363,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 		return node.getName() + extra;
 	}
 	
+	@Override
 	public void addStatusMessage(final String message)
 	{
 	}

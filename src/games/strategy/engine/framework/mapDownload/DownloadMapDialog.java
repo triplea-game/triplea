@@ -95,6 +95,7 @@ public class DownloadMapDialog extends JDialog
 		{
 			private static final long serialVersionUID = 1410141388231981589L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
@@ -104,6 +105,7 @@ public class DownloadMapDialog extends JDialog
 		{
 			private static final long serialVersionUID = -9051243018211311068L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				final String selectedUrl = (String) m_urlComboBox.getSelectedItem();
@@ -146,6 +148,7 @@ public class DownloadMapDialog extends JDialog
 		{
 			private static final long serialVersionUID = -4644282981460989512L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try

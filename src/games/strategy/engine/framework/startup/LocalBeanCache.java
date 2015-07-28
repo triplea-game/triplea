@@ -54,6 +54,7 @@ public class LocalBeanCache
 		// add a shutdown, just in case someone forgets to call writeToDisk
 		final Thread shutdown = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				writeToDisk();

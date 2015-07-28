@@ -181,6 +181,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		final JButton button = new JButton("Network...");
 		button.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JPopupMenu menu = new JPopupMenu();
@@ -202,6 +203,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 	{
 		m_gameTypePanelModel.addObserver(new Observer()
 		{
+			@Override
 			public void update(final Observable o, final Object arg)
 			{
 				setGameSetupPanel(m_gameTypePanelModel.getPanel());
@@ -209,6 +211,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		});
 		m_playButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				play();
@@ -216,6 +219,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		});
 		m_quitButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -254,6 +258,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					setWidgetActivation();
@@ -272,6 +277,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer
 		}
 	}
 	
+	@Override
 	public void update(final Observable o, final Object arg)
 	{
 		setWidgetActivation();

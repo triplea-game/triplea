@@ -198,17 +198,20 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
 		return IGoEndTurnDelegate.class;
 	}
 	
+	@Override
 	public void signalStatus(final String status)
 	{
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 	}
 	
+	@Override
 	public IGridEndTurnData getTerritoryAdjustment()
 	{
 		return (m_groupsThatShouldDie == null ? null : m_groupsThatShouldDie.getSecond());
 	}
 	
+	@Override
 	public boolean haveTwoPassedInARow()
 	{
 		final PlayDelegate localPlayDel = Go.playDelegate(getData());
@@ -227,6 +230,7 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
 	
 	// TODO: this whole interaction thing should be moved to PlayDelegate, but I'm too lazy.
 	// (the only interaction during EndTurnDelegate should be the forum poster. this is because otherwise the forum poster will not post the full game data with the interactions included.)
+	@Override
 	public String territoryAdjustment(final IGridEndTurnData groupsThatShouldDie)
 	{
 		// just ignore whatever user/ai input if the game isn't actually done yet

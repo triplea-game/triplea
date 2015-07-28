@@ -368,6 +368,7 @@ public class PlacementPicker extends JFrame
 		{
 			private static final long serialVersionUID = -2894085191455411106L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadPlacements();
@@ -378,6 +379,7 @@ public class PlacementPicker extends JFrame
 		{
 			private static final long serialVersionUID = -3341738809601318716L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				savePlacements();
@@ -388,6 +390,7 @@ public class PlacementPicker extends JFrame
 		{
 			private static final long serialVersionUID = -9093426903644867897L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -416,6 +419,7 @@ public class PlacementPicker extends JFrame
 		showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
 		showAllModeItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				s_showAllMode = showAllModeItem.getState();
@@ -425,6 +429,7 @@ public class PlacementPicker extends JFrame
 		showOverflowModeItem = new JCheckBoxMenuItem("Show Overflow Mode", false);
 		showOverflowModeItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				s_showOverflowMode = showOverflowModeItem.getState();
@@ -434,6 +439,7 @@ public class PlacementPicker extends JFrame
 		showIncompleteModeItem = new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
 		showIncompleteModeItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				if (showIncompleteModeItem.getState())

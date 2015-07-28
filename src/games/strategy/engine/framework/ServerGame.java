@@ -97,6 +97,7 @@ public class ServerGame extends AbstractGame
 	private volatile boolean m_delegateExecutionStopped = false;
 	private final IServerRemote m_serverRemote = new IServerRemote()
 	{
+		@Override
 		public byte[] getSavedGame()
 		{
 			final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
@@ -128,6 +129,7 @@ public class ServerGame extends AbstractGame
 		super(data, localPlayers, remotePlayerMapping, messengers);
 		m_gameModifiedChannel = new IGameModifiedChannel()
 		{
+			@Override
 			public void gameDataChanged(final Change aChange)
 			{
 				assertCorrectCaller();
@@ -143,6 +145,7 @@ public class ServerGame extends AbstractGame
 				}
 			}
 			
+			@Override
 			public void startHistoryEvent(final String event, final Object renderingData)
 			{
 				startHistoryEvent(event);
@@ -150,12 +153,14 @@ public class ServerGame extends AbstractGame
 					setRenderingData(renderingData);
 			}
 			
+			@Override
 			public void startHistoryEvent(final String event)
 			{
 				assertCorrectCaller();
 				m_data.getHistory().getHistoryWriter().startEvent(event);
 			}
 			
+			@Override
 			public void addChildToEvent(final String text, final Object renderingData)
 			{
 				assertCorrectCaller();
@@ -168,6 +173,7 @@ public class ServerGame extends AbstractGame
 				m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
 			}
 			
+			@Override
 			public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
 			{
 				assertCorrectCaller();
@@ -177,6 +183,7 @@ public class ServerGame extends AbstractGame
 			}
 			
 			// nothing to do, we call this
+			@Override
 			public void shutDown()
 			{
 			}
@@ -209,6 +216,7 @@ public class ServerGame extends AbstractGame
 			saveGame(sink);
 			(new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					try
@@ -480,6 +488,7 @@ public class ServerGame extends AbstractGame
 		}
 	}
 	
+	@Override
 	public void saveGame(final File f)
 	{
 		FileOutputStream fout = null;
@@ -740,6 +749,7 @@ public class ServerGame extends AbstractGame
 		return (IGameModifiedChannel) m_channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
 	}
 	
+	@Override
 	public void addChange(final Change aChange)
 	{
 		getGameModifiedBroadcaster().gameDataChanged(aChange);
@@ -747,11 +757,13 @@ public class ServerGame extends AbstractGame
 		// that way all changes will happen in the same thread
 	}
 	
+	@Override
 	public boolean canSave()
 	{
 		return true;
 	}
 	
+	@Override
 	public IRandomSource getRandomSource()
 	{
 		return m_randomSource;

@@ -143,6 +143,7 @@ public class ClientOptions extends JDialog
 	{
 		private static final long serialVersionUID = -3148947760273290532L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			setVisible(false);
@@ -153,6 +154,7 @@ public class ClientOptions extends JDialog
 	{
 		private static final long serialVersionUID = -3911528133067426275L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			setVisible(false);

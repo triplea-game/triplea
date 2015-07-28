@@ -38,16 +38,19 @@ public class InternalDiceServer implements IRemoteDiceServer
 	// instance methods
 	// -----------------------------------------------------------------------
 	
+	@Override
 	public EditorPanel getEditor()
 	{
 		return new DiceServerEditor(this);
 	}
 	
+	@Override
 	public boolean sameType(final IBean other)
 	{
 		return other.getClass() == InternalDiceServer.class;
 	}
 	
+	@Override
 	public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameID, final String gameUUID) throws IOException
 	{
 		// the interface is rather stupid, you have to return a string here, which is then passed back in getDice()
@@ -62,6 +65,7 @@ public class InternalDiceServer implements IRemoteDiceServer
 		return intArrayString;
 	}
 	
+	@Override
 	public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException
 	{
 		final String[] strArray = string.split(",");
@@ -73,36 +77,43 @@ public class InternalDiceServer implements IRemoteDiceServer
 		return intArray;
 	}
 	
+	@Override
 	public String getDisplayName()
 	{
 		return "Internal Dice Roller";
 	}
 	
+	@Override
 	public String getToAddress()
 	{
 		return null;
 	}
 	
+	@Override
 	public void setToAddress(final String toAddress)
 	{
 		
 	}
 	
+	@Override
 	public String getCcAddress()
 	{
 		return null;
 	}
 	
+	@Override
 	public void setCcAddress(final String ccAddress)
 	{
 		
 	}
 	
+	@Override
 	public String getInfoText()
 	{
 		return "Uses the build in TripleA dice roller.\nDice are not logged, and no internet access is required.\nIt is technically possible (for a hacker) to modify the dice rolls.";
 	}
 	
+	@Override
 	public boolean sendsEmail()
 	{
 		return false;
@@ -121,21 +132,25 @@ public class InternalDiceServer implements IRemoteDiceServer
 		return new InternalDiceServer();
 	}
 	
+	@Override
 	public boolean supportsGameId()
 	{
 		return false;
 	}
 	
+	@Override
 	public void setGameId(final String gameId)
 	{
 		
 	}
 	
+	@Override
 	public String getGameId()
 	{
 		return null;
 	}
 	
+	@Override
 	public String getHelpText()
 	{
 		return "<html>No help</html>";

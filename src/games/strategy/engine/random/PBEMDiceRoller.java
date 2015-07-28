@@ -79,6 +79,7 @@ public class PBEMDiceRoller implements IRandomSource
 	/**
 	 * getRandom
 	 */
+	@Override
 	public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -88,6 +89,7 @@ public class PBEMDiceRoller implements IRandomSource
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						result.set(getRandom(max, count, annotation));
@@ -138,6 +140,7 @@ public class PBEMDiceRoller implements IRandomSource
 	 *            String
 	 * @return int
 	 */
+	@Override
 	public int getRandom(final int max, final String annotation) throws IllegalStateException
 	{
 		return getRandom(max, 1, annotation)[0];
@@ -197,6 +200,7 @@ class HttpDiceRollerDialog extends JDialog
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		m_exitButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				System.exit(-1);
@@ -205,6 +209,7 @@ class HttpDiceRollerDialog extends JDialog
 		m_exitButton.setEnabled(false);
 		m_reRollButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				rollInternal();
@@ -212,6 +217,7 @@ class HttpDiceRollerDialog extends JDialog
 		});
 		m_okButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				closeAndReturn();
@@ -249,6 +255,7 @@ class HttpDiceRollerDialog extends JDialog
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_exitButton.setEnabled(true);
@@ -275,6 +282,7 @@ class HttpDiceRollerDialog extends JDialog
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						roll();
@@ -324,6 +332,7 @@ class HttpDiceRollerDialog extends JDialog
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				setVisible(false);

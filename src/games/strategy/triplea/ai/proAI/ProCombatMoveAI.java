@@ -320,6 +320,7 @@ public class ProCombatMoveAI
 		// Sort attack territories by value
 		Collections.sort(prioritizedTerritories, new Comparator<ProAttackTerritoryData>()
 		{
+			@Override
 			public int compare(final ProAttackTerritoryData t1, final ProAttackTerritoryData t2)
 			{
 				final double value1 = t1.getValue();

@@ -67,6 +67,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 		m_historyWriter = new DelegateHistoryWriter(channelMessenger);
 	}
 	
+	@Override
 	public void setDisplay(final ITripleaDisplay display)
 	{
 		m_dummyDisplay = display;
@@ -75,11 +76,13 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
+	@Override
 	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}
 	
+	@Override
 	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
@@ -89,6 +92,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	 * Changing the player has the effect of commiting the current transaction.
 	 * Player is initialized to the player specified in the xml data.
 	 */
+	@Override
 	public void setPlayerID(final PlayerID aPlayer)
 	{
 		m_id = aPlayer;
@@ -99,22 +103,26 @@ public class TestDelegateBridge implements ITestDelegateBridge
 		return false;
 	}
 	
+	@Override
 	public PlayerID getPlayerID()
 	{
 		return m_id;
 	}
 	
+	@Override
 	public void addChange(final Change aChange)
 	{
 		final ChangePerformer changePerformer = new ChangePerformer(m_data);
 		changePerformer.perform(aChange);
 	}
 	
+	@Override
 	public void setStepName(final String name)
 	{
 		setStepName(name, false);
 	}
 	
+	@Override
 	public void setStepName(final String name, final boolean doNotChangeSequence)
 	{
 		m_stepName = name;
@@ -142,11 +150,13 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/**
 	 * Returns the current step name
 	 */
+	@Override
 	public String getStepName()
 	{
 		return m_stepName;
 	}
 	
+	@Override
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_historyWriter;
@@ -155,6 +165,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
+	@Override
 	public IRemotePlayer getRemotePlayer()
 	{
 		return m_remote;
@@ -163,6 +174,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
+	@Override
 	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		return m_remote;
@@ -171,39 +183,47 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
+	@Override
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_dummyDisplay;
 	}
 	
+	@Override
 	public ISound getSoundChannelBroadcaster()
 	{
 		return m_soundChannel;
 	}
 	
+	@Override
 	public Properties getStepProperties()
 	{
 		return new Properties();
 	}
 	
+	@Override
 	public void leaveDelegateExecution()
 	{
 	}
 	
+	@Override
 	public void enterDelegateExecution()
 	{
 	}
 	
+	@Override
 	public void setRandomSource(final IRandomSource randomSource)
 	{
 		m_randomSource = randomSource;
 	}
 	
+	@Override
 	public void setRemote(final IRemotePlayer remote)
 	{
 		m_remote = remote;
 	}
 	
+	@Override
 	public void stopGameSequence()
 	{
 	}
@@ -212,6 +232,7 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	 * (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getData()
 	 */
+	@Override
 	public GameData getData()
 	{
 		return m_data;

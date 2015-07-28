@@ -244,6 +244,7 @@ public class EndRoundDelegate extends BaseTripleADelegate
 		m_winners = s.m_winners;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

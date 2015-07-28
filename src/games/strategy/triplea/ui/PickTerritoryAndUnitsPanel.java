@@ -69,6 +69,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 		m_currentHighlightedTerritory = null;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -82,6 +83,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 				add(m_doneButton);
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						m_selectTerritoryButton.requestFocusInWindow();
@@ -109,6 +111,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (territoryChoices.size() > 1)
@@ -125,6 +128,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (!getActive())
@@ -148,6 +152,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -2376988913511268803L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currentAction = DoneAction;
@@ -214,6 +219,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 4745335350716395600L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currentAction = SelectUnitsAction;
@@ -234,6 +240,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -8003634505955439651L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currentAction = SelectTerritoryAction;
@@ -259,6 +266,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel
 				m_pickedTerritory = territory;
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						getMap().removeMapSelectionListener(MAP_SELECTION_LISTENER);

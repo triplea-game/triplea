@@ -98,10 +98,12 @@ public class LobbyMenu extends JMenuBar
 		revive.setEnabled(true);
 		revive.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final Runnable runner = new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
@@ -119,6 +121,7 @@ public class LobbyMenu extends JMenuBar
 						}
 						final Runnable componentCreation = new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								final JDialog dialog = new JDialog(m_frame, "Players Information");
@@ -141,6 +144,7 @@ public class LobbyMenu extends JMenuBar
 								{
 									private static final long serialVersionUID = 823636925655070882L;
 									
+									@Override
 									public void actionPerformed(final ActionEvent e)
 									{
 										dialog.dispose();
@@ -172,6 +176,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenuItem item = new JMenuItem("Ban Username");
 		item.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String name = JOptionPane.showInputDialog(null,
@@ -204,6 +209,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenuItem item = new JMenuItem("Ban IP Address");
 		item.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String ip = JOptionPane.showInputDialog(null, "Enter the IP Address that you want to ban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0", "");
@@ -230,6 +236,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenuItem item = new JMenuItem("Ban Hashed Mac Address");
 		item.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String mac = JOptionPane.showInputDialog(null,
@@ -273,6 +280,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenuItem item = new JMenuItem("Unban Username");
 		item.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String name = JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
@@ -302,6 +310,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenuItem item = new JMenuItem("Unban IP Address");
 		item.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String ip = JOptionPane
@@ -327,6 +336,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenuItem item = new JMenuItem("Unban Hashed Mac Address");
 		item.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String mac = JOptionPane.showInputDialog(null,
@@ -433,6 +443,7 @@ public class LobbyMenu extends JMenuBar
 		final JMenuItem guidesLink = new JMenuItem("Guides...");
 		hostingLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -447,6 +458,7 @@ public class LobbyMenu extends JMenuBar
 		});
 		mapLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -460,6 +472,7 @@ public class LobbyMenu extends JMenuBar
 		});
 		bugReport.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -473,6 +486,7 @@ public class LobbyMenu extends JMenuBar
 		});
 		lobbyRules.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -486,6 +500,7 @@ public class LobbyMenu extends JMenuBar
 		});
 		warClub.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -499,6 +514,7 @@ public class LobbyMenu extends JMenuBar
 		});
 		devForum.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -512,6 +528,7 @@ public class LobbyMenu extends JMenuBar
 		});
 		donateLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -525,6 +542,7 @@ public class LobbyMenu extends JMenuBar
 		});
 		guidesLink.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -551,6 +569,7 @@ public class LobbyMenu extends JMenuBar
 		final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
 		chatTimeBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_frame.setShowChatTime(chatTimeBox.isSelected());
@@ -567,6 +586,7 @@ public class LobbyMenu extends JMenuBar
 		update.setEnabled(!m_frame.getLobbyClient().isAnonymousLogin());
 		update.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				updateAccountDetails();
@@ -613,6 +633,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				private static final long serialVersionUID = 7173511775817785866L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					m_frame.shutdown();

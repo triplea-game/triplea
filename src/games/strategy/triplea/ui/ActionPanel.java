@@ -192,6 +192,7 @@ public abstract class ActionPanel extends JPanel
 	 */
 	protected final Runnable REFRESH = new Runnable()
 	{
+		@Override
 		public void run()
 		{
 			revalidate();

@@ -84,10 +84,12 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	{
 	}
 	
+	@Override
 	public void setWidgetActivation()
 	{
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
@@ -98,6 +100,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		}
 	}
 	
+	@Override
 	public void cancel()
 	{
 		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
@@ -108,6 +111,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		}
 	}
 	
+	@Override
 	public boolean canGameStart()
 	{
 		if (m_gameSelectorModel.getGameData() == null || m_model == null)
@@ -130,11 +134,13 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		return false;
 	}
 	
+	@Override
 	public void playerListChanged()
 	{
 		internalPlayerListChanged();
 	}
 	
+	@Override
 	public void playersTakenChanged()
 	{
 		internalPlayersTakenChanged();
@@ -150,6 +156,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		internalPlayersTakenChanged();
 	}
 	
+	@Override
 	public IChatPanel getChatPanel()
 	{
 		return m_model.getChatPanel();
@@ -160,6 +167,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		return m_model;
 	}
 	
+	@Override
 	public synchronized ILauncher getLauncher()
 	{
 		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
@@ -169,21 +177,25 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		return launcher;
 	}
 	
+	@Override
 	public List<Action> getUserActions()
 	{
 		return null;
 	}
 	
+	@Override
 	public void addObserver(final Observer observer)
 	{
 		m_listeners.add(observer);
 	}
 	
+	@Override
 	public void removeObserver(final Observer observer)
 	{
 		m_listeners.add(observer);
 	}
 	
+	@Override
 	public void notifyObservers()
 	{
 		for (final Observer observer : m_listeners)
@@ -192,10 +204,12 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		}
 	}
 	
+	@Override
 	public void preStartGame()
 	{
 	}
 	
+	@Override
 	public void postStartGame()
 	{
 		final GameData data = m_gameSelectorModel.getGameData();

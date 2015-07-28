@@ -4202,6 +4202,7 @@ public class SUtils
 		}
 		Collections.sort(reorder, new Comparator<Object>()
 		{
+			@Override
 			public int compare(final Object o1, final Object o2)
 			{
 				// get int returns 0 if no value
@@ -4233,6 +4234,7 @@ public class SUtils
 	{
 		Collections.sort(reorder, new Comparator<Object>()
 		{
+			@Override
 			public int compare(final Object o1, final Object o2)
 			{
 				double v1 = safeGet(map, o1);

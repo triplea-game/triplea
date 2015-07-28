@@ -72,6 +72,7 @@ public class LoginPanel extends JPanel
 		m_userName.setText(name);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (!m_anonymous.isSelected())
@@ -121,6 +122,7 @@ public class LoginPanel extends JPanel
 	{
 		m_logon.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				logonPressed();
@@ -128,6 +130,7 @@ public class LoginPanel extends JPanel
 		});
 		m_createAccount.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_returnValue = ReturnValue.CREATE_ACCOUNT;
@@ -136,6 +139,7 @@ public class LoginPanel extends JPanel
 		});
 		m_cancel.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -143,6 +147,7 @@ public class LoginPanel extends JPanel
 		});
 		m_anonymous.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				setWidgetActivation();
@@ -153,6 +158,7 @@ public class LoginPanel extends JPanel
 		{
 			private static final long serialVersionUID = 4248565786079247230L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				logonPressed();

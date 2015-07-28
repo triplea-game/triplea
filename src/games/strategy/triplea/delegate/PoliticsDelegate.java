@@ -135,6 +135,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!m_player.amNotDeadYet(getData()))
@@ -153,6 +154,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
 	
+	@Override
 	public Collection<PoliticalActionAttachment> getValidActions()
 	{
 		final GameData data = m_bridge.getData();
@@ -177,6 +179,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		return IPoliticsDelegate.class;
 	}
 	
+	@Override
 	public void attemptAction(final PoliticalActionAttachment paa)
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(getData()))

@@ -262,6 +262,7 @@ public class GameDescription implements Externalizable, Cloneable
 		m_comment = comment;
 	}
 	
+	@Override
 	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_hostedBy = new Node();
@@ -282,6 +283,7 @@ public class GameDescription implements Externalizable, Cloneable
 		m_botSupportEmail = in.readUTF();
 	}
 	
+	@Override
 	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		((Node) m_hostedBy).writeExternal(out);

@@ -123,6 +123,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						setChat(chat);
@@ -218,6 +219,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 		m_text.setEditable(false);
 		m_text.addMouseListener(new MouseListener()
 		{
+			@Override
 			public void mouseReleased(final MouseEvent e)
 			{
 				final String markedText = m_text.getSelectedText();
@@ -227,18 +229,22 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 				}
 			}
 			
+			@Override
 			public void mousePressed(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseExited(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseEntered(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
 			}
@@ -270,16 +276,19 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	}
 	
 	/** thread safe */
+	@Override
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
 		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
 	}
 	
 	/** thread safe */
+	@Override
 	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
 	{
 		final Runnable runner = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (from.equals(m_chat.getServerNode().getName()))
@@ -306,6 +315,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 				addChatMessage(message, from, thirdperson);
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						final BoundedRangeModel scrollModel = m_scrollPane.getVerticalScrollBar().getModel();
@@ -354,10 +364,12 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 		}
 	}
 	
+	@Override
 	public void addStatusMessage(final String message)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -420,6 +432,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	{
 		private static final long serialVersionUID = -774288042140967424L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this), "Enter Status Text (leave blank for no status)", "");
@@ -435,6 +448,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	{
 		private static final long serialVersionUID = -1315412454568254254L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_nextMessage.getText().trim().length() == 0)
@@ -454,6 +468,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	{
 		private static final long serialVersionUID = -1945655511272482449L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_chat == null)
@@ -466,6 +481,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	{
 		private static final long serialVersionUID = 1541868547613849892L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_chat == null)
@@ -475,6 +491,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 		}
 	};
 	
+	@Override
 	public void updatePlayerList(final Collection<INode> players)
 	{
 	}

@@ -1102,6 +1102,7 @@ public class WW2V3_41_Test extends TestCase
 		// The game will ask us if we want to move bomb, say yes.
 		final InvocationHandler handler = new InvocationHandler()
 		{
+			@Override
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				return true;

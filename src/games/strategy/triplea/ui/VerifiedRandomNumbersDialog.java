@@ -69,6 +69,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
 		final JButton close = new JButton("Close");
 		close.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);

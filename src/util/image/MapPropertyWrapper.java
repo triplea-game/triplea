@@ -128,6 +128,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		return m_property.getRowsNeeded();
 	}
 	
+	@Override
 	public Object getValue()
 	{
 		return m_property.getValue();
@@ -138,6 +139,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		return (T) m_property.getValue();
 	}
 	
+	@Override
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_property.setValue(value);
@@ -148,6 +150,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		m_property.setValue(value);
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		return m_property.getEditorComponent();
@@ -262,6 +265,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		return new Tuple<PropertiesUI, List<MapPropertyWrapper>>(ui, properties);
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		return m_property.validate(value);

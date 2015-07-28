@@ -97,6 +97,7 @@ public class InitializationDelegate extends AbstractDelegate
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

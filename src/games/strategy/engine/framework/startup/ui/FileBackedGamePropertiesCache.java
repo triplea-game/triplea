@@ -39,6 +39,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 	 * @param gameData
 	 *            the game which options you want to cache
 	 */
+	@Override
 	public void cacheGameProperties(final GameData gameData)
 	{
 		final Map<String, Object> serializableMap = new HashMap<String, Object>();
@@ -73,6 +74,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 	 * @param gameData
 	 *            the game to load the cached game options into
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	// generics are compile time only, and lost during serialization
 	public void loadCachedGamePropertiesInto(final GameData gameData)

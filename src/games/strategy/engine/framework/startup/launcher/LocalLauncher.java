@@ -78,6 +78,7 @@ public class LocalLauncher extends AbstractLauncher
 			m_gameLoadingWindow.doneWait();
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
@@ -112,6 +113,7 @@ public class LocalLauncher extends AbstractLauncher
 			m_gameSelectorModel.loadDefaultGame(parent);
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					JOptionPane.getFrameForComponent(parent).setVisible(true);

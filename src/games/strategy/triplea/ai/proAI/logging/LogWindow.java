@@ -109,6 +109,7 @@ public class LogWindow extends javax.swing.JDialog
 		v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
 		v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_restoreDefaultsButtonActionPerformed(evt);
@@ -127,6 +128,7 @@ public class LogWindow extends javax.swing.JDialog
 		v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
 		v_settingsDetailsButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_settingsDetailsButtonActionPerformed(evt);
@@ -149,6 +151,7 @@ public class LogWindow extends javax.swing.JDialog
 		v_cancelButton.setName("v_cancelButton");
 		v_cancelButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_cancelButtonActionPerformed(evt);
@@ -164,6 +167,7 @@ public class LogWindow extends javax.swing.JDialog
 		v_okButton.setName("v_okButton");
 		v_okButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_okButtonActionPerformed(evt);
@@ -239,6 +243,7 @@ public class LogWindow extends javax.swing.JDialog
 		v_enableAILogging.setName("v_enableAILogging");
 		v_enableAILogging.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_enableAILoggingStateChanged(evt);
@@ -283,6 +288,7 @@ public class LogWindow extends javax.swing.JDialog
 		v_limitLogHistoryCB.setName("v_limitLogHistoryCB");
 		v_limitLogHistoryCB.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_limitLogHistoryCBStateChanged(evt);
@@ -439,6 +445,7 @@ public class LogWindow extends javax.swing.JDialog
 		{
 			private static final long serialVersionUID = -1367858475413936399L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				dialog.dispose();
@@ -476,6 +483,7 @@ public class LogWindow extends javax.swing.JDialog
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					final JPanel newPanel = new JPanel();
@@ -517,6 +525,7 @@ public class LogWindow extends javax.swing.JDialog
 			{
 				final Runnable runner = new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++)

@@ -162,6 +162,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 		}
 	}
 	
+	@Override
 	public boolean postTurnSummary(final String message, final String subject)
 	{
 		try
@@ -353,6 +354,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 		return stringPart;
 	}
 	
+	@Override
 	public String getDisplayName()
 	{
 		return "AxisAndAllies.org";
@@ -363,6 +365,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 	 * 
 	 * @return a copy
 	 */
+	@Override
 	public IForumPoster doClone()
 	{
 		final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
@@ -374,22 +377,26 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 		return clone;
 	}
 	
+	@Override
 	public boolean supportsSaveGame()
 	{
 		return true;
 	}
 	
+	@Override
 	public void viewPosted()
 	{
 		final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
 		DesktopUtilityBrowserLauncher.openURL(url);
 	}
 	
+	@Override
 	public String getTestMessage()
 	{
 		return "Testing, this will take about 20 seconds...";
 	}
 	
+	@Override
 	public String getHelpText()
 	{
 		return HelpSupport.loadHelp("axisAndAlliesForum.html");

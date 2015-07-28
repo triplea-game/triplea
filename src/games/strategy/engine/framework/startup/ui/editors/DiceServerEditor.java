@@ -91,6 +91,7 @@ public class DiceServerEditor extends EditorPanel
 		
 		m_testDiceyButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final PBEMDiceRoller random = new PBEMDiceRoller(getDiceServer(), null);

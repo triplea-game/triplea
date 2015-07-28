@@ -147,6 +147,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 		m_needToInitialize = s.m_needToInitialize;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if ((m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty()) &&
@@ -192,6 +193,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 	/**
 	 * Returns an error code, or null if all is good.
 	 */
+	@Override
 	public String purchase(final IntegerMap<ProductionRule> productionRules)
 	{
 		final IntegerMap<Resource> costs = getCosts(productionRules, m_player);
@@ -287,6 +289,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 	/**
 	 * Returns an error code, or null if all is good.
 	 */
+	@Override
 	public String purchaseRepair(final Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
 		final IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);
@@ -353,6 +356,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
+		@Override
 		public int compare(final RepairRule o1, final RepairRule o2)
 		{
 			final UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();

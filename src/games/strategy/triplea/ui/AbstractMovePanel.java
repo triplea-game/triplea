@@ -44,6 +44,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -6497408896615920650L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (doneMoveAction())
@@ -58,6 +59,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -257745862234175428L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			cancelMoveAction();
@@ -182,6 +184,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				s_logger.fine("cleanup");
@@ -215,6 +218,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 		super.setActive(active);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_CANCEL_MOVE_ACTION.actionPerformed(null);
@@ -227,6 +231,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 		super.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -262,6 +267,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				s_logger.fine("setup");

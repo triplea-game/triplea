@@ -24,6 +24,7 @@ public interface IPlayerActionFactory
 {
 	public static final IPlayerActionFactory NULL_FACTORY = new IPlayerActionFactory()
 	{
+		@Override
 		public List<Action> mouseOnPlayer(final INode clickedOn)
 		{
 			return Collections.emptyList();

@@ -110,6 +110,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = 2205085537962024476L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -121,6 +122,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = 2205085537962024476L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -133,6 +135,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = 5127470604727907906L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -203,6 +206,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = 8547635747553626362L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -215,6 +219,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -2751668909341983795L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -271,6 +276,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -5536151512828077755L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -330,6 +336,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -2456111915025687825L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -397,6 +404,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = 1835547345902760810L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -442,6 +450,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = 6975869192911780860L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -491,6 +500,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -2950034347058147592L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -577,6 +587,7 @@ public class EditPanel extends ActionPanel
 	{
 		final Comparator<Unit> removableUnitsOrder = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit unit1, final Unit unit2)
 			{
 				final TripleAUnit u1 = TripleAUnit.get(unit1);
@@ -684,6 +695,7 @@ public class EditPanel extends ActionPanel
 	
 	private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener()
 	{
+		@Override
 		public void unitsSelected(final List<Unit> units, final Territory t, final MouseDetails md)
 		{
 			// check if we can handle this event, are we active?
@@ -811,6 +823,7 @@ public class EditPanel extends ActionPanel
 	};
 	private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
 	{
+		@Override
 		public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails md)
 		{
 			if (!getActive())
@@ -859,6 +872,7 @@ public class EditPanel extends ActionPanel
 				}
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -893,6 +907,7 @@ public class EditPanel extends ActionPanel
 				}
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -932,6 +947,7 @@ public class EditPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 6394987295241603443L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_selectedTerritory = null;

@@ -67,6 +67,7 @@ public class UIContext extends AbstractUIContext implements IUIContext
 		// m_frame = frame;
 	}
 	
+	@Override
 	public Cursor getCursor()
 	{
 		return m_cursor;
@@ -108,6 +109,7 @@ public class UIContext extends AbstractUIContext implements IUIContext
 		// avoids the pause where sounds dont load right away
 		final Runnable loadSounds = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				// change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
@@ -138,41 +140,49 @@ public class UIContext extends AbstractUIContext implements IUIContext
 		stopWatch.done();
 	}
 	
+	@Override
 	public MapData getMapData()
 	{
 		return m_mapData;
 	}
 	
+	@Override
 	public TileImageFactory getTileImageFactory()
 	{
 		return m_tileImageFactory;
 	}
 	
+	@Override
 	public UnitImageFactory getUnitImageFactory()
 	{
 		return m_unitImageFactory;
 	}
 	
+	@Override
 	public ResourceImageFactory getResourceImageFactory()
 	{
 		return m_resourceImageFactory;
 	}
 	
+	@Override
 	public MapImage getMapImage()
 	{
 		return m_mapImage;
 	}
 	
+	@Override
 	public FlagIconImageFactory getFlagImageFactory()
 	{
 		return m_flagIconImageFactory;
 	}
 	
+	@Override
 	public PUImageFactory getPUImageFactory()
 	{
 		return m_PUImageFactory;
 	}
 	
+	@Override
 	public DiceImageFactory getDiceImageFactory()
 	{
 		return m_diceImageFactory;
@@ -185,56 +195,67 @@ public class UIContext extends AbstractUIContext implements IUIContext
 		m_mapData.close();
 	}
 	
+	@Override
 	public boolean getShowUnits()
 	{
 		return m_drawUnits;
 	}
 	
+	@Override
 	public void setShowUnits(final boolean aBool)
 	{
 		m_drawUnits = aBool;
 	}
 	
+	@Override
 	public OptionalExtraBorderLevel getDrawTerritoryBordersAgain()
 	{
 		return m_extraTerritoryBorderLevel;
 	}
 	
+	@Override
 	public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level)
 	{
 		m_extraTerritoryBorderLevel = level;
 	}
 	
+	@Override
 	public void resetDrawTerritoryBordersAgain()
 	{
 		m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
 	}
 	
+	@Override
 	public void setDrawTerritoryBordersAgainToMedium()
 	{
 		m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
 	}
 	
+	@Override
 	public void setShowTerritoryEffects(final boolean aBool)
 	{
 		m_drawTerritoryEffects = aBool;
 	}
 	
+	@Override
 	public boolean getShowTerritoryEffects()
 	{
 		return m_drawTerritoryEffects;
 	}
 	
+	@Override
 	public boolean getShowMapOnly()
 	{
 		return m_drawMapOnly;
 	}
 	
+	@Override
 	public void setShowMapOnly(final boolean aBool)
 	{
 		m_drawMapOnly = aBool;
 	}
 	
+	@Override
 	public void setUnitScaleFactor(final double scaleFactor)
 	{
 		m_unitImageFactory.setScaleFactor(scaleFactor);

@@ -298,6 +298,7 @@ public class DecorationPlacer extends JFrame
 		{
 			private static final long serialVersionUID = 2712234474452114083L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadImagesAndPoints();
@@ -308,6 +309,7 @@ public class DecorationPlacer extends JFrame
 		{
 			private static final long serialVersionUID = -4519036149978621171L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				saveImagePoints();
@@ -318,6 +320,7 @@ public class DecorationPlacer extends JFrame
 		{
 			private static final long serialVersionUID = -7217861953409073730L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				saveImagePoints();
@@ -330,6 +333,7 @@ public class DecorationPlacer extends JFrame
 		{
 			private static final long serialVersionUID = -5631457890653630218L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -355,6 +359,7 @@ public class DecorationPlacer extends JFrame
 		final JCheckBoxMenuItem highlightAllModeItem = new JCheckBoxMenuItem("Highlight All", false);
 		highlightAllModeItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				s_highlightAll = highlightAllModeItem.getState();
@@ -364,6 +369,7 @@ public class DecorationPlacer extends JFrame
 		final JCheckBoxMenuItem showNamesModeItem = new JCheckBoxMenuItem("Show Point Names", false);
 		showNamesModeItem.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				s_showPointNames = showNamesModeItem.getState();
@@ -374,6 +380,7 @@ public class DecorationPlacer extends JFrame
 		{
 			private static final long serialVersionUID = -7217861953409073730L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentImagePoints.clear();

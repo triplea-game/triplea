@@ -56,6 +56,7 @@ public class ScrollableTextField extends JPanel
 		final ScrollableTextField field = new ScrollableTextField(0, 100);
 		field.addChangeListener(new ScrollableTextFieldListener()
 		{
+			@Override
 			public void changedValue(final ScrollableTextField aField)
 			{
 				System.out.println(aField.getValue());
@@ -191,6 +192,7 @@ public class ScrollableTextField extends JPanel
 	{
 		private static final long serialVersionUID = 2125871167112459475L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_text.isEnabled())
@@ -204,6 +206,7 @@ public class ScrollableTextField extends JPanel
 	{
 		private static final long serialVersionUID = 787758939168986726L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_text.isEnabled())
@@ -217,6 +220,7 @@ public class ScrollableTextField extends JPanel
 	{
 		private static final long serialVersionUID = -3899827439573519512L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_text.isEnabled())
@@ -230,6 +234,7 @@ public class ScrollableTextField extends JPanel
 	{
 		private static final long serialVersionUID = 5785321239855254848L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_text.isEnabled())
@@ -271,6 +276,7 @@ public class ScrollableTextField extends JPanel
 	
 	private final IntTextFieldChangeListener m_textListener = new IntTextFieldChangeListener()
 	{
+		@Override
 		public void changedValue(final IntTextField field)
 		{
 			notifyListeners();

@@ -72,6 +72,7 @@ public class ImageScrollerSmallView extends JComponent
 		this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
 		model.addObserver(new Observer()
 		{
+			@Override
 			public void update(final Observable o, final Object arg)
 			{
 				repaint();

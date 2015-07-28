@@ -120,6 +120,7 @@ public class MapPropertiesMaker extends JFrame
 		{
 			private static final long serialVersionUID = -3135749471880991185L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadProperties();
@@ -130,6 +131,7 @@ public class MapPropertiesMaker extends JFrame
 		{
 			private static final long serialVersionUID = -5608941822299486808L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				saveProperties();
@@ -140,6 +142,7 @@ public class MapPropertiesMaker extends JFrame
 		{
 			private static final long serialVersionUID = -9212762817640498442L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -185,10 +188,12 @@ public class MapPropertiesMaker extends JFrame
 		widthField.setText("" + s_mapProperties.getMAP_WIDTH());
 		widthField.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusGained(final FocusEvent e)
 			{
 			}
 			
+			@Override
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -207,10 +212,12 @@ public class MapPropertiesMaker extends JFrame
 		heightField.setText("" + s_mapProperties.getMAP_HEIGHT());
 		heightField.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusGained(final FocusEvent e)
 			{
 			}
 			
+			@Override
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -231,10 +238,12 @@ public class MapPropertiesMaker extends JFrame
 		scaleField.setText("" + s_mapProperties.getUNITS_SCALE());
 		scaleField.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusGained(final FocusEvent e)
 			{
 			}
 			
+			@Override
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -258,6 +267,7 @@ public class MapPropertiesMaker extends JFrame
 		{
 			private static final long serialVersionUID = -794092512377464803L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				@SuppressWarnings("rawtypes")
@@ -296,6 +306,7 @@ public class MapPropertiesMaker extends JFrame
 			label.setBackground(entry.getValue());
 			label.addMouseListener(new MouseListener()
 			{
+				@Override
 				public void mouseClicked(final MouseEvent e)
 				{
 					System.out.println(label.getBackground());
@@ -306,18 +317,22 @@ public class MapPropertiesMaker extends JFrame
 					MapPropertiesMaker.this.repaint();
 				}
 				
+				@Override
 				public void mouseEntered(final MouseEvent e)
 				{
 				}
 				
+				@Override
 				public void mouseExited(final MouseEvent e)
 				{
 				}
 				
+				@Override
 				public void mousePressed(final MouseEvent e)
 				{
 				}
 				
+				@Override
 				public void mouseReleased(final MouseEvent e)
 				{
 				}
@@ -328,6 +343,7 @@ public class MapPropertiesMaker extends JFrame
 			{
 				private static final long serialVersionUID = -3593575469168341735L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					s_mapProperties.getCOLOR_MAP().remove(removePlayer.getText().replaceFirst("Remove ", ""));
@@ -348,6 +364,7 @@ public class MapPropertiesMaker extends JFrame
 		{
 			private static final long serialVersionUID = -794092512377464803L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				s_mapProperties.getCOLOR_MAP().put(nameTextField.getText(), Color.GREEN);

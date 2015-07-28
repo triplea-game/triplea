@@ -328,16 +328,19 @@ public class GameParser
 		final DocumentBuilder builder = factory.newDocumentBuilder();
 		builder.setErrorHandler(new ErrorHandler()
 		{
+			@Override
 			public void fatalError(final SAXParseException exception) throws SAXException
 			{
 				errorsSAX.add(exception);
 			}
 			
+			@Override
 			public void error(final SAXParseException exception) throws SAXException
 			{
 				errorsSAX.add(exception);
 			}
 			
+			@Override
 			public void warning(final SAXParseException exception) throws SAXException
 			{
 				errorsSAX.add(exception);

@@ -107,10 +107,12 @@ public class BattlePanel extends ActionPanel
 		getMap().getUIContext().addShutdownWindow(m_battleFrame);
 		m_battleFrame.addWindowListener(new WindowListener()
 		{
+			@Override
 			public void windowActivated(final WindowEvent e)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						if (m_battleDisplay != null)
@@ -119,26 +121,32 @@ public class BattlePanel extends ActionPanel
 				});
 			}
 			
+			@Override
 			public void windowClosed(final WindowEvent e)
 			{
 			}
 			
+			@Override
 			public void windowClosing(final WindowEvent e)
 			{
 			}
 			
+			@Override
 			public void windowDeactivated(final WindowEvent e)
 			{
 			}
 			
+			@Override
 			public void windowDeiconified(final WindowEvent e)
 			{
 			}
 			
+			@Override
 			public void windowIconified(final WindowEvent e)
 			{
 			}
 			
+			@Override
 			public void windowOpened(final WindowEvent e)
 			{
 			}
@@ -156,6 +164,7 @@ public class BattlePanel extends ActionPanel
 		super.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -190,6 +199,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -202,6 +212,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -214,6 +225,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -276,6 +288,7 @@ public class BattlePanel extends ActionPanel
 		{
 			final Runnable r = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					// recursive call
@@ -307,6 +320,7 @@ public class BattlePanel extends ActionPanel
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (m_battleDisplay != null)
@@ -349,6 +363,7 @@ public class BattlePanel extends ActionPanel
 						m_currentBattleDisplayed = battleID;
 						SwingUtilities.invokeLater(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								m_battleFrame.toFront();
@@ -381,6 +396,7 @@ public class BattlePanel extends ActionPanel
 	{
 		final BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>()
 		{
+			@Override
 			public BombardComponent run()
 			{
 				return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
@@ -424,6 +440,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -436,6 +453,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -448,6 +466,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -489,6 +508,7 @@ public class BattlePanel extends ActionPanel
 	{
 		final Task<CasualtyDetails> task = new Task<CasualtyDetails>()
 		{
+			@Override
 			public CasualtyDetails run()
 			{
 				final boolean isEditMode = (dice == null);
@@ -530,6 +550,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -542,6 +563,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -585,6 +607,7 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -608,6 +631,7 @@ public class BattlePanel extends ActionPanel
 			m_territory = battleSite;
 		}
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_CenterBattleActionTimer != null)
@@ -673,6 +697,7 @@ public class BattlePanel extends ActionPanel
 			m_type = battleType;
 		}
 		
+		@Override
 		public void actionPerformed(final ActionEvent actionEvent)
 		{
 			if (m_oldCenteredTerritory != null)

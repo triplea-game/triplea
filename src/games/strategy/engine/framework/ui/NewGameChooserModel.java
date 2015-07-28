@@ -102,6 +102,7 @@ public class NewGameChooserModel extends DefaultListModel
 		} while (entries.remove(null));
 		Collections.sort(entries, new Comparator<NewGameChooserEntry>()
 		{
+			@Override
 			public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2)
 			{
 				return o1.getGameData().getGameName().toLowerCase().compareTo(o2.getGameData().getGameName().toLowerCase());

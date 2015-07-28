@@ -29,6 +29,7 @@ public class SetPasswordAction extends AbstractAction
 		m_lobbyWatcher = watcher;
 	}
 	
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final JLabel label = new JLabel("Enter Password, (Leave blank for no password).");

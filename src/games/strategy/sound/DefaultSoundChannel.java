@@ -38,22 +38,26 @@ public class DefaultSoundChannel implements ISound
 		ClipPlayer.play(clipName, subFolder);
 	}
 	
+	@Override
 	public void initialize()
 	{
 		// nothing for now
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		// nothing for now
 		m_localPlayers = null;
 	}
 	
+	@Override
 	public void playSoundForAll(final String clipName, final String subFolder)
 	{
 		playSoundForAll(clipName, subFolder, false, false, false);
 	}
 	
+	@Override
 	public void playSoundForAll(final String clipName, final String subFolder, final boolean doNotIncludeHost, final boolean doNotIncludeClients, final boolean doNotIncludeObservers)
 	{
 		if (doNotIncludeHost && doNotIncludeClients && doNotIncludeObservers)
@@ -88,6 +92,7 @@ public class DefaultSoundChannel implements ISound
 		playSoundOnLocalMachine(clipName, subFolder);
 	}
 	
+	@Override
 	public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
 				final boolean includeObservers)
 	{
@@ -118,6 +123,7 @@ public class DefaultSoundChannel implements ISound
 			playSoundOnLocalMachine(clipName, subFolder);
 	}
 	
+	@Override
 	public void playSoundToPlayer(final String clipName, final String subFolder, final PlayerID playerToSendTo, final boolean includeObservers)
 	{
 		playSoundToPlayers(clipName, subFolder, Collections.singleton(playerToSendTo), null, includeObservers);

@@ -61,6 +61,7 @@ public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGame
 		return IGridGamePlayer.class;
 	}
 	
+	@Override
 	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)
 	{
 		return null;

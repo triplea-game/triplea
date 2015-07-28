@@ -267,6 +267,7 @@ public class RemoteMessengerTest extends TestCase
 			final AtomicBoolean started = new AtomicBoolean(false);
 			final IFoo foo = new IFoo()
 			{
+				@Override
 				public void foo()
 				{
 					synchronized (lock)
@@ -288,6 +289,7 @@ public class RemoteMessengerTest extends TestCase
 			final AtomicReference<ConnectionLostException> rme = new AtomicReference<ConnectionLostException>(null);
 			final Runnable r = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					try
@@ -350,17 +352,20 @@ class TestRemote implements ITestRemote
 	public static final String EXCEPTION_STRING = "AND GO";
 	private INode m_senderNode;
 	
+	@Override
 	public int increment(final int testVal)
 	{
 		m_senderNode = MessageContext.getSender();
 		return testVal + 1;
 	}
 	
+	@Override
 	public void testVoid()
 	{
 		m_senderNode = MessageContext.getSender();
 	}
 	
+	@Override
 	public void throwException() throws Exception
 	{
 		throw new Exception(EXCEPTION_STRING);

@@ -64,6 +64,7 @@ public class Decoder
 		m_nioSocket = nioSocket;
 		m_thread = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				loop();

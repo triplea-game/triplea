@@ -40,6 +40,7 @@ public final class SoundOptions
 		soundOptions.setMnemonic(KeyEvent.VK_S);
 		soundOptions.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				new SoundOptions(parentMenu, soundType);
@@ -53,6 +54,7 @@ public final class SoundOptions
 		final JButton soundOptions = new JButton("Sound Options...");
 		soundOptions.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				new SoundOptions(parentPanel, soundType);
@@ -105,6 +107,7 @@ public final class SoundOptions
 		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
 		soundCheckBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
@@ -119,6 +122,7 @@ public final class SoundOptions
 		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
 		soundCheckBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				ClipPlayer.setBeSilent(!soundCheckBox.isSelected());

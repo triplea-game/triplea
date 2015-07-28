@@ -130,19 +130,23 @@ public class CommentPanel extends JPanel
 	{
 		m_data.getHistory().addTreeModelListener(new TreeModelListener()
 		{
+			@Override
 			public void treeNodesChanged(final TreeModelEvent e)
 			{
 			}
 			
+			@Override
 			public void treeNodesInserted(final TreeModelEvent e)
 			{
 				readHistoryTreeEvent(e);
 			}
 			
+			@Override
 			public void treeNodesRemoved(final TreeModelEvent e)
 			{
 			}
 			
+			@Override
 			public void treeStructureChanged(final TreeModelEvent e)
 			{
 				readHistoryTreeEvent(e);
@@ -155,6 +159,7 @@ public class CommentPanel extends JPanel
 		final TreeModelEvent tme = e;
 		final Runnable runner = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_data.acquireReadLock();
@@ -263,6 +268,7 @@ public class CommentPanel extends JPanel
 	{
 		final Runnable runner = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -327,6 +333,7 @@ public class CommentPanel extends JPanel
 	{
 		private static final long serialVersionUID = -5771971912942033713L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_nextMessage.getText().trim().length() == 0)

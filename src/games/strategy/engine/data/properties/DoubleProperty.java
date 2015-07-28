@@ -42,11 +42,13 @@ public class DoubleProperty extends AEditableProperty
 		return bd.doubleValue();
 	}
 	
+	@Override
 	public Double getValue()
 	{
 		return m_value;
 	}
 	
+	@Override
 	public void setValue(final Object value) throws ClassCastException
 	{
 		if (value instanceof String)
@@ -62,12 +64,14 @@ public class DoubleProperty extends AEditableProperty
 		}
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final DoubleTextField field = new DoubleTextField(m_min, m_max);
 		field.setValue(m_value);
 		field.addChangeListener(new DoubleTextFieldChangeListener()
 		{
+			@Override
 			public void changedValue(final DoubleTextField aField)
 			{
 				m_value = aField.getValue();
@@ -76,6 +80,7 @@ public class DoubleProperty extends AEditableProperty
 		return field;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value instanceof Double)

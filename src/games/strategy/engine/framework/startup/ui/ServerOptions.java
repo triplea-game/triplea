@@ -83,6 +83,7 @@ public class ServerOptions extends JDialog
 	{
 		m_requirePasswordCheckBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				setWidgetActivation();
@@ -202,6 +203,7 @@ public class ServerOptions extends JDialog
 	{
 		private static final long serialVersionUID = -479176526245850045L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			setVisible(false);
@@ -212,6 +214,7 @@ public class ServerOptions extends JDialog
 	{
 		private static final long serialVersionUID = 6591074291179846696L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			setVisible(false);

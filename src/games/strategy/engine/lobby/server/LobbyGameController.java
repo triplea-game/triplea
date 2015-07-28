@@ -46,11 +46,13 @@ public class LobbyGameController implements ILobbyGameController
 		m_messenger = messenger;
 		((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
 		{
+			@Override
 			public void connectionRemoved(final INode to)
 			{
 				connectionLost(to);
 			}
 			
+			@Override
 			public void connectionAdded(final INode to)
 			{
 			}
@@ -80,6 +82,7 @@ public class LobbyGameController implements ILobbyGameController
 		}
 	}
 	
+	@Override
 	public void postGame(final GUID gameID, final GameDescription description)
 	{
 		final INode from = MessageContext.getSender();
@@ -101,6 +104,7 @@ public class LobbyGameController implements ILobbyGameController
 		}
 	}
 	
+	@Override
 	public void updateGame(final GUID gameID, final GameDescription description)
 	{
 		final INode from = MessageContext.getSender();
@@ -123,6 +127,7 @@ public class LobbyGameController implements ILobbyGameController
 		m_broadcaster.gameUpdated(gameID, description);
 	}
 	
+	@Override
 	public Map<GUID, GameDescription> listGames()
 	{
 		synchronized (m_mutex)
@@ -137,6 +142,7 @@ public class LobbyGameController implements ILobbyGameController
 		remote.registerRemote(this, GAME_CONTROLLER_REMOTE);
 	}
 	
+	@Override
 	public String testGame(final GUID gameID)
 	{
 		GameDescription description;

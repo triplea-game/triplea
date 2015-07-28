@@ -118,6 +118,7 @@ public class TechActivationDelegate extends BaseTripleADelegate
 		m_needToInitialize = true;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

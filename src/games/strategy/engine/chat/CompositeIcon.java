@@ -16,6 +16,7 @@ public class CompositeIcon implements Icon
 		m_incons = icons;
 	}
 	
+	@Override
 	public void paintIcon(final Component c, final Graphics g, final int x, final int y)
 	{
 		int dx = 0;
@@ -27,6 +28,7 @@ public class CompositeIcon implements Icon
 		}
 	}
 	
+	@Override
 	public int getIconWidth()
 	{
 		int sum = 0;
@@ -38,6 +40,7 @@ public class CompositeIcon implements Icon
 		return sum;
 	}
 	
+	@Override
 	public int getIconHeight()
 	{
 		int max = 0;

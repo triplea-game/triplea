@@ -45,6 +45,7 @@ public class HeadlessGameServerConsole
 	{
 		final Thread t = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				printEvalLoop();
@@ -54,6 +55,7 @@ public class HeadlessGameServerConsole
 		t.start();
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				// m_shutDown = true;

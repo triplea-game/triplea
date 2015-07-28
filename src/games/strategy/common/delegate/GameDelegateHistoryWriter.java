@@ -42,6 +42,7 @@ public class GameDelegateHistoryWriter implements IDelegateHistoryWriter
 		return "";
 	}
 	
+	@Override
 	public void startEvent(final String eventName, final Object renderingData)
 	{
 		if (eventName.startsWith("COMMENT: "))
@@ -50,6 +51,7 @@ public class GameDelegateHistoryWriter implements IDelegateHistoryWriter
 			m_delegateHistoryWriter.startEvent(getEventPrefix() + eventName, renderingData);
 	}
 	
+	@Override
 	public void startEvent(final String eventName)
 	{
 		if (eventName.startsWith("COMMENT: "))
@@ -58,6 +60,7 @@ public class GameDelegateHistoryWriter implements IDelegateHistoryWriter
 			m_delegateHistoryWriter.startEvent(getEventPrefix() + eventName);
 	}
 	
+	@Override
 	public void addChildToEvent(final String child)
 	{
 		if (child.startsWith("COMMENT: "))
@@ -66,6 +69,7 @@ public class GameDelegateHistoryWriter implements IDelegateHistoryWriter
 			m_delegateHistoryWriter.addChildToEvent(getEventPrefix() + child, null);
 	}
 	
+	@Override
 	public void addChildToEvent(final String child, final Object renderingData)
 	{
 		if (child.startsWith("COMMENT: "))

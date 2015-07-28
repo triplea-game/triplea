@@ -76,17 +76,20 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;
 	}
 	
+	@Override
 	public void signalStatus(final String status)
 	{
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 	}
 	
+	@Override
 	public String play(final IGridPlayData play)
 	{
 		final Territory start = play.getStart();

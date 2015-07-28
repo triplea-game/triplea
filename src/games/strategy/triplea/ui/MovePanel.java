@@ -790,6 +790,7 @@ public class MovePanel extends AbstractMovePanel
 	
 	private final UnitSelectionListener m_UNIT_SELECTION_LISTENER = new UnitSelectionListener()
 	{
+		@Override
 		public void unitsSelected(final List<Unit> units, final Territory t, final MouseDetails me)
 		{
 			if (!getListening())
@@ -1398,6 +1399,7 @@ public class MovePanel extends AbstractMovePanel
 	
 	private final MouseOverUnitListener m_MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
 	{
+		@Override
 		public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me)
 		{
 			if (!getListening())
@@ -1722,6 +1724,7 @@ class WeakAction extends AbstractAction
 		m_delegate = new WeakReference<Action>(delegate);
 	}
 	
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final Action a = m_delegate.get();

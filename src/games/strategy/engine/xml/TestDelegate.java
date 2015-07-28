@@ -114,6 +114,7 @@ public final class TestDelegate extends AbstractDelegate
 	{
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;

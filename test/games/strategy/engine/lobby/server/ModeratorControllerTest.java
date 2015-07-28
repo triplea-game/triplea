@@ -117,10 +117,12 @@ class ConnectionChangeListener implements IConnectionChangeListener
 {
 	final List<INode> m_removed = new ArrayList<INode>();
 	
+	@Override
 	public void connectionAdded(final INode to)
 	{
 	}
 	
+	@Override
 	public void connectionRemoved(final INode to)
 	{
 		m_removed.add(to);
