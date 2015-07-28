@@ -39,7 +39,6 @@ import java.util.HashSet;
  * Responsible for performing a move in a game of King's Table.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2012-12-25 06:54:45 +0800 (Tue, 25 Dec 2012) $
  */
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
@@ -82,11 +81,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;
 	}
 	
+	@Override
 	public void signalStatus(final String status)
 	{
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
@@ -101,6 +102,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
+	@Override
 	public String play(final IGridPlayData play)
 	{
 		final Territory start = play.getStart();
@@ -118,7 +120,6 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * 
 	 * @param end
 	 *            <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
-	 * @return
 	 */
 	public static Collection<Territory> checkForCaptures(final Territory end, final PlayerID player, final GameData data)
 	{

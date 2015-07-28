@@ -27,12 +27,14 @@ public class MessengerLoginTest extends TestCase
 	{
 		final ILoginValidator validator = new ILoginValidator()
 		{
+			@Override
 			public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient, final String clientName, final String mac,
 						final SocketAddress remoteAddress)
 			{
 				return null;
 			}
 			
+			@Override
 			public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress)
 			{
 				return new HashMap<String, String>();
@@ -40,11 +42,13 @@ public class MessengerLoginTest extends TestCase
 		};
 		final IConnectionLogin login = new IConnectionLogin()
 		{
+			@Override
 			public void notifyFailedLogin(final String message)
 			{
 				fail();
 			}
 			
+			@Override
 			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
 				return new HashMap<String, String>();
@@ -68,12 +72,14 @@ public class MessengerLoginTest extends TestCase
 	{
 		final ILoginValidator validator = new ILoginValidator()
 		{
+			@Override
 			public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient, final String clientName, final String mac,
 						final SocketAddress remoteAddress)
 			{
 				return "error";
 			}
 			
+			@Override
 			public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress)
 			{
 				return new HashMap<String, String>();
@@ -81,10 +87,12 @@ public class MessengerLoginTest extends TestCase
 		};
 		final IConnectionLogin login = new IConnectionLogin()
 		{
+			@Override
 			public void notifyFailedLogin(final String message)
 			{
 			}
 			
+			@Override
 			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
 				return new HashMap<String, String>();
@@ -124,11 +132,13 @@ public class MessengerLoginTest extends TestCase
 		validator.setGamePassword("foo");
 		final IConnectionLogin login = new IConnectionLogin()
 		{
+			@Override
 			public void notifyFailedLogin(final String message)
 			{
 				fail();
 			}
 			
+			@Override
 			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
 				final String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);

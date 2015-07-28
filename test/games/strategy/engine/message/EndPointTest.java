@@ -29,6 +29,7 @@ public class EndPointTest extends TestCase
 		final EndPoint endPoint = new EndPoint("", Comparator.class, false);
 		endPoint.addImplementor(new Comparator()
 		{
+			@Override
 			public int compare(final Object o1, final Object o2)
 			{
 				return 2;

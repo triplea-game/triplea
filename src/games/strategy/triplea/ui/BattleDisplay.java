@@ -126,6 +126,7 @@ public class BattleDisplay extends JPanel
 	{
 		private static final long serialVersionUID = 3308067665313935111L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 		}
@@ -504,12 +505,14 @@ public class BattleDisplay extends JPanel
 		// set the action in the swing thread.
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionButton.setAction(new AbstractAction(message)
 				{
 					private static final long serialVersionUID = 4489826259192394858L;
 					
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						continueLatch.countDown();
@@ -530,6 +533,7 @@ public class BattleDisplay extends JPanel
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionButton.setAction(m_nullAction);
@@ -544,6 +548,7 @@ public class BattleDisplay extends JPanel
 		{
 			private static final long serialVersionUID = 4219274012228245826L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				enclosingFrame.setVisible(false);
@@ -551,6 +556,7 @@ public class BattleDisplay extends JPanel
 		};
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionButton.setAction(close);
@@ -588,6 +594,7 @@ public class BattleDisplay extends JPanel
 		{
 			private static final long serialVersionUID = -1962843804675586562L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String ok = "Submerge";
@@ -614,6 +621,7 @@ public class BattleDisplay extends JPanel
 		};
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionButton.setAction(action);
@@ -621,6 +629,7 @@ public class BattleDisplay extends JPanel
 		});
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				action.actionPerformed(null);
@@ -638,6 +647,7 @@ public class BattleDisplay extends JPanel
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionButton.setAction(m_nullAction);
@@ -658,6 +668,7 @@ public class BattleDisplay extends JPanel
 		{
 			private static final long serialVersionUID = -1276337628464642219L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String yes = "Retreat";
@@ -694,6 +705,7 @@ public class BattleDisplay extends JPanel
 		};
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionButton.setAction(action);
@@ -701,6 +713,7 @@ public class BattleDisplay extends JPanel
 		});
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				action.actionPerformed(null);
@@ -719,6 +732,7 @@ public class BattleDisplay extends JPanel
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_actionButton.setAction(m_nullAction);
@@ -756,6 +770,7 @@ public class BattleDisplay extends JPanel
 			updateImage();
 			m_list.addListSelectionListener(new ListSelectionListener()
 			{
+				@Override
 				public void valueChanged(final ListSelectionEvent e)
 				{
 					updateImage();
@@ -850,6 +865,7 @@ public class BattleDisplay extends JPanel
 		final CountDownLatch continueLatch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final boolean isEditMode = (dice == null);
@@ -867,6 +883,7 @@ public class BattleDisplay extends JPanel
 					private UnitChooser chooser;
 					private JScrollPane chooserScrollPane;
 					
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						final String messageText = message + " " + btnText + ".";
@@ -995,6 +1012,7 @@ public class BattleDisplay extends JPanel
 		{
 			private static final long serialVersionUID = -7893664767396697489L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final Action a = m_actionButton.getAction();
@@ -1264,6 +1282,7 @@ class Renderer implements TableCellRenderer
 {
 	JLabel m_stamp = new JLabel();
 	
+	@Override
 	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 	{
 		((TableData) value).updateStamp(m_stamp);

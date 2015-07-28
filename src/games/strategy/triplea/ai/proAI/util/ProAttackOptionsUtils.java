@@ -89,6 +89,7 @@ public class ProAttackOptionsUtils
 		final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>()
 		{
+			@Override
 			public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2)
 			{
 				// Sort by number of move options then cost of unit then unit type
@@ -113,6 +114,7 @@ public class ProAttackOptionsUtils
 		final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>()
 		{
+			@Override
 			public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2)
 			{
 				// Find number of territories that still need units
@@ -160,6 +162,7 @@ public class ProAttackOptionsUtils
 		final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<Map.Entry<Unit, Set<Territory>>>(unitAttackOptions.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<Unit, Set<Territory>>>()
 		{
+			@Override
 			public int compare(final Map.Entry<Unit, Set<Territory>> o1, final Map.Entry<Unit, Set<Territory>> o2)
 			{
 				// Sort by number of territories that still need units
@@ -343,6 +346,7 @@ public class ProAttackOptionsUtils
 					{
 						Collections.sort(canScrambleAir, new Comparator<Unit>()
 						{
+							@Override
 							public int compare(final Unit o1, final Unit o2)
 							{
 								final double strength1 = battleUtils.estimateStrength(player, to, Collections.singletonList(o1), new ArrayList<Unit>(), false);

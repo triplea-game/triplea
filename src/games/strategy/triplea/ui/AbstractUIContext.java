@@ -79,11 +79,13 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public double getScale()
 	{
 		return m_scale;
 	}
 	
+	@Override
 	public void setScale(final double scale)
 	{
 		m_scale = scale;
@@ -139,11 +141,13 @@ public abstract class AbstractUIContext implements IUIContext
 		return mapDir;
 	}
 	
+	@Override
 	public void setDefaultMapDir(final GameData data)
 	{
 		internalSetMapDir(getDefaultMapDir(data), data);
 	}
 	
+	@Override
 	public void setMapDir(final GameData data, final String mapDir)
 	{
 		internalSetMapDir(mapDir, data);
@@ -169,6 +173,7 @@ public abstract class AbstractUIContext implements IUIContext
 		return m_mapDir;
 	}
 	
+	@Override
 	public void removeActive(final Active actor)
 	{
 		if (m_isShutDown)
@@ -186,6 +191,7 @@ public abstract class AbstractUIContext implements IUIContext
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
+	@Override
 	public void addActive(final Active actor)
 	{
 		if (m_isShutDown)
@@ -207,6 +213,7 @@ public abstract class AbstractUIContext implements IUIContext
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
+	@Override
 	public void addShutdownLatch(final CountDownLatch latch)
 	{
 		m_latchesToCloseOnShutdown.addShutdownLatch(latch);
@@ -221,6 +228,7 @@ public abstract class AbstractUIContext implements IUIContext
 		} */
 	}
 	
+	@Override
 	public void removeShutdownLatch(final CountDownLatch latch)
 	{
 		m_latchesToCloseOnShutdown.removeShutdownLatch(latch);
@@ -231,6 +239,7 @@ public abstract class AbstractUIContext implements IUIContext
 		} */
 	}
 	
+	@Override
 	public CountDownLatchHandler getCountDownLatchHandler()
 	{
 		return m_latchesToCloseOnShutdown;
@@ -239,6 +248,7 @@ public abstract class AbstractUIContext implements IUIContext
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
+	@Override
 	public void addShutdownWindow(final Window window)
 	{
 		if (m_isShutDown)
@@ -262,6 +272,7 @@ public abstract class AbstractUIContext implements IUIContext
 		window.setVisible(false);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				// Having dispose run on anything but the Swing Event Dispatch Thread is very dangerous.
@@ -312,6 +323,7 @@ public abstract class AbstractUIContext implements IUIContext
 		c.getActionMap().clear();
 	}
 	
+	@Override
 	public void removeShutdownWindow(final Window window)
 	{
 		if (m_isShutDown)
@@ -334,11 +346,13 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	} */
 	
+	@Override
 	public boolean isShutDown()
 	{
 		return m_isShutDown;
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		synchronized (this)
@@ -416,12 +430,14 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public boolean getLockMap()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(LOCK_MAP, false);
 	}
 	
+	@Override
 	public void setLockMap(final boolean aBool)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -435,12 +451,14 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public boolean getShowEndOfTurnReport()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_END_OF_TURN_REPORT, true);
 	}
 	
+	@Override
 	public void setShowEndOfTurnReport(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -454,12 +472,14 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public boolean getShowTriggeredNotifications()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_TRIGGERED_NOTIFICATIONS, true);
 	}
 	
+	@Override
 	public void setShowTriggeredNotifications(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -473,12 +493,14 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public boolean getShowTriggerChanceSuccessful()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_SUCCESSFUL, true);
 	}
 	
+	@Override
 	public void setShowTriggerChanceSuccessful(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -492,12 +514,14 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public boolean getShowTriggerChanceFailure()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_FAILURE, true);
 	}
 	
+	@Override
 	public void setShowTriggerChanceFailure(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -511,12 +535,14 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public boolean getShowBattlesBetweenAIs()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_BATTLES_BETWEEN_AIS, true);
 	}
 	
+	@Override
 	public void setShowBattlesBetweenAIs(final boolean aBool)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -530,11 +556,13 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 	}
 	
+	@Override
 	public LocalPlayers getLocalPlayers()
 	{
 		return m_localPlayers;
 	}
 	
+	@Override
 	public void setLocalPlayers(final LocalPlayers players)
 	{
 		m_localPlayers = players;

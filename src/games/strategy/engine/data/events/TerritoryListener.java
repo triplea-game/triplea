@@ -25,7 +25,6 @@ import games.strategy.engine.data.Territory;
  * A TerritoryListener will be notified of events that affect a Territory.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public interface TerritoryListener
 {

@@ -93,6 +93,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		}
 		Collections.sort(propFiles, new Comparator<Properties>()
 		{
+			@Override
 			public int compare(final Properties o1, final Properties o2)
 			{
 				final int n1 = Integer.parseInt(o1.getProperty("order"));
@@ -129,21 +130,25 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 	// instance methods
 	// -----------------------------------------------------------------------
 	
+	@Override
 	public String getDisplayName()
 	{
 		return m_props.getProperty("name");
 	}
 	
+	@Override
 	public EditorPanel getEditor()
 	{
 		return new DiceServerEditor(this);
 	}
 	
+	@Override
 	public boolean sameType(final IBean other)
 	{
 		return other instanceof PropertiesDiceRoller && getDisplayName().equals(other.getDisplayName());
 	}
 	
+	@Override
 	public boolean sendsEmail()
 	{
 		final String property = m_props.getProperty("send.email");
@@ -154,6 +159,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		return Boolean.valueOf(property);
 	}
 	
+	@Override
 	public String postRequest(final int max, final int numDice, final String subjectMessage, String gameID, final String gameUUID) throws IOException
 	{
 		if (gameID.trim().length() == 0)
@@ -192,6 +198,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		}
 	}
 	
+	@Override
 	public String getInfoText()
 	{
 		return m_props.getProperty("infotext");
@@ -202,6 +209,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 	 * @throws IOException
 	 *             if there was an error parsing the string
 	 */
+	@Override
 	public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException
 	{
 		final String errorStartString = m_props.getProperty("error.start");
@@ -260,42 +268,50 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		return rVal;
 	}
 	
+	@Override
 	public String getToAddress()
 	{
 		return m_toAddress;
 	}
 	
+	@Override
 	public void setToAddress(final String toAddress)
 	{
 		m_toAddress = toAddress;
 	}
 	
+	@Override
 	public String getCcAddress()
 	{
 		return m_ccAddress;
 	}
 	
+	@Override
 	public void setCcAddress(final String ccAddress)
 	{
 		m_ccAddress = ccAddress;
 	}
 	
+	@Override
 	public boolean supportsGameId()
 	{
 		final String gameid = m_props.getProperty("gameid");
 		return "true".equals(gameid);
 	}
 	
+	@Override
 	public void setGameId(final String gameId)
 	{
 		m_gameId = gameId;
 	}
 	
+	@Override
 	public String getGameId()
 	{
 		return m_gameId;
 	}
 	
+	@Override
 	public String getHelpText()
 	{
 		return getInfoText();

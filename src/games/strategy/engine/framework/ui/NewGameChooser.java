@@ -173,6 +173,7 @@ public class NewGameChooser extends JDialog
 		// scroll to the top of the notes screen
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_notesPanel != null)
@@ -206,6 +207,7 @@ public class NewGameChooser extends JDialog
 	{
 		m_refreshGamesButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				refreshGameList();
@@ -213,6 +215,7 @@ public class NewGameChooser extends JDialog
 		});
 		m_okButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				selectAndReturn();
@@ -220,6 +223,7 @@ public class NewGameChooser extends JDialog
 		});
 		m_cancelButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				cancelAndReturn();
@@ -227,6 +231,7 @@ public class NewGameChooser extends JDialog
 		});
 		m_gameList.addListSelectionListener(new ListSelectionListener()
 		{
+			@Override
 			public void valueChanged(final ListSelectionEvent e)
 			{
 				updateInfoPanel();
@@ -234,6 +239,7 @@ public class NewGameChooser extends JDialog
 		});
 		m_gameList.addMouseListener(new MouseListener()
 		{
+			@Override
 			public void mouseClicked(final MouseEvent event)
 			{
 				if (event.getClickCount() == 2)
@@ -242,18 +248,22 @@ public class NewGameChooser extends JDialog
 				}
 			}
 			
+			@Override
 			public void mousePressed(final MouseEvent e)
 			{
 			} // ignore
 			
+			@Override
 			public void mouseReleased(final MouseEvent e)
 			{
 			} // ignore
 			
+			@Override
 			public void mouseEntered(final MouseEvent e)
 			{
 			} // ignore
 			
+			@Override
 			public void mouseExited(final MouseEvent e)
 			{
 			} // ignore
@@ -296,6 +306,7 @@ public class NewGameChooser extends JDialog
 		final NewGameChooserEntry selected = getSelected();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try

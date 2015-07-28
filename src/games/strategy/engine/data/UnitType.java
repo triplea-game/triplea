@@ -38,7 +38,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A prototype for units.
  */

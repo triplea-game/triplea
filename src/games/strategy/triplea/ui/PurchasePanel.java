@@ -49,7 +49,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class PurchasePanel extends ActionPanel
 {
@@ -85,6 +84,7 @@ public class PurchasePanel extends ActionPanel
 		m_purchase = new IntegerMap<ProductionRule>();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -123,6 +123,7 @@ public class PurchasePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
@@ -137,6 +138,7 @@ public class PurchasePanel extends ActionPanel
 		// automatically "click" the buy button for us!
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				PURCHASE_ACTION.actionPerformed(null);
@@ -150,6 +152,7 @@ public class PurchasePanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -2931438906267249990L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			final PlayerID player = getCurrentPlayer();
@@ -187,6 +190,7 @@ public class PurchasePanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -209781523508962628L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			final boolean hasPurchased = m_purchase.totalValues() != 0;

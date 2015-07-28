@@ -529,6 +529,7 @@ public class ProNonCombatMoveAI
 		final List<ProAttackTerritoryData> prioritizedTerritories = new ArrayList<ProAttackTerritoryData>(moveMap.values());
 		Collections.sort(prioritizedTerritories, new Comparator<ProAttackTerritoryData>()
 		{
+			@Override
 			public int compare(final ProAttackTerritoryData t1, final ProAttackTerritoryData t2)
 			{
 				final double value1 = t1.getValue();
@@ -1227,6 +1228,7 @@ public class ProNonCombatMoveAI
 				// Sort prioritized territories
 				Collections.sort(priorizitedLoadTerritories, new Comparator<ProAttackTerritoryData>()
 				{
+					@Override
 					public int compare(final ProAttackTerritoryData t1, final ProAttackTerritoryData t2)
 					{
 						final double value1 = t1.getLoadValue();

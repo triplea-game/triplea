@@ -60,6 +60,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 	{
 	}
 	
+	@Override
 	public String removeUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -83,6 +84,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String addUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -143,6 +145,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return 0;
 	}
 	
+	@Override
 	public String changeTerritoryOwner(final Territory territory, final PlayerID player)
 	{
 		String result = null;
@@ -181,6 +184,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String changePUs(final PlayerID player, final int newTotal)
 	{
 		String result = null;
@@ -197,6 +201,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String changeTechTokens(final PlayerID player, final int newTotal)
 	{
 		String result = null;
@@ -213,6 +218,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String addTechAdvance(final PlayerID player, final Collection<TechAdvance> advances)
 	{
 		String result = null;
@@ -228,6 +234,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String removeTechAdvance(final PlayerID player, final Collection<TechAdvance> advances)
 	{
 		String result = null;
@@ -243,6 +250,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory)
 	{
 		String result = null;
@@ -268,6 +276,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory)
 	{
 		String result = null;
@@ -295,6 +304,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate
 		return null;
 	}
 	
+	@Override
 	public String changePoliticalRelationships(final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges)
 	{
 		String result = null;

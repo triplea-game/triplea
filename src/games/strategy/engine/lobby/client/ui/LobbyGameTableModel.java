@@ -54,18 +54,21 @@ public class LobbyGameTableModel extends AbstractTableModel
 		m_remoteMessenger = remoteMessenger;
 		m_channelMessenger.registerChannelSubscriber(new ILobbyGameBroadcaster()
 		{
+			@Override
 			public void gameUpdated(final GUID gameId, final GameDescription description)
 			{
 				assertSentFromServer();
 				updateGame(gameId, description);
 			}
 			
+			@Override
 			public void gameAdded(final GUID gameId, final GameDescription description)
 			{
 				assertSentFromServer();
 				addGame(gameId, description);
 			}
 			
+			@Override
 			public void gameRemoved(final GUID gameId)
 			{
 				assertSentFromServer();
@@ -96,6 +99,7 @@ public class LobbyGameTableModel extends AbstractTableModel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final int index = m_gameIDs.indexOf(gameId);
@@ -110,6 +114,7 @@ public class LobbyGameTableModel extends AbstractTableModel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_gameIDs.add(gameId);
@@ -129,6 +134,7 @@ public class LobbyGameTableModel extends AbstractTableModel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final int index = m_gameIDs.indexOf(gameId);
@@ -149,17 +155,20 @@ public class LobbyGameTableModel extends AbstractTableModel
 		return column.ordinal();
 	}
 	
+	@Override
 	public int getColumnCount()
 	{
 		// -1 so we don't display the guid
 		return Column.values().length - 1;
 	}
 	
+	@Override
 	public int getRowCount()
 	{
 		return m_gameIDs.size();
 	}
 	
+	@Override
 	public Object getValueAt(final int rowIndex, final int columnIndex)
 	{
 		final Column column = Column.values()[columnIndex];

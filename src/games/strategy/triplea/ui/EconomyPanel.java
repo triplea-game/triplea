@@ -72,6 +72,7 @@ public class EconomyPanel extends AbstractStatPanel
 			m_statsResource = statList.toArray(new IStat[statList.size()]);
 		}
 		
+		@Override
 		public synchronized Object getValueAt(final int row, final int col)
 		{
 			if (m_isDirty)
@@ -118,6 +119,7 @@ public class EconomyPanel extends AbstractStatPanel
 			}
 		}
 		
+		@Override
 		public void gameDataChanged(final Change aChange)
 		{
 			synchronized (this)
@@ -126,6 +128,7 @@ public class EconomyPanel extends AbstractStatPanel
 			}
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -141,11 +144,13 @@ public class EconomyPanel extends AbstractStatPanel
 			return m_statsResource[col - 1].getName();
 		}
 		
+		@Override
 		public int getColumnCount()
 		{
 			return m_statsResource.length + 1;
 		}
 		
+		@Override
 		public synchronized int getRowCount()
 		{
 			if (!m_isDirty)

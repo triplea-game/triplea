@@ -16,7 +16,6 @@
  * 
  * Created on November 21, 2001, 3:51 PM
  * 
- * @version $LastChangedDate$
  */
 package games.strategy.triplea.delegate;
 
@@ -40,7 +39,6 @@ import java.util.Map;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Tracks which transports are carrying which units. Also tracks the capacity
  *          that has been unloaded. To reset the unloaded call clearUnloadedCapacity().

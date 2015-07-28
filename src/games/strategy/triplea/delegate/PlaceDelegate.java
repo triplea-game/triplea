@@ -28,7 +28,6 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
  * 
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Known limitations.
  * 

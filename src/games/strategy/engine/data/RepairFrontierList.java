@@ -25,7 +25,6 @@ import java.util.Set;
 /**
  * 
  * @author Kevin Comcowich
- * @version 1.0
  */
 public class RepairFrontierList extends GameDataComponent
 {

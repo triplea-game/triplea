@@ -24,7 +24,6 @@ import games.strategy.util.IntegerMap;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class ResourceCollection extends GameDataComponent
 {

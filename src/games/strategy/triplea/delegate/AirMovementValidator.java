@@ -396,6 +396,7 @@ public class AirMovementValidator
 	{
 		return new Comparator<Territory>()
 		{
+			@Override
 			public int compare(final Territory t1, final Territory t2)
 			{
 				if (t1.equals(t2))
@@ -492,6 +493,7 @@ public class AirMovementValidator
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final int left1 = getMovementLeftForAirUnitNotMovedYet(u1, route);
@@ -628,7 +630,6 @@ public class AirMovementValidator
 	 * 
 	 * @param units
 	 * @param territory
-	 * @return
 	 */
 	public static int carrierCapacity(final Collection<Unit> units, final Territory territoryUnitsAreCurrentlyIn)
 	{
@@ -646,7 +647,6 @@ public class AirMovementValidator
 	 * 
 	 * @param unit
 	 * @param territoryUnitsAreCurrentlyIn
-	 * @return
 	 */
 	public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn)
 	{

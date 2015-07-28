@@ -30,7 +30,6 @@ import javax.swing.SwingUtilities;
  * Presents a clickable label with the currently selected color, through which a color swatch panel is accessable to change the color.
  * 
  * @author Lane O.B. Schwartz
- * @version $LastChangedDate$
  */
 public class ColorProperty extends AEditableProperty
 {
@@ -57,11 +56,13 @@ public class ColorProperty extends AEditableProperty
 			m_color = def;
 	}
 	
+	@Override
 	public Object getValue()
 	{
 		return m_color;
 	}
 	
+	@Override
 	public void setValue(final Object value) throws ClassCastException
 	{
 		if (value == null)
@@ -70,6 +71,7 @@ public class ColorProperty extends AEditableProperty
 			m_color = (Color) value;
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final JLabel label = new JLabel("        ")
@@ -86,6 +88,7 @@ public class ColorProperty extends AEditableProperty
 		};
 		label.addMouseListener(new MouseListener()
 		{
+			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
 				System.out.println("Old color: " + m_color);
@@ -99,6 +102,7 @@ public class ColorProperty extends AEditableProperty
 						// Ask Swing to repaint this label when it's convenient
 						SwingUtilities.invokeLater(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								label.repaint();
@@ -111,18 +115,22 @@ public class ColorProperty extends AEditableProperty
 				}
 			}
 			
+			@Override
 			public void mouseEntered(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseExited(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mousePressed(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseReleased(final MouseEvent e)
 			{
 			}
@@ -130,6 +138,7 @@ public class ColorProperty extends AEditableProperty
 		return label;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value == null)

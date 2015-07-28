@@ -190,6 +190,7 @@ public class Fire implements IExecutable
 		AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
 		final Runnable r = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -230,6 +231,7 @@ public class Fire implements IExecutable
 	/**
 	 * We must execute in atomic steps, push these steps onto the stack, and let them execute
 	 */
+	@Override
 	public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 	{
 		// add to the stack so we will execute,
@@ -239,6 +241,7 @@ public class Fire implements IExecutable
 		{
 			private static final long serialVersionUID = 7578210876028725797L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				rollDice(bridge);
@@ -248,6 +251,7 @@ public class Fire implements IExecutable
 		{
 			private static final long serialVersionUID = -7687053541570519623L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				selectCasualties(bridge);
@@ -258,6 +262,7 @@ public class Fire implements IExecutable
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = -9173385989239225660L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				notifyCasualties(bridge);
@@ -273,7 +278,6 @@ public class Fire implements IExecutable
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isTransportCasualtiesRestricted(final GameData data)
 	{

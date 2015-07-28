@@ -59,6 +59,7 @@ public class InitializationDelegate extends AbstractDelegate
 	{
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

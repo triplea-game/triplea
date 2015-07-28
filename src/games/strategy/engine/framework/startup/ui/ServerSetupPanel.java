@@ -265,6 +265,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
@@ -316,10 +317,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		return false;
 	}
 	
+	@Override
 	public void playerListChanged()
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				internalPlayerListChanged();
@@ -327,10 +330,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		});
 	}
 	
+	@Override
 	public void playersTakenChanged()
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				internalPlayersTakenChanged();
@@ -414,6 +419,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 				m_alliance = new JLabel(playerAlliances.toString());
 			m_type.addActionListener(new ActionListener()
 			{
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
@@ -474,6 +480,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		
 		private final ActionListener m_localPlayerActionListener = new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_localCheckBox.isSelected())
@@ -486,6 +493,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		
 		private final ActionListener m_disablePlayerActionListener = new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_enabledCheckBox.isSelected())

@@ -314,6 +314,7 @@ public class PBEMMessagePoster implements Serializable
 			progressWindow.setVisible(true);
 			final Runnable t = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					boolean postOk = true;
@@ -399,6 +400,7 @@ public class PBEMMessagePoster implements Serializable
 					final String finalMessage = sb.toString();
 					final Runnable runnable = new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							if (postButton != null)

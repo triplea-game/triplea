@@ -150,7 +150,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * Used to determine if there is a multiple on this national objective (if the user specified 'each' in the count.
 	 * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of territories.
 	 * 
-	 * @return
 	 */
 	public int getEachMultiple()
 	{
@@ -179,7 +178,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	/**
 	 * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not be tested for in isSatisfied.
 	 * 
-	 * @return
 	 */
 	public int getUses()
 	{
@@ -431,7 +429,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * Validate that all listed territories actually exist. Will return an empty list of territories if sent a list that is empty or contains only a "" string.
 	 * 
 	 * @param list
-	 * @return
 	 * @throws GameParseException
 	 */
 	public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount, final boolean mustSetTerritoryCount)

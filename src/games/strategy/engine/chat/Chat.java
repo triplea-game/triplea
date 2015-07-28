@@ -153,6 +153,7 @@ public class Chat
 	{
 		(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				// the order of events is significant.
@@ -182,12 +183,14 @@ public class Chat
 				m_chatInitVersion = init.getSecond().longValue();
 				(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						synchronized (m_mutexQueue)
 						{
 							m_queuedInitMessages.add(0, new Runnable()
 							{
+								@Override
 								public void run()
 								{
 									assignNodeTags(chatters);
@@ -320,6 +323,7 @@ public class Chat
 				throw new IllegalStateException("The node:" + senderNode + " sent a message as the server!");
 		}
 		
+		@Override
 		public void chatOccured(final String message)
 		{
 			final INode from = MessageContext.getSender();
@@ -342,6 +346,7 @@ public class Chat
 			}
 		}
 		
+		@Override
 		public void meMessageOccured(final String message)
 		{
 			final INode from = MessageContext.getSender();
@@ -359,6 +364,7 @@ public class Chat
 			}
 		}
 		
+		@Override
 		public void speakerAdded(final INode node, final Tag tag, final long version)
 		{
 			assertMessageFromServer();
@@ -371,6 +377,7 @@ public class Chat
 					else
 						m_queuedInitMessages.add(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								speakerAdded(node, tag, version);
@@ -398,6 +405,7 @@ public class Chat
 			}
 		}
 		
+		@Override
 		public void speakerRemoved(final INode node, final long version)
 		{
 			assertMessageFromServer();
@@ -410,6 +418,7 @@ public class Chat
 					else
 						m_queuedInitMessages.add(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								speakerRemoved(node, version);
@@ -436,6 +445,7 @@ public class Chat
 			}
 		}
 		
+		@Override
 		public void speakerTagUpdated(final INode node, final Tag tag)
 		{
 			synchronized (m_mutexNodes)
@@ -446,6 +456,7 @@ public class Chat
 			}
 		}
 		
+		@Override
 		public void slapOccured(final String to)
 		{
 			final INode from = MessageContext.getSender();
@@ -476,6 +487,7 @@ public class Chat
 			}
 		}
 		
+		@Override
 		public void ping()
 		{
 			// System.out.println("Pinged");

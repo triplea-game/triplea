@@ -40,7 +40,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class TerritoryAttachment extends DefaultAttachment
 {
@@ -71,7 +70,6 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * 
 	 * @param player
 	 * @param data
-	 * @return
 	 */
 	public static Territory getFirstOwnedCapitalOrFirstUnownedCapital(final PlayerID player, final GameData data)
 	{
@@ -436,7 +434,6 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * Use getProduction() instead.
 	 * DO NOT DELETE THIS!
 	 * 
-	 * @return
 	 */
 	@Deprecated
 	public int getProductionOnly()

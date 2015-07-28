@@ -135,10 +135,12 @@ public class MapPanel extends ImageScrollerLargeView
 		this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
 		this.addScrollListener(new ScrollListener()
 		{
+			@Override
 			public void scrolled(final int x, final int y)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						repaint();
@@ -149,6 +151,7 @@ public class MapPanel extends ImageScrollerLargeView
 		recreateTiles(data, m_uiContext);
 		m_uiContext.addActive(new Active()
 		{
+			@Override
 			public void deactivate()
 			{
 				// super.deactivate
@@ -211,6 +214,7 @@ public class MapPanel extends ImageScrollerLargeView
 		m_highlightUnits = units;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();
@@ -243,6 +247,7 @@ public class MapPanel extends ImageScrollerLargeView
 			m_routeDescription = null;
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -258,6 +263,7 @@ public class MapPanel extends ImageScrollerLargeView
 		m_routeDescription = newVal;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();
@@ -372,6 +378,7 @@ public class MapPanel extends ImageScrollerLargeView
 		m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();
@@ -499,6 +506,7 @@ public class MapPanel extends ImageScrollerLargeView
 		m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_smallView.repaint();
@@ -524,11 +532,13 @@ public class MapPanel extends ImageScrollerLargeView
 	
 	private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener()
 	{
+		@Override
 		public void unitsChanged(final Territory territory)
 		{
 			updateCountries(Collections.singleton(territory));
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -536,12 +546,14 @@ public class MapPanel extends ImageScrollerLargeView
 			});
 		}
 		
+		@Override
 		public void ownerChanged(final Territory territory)
 		{
 			m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
 			updateCountries(Collections.singleton(territory));
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -549,11 +561,13 @@ public class MapPanel extends ImageScrollerLargeView
 			});
 		}
 		
+		@Override
 		public void attachmentChanged(final Territory territory)
 		{
 			updateCountries(Collections.singleton(territory));
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -563,6 +577,7 @@ public class MapPanel extends ImageScrollerLargeView
 	};
 	private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener()
 	{
+		@Override
 		public void gameDataChanged(final Change aChange)
 		{
 			// find the players with tech changes
@@ -573,6 +588,7 @@ public class MapPanel extends ImageScrollerLargeView
 			m_tileManager.resetTiles(m_data, m_uiContext.getMapData());
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -906,6 +922,7 @@ public class MapPanel extends ImageScrollerLargeView
 			m_mouseShadowImage = null;
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -944,6 +961,7 @@ public class MapPanel extends ImageScrollerLargeView
 		m_mouseShadowImage = img;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();
@@ -1103,6 +1121,7 @@ class BackgroundDrawer implements Runnable
 		m_mapPanelRef.clear();
 	}
 	
+	@Override
 	public void run()
 	{
 		while (m_mapPanelRef.get() != null)
@@ -1139,6 +1158,7 @@ class BackgroundDrawer implements Runnable
 			}
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					mapPanel.repaint();

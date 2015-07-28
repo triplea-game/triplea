@@ -113,6 +113,7 @@ public class ForumPosterEditor extends EditorPanel
 		
 		m_viewPosts.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				((IForumPoster) getBean()).viewPosted();
@@ -121,6 +122,7 @@ public class ForumPosterEditor extends EditorPanel
 		
 		m_testForum.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				testForum();
@@ -145,6 +147,7 @@ public class ForumPosterEditor extends EditorPanel
 		
 		final Runnable runnable = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				
@@ -188,6 +191,7 @@ public class ForumPosterEditor extends EditorPanel
 				// now that we have a result, marshall it back unto the swing thread
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						try

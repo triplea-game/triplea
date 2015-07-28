@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class DelegateTest extends TestCase
 {

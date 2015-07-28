@@ -67,6 +67,7 @@ public class MapProperty<T, U> extends AEditableProperty
 		return Math.max(1, m_properties.size());
 	}
 	
+	@Override
 	public Object getValue()
 	{
 		return m_map;
@@ -77,6 +78,7 @@ public class MapProperty<T, U> extends AEditableProperty
 		return m_map;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void setValue(final Object value) throws ClassCastException
 	{
@@ -90,6 +92,7 @@ public class MapProperty<T, U> extends AEditableProperty
 		resetProperties(m_map, m_properties, this.getName(), this.getDescription());
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final PropertiesUI ui = new PropertiesUI(m_properties, true);
@@ -103,6 +106,7 @@ public class MapProperty<T, U> extends AEditableProperty
 		return ui;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value == null)

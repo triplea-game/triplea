@@ -41,7 +41,6 @@ import junit.framework.TestCase;
  * </p>
  * 
  * @author unascribed
- * @version 1.0
  */
 public class GameDataManagerTest extends TestCase
 {

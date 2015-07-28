@@ -85,6 +85,7 @@ public class PoliticsPanel extends ActionPanel
 		m_choice = null;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -97,6 +98,7 @@ public class PoliticsPanel extends ActionPanel
 				m_doneButton.setEnabled(false);
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						m_doneButton.requestFocusInWindow();
@@ -134,6 +136,7 @@ public class PoliticsPanel extends ActionPanel
 			}
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					m_selectPoliticalActionButton.setEnabled(true);
@@ -155,6 +158,7 @@ public class PoliticsPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 3906101150281154032L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -197,6 +201,7 @@ public class PoliticsPanel extends ActionPanel
 			{
 				private static final long serialVersionUID = -5979922310580413800L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent arg0)
 				{
 					politicalChoiceDialog.setVisible(false);
@@ -204,6 +209,7 @@ public class PoliticsPanel extends ActionPanel
 			});
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					noActionButton.requestFocusInWindow();
@@ -230,6 +236,7 @@ public class PoliticsPanel extends ActionPanel
 			final JButton button = new JButton(getActionButtonText(paa));
 			button.addActionListener(new ActionListener()
 			{
+				@Override
 				public void actionPerformed(final ActionEvent ae)
 				{
 					m_selectPoliticalActionButton.setEnabled(false);
@@ -255,6 +262,7 @@ public class PoliticsPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 5975405674090929150L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			if (!m_firstRun || youSureDoNothing())
@@ -315,6 +323,7 @@ class PoliticalActionComparator implements Comparator<PoliticalActionAttachment>
 		m_player = currentPlayer;
 	}
 	
+	@Override
 	public int compare(final PoliticalActionAttachment paa1, final PoliticalActionAttachment paa2)
 	{
 		if (paa1.equals(paa2))

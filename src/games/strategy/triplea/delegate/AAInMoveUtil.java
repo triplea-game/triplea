@@ -114,6 +114,7 @@ class AAInMoveUtil implements Serializable
 			{
 				private static final long serialVersionUID = -1545771595683434276L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireAA(location, targets, currentMove);
@@ -221,6 +222,7 @@ class AAInMoveUtil implements Serializable
 			{
 				private static final long serialVersionUID = 4714364489659654758L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					validTargetedUnitsForThisRoll.removeAll(m_casualties); // get rid of units already killed, so we don't target them twice
@@ -234,6 +236,7 @@ class AAInMoveUtil implements Serializable
 			{
 				private static final long serialVersionUID = -8633263235214834617L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					if (!validTargetedUnitsForThisRoll.isEmpty())

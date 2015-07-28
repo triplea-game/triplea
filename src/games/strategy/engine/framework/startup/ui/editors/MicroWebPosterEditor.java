@@ -113,6 +113,7 @@ public class MicroWebPosterEditor extends EditorPanel
 		
 		m_viewSite.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				((IWebPoster) getBean()).viewSite();
@@ -121,6 +122,7 @@ public class MicroWebPosterEditor extends EditorPanel
 		
 		m_testSite.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				testSite();
@@ -128,6 +130,7 @@ public class MicroWebPosterEditor extends EditorPanel
 		});
 		m_initGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				initGame();
@@ -136,6 +139,7 @@ public class MicroWebPosterEditor extends EditorPanel
 		
 		m_hosts.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				fireEditorChanged();
@@ -204,6 +208,7 @@ public class MicroWebPosterEditor extends EditorPanel
 		final JButton btnClose = new JButton("Cancel");
 		btnClose.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				window.setVisible(false);
@@ -214,6 +219,7 @@ public class MicroWebPosterEditor extends EditorPanel
 		final JButton btnOK = new JButton("Initialize");
 		btnOK.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				window.setVisible(false);
@@ -265,6 +271,7 @@ public class MicroWebPosterEditor extends EditorPanel
 		
 		final Runnable runnable = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				Exception tmpException = null;
@@ -296,6 +303,7 @@ public class MicroWebPosterEditor extends EditorPanel
 				// now that we have a result, marshall it back unto the swing thread
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						try
@@ -320,6 +328,7 @@ public class MicroWebPosterEditor extends EditorPanel
 	{
 		final boolean hostValid = validateText((String) m_hosts.getSelectedItem(), m_hostLabel, new IValidator()
 		{
+			@Override
 			public boolean isValid(final String text)
 			{
 				return text != null && text.length() > 0 && !text.equalsIgnoreCase(HTTP_BLANK);

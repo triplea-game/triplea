@@ -79,7 +79,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	
 	/**
 	 * @deprecated please use setConditions, getConditions, clearConditions, instead.
-	 * @return
 	 */
 	@Deprecated
 	public List<RulesAttachment> getTrigger()

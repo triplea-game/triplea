@@ -44,6 +44,7 @@ public class PropertiesSelector
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						rVal.set(showDialog(parent, title, properties, buttonOptions));

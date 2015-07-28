@@ -59,6 +59,7 @@ public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel
 		m_mapPanel = mapPanel;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void render(final HistoryNode node)
 	{

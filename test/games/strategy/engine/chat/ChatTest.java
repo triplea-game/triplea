@@ -132,6 +132,7 @@ public class ChatTest extends TestCase
 		final int messageCount = 50;
 		final Runnable client2Send = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				for (int i = 0; i < messageCount; i++)
@@ -144,6 +145,7 @@ public class ChatTest extends TestCase
 		clientThread.start();
 		final Runnable serverSend = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				for (int i = 0; i < messageCount; i++)
@@ -231,6 +233,7 @@ class TestChatListener implements IChatListener
 	public List<Boolean> m_thirdPerson = new ArrayList<Boolean>();
 	public List<String> m_from = new ArrayList<String>();
 	
+	@Override
 	public void updatePlayerList(final Collection<INode> players)
 	{
 		synchronized (this)
@@ -239,6 +242,7 @@ class TestChatListener implements IChatListener
 		}
 	}
 	
+	@Override
 	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
 	{
 		synchronized (this)
@@ -249,11 +253,13 @@ class TestChatListener implements IChatListener
 		}
 	}
 	
+	@Override
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
 		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
 	}
 	
+	@Override
 	public void addStatusMessage(final String message)
 	{
 	}

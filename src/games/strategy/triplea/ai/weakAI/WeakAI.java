@@ -628,6 +628,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			// private final Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
 			
+			@Override
 			public int compare(final Territory o1, final Territory o2)
 			{
 				// -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.

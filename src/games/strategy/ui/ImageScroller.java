@@ -24,7 +24,6 @@ import javax.swing.OverlayLayout;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Overlays the small view with the large view
  */

@@ -28,7 +28,6 @@ import java.util.List;
  * which correspond to the piece to be moved, and the desination for the move.
  * 
  * @author Lane Schwartz (original), Veqryn (abstraction)
- * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public class GridPlayData implements IGridPlayData
 {
@@ -75,6 +74,7 @@ public class GridPlayData implements IGridPlayData
 		m_pass = pass;
 	}
 	
+	@Override
 	public boolean isPass()
 	{
 		return m_pass;
@@ -85,6 +85,7 @@ public class GridPlayData implements IGridPlayData
 	 * 
 	 * @return <code>Territory</code> where this play starts.
 	 */
+	@Override
 	public Territory getStart()
 	{
 		return m_start;
@@ -95,6 +96,7 @@ public class GridPlayData implements IGridPlayData
 	 * 
 	 * @return <code>Territory</code> where this play ends.
 	 */
+	@Override
 	public Territory getEnd()
 	{
 		return m_end;
@@ -103,11 +105,13 @@ public class GridPlayData implements IGridPlayData
 	/**
 	 * Returns the player making this move.
 	 */
+	@Override
 	public PlayerID getPlayerID()
 	{
 		return m_player;
 	}
 	
+	@Override
 	public List<Territory> getMiddleSteps()
 	{
 		return m_middleSteps;
@@ -116,6 +120,7 @@ public class GridPlayData implements IGridPlayData
 	/**
 	 * Will not return any null territories.
 	 */
+	@Override
 	public List<Territory> getAllSteps()
 	{
 		final List<Territory> all = new ArrayList<Territory>();
@@ -130,6 +135,7 @@ public class GridPlayData implements IGridPlayData
 	/**
 	 * Will not return any null territories.
 	 */
+	@Override
 	public List<Territory> getAllStepsExceptStart()
 	{
 		final List<Territory> all = new ArrayList<Territory>();
@@ -142,6 +148,7 @@ public class GridPlayData implements IGridPlayData
 	/**
 	 * Returns true if the other play in the argument is smaller than this play, and has all the same steps in the same order.
 	 */
+	@Override
 	public boolean isBiggerThanAndContains(final IGridPlayData otherPlay)
 	{
 		final List<Territory> otherSteps = otherPlay.getAllSteps();
@@ -158,6 +165,7 @@ public class GridPlayData implements IGridPlayData
 	
 	public static Comparator<IGridPlayData> LargestToSmallestPlays = new Comparator<IGridPlayData>()
 	{
+		@Override
 		public int compare(final IGridPlayData p1, final IGridPlayData p2)
 		{
 			if ((p1 == null && p2 == null) || p1 == p2)
@@ -180,6 +188,7 @@ public class GridPlayData implements IGridPlayData
 	
 	public static Comparator<IGridPlayData> SmallestToLargestPlays = new Comparator<IGridPlayData>()
 	{
+		@Override
 		public int compare(final IGridPlayData p1, final IGridPlayData p2)
 		{
 			if ((p1 == null && p2 == null) || p1 == p2)

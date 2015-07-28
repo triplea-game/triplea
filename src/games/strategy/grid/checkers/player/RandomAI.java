@@ -56,6 +56,7 @@ public class RandomAI extends GridAbstractAI
 	{
 		return new Comparator<Tuple<GridPlayData, Collection<Territory>>>()
 		{
+			@Override
 			public int compare(final Tuple<GridPlayData, Collection<Territory>> t1, final Tuple<GridPlayData, Collection<Territory>> t2)
 			{
 				if ((t1 == null && t2 == null) || t1 == t2)

@@ -21,7 +21,6 @@ package games.strategy.engine.data;
 /**
  * 
  * @author Edwin van der Wal
- * @version 0.1
  * 
  *          A collection of Relationship types
  */
@@ -133,6 +132,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	 * returns a relationshipTypeIterator
 	 * 
 	 */
+	@Override
 	public Iterator<RelationshipType> iterator()
 	{
 		return m_relationshipTypes.values().iterator();

@@ -44,7 +44,6 @@ import java.util.List;
  * <p>
  * 
  * @author sgb
- * @version $LastChangedDate: 2008-06-10 12:09:22 -0600 (Thu, 14 Feb 2008) $
  */
 public class TripleAUnit extends Unit
 {
@@ -121,7 +120,6 @@ public class TripleAUnit extends Unit
 	/**
 	 * This is a very slow method because it checks all territories on the map. Try not to use this method if possible.
 	 * 
-	 * @return
 	 */
 	public List<Unit> getTransporting()
 	{

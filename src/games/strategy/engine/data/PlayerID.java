@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable
 {
@@ -63,6 +62,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return m_canBeDisabled;
 	}
 	
+	@Override
 	public UnitCollection getUnits()
 	{
 		return m_unitsHeld;
@@ -98,6 +98,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return m_repairFrontier;
 	}
 	
+	@Override
 	public void notifyChanged()
 	{
 	}
@@ -125,6 +126,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return "PlayerID named:" + getName();
 	}
 	
+	@Override
 	public String getType()
 	{
 		return UnitHolder.PLAYER;
@@ -171,7 +173,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	 * And I own zero factories or have have no owned land,
 	 * then I am basically dead, and therefore should not participate in things like politics.
 	 * 
-	 * @return
 	 */
 	public boolean amNotDeadYet(final GameData data)
 	{

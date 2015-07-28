@@ -98,6 +98,7 @@ public class TripleAWebPoster implements IWebPoster
 		}
 	}
 	
+	@Override
 	public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player, final int round)
 	{
 		try
@@ -164,27 +165,32 @@ public class TripleAWebPoster implements IWebPoster
 		}
 	}
 	
+	@Override
 	public boolean getMailSaveGame()
 	{
 		return m_mailSaveGame;
 	}
 	
+	@Override
 	public void setMailSaveGame(final boolean mail)
 	{
 		m_mailSaveGame = mail;
 	}
 	
+	@Override
 	public void addSaveGame(final File saveGame, final String fileName)
 	{
 		m_saveGameFile = saveGame;
 		m_saveGameFileName = fileName;
 	}
 	
+	@Override
 	public EditorPanel getEditor()
 	{
 		return new MicroWebPosterEditor(this, parties);
 	}
 	
+	@Override
 	public boolean sameType(final IBean other)
 	{
 		return getClass() == other.getClass();
@@ -207,21 +213,25 @@ public class TripleAWebPoster implements IWebPoster
 		return stringPart;
 	}
 	
+	@Override
 	public String getTestMessage()
 	{
 		return "Testing, this will take a couple of seconds...";
 	}
 	
+	@Override
 	public String getServerMessage()
 	{
 		return m_serverMessage;
 	}
 	
+	@Override
 	public String getHelpText()
 	{
 		return HelpSupport.loadHelp("tripleAMicroWebsite.html");
 	}
 	
+	@Override
 	public IWebPoster doClone()
 	{
 		final TripleAWebPoster clone = new TripleAWebPoster();
@@ -233,21 +243,25 @@ public class TripleAWebPoster implements IWebPoster
 		return clone;
 	}
 	
+	@Override
 	public String getDisplayName()
 	{
 		return "TripleA Micro Web Site";
 	}
 	
+	@Override
 	public String getSiteId()
 	{
 		return m_siteId;
 	}
 	
+	@Override
 	public String getHost()
 	{
 		return m_host;
 	}
 	
+	@Override
 	public Vector<String> getAllHosts()
 	{
 		return m_allHosts;
@@ -261,31 +275,37 @@ public class TripleAWebPoster implements IWebPoster
 			return host + "/";
 	}
 	
+	@Override
 	public String getGameName()
 	{
 		return m_gameName;
 	}
 	
+	@Override
 	public void setSiteId(final String siteId)
 	{
 		m_siteId = siteId;
 	}
 	
+	@Override
 	public void setGameName(final String gameName)
 	{
 		m_gameName = gameName;
 	}
 	
+	@Override
 	public void setHost(final String host)
 	{
 		m_host = getHostUrlPrefix(host);
 	}
 	
+	@Override
 	public void setAllHosts(final Vector<String> hosts)
 	{
 		m_allHosts = hosts;
 	}
 	
+	@Override
 	public void addToAllHosts(final String host)
 	{
 		final String hostToAdd = getHostUrlPrefix(host);
@@ -295,6 +315,7 @@ public class TripleAWebPoster implements IWebPoster
 		m_allHosts.add(0, hostToAdd);
 	}
 	
+	@Override
 	public void viewSite()
 	{
 		DesktopUtilityBrowserLauncher.openURL(getHost());
@@ -305,6 +326,7 @@ public class TripleAWebPoster implements IWebPoster
 		this.parties = parties;
 	}
 	
+	@Override
 	public void clearSensitiveInfo()
 	{
 		m_allHosts.clear();
@@ -314,11 +336,13 @@ public class TripleAWebPoster implements IWebPoster
 
 class ProductionStat extends AbstractStat
 {
+	@Override
 	public String getName()
 	{
 		return "Production";
 	}
 	
+	@Override
 	public double getValue(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;

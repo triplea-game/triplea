@@ -148,6 +148,7 @@ public class EmailSenderEditor extends EditorPanel
 		m_toAddress.getDocument().addDocumentListener(listener);
 		m_useTLS.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				fireEditorChanged();
@@ -156,6 +157,7 @@ public class EmailSenderEditor extends EditorPanel
 		
 		m_testEmail.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				testEmail();
@@ -174,6 +176,7 @@ public class EmailSenderEditor extends EditorPanel
 		
 		final Runnable runnable = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				// initialize variables to error state, override if successful
@@ -204,6 +207,7 @@ public class EmailSenderEditor extends EditorPanel
 					final int finalMessageType = messageType;
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							try

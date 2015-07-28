@@ -74,6 +74,7 @@ public class LobbyFrame extends JFrame
 		chatPlayers.setPreferredSize(new Dimension(200, 600));
 		chatPlayers.addActionFactory(new IPlayerActionFactory()
 		{
+			@Override
 			public List<Action> mouseOnPlayer(final INode clickedOn)
 			{
 				return createAdminActions(clickedOn);
@@ -97,6 +98,7 @@ public class LobbyFrame extends JFrame
 		setLocationRelativeTo(null);
 		m_client.getMessenger().addErrorListener(new IMessengerErrorListener()
 		{
+			@Override
 			public void messengerInvalid(final IMessenger messenger, final Exception reason)
 			{
 				connectionToServerLost();
@@ -137,6 +139,7 @@ public class LobbyFrame extends JFrame
 		{
 			private static final long serialVersionUID = -114807409972939767L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (!confirm("Boot " + clickedOn.getName()))
@@ -150,6 +153,7 @@ public class LobbyFrame extends JFrame
 		{
 			private static final long serialVersionUID = -762959953993138146L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final List<String> banTypes = new ArrayList<String>();
@@ -230,6 +234,7 @@ public class LobbyFrame extends JFrame
 		{
 			private static final long serialVersionUID = -4909591469708896401L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final List<String> muteTypes = new ArrayList<String>();
@@ -308,6 +313,7 @@ public class LobbyFrame extends JFrame
 		{
 			private static final long serialVersionUID = -6078034907743976564L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JLabel label = new JLabel("How many minutes should this player be muted?");
@@ -336,6 +342,7 @@ public class LobbyFrame extends JFrame
 		{
 			private static final long serialVersionUID = -4065242030670291163L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String text = controller.getInformationOn(clickedOn);
@@ -349,6 +356,7 @@ public class LobbyFrame extends JFrame
 		{
 			private static final long serialVersionUID = -7778103570619930775L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String newPassword = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");

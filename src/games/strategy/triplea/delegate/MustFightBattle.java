@@ -14,7 +14,6 @@
  * 
  * Created on November 15, 2001, 12:39 PM
  * 
- * @version $LastChangedDate$
  */
 package games.strategy.triplea.delegate;
 
@@ -325,7 +324,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	/**
 	 * @deprecated use: route.getTerritoryBeforeEnd();
 	 * @param route
-	 * @return
 	 */
 	@Deprecated
 	private Territory getAttackFrom(final Route route)
@@ -762,6 +760,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 3802352588499530533L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireOffensiveAAGuns(bridge);
@@ -774,6 +773,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = -1370090785540214199L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireDefensiveAAGuns(bridge);
@@ -786,6 +786,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 8762796262264296436L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					clearWaitingToDie(bridge);
@@ -798,6 +799,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 2781652892457063082L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					removeNonCombatants(bridge, false, false, true);
@@ -810,6 +812,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = -2255284529092427441L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireNavalBombardment(bridge);
@@ -819,6 +822,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 6578267830066963474L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireSuicideUnitsAttack(bridge);
@@ -828,6 +832,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 2731652892447063082L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireSuicideUnitsDefend(bridge);
@@ -837,6 +842,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 3389635558184415797L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					removeNonCombatants(bridge, false, false, true);
@@ -846,6 +852,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 7193353768857658286L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					landParatroops(bridge);
@@ -855,6 +862,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = -6676316363537467594L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					markNoMovementLeft(bridge);
@@ -912,6 +920,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = 8611067962952500496L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				clearWaitingToDie(bridge);
@@ -922,6 +931,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// not compatible with 0.9.0.2 saved games. this is new for 1.2.6.0
 			private static final long serialVersionUID = 6387198382888361848L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				checkSuicideUnits(bridge);
@@ -932,6 +942,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = 5259103822937067667L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				// changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
@@ -994,6 +1005,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = 6775880082912594489L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				if (!m_isOver && canAttackerRetreatSubs() && !isSubRetreatBeforeBattle())
@@ -1005,6 +1017,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = -1544916305666912480L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				if (!m_isOver)
@@ -1026,6 +1039,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = -1150863964807721395L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				if (!m_isOver && canAttackerRetreatPlanes() && !canAttackerRetreatPartialAmphib())
@@ -1037,6 +1051,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = -1150863964807721395L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				if (!m_isOver && canAttackerRetreatPartialAmphib())
@@ -1048,6 +1063,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = 669349383898975048L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				if (!m_isOver)
@@ -1061,6 +1077,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = 3118458517320468680L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				pushFightLoopOnStack(false, bridge);
@@ -1071,6 +1088,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = -3993599528368570254L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				if (!m_isOver)
@@ -1104,6 +1122,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// compatible with 0.9.0.2 saved games
 				private static final long serialVersionUID = 6775880082912594489L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					if (!m_isOver)
@@ -1115,6 +1134,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// compatible with 0.9.0.2 saved games
 				private static final long serialVersionUID = 7056448091800764539L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					if (!m_isOver)
@@ -1127,6 +1147,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			private static final long serialVersionUID = 99988L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				checkSuicideUnits(bridge);
@@ -1138,6 +1159,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 99989L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					checkUndefendedTransports(bridge, m_defender);
@@ -1152,6 +1174,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 99990L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					submergeSubsVsOnlyAir(bridge);
@@ -1166,6 +1189,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// compatible with 0.9.0.2 saved games
 				private static final long serialVersionUID = 99992L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					defendSubs(bridge, returnFireAgainstDefendingSubs);
@@ -1176,6 +1200,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			private static final long serialVersionUID = 99991L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				attackSubs(bridge, returnFireAgainstAttackingSubs);
@@ -1189,6 +1214,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// compatible with 0.9.0.2 saved games
 				private static final long serialVersionUID = 99992L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					defendSubs(bridge, returnFireAgainstDefendingSubs);
@@ -1202,6 +1228,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// compatible with 0.9.0.2 saved games
 				private static final long serialVersionUID = 99993L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					attackAirOnNonSubs(bridge);
@@ -1213,6 +1240,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = 99994L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				attackNonSubs(bridge);
@@ -1224,6 +1252,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				private static final long serialVersionUID = 999921L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					defendSubs(bridge, returnFireAgainstDefendingSubs);
@@ -1237,6 +1266,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// compatible with 0.9.0.2 saved games
 				private static final long serialVersionUID = 1560702114917865123L;
 				
+				@Override
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					defendAirOnNonSubs(bridge);
@@ -1247,6 +1277,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// compatible with 0.9.0.2 saved games
 			private static final long serialVersionUID = 1560702114917865290L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				defendNonSubs(bridge);
@@ -1308,7 +1339,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean canAttackerRetreatPlanes()
 	{
@@ -1316,7 +1346,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean canAttackerRetreatPartialAmphib()
 	{
@@ -2313,7 +2342,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isWW2V2()
 	{
@@ -2339,7 +2367,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isAlliedAirIndependent()
 	{
@@ -2347,7 +2374,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isDefendingSubsSneakAttack()
 	{
@@ -2355,7 +2381,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isAttackerRetreatPlanes()
 	{
@@ -2363,7 +2388,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isNavalBombardCasualtiesReturnFire()
 	{
@@ -2371,7 +2395,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isSuicideAndMunitionCasualtiesRestricted()
 	{
@@ -2379,7 +2402,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isDefendingSuicideAndMunitionUnitsDoNotFire()
 	{
@@ -2394,7 +2416,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 */
 	
 	/**
-	 * @return
 	 */
 	private boolean isAirAttackSubRestricted()
 	{
@@ -2402,7 +2423,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isSubRetreatBeforeBattle()
 	{
@@ -2410,7 +2430,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isTransportCasualtiesRestricted()
 	{
@@ -2449,6 +2468,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			m_defending = defending;
 		}
 		
+		@Override
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
 			if ((m_defending && !canFireDefendingAA()) || (!m_defending && !canFireOffensiveAA()))
@@ -2466,6 +2486,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				{
 					private static final long serialVersionUID = 6435935558879109347L;
 					
+					@Override
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
@@ -2498,6 +2519,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				{
 					private static final long serialVersionUID = 7943295620796835166L;
 					
+					@Override
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						if (!validAttackingUnitsForThisRoll.isEmpty())
@@ -2513,6 +2535,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				{
 					private static final long serialVersionUID = -6759782085212899725L;
 					
+					@Override
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						if (!validAttackingUnitsForThisRoll.isEmpty())
@@ -2547,6 +2570,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			getRemote((m_defending ? m_attacker : m_defender), bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
 			final Runnable r = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					try
@@ -3135,6 +3159,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
 		final Comparator<Unit> comparator = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				int amphibComp = 0;

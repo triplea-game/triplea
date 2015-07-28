@@ -25,7 +25,6 @@ import games.strategy.kingstable.ui.display.DummyDisplay;
  * Test suite for the King's Table play delegate.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class PlayDelegateTest extends DelegateTest
 {

@@ -63,6 +63,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// if (!m_player.amNotDeadYet(getData()))
@@ -78,6 +79,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
 	
+	@Override
 	public Collection<UserActionAttachment> getValidActions()
 	{
 		final GameData data = m_bridge.getData();
@@ -93,6 +95,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 		return UserActionAttachment.getValidActions(m_player, testedConditions, data);
 	}
 	
+	@Override
 	public void attemptAction(final UserActionAttachment actionChoice)
 	{
 		if (actionChoice.canPerform(getTestedConditions()))
@@ -202,7 +205,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
 	 * 
 	 * @param uaa
 	 *            the UserActionAttachment that should be accepted
-	 * @return
 	 */
 	private boolean actionIsAccepted(final UserActionAttachment uaa)
 	{

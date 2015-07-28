@@ -43,6 +43,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 	{
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;

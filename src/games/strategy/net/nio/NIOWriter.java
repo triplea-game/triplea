@@ -66,6 +66,7 @@ public class NIOWriter
 		}
 		final Thread t = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				loop();

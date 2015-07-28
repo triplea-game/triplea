@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameSequence extends GameDataComponent implements Iterable<GameStep>
 {
@@ -161,7 +160,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	 * Used for finding if we need to make a new round or not.
 	 * Does not change any data or fields.
 	 * 
-	 * @return
 	 */
 	public boolean testWeAreOnLastStep()
 	{
@@ -201,6 +199,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		return m_steps.get(index);
 	}
 	
+	@Override
 	public Iterator<GameStep> iterator()
 	{
 		return m_steps.iterator();

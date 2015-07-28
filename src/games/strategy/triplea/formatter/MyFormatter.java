@@ -85,6 +85,7 @@ public class MyFormatter
 		final List<UnitType> sortedList = new ArrayList<UnitType>(map.keySet());
 		final Comparator<UnitType> comp = new Comparator<UnitType>()
 		{
+			@Override
 			public int compare(final UnitType u1, final UnitType u2)
 			{
 				return u1.getName().compareTo(u2.getName());
@@ -280,6 +281,7 @@ public class MyFormatter
 		final List<DefaultNamed> sortedList = new ArrayList<DefaultNamed>(map.keySet());
 		final Comparator<DefaultNamed> comp = new Comparator<DefaultNamed>()
 		{
+			@Override
 			public int compare(final DefaultNamed u1, final DefaultNamed u2)
 			{
 				return u1.getName().compareTo(u2.getName());

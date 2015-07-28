@@ -254,16 +254,19 @@ public class ClientModel implements IMessengerErrorListener
 	
 	private final IClientChannel m_channelListener = new IClientChannel()
 	{
+		@Override
 		public void playerListingChanged(final PlayerListing listing)
 		{
 			internalePlayerListingChanged(listing);
 		}
 		
+		@Override
 		public void gameReset()
 		{
 			m_objectStreamFactory.setData(null);
 			Util.runInSwingEventThread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					MainFrame.getInstance().setVisible(true);
@@ -271,6 +274,7 @@ public class ClientModel implements IMessengerErrorListener
 			});
 		}
 		
+		@Override
 		public void doneSelectingPlayers(final byte[] gameData, final Map<String, INode> players)
 		{
 			final CountDownLatch latch = new CountDownLatch(1);
@@ -286,6 +290,7 @@ public class ClientModel implements IMessengerErrorListener
 	};
 	IObserverWaitingToJoin m_observerWaitingToJoin = new IObserverWaitingToJoin()
 	{
+		@Override
 		public void joinGame(final byte[] gameData, final Map<String, INode> players)
 		{
 			m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
@@ -300,10 +305,12 @@ public class ClientModel implements IMessengerErrorListener
 			}
 		}
 		
+		@Override
 		public void cannotJoinGame(final String reason)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					m_typePanelModel.showSelectType();
@@ -317,6 +324,7 @@ public class ClientModel implements IMessengerErrorListener
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_gameLoadingWindow.setVisible(true);
@@ -326,6 +334,7 @@ public class ClientModel implements IMessengerErrorListener
 		});
 		final Runnable r = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -377,6 +386,7 @@ public class ClientModel implements IMessengerErrorListener
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						JOptionPane.getFrameForComponent(m_ui).setVisible(false);
@@ -437,6 +447,7 @@ public class ClientModel implements IMessengerErrorListener
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(), listing.getGameVersion().toString());
@@ -451,6 +462,7 @@ public class ClientModel implements IMessengerErrorListener
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_listener.playerListChanged();
@@ -511,6 +523,7 @@ public class ClientModel implements IMessengerErrorListener
 		MainFrame.getInstance().clientLeftGame();
 	}
 	
+	@Override
 	public void messengerInvalid(final IMessenger messenger, final Exception reason)
 	{
 		connectionLost();

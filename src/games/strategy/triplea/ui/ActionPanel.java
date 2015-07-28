@@ -34,7 +34,6 @@ import javax.swing.border.EmptyBorder;
  * 
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public abstract class ActionPanel extends JPanel
@@ -192,6 +191,7 @@ public abstract class ActionPanel extends JPanel
 	 */
 	protected final Runnable REFRESH = new Runnable()
 	{
+		@Override
 		public void run()
 		{
 			revalidate();

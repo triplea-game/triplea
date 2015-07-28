@@ -23,7 +23,6 @@ import java.io.Serializable;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class DefaultNamed extends GameDataComponent implements Named, Serializable
 {
@@ -39,6 +38,7 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 		m_name = name;
 	}
 	
+	@Override
 	public String getName()
 	{
 		return m_name;

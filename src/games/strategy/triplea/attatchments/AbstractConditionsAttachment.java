@@ -53,6 +53,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * @param conditions
 	 * @throws GameParseException
 	 */
+	@Override
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setConditions(final String conditions) throws GameParseException
 	{
@@ -86,21 +87,25 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		m_conditions = value;
 	}
 	
+	@Override
 	public ArrayList<RulesAttachment> getConditions()
 	{
 		return m_conditions;
 	}
 	
+	@Override
 	public void clearConditions()
 	{
 		m_conditions.clear();
 	}
 	
+	@Override
 	public void resetConditions()
 	{
 		m_conditions = new ArrayList<RulesAttachment>();
 	}
 	
+	@Override
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setInvert(final String s)
 	{
@@ -113,16 +118,19 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		m_invert = s;
 	}
 	
+	@Override
 	public boolean getInvert()
 	{
 		return m_invert;
 	}
 	
+	@Override
 	public void resetInvert()
 	{
 		m_invert = false;
 	}
 	
+	@Override
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setConditionType(final String value) throws GameParseException
 	{
@@ -155,11 +163,13 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		m_conditionType = s;
 	}
 	
+	@Override
 	public String getConditionType()
 	{
 		return m_conditionType;
 	}
 	
+	@Override
 	public void resetConditionType()
 	{
 		m_conditionType = AND;
@@ -168,6 +178,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	/**
 	 * Accounts for Invert and conditionType. Only use if testedConditions has already been filled and this conditions has been tested.
 	 */
+	@Override
 	public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return isSatisfied(testedConditions, null);
@@ -176,6 +187,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	/**
 	 * Accounts for Invert and conditionType. IDelegateBridge is not used so can be null, this is because we have already tested all the conditions.
 	 */
+	@Override
 	public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge)
 	{
 		if (testedConditions == null)
@@ -203,7 +215,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * Since anything implementing ICondition can contain other ICondition, this must recursively search through all conditions and contained conditions to get the final list.
 	 * 
 	 * @param startingListOfConditions
-	 * @return
 	 * @author veqryn
 	 */
 	public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions, HashSet<ICondition> allConditionsNeededSoFar)
@@ -227,7 +238,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * 
 	 * @param rules
 	 * @param data
-	 * @return
 	 * @author veqryn
 	 */
 	public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules, HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge aBridge)
@@ -254,7 +264,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * @param rules
 	 * @param conditionType
 	 * @param data
-	 * @return
 	 * @author veqryn
 	 */
 	public static boolean areConditionsMet(final List<ICondition> rulesToTest, final HashMap<ICondition, Boolean> testedConditions, final String conditionType)

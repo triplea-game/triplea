@@ -23,7 +23,6 @@ import java.util.Stack;
  * Currently, minimax and alpha-beta algorithms are implemented.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  * @see "Chapter 6 of Artificial Intelligence, 2nd ed. by Stuart Russell & Peter Norvig"
  */
 public class AIAlgorithm

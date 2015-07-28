@@ -117,6 +117,7 @@ public class Console extends JFrame
 	{
 		private static final long serialVersionUID = 1573097546768015070L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			final String text = m_text.getText();
@@ -129,6 +130,7 @@ public class Console extends JFrame
 	{
 		private static final long serialVersionUID = 4414139104815149199L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			System.out.println(DebugUtils.getThreadDumps());
@@ -139,6 +141,7 @@ public class Console extends JFrame
 	{
 		private static final long serialVersionUID = 1053036985791697566L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			append(DebugUtils.getMemory());
@@ -149,6 +152,7 @@ public class Console extends JFrame
 	{
 		private static final long serialVersionUID = -8186358504886470902L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			final String s = DebugUtils.getProperties();
@@ -172,6 +176,7 @@ class ThreadReader implements Runnable
 		m_displayConsoleOnWrite = displayConsoleOnWrite;
 	}
 	
+	@Override
 	public void run()
 	{
 		while (true)

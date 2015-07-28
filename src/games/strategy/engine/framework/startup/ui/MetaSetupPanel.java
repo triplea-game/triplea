@@ -115,6 +115,7 @@ public class MetaSetupPanel extends SetupPanel
 	{
 		m_startLocal.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.showLocal();
@@ -122,6 +123,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_startPBEM.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.showPBEM();
@@ -129,6 +131,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_hostGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.showServer(MetaSetupPanel.this);
@@ -136,6 +139,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_connectToHostedGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.showClient(MetaSetupPanel.this);
@@ -143,6 +147,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_connectToLobby.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				connectToLobby();
@@ -150,6 +155,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_enginePreferences.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				enginePreferences();
@@ -157,6 +163,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_downloadMaps.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				downloadMaps();
@@ -164,6 +171,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_ruleBook.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				ruleBook();
@@ -171,6 +179,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_donate.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -184,6 +193,7 @@ public class MetaSetupPanel extends SetupPanel
 		});
 		m_about.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				about();
@@ -335,6 +345,7 @@ public class MetaSetupPanel extends SetupPanel
 		final CountDownLatch latch = new CountDownLatch(1);
 		final Runnable r = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				for (int i = 0; i < 5; i++)
@@ -364,6 +375,7 @@ public class MetaSetupPanel extends SetupPanel
 			{
 				final Thread t1 = new Thread(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						ref.set(new LobbyServerProperties(serverPropsURL));
@@ -440,6 +452,7 @@ public class MetaSetupPanel extends SetupPanel
 		return false;
 	}
 	
+	@Override
 	public void shutDown()
 	{
 	}

@@ -34,7 +34,6 @@ import javax.swing.text.PlainDocument;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Text field for entering int values.
  *          Ensures valid integers are entered, and can limit the range of

@@ -44,7 +44,6 @@ import java.util.concurrent.CountDownLatch;
  * Custom component for displaying a Tic Tac Toe gameboard and pieces.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2013-02-03 04:49:39 +0800 (Sun, 03 Feb 2013) $
  */
 public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 {
@@ -56,6 +55,7 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener
 		updateAllImages();
 		m_gameData.addDataChangeListener(new GameDataChangeListener()
 		{
+			@Override
 			public void gameDataChanged(final Change change)
 			{
 				updateAllImages();

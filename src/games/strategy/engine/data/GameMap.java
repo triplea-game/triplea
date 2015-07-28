@@ -39,7 +39,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Holds a collection of territories, and the links between them.
  *          Utility methods for finding routes and distances between different territories.
@@ -126,6 +125,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	
 	private static Comparator<Territory> TERRITORY_GRID_ORDERING = new Comparator<Territory>()
 	{
+		@Override
 		public int compare(final Territory t1, final Territory t2)
 		{
 			if ((t1 == null && t2 == null) || t1 == t2)
@@ -643,6 +643,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		return Collections.unmodifiableList(m_territories);
 	}
 	
+	@Override
 	public Iterator<Territory> iterator()
 	{
 		return m_territories.iterator();

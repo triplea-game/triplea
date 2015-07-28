@@ -16,7 +16,6 @@
  * 
  * Created on November 9, 2001, 4:05 PM
  * 
- * @version $LastChangedDate$
  */
 package games.strategy.triplea.delegate;
 
@@ -692,7 +691,6 @@ public class MoveValidator
 	 * 
 	 * @param targets
 	 * @param data
-	 * @return
 	 */
 	public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units, final GameData data)
 	{
@@ -712,7 +710,6 @@ public class MoveValidator
 	 * @deprecated use Match.allMatch(units, Matches.UnitHasEnoughMovementForRoute(route));
 	 * @param units
 	 * @param length
-	 * @return
 	 */
 	@Deprecated
 	public static boolean hasEnoughMovement(final Collection<Unit> units, final int length)
@@ -865,7 +862,6 @@ public class MoveValidator
 	/**
 	 * @deprecated use: route.isLoad();
 	 * @param route
-	 * @return
 	 */
 	@Deprecated
 	public static boolean isLoad(final Route route)
@@ -915,7 +911,6 @@ public class MoveValidator
 	/**
 	 * @deprecated use route.hasNeutralBeforeEnd()
 	 * @param route
-	 * @return
 	 */
 	@Deprecated
 	public static boolean hasNeutralBeforeEnd(final Route route)
@@ -964,7 +959,6 @@ public class MoveValidator
 	/**
 	 * @deprecated use route.hasWater();
 	 * @param route
-	 * @return
 	 */
 	@Deprecated
 	public static boolean hasWater(final Route route)
@@ -975,7 +969,6 @@ public class MoveValidator
 	/**
 	 * @deprecated use route.hasLand();
 	 * @param route
-	 * @return
 	 */
 	@Deprecated
 	public static boolean hasLand(final Route route)
@@ -1414,7 +1407,6 @@ public class MoveValidator
 	 *            (Can be null. If null we will assume all units would be stopped by the canal.)
 	 * @param player
 	 * @param data
-	 * @return
 	 */
 	public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player, final GameData data)
 	{
@@ -1437,7 +1429,6 @@ public class MoveValidator
 	 *            (Can be null. If null we will assume all units would be stopped by the canal.)
 	 * @param player
 	 * @param data
-	 * @return
 	 */
 	public static String validateCanal(final Territory territory, final Route route, final Collection<Unit> units, final PlayerID player, final GameData data)
 	{

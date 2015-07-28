@@ -37,7 +37,6 @@ import javax.swing.border.EtchedBorder;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A small image that tracks a selection area within a small image. Generally
  *          used in conjunction with a ImageScrollerLarrgeView.
@@ -72,6 +71,7 @@ public class ImageScrollerSmallView extends JComponent
 		this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
 		model.addObserver(new Observer()
 		{
+			@Override
 			public void update(final Observable o, final Object arg)
 			{
 				repaint();

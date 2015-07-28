@@ -59,6 +59,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	/**
 	 * Get the name of the current step being executed.
 	 */
+	@Override
 	public String getStepName()
 	{
 		return m_currentStep;
@@ -97,6 +98,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 		}
 	}*/
 	
+	@Override
 	public boolean isGameOver()
 	{
 		return m_game.isGameOver();
@@ -105,6 +107,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	/**
 	 * Return the game data
 	 */
+	@Override
 	public GameData getGameData()
 	{
 		return m_game.getData();
@@ -112,6 +115,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	
 	private final GameStepListener m_gameStepListener = new GameStepListener()
 	{
+		@Override
 		public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 		{
 			if (stepName == null)
@@ -126,6 +130,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	/* 
 	 * @see games.strategy.engine.gamePlayer.PlayerBridge#getRemote()
 	 */
+	@Override
 	public IRemote getRemoteDelegate()
 	{
 		if (m_game.isGameOver())
@@ -165,6 +170,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 		}
 	}
 	
+	@Override
 	public IRemote getRemotePersistentDelegate(final String name)
 	{
 		if (m_game.isGameOver())
@@ -194,6 +200,7 @@ public class DefaultPlayerBridge implements IPlayerBridge
 		}
 	}
 	
+	@Override
 	public Properties getStepProperties()
 	{
 		return m_game.getData().getSequence().getStep().getProperties();
@@ -219,6 +226,7 @@ class GameOverInvocationHandler implements InvocationHandler
 		m_game = game;
 	}
 	
+	@Override
 	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 	{
 		try

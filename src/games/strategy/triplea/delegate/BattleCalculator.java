@@ -71,7 +71,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Utiltity class for determing casualties and selecting casualties. The code
  *          was being dduplicated all over the place.
@@ -94,6 +93,7 @@ public class BattleCalculator
 	{
 		final Comparator<Unit> comparator = new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				if (u1.getUnitType().equals(u2.getUnitType()))
@@ -729,7 +729,6 @@ public class BattleCalculator
 	 * @param player
 	 * @param costs
 	 * @param data
-	 * @return
 	 */
 	private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom, final int hits, final boolean defending, final PlayerID player,
 				final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
@@ -1563,7 +1562,6 @@ public class BattleCalculator
 	 * Therefore, this map should NOT be used for Purchasing information!
 	 * 
 	 * @param data
-	 * @return
 	 */
 	public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data)
 	{
@@ -1625,7 +1623,6 @@ public class BattleCalculator
 	 * 
 	 * @param data
 	 * @param includeAverageForMissingUnits
-	 * @return
 	 */
 	public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTUV(final GameData data, final boolean includeAverageForMissingUnits)
 	{
@@ -1698,7 +1695,6 @@ public class BattleCalculator
 	 * Therefore, this map should NOT be used for Purchasing information!
 	 * 
 	 * @param data
-	 * @return
 	 */
 	public static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(final GameData data)
 	{

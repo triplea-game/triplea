@@ -74,7 +74,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameData implements java.io.Serializable
 {

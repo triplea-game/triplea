@@ -286,7 +286,6 @@ public class MapData
 	/**
 	 * Does not take account of any scaling.
 	 * 
-	 * @return
 	 */
 	public int getDefaultUnitWidth()
 	{
@@ -305,7 +304,6 @@ public class MapData
 	/**
 	 * Does not take account of any scaling.
 	 * 
-	 * @return
 	 */
 	public int getDefaultUnitHeight()
 	{
@@ -324,7 +322,6 @@ public class MapData
 	/**
 	 * Does not take account of any scaling.
 	 * 
-	 * @return
 	 */
 	public int getDefaultUnitCounterOffsetWidth()
 	{
@@ -344,7 +341,6 @@ public class MapData
 	/**
 	 * Does not take account of any scaling.
 	 * 
-	 * @return
 	 */
 	public int getDefaultUnitCounterOffsetHeight()
 	{

@@ -32,7 +32,6 @@ import java.util.Set;
  * Placeholder for all calculations to do with TerritoryEffects
  * 
  * @author Edwin van der Wal
- * @version 1.0
  */
 public class TerritoryEffectHelper
 {

@@ -296,6 +296,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
 		v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_restoreDefaultsButtonActionPerformed(evt);
@@ -314,6 +315,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
 		v_settingsDetailsButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_settingsDetailsButtonActionPerformed(evt);
@@ -336,6 +338,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_cancelButton.setName("v_cancelButton"); // NOI18N
 		v_cancelButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_cancelButtonActionPerformed(evt);
@@ -351,6 +354,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_okButton.setName("v_okButton"); // NOI18N
 		v_okButton.addActionListener(new java.awt.event.ActionListener()
 		{
+			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_okButtonActionPerformed(evt);
@@ -587,6 +591,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_allowCalcingDecrease.setName("v_allowCalcingDecrease"); // NOI18N
 		v_allowCalcingDecrease.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_allowCalcingDecreaseStateChanged(evt);
@@ -673,6 +678,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_resourceCollectionMultiplier.setName("v_resourceCollectionMultiplier"); // NOI18N
 		v_resourceCollectionMultiplier.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_resourceCollectionMultiplierStateChanged(evt);
@@ -702,6 +708,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_unitPlacementMultiplier.setName("v_unitPlacementMultiplier"); // NOI18N
 		v_unitPlacementMultiplier.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_unitPlacementMultiplierStateChanged(evt);
@@ -745,6 +752,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_resourceCollectionIncreaser.setName("v_resourceCollectionIncreaser"); // NOI18N
 		v_resourceCollectionIncreaser.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_resourceCollectionIncreaserStateChanged(evt);
@@ -1285,6 +1293,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableAttackStabalize.setName("v_tr_enableAttackStabalize"); // NOI18N
 		v_tr_enableAttackStabalize.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged(evt);
@@ -1557,6 +1566,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableAttackOffensive.setName("v_tr_enableAttackOffensive"); // NOI18N
 		v_tr_enableAttackOffensive.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged(evt);
@@ -1614,6 +1624,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableReinforceStabalize.setName("v_tr_enableReinforceStabalize"); // NOI18N
 		v_tr_enableReinforceStabalize.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged(evt);
@@ -1633,6 +1644,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableAttackTrade.setName("v_tr_enableAttackTrade"); // NOI18N
 		v_tr_enableAttackTrade.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged(evt);
@@ -1674,6 +1686,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableReinforceBlock.setName("v_tr_enableReinforceBlock"); // NOI18N
 		v_tr_enableReinforceBlock.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged(evt);
@@ -1713,6 +1726,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableAttackLandGrab.setName("v_tr_enableAttackLandGrab"); // NOI18N
 		v_tr_enableAttackLandGrab.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged(evt);
@@ -1732,6 +1746,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableReinforceFrontline.setName("v_tr_enableReinforceFrontline"); // NOI18N
 		v_tr_enableReinforceFrontline.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged(evt);
@@ -1796,6 +1811,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_cr_enableCallForLandGrab.setName("v_cr_enableCallForLandGrab"); // NOI18N
 		v_cr_enableCallForLandGrab.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_cr_enableCallForLandGrabStateChanged(evt);
@@ -1815,6 +1831,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_cr_enableCallForDefensiveFront.setName("v_cr_enableCallForDefensiveFront"); // NOI18N
 		v_cr_enableCallForDefensiveFront.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_cr_enableCallForDefensiveFrontStateChanged(evt);
@@ -1834,6 +1851,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_cr_enableCallForCapitalDefense.setName("v_cr_enableCallForCapitalDefense"); // NOI18N
 		v_cr_enableCallForCapitalDefense.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_cr_enableCallForCapitalDefenseStateChanged(evt);
@@ -1898,6 +1916,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_enableAILogging.setName("v_enableAILogging"); // NOI18N
 		v_enableAILogging.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_enableAILoggingStateChanged(evt);
@@ -1942,6 +1961,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_limitLogHistoryCB.setName("v_limitLogHistoryCB"); // NOI18N
 		v_limitLogHistoryCB.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_limitLogHistoryCBStateChanged(evt);
@@ -1966,6 +1986,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_pauseAIs.setName("v_pauseAIs"); // NOI18N
 		v_pauseAIs.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_pauseAIsStateChanged(evt);
@@ -2040,6 +2061,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_aa_hotspotInvalidation.setName("v_aa_hotspotInvalidation"); // NOI18N
 		v_aa_hotspotInvalidation.addChangeListener(new javax.swing.event.ChangeListener()
 		{
+			@Override
 			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_aa_hotspotInvalidationStateChanged(evt);
@@ -2635,6 +2657,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		{
 			private static final long serialVersionUID = -1367858475413936399L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				dialog.dispose();
@@ -2772,6 +2795,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					final JPanel newPanel = new JPanel();
@@ -2813,6 +2837,7 @@ public class SettingsWindow extends javax.swing.JDialog
 			{
 				final Runnable runner = new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++)

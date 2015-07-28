@@ -50,6 +50,7 @@ public class OddsCalculatorDialog extends JDialog
 		{
 			private static final long serialVersionUID = 8426179963957717432L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				dialog.setVisible(false);

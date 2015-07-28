@@ -76,7 +76,6 @@ import javax.swing.border.EmptyBorder;
  * Custom component for displaying a Grid Game gameboard and pieces.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction and major rewrite)
- * @version $LastChangedDate: 2012-04-19 18:13:58 +0800 (Thu, 19 Apr 2012) $
  */
 public abstract class GridMapPanel extends ImageScrollerLargeView implements MouseListener
 {
@@ -127,10 +126,12 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		this.addMouseMotionListener(getMouseMotionListener());
 		this.addScrollListener(new ScrollListener()
 		{
+			@Override
 			public void scrolled(final int x, final int y)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						repaint();
@@ -188,6 +189,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		// Ask Swing to repaint this panel when it's convenient
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();
@@ -200,6 +202,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		m_lastMove = move;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_parentGridGameFrame.updateRightSidePanel(move.toString(), m_lastMove.getEnd().getUnits().getUnits());
@@ -211,6 +214,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_parentGridGameFrame.updateRightSidePanel(endTurnData.toString(), null);
@@ -263,6 +267,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	protected GameMapListener GAME_MAP_LISTENER = new GameMapListener()
 	{
 		
+		@Override
 		public void gameMapDataChanged()
 		{
 			m_mapData.setMapData(m_gameData.getMap(), m_gameData.getMap().getXDimension(), m_gameData.getMap().getYDimension(), m_mapData.getSquareWidth(), m_mapData.getSquareHeight(),
@@ -354,14 +359,17 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		}
 	}
 	
+	@Override
 	public void mouseClicked(final MouseEvent e)
 	{
 	}
 	
+	@Override
 	public void mouseEntered(final MouseEvent e)
 	{
 	}
 	
+	@Override
 	public void mouseExited(final MouseEvent e)
 	{
 	}
@@ -369,6 +377,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	/**
 	 * Process the mouse button being pressed.
 	 */
+	@Override
 	public void mousePressed(final MouseEvent e)
 	{
 		// After this method has been called,
@@ -386,6 +395,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	/**
 	 * Process the mouse button being released.
 	 */
+	@Override
 	public void mouseReleased(final MouseEvent e)
 	{
 		// After this method has been called,
@@ -415,6 +425,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 				m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						repaint();
@@ -432,6 +443,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	
 	protected final GameDataChangeListener GAME_DATA_CHANGE_LISTENER = new GameDataChangeListener()
 	{
+		@Override
 		public void gameDataChanged(final Change aChange)
 		{
 			updateAllImages();
@@ -445,6 +457,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 			m_mouseShadowImage = null;
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();
@@ -473,6 +486,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		m_mouseShadowImage = img;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();
@@ -585,6 +599,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_parentGridGameFrame.updateRightSidePanel(getPlayByEmailOrForumPosterPanel(player, bridge, waiting, m_posterPBEM, false, true, false, false, false));
@@ -607,6 +622,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		{
 			private static final long serialVersionUID = 2574764222648059066L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				if (waiting != null)
@@ -655,6 +671,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 		m_model.set(x, y);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				repaint();

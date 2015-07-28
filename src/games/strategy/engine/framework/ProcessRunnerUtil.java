@@ -99,6 +99,7 @@ public class ProcessRunnerUtil
 			// deadlocks
 			final Thread t = new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					try
@@ -154,6 +155,7 @@ public class ProcessRunnerUtil
 			// deadlocks
 			t = new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					System.out.println("Gobbling intput/output");

@@ -35,7 +35,6 @@ import java.util.List;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Represents a battle.
  */
@@ -101,7 +100,6 @@ public interface IBattle extends java.io.Serializable
 	/**
 	 * The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc.
 	 * 
-	 * @return
 	 */
 	public BattleType getBattleType();
 	

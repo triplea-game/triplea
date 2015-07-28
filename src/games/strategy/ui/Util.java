@@ -44,7 +44,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class Util
 {
@@ -91,6 +90,7 @@ public class Util
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					results.set(task.run());

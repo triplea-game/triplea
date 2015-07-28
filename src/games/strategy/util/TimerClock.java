@@ -49,6 +49,7 @@ public class TimerClock<T> extends Observable
 		// start the task
 		final Thread t = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -160,11 +161,13 @@ public class TimerClock<T> extends Observable
 			m_areWeInterrupting = areWeInterrupting;
 		}
 		
+		@Override
 		public int getSecondsLeft()
 		{
 			return m_secondsLeft;
 		}
 		
+		@Override
 		public boolean areWeInterrupting()
 		{
 			return m_areWeInterrupting;

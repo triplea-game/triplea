@@ -172,6 +172,7 @@ public class ValidateAttachmentsTest extends TestCase
 	// file to find classes or directory
 	static FileFilter s_classOrDirectory = new FileFilter()
 	{
+		@Override
 		public boolean accept(final File file)
 		{
 			return file.isDirectory() || file.getName().endsWith(".class");

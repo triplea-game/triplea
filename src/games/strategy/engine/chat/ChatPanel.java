@@ -69,11 +69,13 @@ public class ChatPanel extends JPanel implements IChatPanel
 		setSize(300, 200);
 	}
 	
+	@Override
 	public String getAllText()
 	{
 		return m_chatMessagePanel.getAllText();
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		final Chat chat = getChat(); // get first, before below turns it null
@@ -83,12 +85,14 @@ public class ChatPanel extends JPanel implements IChatPanel
 			chat.shutdown(); // now shut down
 	}
 	
+	@Override
 	public void setChat(final Chat chat)
 	{
 		m_chatMessagePanel.setChat(chat);
 		m_chatPlayerPanel.setChat(chat);
 	}
 	
+	@Override
 	public Chat getChat()
 	{
 		return m_chatMessagePanel.getChat();
@@ -113,12 +117,14 @@ public class ChatPanel extends JPanel implements IChatPanel
 		m_chatMessagePanel = new ChatMessagePanel(null);
 	}
 	
+	@Override
 	public void setPlayerRenderer(final DefaultListCellRenderer renderer)
 	{
 		m_chatPlayerPanel.setPlayerRenderer(renderer);
 		m_chatMessagePanel.setPreferredSize(new Dimension(30, m_chatMessagePanel.getPreferredSize().height)); // gets remaining width from parent component, so setting the width is not really necessary
 	}
 	
+	@Override
 	public void setShowChatTime(final boolean showTime)
 	{
 		m_chatMessagePanel.setShowTime(showTime);

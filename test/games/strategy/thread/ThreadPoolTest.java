@@ -78,6 +78,7 @@ public class ThreadPoolTest extends TestCase
 		{
 			final Runnable r = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					threadTestBlock();
@@ -129,6 +130,7 @@ class Task implements Runnable
 		return done;
 	}
 	
+	@Override
 	public void run()
 	{
 		try

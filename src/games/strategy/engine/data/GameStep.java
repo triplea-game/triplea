@@ -30,7 +30,6 @@ import java.util.Properties;
  * 
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameStep extends GameDataComponent
 {

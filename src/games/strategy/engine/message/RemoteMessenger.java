@@ -31,11 +31,13 @@ public class RemoteMessenger implements IRemoteMessenger
 		m_unifiedMessenger = messenger;
 	}
 	
+	@Override
 	public IRemote getRemote(final RemoteName remoteName)
 	{
 		return getRemote(remoteName, false);
 	}
 	
+	@Override
 	public IRemote getRemote(final RemoteName remoteName, final boolean ignoreResults)
 	{
 		final InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
@@ -43,26 +45,31 @@ public class RemoteMessenger implements IRemoteMessenger
 		return rVal;
 	}
 	
+	@Override
 	public void registerRemote(final Object implementor, final RemoteName name)
 	{
 		m_unifiedMessenger.addImplementor(name, implementor, false);
 	}
 	
+	@Override
 	public void unregisterRemote(final RemoteName name)
 	{
 		unregisterRemote(name.getName());
 	}
 	
+	@Override
 	public boolean isServer()
 	{
 		return m_unifiedMessenger.isServer();
 	}
 	
+	@Override
 	public void unregisterRemote(final String name)
 	{
 		m_unifiedMessenger.removeImplementor(name, m_unifiedMessenger.getImplementor(name));
 	}
 	
+	@Override
 	public boolean hasLocalImplementor(final RemoteName descriptor)
 	{
 		return m_unifiedMessenger.getLocalEndPointCount(descriptor) == 1;

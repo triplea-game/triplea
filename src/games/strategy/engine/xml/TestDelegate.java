@@ -26,7 +26,6 @@ import java.io.Serializable;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A simple dumb delegate, dont acutally call these methods.
  *          Simply to satisfy the interface requirements for testing.
@@ -114,6 +113,7 @@ public final class TestDelegate extends AbstractDelegate
 	{
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;

@@ -34,7 +34,6 @@ import java.util.Random;
  * Responsible for initializing an N-Puzzle game.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class InitializationDelegate extends AbstractDelegate
 {
@@ -133,6 +132,7 @@ public class InitializationDelegate extends AbstractDelegate
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

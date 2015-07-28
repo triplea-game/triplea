@@ -32,6 +32,7 @@ public class UnitComparator
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final int left1 = TripleAUnit.get(u1).getMovementLeft();
@@ -49,6 +50,7 @@ public class UnitComparator
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final int left1 = TripleAUnit.get(u1).getMovementLeft();
@@ -83,6 +85,7 @@ public class UnitComparator
 		}
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit t1, final Unit t2)
 			{
 				final int cost1 = capacityMap.getInt(t1);
@@ -104,6 +107,7 @@ public class UnitComparator
 		final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final TripleAUnit t1 = TripleAUnit.get(u1);
@@ -149,6 +153,7 @@ public class UnitComparator
 		final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit t1, final Unit t2)
 			{
 				// check if transport is incapable due to game state
@@ -191,6 +196,7 @@ public class UnitComparator
 		final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(units);
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				// ensure units have enough movement
@@ -249,6 +255,7 @@ public class UnitComparator
 		final Comparator<Unit> movableUnitsComparator = getMovableUnitsComparator(units, route, player, noTies);
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final Unit t1 = TripleAUnit.get(u1).getTransportedBy();
@@ -275,6 +282,7 @@ public class UnitComparator
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit u1, final Unit u2)
 			{
 				final UnitAttachment ua1 = UnitAttachment.get(u1.getType());

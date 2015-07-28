@@ -49,7 +49,6 @@ import java.util.Set;
  * In this way changes to the game data can be co-ordinated across the network.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class ChangeFactory
 {

@@ -143,6 +143,7 @@ public class ProTransportUtils
 			// Sort units by attack
 			Collections.sort(units, new Comparator<Unit>()
 			{
+				@Override
 				public int compare(final Unit o1, final Unit o2)
 				{
 					// Very rough way to add support power

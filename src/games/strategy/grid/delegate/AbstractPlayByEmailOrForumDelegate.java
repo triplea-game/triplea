@@ -51,22 +51,26 @@ public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegat
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// we could have a pbem/forum post to do
 		return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData());
 	}
 	
+	@Override
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
 		m_hasPostedTurnSummary = hasPostedTurnSummary;
 	}
 	
+	@Override
 	public boolean getHasPostedTurnSummary()
 	{
 		return m_hasPostedTurnSummary;
 	}
 	
+	@Override
 	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
 	{
 		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);

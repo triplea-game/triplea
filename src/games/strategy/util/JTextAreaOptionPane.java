@@ -65,6 +65,7 @@ public class JTextAreaOptionPane
 		m_windowFrame.getContentPane().add(m_okButton, BorderLayout.SOUTH);
 		m_okButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_countDownLatch != null)

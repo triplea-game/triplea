@@ -40,6 +40,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		super(serverMessenger, messengers);
 	}
 	
+	@Override
 	public void banUsername(final INode node, final Date banExpires)
 	{
 		assertUserIsAdmin();
@@ -53,6 +54,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
+	@Override
 	public void banIp(final INode node, final Date banExpires)
 	{
 		assertUserIsAdmin();
@@ -66,6 +68,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
+	@Override
 	public void banMac(final INode node, final Date banExpires)
 	{
 		assertUserIsAdmin();
@@ -79,6 +82,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
+	@Override
 	public void banMac(final INode node, final String hashedMac, final Date banExpires)
 	{
 		assertUserIsAdmin();
@@ -91,6 +95,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					.getAddress().getHostAddress(), hashedMac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
+	@Override
 	public void muteUsername(final INode node, final Date muteExpires)
 	{
 		assertUserIsAdmin();
@@ -106,6 +111,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
 	}
 	
+	@Override
 	public void muteIp(final INode node, final Date muteExpires)
 	{
 		assertUserIsAdmin();
@@ -121,6 +127,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
 	}
 	
+	@Override
 	public void muteMac(final INode node, final Date muteExpires)
 	{
 		assertUserIsAdmin();
@@ -135,6 +142,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
 	}
 	
+	@Override
 	public void boot(final INode node)
 	{
 		assertUserIsAdmin();
@@ -150,6 +158,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 					mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
 	}
 	
+	@Override
 	public String getHeadlessHostBotSalt(final INode node)
 	{
 		assertUserIsAdmin();
@@ -164,6 +173,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return remoteHostUtils.getSalt();
 	}
 	
+	@Override
 	public String getChatLogHeadlessHostBot(final INode node, final String hashedPassword, final String salt)
 	{
 		assertUserIsAdmin();
@@ -180,6 +190,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return response;
 	}
 	
+	@Override
 	public String mutePlayerHeadlessHostBot(final INode node, final String playerNameToBeMuted, final int minutes, final String hashedPassword, final String salt)
 	{
 		assertUserIsAdmin();
@@ -196,6 +207,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return response;
 	}
 	
+	@Override
 	public String bootPlayerHeadlessHostBot(final INode node, final String playerNameToBeBooted, final String hashedPassword, final String salt)
 	{
 		assertUserIsAdmin();
@@ -212,6 +224,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return response;
 	}
 	
+	@Override
 	public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final int hours, final String hashedPassword, final String salt)
 	{
 		assertUserIsAdmin();
@@ -228,6 +241,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return response;
 	}
 	
+	@Override
 	public String stopGameHeadlessHostBot(final INode node, final String hashedPassword, final String salt)
 	{
 		assertUserIsAdmin();
@@ -244,6 +258,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return response;
 	}
 	
+	@Override
 	public String shutDownHeadlessHostBot(final INode node, final String hashedPassword, final String salt)
 	{
 		assertUserIsAdmin();
@@ -270,12 +285,14 @@ public class ModeratorController extends AbstractModeratorController implements 
 		}
 	}
 	
+	@Override
 	public boolean isAdmin()
 	{
 		final INode node = MessageContext.getSender();
 		return isPlayerAdmin(node);
 	}
 	
+	@Override
 	public boolean isPlayerAdmin(final INode node)
 	{
 		final String name = getRealName(node);
@@ -286,6 +303,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return user.isAdmin();
 	}
 	
+	@Override
 	public String getInformationOn(final INode node)
 	{
 		assertUserIsAdmin();
@@ -306,6 +324,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return builder.toString();
 	}
 	
+	@Override
 	public String getHostConnections(final INode node)
 	{
 		assertUserIsAdmin();
@@ -317,6 +336,7 @@ public class ModeratorController extends AbstractModeratorController implements 
 		return response;
 	}
 	
+	@Override
 	public String setPassword(final INode node, final String hashedPassword)
 	{
 		assertUserIsAdmin();

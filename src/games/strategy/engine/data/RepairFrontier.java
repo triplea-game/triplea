@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * 
  * @author Kevin Comcowich
- * @version 1.0
  */
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 {
@@ -70,6 +69,7 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 		return m_cachedRules;
 	}
 	
+	@Override
 	public Iterator<RepairRule> iterator()
 	{
 		return getRules().iterator();

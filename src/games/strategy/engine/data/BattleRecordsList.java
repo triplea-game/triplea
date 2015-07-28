@@ -147,7 +147,6 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 	 * @param beginningRound
 	 * @param endRound
 	 * @param currentRoundOnly
-	 * @return
 	 */
 	public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender, final String battleType, final Collection<Territory> anyOfTheseTerritories,
 				final BattleRecordsList brl, final int beginningRound, final int endRound, final boolean currentRoundOnly)

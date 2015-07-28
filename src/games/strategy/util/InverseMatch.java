@@ -23,7 +23,6 @@ package games.strategy.util;
  * A match that returns the negation of the given match.
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public class InverseMatch<T> extends Match<T>

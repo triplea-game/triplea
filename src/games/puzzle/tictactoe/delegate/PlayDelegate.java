@@ -33,7 +33,6 @@ import java.util.Collection;
  * Responsible for performing a move in a game of Tic Tac Toe.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 {
@@ -71,11 +70,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;
 	}
 	
+	@Override
 	public void signalStatus(final String status)
 	{
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
@@ -88,6 +89,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
+	@Override
 	public String play(final IGridPlayData play)
 	{
 		final Territory from = play.getStart();

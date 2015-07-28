@@ -35,7 +35,6 @@ import javax.swing.SwingUtilities;
  * Represents a human player of Grid Games.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2012-07-25 15:19:19 +0800 (Wed, 25 Jul 2012) $
  */
 public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implements IGridGamePlayer
 {
@@ -139,6 +138,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		// we do nothing, unless someone overrides this method
 	}
 	
+	@Override
 	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message)
 	{
 		return m_ui.selectUnit(startUnit, options, territory, player, data, message);
@@ -154,6 +154,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		}
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
@@ -167,6 +168,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 		m_ui.setEditDelegate(null);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_ui.getEditModeButtonModel().setEnabled(false);
@@ -179,6 +181,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	{
 		private static final long serialVersionUID = -6514835498581811786L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent ae)
 		{
 			final boolean editMode = ((ButtonModel) ae.getSource()).isSelected();

@@ -23,6 +23,7 @@ import java.util.Comparator;
 
 public class UnitTypeComparator implements Comparator<UnitType>
 {
+	@Override
 	public int compare(final UnitType o1, final UnitType o2)
 	{
 		final UnitType u1 = o1;

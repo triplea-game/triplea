@@ -52,6 +52,7 @@ public class DelegateList extends GameDataComponent implements Iterable<IDelegat
 		return m_delegates.size();
 	}
 	
+	@Override
 	public Iterator<IDelegate> iterator()
 	{
 		return m_delegates.values().iterator();

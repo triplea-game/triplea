@@ -107,6 +107,7 @@ public class MovePerformer implements Serializable
 		{
 			private static final long serialVersionUID = -7945930782650355037L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				// if we are moving out of a battle zone, mark it
@@ -131,6 +132,7 @@ public class MovePerformer implements Serializable
 		{
 			private static final long serialVersionUID = -3780228078499895244L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				final Collection<Unit> aaCasualties = fireAA(route, units);
@@ -158,6 +160,7 @@ public class MovePerformer implements Serializable
 		{
 			private static final long serialVersionUID = 670783657414493643L;
 			
+			@Override
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				// if any non enemy territories on route
@@ -484,7 +487,6 @@ public class MovePerformer implements Serializable
 	}
 	
 	/**
-	 * @return
 	 */
 	private static boolean isIgnoreTransportInMovement(final GameData data)
 	{

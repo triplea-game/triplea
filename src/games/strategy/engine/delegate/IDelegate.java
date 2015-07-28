@@ -40,7 +40,6 @@ import java.io.Serializable;
  * and will be called through RemoteMessenger.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public interface IDelegate
 {

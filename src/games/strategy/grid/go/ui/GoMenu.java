@@ -36,6 +36,7 @@ public class GoMenu extends GridGameMenu<GridGameFrame>
 		{
 			private static final long serialVersionUID = 4760939530305280882L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

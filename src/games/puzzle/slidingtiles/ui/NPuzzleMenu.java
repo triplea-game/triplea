@@ -29,7 +29,6 @@ import javax.swing.JScrollPane;
  * Represents the menu bar for an n-puzzle game.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class NPuzzleMenu extends GridGameMenu<GridGameFrame>
 {
@@ -50,6 +49,7 @@ public class NPuzzleMenu extends GridGameMenu<GridGameFrame>
 		{
 			private static final long serialVersionUID = -7535795861423393750L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

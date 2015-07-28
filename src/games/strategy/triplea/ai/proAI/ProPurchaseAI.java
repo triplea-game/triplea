@@ -1022,6 +1022,7 @@ public class ProPurchaseAI
 		final List<ProPlaceTerritory> sortedTerritories = new ArrayList<ProPlaceTerritory>(needToDefendTerritories);
 		Collections.sort(sortedTerritories, new Comparator<ProPlaceTerritory>()
 		{
+			@Override
 			public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2)
 			{
 				final double value1 = t1.getDefenseValue();
@@ -1174,6 +1175,7 @@ public class ProPurchaseAI
 		// Sort territories by value
 		Collections.sort(prioritizedLandTerritories, new Comparator<ProPlaceTerritory>()
 		{
+			@Override
 			public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2)
 			{
 				final double value1 = t1.getStrategicValue();
@@ -1586,6 +1588,7 @@ public class ProPurchaseAI
 		final List<ProPlaceTerritory> sortedTerritories = new ArrayList<ProPlaceTerritory>(seaPlaceTerritories);
 		Collections.sort(sortedTerritories, new Comparator<ProPlaceTerritory>()
 		{
+			@Override
 			public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2)
 			{
 				final double value1 = t1.getStrategicValue();
@@ -1986,6 +1989,7 @@ public class ProPurchaseAI
 		// Sort territories by value
 		Collections.sort(prioritizedLandTerritories, new Comparator<ProPlaceTerritory>()
 		{
+			@Override
 			public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2)
 			{
 				final double value1 = t1.getStrategicValue();
@@ -2045,6 +2049,7 @@ public class ProPurchaseAI
 		// Sort territories by value
 		Collections.sort(prioritizedCantHoldLandTerritories, new Comparator<ProPlaceTerritory>()
 		{
+			@Override
 			public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2)
 			{
 				final double value1 = t1.getDefenseValue();
@@ -2117,6 +2122,7 @@ public class ProPurchaseAI
 		// Sort territories by ascending value (try upgrading units in far away territories first)
 		Collections.sort(prioritizedLandTerritories, new Comparator<ProPlaceTerritory>()
 		{
+			@Override
 			public int compare(final ProPlaceTerritory t1, final ProPlaceTerritory t2)
 			{
 				final double value1 = t1.getStrategicValue();

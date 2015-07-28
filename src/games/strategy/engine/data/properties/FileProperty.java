@@ -35,7 +35,6 @@ import javax.swing.filechooser.FileFilter;
  * Presents a clickable label with the currently selected file name, through which a file dialog panel is accessible to change the file.
  * 
  * @author Lane O.B. Schwartz
- * @version $LastChangedDate$
  */
 public class FileProperty extends AEditableProperty
 {
@@ -82,11 +81,13 @@ public class FileProperty extends AEditableProperty
 	 * 
 	 * @return The file associated with this property
 	 */
+	@Override
 	public Object getValue()
 	{
 		return m_file;
 	}
 	
+	@Override
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_file = (File) value;
@@ -97,6 +98,7 @@ public class FileProperty extends AEditableProperty
 	 * 
 	 * @return a non-editable JTextField
 	 */
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final JTextField label;
@@ -107,6 +109,7 @@ public class FileProperty extends AEditableProperty
 		label.setEditable(false);
 		label.addMouseListener(new MouseListener()
 		{
+			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
 				final File selection = getFileUsingDialog(m_acceptableSuffixes);
@@ -117,6 +120,7 @@ public class FileProperty extends AEditableProperty
 					// Ask Swing to repaint this label when it's convenient
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							label.repaint();
@@ -125,18 +129,22 @@ public class FileProperty extends AEditableProperty
 				}
 			}
 			
+			@Override
 			public void mouseEntered(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseExited(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mousePressed(final MouseEvent e)
 			{
 			}
 			
+			@Override
 			public void mouseReleased(final MouseEvent e)
 			{
 			}
@@ -148,7 +156,6 @@ public class FileProperty extends AEditableProperty
 	 * Prompts the user to select a file.
 	 * 
 	 * @param acceptableSuffixes
-	 * @return
 	 */
 	private File getFileUsingDialog(final String... acceptableSuffixes)
 	{
@@ -161,6 +168,7 @@ public class FileProperty extends AEditableProperty
 			fileDialog.setMode(FileDialog.LOAD);
 			fileDialog.setFilenameFilter(new FilenameFilter()
 			{
+				@Override
 				public boolean accept(final File dir, final String name)
 				{
 					if (acceptableSuffixes == null || acceptableSuffixes.length == 0)
@@ -216,6 +224,7 @@ public class FileProperty extends AEditableProperty
 		return null;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value == null)

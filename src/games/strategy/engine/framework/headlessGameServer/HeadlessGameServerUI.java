@@ -78,6 +78,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 		{
 			private static final long serialVersionUID = 699780405180654825L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				leaveGame();
@@ -88,6 +89,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 		{
 			private static final long serialVersionUID = -3485076131973126967L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				shutdown();
@@ -145,6 +147,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 	
 	GameStepListener m_stepListener = new GameStepListener()
 	{
+		@Override
 		public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String stepDisplayName)
 		{
 			updateStep();
@@ -153,12 +156,14 @@ public class HeadlessGameServerUI extends MainGameFrame
 	
 	GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
 	{
+		@Override
 		public void gameDataChanged(final Change change)
 		{
 			try
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						if (m_uiContext == null)
@@ -197,6 +202,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						updateStep();

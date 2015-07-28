@@ -26,7 +26,6 @@ import java.io.Serializable;
  * Responsible for initializing a game of King's Table.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2012-12-25 06:54:45 +0800 (Tue, 25 Dec 2012) $
  */
 public class InitializationDelegate extends AbstractDelegate
 {
@@ -97,6 +96,7 @@ public class InitializationDelegate extends AbstractDelegate
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

@@ -58,7 +58,6 @@ public class DelegateExecutionManager
 	 * <p>
 	 * 
 	 * @param timeToWait
-	 * @return
 	 */
 	public boolean blockDelegateExecution(final int timeToWaitMS) throws InterruptedException
 	{
@@ -119,6 +118,7 @@ public class DelegateExecutionManager
 		assertGameNotOver();
 		final InvocationHandler ih = new InvocationHandler()
 		{
+			@Override
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				assertGameNotOver();

@@ -65,6 +65,7 @@ public class UnitsDrawer implements IDrawable
 		return m_playerName;
 	}
 	
+	@Override
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		if (m_overflow)
@@ -221,6 +222,7 @@ public class UnitsDrawer implements IDrawable
 		return new Tuple<Territory, List<Unit>>(t, rVal);
 	}
 	
+	@Override
 	public int getLevel()
 	{
 		return UNITS_LEVEL;

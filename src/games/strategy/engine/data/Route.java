@@ -51,7 +51,6 @@ import java.util.Set;
  * 
  * 
  * @author Sean Bridges, last major modification by edwinvanderwal
- * @version 1.0
  * 
  */
 public class Route implements java.io.Serializable, Iterable<Territory>
@@ -471,6 +470,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return true;
 	}
 	
+	@Override
 	public Iterator<Territory> iterator()
 	{
 		return Collections.unmodifiableList(getAllTerritories()).iterator();

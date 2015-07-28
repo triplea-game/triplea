@@ -59,8 +59,8 @@ public interface IWebPoster extends IBean
 	/**
 	 * Get the display name
 	 * 
-	 * @return
 	 */
+	@Override
 	public String getDisplayName();
 	
 	/**
@@ -73,7 +73,6 @@ public interface IWebPoster extends IBean
 	/**
 	 * Get the host URL.
 	 * 
-	 * @return
 	 */
 	public String getHost();
 	

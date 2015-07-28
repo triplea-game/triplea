@@ -53,12 +53,14 @@ public class ClientGame extends AbstractGame
 		super(data, gamePlayers, remotePlayerMapping, messengers);
 		m_gameModifiedChannel = new IGameModifiedChannel()
 		{
+			@Override
 			public void gameDataChanged(final Change aChange)
 			{
 				m_changePerformer.perform(aChange);
 				m_data.getHistory().getHistoryWriter().addChange(aChange);
 			}
 			
+			@Override
 			public void startHistoryEvent(final String event, final Object renderingData)
 			{
 				startHistoryEvent(event);
@@ -66,11 +68,13 @@ public class ClientGame extends AbstractGame
 					setRenderingData(renderingData);
 			}
 			
+			@Override
 			public void startHistoryEvent(final String event)
 			{
 				m_data.getHistory().getHistoryWriter().startEvent(event);
 			}
 			
+			@Override
 			public void addChildToEvent(final String text, final Object renderingData)
 			{
 				m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
@@ -81,6 +85,7 @@ public class ClientGame extends AbstractGame
 				m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
 			}
 			
+			@Override
 			public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
 			{
 				// we want to skip the first iteration, since that simply advances us to step 0
@@ -120,6 +125,7 @@ public class ClientGame extends AbstractGame
 				notifyGameStepListeners(stepName, delegateName, player, round, displayName);
 			}
 			
+			@Override
 			public void shutDown()
 			{
 				ClientGame.this.shutDown();
@@ -167,6 +173,7 @@ public class ClientGame extends AbstractGame
 		m_data.getGameLoader().shutDown();
 	}
 	
+	@Override
 	public void addChange(final Change aChange)
 	{
 		throw new UnsupportedOperationException();
@@ -174,6 +181,7 @@ public class ClientGame extends AbstractGame
 	
 	private final IGameStepAdvancer m_gameStepAdvancer = new IGameStepAdvancer()
 	{
+		@Override
 		public void startPlayerStep(final String stepName, final PlayerID player)
 		{
 			if (m_isGameOver)
@@ -234,16 +242,19 @@ public class ClientGame extends AbstractGame
 	 * It would be easy to get the server to save the game, and send the
 	 * data to the client, I just havent bothered.
 	 */
+	@Override
 	public boolean canSave()
 	{
 		return false;
 	}
 	
+	@Override
 	public IRandomSource getRandomSource()
 	{
 		return null;
 	}
 	
+	@Override
 	public void saveGame(final File f)
 	{
 		final IServerRemote server = (IServerRemote) m_remoteMessenger.getRemote(ServerGame.SERVER_REMOTE);

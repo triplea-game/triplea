@@ -32,7 +32,6 @@ import java.util.Set;
  * Supports adding and comparing of maps.
  * 
  * @author Sean Bridges
- * @version 2.0
  * 
  */
 public class IntegerMap<T> implements Cloneable, Serializable
@@ -250,7 +249,6 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * Will return zero if empty.
 	 * 
-	 * @return
 	 */
 	public int highestValue()
 	{
@@ -268,7 +266,6 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * Will return zero if empty.
 	 * 
-	 * @return
 	 */
 	public int lowestValue()
 	{

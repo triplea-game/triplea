@@ -93,6 +93,7 @@ public class ProScrambleAI
 			{
 				Collections.sort(canScrambleAir, new Comparator<Unit>()
 				{
+					@Override
 					public int compare(final Unit o1, final Unit o2)
 					{
 						final double strength1 = battleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o1), new ArrayList<Unit>(), false);

@@ -51,6 +51,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 	/**
 	 * Called after ALL attachments are created.
 	 */
+	@Override
 	public abstract void validate(final GameData data) throws GameParseException;
 	
 	/**
@@ -121,22 +122,26 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 		return obj.toString();
 	}
 	
+	@Override
 	public Attachable getAttachedTo()
 	{
 		return m_attachedTo;
 	}
 	
+	@Override
 	@InternalDoNotExport
 	public void setAttachedTo(final Attachable attachable)
 	{
 		m_attachedTo = attachable;
 	}
 	
+	@Override
 	public String getName()
 	{
 		return m_name;
 	}
 	
+	@Override
 	@InternalDoNotExport
 	public void setName(final String aString)
 	{

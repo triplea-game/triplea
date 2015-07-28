@@ -106,6 +106,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private CountDownLatch m_removeConnectionsLatch = null;
 	private final Observer m_gameSelectorObserver = new Observer()
 	{
+		@Override
 		public void update(final Observable o, final Object arg)
 		{
 			gameDataChanged();
@@ -302,21 +303,25 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	
 	private final IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote()
 	{
+		@Override
 		public PlayerListing getPlayerListing()
 		{
 			return getPlayerListingInternal();
 		}
 		
+		@Override
 		public void takePlayer(final INode who, final String playerName)
 		{
 			takePlayerInternal(who, true, playerName);
 		}
 		
+		@Override
 		public void releasePlayer(final INode who, final String playerName)
 		{
 			takePlayerInternal(who, false, playerName);
 		}
 		
+		@Override
 		public void disablePlayer(final String playerName)
 		{
 			if (!m_headless)
@@ -324,6 +329,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			setPlayerEnabled(playerName, false);// we don't want the client's changing stuff for anyone but a bot
 		}
 		
+		@Override
 		public void enablePlayer(final String playerName)
 		{
 			if (!m_headless)
@@ -331,6 +337,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			setPlayerEnabled(playerName, true); // we don't want the client's changing stuff for anyone but a bot
 		}
 		
+		@Override
 		public boolean isGameStarted(final INode newNode)
 		{
 			if (m_serverLauncher != null)
@@ -347,6 +354,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			}
 		}
 		
+		@Override
 		public boolean getIsServerHeadless()
 		{
 			return HeadlessGameServer.headless();
@@ -355,6 +363,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		/**
 		 * This should not be called from within game, only from the game setup screen, while everyone is waiting for game to start
 		 */
+		@Override
 		public byte[] getSaveGame()
 		{
 			System.out.println("Sending save game");
@@ -380,6 +389,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			return bytes;
 		}
 		
+		@Override
 		public byte[] getGameOptions()
 		{
 			byte[] bytes = null;
@@ -407,6 +417,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			return bytes;
 		}
 		
+		@Override
 		public Set<String> getAvailableGames()
 		{
 			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
@@ -415,6 +426,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			return headless.getAvailableGames();
 		}
 		
+		@Override
 		public void changeServerGameTo(final String gameName)
 		{
 			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
@@ -424,6 +436,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			headless.setGameMapTo(gameName);
 		}
 		
+		@Override
 		public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave)
 		{
 			final HeadlessGameServer headless = HeadlessGameServer.getInstance();
@@ -448,6 +461,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			headless.loadGameSave(save);
 		}
 		
+		@Override
 		public void changeToGameSave(final byte[] bytes, final String fileName)
 		{
 			// TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
@@ -490,6 +504,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			}
 		}
 		
+		@Override
 		public void changeToGameOptions(final byte[] bytes)
 		{
 			// TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why if not.
@@ -632,6 +647,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
+	@Override
 	public void messengerInvalid(final IMessenger messenger, final Exception reason)
 	{
 		if (m_headless)
@@ -647,10 +663,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
+	@Override
 	public void connectionAdded(final INode to)
 	{
 	}
 	
+	@Override
 	public void connectionRemoved(final INode node)
 	{
 		if (m_removeConnectionsLatch != null)

@@ -23,7 +23,6 @@ import java.io.Serializable;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public interface IAttachment extends Serializable
 {

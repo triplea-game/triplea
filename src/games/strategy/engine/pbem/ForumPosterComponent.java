@@ -62,6 +62,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = -2619980789206699839L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_historyLog.setVisible(true);
@@ -71,6 +72,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = 8317441736305744524L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_postButton.setEnabled(false);
@@ -83,6 +85,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = 207279881318712095L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -92,6 +95,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = 207279881318712095L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -101,6 +105,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = 2298448099326090293L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -110,6 +115,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = -4248518090232071926L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -119,6 +125,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = 1431745626173286692L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -128,6 +135,7 @@ public class ForumPosterComponent extends JPanel
 		{
 			private static final long serialVersionUID = -67455254243579500L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				if (m_repostTurnSummaryCheckBox.isSelected())

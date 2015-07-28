@@ -29,7 +29,6 @@ import java.util.List;
  * Some utility methods for dealing with collections.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class Util
 {
@@ -177,6 +176,7 @@ public class Util
 		}
 		Collections.sort(reorder, new Comparator<T>()
 		{
+			@Override
 			public int compare(final T o1, final T o2)
 			{
 				// get int returns 0 if no value

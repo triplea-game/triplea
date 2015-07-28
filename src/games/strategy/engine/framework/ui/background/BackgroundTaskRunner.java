@@ -18,6 +18,7 @@ public class BackgroundTaskRunner
 		final AtomicBoolean doneWait = new AtomicBoolean(false);
 		final Thread t = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -27,6 +28,7 @@ public class BackgroundTaskRunner
 				{
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							doneWait.set(true);
@@ -56,6 +58,7 @@ public class BackgroundTaskRunner
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				runInBackground(parent, waitMessage, r);

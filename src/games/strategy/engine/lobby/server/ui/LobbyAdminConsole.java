@@ -114,6 +114,7 @@ public class LobbyAdminConsole extends JFrame
 		m_bootPlayer.addActionListener(new BootPlayerAction(this, m_server.getMessenger()));
 		m_debugPlayer.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				debugPlayer();
@@ -121,6 +122,7 @@ public class LobbyAdminConsole extends JFrame
 		});
 		m_remoteHostActions.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				remoteHostActions();
@@ -128,6 +130,7 @@ public class LobbyAdminConsole extends JFrame
 		});
 		m_exit.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final int option = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, "Are you Sure?", "Are you Sure", JOptionPane.YES_NO_OPTION);
@@ -138,6 +141,7 @@ public class LobbyAdminConsole extends JFrame
 		});
 		m_backupNow.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				Database.backup();
@@ -178,6 +182,7 @@ public class LobbyAdminConsole extends JFrame
 				// kill the swing thread
 				final Runnable r = new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						s_logger.info("Getting debug info for:" + node);
@@ -227,6 +232,7 @@ public class LobbyAdminConsole extends JFrame
 				// kill the swing thread
 				final Runnable r = new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						s_logger.info("Starting Remote Host Action for: " + node);

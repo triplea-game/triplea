@@ -145,6 +145,7 @@ public class HeuristicAI extends GridAbstractAI
 	{
 		return new Comparator<Triple<Territory, Territory, Integer>>()
 		{
+			@Override
 			public int compare(final Triple<Territory, Territory, Integer> t1, final Triple<Territory, Territory, Integer> t2)
 			{
 				if ((t1 == null && t2 == null) || t1 == t2)
@@ -189,6 +190,7 @@ public class HeuristicAI extends GridAbstractAI
 	{
 		return new Comparator<Triple<Territory, Territory, Collection<Territory>>>()
 		{
+			@Override
 			public int compare(final Triple<Territory, Territory, Collection<Territory>> t1, final Triple<Territory, Territory, Collection<Territory>> t2)
 			{
 				if ((t1 == null && t2 == null) || t1 == t2)

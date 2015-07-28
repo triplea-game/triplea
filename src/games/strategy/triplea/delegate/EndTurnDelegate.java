@@ -58,7 +58,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          At the end of the turn collect income.
  */
@@ -363,7 +362,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	 * 
 	 * @param territories
 	 * @param data
-	 * @return
 	 */
 	public static ResourceCollection getResourceProduction(final Collection<Territory> territories, final GameData data)
 	{

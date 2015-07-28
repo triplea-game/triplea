@@ -124,6 +124,7 @@ public class Version implements Serializable, Comparable
 		return this.toString().hashCode();
 	}
 	
+	@Override
 	public int compareTo(final Object o)
 	{
 		return compareTo(o, false);
@@ -185,6 +186,7 @@ public class Version implements Serializable, Comparable
 	{
 		return new Comparator<Version>()
 		{
+			@Override
 			public int compare(final Version v1, final Version v2)
 			{
 				if (v1 == null && v2 == null)

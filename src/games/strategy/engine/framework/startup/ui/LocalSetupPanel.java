@@ -127,6 +127,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 		data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		m_gameSelectorModel.deleteObserver(this);
@@ -138,12 +139,14 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 		m_gameSelectorModel.deleteObserver(this);
 	}
 	
+	@Override
 	public void update(final Observable o, final Object arg)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					layoutComponents();
@@ -266,6 +269,7 @@ class LocalPlayerComboBoxSelector
 	
 	private final ActionListener m_disablePlayerActionListener = new ActionListener()
 	{
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_enabledCheckBox.isSelected())

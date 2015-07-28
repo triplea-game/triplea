@@ -47,6 +47,7 @@ public class ClientLoginValidator implements ILoginValidator
 		m_password = password;
 	}
 	
+	@Override
 	public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress)
 	{
 		final Map<String, String> challengeProperties = new HashMap<String, String>();
@@ -67,6 +68,7 @@ public class ClientLoginValidator implements ILoginValidator
 		return challengeProperties;
 	}
 	
+	@Override
 	public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient, final String clientName, final String hashedMac,
 				final SocketAddress remoteAddress)
 	{

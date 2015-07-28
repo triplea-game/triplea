@@ -38,10 +38,12 @@ public class DummyGridGameDisplay implements IGridGameDisplay
 		m_ui = ui;
 	}
 	
+	@Override
 	public void initialize(final IDisplayBridge bridge)
 	{
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		// make sure to shut down the ui if there is one
@@ -49,30 +51,37 @@ public class DummyGridGameDisplay implements IGridGameDisplay
 			m_ui.stopGame();
 	}
 	
+	@Override
 	public void setStatus(final String status)
 	{
 	}
 	
+	@Override
 	public void setGameOver()
 	{
 	}
 	
+	@Override
 	public void refreshTerritories(final Collection<Territory> territories)
 	{
 	}
 	
+	@Override
 	public void showGridPlayDataMove(final IGridPlayData move)
 	{
 	}
 	
+	@Override
 	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
 	{
 	}
 	
+	@Override
 	public void initializeGridMapData(final GameMap map)
 	{
 	}
 	
+	@Override
 	public GridGameFrame getGridGameFrame()
 	{
 		return null;

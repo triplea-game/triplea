@@ -75,6 +75,7 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		// Make sure that if any of the incoming data is null, we are still OK (tests and mockbattle use null for a lot of this stuff)
 	}
 	
+	@Override
 	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
 	{
 		final Collection<Unit> rVal = new ArrayList<Unit>();
@@ -96,41 +97,49 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
 	}
 	
+	@Override
 	public void addBombardingUnit(final Unit unit)
 	{
 		m_bombardingUnits.add(unit);
 	}
 	
+	@Override
 	public Collection<Unit> getBombardingUnits()
 	{
 		return new ArrayList<Unit>(m_bombardingUnits);
 	}
 	
+	@Override
 	public boolean isAmphibious()
 	{
 		return m_isAmphibious;
 	}
 	
+	@Override
 	public Collection<Unit> getAmphibiousLandAttackers()
 	{
 		return new ArrayList<Unit>(m_amphibiousLandAttackers);
 	}
 	
+	@Override
 	public Collection<Unit> getAttackingUnits()
 	{
 		return new ArrayList<Unit>(m_attackingUnits);
 	}
 	
+	@Override
 	public Collection<Unit> getDefendingUnits()
 	{
 		return new ArrayList<Unit>(m_defendingUnits);
 	}
 	
+	@Override
 	public List<Unit> getRemainingAttackingUnits()
 	{
 		return new ArrayList<Unit>(m_attackingUnits);
 	}
 	
+	@Override
 	public List<Unit> getRemainingDefendingUnits()
 	{
 		return new ArrayList<Unit>(m_defendingUnits);
@@ -140,13 +149,16 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#isEmpty()
 	 */
+	@Override
 	abstract public boolean isEmpty();
 	
+	@Override
 	public final boolean isOver()
 	{
 		return m_isOver;
 	}
 	
+	@Override
 	public void cancelBattle(final IDelegateBridge bridge)
 	{
 	}
@@ -155,36 +167,43 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#isBombingRun()
 	 */
+	@Override
 	public boolean isBombingRun()
 	{
 		return m_isBombingRun;
 	}
 	
+	@Override
 	public BattleType getBattleType()
 	{
 		return m_battleType;
 	}
 	
+	@Override
 	public int getBattleRound()
 	{
 		return m_round;
 	}
 	
+	@Override
 	public WhoWon getWhoWon()
 	{
 		return m_whoWon;
 	}
 	
+	@Override
 	public BattleResultDescription getBattleResultDescription()
 	{
 		return m_battleResultDescription;
 	}
 	
+	@Override
 	public GUID getBattleID()
 	{
 		return m_battleID;
 	}
 	
+	@Override
 	public final Territory getTerritory()
 	{
 		return m_battleSite;
@@ -195,11 +214,13 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		return m_territoryEffects;
 	}
 	
+	@Override
 	public PlayerID getAttacker()
 	{
 		return m_attacker;
 	}
 	
+	@Override
 	public PlayerID getDefender()
 	{
 		return m_defender;
@@ -214,24 +235,28 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#fight(games.strategy.engine.delegate.IDelegateBridge)
 	 */
+	@Override
 	abstract public void fight(IDelegateBridge bridge);
 	
 	/*
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#addAttackChange(games.strategy.engine.data.Route, java.util.Collection, java.util.HashMap)
 	 */
+	@Override
 	abstract public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets);
 	
 	/*
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#removeAttack(games.strategy.engine.data.Route, java.util.Collection)
 	 */
+	@Override
 	abstract public void removeAttack(Route route, Collection<Unit> units);
 	
 	/*
 	 * (non-Javadoc)
 	 * @see games.strategy.triplea.delegate.IBattle#unitsLostInPrecedingBattle(games.strategy.triplea.delegate.IBattle,java.util.Collection<Unit>,games.strategy.engine.delegate.IDelegateBridge)
 	 */
+	@Override
 	abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 	
 	@Override

@@ -295,6 +295,7 @@ public class GoMapPanel extends GridMapPanel
 		m_lastMove = move;
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (move != null)
@@ -365,6 +366,7 @@ public class GoMapPanel extends GridMapPanel
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						repaint();
@@ -386,6 +388,7 @@ public class GoMapPanel extends GridMapPanel
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					repaint();

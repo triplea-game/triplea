@@ -110,6 +110,7 @@ public class ActionButtons extends JPanel
 		// this will minimize the damage
 		map.getUIContext().addActive(new Active()
 		{
+			@Override
 			public void deactivate()
 			{
 				removeAll();
@@ -213,6 +214,7 @@ public class ActionButtons extends JPanel
 		final String currentName = m_current.toString();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (m_layout != null)

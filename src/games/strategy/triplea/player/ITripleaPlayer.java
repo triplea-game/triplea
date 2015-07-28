@@ -273,7 +273,6 @@ public interface ITripleaPlayer extends IRemotePlayer
 	 * @param current
 	 * @param possible
 	 * @param message
-	 * @return
 	 */
 	public Collection<Unit> selectUnitsQuery(Territory current, Collection<Unit> possible, String message);
 	
@@ -302,7 +301,6 @@ public interface ITripleaPlayer extends IRemotePlayer
 	 * Asks the player if they wish to perform any kamikaze suicide attacks
 	 * 
 	 * @param possibleUnitsToAttack
-	 * @return
 	 */
 	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(HashMap<Territory, Collection<Unit>> possibleUnitsToAttack);
 	

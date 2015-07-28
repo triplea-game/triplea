@@ -42,7 +42,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A large image that can be scrolled according to a ImageScrollModel.
  *          Generally used in conjunction with a ImageScrollerSmallView.
@@ -72,6 +71,7 @@ public class ImageScrollerLargeView extends JComponent
 	private int m_drag_scrolling_lasty;
 	private final ActionListener m_timerAction = new ActionListener()
 	{
+		@Override
 		public final void actionPerformed(final ActionEvent e)
 		{
 			if (JOptionPane.getFrameForComponent(ImageScrollerLargeView.this).getFocusOwner() == null)
@@ -117,6 +117,7 @@ public class ImageScrollerLargeView extends JComponent
 		m_timer.start();
 		m_model.addObserver(new Observer()
 		{
+			@Override
 			public void update(final Observable o, final Object arg)
 			{
 				repaint();
@@ -278,6 +279,7 @@ public class ImageScrollerLargeView extends JComponent
 	 */
 	private final MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener()
 	{
+		@Override
 		public void mouseWheelMoved(final MouseWheelEvent e)
 		{
 			if (!e.isAltDown())
@@ -416,6 +418,7 @@ public class ImageScrollerLargeView extends JComponent
 	
 	private class Scroller implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			scroll();

@@ -54,75 +54,90 @@ public class ProDummyDelegateBridge implements IDelegateBridge
 		m_changePerformer = new ChangePerformer(m_data);
 	}
 	
+	@Override
 	public GameData getData()
 	{
 		return m_data;
 	}
 	
+	@Override
 	public void leaveDelegateExecution()
 	{
 	}
 	
+	@Override
 	public Properties getStepProperties()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public String getStepName()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		return m_proAI;
 	}
 	
+	@Override
 	public IRemotePlayer getRemotePlayer()
 	{
 		return m_proAI;
 	}
 	
+	@Override
 	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
 	}
 	
+	@Override
 	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}
 	
+	@Override
 	public PlayerID getPlayerID()
 	{
 		return m_player;
 	}
 	
+	@Override
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_writer;
 	}
 	
+	@Override
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
 	}
 	
+	@Override
 	public ISound getSoundChannelBroadcaster()
 	{
 		return m_soundChannel;
 	}
 	
+	@Override
 	public void enterDelegateExecution()
 	{
 	}
 	
+	@Override
 	public void addChange(final Change aChange)
 	{
 		m_allChanges.add(aChange);
 		m_changePerformer.perform(aChange);
 	}
 	
+	@Override
 	public void stopGameSequence()
 	{
 	}

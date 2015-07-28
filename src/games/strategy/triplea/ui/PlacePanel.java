@@ -49,7 +49,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Sean Bridges, edited by Erik von der Osten
- * @version 1.1
  */
 public class PlacePanel extends AbstractMovePanel
 {
@@ -78,6 +77,7 @@ public class PlacePanel extends AbstractMovePanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));

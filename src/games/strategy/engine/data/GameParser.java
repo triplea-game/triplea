@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -72,7 +73,6 @@ import org.xml.sax.SAXParseException;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameParser
 {
@@ -93,17 +93,16 @@ public class GameParser
 	 * @param stream
 	 * @param delayParsing
 	 *            Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the game chooser which should use the user set preference.
-	 * @return
 	 * @throws GameParseException
 	 * @throws SAXException
 	 * @throws EngineVersionException
 	 */
 	public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName, final boolean delayParsing)
-				throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException
+				throws GameParseException, SAXException, EngineVersionException
 	{
-		if (stream == null)
+		if( stream == null )
 		{
-			throw new IllegalArgumentException("Stream must be non null");
+			throw new NullPointerException("input stream shoudl not be null");
 		}
 		Document doc = null;
 		try
@@ -129,8 +128,9 @@ public class GameParser
 		{
 			for (final SAXParseException error : errorsSAX)
 			{
-				System.err.println("SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
-							+ error.getColumnNumber() + ", error: " + error.getMessage());
+				String msg = "SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
+						+ error.getColumnNumber() + ", error: " + error.getMessage();
+				ClientLogger.logQuietly(msg);
 			}
 		}
 		parseDiceSides(getSingleChild("diceSides", root, true));
@@ -328,16 +328,19 @@ public class GameParser
 		final DocumentBuilder builder = factory.newDocumentBuilder();
 		builder.setErrorHandler(new ErrorHandler()
 		{
+			@Override
 			public void fatalError(final SAXParseException exception) throws SAXException
 			{
 				errorsSAX.add(exception);
 			}
 			
+			@Override
 			public void error(final SAXParseException exception) throws SAXException
 			{
 				errorsSAX.add(exception);
 			}
 			
+			@Override
 			public void warning(final SAXParseException exception) throws SAXException
 			{
 				errorsSAX.add(exception);

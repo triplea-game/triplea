@@ -38,95 +38,115 @@ public class HeadlessUIContext extends AbstractUIContext implements IUIContext
 		stopWatch.done();
 	}
 	
+	@Override
 	public Cursor getCursor()
 	{
 		return null;
 	}
 	
+	@Override
 	public MapData getMapData()
 	{
 		return null;
 	}
 	
+	@Override
 	public TileImageFactory getTileImageFactory()
 	{
 		return null;
 	}
 	
+	@Override
 	public UnitImageFactory getUnitImageFactory()
 	{
 		return null;
 	}
 	
+	@Override
 	public ResourceImageFactory getResourceImageFactory()
 	{
 		return null;
 	}
 	
+	@Override
 	public MapImage getMapImage()
 	{
 		return null;
 	}
 	
+	@Override
 	public FlagIconImageFactory getFlagImageFactory()
 	{
 		return null;
 	}
 	
+	@Override
 	public PUImageFactory getPUImageFactory()
 	{
 		return null;
 	}
 	
+	@Override
 	public DiceImageFactory getDiceImageFactory()
 	{
 		return null;
 	}
 	
+	@Override
 	public boolean getShowUnits()
 	{
 		return false;
 	}
 	
+	@Override
 	public void setShowUnits(final boolean aBool)
 	{
 	}
 	
+	@Override
 	public OptionalExtraBorderLevel getDrawTerritoryBordersAgain()
 	{
 		return null;
 	}
 	
+	@Override
 	public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level)
 	{
 	}
 	
+	@Override
 	public void resetDrawTerritoryBordersAgain()
 	{
 	}
 	
+	@Override
 	public void setDrawTerritoryBordersAgainToMedium()
 	{
 	}
 	
+	@Override
 	public void setShowTerritoryEffects(final boolean aBool)
 	{
 	}
 	
+	@Override
 	public boolean getShowTerritoryEffects()
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean getShowMapOnly()
 	{
 		return false;
 	}
 	
+	@Override
 	public void setShowMapOnly(final boolean aBool)
 	{
 	}
 	
+	@Override
 	public void setUnitScaleFactor(final double scaleFactor)
 	{
 	}

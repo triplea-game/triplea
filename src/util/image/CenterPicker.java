@@ -207,6 +207,7 @@ public class CenterPicker extends JFrame
 		{
 			private static final long serialVersionUID = 2712234474452114083L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadCenters();
@@ -217,6 +218,7 @@ public class CenterPicker extends JFrame
 		{
 			private static final long serialVersionUID = -4519036149978621171L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				saveCenters();
@@ -227,6 +229,7 @@ public class CenterPicker extends JFrame
 		{
 			private static final long serialVersionUID = -5631457890653630218L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);

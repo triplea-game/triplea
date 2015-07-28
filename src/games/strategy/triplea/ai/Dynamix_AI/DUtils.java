@@ -757,6 +757,7 @@ public class DUtils
 	{
 		return DSorting.SortListByX(list, new Comparator<Territory>()
 		{
+			@Override
 			public int compare(final Territory ter1, final Territory ter2)
 			{
 				final int val1 = DUtils.GetTersThatMatchXThatUnitsOnTerCanAttack(data, ter1, DMatches.territoryIsOwnedByNNEnemy(data, player), player).size();
@@ -1915,6 +1916,7 @@ public class DUtils
 			this.base = base;
 		}
 		
+		@Override
 		public int compare(final Object a, final Object b)
 		{
 			if ((Double) base.get(a) < (Double) base.get(b))
@@ -1936,6 +1938,7 @@ public class DUtils
 			this.base = base;
 		}
 		
+		@Override
 		public int compare(final Object a, final Object b)
 		{
 			if ((Double) base.get(a) > (Double) base.get(b))

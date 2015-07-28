@@ -98,11 +98,13 @@ public class ScriptedRandomSource implements IRandomSource
 		}
 	}
 	
+	@Override
 	public int getRandom(final int max, final String annotation) throws IllegalStateException
 	{
 		return getRandom(max, 1, null)[0];
 	}
 	
+	@Override
 	public int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException, IllegalStateException
 	{
 		if (count <= 0)

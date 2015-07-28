@@ -63,7 +63,6 @@ import javax.swing.SwingUtilities;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class TripleA extends AbstractGameLoader implements IGameLoader
 {
@@ -78,6 +77,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 	// public static final String NONE = "None (AI)";
 	protected transient ITripleaDisplay m_display;
 	
+	@Override
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -133,6 +133,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 	{
 	}
 	
+	@Override
 	public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception
 	{
 		try
@@ -188,6 +189,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						final TripleAFrame frame;
@@ -210,6 +212,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 						connectPlayers(players, frame);
 						SwingUtilities.invokeLater(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -260,27 +263,32 @@ public class TripleA extends AbstractGameLoader implements IGameLoader
 	/*
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
+	@Override
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return ITripleaDisplay.class;
 	}
 	
+	@Override
 	public Class<? extends IChannelSubscribor> getSoundType()
 	{
 		return ISound.class;
 	}
 	
+	@Override
 	public Class<? extends IRemote> getRemotePlayerType()
 	{
 		return ITripleaPlayer.class;
 	}
 	
+	@Override
 	public IUnitFactory getUnitFactory()
 	{
 		return new IUnitFactory()
 		{
 			private static final long serialVersionUID = 5684926837825766505L;
 			
+			@Override
 			public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data)
 			{
 				return new TripleAUnit(type, owner, data);

@@ -26,7 +26,6 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 /**
  * 
  * @author Tony Clayton, but abstracted by Veqryn
- * @version 1.0
  */
 public class EndTurnPanel extends AbstractForumPosterPanel
 {

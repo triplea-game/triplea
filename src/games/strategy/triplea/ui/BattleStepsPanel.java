@@ -61,6 +61,7 @@ class BattleStepsPanel extends JPanel implements Active
 		m_list.setSelectionModel(m_listSelectionModel);
 	}
 	
+	@Override
 	public void deactivate()
 	{
 		wakeAll();
@@ -184,6 +185,7 @@ class BattleStepsPanel extends JPanel implements Active
 					}
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							walkStep();

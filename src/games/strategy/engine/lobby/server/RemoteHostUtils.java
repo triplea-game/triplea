@@ -29,6 +29,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		m_serverMessenger = gameServerMessenger;
 	}
 	
+	@Override
 	public String getConnections()
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -51,6 +52,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return "Not a server.";
 	}
 	
+	@Override
 	public String getChatLogHeadlessHostBot(final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -61,6 +63,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return instance.remoteGetChatLog(hashedPassword, salt);
 	}
 	
+	@Override
 	public String mutePlayerHeadlessHostBot(final String playerNameToBeMuted, final int minutes, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -71,6 +74,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return instance.remoteMutePlayer(playerNameToBeMuted, minutes, hashedPassword, salt);
 	}
 	
+	@Override
 	public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -81,6 +85,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return instance.remoteBootPlayer(playerNameToBeBooted, hashedPassword, salt);
 	}
 	
+	@Override
 	public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -91,6 +96,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return instance.remoteBanPlayer(playerNameToBeBanned, hours, hashedPassword, salt);
 	}
 	
+	@Override
 	public String stopGameHeadlessHostBot(final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -101,6 +107,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return instance.remoteStopGame(hashedPassword, salt);
 	}
 	
+	@Override
 	public String shutDownHeadlessHostBot(final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -111,6 +118,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		return instance.remoteShutdown(hashedPassword, salt);
 	}
 	
+	@Override
 	public String getSalt()
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))

@@ -26,7 +26,6 @@ import java.util.Collection;
  * Display for a Grid Game.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public class GridGameDisplay implements IGridGameDisplay
 {
@@ -47,6 +46,7 @@ public class GridGameDisplay implements IGridGameDisplay
 		m_ui = ui;
 	}
 	
+	@Override
 	public GridGameFrame getGridGameFrame()
 	{
 		return m_ui;
@@ -55,6 +55,7 @@ public class GridGameDisplay implements IGridGameDisplay
 	/**
 	 * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
 	 */
+	@Override
 	public void initialize(final IDisplayBridge bridge)
 	{
 		m_displayBridge = bridge;
@@ -66,6 +67,7 @@ public class GridGameDisplay implements IGridGameDisplay
 	 * 
 	 * @see games.strategy.engine.display.IDisplay#shutdown()
 	 */
+	@Override
 	public void shutDown()
 	{
 		m_ui.stopGame();
@@ -77,6 +79,7 @@ public class GridGameDisplay implements IGridGameDisplay
 	 * @param error
 	 *            the status message to display
 	 */
+	@Override
 	public void setStatus(final String status)
 	{
 		m_ui.setStatus(status);
@@ -85,6 +88,7 @@ public class GridGameDisplay implements IGridGameDisplay
 	/**
 	 * Set the game over status for this display to <code>true</code>.
 	 */
+	@Override
 	public void setGameOver()// (CountDownLatch waiting)
 	{
 		m_ui.setGameOver();// waiting);
@@ -96,21 +100,25 @@ public class GridGameDisplay implements IGridGameDisplay
 	 * @param territories
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces have changed
 	 */
+	@Override
 	public void refreshTerritories(final Collection<Territory> territories)
 	{
 		m_ui.refreshTerritories(territories);
 	}
 	
+	@Override
 	public void showGridPlayDataMove(final IGridPlayData move)
 	{
 		m_ui.showGridPlayDataMove(move);
 	}
 	
+	@Override
 	public void showGridEndTurnData(final IGridEndTurnData endTurnData)
 	{
 		m_ui.showGridEndTurnData(endTurnData);
 	}
 	
+	@Override
 	public void initializeGridMapData(final GameMap map)
 	{
 		m_ui.initializeGridMapData(map);

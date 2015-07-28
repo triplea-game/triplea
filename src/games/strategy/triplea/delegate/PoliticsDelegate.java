@@ -54,7 +54,6 @@ import java.util.Set;
  * Responsible allowing players to perform politicalActions
  * 
  * @author Edwin van der Wal
- * @version 1.0
  * 
  */
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate
@@ -135,6 +134,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		// load other variables from state here:
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!m_player.amNotDeadYet(getData()))
@@ -153,6 +153,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
 	
+	@Override
 	public Collection<PoliticalActionAttachment> getValidActions()
 	{
 		final GameData data = m_bridge.getData();
@@ -177,6 +178,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		return IPoliticsDelegate.class;
 	}
 	
+	@Override
 	public void attemptAction(final PoliticalActionAttachment paa)
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(getData()))
@@ -224,7 +226,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	 * 
 	 * @param paa
 	 *            the politicalActionAttachment that should be accepted
-	 * @return
 	 */
 	private boolean actionIsAccepted(final PoliticalActionAttachment paa)
 	{

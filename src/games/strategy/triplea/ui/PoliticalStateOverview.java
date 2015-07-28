@@ -119,7 +119,6 @@ public class PoliticalStateOverview extends JPanel
 	 * 
 	 * @param player1
 	 * @param player2
-	 * @return
 	 */
 	private JPanel getRelationshipLabel(final PlayerID player1, final PlayerID player2)
 	{
@@ -159,6 +158,7 @@ public class PoliticalStateOverview extends JPanel
 			{
 				private static final long serialVersionUID = 629987410235293178L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					final List<RelationshipType> types = new ArrayList<RelationshipType>(m_data.getRelationshipTypeList().getAllRelationshipTypes());

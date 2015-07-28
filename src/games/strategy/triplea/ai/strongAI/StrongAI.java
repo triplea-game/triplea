@@ -7398,7 +7398,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 * 
 	 * @param data
 	 * @param player
-	 * @return
 	 */
 	private int countSeaUnits(final GameData data, final PlayerID player)
 	{

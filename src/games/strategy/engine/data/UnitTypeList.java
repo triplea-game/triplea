@@ -28,7 +28,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A collection of unit types
  */
@@ -62,7 +61,6 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 	 * Will return null if even a single name is not on the unit list.
 	 * 
 	 * @param names
-	 * @return
 	 */
 	public Set<UnitType> getUnitTypes(final String[] names)
 	{
@@ -82,6 +80,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 		return m_unitTypes.size();
 	}
 	
+	@Override
 	public Iterator<UnitType> iterator()
 	{
 		return m_unitTypes.values().iterator();

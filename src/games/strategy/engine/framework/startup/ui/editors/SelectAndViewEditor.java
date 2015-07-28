@@ -79,6 +79,7 @@ public class SelectAndViewEditor extends EditorPanel
 		m_selector.setRenderer(new DisplayNameComboBoxRender());
 		m_selector.addItemListener(new ItemListener()
 		{
+			@Override
 			public void itemStateChanged(final ItemEvent e)
 			{
 				if (e.getStateChange() == ItemEvent.SELECTED)
@@ -91,6 +92,7 @@ public class SelectAndViewEditor extends EditorPanel
 		
 		m_properChangeListener = new PropertyChangeListener()
 		{
+			@Override
 			public void propertyChange(final PropertyChangeEvent evt)
 			{
 				fireEditorChanged();
@@ -113,6 +115,7 @@ public class SelectAndViewEditor extends EditorPanel
 		
 		m_helpButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				String helpText;

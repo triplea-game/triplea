@@ -38,14 +38,17 @@ public class ClientSetupPanel extends SetupPanel
 	private List<PlayerRow> m_playerRows = Collections.emptyList();
 	private final IRemoteModelListener m_listener = new IRemoteModelListener()
 	{
+		@Override
 		public void playersTakenChanged()
 		{
 		}
 		
+		@Override
 		public void playerListChanged()
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					internalPlayersChanged();
@@ -177,6 +180,7 @@ public class ClientSetupPanel extends SetupPanel
 	{
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		m_model.shutDown();
@@ -299,6 +303,7 @@ public class ClientSetupPanel extends SetupPanel
 		{
 			private static final long serialVersionUID = 9086754428763609790L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.takePlayer(m_playerNameLabel.getText());
@@ -308,6 +313,7 @@ public class ClientSetupPanel extends SetupPanel
 		{
 			private static final long serialVersionUID = 8735891444454338978L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.releasePlayer(m_playerNameLabel.getText());
@@ -315,6 +321,7 @@ public class ClientSetupPanel extends SetupPanel
 		};
 		private final ActionListener m_disablePlayerActionListener = new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_enabledCheckBox.isSelected())

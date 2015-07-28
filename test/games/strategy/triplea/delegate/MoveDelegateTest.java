@@ -42,7 +42,6 @@ import java.util.List;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class MoveDelegateTest extends DelegateTest
 {

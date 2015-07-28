@@ -96,11 +96,13 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		return m_transportTracker;
 	}*/
 	
+	@Override
 	public List<UndoableMove> getMovesMade()
 	{
 		return new ArrayList<UndoableMove>(m_movesToUndo);
 	}
 	
+	@Override
 	public String undoMove(final int moveIndex)
 	{
 		if (m_movesToUndo.isEmpty())
@@ -140,16 +142,19 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 			return units.iterator().next().getOwner();
 	}
 	
+	@Override
 	public String move(final Collection<Unit> units, final Route route)
 	{
 		return move(units, route, Collections.<Unit> emptyList());
 	}
 	
+	@Override
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded)
 	{
 		return move(units, route, transportsThatCanBeLoaded, new HashMap<Unit, Collection<Unit>>());
 	}
 	
+	@Override
 	public abstract String move(final Collection<Unit> units, final Route route, final Collection<Unit> m_transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
 	
 	public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units, final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
@@ -160,16 +165,19 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		return MoveValidator.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
 	}
 	
+	@Override
 	public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player)
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(player);
 	}
 	
+	@Override
 	public Collection<Territory> getTerritoriesWhereAirCantLand()
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
 	}
 	
+	@Override
 	public Collection<Territory> getTerritoriesWhereUnitsCantFight()
 	{
 		return new UnitsThatCantFightUtil(getData()).getTerritoriesWhereUnitsCantFight(m_player);
@@ -227,16 +235,19 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		return games.strategy.triplea.Properties.getWW2V3(getData());
 	}*/
 	
+	@Override
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
 		// nothing for now
 	}
 	
+	@Override
 	public boolean getHasPostedTurnSummary()
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
 	{
 		return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);

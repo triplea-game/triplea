@@ -35,6 +35,7 @@ public class IntegerRangeValidator implements IValidator
 	// instance methods
 	// -----------------------------------------------------------------------
 	
+	@Override
 	public boolean isValid(final String text)
 	{
 		try

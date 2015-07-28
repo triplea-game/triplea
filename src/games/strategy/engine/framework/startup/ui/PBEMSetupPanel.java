@@ -113,6 +113,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	{
 		m_localPlayerSelection.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				JOptionPane.showMessageDialog(PBEMSetupPanel.this, m_localPlayerPanel, "Select Local Players and AI's", JOptionPane.PLAIN_MESSAGE);
@@ -319,6 +320,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		return cached;
 	}
 	
+	@Override
 	public void shutDown()
 	{
 		m_gameSelectorModel.deleteObserver(this);
@@ -336,7 +338,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	/**
 	 * Called when the observers detect change, to see if the game is in a startable state
 	 * 
-	 * @return
 	 */
 	@Override
 	public boolean canGameStart()
@@ -415,6 +416,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	 * @param arg
 	 *            always null
 	 */
+	@Override
 	public void update(final Observable o, final Object arg)
 	{
 		
@@ -422,6 +424,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					loadAll();
@@ -493,6 +496,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	 */
 	private class NotifyingPropertyChangeListener implements PropertyChangeListener
 	{
+		@Override
 		public void propertyChange(final PropertyChangeEvent evt)
 		{
 			notifyObservers();
@@ -639,6 +643,7 @@ class PBEMLocalPlayerComboBoxSelector
 	
 	private final ActionListener m_disablePlayerActionListener = new ActionListener()
 	{
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_enabledCheckBox.isSelected())

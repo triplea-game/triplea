@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * 
  * @author Mark Christopher Duncan (veqryn)
- * @version 1.0
  */
 public class CasualtyList implements Serializable
 {

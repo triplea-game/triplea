@@ -110,11 +110,13 @@ public class ExtendedStats extends StatPanel
 	
 	class TechCountStat extends AbstractStat
 	{
+		@Override
 		public String getName()
 		{
 			return "Techs";
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int count = 0;
@@ -166,11 +168,13 @@ public class ExtendedStats extends StatPanel
 			m_name = name;
 		}
 		
+		@Override
 		public String getName()
 		{
 			return "Resource: " + m_name;
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			return player.getResources().getQuantity(m_name);
@@ -187,11 +191,13 @@ public class ExtendedStats extends StatPanel
 			m_ta = ta;
 		}
 		
+		@Override
 		public String getName()
 		{
 			return "TechAdvance: " + m_ta.getName();
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			if (m_ta.hasTech(TechAttachment.get(player)))
@@ -210,11 +216,13 @@ public class ExtendedStats extends StatPanel
 			m_ut = ut;
 		}
 		
+		@Override
 		public String getName()
 		{
 			return "UnitType: " + m_ut.getName();
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int rVal = 0;

@@ -60,7 +60,6 @@ import java.util.List;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          At the end of the turn collect income.
  */
@@ -246,6 +245,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true; // currently we need to call this regardless, because it resets player sounds for the turn.
@@ -500,16 +500,19 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 		return realTotalLoss;
 	}
 	
+	@Override
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
 		m_hasPostedTurnSummary = hasPostedTurnSummary;
 	}
 	
+	@Override
 	public boolean getHasPostedTurnSummary()
 	{
 		return m_hasPostedTurnSummary;
 	}
 	
+	@Override
 	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
 	{
 		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
@@ -572,6 +575,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	{
 		return new Comparator<Territory>()
 		{
+			@Override
 			public int compare(final Territory t1, final Territory t2)
 			{
 				if (t1 == t2 || (t1 == null && t2 == null))
@@ -616,6 +620,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 	{
 		return new Comparator<Territory>()
 		{
+			@Override
 			public int compare(final Territory t1, final Territory t2)
 			{
 				if (t1 == t2 || (t1 == null && t2 == null))

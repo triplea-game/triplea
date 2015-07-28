@@ -41,7 +41,6 @@ import junit.framework.TestCase;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class ParserTest extends TestCase
 {

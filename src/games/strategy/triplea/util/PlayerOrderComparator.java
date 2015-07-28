@@ -20,6 +20,7 @@ public class PlayerOrderComparator implements Comparator<PlayerID>
 	/**
 	 * sort based on first step that isn't a bid related step.
 	 */
+	@Override
 	public int compare(final PlayerID p1, final PlayerID p2)
 	{
 		if (p1.equals(p2))

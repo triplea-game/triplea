@@ -45,6 +45,7 @@ public class PlainRandomSource implements IRandomSource
 	// private static Random s_random;
 	private static MersenneTwister s_random;
 	
+	@Override
 	public synchronized int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException
 	{
 		if (count <= 0)
@@ -59,6 +60,7 @@ public class PlainRandomSource implements IRandomSource
 		return numbers;
 	}
 	
+	@Override
 	public synchronized int getRandom(final int max, final String annotation) throws IllegalArgumentException
 	{
 		if (s_random == null)

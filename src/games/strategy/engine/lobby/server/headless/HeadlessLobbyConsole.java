@@ -59,6 +59,7 @@ public class HeadlessLobbyConsole
 		this.server = server;
 		server.getMessenger().addConnectionChangeListener(new IConnectionChangeListener()
 		{
+			@Override
 			public void connectionAdded(final INode to)
 			{
 				currentConnections.incrementAndGet();
@@ -67,6 +68,7 @@ public class HeadlessLobbyConsole
 				maxConcurrentLogins = Math.max(maxConcurrentLogins, currentConnections.get());
 			}
 			
+			@Override
 			public void connectionRemoved(final INode to)
 			{
 				currentConnections.decrementAndGet();
@@ -78,6 +80,7 @@ public class HeadlessLobbyConsole
 	{
 		final Thread t = new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				printEvalLoop();

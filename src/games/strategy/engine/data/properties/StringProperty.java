@@ -36,11 +36,13 @@ public class StringProperty extends AEditableProperty
 		m_value = defaultValue;
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final JTextField text = new JTextField(m_value);
 		text.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_value = text.getText();
@@ -48,10 +50,12 @@ public class StringProperty extends AEditableProperty
 		});
 		text.addFocusListener(new FocusListener()
 		{
+			@Override
 			public void focusGained(final FocusEvent e)
 			{
 			}
 			
+			@Override
 			public void focusLost(final FocusEvent e)
 			{
 				m_value = text.getText();
@@ -63,16 +67,19 @@ public class StringProperty extends AEditableProperty
 		return text;
 	}
 	
+	@Override
 	public Object getValue()
 	{
 		return m_value;
 	}
 	
+	@Override
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_value = (String) value;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (value == null)

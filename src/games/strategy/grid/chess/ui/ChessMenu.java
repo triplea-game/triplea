@@ -36,6 +36,7 @@ public class ChessMenu extends GridGameMenu<GridGameFrame>
 		{
 			private static final long serialVersionUID = -561502556482560961L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

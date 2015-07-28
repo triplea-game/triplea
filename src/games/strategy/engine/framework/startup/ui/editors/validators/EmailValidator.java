@@ -27,6 +27,7 @@ public class EmailValidator implements IValidator
 		m_validIfEmpty = validIfEmpty;
 	}
 	
+	@Override
 	public boolean isValid(final String text)
 	{
 		if (text.length() == 0)

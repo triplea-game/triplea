@@ -30,7 +30,6 @@ import java.io.ObjectOutputStream;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameDataComponent implements java.io.Serializable
 {

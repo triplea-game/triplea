@@ -34,6 +34,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction
 		m_serverRemote = serverRemote;
 	}
 	
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final byte[] oldBytes = m_serverRemote.getGameOptions();

@@ -50,7 +50,6 @@ import java.util.Set;
  * occurs.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class NonFightingBattle extends AbstractBattle
 {

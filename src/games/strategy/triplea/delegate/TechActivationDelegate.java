@@ -44,7 +44,6 @@ import java.util.Set;
  * TechnologyDelegate to run correctly.
  * 
  * @author Ali Ibrahim
- * @version 1.0
  */
 public class TechActivationDelegate extends BaseTripleADelegate
 {
@@ -118,6 +117,7 @@ public class TechActivationDelegate extends BaseTripleADelegate
 		m_needToInitialize = true;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;

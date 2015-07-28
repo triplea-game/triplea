@@ -8,7 +8,6 @@ package games.strategy.engine.data;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameParseException extends Exception
 {

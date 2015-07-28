@@ -36,7 +36,6 @@ import java.util.Set;
  * count the number of matches, see if any elements match etc.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public abstract class Match<T>
 {

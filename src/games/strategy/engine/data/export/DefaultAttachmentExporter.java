@@ -42,6 +42,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.data.export.IAttachmentExporter#getAttachmentOptions(games.strategy.engine.data.IAttachment)
 	 */
+	@Override
 	public String getAttachmentOptions(final IAttachment attachment)
 	{
 		final StringBuffer xmlfile = new StringBuffer();

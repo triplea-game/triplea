@@ -188,7 +188,6 @@ public final class TileImageFactory
 	
 	/**
 	 * @param fileName
-	 * @return
 	 */
 	private Image isImageLoaded(final String fileName)
 	{
@@ -217,7 +216,6 @@ public final class TileImageFactory
 	/**
 	 * @param x
 	 * @param y
-	 * @return
 	 */
 	private String getBaseTileImageName(final int x, final int y)
 	{
@@ -228,7 +226,6 @@ public final class TileImageFactory
 	
 	/**
 	 * @param fileName
-	 * @return
 	 */
 	private Image getImage(final String fileName, final boolean transparent)
 	{
@@ -267,7 +264,6 @@ public final class TileImageFactory
 	/**
 	 * @param x
 	 * @param y
-	 * @return
 	 */
 	private String getReliefTileImageName(final int x, final int y)
 	{
@@ -293,7 +289,6 @@ public final class TileImageFactory
 	
 	/**
 	 * @param imageLocation
-	 * @return
 	 */
 	private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent, final boolean cache, final boolean scale)
 	{
@@ -518,6 +513,7 @@ class ImageRef
 	{
 		final Runnable r = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				while (true)
@@ -630,6 +626,7 @@ class BlendComposite implements java.awt.Composite
 		this.alpha = alpha;
 	}
 	
+	@Override
 	public CompositeContext createContext(final ColorModel srcColorModel, final ColorModel dstColorModel, final RenderingHints hints)
 	{
 		return new BlendingContext(this);
@@ -647,10 +644,12 @@ class BlendComposite implements java.awt.Composite
 			this.blender = Blender.getBlenderFor(composite);
 		}
 		
+		@Override
 		public void dispose()
 		{
 		}
 		
+		@Override
 		public void compose(final Raster src, final Raster dstIn, final WritableRaster dstOut)
 		{
 			if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT || dstIn.getSampleModel().getDataType() != DataBuffer.TYPE_INT

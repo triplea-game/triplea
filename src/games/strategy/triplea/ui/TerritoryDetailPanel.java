@@ -88,6 +88,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel
 		{
 			private static final long serialVersionUID = -1863748437390486994L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				OddsCalculatorDialog.show(m_frame, m_currentTerritory);
@@ -95,6 +96,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel
 		};
 		m_showOdds.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				showBattleCalc.actionPerformed(e);
@@ -111,6 +113,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel
 		{
 			private static final long serialVersionUID = -1863748437390486994L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_new_territory == null && m_currentTerritory != null)
@@ -124,6 +127,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel
 		{
 			private static final long serialVersionUID = -1863748437390486994L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (m_new_territory != null)

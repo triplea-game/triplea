@@ -28,7 +28,6 @@ public interface ICondition extends IAttachment
 	 * Returns attached RulesAttachments.
 	 * Yes, this should be RulesAttachment, not ICondition. The reason being that you can ONLY attach RulesAttachments to a class that implements ICondition.
 	 * 
-	 * @return
 	 */
 	public List<RulesAttachment> getConditions();
 	
@@ -43,7 +42,6 @@ public interface ICondition extends IAttachment
 	/**
 	 * Modifies the attached conditions, with things like AND, OR, XOR, or requiring a specific number of attached conditions to be true (like exactly 3, or 4-6 only).
 	 * 
-	 * @return
 	 */
 	public String getConditionType();
 	
@@ -54,7 +52,6 @@ public interface ICondition extends IAttachment
 	/**
 	 * Logical negation of the entire condition.
 	 * 
-	 * @return
 	 */
 	public boolean getInvert();
 	
@@ -67,7 +64,6 @@ public interface ICondition extends IAttachment
 	 * 
 	 * @param testedConditions
 	 * @param aBridge
-	 * @return
 	 */
 	public boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge);
 	
@@ -76,7 +72,6 @@ public interface ICondition extends IAttachment
 	 * 
 	 * @param testedConditions
 	 * @param aBridge
-	 * @return
 	 */
 	public boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions);
 }

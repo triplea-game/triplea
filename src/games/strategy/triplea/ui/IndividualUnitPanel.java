@@ -54,6 +54,7 @@ public class IndividualUnitPanel extends JPanel
 	
 	private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener()
 	{
+		@Override
 		public void changedValue(final ScrollableTextField field)
 		{
 			updateLeft();
@@ -205,6 +206,7 @@ public class IndividualUnitPanel extends JPanel
 		add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
 		m_selectNoneButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				selectNone();
@@ -212,6 +214,7 @@ public class IndividualUnitPanel extends JPanel
 		});
 		m_autoSelectButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				autoSelect();

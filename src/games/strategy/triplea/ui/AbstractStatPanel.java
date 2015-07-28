@@ -80,11 +80,13 @@ public abstract class AbstractStatPanel extends JPanel
 			m_resource = resource;
 		}
 		
+		@Override
 		public String getName()
 		{
 			return m_resource.getName();
 		}
 		
+		@Override
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			return player.getResources().getQuantity(m_resource);

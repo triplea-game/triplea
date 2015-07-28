@@ -42,7 +42,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Kevin Comcowich
- * @version 1.0
  */
 public class RepairPanel extends ActionPanel
 {
@@ -73,6 +72,7 @@ public class RepairPanel extends ActionPanel
 		m_repair = new HashMap<Unit, IntegerMap<RepairRule>>();
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeAll();
@@ -97,6 +97,7 @@ public class RepairPanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				actionLabel.setText(getCurrentPlayer().getName() + " repair " + (m_bid ? " for bid" : ""));
@@ -112,6 +113,7 @@ public class RepairPanel extends ActionPanel
 		// automatically "click" the buy button for us!
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				PURCHASE_ACTION.actionPerformed(null);
@@ -125,6 +127,7 @@ public class RepairPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = 5572043262815077402L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			final PlayerID player = getCurrentPlayer();
@@ -163,6 +166,7 @@ public class RepairPanel extends ActionPanel
 	{
 		private static final long serialVersionUID = -2002286381161651398L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent event)
 		{
 			final boolean hasPurchased = getTotalValues(m_repair) != 0;

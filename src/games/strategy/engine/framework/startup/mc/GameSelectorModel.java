@@ -454,6 +454,7 @@ public class GameSelectorModel extends Observable
 			{
 				new Thread(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						NewGameChooser.refreshNewGameChooserModel();

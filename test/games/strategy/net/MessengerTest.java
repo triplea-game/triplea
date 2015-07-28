@@ -258,11 +258,13 @@ public class MessengerTest extends TestCase
 		final AtomicInteger m_serverCount = new AtomicInteger(3);
 		m_server.addConnectionChangeListener(new IConnectionChangeListener()
 		{
+			@Override
 			public void connectionRemoved(final INode to)
 			{
 				m_serverCount.decrementAndGet();
 			}
 			
+			@Override
 			public void connectionAdded(final INode to)
 			{
 				fail();
@@ -309,6 +311,7 @@ public class MessengerTest extends TestCase
 		final AtomicBoolean closed = new AtomicBoolean(false);
 		m_client1.addErrorListener(new IMessengerErrorListener()
 		{
+			@Override
 			public void messengerInvalid(final IMessenger messenger, final Exception reason)
 			{
 				closed.set(true);
@@ -371,6 +374,7 @@ class MessageListener implements IMessageListener
 	{
 	}
 	
+	@Override
 	public void messageReceived(final Serializable msg, final INode from)
 	{
 		synchronized (lock)
@@ -443,6 +447,7 @@ class MultipleMessageSender implements Runnable
 		m_messenger = messenger;
 	}
 	
+	@Override
 	public void run()
 	{
 		Thread.yield();

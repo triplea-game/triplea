@@ -82,6 +82,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					updateGameData();
@@ -188,6 +189,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 	{
 		m_loadNewGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (canSelectLocalGameData())
@@ -206,6 +208,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		});
 		m_loadSavedGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (canSelectLocalGameData())
@@ -232,6 +235,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		});
 		m_gameOptions.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (canSelectLocalGameData())
@@ -327,6 +331,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					setWidgetActivation();
@@ -363,6 +368,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		return m_model != null && m_model.isHostHeadlessBot();
 	}
 	
+	@Override
 	public void update(final Observable o, final Object arg)
 	{
 		updateGameData();
@@ -379,6 +385,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 			fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
 			fileDialog.setFilenameFilter(new FilenameFilter()
 			{
+				@Override
 				public boolean accept(final File dir, final String name)
 				{
 					// the extension should be .tsvg, but find svg extensions as well

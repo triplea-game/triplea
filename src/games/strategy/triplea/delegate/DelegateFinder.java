@@ -24,7 +24,6 @@ import games.strategy.engine.delegate.IDelegate;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class DelegateFinder
 {

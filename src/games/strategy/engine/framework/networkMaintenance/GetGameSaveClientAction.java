@@ -31,6 +31,7 @@ public class GetGameSaveClientAction extends AbstractAction
 		m_serverRemote = serverRemote;
 	}
 	
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final Frame frame = JOptionPane.getFrameForComponent(m_parent);

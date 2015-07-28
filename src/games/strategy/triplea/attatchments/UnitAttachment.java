@@ -60,7 +60,6 @@ import java.util.Set;
  * Do not change the name fooBar to make it plural or any other crap.
  * 
  * @author Sean Bridges and Mark Christopher Duncan
- * @version 1.0
  */
 public class UnitAttachment extends DefaultAttachment
 {

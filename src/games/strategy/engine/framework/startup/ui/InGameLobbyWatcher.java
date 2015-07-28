@@ -76,6 +76,7 @@ public class InGameLobbyWatcher
 	private GameSelectorModel m_gameSelectorModel;
 	private final Observer m_gameSelectorModelObserver = new Observer()
 	{
+		@Override
 		public void update(final Observable o, final Object arg)
 		{
 			gameSelectorModelUpdated();
@@ -84,6 +85,7 @@ public class InGameLobbyWatcher
 	private IGame m_game;
 	private final GameStepListener m_gameStepListener = new GameStepListener()
 	{
+		@Override
 		public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 		{
 			InGameLobbyWatcher.this.gameStepChanged(stepName, round);
@@ -128,10 +130,12 @@ public class InGameLobbyWatcher
 		
 		final IConnectionLogin login = new IConnectionLogin()
 		{
+			@Override
 			public void notifyFailedLogin(final String message)
 			{
 			}
 			
+			@Override
 			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
 				final Map<String, String> rVal = new HashMap<String, String>();
@@ -225,6 +229,7 @@ public class InGameLobbyWatcher
 		}
 		m_messengerErrorListener = new IMessengerErrorListener()
 		{
+			@Override
 			public void messengerInvalid(final IMessenger messenger, final Exception reason)
 			{
 				shutDown();
@@ -233,11 +238,13 @@ public class InGameLobbyWatcher
 		m_messenger.addErrorListener(m_messengerErrorListener);
 		m_connectionChangeListener = new IConnectionChangeListener()
 		{
+			@Override
 			public void connectionRemoved(final INode to)
 			{
 				updatePlayerCount();
 			}
 			
+			@Override
 			public void connectionAdded(final INode to)
 			{
 				updatePlayerCount();
@@ -253,6 +260,7 @@ public class InGameLobbyWatcher
 		// if we loose our connection, then shutdown
 		final Runnable r = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final String addressUsed = controller.testGame(m_gameID);
@@ -264,6 +272,7 @@ public class InGameLobbyWatcher
 						shutDown();
 						SwingUtilities.invokeLater(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								String portString = System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY);

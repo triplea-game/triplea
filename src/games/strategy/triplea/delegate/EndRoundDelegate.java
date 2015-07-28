@@ -244,6 +244,7 @@ public class EndRoundDelegate extends BaseTripleADelegate
 		m_winners = s.m_winners;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;
@@ -351,7 +352,6 @@ public class EndRoundDelegate extends BaseTripleADelegate
 	/**
 	 * if null, the game is not over yet
 	 * 
-	 * @return
 	 */
 	public Collection<PlayerID> getWinners()
 	{

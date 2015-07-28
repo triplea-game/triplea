@@ -24,6 +24,7 @@ public class EventChild extends HistoryNode implements Renderable
 		m_renderingData = renderingData;
 	}
 	
+	@Override
 	public Object getRenderingData()
 	{
 		return m_renderingData;
@@ -55,6 +56,7 @@ class EventChildWriter implements SerializationWriter
 		m_renderingData = renderingData;
 	}
 	
+	@Override
 	public void write(final HistoryWriter writer)
 	{
 		writer.addChildToEvent(new EventChild(m_text, m_renderingData));

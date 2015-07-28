@@ -67,7 +67,6 @@ import java.util.Set;
 /**
  *
  * @author Sean Bridges
- * @version 1.0
  *
  *          Used to keep track of where battles have occurred
  */

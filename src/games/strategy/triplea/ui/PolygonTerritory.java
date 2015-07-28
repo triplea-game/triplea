@@ -28,7 +28,6 @@
 // /**
 // *
 // * @author Sean Bridges
-// * @version 1.0
 // */
 //
 // class PolygonTerritory implements Comparable

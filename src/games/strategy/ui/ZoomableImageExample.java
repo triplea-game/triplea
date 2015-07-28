@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Start with one arg that is the filename
  *          press z to set the zoom.
@@ -82,6 +81,7 @@ public class ZoomableImageExample extends JFrame
 	{
 		private static final long serialVersionUID = 4825071800322928852L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			final String input = JOptionPane.showInputDialog("Get Zoom Factor");

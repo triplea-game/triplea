@@ -69,6 +69,7 @@ public class AIUtils
 	{
 		return new Comparator<Unit>()
 		{
+			@Override
 			public int compare(final Unit o1, final Unit o2)
 			{
 				return getCost(o1.getType(), o1.getOwner(), o1.getData()) - getCost(o2.getType(), o2.getOwner(), o2.getData());
@@ -110,7 +111,6 @@ public class AIUtils
 	 *            - are the units on attack or defense
 	 * @param sea
 	 *            - calculate the strength of the units in a sea or land battle?
-	 * @return
 	 */
 	public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea)
 	{

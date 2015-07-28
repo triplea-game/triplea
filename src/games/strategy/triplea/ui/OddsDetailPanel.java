@@ -61,20 +61,24 @@ public class OddsDetailPanel extends JPanel
 		});
 		m_territoryListener = new TerritoryListener()
 		{
+			@Override
 			public void ownerChanged(final Territory territory)
 			{
 			}
 			
+			@Override
 			public void attachmentChanged(final Territory territory)
 			{
 			}
 			
+			@Override
 			public void unitsChanged(final Territory territory)
 			{
 				if (m_currentTerritory != null && m_currentTerritory.equals(territory))
 				{
 					SwingUtilities.invokeLater(new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							updateOdds();

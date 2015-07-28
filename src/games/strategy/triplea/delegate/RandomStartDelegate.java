@@ -56,6 +56,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 		m_currentPickingPlayer = null;
 	}
 	
+	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (Match.noneMatch(getData().getMap().getTerritories(), getTerritoryPickableMatch())
@@ -275,6 +276,7 @@ class UnitCostComparator implements Comparator<Unit>
 		m_costs = BattleCalculator.getCostsForTUV(player, data);
 	}
 	
+	@Override
 	public int compare(final Unit u1, final Unit u2)
 	{
 		return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
@@ -296,6 +298,7 @@ class UnitTypeCostComparator implements Comparator<UnitType>
 		m_costs = BattleCalculator.getCostsForTUV(player, data);
 	}
 	
+	@Override
 	public int compare(final UnitType u1, final UnitType u2)
 	{
 		return m_costs.getInt(u1) - m_costs.getInt(u2);

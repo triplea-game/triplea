@@ -59,6 +59,7 @@ public class WrappedInvocationHandler implements InvocationHandler
 		return m_delegate.hashCode();
 	}
 	
+	@Override
 	public Object invoke(final Object arg0, final Method arg1, final Object[] arg2) throws Throwable
 	{
 		if (shouldHandle(arg1, arg2))

@@ -32,7 +32,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A collection of units.
  */
@@ -308,6 +307,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 		return buf.toString();
 	}
 	
+	@Override
 	public Iterator<Unit> iterator()
 	{
 		return Collections.unmodifiableList(m_units).iterator();

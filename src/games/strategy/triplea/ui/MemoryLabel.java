@@ -46,6 +46,7 @@ public class MemoryLabel extends JLabel
 		{
 			private static final long serialVersionUID = -8067651392155651586L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				System.gc();
@@ -93,6 +94,7 @@ class Updater implements Runnable
 		m_label = new WeakReference<MemoryLabel>(label);
 	}
 	
+	@Override
 	public void run()
 	{
 		while (m_label.get() != null)
@@ -106,6 +108,7 @@ class Updater implements Runnable
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				final MemoryLabel label = m_label.get();

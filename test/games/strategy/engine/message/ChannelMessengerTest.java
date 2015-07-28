@@ -208,21 +208,25 @@ class ChannelSubscribor implements IChannelBase
 		return m_callCount;
 	}
 	
+	@Override
 	public void testNoParams()
 	{
 		incrementCount();
 	}
 	
+	@Override
 	public void testPrimitives(final int a, final short b, final long c, final byte d, final boolean e, final float f)
 	{
 		incrementCount();
 	}
 	
+	@Override
 	public void testString(final String a)
 	{
 		incrementCount();
 	}
 	
+	@Override
 	public void testArray(final int[] ints, final short[] shorts, final byte[] bytes, final boolean[] bools, final float[] floats, final Object[] objects)
 	{
 		incrementCount();

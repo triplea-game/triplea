@@ -115,7 +115,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * User interface for Grid Games.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction and major rewrite)
- * @version $LastChangedDate: 2012-11-11 02:04:07 +0800 (Sun, 11 Nov 2012) $
  */
 public class GridGameFrame extends MainGameFrame
 {
@@ -414,6 +413,7 @@ public class GridGameFrame extends MainGameFrame
 	{
 		private static final long serialVersionUID = -7099175363241411428L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			showHistory();
@@ -430,6 +430,7 @@ public class GridGameFrame extends MainGameFrame
 			setEnabled(false);
 		}
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			showGame();
@@ -442,6 +443,7 @@ public class GridGameFrame extends MainGameFrame
 	{
 		private static final long serialVersionUID = -5908032486008953815L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			HistoryNode curNode = null;
@@ -516,6 +518,7 @@ public class GridGameFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = -6730966512179268157L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
@@ -535,6 +538,7 @@ public class GridGameFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = 1222760138263428443L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent ae)
 			{
 				saveScreenshot(m_historyPanel.getCurrentPopupNode(), clonedGameData);
@@ -545,6 +549,7 @@ public class GridGameFrame extends MainGameFrame
 		{
 			private static final long serialVersionUID = 1430512376199927896L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent ae)
 			{
 				m_data.acquireReadLock();
@@ -666,6 +671,7 @@ public class GridGameFrame extends MainGameFrame
 			final File file = f;
 			final Runnable t = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (saveScreenshot(node, data, file))
@@ -884,7 +890,6 @@ public class GridGameFrame extends MainGameFrame
 	/**
 	 * This only applies to the UI for this local machine. Therefore it returns the "last" active player that was played on this machine.
 	 * 
-	 * @return
 	 */
 	public PlayerID getActivePlayer()
 	{
@@ -1072,6 +1077,7 @@ public class GridGameFrame extends MainGameFrame
 	{
 		final int diffPixel = 50;
 		
+		@Override
 		public void keyPressed(final KeyEvent e)
 		{
 			// scroll map according to wasd/arrowkeys
@@ -1101,10 +1107,12 @@ public class GridGameFrame extends MainGameFrame
 			m_mapPanel.doKeyListenerEvents(e);
 		}
 		
+		@Override
 		public void keyTyped(final KeyEvent e)
 		{
 		}
 		
+		@Override
 		public void keyReleased(final KeyEvent e)
 		{
 		}
@@ -1119,6 +1127,7 @@ public class GridGameFrame extends MainGameFrame
 		final AtomicReference<UnitType> selected = new AtomicReference<UnitType>();
 		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
+			@Override
 			public Tuple<JPanel, JList> run()
 			{
 				final JList list = new JList(new Vector<UnitType>(options));
@@ -1168,6 +1177,7 @@ public class GridGameFrame extends MainGameFrame
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					setWidgetActivation();
@@ -1226,12 +1236,14 @@ public class GridGameFrame extends MainGameFrame
 	
 	GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
 	{
+		@Override
 		public void gameDataChanged(final Change change)
 		{
 			try
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						if (getEditMode())

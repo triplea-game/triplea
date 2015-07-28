@@ -152,6 +152,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 6388976622644695135L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string
@@ -249,6 +250,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 6388976552644695135L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JEditorPane editorPane = new JEditorPane();
@@ -275,6 +277,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				{
 					private static final long serialVersionUID = -6628015175043647980L;
 					
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						dialog.setVisible(false);
@@ -399,6 +402,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 1114072913279994047L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				final SpinnerNumberModel model = new SpinnerNumberModel();
@@ -421,6 +425,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				panel.add(buttons, BorderLayout.SOUTH);
 				fitWidth.addActionListener(new ActionListener()
 				{
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						final double screenWidth = m_frame.getMapPanel().getWidth();
@@ -433,6 +438,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				});
 				fitHeight.addActionListener(new ActionListener()
 				{
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						final double screenHeight = m_frame.getMapPanel().getHeight();
@@ -444,6 +450,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				});
 				reset.addActionListener(new ActionListener()
 				{
+					@Override
 					public void actionPerformed(final ActionEvent e)
 					{
 						model.setValue(100);
@@ -468,6 +475,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = -2753073276162734526L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				new VerifiedRandomNumbersDialog(m_frame.getRootPane()).setVisible(true);
@@ -507,6 +515,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = -7445092411530581715L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected());
@@ -523,6 +532,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 6176484225385360649L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected());
@@ -540,6 +550,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = -352890957050498753L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				PurchasePanel.setTabbedProduction(tabbedProduction.isSelected());
@@ -560,6 +571,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 7880136597816371478L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final PoliticalStateOverview ui = new PoliticalStateOverview(getData(), getUIContext(), false);
@@ -585,6 +597,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		showUnitsBox.setSelected(true);
 		showUnitsBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final boolean tfselected = showUnitsBox.isSelected();
@@ -613,6 +626,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		group.add(highButton);
 		drawBordersMenu.addMenuListener(new MenuListener()
 		{
+			@Override
 			public void menuSelected(final MenuEvent e)
 			{
 				final OptionalExtraBorderLevel current = getUIContext().getDrawTerritoryBordersAgain();
@@ -624,16 +638,19 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					highButton.setSelected(true);
 			}
 			
+			@Override
 			public void menuDeselected(final MenuEvent e)
 			{
 			}
 			
+			@Override
 			public void menuCanceled(final MenuEvent e)
 			{
 			}
 		});
 		noneButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (noneButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.LOW)
@@ -645,6 +662,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		});
 		mediumButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (mediumButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM)
@@ -656,6 +674,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		});
 		highButton.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (highButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.HIGH)
@@ -677,6 +696,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 2788608972531414309L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
@@ -732,6 +752,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
 		territoryEffectsBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final boolean tfselected = territoryEffectsBox.isSelected();
@@ -750,6 +771,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		lockMapBox.setSelected(getUIContext().getLockMap());
 		lockMapBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getUIContext().setLockMap(lockMapBox.isSelected());
@@ -773,6 +795,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		showTriggerChanceFailure.setMnemonic(KeyEvent.VK_F);
 		notificationMenu.addMenuListener(new MenuListener()
 		{
+			@Override
 			public void menuSelected(final MenuEvent e)
 			{
 				showEndOfTurnReport.setSelected(getUIContext().getShowEndOfTurnReport());
@@ -781,16 +804,19 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				showTriggerChanceFailure.setSelected(getUIContext().getShowTriggerChanceFailure());
 			}
 			
+			@Override
 			public void menuDeselected(final MenuEvent e)
 			{
 			}
 			
+			@Override
 			public void menuCanceled(final MenuEvent e)
 			{
 			}
 		});
 		showEndOfTurnReport.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getUIContext().setShowEndOfTurnReport(showEndOfTurnReport.isSelected());
@@ -798,6 +824,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		});
 		showTriggeredNotifications.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getUIContext().setShowTriggeredNotifications(showTriggeredNotifications.isSelected());
@@ -805,6 +832,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		});
 		showTriggerChanceSuccessful.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getUIContext().setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected());
@@ -812,6 +840,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		});
 		showTriggerChanceFailure.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getUIContext().setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected());
@@ -831,6 +860,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		showAIBattlesBox.setSelected(getUIContext().getShowBattlesBetweenAIs());
 		showAIBattlesBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getUIContext().setShowBattlesBetweenAIs(showAIBattlesBox.isSelected());
@@ -862,6 +892,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			{
 				private static final long serialVersionUID = 2257295609477283292L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					Dynamix_AI.ShowSettingsWindow();
@@ -888,6 +919,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			{
 				private static final long serialVersionUID = 3457295609477283292L;
 				
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					ProAI.ShowSettingsWindow();
@@ -906,6 +938,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 5530880208301800861L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final IRandomStats randomStats = (IRandomStats) getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
@@ -922,6 +955,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		RollDiceBox.setMnemonic(KeyEvent.VK_R);
 		RollDiceBox.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final IntTextField numberOfText = new IntTextField(0, 100);
@@ -970,6 +1004,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 6211814774301020553L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				OddsCalculatorDialog.show(m_frame, null);
@@ -989,6 +1024,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = -1732417863580400806L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				createAndSaveStats(true);
@@ -1006,6 +1042,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 8196345604657706754L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				createAndSaveStats(false);
@@ -1298,6 +1335,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 1596267069542201864L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JFileChooser chooser = new JFileChooser();
@@ -1345,6 +1383,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
 		showMapDetails.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected())
@@ -1384,6 +1423,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		}
 		showMapBlends.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected())
@@ -1434,6 +1474,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				mapMenuItem.setSelected(true);
 			mapMenuItem.addActionListener(new ActionListener()
 			{
+				@Override
 				public void actionPerformed(final ActionEvent e)
 				{
 					try
@@ -1464,6 +1505,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			private static final long serialVersionUID = 1596267069546601864L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JFrame frame = new JFrame("Export Setup Files");
@@ -1507,6 +1549,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				putValue(Action.NAME, s_decimalFormat.format(m_scaleFactor * 100) + "%");
 			}
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getUIContext().setUnitScaleFactor(m_scaleFactor);

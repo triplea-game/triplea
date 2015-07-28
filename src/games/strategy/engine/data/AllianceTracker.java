@@ -36,7 +36,6 @@ import java.util.Set;
  * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
  * 
  * @author Sean Bridges, modified by Erik von der Osten
- * @version 1.0
  */
 public class AllianceTracker extends GameDataComponent
 {

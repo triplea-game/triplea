@@ -282,6 +282,7 @@ public class HeadlessGameServer
 		{
 			(new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					System.out.println("Remote Shutdown Initiated.");
@@ -315,6 +316,7 @@ public class HeadlessGameServer
 			{
 				(new Thread(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						System.out.println("Remote Stop Game Initiated.");
@@ -373,6 +375,7 @@ public class HeadlessGameServer
 		{
 			(new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (getServerModel() == null)
@@ -422,6 +425,7 @@ public class HeadlessGameServer
 		{
 			(new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (getServerModel() == null)
@@ -467,6 +471,7 @@ public class HeadlessGameServer
 		{
 			(new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					if (getServerModel() == null)
@@ -541,6 +546,7 @@ public class HeadlessGameServer
 		s_instance = this;
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				System.out.println("Running ShutdownHook.");
@@ -566,6 +572,7 @@ public class HeadlessGameServer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					System.out.println("Starting UI");
@@ -589,6 +596,7 @@ public class HeadlessGameServer
 		{
 			final Runnable r = new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					System.out.println("Headless Start");
@@ -612,6 +620,7 @@ public class HeadlessGameServer
 		}
 		m_lobbyWatcherResetupThread.scheduleAtFixedRate(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -784,6 +793,7 @@ public class HeadlessGameServer
 			return;
 		final Runnable r = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				while (!m_shutDown)

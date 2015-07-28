@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule>
 {
@@ -70,6 +69,7 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
 		return m_cachedRules;
 	}
 	
+	@Override
 	public Iterator<ProductionRule> iterator()
 	{
 		return getRules().iterator();

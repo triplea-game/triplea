@@ -63,7 +63,6 @@ import javax.swing.border.EtchedBorder;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  * 
  */
@@ -108,6 +107,7 @@ public class ProductionRepairPanel extends JPanel
 		m_dialog.setLocationRelativeTo(parent);
 		SwingUtilities.invokeLater(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_done.requestFocusInWindow();
@@ -137,6 +137,7 @@ public class ProductionRepairPanel extends JPanel
 		{
 			private static final long serialVersionUID = 2832491642574528614L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -223,6 +224,7 @@ public class ProductionRepairPanel extends JPanel
 	{
 		private static final long serialVersionUID = 8547016018558520143L;
 		
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_dialog.setVisible(false);
@@ -371,6 +373,7 @@ public class ProductionRepairPanel extends JPanel
 	
 	private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
+		@Override
 		public void changedValue(final ScrollableTextField stf)
 		{
 			calculateLimits();

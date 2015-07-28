@@ -69,11 +69,13 @@ public class ComboProperty<T> extends AEditableProperty
 		m_possibleValues = new ArrayList<T>(possibleValues);
 	}
 	
+	@Override
 	public Object getValue()
 	{
 		return m_value;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void setValue(final Object value) throws ClassCastException
 	{
@@ -85,12 +87,14 @@ public class ComboProperty<T> extends AEditableProperty
 		m_value = value;
 	}
 	
+	@Override
 	public JComponent getEditorComponent()
 	{
 		final JComboBox box = new JComboBox(new Vector<T>(m_possibleValues));
 		box.setSelectedItem(m_value);
 		box.addActionListener(new ActionListener()
 		{
+			@Override
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(final ActionEvent e)
 			{
@@ -100,6 +104,7 @@ public class ComboProperty<T> extends AEditableProperty
 		return box;
 	}
 	
+	@Override
 	public boolean validate(final Object value)
 	{
 		if (m_possibleValues == null || m_possibleValues.isEmpty())

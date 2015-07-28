@@ -76,6 +76,7 @@ public class AlphaBeta extends HeuristicAI
 			movesWithPointsReferences.add(new Triple<Territory, Territory, AtomicReference<Tuple<Long, Integer>>>(move1.getFirst(), move1.getSecond(), reference));
 			final Thread startBranches = new Thread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					final Tuple<Long, Integer> pointsForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp, theAITemp, temp.getForth(), branchesLeftToDo - 1);
@@ -211,6 +212,7 @@ public class AlphaBeta extends HeuristicAI
 	{
 		return new Comparator<Triple<Territory, Territory, Long>>()
 		{
+			@Override
 			public int compare(final Triple<Territory, Territory, Long> t1, final Triple<Territory, Territory, Long> t2)
 			{
 				if ((t1 == null && t2 == null) || t1 == t2)

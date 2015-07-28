@@ -17,7 +17,6 @@ import javax.swing.JComponent;
  * </p>
  * 
  * @author unascribed
- * @version 1.0
  */
 public interface IEditableProperty
 {
@@ -60,14 +59,12 @@ public interface IEditableProperty
 	/**
 	 * Get the view (read only) component for this property
 	 * 
-	 * @return
 	 */
 	public JComponent getViewComponent();
 	
 	/**
 	 * Description of what this property is, can be used for tooltip.
 	 * 
-	 * @return
 	 */
 	public String getDescription();
 	

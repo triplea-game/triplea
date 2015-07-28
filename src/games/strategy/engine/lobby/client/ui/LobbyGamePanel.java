@@ -142,6 +142,7 @@ public class LobbyGamePanel extends JPanel
 	{
 		m_hostGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				hostGame();
@@ -149,6 +150,7 @@ public class LobbyGamePanel extends JPanel
 		});
 		m_joinGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				joinGame();
@@ -156,6 +158,7 @@ public class LobbyGamePanel extends JPanel
 		});
 		m_bootGame.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				bootGame();
@@ -163,6 +166,7 @@ public class LobbyGamePanel extends JPanel
 		});
 		m_gameTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
+			@Override
 			public void valueChanged(final ListSelectionEvent e)
 			{
 				setWidgetActivation();
@@ -171,6 +175,7 @@ public class LobbyGamePanel extends JPanel
 		
 		m_gameTable.addMouseListener(new MouseListener()
 		{
+			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
 				if (e.getClickCount() == 2)
@@ -180,6 +185,7 @@ public class LobbyGamePanel extends JPanel
 				mouseOnGamesList(e);
 			}
 			
+			@Override
 			public void mousePressed(final MouseEvent e)
 			{
 				// right clicks do not 'select' a row by default. so force a row selection at the mouse point.
@@ -191,15 +197,18 @@ public class LobbyGamePanel extends JPanel
 				mouseOnGamesList(e);
 			}
 			
+			@Override
 			public void mouseReleased(final MouseEvent e)
 			{
 				mouseOnGamesList(e);
 			}
 			
+			@Override
 			public void mouseEntered(final MouseEvent e)
 			{
 			} // ignore
 			
+			@Override
 			public void mouseExited(final MouseEvent e)
 			{
 			} // ignore
@@ -266,6 +275,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = 8280773721585118064L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JTextPane textPane = new JTextPane();
@@ -282,6 +292,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = -8534704904840171733L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				joinGame();
@@ -295,6 +306,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = 2256758711590833222L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				hostGame();
@@ -308,6 +320,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = 5507232731850561329L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				bootGame();
@@ -321,6 +334,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = -1653282482807405899L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getHostInfo();
@@ -337,6 +351,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = -2927005305224530547L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				getChatLogOfHeadlessHostBot();
@@ -353,6 +368,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = 877617773610239979L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				mutePlayerInHeadlessHostBot();
@@ -369,6 +385,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = -2364912813781036326L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				bootPlayerInHeadlessHostBot();
@@ -385,6 +402,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = 7864471330154915855L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				banPlayerInHeadlessHostBot();
@@ -401,6 +419,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = 3580808218664367499L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				shutDownHeadlessHostBot();
@@ -417,6 +436,7 @@ public class LobbyGamePanel extends JPanel
 		{
 			private static final long serialVersionUID = 4667832053880819979L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
 				stopGameHeadlessHostBot();

@@ -11,6 +11,7 @@ public class NonEmptyValidator implements IValidator
 	// instance methods
 	// -----------------------------------------------------------------------
 	
+	@Override
 	public boolean isValid(final String text)
 	{
 		return text.length() > 0;

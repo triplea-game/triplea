@@ -42,21 +42,25 @@ public class DelegateHistoryWriter implements IDelegateHistoryWriter
 		return m_channel;
 	}
 	
+	@Override
 	public void startEvent(final String eventName, final Object renderingData)
 	{
 		getGameModifiedChannel().startHistoryEvent(eventName, renderingData);
 	}
 	
+	@Override
 	public void startEvent(final String eventName)
 	{
 		getGameModifiedChannel().startHistoryEvent(eventName);
 	}
 	
+	@Override
 	public void addChildToEvent(final String child)
 	{
 		addChildToEvent(child, null);
 	}
 	
+	@Override
 	public void addChildToEvent(final String child, final Object renderingData)
 	{
 		getGameModifiedChannel().addChildToEvent(child, renderingData);
