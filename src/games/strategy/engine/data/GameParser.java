@@ -71,8 +71,6 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.google.common.base.Preconditions;
-
 /**
  * @author Sean Bridges
  */
@@ -102,7 +100,10 @@ public class GameParser
 	public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName, final boolean delayParsing)
 				throws GameParseException, SAXException, EngineVersionException
 	{
-		Preconditions.checkNotNull(stream);
+		if( stream == null )
+		{
+			throw new NullPointerException("input stream shoudl not be null");
+		}
 		Document doc = null;
 		try
 		{
