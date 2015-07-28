@@ -1,4 +1,6 @@
+### Project specific files
 bin/
+derby_db/
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
