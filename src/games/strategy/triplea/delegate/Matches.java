@@ -657,7 +657,6 @@ public class Matches
 	 * @param attack
 	 * @param player
 	 * @param data
-	 * @return
 	 */
 	public static final Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final GameData data)
 	{
@@ -677,7 +676,6 @@ public class Matches
 	 * @param attack
 	 * @param player
 	 * @param data
-	 * @return
 	 */
 	public static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player, final GameData data)
 	{
@@ -1460,7 +1458,6 @@ public class Matches
 	 * 
 	 * @param player
 	 * @param data
-	 * @return
 	 */
 	public static Match<Territory> territoryCanCollectIncomeFrom(final PlayerID player, final GameData data)
 	{
@@ -3860,7 +3857,6 @@ public class Matches
 	 * Accounts for OccupiedTerrOf. Returns false if there is no territory attachment (like if it is water).
 	 * 
 	 * @param player
-	 * @return
 	 */
 	public static final Match<Territory> TerritoryIsOriginallyOwnedBy(final PlayerID player)
 	{
@@ -3949,7 +3945,6 @@ public class Matches
 	 *            can NOT be null
 	 * @param data
 	 *            can NOT be null
-	 * @return
 	 */
 	public static final Match<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(final PlayerID player, final Match<RelationshipType> currentRelation,
 				final Match<RelationshipType> newRelation, final GameData data)

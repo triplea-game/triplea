@@ -100,7 +100,6 @@ public interface IBattle extends java.io.Serializable
 	/**
 	 * The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc.
 	 * 
-	 * @return
 	 */
 	public BattleType getBattleType();
 	

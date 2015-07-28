@@ -119,7 +119,6 @@ public class PoliticalStateOverview extends JPanel
 	 * 
 	 * @param player1
 	 * @param player2
-	 * @return
 	 */
 	private JPanel getRelationshipLabel(final PlayerID player1, final PlayerID player2)
 	{

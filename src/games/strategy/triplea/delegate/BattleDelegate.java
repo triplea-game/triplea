@@ -282,7 +282,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isShoreBombardPerGroundUnitRestricted(final GameData data)
 	{
@@ -1657,7 +1656,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	}
 	
 	/**
-	 * @return
 	 */
 	private static boolean isIgnoreTransportInMovement(final GameData data)
 	{
@@ -1665,7 +1663,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 	}
 	
 	/**
-	 * @return
 	 */
 	private static boolean isIgnoreSubInMovement(final GameData data)
 	{

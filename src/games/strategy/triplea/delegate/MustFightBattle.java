@@ -324,7 +324,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	/**
 	 * @deprecated use: route.getTerritoryBeforeEnd();
 	 * @param route
-	 * @return
 	 */
 	@Deprecated
 	private Territory getAttackFrom(final Route route)
@@ -1340,7 +1339,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean canAttackerRetreatPlanes()
 	{
@@ -1348,7 +1346,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean canAttackerRetreatPartialAmphib()
 	{
@@ -2345,7 +2342,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isWW2V2()
 	{
@@ -2371,7 +2367,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isAlliedAirIndependent()
 	{
@@ -2379,7 +2374,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isDefendingSubsSneakAttack()
 	{
@@ -2387,7 +2381,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isAttackerRetreatPlanes()
 	{
@@ -2395,7 +2388,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isNavalBombardCasualtiesReturnFire()
 	{
@@ -2403,7 +2395,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isSuicideAndMunitionCasualtiesRestricted()
 	{
@@ -2411,7 +2402,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isDefendingSuicideAndMunitionUnitsDoNotFire()
 	{
@@ -2426,7 +2416,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 */
 	
 	/**
-	 * @return
 	 */
 	private boolean isAirAttackSubRestricted()
 	{
@@ -2434,7 +2423,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isSubRetreatBeforeBattle()
 	{
@@ -2442,7 +2430,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isTransportCasualtiesRestricted()
 	{

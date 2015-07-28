@@ -194,7 +194,6 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate
 	 * 
 	 * @param end
 	 *            <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
-	 * @return
 	 */
 	public static Collection<Territory> checkForCaptures(final IGridPlayData play, final PlayerID player, final GameData data)
 	{

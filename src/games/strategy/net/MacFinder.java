@@ -46,7 +46,6 @@ public class MacFinder
 	/**
 	 * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
 	 * 
-	 * @return
 	 */
 	public static String GetHashedMacAddress()
 	{

@@ -120,7 +120,6 @@ public class TripleAUnit extends Unit
 	/**
 	 * This is a very slow method because it checks all territories on the map. Try not to use this method if possible.
 	 * 
-	 * @return
 	 */
 	public List<Unit> getTransporting()
 	{

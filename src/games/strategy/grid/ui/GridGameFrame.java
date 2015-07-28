@@ -890,7 +890,6 @@ public class GridGameFrame extends MainGameFrame
 	/**
 	 * This only applies to the UI for this local machine. Therefore it returns the "last" active player that was played on this machine.
 	 * 
-	 * @return
 	 */
 	public PlayerID getActivePlayer()
 	{

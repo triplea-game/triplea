@@ -100,14 +100,12 @@ public interface IForumPoster extends IBean
 	/**
 	 * Can you view the forum post with this poster
 	 * 
-	 * @return
 	 */
 	public boolean getCanViewPosted();
 	
 	/**
 	 * Get the user name to login with
 	 * 
-	 * @return
 	 */
 	@Override
 	public String getDisplayName();

@@ -278,7 +278,6 @@ public class Fire implements IExecutable
 	}
 	
 	/**
-	 * @return
 	 */
 	private boolean isTransportCasualtiesRestricted(final GameData data)
 	{

@@ -112,7 +112,6 @@ public class LocalizeHTML
 	 * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be the last game's resource loader.
 	 * 
 	 * @param htmlText
-	 * @return
 	 */
 	public static String localizeImgLinksInHTML(final String htmlText)
 	{

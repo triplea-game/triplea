@@ -615,7 +615,6 @@ class EndPoint
 	/**
 	 * @param call
 	 * @param implementor
-	 * @return
 	 */
 	private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor, final INode messageOriginator)
 	{

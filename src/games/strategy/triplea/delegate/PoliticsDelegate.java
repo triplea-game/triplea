@@ -226,7 +226,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	 * 
 	 * @param paa
 	 *            the politicalActionAttachment that should be accepted
-	 * @return
 	 */
 	private boolean actionIsAccepted(final PoliticalActionAttachment paa)
 	{

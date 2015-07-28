@@ -111,7 +111,6 @@ public class AIUtils
 	 *            - are the units on attack or defense
 	 * @param sea
 	 *            - calculate the strength of the units in a sea or land battle?
-	 * @return
 	 */
 	public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea)
 	{

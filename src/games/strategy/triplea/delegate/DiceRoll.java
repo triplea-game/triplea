@@ -435,7 +435,6 @@ public class DiceRoll implements Externalizable
 	 * @param territoryEffects
 	 * @param isAmphibiousBattle
 	 * @param amphibiousLandAttackers
-	 * @return
 	 */
 	public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
 				final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing, final PlayerID player, final GameData data, final Territory location,
@@ -461,7 +460,6 @@ public class DiceRoll implements Externalizable
 	 * @param amphibiousLandAttackers
 	 * @param unitSupportPowerMap
 	 * @param unitSupportRollsMap
-	 * @return
 	 */
 	public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
 				final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing, final PlayerID player, final GameData data, final Territory location,
@@ -654,7 +652,6 @@ public class DiceRoll implements Externalizable
 	 * @param units
 	 * @param defending
 	 * @param player
-	 * @return
 	 */
 	public static int getArtillerySupportAvailable(final List<Unit> units, final boolean defending, final PlayerID player)
 	{
@@ -948,7 +945,6 @@ public class DiceRoll implements Externalizable
 	 * @param bridge
 	 * @param battle
 	 * @param annotation
-	 * @return
 	 */
 	public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
 	{
@@ -1208,7 +1204,6 @@ public class DiceRoll implements Externalizable
 	 * @param units
 	 * @param player
 	 * @param battle
-	 * @return
 	 */
 	public static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle)
 	{

@@ -1025,7 +1025,6 @@ public class GameRunner2
 	/**
 	 * Our jar is named with engine number and we are in "old" folder.
 	 * 
-	 * @return
 	 */
 	public static boolean areWeOldExtraJar()
 	{

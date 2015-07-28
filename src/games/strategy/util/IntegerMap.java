@@ -249,7 +249,6 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * Will return zero if empty.
 	 * 
-	 * @return
 	 */
 	public int highestValue()
 	{
@@ -267,7 +266,6 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * Will return zero if empty.
 	 * 
-	 * @return
 	 */
 	public int lowestValue()
 	{

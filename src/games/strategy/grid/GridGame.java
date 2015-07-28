@@ -62,7 +62,6 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 	 * Should be evenly divided by 2, or else your map might get drawn funny.
 	 * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
 	 * 
-	 * @return
 	 */
 	public int getSquareWidth()
 	{
@@ -73,7 +72,6 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 	 * Should be evenly divided by 2, or else your map might get drawn funny.
 	 * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
 	 * 
-	 * @return
 	 */
 	public int getSquareHeight()
 	{

@@ -15,7 +15,6 @@ public class IllegalCharacterRemover
 	 * Designed to remove / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
 	 * 
 	 * @param text
-	 * @return
 	 */
 	public static String removeIllegalCharacter(final String text)
 	{
@@ -33,7 +32,6 @@ public class IllegalCharacterRemover
 	 * 
 	 * @param text
 	 * @param replacement
-	 * @return
 	 */
 	public static String replaceIllegalCharacter(final String text, final char replacement)
 	{

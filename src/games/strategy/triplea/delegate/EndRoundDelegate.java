@@ -352,7 +352,6 @@ public class EndRoundDelegate extends BaseTripleADelegate
 	/**
 	 * if null, the game is not over yet
 	 * 
-	 * @return
 	 */
 	public Collection<PlayerID> getWinners()
 	{

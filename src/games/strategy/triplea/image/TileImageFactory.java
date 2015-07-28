@@ -188,7 +188,6 @@ public final class TileImageFactory
 	
 	/**
 	 * @param fileName
-	 * @return
 	 */
 	private Image isImageLoaded(final String fileName)
 	{
@@ -217,7 +216,6 @@ public final class TileImageFactory
 	/**
 	 * @param x
 	 * @param y
-	 * @return
 	 */
 	private String getBaseTileImageName(final int x, final int y)
 	{
@@ -228,7 +226,6 @@ public final class TileImageFactory
 	
 	/**
 	 * @param fileName
-	 * @return
 	 */
 	private Image getImage(final String fileName, final boolean transparent)
 	{
@@ -267,7 +264,6 @@ public final class TileImageFactory
 	/**
 	 * @param x
 	 * @param y
-	 * @return
 	 */
 	private String getReliefTileImageName(final int x, final int y)
 	{
@@ -293,7 +289,6 @@ public final class TileImageFactory
 	
 	/**
 	 * @param imageLocation
-	 * @return
 	 */
 	private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent, final boolean cache, final boolean scale)
 	{

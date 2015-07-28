@@ -173,7 +173,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	 * And I own zero factories or have have no owned land,
 	 * then I am basically dead, and therefore should not participate in things like politics.
 	 * 
-	 * @return
 	 */
 	public boolean amNotDeadYet(final GameData data)
 	{

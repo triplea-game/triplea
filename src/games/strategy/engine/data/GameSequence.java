@@ -160,7 +160,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	 * Used for finding if we need to make a new round or not.
 	 * Does not change any data or fields.
 	 * 
-	 * @return
 	 */
 	public boolean testWeAreOnLastStep()
 	{

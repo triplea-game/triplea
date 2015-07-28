@@ -48,7 +48,6 @@ public class TechTracker implements java.io.Serializable
 	 * 
 	 * @param id
 	 * @param data
-	 * @return
 	 */
 	public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerID id, final GameData data)
 	{
@@ -68,7 +67,6 @@ public class TechTracker implements java.io.Serializable
 	 * 
 	 * @param data
 	 * @param id
-	 * @return
 	 */
 	public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final GameData data, final PlayerID id)
 	{

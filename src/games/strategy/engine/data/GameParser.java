@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -70,6 +71,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.google.common.base.Preconditions;
+
 /**
  * @author Sean Bridges
  */
@@ -92,18 +95,14 @@ public class GameParser
 	 * @param stream
 	 * @param delayParsing
 	 *            Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the game chooser which should use the user set preference.
-	 * @return
 	 * @throws GameParseException
 	 * @throws SAXException
 	 * @throws EngineVersionException
 	 */
 	public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName, final boolean delayParsing)
-				throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException
+				throws GameParseException, SAXException, EngineVersionException
 	{
-		if (stream == null)
-		{
-			throw new IllegalArgumentException("Stream must be non null");
-		}
+		Preconditions.checkNotNull(stream);
 		Document doc = null;
 		try
 		{
@@ -128,8 +127,9 @@ public class GameParser
 		{
 			for (final SAXParseException error : errorsSAX)
 			{
-				System.err.println("SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
-							+ error.getColumnNumber() + ", error: " + error.getMessage());
+				String msg = "SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
+						+ error.getColumnNumber() + ", error: " + error.getMessage();
+				ClientLogger.logQuietly(msg, error);
 			}
 		}
 		parseDiceSides(getSingleChild("diceSides", root, true));

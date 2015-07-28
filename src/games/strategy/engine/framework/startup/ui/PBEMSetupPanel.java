@@ -338,7 +338,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	/**
 	 * Called when the observers detect change, to see if the game is in a startable state
 	 * 
-	 * @return
 	 */
 	@Override
 	public boolean canGameStart()

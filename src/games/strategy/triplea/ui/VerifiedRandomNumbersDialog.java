@@ -80,7 +80,6 @@ public class VerifiedRandomNumbersDialog extends JDialog
 	
 	/**
 	 * @param verified
-	 * @return
 	 */
 	private String[][] getTableValues(final List<VerifiedRandomNumbers> verified)
 	{

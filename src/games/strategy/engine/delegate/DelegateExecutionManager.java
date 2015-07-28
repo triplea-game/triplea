@@ -58,7 +58,6 @@ public class DelegateExecutionManager
 	 * <p>
 	 * 
 	 * @param timeToWait
-	 * @return
 	 */
 	public boolean blockDelegateExecution(final int timeToWaitMS) throws InterruptedException
 	{

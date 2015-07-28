@@ -297,7 +297,6 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 	 * Returns all tech advances possible in this game.
 	 * 
 	 * @param data
-	 * @return
 	 */
 	public static List<TechAdvance> getTechAdvances(final GameData data)
 	{
@@ -309,7 +308,6 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 	 * 
 	 * @param data
 	 * @param player
-	 * @return
 	 */
 	public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player)
 	{
@@ -343,7 +341,6 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 	 * 
 	 * @param data
 	 * @param player
-	 * @return
 	 */
 	public static List<TechnologyFrontier> getPlayerTechCategories(final GameData data, final PlayerID player)
 	{

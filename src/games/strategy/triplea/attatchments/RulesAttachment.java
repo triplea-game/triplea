@@ -141,7 +141,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	 * 
 	 * @param player
 	 * @param data
-	 * @return
 	 */
 	public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data)
 	{

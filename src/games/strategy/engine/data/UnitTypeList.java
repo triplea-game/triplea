@@ -61,7 +61,6 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 	 * Will return null if even a single name is not on the unit list.
 	 * 
 	 * @param names
-	 * @return
 	 */
 	public Set<UnitType> getUnitTypes(final String[] names)
 	{

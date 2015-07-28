@@ -5,14 +5,21 @@ import java.io.PrintStream;
 public class ClientLogger
 {
 	private static final PrintStream developerOutputStream = System.out;
-	
-	public static void logQuietly(final Exception e)
+
+	public static void logQuietly(String msg , Exception e)
 	{
-		developerOutputStream.println("Exception: " + e.getMessage());
+		developerOutputStream.println(msg);
 		for (final StackTraceElement stackTraceElement : e.getStackTrace())
 		{
 			developerOutputStream.println(stackTraceElement.toString());
 		}
+		
 	}
-	
+
+	public static void logQuietly(Exception e)
+	{
+		String msg = "Exception: " + e.getMessage();
+		logQuietly(msg,e);
+	}
+
 }

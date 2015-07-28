@@ -215,7 +215,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * Since anything implementing ICondition can contain other ICondition, this must recursively search through all conditions and contained conditions to get the final list.
 	 * 
 	 * @param startingListOfConditions
-	 * @return
 	 * @author veqryn
 	 */
 	public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions, HashSet<ICondition> allConditionsNeededSoFar)
@@ -239,7 +238,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * 
 	 * @param rules
 	 * @param data
-	 * @return
 	 * @author veqryn
 	 */
 	public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules, HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge aBridge)
@@ -266,7 +264,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * @param rules
 	 * @param conditionType
 	 * @param data
-	 * @return
 	 * @author veqryn
 	 */
 	public static boolean areConditionsMet(final List<ICondition> rulesToTest, final HashMap<ICondition, Boolean> testedConditions, final String conditionType)

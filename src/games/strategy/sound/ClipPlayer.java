@@ -409,7 +409,6 @@ public class ClipPlayer
 	 * 
 	 * @param pathName
 	 * @param subFolder
-	 * @return
 	 */
 	private void parseClipPaths(final String pathName, final boolean subFolder)
 	{
@@ -442,7 +441,6 @@ public class ClipPlayer
 	 * 
 	 * @param resourceAndPathURL
 	 *            (URL uses '/', not File.separator or '\')
-	 * @return
 	 */
 	private List<URL> createAndAddClips(final String resourceAndPathURL)
 	{

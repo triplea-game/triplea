@@ -362,7 +362,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	 * 
 	 * @param territories
 	 * @param data
-	 * @return
 	 */
 	public static ResourceCollection getResourceProduction(final Collection<Territory> territories, final GameData data)
 	{

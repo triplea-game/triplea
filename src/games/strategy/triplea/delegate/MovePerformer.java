@@ -487,7 +487,6 @@ public class MovePerformer implements Serializable
 	}
 	
 	/**
-	 * @return
 	 */
 	private static boolean isIgnoreTransportInMovement(final GameData data)
 	{

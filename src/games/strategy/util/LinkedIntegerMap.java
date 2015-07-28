@@ -245,7 +245,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * Will return zero if empty.
 	 * 
-	 * @return
 	 */
 	public int highestValue()
 	{
@@ -263,7 +262,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * Will return zero if empty.
 	 * 
-	 * @return
 	 */
 	public int lowestValue()
 	{
