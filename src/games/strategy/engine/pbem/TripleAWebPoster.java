@@ -40,29 +40,29 @@ public class TripleAWebPoster implements IWebPoster
 	// -----------------------------------------------------------------------
 	// class fields
 	// -----------------------------------------------------------------------
-	
+
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
-	
+
 	private String m_host = MicroWebPosterEditor.HTTP_BLANK;
 	private Vector<String> m_allHosts = new Vector<String>();
 	private String m_siteId = "";
 	private boolean m_mailSaveGame = true;
 	private String m_gameName = "";
-	
+
 	private transient String m_serverMessage = "";
 	private transient File m_saveGameFile = null;
 	private transient String m_saveGameFileName = "";
 	private String[] parties;
-	
+
 	// -----------------------------------------------------------------------
 	// constructors
 	// -----------------------------------------------------------------------
-	
+
 	private static Collection<String> getAlliances(final GameData gameData)
 	{
-		
+
 		final Collection<String> rVal = new TreeSet<String>();
 		for (final String alliance : gameData.getAllianceTracker().getAlliances())
 		{
@@ -73,7 +73,7 @@ public class TripleAWebPoster implements IWebPoster
 		}
 		return rVal;
 	}
-	
+
 	private static String getProductionData(final GameData gameData)
 	{
 		gameData.acquireReadLock();
@@ -81,9 +81,9 @@ public class TripleAWebPoster implements IWebPoster
 		{
 			final Collection<String> alliances = getAlliances(gameData);
 			final ProductionStat prodStat = new ProductionStat();
-			
+
 			String result = "";
-			
+
 			for (final String alliance : alliances)
 			{
 				final int value = (int) prodStat.getValue(alliance, gameData);
@@ -97,7 +97,7 @@ public class TripleAWebPoster implements IWebPoster
 			gameData.releaseReadLock();
 		}
 	}
-	
+
 	public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player, final int round)
 	{
 		try
@@ -117,7 +117,7 @@ public class TripleAWebPoster implements IWebPoster
 				part.setContentType("application/octet-stream");
 				parts.add(part);
 			}
-			
+
 			m_serverMessage = executePost(m_host, "upload.php", parts);
 			if (!m_serverMessage.toLowerCase().contains("success"))
 			{
@@ -130,10 +130,10 @@ public class TripleAWebPoster implements IWebPoster
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public static String executePost(final String host, final String path, final List<Part> parts) throws Exception
 	{
 		final HttpClient client = new HttpClient();
@@ -141,15 +141,15 @@ public class TripleAWebPoster implements IWebPoster
 		client.getParams().setParameter("http.useragent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
 		final HttpState httpState = new HttpState();
 		final HostConfiguration hostConfiguration = new HostConfiguration();
-		
+
 		// add the proxy
 		GameRunner2.addProxy(hostConfiguration);
 		hostConfiguration.setHost(host);
-		
+
 		final MultipartRequestEntity entity = new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
 		final PostMethod post = new PostMethod(getHostUrlPrefix(host) + path);
 		post.setRequestEntity(entity);
-		
+
 		try
 		{
 			final int status = client.executeMethod(hostConfiguration, post, httpState);
@@ -163,36 +163,36 @@ public class TripleAWebPoster implements IWebPoster
 			post.releaseConnection();
 		}
 	}
-	
+
 	public boolean getMailSaveGame()
 	{
 		return m_mailSaveGame;
 	}
-	
+
 	public void setMailSaveGame(final boolean mail)
 	{
 		m_mailSaveGame = mail;
 	}
-	
+
 	public void addSaveGame(final File saveGame, final String fileName)
 	{
 		m_saveGameFile = saveGame;
 		m_saveGameFileName = fileName;
 	}
-	
+
 	public EditorPanel getEditor()
 	{
 		return new MicroWebPosterEditor(this, parties);
 	}
-	
+
 	public boolean sameType(final IBean other)
 	{
 		return getClass() == other.getClass();
 	}
-	
+
 	/**
 	 * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like a browser
-	 * 
+	 *
 	 * @param name
 	 *            the form field name
 	 * @param value
@@ -206,22 +206,22 @@ public class TripleAWebPoster implements IWebPoster
 		stringPart.setContentType(null);
 		return stringPart;
 	}
-	
+
 	public String getTestMessage()
 	{
 		return "Testing, this will take a couple of seconds...";
 	}
-	
+
 	public String getServerMessage()
 	{
 		return m_serverMessage;
 	}
-	
+
 	public String getHelpText()
 	{
 		return HelpSupport.loadHelp("tripleAMicroWebsite.html");
 	}
-	
+
 	public IWebPoster doClone()
 	{
 		final TripleAWebPoster clone = new TripleAWebPoster();
@@ -232,27 +232,27 @@ public class TripleAWebPoster implements IWebPoster
 		clone.setGameName(getGameName());
 		return clone;
 	}
-	
+
 	public String getDisplayName()
 	{
 		return "TripleA Micro Web Site";
 	}
-	
+
 	public String getSiteId()
 	{
 		return m_siteId;
 	}
-	
+
 	public String getHost()
 	{
 		return m_host;
 	}
-	
+
 	public Vector<String> getAllHosts()
 	{
 		return m_allHosts;
 	}
-	
+
 	private static String getHostUrlPrefix(final String host)
 	{
 		if (host.endsWith("/"))
@@ -260,32 +260,32 @@ public class TripleAWebPoster implements IWebPoster
 		else
 			return host + "/";
 	}
-	
+
 	public String getGameName()
 	{
 		return m_gameName;
 	}
-	
+
 	public void setSiteId(final String siteId)
 	{
 		m_siteId = siteId;
 	}
-	
+
 	public void setGameName(final String gameName)
 	{
 		m_gameName = gameName;
 	}
-	
+
 	public void setHost(final String host)
 	{
 		m_host = getHostUrlPrefix(host);
 	}
-	
+
 	public void setAllHosts(final Vector<String> hosts)
 	{
 		m_allHosts = hosts;
 	}
-	
+
 	public void addToAllHosts(final String host)
 	{
 		final String hostToAdd = getHostUrlPrefix(host);
@@ -294,17 +294,17 @@ public class TripleAWebPoster implements IWebPoster
 			m_allHosts.subList(10, m_allHosts.size()).clear();
 		m_allHosts.add(0, hostToAdd);
 	}
-	
+
 	public void viewSite()
 	{
 		DesktopUtilityBrowserLauncher.openURL(getHost());
 	}
-	
+
 	public void setParties(final String[] parties)
 	{
 		this.parties = parties;
 	}
-	
+
 	public void clearSensitiveInfo()
 	{
 		m_allHosts.clear();
@@ -318,7 +318,7 @@ class ProductionStat extends AbstractStat
 	{
 		return "Production";
 	}
-	
+
 	public double getValue(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;

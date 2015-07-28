@@ -26,19 +26,19 @@ import games.strategy.sound.ISound;
 import java.util.Properties;
 
 /**
- * 
+ *
  * TripleA implementation of DelegateBridge
- * 
+ *
  * @author Tony Clayton
  */
 public class GameDelegateBridge implements IDelegateBridge
 {
 	private final IDelegateBridge m_bridge;
 	private final GameDelegateHistoryWriter m_historyWriter;
-	
+
 	/**
 	 * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge
-	 * 
+	 *
 	 * @param bridge
 	 *            delegate bridge
 	 * @param data
@@ -49,26 +49,26 @@ public class GameDelegateBridge implements IDelegateBridge
 		m_bridge = bridge;
 		m_historyWriter = new GameDelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
 	}
-	
+
 	public GameData getData()
 	{
 		return m_bridge.getData();
 	}
-	
+
 	/**
 	 * Return our custom historyWriter instead of the default one
-	 * 
+	 *
 	 */
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_historyWriter;
 	}
-	
+
 	public PlayerID getPlayerID()
 	{
 		return m_bridge.getPlayerID();
 	}
-	
+
 	/**
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
@@ -77,7 +77,7 @@ public class GameDelegateBridge implements IDelegateBridge
 	{
 		return m_bridge.getRandom(max, player, diceType, annotation);
 	}
-	
+
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
@@ -85,12 +85,12 @@ public class GameDelegateBridge implements IDelegateBridge
 	{
 		return m_bridge.getRandom(max, count, player, diceType, annotation);
 	}
-	
+
 	public void addChange(final Change aChange)
 	{
 		m_bridge.addChange(aChange);
 	}
-	
+
 	/**
 	 * Returns the current step name
 	 */
@@ -98,7 +98,7 @@ public class GameDelegateBridge implements IDelegateBridge
 	{
 		return m_bridge.getStepName();
 	}
-	
+
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
@@ -106,7 +106,7 @@ public class GameDelegateBridge implements IDelegateBridge
 	{
 		return m_bridge.getRemotePlayer();
 	}
-	
+
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
@@ -114,7 +114,7 @@ public class GameDelegateBridge implements IDelegateBridge
 	{
 		return m_bridge.getRemotePlayer(id);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
@@ -122,7 +122,7 @@ public class GameDelegateBridge implements IDelegateBridge
 	{
 		return m_bridge.getDisplayChannelBroadcaster();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getSoundChannelBroadcaster()
 	 */
@@ -130,22 +130,22 @@ public class GameDelegateBridge implements IDelegateBridge
 	{
 		return m_bridge.getSoundChannelBroadcaster();
 	}
-	
+
 	public Properties getStepProperties()
 	{
 		return m_bridge.getStepProperties();
 	}
-	
+
 	public void leaveDelegateExecution()
 	{
 		m_bridge.leaveDelegateExecution();
 	}
-	
+
 	public void enterDelegateExecution()
 	{
 		m_bridge.enterDelegateExecution();
 	}
-	
+
 	public void stopGameSequence()
 	{
 		m_bridge.stopGameSequence();

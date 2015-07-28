@@ -11,15 +11,15 @@ import games.strategy.engine.history.Step;
 import games.strategy.triplea.Constants;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public abstract class BaseEditDelegate extends BasePersistentDelegate
 {
 	public static String EDITMODE_ON = "Turning on Edit Mode";
 	public static String EDITMODE_OFF = "Turning off Edit Mode";
-	
+
 	/**
 	 * Called before the delegate will run, AND before "start" is called.
 	 */
@@ -28,7 +28,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 	{
 		super.setDelegateBridgeAndPlayer(new GameDelegateBridge(iDelegateBridge));
 	}
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -37,17 +37,17 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 	{
 		super.start();
 	}
-	
+
 	@Override
 	public void end()
 	{
 	}
-	
+
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return true;
 	}
-	
+
 	public static boolean getEditMode(final GameData data)
 	{
 		final Object editMode = data.getProperties().get(Constants.EDIT_MODE);
@@ -57,7 +57,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 			return false;
 		return ((Boolean) editMode).booleanValue();
 	}
-	
+
 	protected String checkPlayerID()
 	{
 		final IRemotePlayer remotePlayer = getRemotePlayer();
@@ -65,7 +65,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 			return "Edit actions can only be performed during players turn";
 		return null;
 	}
-	
+
 	protected String checkEditMode()
 	{
 		final String result = checkPlayerID();
@@ -75,7 +75,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 			return "Edit mode is not enabled";
 		return null;
 	}
-	
+
 	public String setEditMode(final boolean editMode)
 	{
 		final IRemotePlayer remotePlayer = getRemotePlayer();
@@ -85,12 +85,12 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 		m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, new Boolean(editMode), getData()));
 		return null;
 	}
-	
+
 	public boolean getEditMode()
 	{
 		return getEditMode(getData());
 	}
-	
+
 	public String addComment(final String message)
 	{
 		String result = null;
@@ -99,7 +99,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate
 		logEvent("COMMENT: " + message, null);
 		return null;
 	}
-	
+
 	// We don't know the current context, so we need to figure
 	// out whether it makes more sense to log a new event or a child.
 	// If any child events came before us, then we'll log a child event.

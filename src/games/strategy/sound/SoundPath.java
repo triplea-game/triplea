@@ -20,21 +20,21 @@ import java.util.HashSet;
 
 /**
  * Contains the sound file names and the directory of all sound files.
- * 
+ *
  * @author Frigoref
- * 
+ *
  */
 public class SoundPath
 {
 	// the sounds directory is based on the resource loader, because it could change based on the map or skin
-	
+
 	public static enum SoundType
 	{
 		GENERAL, TRIPLEA
 	}
-	
+
 	// MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference will not be saved)
-	
+
 	// standard sounds (files can be found in corresponding data/... folder to this package)
 	public static final String CLIP_CHAT_MESSAGE = "chat_message";
 	public static final String CLIP_CHAT_SLAP = "chat_slap";
@@ -45,9 +45,9 @@ public class SoundPath
 	public static final String CLIP_GAME_WON = "game_won";
 	public static final String CLIP_REQUIRED_ACTION = "required_action"; // TODO
 	public static final String CLIP_REQUIRED_YOUR_TURN_SERIES = "required_your_turn_series";
-	
+
 	// TripleA sounds:
-	
+
 	// custom AA Guns:
 	public static final String CLIP_BATTLE_X_PREFIX = "battle_";
 	public static final String CLIP_BATTLE_X_HIT = "_hit";
@@ -97,7 +97,7 @@ public class SoundPath
 	public static final String CLIP_TERRITORY_CAPTURE_SEA = "territory_capture_sea";
 	public static final String CLIP_USER_ACTION_FAILURE = "user_action_failure";
 	public static final String CLIP_USER_ACTION_SUCCESSFUL = "user_action_successful";
-	
+
 	public static HashSet<String> getAllSoundOptions()
 	{
 		final HashSet<String> rVal = new HashSet<String>();
@@ -110,7 +110,7 @@ public class SoundPath
 		rVal.add(CLIP_GAME_WON);
 		rVal.add(CLIP_REQUIRED_ACTION);
 		rVal.add(CLIP_REQUIRED_YOUR_TURN_SERIES);
-		
+
 		rVal.add(CLIP_BATTLE_AA_HIT);
 		rVal.add(CLIP_BATTLE_AA_MISS);
 		rVal.add(CLIP_BATTLE_AIR);
@@ -153,7 +153,7 @@ public class SoundPath
 		rVal.add(CLIP_USER_ACTION_SUCCESSFUL);
 		return rVal;
 	}
-	
+
 	public static void preLoadSounds(final SoundType sounds)
 	{
 		final ClipPlayer clipPlayer = ClipPlayer.getInstance();
@@ -214,7 +214,7 @@ public class SoundPath
 				break;
 		}
 	}
-	
+
 	public static ArrayList<IEditableProperty> getSoundOptions(final SoundType sounds)
 	{
 		final ArrayList<IEditableProperty> rVal = new ArrayList<IEditableProperty>();

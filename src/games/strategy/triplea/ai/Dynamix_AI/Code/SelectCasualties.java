@@ -32,13 +32,13 @@ import java.util.Map;
 import java.util.logging.Level;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class SelectCasualties
 {
 	private static boolean useDefaultSelectionThisTime = false;
-	
+
 	public static void NotifyCasualtySelectionError(final String error)
 	{
 		if (error.equals("Wrong number of casualties selected"))
@@ -47,7 +47,7 @@ public class SelectCasualties
 			useDefaultSelectionThisTime = true;
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static CasualtyDetails selectCasualties(final Dynamix_AI ai, final GameData data, final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
 				final String message, final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit)

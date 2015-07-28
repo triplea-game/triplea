@@ -26,13 +26,13 @@ import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted ips (there is no update).
- * 
+ *
  * @author sgb
  */
 public class MutedIpController
 {
 	private static final Logger s_logger = Logger.getLogger(MutedIpController.class.getName());
-	
+
 	/**
 	 * Mute the ip permanently
 	 */
@@ -40,11 +40,11 @@ public class MutedIpController
 	{
 		addMutedIp(ip, null);
 	}
-	
+
 	/**
 	 * Mute the given ip. If muteTill is not null, the mute will expire when muteTill is reached.
 	 * <p>
-	 * 
+	 *
 	 * If this ip is already muted, this call will update the mute_end.
 	 */
 	public void addMutedIp(final String ip, final Date muteTill)
@@ -82,7 +82,7 @@ public class MutedIpController
 			DbUtil.closeConnection(con);
 		}
 	}
-	
+
 	public void removeMutedIp(final String ip)
 	{
 		s_logger.fine("Removing muted ip:" + ip);
@@ -103,7 +103,7 @@ public class MutedIpController
 			DbUtil.closeConnection(con);
 		}
 	}
-	
+
 	/**
 	 * Is the given ip muted? This may have the side effect of removing from the
 	 * database any ip's whose mute has expired
@@ -113,7 +113,7 @@ public class MutedIpController
 		final long muteTill = getIpUnmuteTime(ip);
 		return muteTill > System.currentTimeMillis();
 	}
-	
+
 	public long getIpUnmuteTime(final String ip)
 	{
 		long result = -1;
@@ -156,7 +156,7 @@ public class MutedIpController
 		}
 		return result;
 	}
-	
+
 	public List<String> getIPsThatAreStillMuted(final List<String> ips)
 	{
 		final List<String> results = new ArrayList<String>();

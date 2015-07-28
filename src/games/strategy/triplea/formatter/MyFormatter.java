@@ -13,7 +13,7 @@
  */
 /*
  * MyFormatter.java
- * 
+ *
  * Created on January 14, 2002, 4:06 PM
  */
 package games.strategy.triplea.formatter;
@@ -39,9 +39,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * 
+ *
  * Provides useful methods for converting things to text.
- * 
+ *
  * @author Sean Bridges
  */
 public class MyFormatter
@@ -59,12 +59,12 @@ public class MyFormatter
 		s_plural.put("artillery", "artilleries");
 		s_plural.put("factory", "factories");
 	}
-	
+
 	public static String unitsToTextNoOwner(final Collection<Unit> units)
 	{
 		return unitsToTextNoOwner(units, null);
 	}
-	
+
 	public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerID owner)
 	{
 		final Iterator<Unit> iter = units.iterator();
@@ -74,8 +74,8 @@ public class MyFormatter
 			final Unit unit = iter.next();
 			if (unit == null || unit.getUnitType() == null)
 				throw new IllegalStateException(
-							"Trying to format a unit that does not exist.  " +
-										"If you are using Dynamix AI, then this is being caused by switching maps with the ai (it is still thinking about the last map's units).  " +
+							"Trying to format a unit that does not exist.  "
+										"If you are using Dynamix AI, then this is being caused by switching maps with the ai (it is still thinking about the last map's units).  "
 										"Try restarting TripleA every time you switch maps and wish to play with Dynamix AI.");
 			if (owner == null || owner.equals(unit.getOwner()))
 				map.add(unit.getUnitType(), 1);
@@ -108,7 +108,7 @@ public class MyFormatter
 		}
 		return buf.toString();
 	}
-	
+
 	public static String unitsToText(final Collection<Unit> units)
 	{
 		final Iterator<Unit> iter = units.iterator();
@@ -139,14 +139,14 @@ public class MyFormatter
 		}
 		return buf.toString();
 	}
-	
+
 	public static String pluralize(final String in, final int quantity)
 	{
 		if (quantity == -1 || quantity == 1)
 			return in;
 		return pluralize(in);
 	}
-	
+
 	/**
 	 * Is pluralize even a word?
 	 */
@@ -158,7 +158,7 @@ public class MyFormatter
 			return in.substring(0, in.lastIndexOf("man")) + "men";
 		return in + "s";
 	}
-	
+
 	public static String attachmentNameToText(final String attachmentGetName)
 	{
 		String toText = attachmentGetName;
@@ -197,7 +197,7 @@ public class MyFormatter
 		toText = toText.trim();
 		return toText;
 	}
-	
+
 	public static String listOfArraysToString(final ArrayList<String[]> listOfArrays)
 	{
 		if (listOfArrays == null)
@@ -211,7 +211,7 @@ public class MyFormatter
 		toText += "]";
 		return toText;
 	}
-	
+
 	public static String asDice(final DiceRoll roll)
 	{
 		if (roll == null || roll.size() == 0)
@@ -225,7 +225,7 @@ public class MyFormatter
 		}
 		return buf.toString();
 	}
-	
+
 	public static String asDice(final int[] rolls)
 	{
 		if (rolls == null || rolls.length == 0)
@@ -239,7 +239,7 @@ public class MyFormatter
 		}
 		return buf.toString();
 	}
-	
+
 	public static String asDice(final List<Die> rolls)
 	{
 		if (rolls == null || rolls.size() == 0)
@@ -253,17 +253,17 @@ public class MyFormatter
 		}
 		return buf.toString();
 	}
-	
+
 	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list)
 	{
 		return defaultNamedToTextList(list, ", ", false);
 	}
-	
+
 	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final boolean showQuantity)
 	{
 		return defaultNamedToTextList(list, ", ", showQuantity);
 	}
-	
+
 	public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator, final boolean showQuantity)
 	{
 		final Iterator<? extends DefaultNamed> iter = list.iterator();
@@ -323,7 +323,7 @@ public class MyFormatter
 		}
 		return buffer.toString();*/
 	}
-	
+
 	public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map, final String separator, final String assignment, final boolean valueBeforeKey)
 	{
 		final StringBuilder buf = new StringBuilder("");
@@ -339,7 +339,7 @@ public class MyFormatter
 		}
 		return buf.toString().replaceFirst(separator, "");
 	}
-	
+
 	public static String integerUnitMapToString(final IntegerMap<? extends Unit> map, final String separator, final String assignment, final boolean valueBeforeKey)
 	{
 		final StringBuilder buf = new StringBuilder("");
@@ -355,7 +355,7 @@ public class MyFormatter
 		}
 		return buf.toString().replaceFirst(separator, "");
 	}
-	
+
 	/** Creates a new instance of MyFormatter */
 	private MyFormatter()
 	{
@@ -367,13 +367,13 @@ class UnitOwner
 {
 	public UnitType type;
 	public PlayerID owner;
-	
+
 	UnitOwner(final UnitType type, final PlayerID id)
 	{
 		this.type = type;
 		this.owner = id;
 	}
-	
+
 	@Override
 	public boolean equals(final Object o)
 	{
@@ -382,7 +382,7 @@ class UnitOwner
 		final UnitOwner other = (UnitOwner) o;
 		return other.type.equals(this.type) && other.owner.equals(this.owner);
 	}
-	
+
 	@Override
 	public int hashCode()
 	{

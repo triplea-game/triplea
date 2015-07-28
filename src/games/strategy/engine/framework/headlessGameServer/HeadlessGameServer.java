@@ -45,9 +45,9 @@ import javax.swing.WindowConstants;
 
 /**
  * A way of hosting a game, but headless.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
- * 
+ *
  */
 public class HeadlessGameServer
 {
@@ -76,7 +76,7 @@ public class HeadlessGameServer
 	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
 	private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
 	private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
-	
+
 	public static String[] getProperties()
 	{
 		return new String[] { GameRunner2.TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY, TRIPLEA_GAME_HOST_UI_PROPERTY, GameRunner2.TRIPLEA_SERVER_PROPERTY,
@@ -84,7 +84,7 @@ public class HeadlessGameServer
 					GameRunner2.LOBBY_GAME_HOSTED_BY, GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner2.LOBBY_GAME_RECONNECTION,
 					GameRunner2.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner2.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME };
 	}
-	
+
 	private static void usage()
 	{
 		System.out.println("\nUsage and Valid Arguments:\n"
@@ -111,29 +111,29 @@ public class HeadlessGameServer
 					+ "   Support password is a remote access password that will allow lobby admins to remotely take the following actions: ban player, stop game, shutdown server."
 					+ " (Please email this password to one of the lobby moderators, or private message an admin on the TripleaWarClub.org website forum.)\n");
 	}
-	
+
 	public static synchronized HeadlessGameServer getInstance()
 	{
 		return s_instance;
 	}
-	
+
 	public static synchronized boolean getUseGameServerUI()
 	{
 		return Boolean.parseBoolean(System.getProperty(TRIPLEA_GAME_HOST_UI_PROPERTY, "false"));
 	}
-	
+
 	public static synchronized boolean headless()
 	{
 		if (getInstance() != null)
 			return true;
 		return Boolean.parseBoolean(System.getProperty(TRIPLEA_HEADLESS, "false"));
 	}
-	
+
 	public Set<String> getAvailableGames()
 	{
 		return new HashSet<String>(m_availableGames.getGameNames());
 	}
-	
+
 	public synchronized void setGameMapTo(final String gameName)
 	{
 		// don't change mid-game
@@ -145,7 +145,7 @@ public class HeadlessGameServer
 			System.out.println("Changed to game map: " + gameName);
 		}
 	}
-	
+
 	public synchronized void loadGameSave(final File file)
 	{
 		// don't change mid-game
@@ -157,7 +157,7 @@ public class HeadlessGameServer
 			System.out.println("Changed to save: " + file.getName());
 		}
 	}
-	
+
 	public synchronized void loadGameSave(final InputStream input, final String fileName)
 	{
 		// don't change mid-game
@@ -181,7 +181,7 @@ public class HeadlessGameServer
 			System.out.println("Changed to user savegame: " + fileName);
 		}
 	}
-	
+
 	public synchronized void loadGameSave(final ObjectInputStream input, final String fileName)
 	{
 		// don't change mid-game
@@ -205,7 +205,7 @@ public class HeadlessGameServer
 			System.out.println("Changed to user savegame: " + fileName);
 		}
 	}
-	
+
 	public synchronized void loadGameOptions(final byte[] bytes)
 	{
 		// don't change mid-game
@@ -223,7 +223,7 @@ public class HeadlessGameServer
 			System.out.println("Changed to user game options.");
 		}
 	}
-	
+
 	public static synchronized void setServerGame(final ServerGame serverGame)
 	{
 		final HeadlessGameServer instance = getInstance();
@@ -237,14 +237,14 @@ public class HeadlessGameServer
 			}
 		}
 	}
-	
+
 	public static synchronized void log(final String stdout)
 	{
 		final HeadlessGameServer instance = getInstance();
 		if (instance != null)
 			System.out.println(stdout);
 	}
-	
+
 	public static synchronized void sendChat(final String chatString)
 	{
 		final HeadlessGameServer instance = getInstance();
@@ -263,14 +263,14 @@ public class HeadlessGameServer
 			}
 		}
 	}
-	
+
 	public String getSalt()
 	{
 		final String encryptedPassword = MD5Crypt.crypt(System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, ""));
 		final String salt = MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword);
 		return salt;
 	}
-	
+
 	public String remoteShutdown(final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -300,7 +300,7 @@ public class HeadlessGameServer
 		System.out.println("Attempted remote shutdown with invalid password.");
 		return "Invalid password!";
 	}
-	
+
 	public String remoteStopGame(final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -342,7 +342,7 @@ public class HeadlessGameServer
 		System.out.println("Attempted remote stop game with invalid password.");
 		return "Invalid password!";
 	}
-	
+
 	public String remoteGetChatLog(final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -360,7 +360,7 @@ public class HeadlessGameServer
 		System.out.println("Attempted remote get chat log with invalid password.");
 		return "Invalid password!";
 	}
-	
+
 	public String remoteMutePlayer(final String playerName, final int minutes, final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -410,7 +410,7 @@ public class HeadlessGameServer
 		System.out.println("Attempted remote mute player with invalid password.");
 		return "Invalid password!";
 	}
-	
+
 	public String remoteBootPlayer(final String playerName, final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -454,7 +454,7 @@ public class HeadlessGameServer
 		System.out.println("Attempted remote boot player with invalid password.");
 		return "Invalid password!";
 	}
-	
+
 	public String remoteBanPlayer(final String playerName, final int hours, final String hashedPassword, final String salt)
 	{
 		final String password = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -522,17 +522,17 @@ public class HeadlessGameServer
 		System.out.println("Attempted remote ban player with invalid password.");
 		return "Invalid password!";
 	}
-	
+
 	ServerGame getIGame()
 	{
 		return m_iGame;
 	}
-	
+
 	public boolean isShutDown()
 	{
 		return m_shutDown;
 	}
-	
+
 	public HeadlessGameServer(final boolean useUI)
 	{
 		super();
@@ -631,7 +631,7 @@ public class HeadlessGameServer
 		}, reconnect, reconnect, TimeUnit.SECONDS);
 		s_logger.info("Game Server initialized");
 	}
-	
+
 	private static synchronized void restartLobbyWatcher(final SetupPanelModel setupPanelModel, final ServerGame iGame)
 	{
 		try
@@ -656,7 +656,7 @@ public class HeadlessGameServer
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void resetLobbyHostOldExtensionProperties()
 	{
 		for (final String property : getProperties())
@@ -672,7 +672,7 @@ public class HeadlessGameServer
 			}
 		}
 	}
-	
+
 	public String getStatus()
 	{
 		String message = "Server Start Date: " + m_startDate;
@@ -689,7 +689,7 @@ public class HeadlessGameServer
 		}
 		return message;
 	}
-	
+
 	public void printThreadDumpsAndStatus()
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -705,7 +705,7 @@ public class HeadlessGameServer
 		sb.append("\n\nDump finished.\n");
 		System.out.println(sb.toString());
 	}
-	
+
 	public synchronized void shutdown()
 	{
 		m_shutDown = true;
@@ -776,7 +776,7 @@ public class HeadlessGameServer
 		m_iGame = null;
 		System.out.println("Shutdown Script Finished.");
 	}
-	
+
 	public void waitForUsersHeadless()
 	{
 		setServerGame(null);
@@ -808,7 +808,7 @@ public class HeadlessGameServer
 		final Thread t = new Thread(r, "Headless Server Waiting For Users To Connect And Start");
 		t.start();
 	}
-	
+
 	private synchronized static boolean startHeadlessGame(final SetupPanelModel setupPanelModel)
 	{
 		try
@@ -834,7 +834,7 @@ public class HeadlessGameServer
 		}
 		return false;
 	}
-	
+
 	public static void waitForUsersHeadlessInstance()
 	{
 		final HeadlessGameServer server = getInstance();
@@ -849,17 +849,17 @@ public class HeadlessGameServer
 			server.waitForUsersHeadless();
 		}
 	}
-	
+
 	SetupPanelModel getSetupPanelModel()
 	{
 		return m_setupPanelModel;
 	}
-	
+
 	ServerModel getServerModel()
 	{
 		return getServerModel(m_setupPanelModel);
 	}
-	
+
 	static ServerModel getServerModel(final SetupPanelModel setupPanelModel)
 	{
 		if (setupPanelModel == null)
@@ -877,10 +877,10 @@ public class HeadlessGameServer
 		}
 		return null;
 	}
-	
+
 	/**
 	 * todo, replace with something better
-	 * 
+	 *
 	 * Get the chat for the game, or null if there is no chat
 	 */
 	public Chat getChat()
@@ -903,7 +903,7 @@ public class HeadlessGameServer
 			return null;
 		}
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		System.out.println("Headless AWT Test: " + java.awt.GraphicsEnvironment.isHeadless());
@@ -931,14 +931,14 @@ public class HeadlessGameServer
 			startConsole(server, in, out);
 		}
 	}
-	
+
 	private static void startConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out)
 	{
 		System.out.println("Starting console.");
 		s_console = new HeadlessGameServerConsole(server, in, out);
 		s_console.start();
 	}
-	
+
 	public static void setupLogging()
 	{
 		// setup logging to read our logging.properties
@@ -953,7 +953,7 @@ public class HeadlessGameServer
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Move command line arguments to System.properties
 	 */
@@ -980,7 +980,7 @@ public class HeadlessGameServer
 				args[0] = GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + args[0];
 			}
 		}
-		
+
 		boolean printUsage = false;
 		for (int argIndex = 0; argIndex < args.length; argIndex++)
 		{
@@ -1008,7 +1008,7 @@ public class HeadlessGameServer
 				printUsage = true;
 			}
 		}
-		
+
 		{ // now check for required fields
 			final String playerName = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, "");
 			final String hostName = System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, "");
@@ -1082,7 +1082,7 @@ public class HeadlessGameServer
 			System.exit(-1);
 		}
 	}
-	
+
 	private static String getValue(final String arg)
 	{
 		final int index = arg.indexOf('=');

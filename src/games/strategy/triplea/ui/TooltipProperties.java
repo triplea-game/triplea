@@ -19,7 +19,7 @@ public class TooltipProperties
 	private static TooltipProperties s_ttp = null;
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
-	
+
 	protected TooltipProperties()
 	{
 		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
@@ -39,7 +39,7 @@ public class TooltipProperties
 			}
 		}
 	}
-	
+
 	public static TooltipProperties getInstance()
 	{
 		if (s_ttp == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 5000)
@@ -49,7 +49,7 @@ public class TooltipProperties
 		}
 		return s_ttp;
 	}
-	
+
 	public String getToolTip(final UnitType ut, final PlayerID playerId)
 	{
 		final String tooltip = m_properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "." + (playerId == null ? PlayerID.NULL_PLAYERID.getName() : playerId.getName()), "");

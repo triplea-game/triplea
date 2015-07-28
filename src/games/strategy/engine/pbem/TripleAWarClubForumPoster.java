@@ -24,7 +24,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 /**
  * A poster for www.tripleawarclub.org forum
  * We log in and out every time we post, so we don't need to keep state.
- * 
+ *
  * @author Klaus Groenbaek
  */
 public class TripleAWarClubForumPoster extends AbstractForumPoster
@@ -39,26 +39,26 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 	// class fields
 	// -----------------------------------------------------------------------
 	private static Pattern s_XOOPS_TOKEN_REQUEST = Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-	
+
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
-	
+
 	private transient HttpState m_httpState;
 	private transient HostConfiguration m_hostConfiguration;
 	private transient HttpClient m_client;
-	
+
 	// -----------------------------------------------------------------------
 	// constructors
 	// -----------------------------------------------------------------------
-	
+
 	// -----------------------------------------------------------------------
 	// instance methods
 	// -----------------------------------------------------------------------
-	
+
 	/**
 	 * Logs into the website
-	 * 
+	 *
 	 * @throws Exception
 	 *             if login fails
 	 */
@@ -72,7 +72,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		// add the proxy
 		GameRunner2.addProxy(m_hostConfiguration);
 		m_hostConfiguration.setHost("www.tripleawarclub.org");
-		
+
 		final PostMethod post = new PostMethod("http://www.tripleawarclub.org/user.php");
 		final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 		parameters.add(new NameValuePair("uname", getUsername()));
@@ -82,7 +82,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		parameters.add(new NameValuePair("xoops_redirect", "/"));
 		parameters.add(new NameValuePair("op", "login"));
 		post.setRequestBody(parameters.toArray(new NameValuePair[parameters.size()]));
-		
+
 		final int status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
 		if (status != 200)
 		{
@@ -94,20 +94,20 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		{
 			throw new Exception("Incorrect login credentials");
 		}
-		
+
 		if (!lowerBody.contains("thank you for logging in"))
 		{
 			System.out.println("Unknown login error, site response " + body);
 			throw new Exception("Unknown login error");
 		}
-		
+
 	}
-	
+
 	/**
 	 * Post the turn summary and save game to the forum
 	 * After login we must load the post page to get the XOOPS_TOKEN_REQUEST (which I think is CSRF nounce)
 	 * then we can post the reply
-	 * 
+	 *
 	 * @param summary
 	 *            the forum summary
 	 * @param subject
@@ -119,9 +119,9 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		try
 		{
 			login();
-			
+
 			// load the reply page
-			
+
 			final String url = "http://www.tripleawarclub.org/modules/newbb/reply.php?forum=" + s_forumId + "&topic_id=" + m_topicId;
 			GetMethod get = new GetMethod(url);
 			String XOOPS_TOKEN_REQUEST;
@@ -132,7 +132,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 				{
 					throw new Exception("Could not load reply page: " + url + ". Site returned " + status);
 				}
-				
+
 				final String body = get.getResponseBodyAsString();
 				final Matcher m = s_XOOPS_TOKEN_REQUEST.matcher(body);
 				if (!m.matches())
@@ -144,7 +144,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 			{
 				get.releaseConnection();
 			}
-			
+
 			final List<Part> parts = new ArrayList<Part>();
 			parts.add(createStringPart("subject", subject));
 			parts.add(createStringPart("message", summary));
@@ -153,13 +153,13 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 			parts.add(createStringPart("XOOPS_TOKEN_REQUEST", XOOPS_TOKEN_REQUEST));
 			parts.add(createStringPart("xoops_upload_file[]", "userfile"));
 			parts.add(createStringPart("contents_submit", "Submit"));
-			
+
 			parts.add(createStringPart("doxcode", "1"));
 			parts.add(createStringPart("dosmiley", "1"));
 			parts.add(createStringPart("dohtml", "1"));
 			parts.add(createStringPart("dobr", "1"));
 			parts.add(createStringPart("editor", "dhtmltextarea"));
-			
+
 			if (m_includeSaveGame && m_saveGameFile != null)
 			{
 				final FilePart part = new FilePart("userfile", m_saveGameFileName, m_saveGameFile);
@@ -168,11 +168,11 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 				part.setCharSet(null);
 				parts.add(part);
 			}
-			
+
 			final MultipartRequestEntity entity = new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
 			final PostMethod post = new PostMethod("http://www.tripleawarclub.org/modules/newbb/post.php");
 			post.setRequestEntity(entity);
-			
+
 			try
 			{
 				final int status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
@@ -186,7 +186,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 					throw new Exception("Posting summary failed, the server didn't respond with thank you message");
 				}
 				m_turnSummaryRef = "www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=" + m_topicId + "&forum=" + s_forumId;
-				
+
 				// now logout, this is just to be nice, so we don't care if this fails
 				get = new GetMethod("http://www.tripleawarclub.org/user.php?op=logout");
 				try
@@ -196,7 +196,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 				{
 					get.releaseConnection();
 				}
-				
+
 			} finally
 			{
 				post.releaseConnection();
@@ -207,13 +207,13 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like a browser
-	 * 
+	 *
 	 * @param name
 	 *            the form field name
 	 * @param value
@@ -227,17 +227,17 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		stringPart.setContentType(null);
 		return stringPart;
 	}
-	
+
 	public String getTestMessage()
 	{
 		return "Testing, this will take a couple of seconds...";
 	}
-	
+
 	public String getHelpText()
 	{
 		return HelpSupport.loadHelp("tripleAWarClubForum.html");
 	}
-	
+
 	public IForumPoster doClone()
 	{
 		final TripleAWarClubForumPoster clone = new TripleAWarClubForumPoster();
@@ -248,21 +248,21 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		clone.setUsername(getUsername());
 		return clone;
 	}
-	
+
 	public boolean supportsSaveGame()
 	{
 		return true;
 	}
-	
+
 	public String getDisplayName()
 	{
 		return "TripleaWarClub.org";
 	}
-	
+
 	public void viewPosted()
 	{
 		final String url = "http://" + m_host + "/modules/newbb/viewtopic.php?topic_id=" + m_topicId;
 		DesktopUtilityBrowserLauncher.openURL(url);
 	}
-	
+
 }

@@ -29,7 +29,7 @@ import javax.swing.JScrollPane;
  * The bean's editor is displayed below the dropdown.
  * Use <code>setBeans</code> to set the beans edited by this editor, and <code>setSelectedBean</code> to select a specific bean
  * The editor automatically realigns the label of nested editors
- * 
+ *
  * @author Klaus Groenbaek
  */
 public class SelectAndViewEditor extends EditorPanel
@@ -46,14 +46,14 @@ public class SelectAndViewEditor extends EditorPanel
 	private final JLabel m_selectorLabel;
 	private final JEditorPane m_helpPanel;
 	private final String m_defaultHelp;
-	
+
 	// -----------------------------------------------------------------------
 	// constructors
 	// -----------------------------------------------------------------------
-	
+
 	/**
 	 * creates a new editor
-	 * 
+	 *
 	 * @param labelTitle
 	 *            the title in front of the combo box
 	 * @param defaultHelp
@@ -63,19 +63,19 @@ public class SelectAndViewEditor extends EditorPanel
 	{
 		super();
 		m_defaultHelp = defaultHelp;
-		
+
 		final Font oldFont = m_helpButton.getFont();
 		m_helpButton.setFont(new Font(oldFont.getName(), Font.BOLD, oldFont.getSize()));
-		
+
 		m_view.setLayout(new GridBagLayout());
-		
+
 		m_selectorLabel = new JLabel(labelTitle + ":");
 		add(m_selectorLabel, new GridBagConstraints(0, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 1, 2), 0, 0));
 		add(m_selector, new GridBagConstraints(1, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 1, 0), 0, 0));
 		add(m_helpButton, new GridBagConstraints(2, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(0, 0, 1, 0), 0, 0));
-		
+
 		add(m_view, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		
+
 		m_selector.setRenderer(new DisplayNameComboBoxRender());
 		m_selector.addItemListener(new ItemListener()
 		{
@@ -88,7 +88,7 @@ public class SelectAndViewEditor extends EditorPanel
 				}
 			}
 		});
-		
+
 		m_properChangeListener = new PropertyChangeListener()
 		{
 			public void propertyChange(final PropertyChangeEvent evt)
@@ -96,7 +96,7 @@ public class SelectAndViewEditor extends EditorPanel
 				fireEditorChanged();
 			}
 		};
-		
+
 		m_helpPanel = new JEditorPane();
 		m_helpPanel.setEditable(false);
 		m_helpPanel.setContentType("text/html");
@@ -105,12 +105,12 @@ public class SelectAndViewEditor extends EditorPanel
 		final Dimension preferredSize = new Dimension(500, 500);
 		m_helpPanel.setPreferredSize(preferredSize);
 		m_helpPanel.setSize(preferredSize);
-		
+
 		final JScrollPane notesScroll = new JScrollPane();
 		notesScroll.setViewportView(m_helpPanel);
 		notesScroll.setBorder(null);
 		notesScroll.getViewport().setBorder(null);
-		
+
 		m_helpButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -129,16 +129,16 @@ public class SelectAndViewEditor extends EditorPanel
 				JButtonDialog.showDialog(SelectAndViewEditor.this, "Help", notesScroll, "Close");
 			}
 		});
-		
+
 	}
-	
+
 	// -----------------------------------------------------------------------
 	// instance methods
 	// -----------------------------------------------------------------------
-	
+
 	/**
 	 * Updates the view panel below the combo box.
-	 * 
+	 *
 	 */
 	private void updateView()
 	{
@@ -148,7 +148,7 @@ public class SelectAndViewEditor extends EditorPanel
 		{
 			m_editor.removePropertyChangeListener(m_properChangeListener);
 		}
-		
+
 		m_view.removeAll();
 		final IBean item = (IBean) m_selector.getSelectedItem();
 		m_editor = item.getEditor();
@@ -162,7 +162,7 @@ public class SelectAndViewEditor extends EditorPanel
 		revalidate();
 		alignLabels();
 	}
-	
+
 	/**
 	 * Aligns label of this editor with the nested editor, by either resizing this (if it is smaller)
 	 * or resizing the labels on the nested editor (if it is bigger)
@@ -190,10 +190,10 @@ public class SelectAndViewEditor extends EditorPanel
 		m_selectorLabel.setPreferredSize(dimension);
 		m_selectorLabel.setSize(dimension);
 	}
-	
+
 	/**
 	 * Sets the list of possible beans to choose from
-	 * 
+	 *
 	 * @param beans
 	 *            the list of beans
 	 */
@@ -202,16 +202,16 @@ public class SelectAndViewEditor extends EditorPanel
 		m_selector.setModel(new DefaultComboBoxModel(beans.toArray()));
 		updateView();
 	}
-	
+
 	@Override
 	public boolean isBeanValid()
 	{
 		return m_editor == null || m_editor.isBeanValid();
 	}
-	
+
 	/**
 	 * Returns the bean being edited
-	 * 
+	 *
 	 * @return the current bean, or null if the bean doesn't have an editor (is disabled)
 	 */
 	@Override
@@ -223,12 +223,12 @@ public class SelectAndViewEditor extends EditorPanel
 		}
 		return m_editor.getBean();
 	}
-	
+
 	/**
 	 * Sets the bean on this editor.
 	 * If an editor of the same class is found, it is selected an modified to match
 	 * If no bean of this type is found, it is added to the list
-	 * 
+	 *
 	 * @param bean
 	 *            the bean
 	 */
@@ -251,7 +251,7 @@ public class SelectAndViewEditor extends EditorPanel
 				newModel.addElement(candidate);
 			}
 		}
-		
+
 		if (found)
 		{
 			m_selector.setModel(newModel);

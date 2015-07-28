@@ -13,7 +13,7 @@
  */
 /*
  * GameDataExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -61,7 +61,7 @@ import java.util.Map;
 public class GameDataExporter
 {
 	private final StringBuffer xmlfile;
-	
+
 	public GameDataExporter(final GameData data, final boolean currentAttachmentObjects)
 	{
 		xmlfile = new StringBuffer();
@@ -82,19 +82,19 @@ public class GameDataExporter
 		propertyList(data);
 		finish();
 	}
-	
+
 	private void tripleaMinimumVersion()
 	{
 		// Since we do not keep the minimum version info in the game data, just put the current version of triplea here (since we have successfully started the map, it is basically correct)
 		xmlfile.append("    <triplea minimumVersion=\"" + EngineVersion.VERSION + "\"/>\n");
 	}
-	
+
 	private void diceSides(final GameData data)
 	{
 		final int diceSides = data.getDiceSides();
 		xmlfile.append("    <diceSides value=\"" + diceSides + "\"/>\n");
 	}
-	
+
 	private void technology(final GameData data)
 	{
 		final String technologies = technologies(data);
@@ -107,7 +107,7 @@ public class GameDataExporter
 			xmlfile.append("    </technology>\n");
 		}
 	}
-	
+
 	private String playertechs(final GameData data)
 	{
 		final Iterator<PlayerID> players = data.getPlayerList().iterator();
@@ -143,7 +143,7 @@ public class GameDataExporter
 		}
 		return returnValue.toString();
 	}
-	
+
 	private String technologies(final GameData data)
 	{
 		final Iterator<TechAdvance> techs = data.getTechnologyFrontier().getTechs().iterator();
@@ -172,7 +172,7 @@ public class GameDataExporter
 		}
 		return returnValue.toString();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void propertyList(final GameData data)
 	{
@@ -200,7 +200,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("    </propertyList>\n");
 	}
-	
+
 	private void printEditableProperties(final Map<String, IEditableProperty> edProperties)
 	{
 		final Iterator<String> propertyNames = edProperties.keySet().iterator();
@@ -209,7 +209,7 @@ public class GameDataExporter
 			printEditableProperty(edProperties.get(propertyNames.next()));
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void printEditableProperty(final IEditableProperty prop)
 	{
@@ -280,7 +280,7 @@ public class GameDataExporter
 		xmlfile.append(typeString);
 		xmlfile.append("        </property>\n");
 	}
-	
+
 	private void printConstantProperties(final Map<String, Object> conProperties)
 	{
 		final Iterator<String> propertyNames = conProperties.keySet().iterator();
@@ -302,7 +302,7 @@ public class GameDataExporter
 			}
 		}
 	}
-	
+
 	private void printNotes(final String notes)
 	{
 		xmlfile.append("        <property name=\"notes\">\n");
@@ -313,7 +313,7 @@ public class GameDataExporter
 		xmlfile.append("            </value>\n");
 		xmlfile.append("        </property>\n");
 	}
-	
+
 	private void printConstantProperty(final String propName, final Object property)
 	{
 		xmlfile.append("        <property name=\"" + propName + "\" value=\"" + property.toString() + "\" editable=\"false\">\n");
@@ -325,7 +325,7 @@ public class GameDataExporter
 			xmlfile.append("            <boolean/>\n");
 		xmlfile.append("        </property>\n");
 	}
-	
+
 	private void initialize(final GameData data)
 	{
 		xmlfile.append("    <initialize>\n");
@@ -335,7 +335,7 @@ public class GameDataExporter
 		relationshipInitialize(data);
 		xmlfile.append("    </initialize>\n");
 	}
-	
+
 	private void relationshipInitialize(final GameData data)
 	{
 		if (data.getRelationshipTypeList().getAllRelationshipTypes().size() <= 4)
@@ -359,7 +359,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("        </relationshipInitialize>\n");
 	}
-	
+
 	private void resourceInitialize(final GameData data)
 	{
 		xmlfile.append("        <resourceInitialize>\n");
@@ -378,7 +378,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("        </resourceInitialize>\n");
 	}
-	
+
 	private void unitInitialize(final GameData data)
 	{
 		xmlfile.append("        <unitInitialize>\n");
@@ -406,7 +406,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("        </unitInitialize>\n");
 	}
-	
+
 	private void ownerInitialize(final GameData data)
 	{
 		xmlfile.append("        <ownerInitialize>\n");
@@ -419,7 +419,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("        </ownerInitialize>\n");
 	}
-	
+
 	private void attachments(final GameData data, final boolean currentAttachmentObjects)
 	{
 		xmlfile.append("\n");
@@ -433,7 +433,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("    </attatchmentList>\n");
 	}
-	
+
 	private String printAttachmentOptionsBasedOnOriginalXML(final ArrayList<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment)
 	{
 		if (attachmentPlusValues.isEmpty())
@@ -453,10 +453,10 @@ public class GameDataExporter
 			if (ta.getOriginalOwner() != null)
 				sb.append("            <option name=\"occupiedTerrOf\" value=\"" + ta.getOriginalOwner().getName() + "\"/>\n");
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	private void printAttachments(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentPlusValues, final boolean currentAttachmentObjects)
 	{
 		try
@@ -504,7 +504,7 @@ public class GameDataExporter
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void production(final GameData data)
 	{
 		xmlfile.append("\n");
@@ -517,7 +517,7 @@ public class GameDataExporter
 		playerRepair(data);
 		xmlfile.append("    </production>\n");
 	}
-	
+
 	private void repairRules(final GameData data)
 	{
 		final Iterator<RepairRule> iRepairRules = data.getRepairRuleList().getRepairRules().iterator();
@@ -540,7 +540,7 @@ public class GameDataExporter
 			xmlfile.append("        </repairRule>\n");
 		}
 	}
-	
+
 	private void repairFrontiers(final GameData data)
 	{
 		final Iterator<String> frontiers = data.getRepairFrontierList().getRepairFrontierNames().iterator();
@@ -558,7 +558,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("\n");
 	}
-	
+
 	private void playerRepair(final GameData data)
 	{
 		final Iterator<PlayerID> players = data.getPlayerList().iterator();
@@ -576,7 +576,7 @@ public class GameDataExporter
 			}
 		}
 	}
-	
+
 	private void playerProduction(final GameData data)
 	{
 		final Iterator<PlayerID> players = data.getPlayerList().iterator();
@@ -594,7 +594,7 @@ public class GameDataExporter
 			}
 		}
 	}
-	
+
 	private void productionFrontiers(final GameData data)
 	{
 		final Iterator<String> frontiers = data.getProductionFrontierList().getProductionFrontierNames().iterator();
@@ -612,7 +612,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("\n");
 	}
-	
+
 	private void productionRules(final GameData data)
 	{
 		final Iterator<ProductionRule> productionRules = data.getProductionRuleList().getProductionRules().iterator();
@@ -635,7 +635,7 @@ public class GameDataExporter
 			xmlfile.append("        </productionRule>\n");
 		}
 	}
-	
+
 	private void gamePlay(final GameData data)
 	{
 		xmlfile.append("\n");
@@ -651,7 +651,7 @@ public class GameDataExporter
 		xmlfile.append("        <offset round=\"" + (data.getSequence().getRound() - 1) + "\"/>\n");
 		xmlfile.append("    </gamePlay>\n");
 	}
-	
+
 	private void sequence(final GameData data)
 	{
 		xmlfile.append("\n");
@@ -694,7 +694,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("        </sequence>\n");
 	}
-	
+
 	private void unitList(final GameData data)
 	{
 		xmlfile.append("\n");
@@ -706,7 +706,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("    </unitList>\n");
 	}
-	
+
 	private void playerList(final GameData data)
 	{
 		xmlfile.append("\n");
@@ -729,7 +729,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("    </playerList>\n");
 	}
-	
+
 	private void relationshipTypeList(final GameData data)
 	{
 		final Collection<RelationshipType> types = data.getRelationshipTypeList().getAllRelationshipTypes();
@@ -749,7 +749,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("    </relationshipTypes>\n");
 	}
-	
+
 	private void territoryEffectList(final GameData data)
 	{
 		final Collection<TerritoryEffect> types = data.getTerritoryEffectList().values();
@@ -765,7 +765,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("    </territoryEffectList>\n");
 	}
-	
+
 	private void resourceList(final GameData data)
 	{
 		xmlfile.append("\n");
@@ -777,7 +777,7 @@ public class GameDataExporter
 		}
 		xmlfile.append("    </resourceList>\n");
 	}
-	
+
 	private void map(final GameData data)
 	{
 		xmlfile.append("\n");
@@ -796,25 +796,25 @@ public class GameDataExporter
 		connections(data);
 		xmlfile.append("    </map>\n");
 	}
-	
-	
+
+
 	private class Connection
 	{
 		private final Territory _t1;
 		private final Territory _t2;
-		
+
 		private Connection(final Territory t1, final Territory t2)
 		{
 			_t1 = t1;
 			_t2 = t2;
 		}
-		
+
 		@Override
 		public int hashCode()
 		{
 			return _t1.hashCode() + _t2.hashCode();
 		}
-		
+
 		@Override
 		public boolean equals(final Object o)
 		{
@@ -824,7 +824,7 @@ public class GameDataExporter
 			return (_t1 == con._t1 && _t2 == con._t2);
 		}
 	}
-	
+
 	private void connections(final GameData data)
 	{
 		xmlfile.append("        <!-- Territory Connections -->\n");
@@ -846,7 +846,7 @@ public class GameDataExporter
 			}
 		}
 	}
-	
+
 	private void init(final GameData data)
 	{
 		xmlfile.append("<?xml version=\"1.0\"?>\n");
@@ -855,13 +855,13 @@ public class GameDataExporter
 		xmlfile.append("    <info name=\"" + data.getGameName() + "\" version=\"" + data.getGameVersion().toString() + "\"/>\n");
 		xmlfile.append("    <loader javaClass=\"" + data.getGameLoader().getClass().getCanonicalName() + "\"/>\n");
 	}
-	
+
 	private void finish()
 	{
 		xmlfile.append("\n");
 		xmlfile.append("</game>\n");
 	}
-	
+
 	public String getXML()
 	{
 		return xmlfile.toString();

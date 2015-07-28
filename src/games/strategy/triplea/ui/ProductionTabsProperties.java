@@ -35,7 +35,7 @@ public class ProductionTabsProperties
 	private final Properties m_properties = new Properties();
 	private final List<Rule> m_rules;
 	private List<Tuple<String, List<Rule>>> m_ruleLists;
-	
+
 	protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> mRules)
 	{
 		m_rules = mRules;
@@ -62,12 +62,12 @@ public class ProductionTabsProperties
 			}
 		}
 	}
-	
+
 	public static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> mRules)
 	{
 		return new ProductionTabsProperties(playerId, mRules);
 	}
-	
+
 	public List<Tuple<String, List<Rule>>> getRuleLists()
 	{
 		if (m_ruleLists != null)
@@ -90,22 +90,22 @@ public class ProductionTabsProperties
 		}
 		return m_ruleLists;
 	}
-	
+
 	private int getNumberOfTabs()
 	{
 		return Integer.valueOf(m_properties.getProperty(NUMBER_OF_TABS, "0")).intValue();
 	}
-	
+
 	public boolean useDefaultTabs()
 	{
 		return Boolean.valueOf(m_properties.getProperty(USE_DEFAULT_TABS, "true")).booleanValue();
 	}
-	
+
 	public int getRows()
 	{
 		return Integer.valueOf(m_properties.getProperty(NUMBER_OF_ROWS, "0")).intValue();
 	}
-	
+
 	public int getColumns()
 	{
 		return Integer.valueOf(m_properties.getProperty(NUMBER_OF_COLUMNS, "0")).intValue();

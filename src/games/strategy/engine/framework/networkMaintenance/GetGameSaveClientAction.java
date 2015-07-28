@@ -14,23 +14,23 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class GetGameSaveClientAction extends AbstractAction
 {
 	private static final long serialVersionUID = 1118264715230932068L;
 	private final Component m_parent;
 	private final IServerStartupRemote m_serverRemote;
-	
+
 	public GetGameSaveClientAction(final Component parent, final IServerStartupRemote serverRemote)
 	{
 		super("Download Gamesave (Save Game)...");
 		m_parent = JOptionPane.getFrameForComponent(parent);
 		m_serverRemote = serverRemote;
 	}
-	
+
 	public void actionPerformed(final ActionEvent e)
 	{
 		final Frame frame = JOptionPane.getFrameForComponent(m_parent);

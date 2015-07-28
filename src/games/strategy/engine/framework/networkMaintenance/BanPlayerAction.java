@@ -17,14 +17,14 @@ public class BanPlayerAction extends AbstractAction
 	private static final long serialVersionUID = -2415917785233191860L;
 	private final Component m_parent;
 	private final IServerMessenger m_messenger;
-	
+
 	public BanPlayerAction(final Component parent, final IServerMessenger messenger)
 	{
 		super("Ban Player From Game...");
 		m_parent = JOptionPane.getFrameForComponent(parent);
 		m_messenger = messenger;
 	}
-	
+
 	public void actionPerformed(final ActionEvent e)
 	{
 		final DefaultComboBoxModel model = new DefaultComboBoxModel();

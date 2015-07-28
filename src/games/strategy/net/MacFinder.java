@@ -26,7 +26,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class MacFinder
@@ -42,10 +42,10 @@ public class MacFinder
 		System.out.println(isMacValid("00.1b.63.9f.b4.d3") ? "valid" : "not valid");
 		System.out.println(isMacValid("00.60.08.C4.99.AA") ? "valid" : "not valid");
 	}
-	
+
 	/**
 	 * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
-	 * 
+	 *
 	 * @return
 	 */
 	public static String GetHashedMacAddress()
@@ -55,7 +55,7 @@ public class MacFinder
 			throw new IllegalArgumentException("You have an invalid MAC address! (Or your Java is out of date, or TripleA simply can't find your mac address)");
 		return MD5Crypt.crypt(mac, "MH");
 	}
-	
+
 	private static String GetMacAddress()
 	{
 		// We must try different methods of obtaining the mac address because not all the methods work on each system, and if we can't obtain the mac, we can't login to the lobby
@@ -180,7 +180,7 @@ public class MacFinder
 		}
 		return null;
 	}
-	
+
 	private static String executeCommandAndGetResults(final String command)
 	{
 		Process p = null;
@@ -223,7 +223,7 @@ public class MacFinder
 			return null;
 		}
 	}
-	
+
 	private static String convertMacBytesToString(final byte[] mac)
 	{
 		if (mac == null)
@@ -239,7 +239,7 @@ public class MacFinder
 		}
 		return macStringBuilder.toString();
 	}
-	
+
 	public static boolean isMacValid(final String mac)
 	{
 		if (mac == null)
@@ -272,7 +272,7 @@ public class MacFinder
 			return false;
 		return true;
 	}
-	
+
 	private static String tryToParseMACFromOutput(final String output, final List<String> possibleSeparators, final boolean allowAppendedZeroCheck)
 	{
 		if (output == null || output.trim().length() < 6)

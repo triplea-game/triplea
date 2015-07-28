@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings({ "unchecked", "deprecation" })
@@ -57,7 +57,7 @@ public class NCM_Task
 	private NCM_TaskType m_taskType = NCM_TaskType.Empty;
 	private float m_priority = 0.0F;
 	private GameData m_data = null;
-	
+
 	public NCM_Task(final GameData data, final Territory target, final NCM_TaskType type, final float priority)
 	{
 		m_data = data;
@@ -65,27 +65,27 @@ public class NCM_Task
 		m_priority = priority;
 		m_target = target;
 	}
-	
+
 	public Territory GetTarget()
 	{
 		return m_target;
 	}
-	
+
 	public NCM_TaskType GetTaskType()
 	{
 		return m_taskType;
 	}
-	
+
 	public float GetPriority()
 	{
 		return m_priority;
 	}
-	
+
 	public void SetPriority(final float priority)
 	{
 		m_priority = priority;
 	}
-	
+
 	private List<UnitGroup> getSortedPossibleRecruits()
 	{
 		final HashMap<Unit, Territory> unitLocations = new HashMap<Unit, Territory>();
@@ -148,9 +148,9 @@ public class NCM_Task
 			result.add(DUtils.CreateUnitGroupForUnits(Collections.singletonList(unit), unitLocations.get(unit), m_data));
 		return result;
 	}
-	
+
 	private float m_minSurvivalChance = 0.0F;
-	
+
 	public void CalculateTaskRequirements()
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
@@ -161,13 +161,13 @@ public class NCM_Task
 			m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
 		// DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Min Survival Chance: {0}", m_minSurvivalChance);
 	}
-	
+
 	public void SetTaskRequirements(final float minSurvivalChance)
 	{
 		m_minSurvivalChance = minSurvivalChance;
 		// DUtils.Log(Level.FINER, "    NCM Task requirements set. Min Survival Chance: {0}", m_minSurvivalChance);
 	}
-	
+
 	private float getMeetingOfMinSurvivalChanceScore(final AggregateResults simulatedAttack, final float minSurvivalChance)
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
@@ -179,7 +179,7 @@ public class NCM_Task
 		}
 		return DUtils.Divide_SL((float) simulatedAttack.getDefenderWinPercent(), minSurvivalChance); // We're this close to meeting our min survival chance
 	}
-	
+
 	private float getMeetingOfMaxBattleVolleysScore(final AggregateResults simulatedAttack, final int maxBattleVolleys)
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
@@ -191,14 +191,14 @@ public class NCM_Task
 		}
 		return DUtils.Divide_SL(maxBattleVolleys, (float) simulatedAttack.getAverageBattleRoundsFought()); // We're this close to getting the average battle volley count below max amount
 	}
-	
+
 	private List<UnitGroup> m_recruitedUnits = new ArrayList<UnitGroup>();
-	
+
 	public void RecruitUnits()
 	{
 		recruitEnoughUnitsToMeetXYZ(m_minSurvivalChance, 100);
 	}
-	
+
 	public void RecruitUnits2()
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
@@ -207,7 +207,7 @@ public class NCM_Task
 		final int maxBattleVolleys = 5;
 		recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
 	}
-	
+
 	public void RecruitUnits3()
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
@@ -216,7 +216,7 @@ public class NCM_Task
 		final int maxBattleVolleys = 3;
 		recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
 	}
-	
+
 	public void RecruitUnits4()
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
@@ -225,7 +225,7 @@ public class NCM_Task
 		final int maxBattleVolleys = 1;
 		recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
 	}
-	
+
 	private void recruitEnoughUnitsToMeetXYZ(final float minSurvivalChance, final int maxBattleVolleys)
 	{
 		final List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
@@ -289,12 +289,12 @@ public class NCM_Task
 			break; // We've met all requirements
 		}
 	}
-	
+
 	public List<UnitGroup> GetRecruitedUnits()
 	{
 		return m_recruitedUnits;
 	}
-	
+
 	public List<Unit> GetRecruitedUnitsAsUnitList()
 	{
 		final List<Unit> result = new ArrayList<Unit>();
@@ -304,7 +304,7 @@ public class NCM_Task
 		}
 		return result;
 	}
-	
+
 	public boolean IsPlannedMoveWorthwhile(final List<NCM_Task> allTasks)
 	{
 		DUtils.Log(Level.FINEST, "      Determining if ncm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
@@ -401,7 +401,7 @@ public class NCM_Task
 			return false; // Shouldn't happen
 		}
 	}
-	
+
 	public boolean IsTaskWithAdditionalRecruitsWorthwhile()
 	{
 		DUtils.Log(Level.FINEST, "      Determining if ncm task with additional recruits is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
@@ -441,19 +441,19 @@ public class NCM_Task
 		}
 		return true;
 	}
-	
+
 	private boolean m_disqualified = false;
-	
+
 	public boolean IsDisqualified()
 	{
 		return m_disqualified;
 	}
-	
+
 	public void Disqualify()
 	{
 		m_disqualified = true;
 	}
-	
+
 	public void PerformTargetRetreat(final List<NCM_Task> allTasks, final IMoveDelegate mover)
 	{
 		DUtils.Log(Level.FINER, "      Attemping to perform target retreat for task. Target: {0} Recruits: {1}", m_target, DUtils.UnitGroupList_ToString(m_recruitedUnits));
@@ -689,7 +689,7 @@ public class NCM_Task
 							DUtils.UnitGroupList_ToString(retreatUnits));
 		}
 	}
-	
+
 	/**
 	 * If this is an ncm task that is strong enough to resist all it's threats, we invalidate them because they can't attack more than one place.
 	 * (This method was added to fix the problem where one far-away airplane 'stack' can discourage ALL our attacks in the area, which is very bad.
@@ -732,7 +732,7 @@ public class NCM_Task
 			}
 		}
 	}
-	
+
 	public void Reset()
 	{
 		DUtils.Log(Level.FINER, "        Resetting task. Target: {0} Task Type: {1} Priority: {2} Recruit Size: {3}", m_target, m_taskType, m_priority, m_recruitedUnits.size());
@@ -740,14 +740,14 @@ public class NCM_Task
 		m_disqualified = false;
 		m_recruitedUnits = new ArrayList<UnitGroup>();
 	}
-	
+
 	private boolean m_completed = false;
-	
+
 	public boolean IsCompleted()
 	{
 		return m_completed;
 	}
-	
+
 	public void PerformTask(final IMoveDelegate mover)
 	{
 		if (m_recruitedUnits.isEmpty())

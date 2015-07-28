@@ -17,14 +17,14 @@ public class MutePlayerAction extends AbstractAction
 	private static final long serialVersionUID = -6578758359870435844L;
 	private final Component m_parent;
 	private final IServerMessenger m_messenger;
-	
+
 	public MutePlayerAction(final Component parent, final IServerMessenger messenger)
 	{
 		super("Mute Player's Chatting...");
 		m_parent = JOptionPane.getFrameForComponent(parent);
 		m_messenger = messenger;
 	}
-	
+
 	public void actionPerformed(final ActionEvent e)
 	{
 		final DefaultComboBoxModel model = new DefaultComboBoxModel();

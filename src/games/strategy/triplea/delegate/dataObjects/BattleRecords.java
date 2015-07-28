@@ -18,21 +18,21 @@ import java.util.Map.Entry;
 /**
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
- * 
+ *
  * @author Veqryn [Mark Christopher Duncan]
- * 
+ *
  */
 public class BattleRecords extends GameDataComponent implements Serializable
 {
 	private static final long serialVersionUID = 1473664374777905497L;
-	
+
 	private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records = new HashMap<PlayerID, HashMap<GUID, BattleRecord>>();
-	
+
 	public BattleRecords(final GameData data)
 	{
 		super(data);
 	}
-	
+
 	// Create copy
 	public BattleRecords(final BattleRecords records)
 	{
@@ -49,7 +49,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 			m_records.put(p, map);
 		}
 	}
-	
+
 	public static Collection<BattleRecord> getAllRecords(final BattleRecords brs)
 	{
 		final Collection<BattleRecord> records = new ArrayList<BattleRecord>();
@@ -62,7 +62,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		}
 		return records;
 	}
-	
+
 	public static Collection<BattleRecord> getRecordsForPlayerID(final PlayerID player, final BattleRecords brs)
 	{
 		final Collection<BattleRecord> playerRecords = new ArrayList<BattleRecord>();
@@ -74,7 +74,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		}
 		return playerRecords;
 	}
-	
+
 	public static Collection<BattleRecord> getRecordsForPlayers(final Collection<PlayerID> players, final BattleRecords brs)
 	{
 		final Collection<BattleRecord> playersRecords = new ArrayList<BattleRecord>();
@@ -89,7 +89,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		}
 		return playersRecords;
 	}
-	
+
 	public static int getLostTUVforBattleRecords(final Collection<BattleRecord> brs, final boolean attackerLostTUV, final boolean includeNullPlayer)
 	{
 		int totalLostTUV = 0;
@@ -104,7 +104,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		}
 		return totalLostTUV;
 	}
-	
+
 	public static boolean getWereThereBattlesInTerritoriesMatching(final Collection<BattleRecord> brs, final PlayerID attacker, final PlayerID defender, final String battleType,
 				final Collection<Territory> anyOfTheseTerritories)
 	{
@@ -124,7 +124,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		}
 		return false;
 	}
-	
+
 	public void removeBattle(final PlayerID currentPlayer, final GUID battleID)
 	{
 		final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
@@ -143,7 +143,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		}
 		current.remove(battleID);
 	}
-	
+
 	public void addRecord(final BattleRecords other)
 	{
 		for (final PlayerID p : other.m_records.keySet())
@@ -159,7 +159,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 					final BattleRecord br = entry.getValue();
 					if (currentRecord.containsKey(guid))
 					{
-						throw new IllegalStateException("Should not be adding battle record for player " + p.getName() + " when they are already on the record. " +
+						throw new IllegalStateException("Should not be adding battle record for player " + p.getName() + " when they are already on the record. "
 									"Trying to add: " + br.toString());
 					}
 					else
@@ -175,7 +175,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 			}
 		}
 	}
-	
+
 	public void removeRecord(final BattleRecords other)
 	{
 		for (final PlayerID p : other.m_records.keySet())
@@ -194,7 +194,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 			}
 		}
 	}
-	
+
 	public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleID, final Territory battleSite, final BattleType battleType, final GameData data)
 	{
 		HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
@@ -204,7 +204,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		current.put(battleID, initial);
 		m_records.put(currentPlayerAndAttacker, current);
 	}
-	
+
 	public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
 				final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage)
 	{
@@ -216,17 +216,17 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		final BattleRecord record = current.get(battleID);
 		record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, battleResults, bombingDamage);
 	}
-	
+
 	public void clear()
 	{
 		m_records.clear();
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return m_records.isEmpty();
 	}
-	
+
 	@Override
 	public String toString()
 	{

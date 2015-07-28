@@ -22,9 +22,9 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 /**
- * 
+ *
  * @author Tony Clayton
- * 
+ *
  *         Not for actual use, suitable for testing. Never returns messages, but can get
  *         random and implements changes immediately.
  */
@@ -35,14 +35,14 @@ public interface ITestDelegateBridge extends IDelegateBridge
 	 * Player is initialized to the player specified in the xml data.
 	 */
 	public void setPlayerID(PlayerID aPlayer);
-	
+
 	public void setStepName(String name);
-	
+
 	public void setStepName(String name, boolean doNotChangeSequence);
-	
+
 	public void setRandomSource(IRandomSource randomSource);
-	
+
 	public void setRemote(IRemotePlayer remote);
-	
+
 	public void setDisplay(ITripleaDisplay display);
 }

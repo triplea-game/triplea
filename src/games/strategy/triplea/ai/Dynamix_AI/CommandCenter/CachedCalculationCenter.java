@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -36,7 +36,7 @@ public class CachedCalculationCenter
 	public static HashMap<List<Territory>, Route> CachedLandRoutes = new HashMap<List<Territory>, Route>();
 	public static HashMap<List<Territory>, Route> CachedPassableLandRoutes = new HashMap<List<Territory>, Route>();
 	public static HashMap<List<Territory>, Route> CachedSeaRoutes = new HashMap<List<Territory>, Route>();
-	
+
 	public static void clearCachedStaticData()
 	{
 		CachedMapTersFromPoints = new HashMap<Territory, List<Territory>>();
@@ -46,7 +46,7 @@ public class CachedCalculationCenter
 		CachedPassableLandRoutes = new HashMap<List<Territory>, Route>();
 		CachedSeaRoutes = new HashMap<List<Territory>, Route>();
 	}
-	
+
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting List<Territory> for quick retrieval later on.
 	 */
@@ -57,7 +57,7 @@ public class CachedCalculationCenter
 			CachedMapTersFromPoints.put(key, DUtils.GetTerritoriesWithinXDistanceOfY(target.getData(), target, Integer.MAX_VALUE));
 		return CachedMapTersFromPoints.get(key);
 	}
-	
+
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
 	 */
@@ -68,7 +68,7 @@ public class CachedCalculationCenter
 			CachedRoutes.put(key, data.getMap().getRoute(ter1, ter2));
 		return CachedRoutes.get(key);
 	}
-	
+
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable), except that this method caches the resulting Route for quick retrieval later on.
 	 */
@@ -79,7 +79,7 @@ public class CachedCalculationCenter
 			CachedAirPassableRoutes.put(key, data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable));
 		return CachedAirPassableRoutes.get(key);
 	}
-	
+
 	/**
 	 * The same as data.getMap().getLandRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
 	 */
@@ -90,7 +90,7 @@ public class CachedCalculationCenter
 			CachedLandRoutes.put(key, data.getMap().getLandRoute(ter1, ter2));
 		return CachedLandRoutes.get(key);
 	}
-	
+
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable)), except that this method caches the resulting Route for quick retrieval later on.
 	 */
@@ -101,7 +101,7 @@ public class CachedCalculationCenter
 			CachedPassableLandRoutes.put(key, data.getMap().getRoute(ter1, ter2, DMatches.TerritoryIsLandAndPassable));
 		return CachedPassableLandRoutes.get(key);
 	}
-	
+
 	/**
 	 * The same as data.getMap().getWaterRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
 	 */

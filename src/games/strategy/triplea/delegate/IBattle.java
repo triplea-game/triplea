@@ -13,7 +13,7 @@
  */
 /*
  * Battle.java
- * 
+ *
  * Created on November 15, 2001, 12:39 PM
  */
 package games.strategy.triplea.delegate;
@@ -33,10 +33,10 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
- * 
+ *
  *          Represents a battle.
  */
 public interface IBattle extends java.io.Serializable
@@ -45,41 +45,41 @@ public interface IBattle extends java.io.Serializable
 	{
 		NOTFINISHED, DRAW, ATTACKER, DEFENDER
 	}
-	
-	
+
+
 	public static enum BattleType
 	{
 		NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
-		
+
 		private final String m_type;
-		
+
 		private BattleType(final String type)
 		{
 			m_type = type;
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return m_type;
 		}
-		
+
 		// if it has the word "Raid" in it, then it is a bombing battle
 		public boolean isBombingRun()
 		{
 			return m_type.indexOf("Raid") != -1;
 		}
-		
+
 		// if it has the word "Air" in it, then it is an air battle
 		public boolean isAirPreBattleOrPreRaid()
 		{
 			return m_type.indexOf("Air") != -1;
 		}
 	}
-	
+
 	/**
 	 * Add a bunch of attacking units to the battle.
-	 * 
+	 *
 	 * @param route
 	 *            - attack route
 	 * @param units
@@ -89,45 +89,45 @@ public interface IBattle extends java.io.Serializable
 	 * @return attack change object
 	 */
 	public Change addAttackChange(Route route, Collection<Unit> units, HashMap<Unit, HashSet<Unit>> targets);
-	
+
 	/**
 	 * There are two distinct super-types of battles: Bombing battles, and Fighting battles.
 	 * There may be sub-types of each of these.
-	 * 
+	 *
 	 * @return whether this battle is a bombing run
 	 */
 	public boolean isBombingRun();
-	
+
 	/**
 	 * The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc.
-	 * 
+	 *
 	 * @return
 	 */
 	public BattleType getBattleType();
-	
+
 	/**
 	 * @return territory this battle is occurring in.
 	 */
 	public Territory getTerritory();
-	
+
 	/**
 	 * Fight this battle.
-	 * 
+	 *
 	 * @param bridge
 	 *            - IDelegateBridge
 	 */
 	public void fight(IDelegateBridge bridge);
-	
+
 	/**
 	 * @return whether this battle is over or not
 	 */
 	public boolean isOver();
-	
+
 	/**
 	 * Call this method when units are lost in another battle.
 	 * This is needed to remove dependent units who have been
 	 * lost in another battle.
-	 * 
+	 *
 	 * @param battle
 	 *            - other battle
 	 * @param units
@@ -136,84 +136,84 @@ public interface IBattle extends java.io.Serializable
 	 *            - IDelegateBridge
 	 */
 	public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
-	
+
 	/**
 	 * Add a bombardment unit.
-	 * 
+	 *
 	 * @param u
 	 *            - unit to add
 	 */
 	public void addBombardingUnit(Unit u);
-	
+
 	/**
 	 * @return whether battle is amphibious
 	 */
 	public boolean isAmphibious();
-	
+
 	/**
 	 * This occurs when a move has been undone.
-	 * 
+	 *
 	 * @param route
 	 *            - attacking route
 	 * @param units
 	 *            - attacking units
 	 */
 	public void removeAttack(Route route, Collection<Unit> units);
-	
+
 	/**
 	 * If we need to cancel the battle, we may need to perform some cleanup.
 	 */
 	public void cancelBattle(IDelegateBridge bridge);
-	
+
 	/**
 	 * Test-method after an attack has been removed.
-	 * 
+	 *
 	 * @return whether there are still units left to fight
 	 */
 	public boolean isEmpty();
-	
+
 	/**
 	 * @param units
 	 * @return units which are dependent on the given units.
 	 */
 	public Collection<Unit> getDependentUnits(Collection<Unit> units);
-	
+
 	/**
 	 * @return units which are actually assaulting amphibiously
 	 */
 	public Collection<Unit> getAmphibiousLandAttackers();
-	
+
 	/**
 	 * @return units which are actually bombarding
 	 */
 	public Collection<Unit> getBombardingUnits();
-	
+
 	/**
 	 * @return what round this battle is in
 	 */
 	public int getBattleRound();
-	
+
 	/**
 	 * @return units which are attacking
 	 */
 	public Collection<Unit> getAttackingUnits();
-	
+
 	/**
 	 * @return units which are defending
 	 */
 	public Collection<Unit> getDefendingUnits();
-	
+
 	public List<Unit> getRemainingAttackingUnits();
-	
+
 	public List<Unit> getRemainingDefendingUnits();
-	
+
 	public WhoWon getWhoWon();
-	
+
 	public BattleResultDescription getBattleResultDescription();
-	
+
 	public PlayerID getAttacker();
-	
+
 	public PlayerID getDefender();
-	
+
 	public GUID getBattleID();
 }

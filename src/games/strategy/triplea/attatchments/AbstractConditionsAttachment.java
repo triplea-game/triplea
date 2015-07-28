@@ -20,9 +20,9 @@ import java.util.List;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold conditions (ie: RulesAttachments), should extend this instead of DefaultAttachment.
- * 
+ *
  * @author veqryn [Mark Christopher Duncan]
- * 
+ *
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition
 {
@@ -34,22 +34,22 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	protected static final String XOR = "XOR";
 	protected static final String DEFAULT_CHANCE = "1:1";
 	protected static final String CHANCE = "chance";
-	
+
 	protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can contain
 	protected String m_conditionType = AND; // m_conditionType modifies the relationship of m_conditions
 	protected boolean m_invert = false; // will logically negate the entire condition, including contained conditions
 	protected String m_chance = DEFAULT_CHANCE; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
 	protected int m_chanceIncrementOnFailure = 0; // if chance fails, we should increment the chance by x
 	protected int m_chanceDecrementOnSuccess = 0; // if chance succeeds, we should decrement the chance by x
-	
+
 	public AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param conditions
 	 * @throws GameParseException
 	 */
@@ -79,50 +79,50 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 			m_conditions.add(condition);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setConditions(final ArrayList<RulesAttachment> value)
 	{
 		m_conditions = value;
 	}
-	
+
 	public ArrayList<RulesAttachment> getConditions()
 	{
 		return m_conditions;
 	}
-	
+
 	public void clearConditions()
 	{
 		m_conditions.clear();
 	}
-	
+
 	public void resetConditions()
 	{
 		m_conditions = new ArrayList<RulesAttachment>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setInvert(final String s)
 	{
 		m_invert = getBool(s);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setInvert(final Boolean s)
 	{
 		m_invert = s;
 	}
-	
+
 	public boolean getInvert()
 	{
 		return m_invert;
 	}
-	
+
 	public void resetInvert()
 	{
 		m_invert = false;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setConditionType(final String value) throws GameParseException
 	{
@@ -154,17 +154,17 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		}
 		m_conditionType = s;
 	}
-	
+
 	public String getConditionType()
 	{
 		return m_conditionType;
 	}
-	
+
 	public void resetConditionType()
 	{
 		m_conditionType = AND;
 	}
-	
+
 	/**
 	 * Accounts for Invert and conditionType. Only use if testedConditions has already been filled and this conditions has been tested.
 	 */
@@ -172,7 +172,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	{
 		return isSatisfied(testedConditions, null);
 	}
-	
+
 	/**
 	 * Accounts for Invert and conditionType. IDelegateBridge is not used so can be null, this is because we have already tested all the conditions.
 	 */
@@ -184,7 +184,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 			return testedConditions.get(this);
 		return areConditionsMet(new ArrayList<ICondition>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
 	}
-	
+
 	public static Match<AbstractConditionsAttachment> isSatisfiedAbstractConditionsAttachmentMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return new Match<AbstractConditionsAttachment>()
@@ -196,12 +196,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 			}
 		};
 	}
-	
+
 	/**
 	 * Anything that implements ICondition (currently RulesAttachment, TriggerAttachment, and PoliticalActionAttachment)
 	 * can use this to get all the conditions that must be checked for the object to be 'satisfied'. <br>
 	 * Since anything implementing ICondition can contain other ICondition, this must recursively search through all conditions and contained conditions to get the final list.
-	 * 
+	 *
 	 * @param startingListOfConditions
 	 * @return
 	 * @author veqryn
@@ -221,10 +221,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		}
 		return allConditionsNeededSoFar;
 	}
-	
+
 	/**
 	 * Takes the list of ICondition that getAllConditionsRecursive generates, and tests each of them, mapping them one by one to their boolean value.
-	 * 
+	 *
 	 * @param rules
 	 * @param data
 	 * @return
@@ -234,7 +234,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	{
 		if (allConditionsTestedSoFar == null)
 			allConditionsTestedSoFar = new HashMap<ICondition, Boolean>();
-		
+
 		for (final ICondition c : rules)
 		{
 			if (!allConditionsTestedSoFar.containsKey(c))
@@ -243,14 +243,14 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 				allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, aBridge));
 			}
 		}
-		
+
 		return allConditionsTestedSoFar;
 	}
-	
+
 	/**
 	 * Accounts for all listed rules, according to the conditionType.
 	 * Takes the mapped conditions generated by testAllConditions and uses it to know which conditions are true and which are false. There is no testing of conditions done in this method.
-	 * 
+	 *
 	 * @param rules
 	 * @param conditionType
 	 * @param data
@@ -326,7 +326,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		}
 		return met;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChance(final String chance) throws GameParseException
 	{
@@ -343,7 +343,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		}
 		m_chance = chance;
 	}
-	
+
 	/**
 	 * @return the number you need to roll to get the action to succeed format "1:10" for 10% chance
 	 */
@@ -351,66 +351,66 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	{
 		return m_chance;
 	}
-	
+
 	public void resetChance()
 	{
 		m_chance = DEFAULT_CHANCE;
 	}
-	
+
 	public int getChanceToHit()
 	{
 		return getInt(getChance().split(":")[0]);
 	}
-	
+
 	public int getChanceDiceSides()
 	{
 		return getInt(getChance().split(":")[1]);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChanceIncrementOnFailure(final String value)
 	{
 		m_chanceIncrementOnFailure = getInt(value);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChanceIncrementOnFailure(final Integer value)
 	{
 		m_chanceIncrementOnFailure = value;
 	}
-	
+
 	public int getChanceIncrementOnFailure()
 	{
 		return m_chanceIncrementOnFailure;
 	}
-	
+
 	public void resetChanceIncrementOnFailure()
 	{
 		m_chanceIncrementOnFailure = 0;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChanceDecrementOnSuccess(final String value)
 	{
 		m_chanceDecrementOnSuccess = getInt(value);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChanceDecrementOnSuccess(final Integer value)
 	{
 		m_chanceDecrementOnSuccess = value;
 	}
-	
+
 	public int getChanceDecrementOnSuccess()
 	{
 		return m_chanceDecrementOnSuccess;
 	}
-	
+
 	public void resetChanceDecrementOnSuccess()
 	{
 		m_chanceDecrementOnSuccess = 0;
 	}
-	
+
 	public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge aBridge, final boolean success, final boolean historyChild)
 	{
 		if (success)
@@ -443,7 +443,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
 		}
 	}
-	
+
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

@@ -14,33 +14,33 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 	private final List<TechAdvance> m_techs = new ArrayList<TechAdvance>();
 	private List<TechAdvance> m_cachedTechs;
 	private final String m_name;
-	
+
 	public TechnologyFrontier(final String name, final GameData data)
 	{
 		super(data);
 		m_name = name;
 	}
-	
+
 	public TechnologyFrontier(final TechnologyFrontier other)
 	{
 		super(other.getData());
 		m_name = other.m_name;
 		m_techs.addAll(other.m_techs);
 	}
-	
+
 	public void addAdvance(final TechAdvance t)
 	{
 		m_cachedTechs = null;
 		m_techs.add(t);
 		Util.reorder(m_techs, getData().getTechnologyFrontier().getTechs());
 	}
-	
+
 	public void addAdvance(final List<TechAdvance> list)
 	{
 		for (final TechAdvance t : list)
 			addAdvance(t);
 	}
-	
+
 	public void removeAdvance(final TechAdvance t)
 	{
 		if (!m_techs.contains(t))
@@ -50,7 +50,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 		m_cachedTechs = null;
 		m_techs.remove(t);
 	}
-	
+
 	public TechAdvance getAdvanceByProperty(final String property)
 	{
 		for (final TechAdvance ta : m_techs)
@@ -58,7 +58,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 				return ta;
 		return null;
 	}
-	
+
 	public TechAdvance getAdvanceByName(final String name)
 	{
 		for (final TechAdvance ta : m_techs)
@@ -66,41 +66,41 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 				return ta;
 		return null;
 	}
-	
+
 	public List<TechAdvance> getTechs()
 	{
 		if (m_cachedTechs == null)
 			m_cachedTechs = Collections.unmodifiableList(m_techs);
 		return m_cachedTechs;
 	}
-	
+
 	public Iterator<TechAdvance> iterator()
 	{
 		return getTechs().iterator();
 	}
-	
+
 	public String getName()
 	{
 		return m_name;
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return m_techs.isEmpty();
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return m_name;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		return m_name.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(final Object o)
 	{

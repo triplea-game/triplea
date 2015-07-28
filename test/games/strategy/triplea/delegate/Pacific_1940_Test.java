@@ -18,31 +18,31 @@ import junit.framework.TestCase;
 public class Pacific_1940_Test extends TestCase
 {
 	private GameData m_data;
-	
+
 	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
 		m_data = LoadGameUtil.loadGame("World War II Pacific Test", "ww2pac40_test.xml");
 	}
-	
+
 	@Override
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
 		super.tearDown();
 	}
-	
+
 	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
 		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
-	
+
 	public void test()
 	{
 		// TODO
 	}
-	
+
 	/***********************************************************
 	************************************************************
 	************************************************************
@@ -61,7 +61,7 @@ public class Pacific_1940_Test extends TestCase
 		}
 		return rVal;
 	}
-	
+
 	/***********************************************************
 	************************************************************
 	************************************************************
@@ -73,7 +73,7 @@ public class Pacific_1940_Test extends TestCase
 	{
 		assertNull(string, string);
 	}
-	
+
 	public void assertError(final String string)
 	{
 		assertNotNull(string, string);

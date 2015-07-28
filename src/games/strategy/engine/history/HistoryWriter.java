@@ -31,18 +31,18 @@ public class HistoryWriter implements java.io.Serializable
 	private final History m_history;
 	private HistoryNode m_current;
 	private static final Logger s_logger = Logger.getLogger(HistoryWriter.class.getName());
-	
+
 	public HistoryWriter(final History history)
 	{
 		m_history = history;
 	}
-	
+
 	private void assertCorrectThread()
 	{
 		if (m_history.getGameData().areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
 	}
-	
+
 	/**
 	 * Can only be called if we are currently in a round or a step
 	 */
@@ -88,7 +88,7 @@ public class HistoryWriter implements java.io.Serializable
 		m_history.nodeStructureChanged(old);*/
 		addToAndSetCurrent(currentStep);
 	}
-	
+
 	public void startNextRound(final int round)
 	{
 		assertCorrectThread();
@@ -114,7 +114,7 @@ public class HistoryWriter implements java.io.Serializable
 		m_current = (HistoryNode) m_history.getRoot();
 		addToAndSetCurrent(currentRound);
 	}
-	
+
 	private void closeCurrent()
 	{
 		assertCorrectThread();
@@ -142,13 +142,13 @@ public class HistoryWriter implements java.io.Serializable
 			m_history.getGameData().releaseWriteLock();
 		}
 	}
-	
+
 	private void addToAndSetCurrent(final HistoryNode newNode)
 	{
 		addToCurrent(newNode);
 		m_current = newNode;
 	}
-	
+
 	private void addToCurrent(final HistoryNode newNode)
 	{
 		m_history.getGameData().acquireWriteLock();
@@ -161,7 +161,7 @@ public class HistoryWriter implements java.io.Serializable
 		}
 		m_history.goToEnd();
 	}
-	
+
 	public void startEvent(final String eventName)
 	{
 		assertCorrectThread();
@@ -170,7 +170,7 @@ public class HistoryWriter implements java.io.Serializable
 		if (isCurrentEvent())
 			closeCurrent();
 		if (!isCurrentStep())
-			throw new IllegalStateException("Cant add an event, not a step. " +
+			throw new IllegalStateException("Cant add an event, not a step. "
 						"Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
 		final Event event = new Event(eventName, m_history.getChanges().size());
 		/* Can delete after a few releases confirm that the new way works
@@ -187,22 +187,22 @@ public class HistoryWriter implements java.io.Serializable
 		m_history.reload(oldCurrent);*/
 		addToAndSetCurrent(event);
 	}
-	
+
 	private boolean isCurrentEvent()
 	{
 		return m_current instanceof Event;
 	}
-	
+
 	private boolean isCurrentRound()
 	{
 		return m_current instanceof Round;
 	}
-	
+
 	private boolean isCurrentStep()
 	{
 		return m_current instanceof Step;
 	}
-	
+
 	/**
 	 * Add a child to the current event.
 	 */
@@ -232,7 +232,7 @@ public class HistoryWriter implements java.io.Serializable
 		}
 		addToCurrent(node);
 	}
-	
+
 	/**
 	 * Add a change to the current event.
 	 */
@@ -247,7 +247,7 @@ public class HistoryWriter implements java.io.Serializable
 		}
 		m_history.changeAdded(change);
 	}
-	
+
 	public void setRenderingData(final Object details)
 	{
 		assertCorrectThread();

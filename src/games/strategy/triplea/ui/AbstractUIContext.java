@@ -27,9 +27,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * Abstraction by veqryn.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public abstract class AbstractUIContext implements IUIContext
 {
@@ -54,18 +54,18 @@ public abstract class AbstractUIContext implements IUIContext
 	protected final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false); // List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
 	protected LocalPlayers m_localPlayers;
 	protected double m_scale = 1;
-	
+
 	public static ResourceLoader getResourceLoader()
 	{
 		return m_resourceLoader;
 	}
-	
+
 	public static int getAIPauseDuration()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getInt(AI_PAUSE_DURATION, 400);
 	}
-	
+
 	public static void setAIPauseDuration(final int value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -78,12 +78,12 @@ public abstract class AbstractUIContext implements IUIContext
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public double getScale()
 	{
 		return m_scale;
 	}
-	
+
 	public void setScale(final double scale)
 	{
 		m_scale = scale;
@@ -98,7 +98,7 @@ public abstract class AbstractUIContext implements IUIContext
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Get the preferences for the map.
 	 */
@@ -106,7 +106,7 @@ public abstract class AbstractUIContext implements IUIContext
 	{
 		return Preferences.userNodeForPackage(AbstractUIContext.class).node(mapName);
 	}
-	
+
 	/**
 	 * Get the preferences for the map or map skin
 	 */
@@ -114,7 +114,7 @@ public abstract class AbstractUIContext implements IUIContext
 	{
 		return Preferences.userNodeForPackage(AbstractUIContext.class).node(mapDir);
 	}
-	
+
 	protected static String getDefaultMapDir(final GameData data)
 	{
 		final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
@@ -138,12 +138,12 @@ public abstract class AbstractUIContext implements IUIContext
 		}
 		return mapDir;
 	}
-	
+
 	public void setDefaultMapDir(final GameData data)
 	{
 		internalSetMapDir(getDefaultMapDir(data), data);
 	}
-	
+
 	public void setMapDir(final GameData data, final String mapDir)
 	{
 		internalSetMapDir(mapDir, data);
@@ -161,14 +161,14 @@ public abstract class AbstractUIContext implements IUIContext
 			e.printStackTrace();
 		}
 	}
-	
+
 	protected abstract void internalSetMapDir(final String dir, final GameData data);
-	
+
 	public static String getMapDir()
 	{
 		return m_mapDir;
 	}
-	
+
 	public void removeActive(final Active actor)
 	{
 		if (m_isShutDown)
@@ -182,7 +182,7 @@ public abstract class AbstractUIContext implements IUIContext
 			m_activeToDeactivate.remove(actor);
 		}
 	}
-	
+
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
@@ -203,7 +203,7 @@ public abstract class AbstractUIContext implements IUIContext
 			m_activeToDeactivate.add(actor);
 		}
 	}
-	
+
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
@@ -220,7 +220,7 @@ public abstract class AbstractUIContext implements IUIContext
 			m_latchesToCloseOnShutdown.add(latch);
 		} */
 	}
-	
+
 	public void removeShutdownLatch(final CountDownLatch latch)
 	{
 		m_latchesToCloseOnShutdown.removeShutdownLatch(latch);
@@ -230,12 +230,12 @@ public abstract class AbstractUIContext implements IUIContext
 			m_latchesToCloseOnShutdown.remove(latch);
 		} */
 	}
-	
+
 	public CountDownLatchHandler getCountDownLatchHandler()
 	{
 		return m_latchesToCloseOnShutdown;
 	}
-	
+
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
@@ -256,7 +256,7 @@ public abstract class AbstractUIContext implements IUIContext
 			m_windowsToCloseOnShutdown.add(window);
 		}
 	}
-	
+
 	protected static void closeWindow(final Window window)
 	{
 		window.setVisible(false);
@@ -303,7 +303,7 @@ public abstract class AbstractUIContext implements IUIContext
 			}
 		});
 	}
-	
+
 	protected static void clearInputMap(final JComponent c)
 	{
 		c.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
@@ -311,7 +311,7 @@ public abstract class AbstractUIContext implements IUIContext
 		c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
 		c.getActionMap().clear();
 	}
-	
+
 	public void removeShutdownWindow(final Window window)
 	{
 		if (m_isShutDown)
@@ -325,7 +325,7 @@ public abstract class AbstractUIContext implements IUIContext
 			m_windowsToCloseOnShutdown.remove(window);
 		}
 	}
-	
+
 	/* protected void releaseLatch(final CountDownLatch latch)
 	{
 		while (latch.getCount() > 0)
@@ -333,12 +333,12 @@ public abstract class AbstractUIContext implements IUIContext
 			latch.countDown();
 		}
 	} */
-	
+
 	public boolean isShutDown()
 	{
 		return m_isShutDown;
 	}
-	
+
 	public void shutDown()
 	{
 		synchronized (this)
@@ -365,10 +365,10 @@ public abstract class AbstractUIContext implements IUIContext
 			// m_mapData.close();
 		}
 	}
-	
+
 	/**
 	 * returns the map skins for the game data.
-	 * 
+	 *
 	 * returns is a map of display-name -> map directory
 	 */
 	public static Map<String, String> getSkins(final GameData data)
@@ -380,7 +380,7 @@ public abstract class AbstractUIContext implements IUIContext
 		getSkins(mapName, rVal, GameRunner2.getUserMapsFolder());
 		return rVal;
 	}
-	
+
 	protected static void getSkins(final String mapName, final Map<String, String> rVal, final File root)
 	{
 		final File[] files = root.listFiles();
@@ -404,7 +404,7 @@ public abstract class AbstractUIContext implements IUIContext
 			}
 		}
 	}
-	
+
 	protected void closeActor(final Active actor)
 	{
 		try
@@ -415,13 +415,13 @@ public abstract class AbstractUIContext implements IUIContext
 			re.printStackTrace();
 		}
 	}
-	
+
 	public boolean getLockMap()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(LOCK_MAP, false);
 	}
-	
+
 	public void setLockMap(final boolean aBool)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -434,13 +434,13 @@ public abstract class AbstractUIContext implements IUIContext
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean getShowEndOfTurnReport()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_END_OF_TURN_REPORT, true);
 	}
-	
+
 	public void setShowEndOfTurnReport(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -453,13 +453,13 @@ public abstract class AbstractUIContext implements IUIContext
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean getShowTriggeredNotifications()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_TRIGGERED_NOTIFICATIONS, true);
 	}
-	
+
 	public void setShowTriggeredNotifications(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -472,13 +472,13 @@ public abstract class AbstractUIContext implements IUIContext
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean getShowTriggerChanceSuccessful()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_SUCCESSFUL, true);
 	}
-	
+
 	public void setShowTriggerChanceSuccessful(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -491,13 +491,13 @@ public abstract class AbstractUIContext implements IUIContext
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean getShowTriggerChanceFailure()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_FAILURE, true);
 	}
-	
+
 	public void setShowTriggerChanceFailure(final boolean value)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -510,13 +510,13 @@ public abstract class AbstractUIContext implements IUIContext
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean getShowBattlesBetweenAIs()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
 		return prefs.getBoolean(SHOW_BATTLES_BETWEEN_AIS, true);
 	}
-	
+
 	public void setShowBattlesBetweenAIs(final boolean aBool)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
@@ -529,12 +529,12 @@ public abstract class AbstractUIContext implements IUIContext
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public LocalPlayers getLocalPlayers()
 	{
 		return m_localPlayers;
 	}
-	
+
 	public void setLocalPlayers(final LocalPlayers players)
 	{
 		m_localPlayers = players;

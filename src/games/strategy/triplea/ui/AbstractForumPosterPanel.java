@@ -13,7 +13,7 @@
  */
 /*
  * EndTurnPanel.java
- * 
+ *
  * Created on December 2, 2006, 10:04 AM
  */
 package games.strategy.triplea.ui;
@@ -36,7 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 /**
- * 
+ *
  * @author Tony Clayton, but abstracted by Veqryn
  * @version 1.0
  */
@@ -49,7 +49,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	protected TripleAFrame m_frame;
 	protected Action m_doneAction;
 	protected ForumPosterComponent m_forumPosterComponent;
-	
+
 	public AbstractForumPosterPanel(final GameData data, final MapPanel map)
 	{
 		super(data, map);
@@ -57,7 +57,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		m_doneAction = new AbstractAction("Done")
 		{
 			private static final long serialVersionUID = -3658752576117043053L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				release();
@@ -65,7 +65,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		};
 		m_forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
 	}
-	
+
 	private int getRound()
 	{
 		int round = 0;
@@ -88,7 +88,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		} while (true);
 		return round;
 	}
-	
+
 	@Override
 	public void display(final PlayerID id)
 	{
@@ -102,32 +102,32 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 			}
 		});
 	}
-	
+
 	abstract protected boolean allowIncludeTerritorySummary();
-	
+
 	abstract protected boolean allowIncludeTerritoryAllPlayersSummary();
-	
+
 	abstract protected boolean allowIncludeProductionSummary();
-	
+
 	abstract protected boolean allowDiceBattleDetails();
-	
+
 	abstract protected boolean allowDiceStatistics();
-	
+
 	abstract protected IAbstractForumPosterDelegate getForumPosterDelegate();
-	
+
 	abstract protected boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame);
-	
+
 	abstract protected boolean getHasPostedTurnSummary();
-	
+
 	abstract protected void setHasPostedTurnSummary(boolean posted);
-	
+
 	abstract protected boolean skipPosting();
-	
+
 	abstract protected String getTitle();
-	
+
 	@Override
 	abstract public String toString();
-	
+
 	protected void waitForDone(final TripleAFrame frame, final IPlayerBridge bridge)
 	{
 		m_frame = frame;
@@ -138,7 +138,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 			return;
 		if (skipPosting() || GameStepPropertiesHelper.isSkipPosting(getData()))
 			return;
-		
+
 		final boolean hasPosted = getHasPostedTurnSummary();
 		SwingUtilities.invokeLater(new Runnable()
 		{

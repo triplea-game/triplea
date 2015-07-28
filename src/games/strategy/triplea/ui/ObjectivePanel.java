@@ -82,9 +82,9 @@ import javax.swing.table.TableColumnModel;
 
 /**
  * A panel that will show all objectives for all players, including if the objective is filled or not.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class ObjectivePanel extends AbstractStatPanel
 {
@@ -92,30 +92,30 @@ public class ObjectivePanel extends AbstractStatPanel
 	private Map<String, Map<ICondition, String>> m_statsObjective;
 	private ObjectiveTableModel m_objectiveModel;
 	private IDelegateBridge m_dummyDelegate;
-	
+
 	public ObjectivePanel(final GameData data)
 	{
 		super(data);
 		m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
 		initLayout();
 	}
-	
+
 	@Override
 	public String getName()
 	{
 		return ObjectiveProperties.getInstance().getProperty(ObjectiveProperties.OBJECTIVES_PANEL_NAME, "Objectives");
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return m_statsObjective.isEmpty();
 	}
-	
+
 	public void removeDataChangeListener()
 	{
 		m_objectiveModel.removeDataChangeListener();
 	}
-	
+
 	@Override
 	protected void initLayout()
 	{
@@ -139,7 +139,7 @@ public class ObjectivePanel extends AbstractStatPanel
 		refresh.addActionListener(new AbstractAction("Refresh Objectives")
 		{
 			private static final long serialVersionUID = -5217040341132623172L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_objectiveModel.loadData();
@@ -157,8 +157,8 @@ public class ObjectivePanel extends AbstractStatPanel
 		add(Box.createVerticalStrut(6));
 		add(scroll);
 	}
-	
-	
+
+
 	class ObjectiveTableModel extends AbstractTableModel implements GameDataChangeListener
 	{
 		private static final long serialVersionUID = 2259315408905271333L;
@@ -167,19 +167,19 @@ public class ObjectivePanel extends AbstractStatPanel
 		private String[][] m_collectedData;
 		final Map<String, List<String>> m_sections = new LinkedHashMap<String, List<String>>();
 		private long m_timestamp = 0;
-		
+
 		public ObjectiveTableModel()
 		{
 			setObjectiveStats();
 			m_data.addDataChangeListener(this);
 			m_isDirty = true;
 		}
-		
+
 		public void removeDataChangeListener()
 		{
 			m_data.removeDataChangeListener(this);
 		}
-		
+
 		private void setObjectiveStats()
 		{
 			m_statsObjective = new LinkedHashMap<String, Map<ICondition, String>>();
@@ -321,7 +321,7 @@ public class ObjectivePanel extends AbstractStatPanel
 				}
 			}
 		}
-		
+
 		public synchronized Object getValueAt(final int row, final int col)
 		{
 			// do not refresh too often, or else it will slow the game down seriously
@@ -333,7 +333,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			}
 			return m_collectedData[row][col];
 		}
-		
+
 		private synchronized void loadData()
 		{
 			m_data.acquireReadLock();
@@ -360,7 +360,7 @@ public class ObjectivePanel extends AbstractStatPanel
 				m_data.releaseReadLock();
 			}
 		}
-		
+
 		public HashMap<ICondition, String> getConditionComment(final HashMap<ICondition, Boolean> testedConditions)
 		{
 			final HashMap<ICondition, String> conditionsComments = new HashMap<ICondition, String>(testedConditions.size());
@@ -418,7 +418,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			}
 			return conditionsComments;
 		}
-		
+
 		public HashMap<ICondition, Boolean> getTestedConditions()
 		{
 			final HashSet<ICondition> myConditions = new HashSet<ICondition>();
@@ -429,7 +429,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(myConditions, null);
 			return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_dummyDelegate);
 		}
-		
+
 		public void gameDataChanged(final Change aChange)
 		{
 			synchronized (this)
@@ -444,7 +444,7 @@ public class ObjectivePanel extends AbstractStatPanel
 				}
 			});
 		}
-		
+
 		@Override
 		public String getColumnName(final int col)
 		{
@@ -453,12 +453,12 @@ public class ObjectivePanel extends AbstractStatPanel
 			else
 				return "Objective Name";
 		}
-		
+
 		public int getColumnCount()
 		{
 			return COLUMNS_TOTAL;
 		}
-		
+
 		public synchronized int getRowCount()
 		{
 			if (!m_isDirty)
@@ -475,7 +475,7 @@ public class ObjectivePanel extends AbstractStatPanel
 				}
 			}
 		}
-		
+
 		private int getRowTotal()
 		{
 			int rowsTotal = m_sections.size() * 2; // we include a space between sections as well
@@ -485,7 +485,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			}
 			return rowsTotal;
 		}
-		
+
 		public synchronized void setGameData(final GameData data)
 		{
 			synchronized (this)
@@ -499,7 +499,7 @@ public class ObjectivePanel extends AbstractStatPanel
 			repaint();
 		}
 	}
-	
+
 	@Override
 	public void setGameData(final GameData data)
 	{
@@ -508,7 +508,7 @@ public class ObjectivePanel extends AbstractStatPanel
 		m_objectiveModel.setGameData(data);
 		m_objectiveModel.gameDataChanged(null);
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		final JFrame f = new JFrame();
@@ -522,8 +522,8 @@ public class ObjectivePanel extends AbstractStatPanel
 		uiContext.getMapData().verify(data);
 		// uiContext.setPlayerList(players);
 		final ObjectivePanel panelObj = new ObjectivePanel(data);
-		/*final String blah = "<html><b>blah</b> blah blah blah blah blah blah blah blah blah blah blah blah " +
-					"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
+		/*final String blah = "<html><b>blah</b> blah blah blah blah blah blah blah blah blah blah blah blah "
+					"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah "
 					"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</html>";
 		final JEditorPane editor = new JEditorPane();
 		editor.setContentType("text/html");
@@ -554,7 +554,7 @@ class ObjectiveProperties
 	private static ObjectiveProperties s_op = null;
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
-	
+
 	protected ObjectiveProperties()
 	{
 		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
@@ -574,7 +574,7 @@ class ObjectiveProperties
 			}
 		}
 	}
-	
+
 	public static ObjectiveProperties getInstance()
 	{
 		if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000)
@@ -584,17 +584,17 @@ class ObjectiveProperties
 		}
 		return s_op;
 	}
-	
+
 	public String getProperty(final String objectiveKey)
 	{
 		return getProperty(objectiveKey, "Not Found In objectives.properties");
 	}
-	
+
 	public String getProperty(final String objectiveKey, final String defaultValue)
 	{
 		return m_properties.getProperty(objectiveKey, defaultValue);
 	}
-	
+
 	public Set<Entry<Object, Object>> entrySet()
 	{
 		return m_properties.entrySet();
@@ -609,41 +609,41 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 	private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
 	private final GameData m_data;
 	private final ObjectivePanelDummyPlayer m_dummyAI = new ObjectivePanelDummyPlayer("objective panel dummy", "None (AI)");
-	
+
 	public ObjectivePanelDummyDelegateBridge(final GameData data)
 	{
 		m_data = data;
 	}
-	
+
 	public GameData getData()
 	{
 		return m_data;
 	}
-	
+
 	public void leaveDelegateExecution()
 	{
 	}
-	
+
 	public Properties getStepProperties()
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public String getStepName()
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public IRemotePlayer getRemotePlayer(final PlayerID id)
 	{
 		return m_dummyAI;
 	}
-	
+
 	public IRemotePlayer getRemotePlayer()
 	{
 		return m_dummyAI;
 	}
-	
+
 	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		if (count <= 0)
@@ -657,40 +657,40 @@ class ObjectivePanelDummyDelegateBridge implements IDelegateBridge
 		}
 		return numbers;
 	}
-	
+
 	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return 0;
 	}
-	
+
 	public PlayerID getPlayerID()
 	{
 		return PlayerID.NULL_PLAYERID;
 	}
-	
+
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_writer;
 	}
-	
+
 	public IDisplay getDisplayChannelBroadcaster()
 	{
 		return m_display;
 	}
-	
+
 	public ISound getSoundChannelBroadcaster()
 	{
 		return m_soundChannel;
 	}
-	
+
 	public void enterDelegateExecution()
 	{
 	}
-	
+
 	public void addChange(final Change aChange)
 	{
 	}
-	
+
 	public void stopGameSequence()
 	{
 	}
@@ -702,23 +702,23 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	public void addChildToEvent(final String text, final Object renderingData)
 	{
 	}
-	
+
 	public void gameDataChanged(final Change aChange)
 	{
 	}
-	
+
 	public void shutDown()
 	{
 	}
-	
+
 	public void startHistoryEvent(final String event)
 	{
 	}
-	
+
 	public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
 	{
 	}
-	
+
 	public void startHistoryEvent(final String event, final Object renderingData)
 	{
 	}
@@ -731,61 +731,61 @@ class ObjectivePanelDummyPlayer extends AbstractAI
 	{
 		super(name, type);
 	}
-	
+
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	protected void purchase(final boolean purcahseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite, final Collection<Territory> possibleTerritories, final String message)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
@@ -793,25 +793,25 @@ class ObjectivePanelDummyPlayer extends AbstractAI
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public boolean shouldBomberBomb(final Territory territory)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
 	{
@@ -829,7 +829,7 @@ class ColorTableCellRenderer extends DefaultTableCellRenderer
 {
 	private static final long serialVersionUID = 4197520597103598219L;
 	private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-	
+
 	@Override
 	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 	{
@@ -855,7 +855,7 @@ class ColorTableCellRenderer extends DefaultTableCellRenderer
 class EditorPaneCellEditor extends DefaultCellEditor
 {
 	private static final long serialVersionUID = 509377442956621991L;
-	
+
 	public EditorPaneCellEditor()
 	{
 		super(new JTextField());
@@ -867,17 +867,17 @@ class EditorPaneCellEditor extends DefaultCellEditor
 		final JScrollPane scrollPane = new JScrollPane(textArea);
 		scrollPane.setBorder(null);
 		editorComponent = scrollPane;
-		
+
 		delegate = new DefaultCellEditor.EditorDelegate()
 		{
 			private static final long serialVersionUID = 5746645959173385516L;
-			
+
 			@Override
 			public void setValue(final Object value)
 			{
 				textArea.setText((value != null) ? value.toString() : "");
 			}
-			
+
 			@Override
 			public Object getCellEditorValue()
 			{
@@ -895,7 +895,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 	private static final long serialVersionUID = -2835145877164663862L;
 	private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 	private final Map cellSizes = new HashMap();
-	
+
 	public EditorPaneTableCellRenderer()
 	{
 		// setLineWrap(true);
@@ -903,7 +903,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 		setEditable(false);
 		setContentType("text/html");
 	}
-	
+
 	public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 	{
 		// set the colors, etc. using the standard for that platform
@@ -913,7 +913,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 		setBorder(adaptee.getBorder());
 		setFont(adaptee.getFont());
 		setText(adaptee.getText());
-		
+
 		// This line was very important to get it working with JDK1.4
 		final TableColumnModel columnModel = table.getColumnModel();
 		setSize(columnModel.getColumn(column).getWidth(), 100000);
@@ -926,7 +926,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 		}
 		return this;
 	}
-	
+
 	private void addSize(final JTable table, final int row, final int column,
 				final int height)
 	{
@@ -942,7 +942,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 		}
 		rowheights.put(new Integer(column), new Integer(height));
 	}
-	
+
 	/**
 	 * Look through all columns and get the renderer. If it is
 	 * also a TextAreaRenderer, we look at the maximum height in
@@ -964,7 +964,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 		}
 		return maximum_height;
 	}
-	
+
 	private int findMaximumRowSize(final JTable table, final int row)
 	{
 		final Map rows = (Map) cellSizes.get(table);
@@ -989,7 +989,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
 class TextAreaCellEditor extends DefaultCellEditor
 {
 	private static final long serialVersionUID = 1581016985298673267L;
-	
+
 	public TextAreaCellEditor()
 	{
 		super(new JTextField());
@@ -1000,17 +1000,17 @@ class TextAreaCellEditor extends DefaultCellEditor
 		final JScrollPane scrollPane = new JScrollPane(textArea);
 		scrollPane.setBorder(null);
 		editorComponent = scrollPane;
-		
+
 		delegate = new DefaultCellEditor.EditorDelegate()
 		{
 			private static final long serialVersionUID = 382738058299167626L;
-			
+
 			@Override
 			public void setValue(final Object value)
 			{
 				textArea.setText((value != null) ? value.toString() : "");
 			}
-			
+
 			@Override
 			public Object getCellEditorValue()
 			{
@@ -1028,14 +1028,14 @@ class TextAreaTableCellRenderer extends JTextArea implements TableCellRenderer
 	private static final long serialVersionUID = 3742567967589372832L;
 	private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 	private final Map cellSizes = new HashMap();
-	
+
 	public TextAreaTableCellRenderer()
 	{
 		setLineWrap(true);
 		setWrapStyleWord(true);
 		setEditable(false);
 	}
-	
+
 	public Component getTableCellRendererComponent(final JTable table, final Object obj, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 	{
 		// set the colors, etc. using the standard for that platform
@@ -1045,7 +1045,7 @@ class TextAreaTableCellRenderer extends JTextArea implements TableCellRenderer
 		setBorder(adaptee.getBorder());
 		setFont(adaptee.getFont());
 		setText(adaptee.getText());
-		
+
 		// This line was very important to get it working with JDK1.4
 		final TableColumnModel columnModel = table.getColumnModel();
 		setSize(columnModel.getColumn(column).getWidth(), 100000);
@@ -1058,7 +1058,7 @@ class TextAreaTableCellRenderer extends JTextArea implements TableCellRenderer
 		}
 		return this;
 	}
-	
+
 	private void addSize(final JTable table, final int row, final int column,
 				final int height)
 	{
@@ -1074,7 +1074,7 @@ class TextAreaTableCellRenderer extends JTextArea implements TableCellRenderer
 		}
 		rowheights.put(new Integer(column), new Integer(height));
 	}
-	
+
 	// Look through all columns and get the renderer. If it is
 	// also a TextAreaRenderer, we look at the maximum height in
 	// its hash table for this row.
@@ -1094,7 +1094,7 @@ class TextAreaTableCellRenderer extends JTextArea implements TableCellRenderer
 		}
 		return maximum_height;
 	}
-	
+
 	private int findMaximumRowSize(final JTable table, final int row)
 	{
 		final Map rows = (Map) cellSizes.get(table);

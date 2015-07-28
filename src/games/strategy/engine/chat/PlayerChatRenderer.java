@@ -28,19 +28,19 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 	private static final long serialVersionUID = -8195565028281374498L;
 	private final IGame m_game;
 	private final IUIContext m_uiContext;
-	
+
 	int m_maxIconCounter = 0;
-	
+
 	HashMap<String, List<Icon>> m_iconMap = new HashMap<String, List<Icon>>();
 	HashMap<String, Set<String>> m_playerMap = new HashMap<String, Set<String>>();
-	
+
 	public PlayerChatRenderer(final IGame game, final IUIContext uiContext)
 	{
 		m_game = game;
 		m_uiContext = uiContext;
 		setIconMap();
 	}
-	
+
 	@Override
 	public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
 	{
@@ -71,11 +71,11 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 		}
 		return this;
 	}
-	
+
 	private void setIconMap()
 	{
 		final PlayerManager playerManager = m_game.getPlayerManager();
-		
+
 		PlayerList playerList;
 		m_game.getData().acquireReadLock();
 		try
@@ -105,7 +105,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer
 			}
 		}
 	}
-	
+
 	public int getMaxIconCounter()
 	{
 		return m_maxIconCounter;

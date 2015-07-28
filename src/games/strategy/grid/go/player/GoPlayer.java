@@ -16,7 +16,7 @@ public class GoPlayer extends GridGamePlayer
 	{
 		super(name, type);
 	}
-	
+
 	@Override
 	protected void play()
 	{
@@ -33,7 +33,7 @@ public class GoPlayer extends GridGamePlayer
 		}
 		// if (playDel.haveTwoPassedInARow())
 		// return;
-		
+
 		// change to active player
 		m_ui.changeActivePlayer(getPlayerID());
 		final GoMapPanel mapPanel = ((GoMapPanel) m_ui.getMainPanel());
@@ -71,7 +71,7 @@ public class GoPlayer extends GridGamePlayer
 			}
 		}
 	}
-	
+
 	@Override
 	protected void endTurn()
 	{
@@ -88,12 +88,12 @@ public class GoPlayer extends GridGamePlayer
 		}
 		// if (!endTurnDel.haveTwoPassedInARow())
 		// return;
-		
+
 		m_ui.changeActivePlayer(getPlayerID());
 		final GoMapPanel mapPanel = ((GoMapPanel) m_ui.getMainPanel());
 		if (mapPanel != null)
 			mapPanel.changePhase(GO_DELEGATE_PHASE.ENDGAME);
-		
+
 		// Get the relevant delegate
 		// final PlayerID me = getPlayerID();
 		IGridEndTurnData endTurnData = null;
@@ -126,7 +126,7 @@ public class GoPlayer extends GridGamePlayer
 				}
 			}
 		}
-		
+
 		// TODO: move all end game stuff to play delegate. it is such a hack sitting here
 		IGridEndTurnData forumPoster = null;
 		CountDownLatch waiting = null;
@@ -149,5 +149,5 @@ public class GoPlayer extends GridGamePlayer
 			mapPanel.removeShutdownLatch(waiting);
 		}
 	}
-	
+
 }

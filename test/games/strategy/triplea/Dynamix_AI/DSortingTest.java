@@ -25,26 +25,26 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class DSortingTest extends TestCase
 {
 	@SuppressWarnings("unused")
 	private GameData m_data;
-	
+
 	@Override
 	protected void setUp() throws Exception
 	{
 		m_data = LoadGameUtil.loadGame("Great Lakes War Test", "Great Lakes War v1.4 test.xml");
 	}
-	
+
 	@Override
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void testDSorting()
 	{

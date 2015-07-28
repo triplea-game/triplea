@@ -9,44 +9,44 @@ import games.strategy.net.Messengers;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public abstract class AbstractModeratorController implements IModeratorController
 {
 	protected final static Logger s_logger = Logger.getLogger(ModeratorController.class.getName());
 	protected final IServerMessenger m_serverMessenger;
 	protected final Messengers m_allMessengers;
-	
+
 	public AbstractModeratorController(final IServerMessenger serverMessenger, final Messengers messengers)
 	{
 		m_serverMessenger = serverMessenger;
 		m_allMessengers = messengers;
 	}
-	
+
 	public static final RemoteName getModeratorControllerName()
 	{
 		return new RemoteName(IModeratorController.class, "games.strategy.engine.lobby.server.ModeratorController:Global");
 	}
-	
+
 	public void register(final IRemoteMessenger messenger)
 	{
 		messenger.registerRemote(this, getModeratorControllerName());
 	}
-	
+
 	protected String getNodeMacAddress(final INode node)
 	{
 		return m_serverMessenger.GetPlayerMac(node.getName());
 	}
-	
+
 	protected String getRealName(final INode node)
 	{
 		// Remove any (n) that is added to distinguish duplicate names
 		final String name = node.getName().split(" ")[0];
 		return name;
 	}
-	
+
 	protected String getAliasesFor(final INode node)
 	{
 		final StringBuilder builder = new StringBuilder();

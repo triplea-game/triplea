@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * A game options cache that uses files to store the game options
- * 
+ *
  * @author Klaus Groenbaek
  */
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache
@@ -27,15 +27,15 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 	// -----------------------------------------------------------------------
 	// chars illegal on windows (on linux/mac anything that is allowed on windows works fine)
 	final static char[] s_illegalChars = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 58, 60, 62, 63, 92, 124 };
-	
+
 	// -----------------------------------------------------------------------
 	// instance methods
 	// -----------------------------------------------------------------------
-	
+
 	/**
 	 * Caches the gameOptions stored in the game data, and associates with this game. only values that are serializable
 	 * (which they should all be) will be stored
-	 * 
+	 *
 	 * @param gameData
 	 *            the game which options you want to cache
 	 */
@@ -49,7 +49,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 				serializableMap.put(property.getName(), property.getValue());
 			}
 		}
-		
+
 		final File cache = getCacheFile(gameData);
 		try
 		{
@@ -66,10 +66,10 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Loads cached game options into the gameData
-	 * 
+	 *
 	 * @param gameData
 	 *            the game to load the cached game options into
 	 */
@@ -102,10 +102,10 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Calculates the cache filename and location based on the game data
-	 * 
+	 *
 	 * @param gameData
 	 *            the game data
 	 * @return the File where the cached game options should be stored or read from
@@ -115,10 +115,10 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 		final File cacheDir = new File(GameRunner2.getUserRootFolder(), "optionCache");
 		return new File(cacheDir, getFileName(gameData.getGameName()));
 	}
-	
+
 	/**
 	 * Removes any special characters from the file name
-	 * 
+	 *
 	 * @param gameName
 	 *            the name of the game
 	 * @return the fileName on disk
@@ -126,7 +126,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache
 	private String getFileName(final String gameName)
 	{
 		final StringBuilder sb = new StringBuilder();
-		
+
 		for (int i = 0, charArrayLength = gameName.length(); i < charArrayLength; i++)
 		{
 			final char c = gameName.charAt(i);

@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 import javax.swing.JComponent;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class DoubleProperty extends AEditableProperty
 {
@@ -21,7 +21,7 @@ public class DoubleProperty extends AEditableProperty
 	private final double m_min;
 	private double m_value;
 	private final int m_places;
-	
+
 	public DoubleProperty(final String name, final String description, final double max, final double min, final double def, final int numberOfPlaces)
 	{
 		super(name, description);
@@ -34,19 +34,19 @@ public class DoubleProperty extends AEditableProperty
 		m_places = numberOfPlaces;
 		m_value = roundToPlace(def, numberOfPlaces, BigDecimal.ROUND_FLOOR);
 	}
-	
+
 	public static double roundToPlace(final double number, final int places, final int BigDecimalRoundingMode)
 	{
 		BigDecimal bd = new BigDecimal(number);
 		bd = bd.setScale(places, BigDecimalRoundingMode);
 		return bd.doubleValue();
 	}
-	
+
 	public Double getValue()
 	{
 		return m_value;
 	}
-	
+
 	public void setValue(final Object value) throws ClassCastException
 	{
 		if (value instanceof String)
@@ -61,7 +61,7 @@ public class DoubleProperty extends AEditableProperty
 			m_value = roundToPlace((Double) value, m_places, BigDecimal.ROUND_FLOOR);
 		}
 	}
-	
+
 	public JComponent getEditorComponent()
 	{
 		final DoubleTextField field = new DoubleTextField(m_min, m_max);
@@ -75,7 +75,7 @@ public class DoubleProperty extends AEditableProperty
 		});
 		return field;
 	}
-	
+
 	public boolean validate(final Object value)
 	{
 		if (value instanceof Double)

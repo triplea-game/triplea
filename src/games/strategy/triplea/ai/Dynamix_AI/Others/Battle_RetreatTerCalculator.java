@@ -24,7 +24,7 @@ import games.strategy.triplea.delegate.Matches;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class Battle_RetreatTerCalculator

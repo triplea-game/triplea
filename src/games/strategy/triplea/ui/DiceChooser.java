@@ -46,7 +46,7 @@ public class DiceChooser extends JPanel
 	private JLabel m_diceCountLabel;
 	// private final GameData m_data;
 	private int m_diceSides = 6;
-	
+
 	public DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final int diceSides, final GameData data)
 	{
 		m_uiContext = uiContext;
@@ -60,7 +60,7 @@ public class DiceChooser extends JPanel
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		createComponents();
 	}
-	
+
 	public void clear()
 	{
 		m_dicePanel.removeAll();
@@ -68,14 +68,14 @@ public class DiceChooser extends JPanel
 			m_random[i] = 0;
 		m_diceCount = 0;
 	}
-	
+
 	public int[] getDice()
 	{
 		if (m_diceCount < m_numRolls)
 			return null;
 		return m_random;
 	}
-	
+
 	private void addDie(final int roll)
 	{
 		final boolean hit = (roll == m_hitAt || (!m_hitOnlyIfEquals && (m_hitAt > 0) && roll > m_hitAt));
@@ -88,7 +88,7 @@ public class DiceChooser extends JPanel
 		invalidate();
 		repaint();
 	}
-	
+
 	private void removeLastDie()
 	{
 		// remove the strut and the component
@@ -101,7 +101,7 @@ public class DiceChooser extends JPanel
 		invalidate();
 		repaint();
 	}
-	
+
 	private void updateDiceCount()
 	{
 		final boolean showButtons = (m_diceCount < m_numRolls);
@@ -112,7 +112,7 @@ public class DiceChooser extends JPanel
 		m_undoButton.setEnabled((m_diceCount > 0));
 		m_diceCountLabel.setText("Dice remaining: " + (m_numRolls - m_diceCount));
 	}
-	
+
 	private void createComponents()
 	{
 		final JPanel diceButtonPanel = new JPanel();
@@ -127,7 +127,7 @@ public class DiceChooser extends JPanel
 			final JButton button = new JButton(new AbstractAction(null, m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType))
 			{
 				private static final long serialVersionUID = 8900816143434068634L;
-				
+
 				public void actionPerformed(final ActionEvent event)
 				{
 					addDie(dieNum);
@@ -141,7 +141,7 @@ public class DiceChooser extends JPanel
 		m_undoButton = new JButton(new AbstractAction("Undo")
 		{
 			private static final long serialVersionUID = 9096980607403511853L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				removeLastDie();

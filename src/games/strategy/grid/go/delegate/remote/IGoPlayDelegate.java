@@ -12,8 +12,8 @@ import java.util.Set;
 public interface IGoPlayDelegate extends IGridPlayDelegate
 {
 	public boolean haveTwoPassedInARow();
-	
+
 	public List<Map<Territory, PlayerID>> getPreviousMapStates();
-	
+
 	public Set<Unit> getCapturedUnits();
 }

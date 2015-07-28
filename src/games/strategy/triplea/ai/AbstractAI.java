@@ -51,26 +51,26 @@ import java.util.logging.Logger;
 /**
  * Base class for ais.
  * <p>
- * 
+ *
  * Control pausing with the AI pause menu option
- * 
+ *
  * AI's should note that any data that is stored in the ai instance, will be lost when the game is restarted. We cannot save data with an AI, since the player may choose to restart the game with a different ai, or with a human player.
  * <p>
- * 
+ *
  * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase, (as would happen if a player saved the game during the middle of an AI's move phase) it is acceptable for the ai to play badly for a turn, but the ai should recover, and play correctly when the next phase of the game starts.
  * <p>
- * 
+ *
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
  * <p>
- * 
+ *
  * @author sgb
  */
 public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlayer, IGamePlayer
 {
 	private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
-	
+
 	/**
-	 * 
+	 *
 	 * @param name
 	 *            - the name of the player (the nation)
 	 * @param type
@@ -80,18 +80,18 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	{
 		super(name, type);
 	}
-	
+
 	public final Class<ITripleaPlayer> getRemotePlayerType()
 	{
 		return ITripleaPlayer.class;
 	}
-	
+
 	/************************
 	 * The following methods are called when the AI starts a phase.
 	 *************************/
 	/**
 	 * It is the AI's turn to purchase units.
-	 * 
+	 *
 	 * @param purcahseForBid
 	 *            - is this a bid purchase, or a normal purchase
 	 * @param PUsToSpend
@@ -104,10 +104,10 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	 *            - the player to buy for
 	 */
 	protected abstract void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player);
-	
+
 	/**
 	 * It is the AI's turn to roll for technology.
-	 * 
+	 *
 	 * @param techDelegate
 	 *            - the tech delegate to roll for
 	 * @param data
@@ -116,10 +116,10 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	 *            - the player to roll tech for
 	 */
 	protected abstract void tech(ITechDelegate techDelegate, GameData data, PlayerID player);
-	
+
 	/**
 	 * It is the AI's turn to move. Make all moves before returning from this method.
-	 * 
+	 *
 	 * @param nonCombat
 	 *            - are we moving in combat, or non combat
 	 * @param moveDel
@@ -130,10 +130,10 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	 *            - the player to move with
 	 */
 	protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player);
-	
+
 	/**
 	 * It is the AI's turn to place units. get the units available to place with player.getUnits()
-	 * 
+	 *
 	 * @param placeForBid
 	 *            - is this a placement for bid
 	 * @param placeDelegate
@@ -144,54 +144,54 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	 *            - the player to place for
 	 */
 	protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player);
-	
+
 	/******************************************
 	 * The following methods the AI may choose to implemenmt,
 	 * but in general won't
-	 * 
+	 *
 	 *******************************************/
 	public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
 	{
 		// return the first one
 		return territories.iterator().next();
 	}
-	
+
 	public boolean selectAttackSubs(final Territory unitTerritory)
 	{
 		return true;
 	}
-	
+
 	public boolean selectAttackTransports(final Territory unitTerritory)
 	{
 		return true;
 	}
-	
+
 	public boolean selectAttackUnits(final Territory unitTerritory)
 	{
 		return true;
 	}
-	
+
 	public boolean selectShoreBombard(final Territory unitTerritory)
 	{
 		return true;
 	}
-	
+
 	public boolean confirmMoveKamikaze()
 	{
 		return false;
 	}
-	
+
 	public boolean confirmMoveHariKari()
 	{
 		return false;
 	}
-	
+
 	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
 	{
 		// just use the first one
 		return candidates.iterator().next();
 	}
-	
+
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties
 	 */
@@ -235,7 +235,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		return myCasualties;
 	}
-	
+
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
@@ -248,7 +248,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			return potentialTargets.iterator().next();
 		return factories.iterator().next();
 	}
-	
+
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
 	 */
@@ -262,7 +262,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		return rVal;
 	}
-	
+
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
@@ -270,29 +270,29 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	{
 		return candidates.iterator().next();
 	}
-	
+
 	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		return true;
 	}
-	
+
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		return null;
 	}
-	
+
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		return null;
 	}
-	
+
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
 	{
 		return null;
 	}
-	
+
 	public abstract boolean shouldBomberBomb(final Territory territory);
-	
+
 	public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics)
 	{
 		// we are dead, just accept
@@ -320,7 +320,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			return true;
 		return false;
 	}
-	
+
 	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
 	{
 		final PlayerID id = getPlayerID();
@@ -370,37 +370,37 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		return rVal;
 	}
-	
+
 	/*****************************************
 	 * The following methods are more for the ui, and the
 	 * ai will generally not care
-	 * 
+	 *
 	 *****************************************/
 	public void battleInfoMessage(final String shortMessage, final DiceRoll dice)
 	{
 	}
-	
+
 	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 	}
-	
+
 	public void retreatNotificationMessage(final Collection<Unit> units)
 	{
 	}
-	
+
 	public void reportError(final String error)
 	{
 	}
-	
+
 	public void reportMessage(final String message, final String title)
 	{
 	}
-	
+
 	public void confirmOwnCasualties(final GUID battleId, final String message)
 	{
 		pause();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
@@ -413,10 +413,10 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		return dice;
 	}
-	
+
 	/*****************************************
 	 * Game Player Methods
-	 * 
+	 *
 	 *****************************************/
 	/**
 	 * The given phase has started. We parse the phase name and call the apropiate method.
@@ -453,7 +453,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		}
 		else if (name.endsWith("Move"))
 		{
-			
+
 			final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
 			/* if (!moveDel.stuffToDoInThisDelegate())
 				return; */
@@ -485,7 +485,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
 		}
 	}
-	
+
 	/**
 	 * No need to override this.
 	 */
@@ -493,11 +493,11 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	{
 		// we should not override this...
 	}
-	
+
 	/**
 	 * It is the AI's turn to fight. Subclasses may override this if they want, but
 	 * generally the AI does not need to worry about the order of fighting battles.
-	 * 
+	 *
 	 * @param battleDelegate
 	 *            the battle delegate to query for battles not fought and the
 	 * @param data
@@ -529,7 +529,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			}
 		}
 	}
-	
+
 	public void politicalActions()
 	{
 		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
@@ -596,7 +596,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			}
 		}
 	}
-	
+
 	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
 	{
 		pause();

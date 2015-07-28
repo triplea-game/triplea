@@ -100,7 +100,7 @@ public class EditPanel extends ActionPanel
 	private final Set<Unit> m_selectedUnits = new LinkedHashSet<Unit>();
 	private Territory m_selectedTerritory = null;
 	private Territory m_currentTerritory = null;
-	
+
 	public EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame)
 	{
 		super(data, map);
@@ -109,7 +109,7 @@ public class EditPanel extends ActionPanel
 		m_performMoveAction = new AbstractAction("Perform Move or Other Actions")
 		{
 			private static final long serialVersionUID = 2205085537962024476L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -120,7 +120,7 @@ public class EditPanel extends ActionPanel
 		m_addUnitsAction = new AbstractAction("Add Units")
 		{
 			private static final long serialVersionUID = 2205085537962024476L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -132,7 +132,7 @@ public class EditPanel extends ActionPanel
 		m_delUnitsAction = new AbstractAction("Remove Selected Units")
 		{
 			private static final long serialVersionUID = 5127470604727907906L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -202,7 +202,7 @@ public class EditPanel extends ActionPanel
 		m_changeTerritoryOwnerAction = new AbstractAction("Change Territory Owner")
 		{
 			private static final long serialVersionUID = 8547635747553626362L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -214,7 +214,7 @@ public class EditPanel extends ActionPanel
 		m_changePUsAction = new AbstractAction("Change PUs")
 		{
 			private static final long serialVersionUID = -2751668909341983795L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -222,7 +222,7 @@ public class EditPanel extends ActionPanel
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
 				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
 				dialog.setVisible(true);
-				
+
 				final PlayerID player = playerChooser.getSelected();
 				if (player == null)
 				{
@@ -270,7 +270,7 @@ public class EditPanel extends ActionPanel
 		m_addTechAction = new AbstractAction("Add Technology")
 		{
 			private static final long serialVersionUID = -5536151512828077755L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -278,7 +278,7 @@ public class EditPanel extends ActionPanel
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
 				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to get technology");
 				dialog.setVisible(true);
-				
+
 				final PlayerID player = playerChooser.getSelected();
 				if (player == null)
 				{
@@ -329,7 +329,7 @@ public class EditPanel extends ActionPanel
 		m_removeTechAction = new AbstractAction("Remove Technology")
 		{
 			private static final long serialVersionUID = -2456111915025687825L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -337,7 +337,7 @@ public class EditPanel extends ActionPanel
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
 				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to remove technology");
 				dialog.setVisible(true);
-				
+
 				final PlayerID player = playerChooser.getSelected();
 				if (player == null)
 				{
@@ -396,7 +396,7 @@ public class EditPanel extends ActionPanel
 		m_changeUnitHitDamageAction = new AbstractAction("Change Unit Hit Damage")
 		{
 			private static final long serialVersionUID = 1835547345902760810L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -441,7 +441,7 @@ public class EditPanel extends ActionPanel
 		m_changeUnitBombingDamageAction = new AbstractAction("Change Unit Bombing Damage")
 		{
 			private static final long serialVersionUID = 6975869192911780860L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -490,7 +490,7 @@ public class EditPanel extends ActionPanel
 		m_changePoliticalRelationships = new AbstractAction("Change Political Relationships")
 		{
 			private static final long serialVersionUID = -2950034347058147592L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -564,7 +564,7 @@ public class EditPanel extends ActionPanel
 		add(Box.createVerticalStrut(15));
 		setWidgetActivation();
 	}
-	
+
 	private void sortUnitsToRemove(final List<Unit> units, /*final MustMoveWithDetails mustMoveWith,*/final Territory territory)
 	{
 		if (units.isEmpty())
@@ -572,7 +572,7 @@ public class EditPanel extends ActionPanel
 		// sort units based on which transports are allowed to unload
 		Collections.sort(units, getRemovableUnitsOrder(units, /*mustMoveWith,*/territory, true));
 	}
-	
+
 	public static Comparator<Unit> getRemovableUnitsOrder(final List<Unit> units, final Territory territory, final boolean noTies)
 	{
 		final Comparator<Unit> removableUnitsOrder = new Comparator<Unit>()
@@ -610,7 +610,7 @@ public class EditPanel extends ActionPanel
 		};
 		return removableUnitsOrder;
 	}
-	
+
 	private void setWidgetActivation()
 	{
 		if (m_frame.getEditDelegate() == null)
@@ -641,13 +641,13 @@ public class EditPanel extends ActionPanel
 			m_changePoliticalRelationships.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "EditPanel";
 	}
-	
+
 	@Override
 	public void setActive(final boolean active)
 	{
@@ -675,13 +675,13 @@ public class EditPanel extends ActionPanel
 		}
 		m_active = active;
 	}
-	
+
 	@Override
 	public boolean getActive()
 	{
 		return m_active;
 	}
-	
+
 	private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener()
 	{
 		public void unitsSelected(final List<Unit> units, final Territory t, final MouseDetails md)
@@ -716,7 +716,7 @@ public class EditPanel extends ActionPanel
 			}
 			setWidgetActivation();
 		}
-		
+
 		private void deselectUnits(final List<Unit> units, final Territory t, final MouseDetails md)
 		{
 			// no unit selected, deselect the most recent
@@ -756,7 +756,7 @@ public class EditPanel extends ActionPanel
 			else
 				getMap().setMouseShadowUnits(m_selectedUnits);
 		}
-		
+
 		private void selectUnitsToRemove(final List<Unit> units, final Territory t, final MouseDetails md)
 		{
 			if (units.isEmpty() && m_selectedUnits.isEmpty())
@@ -849,7 +849,7 @@ public class EditPanel extends ActionPanel
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUIContext(), true);
 				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
 				dialog.setVisible(true);
-				
+
 				final PlayerID player = playerChooser.getSelected();
 				if (player != null)
 				{
@@ -871,7 +871,7 @@ public class EditPanel extends ActionPanel
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUIContext(), allowNeutral);
 				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
 				dialog.setVisible(true);
-				
+
 				final PlayerID player = playerChooser.getSelected();
 				if (player != null)
 				{
@@ -900,7 +900,7 @@ public class EditPanel extends ActionPanel
 				});
 			}
 		}
-		
+
 		@Override
 		public void mouseMoved(final Territory territory, final MouseDetails md)
 		{
@@ -931,7 +931,7 @@ public class EditPanel extends ActionPanel
 	private final AbstractAction CANCEL_EDIT_ACTION = new AbstractAction("Cancel")
 	{
 		private static final long serialVersionUID = 6394987295241603443L;
-		
+
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_selectedTerritory = null;
@@ -946,7 +946,7 @@ public class EditPanel extends ActionPanel
 			setWidgetActivation();
 		}
 	};
-	
+
 	private static boolean doesPlayerHaveUnitsOnMap(final PlayerID player, final GameData data)
 	{
 		for (final Territory t : data.getMap())

@@ -17,7 +17,7 @@
  * Twitter: @hansolo_
  * URL:http://harmoniccode.blogspot.nl/
  * email: han.solo at muenster.de
- * 
+ *
  * @author Edwin van der Wal
  */
 
@@ -55,12 +55,12 @@ import javax.swing.JOptionPane;
 /**
  * Utility to find connections between polygons
  * Not pretty, meant only for one time use.
- * 
+ *
  * Inputs - a polygons.txt file
  * Outputs - a list of connections between the Polygons
- * 
+ *
  * @author edwin
- * 
+ *
  */
 public class ConnectionFinder
 {
@@ -71,13 +71,13 @@ public class ConnectionFinder
 	private static final String MIN_OVERLAP = "triplea.map.minOverlap";
 	private static boolean dimensionsSet = false;
 	private static StringBuffer territoryDefinitions = null;
-	
+
 	// how many pixels should each area become bigger in both x and y axis to see which area it overlaps?
 	public static int scalePixels = 8; // default 8, or if LINE_THICKNESS if given 4x linethickness
-	
+
 	// how many pixels should the boundingbox of the overlapping area have for it to be considered a valid connection?
 	public static double minOverlap = 32.0; // default 32, or if LINE_THICKNESS is given 16 x linethickness
-	
+
 	public static void main(final String[] args)
 	{
 		handleCommandLineArgs(args);
@@ -105,7 +105,7 @@ public class ConnectionFinder
 		}
 		if (s_mapFolderLocation == null && polyFile != null)
 			s_mapFolderLocation = polyFile.getParentFile();
-		
+
 		final Map<String, List<Area>> territoryAreas = new HashMap<String, List<Area>>();
 		Map<String, List<Polygon>> mapOfPolygons = null;
 		try
@@ -121,7 +121,7 @@ public class ConnectionFinder
 					listOfAreas.add(new Area(p));
 				}
 				territoryAreas.put(territoryName, listOfAreas);
-				
+
 			}
 		} catch (final FileNotFoundException ex)
 		{
@@ -143,7 +143,7 @@ public class ConnectionFinder
 			{
 			}
 		}
-		if (JOptionPane.showConfirmDialog(null, "Scale set to " + scalePixels + " pixels larger, and minimum overlap set to " + minOverlap + " pixels. \r\n" +
+		if (JOptionPane.showConfirmDialog(null, "Scale set to " + scalePixels + " pixels larger, and minimum overlap set to " + minOverlap + " pixels. \r\n"
 					"Do you wish to continue with this? \r\nSelect Yes to continue, Select No to override and change the size.", "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1)
 		{
 			final String scale = JOptionPane.showInputDialog(null,
@@ -163,7 +163,7 @@ public class ConnectionFinder
 			{
 			}
 		}
-		
+
 		final Map<String, Collection<String>> connections = new HashMap<String, Collection<String>>();
 		System.out.println("Now Scanning for Connections");
 		// sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
@@ -177,9 +177,9 @@ public class ConnectionFinder
 			final List<Polygon> currentPolygons = mapOfPolygons.get(territory);
 			for (final Polygon currentPolygon : currentPolygons)
 			{
-				
+
 				final Shape scaledShape = scale(currentPolygon, scalePixels);
-				
+
 				for (final String otherTerritory : allAreas)
 				{
 					if (otherTerritory.equals(territory))
@@ -198,7 +198,7 @@ public class ConnectionFinder
 						}
 						else if (!testArea.isEmpty())
 						{
-							
+
 						}
 					}
 				}
@@ -240,10 +240,10 @@ public class ConnectionFinder
 			ex.printStackTrace();
 		}
 	}// end main
-	
+
 	/**
 	 * Creates the xml territory definitions.
-	 * 
+	 *
 	 * @param allTerritoryNames
 	 * @param waterString
 	 *            a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a territory is water
@@ -273,10 +273,10 @@ public class ConnectionFinder
 		output.append("\r\n");
 		return output;
 	}
-	
+
 	/**
 	 * Converts a map of connections to XML formatted text with the connections
-	 * 
+	 *
 	 * @param connections
 	 *            a map of connections between Territories
 	 * @return a StringBuffer containing XML representing these connections
@@ -297,25 +297,25 @@ public class ConnectionFinder
 		}
 		return output;
 	}
-	
+
 	/**
 	 * Returns the size of the area of the boundingbox of the polygon
-	 * 
+	 *
 	 * @param area
 	 *            the area of which the boundingbox size is measured
 	 * @return the size of the area of the boundingbox of this area
 	 */
-	
+
 	private static double sizeOfArea(final Area area)
 	{
 		final Dimension d = area.getBounds().getSize();
 		return d.getHeight() * d.getWidth();
 	}
-	
+
 	/**
 	 * from: eu.hansolo.steelseries.tools.Scaler.java
 	 * Returns a double that represents the area of the given point array of a polygon
-	 * 
+	 *
 	 * @param pointArray
 	 * @param N
 	 * @return a double that represents the area of the given point array of a polygon
@@ -326,7 +326,7 @@ public class ConnectionFinder
 		int i;
 		int j;
 		double area = 0;
-		
+
 		for (i = 0; i < N; i++)
 		{
 			j = (i + 1) % N;
@@ -334,15 +334,15 @@ public class ConnectionFinder
 			area -= pointArray[i].getY() * pointArray[j].getX();
 		}
 		area /= 2.0;
-		
+
 		return (area);
 	}
-	
+
 	/**
 	 * from: eu.hansolo.steelseries.tools.Scaler.java
 	 * Returns a Point2D object that represents the center of mass of the given point array which represents a
 	 * polygon.
-	 * 
+	 *
 	 * @param pointArray
 	 * @return a Point2D object that represents the center of mass of the given point array
 	 */
@@ -355,7 +355,7 @@ public class ConnectionFinder
 		final Point2D centroid = new Point2D.Double();
 		int i;
 		int j;
-		
+
 		double factor = 0;
 		for (i = 0; i < N; i++)
 		{
@@ -368,15 +368,15 @@ public class ConnectionFinder
 		factor = 1 / area;
 		cx *= factor;
 		cy *= factor;
-		
+
 		centroid.setLocation(cx, cy);
 		return centroid;
 	}
-	
+
 	/**
 	 * from: eu.hansolo.steelseries.tools.Scaler.java
 	 * Returns a Point2D object that represents the center of mass of the given shape.
-	 * 
+	 *
 	 * @param currentShape
 	 * @return a Point2D object that represents the center of mass of the given shape
 	 */
@@ -419,7 +419,7 @@ public class ConnectionFinder
 		pointList.toArray(pointArray);
 		return (calcCenterOfMass(pointArray));
 	}
-	
+
 	private static Shape scale(final Shape currentShape, final int pixels)
 	{
 		final Dimension d = currentShape.getBounds().getSize();
@@ -427,12 +427,12 @@ public class ConnectionFinder
 		final double scalefactorY = 1.0 + (1 / ((double) d.height)) * pixels;
 		return scale(currentShape, scalefactorX, scalefactorY);
 	}
-	
+
 	/**
 	 * from: eu.hansolo.steelseries.tools.Scaler.java
 	 * Returns a scaled version of the given shape, calculated by the given scale factor.
 	 * The scaling will be calculated around the centroid of the shape.
-	 * 
+	 *
 	 * @param currentPolygon
 	 * @param xScaleFactor
 	 *            how much to scale on the x-axis
@@ -440,7 +440,7 @@ public class ConnectionFinder
 	 *            how much to scale on the y-axis
 	 *            * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
 	 */
-	
+
 	private static Shape scale(final Shape currentPolygon, final double xScaleFactor, final double yScaleFactor)
 	{
 		final Point2D centroid = getCentroid(currentPolygon);
@@ -448,9 +448,9 @@ public class ConnectionFinder
 		transform.scale(xScaleFactor, yScaleFactor);
 		final Shape shape = transform.createTransformedShape(currentPolygon);
 		return shape;
-		
+
 	}
-	
+
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		for (final String arg : args)
@@ -479,9 +479,9 @@ public class ConnectionFinder
 			{
 				scalePixels = new Integer(value).intValue();
 			}
-			
+
 		}
-		
+
 		// might be set by -D
 		if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1)
 		{
@@ -514,7 +514,7 @@ public class ConnectionFinder
 			scalePixels = new Integer(value).intValue();
 		}
 	}
-	
+
 	private static String getValue(final String arg)
 	{
 		final int index = arg.indexOf('=');

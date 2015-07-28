@@ -13,7 +13,7 @@
  */
 /*
  * UnitSupportAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -40,12 +40,12 @@ public class UnitSupportAttachmentExporter extends DefaultAttachmentExporter
 			return "";
 		return super.printOption(field, attachment);
 	}
-	
+
 	private String mPlayersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mUnitTypeHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{

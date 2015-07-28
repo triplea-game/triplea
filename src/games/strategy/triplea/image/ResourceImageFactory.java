@@ -14,9 +14,9 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class ResourceImageFactory
 {
@@ -30,19 +30,19 @@ public class ResourceImageFactory
 	// Scaling factor for images
 	private double m_scaleFactor;
 	private ResourceLoader m_resourceLoader;
-	
+
 	/** Creates new ResourceImageFactory */
 	public ResourceImageFactory()
 	{
 	}
-	
+
 	public void setResourceLoader(final ResourceLoader loader, final double scaleFactor)
 	{
 		m_scaleFactor = scaleFactor;
 		m_resourceLoader = loader;
 		clearImageCache();
 	}
-	
+
 	/**
 	 * Set the scaling factor
 	 */
@@ -54,7 +54,7 @@ public class ResourceImageFactory
 			clearImageCache();
 		}
 	}
-	
+
 	/**
 	 * Return the scaling factor
 	 */
@@ -62,7 +62,7 @@ public class ResourceImageFactory
 	{
 		return m_scaleFactor;
 	}
-	
+
 	/**
 	 * Return the width of scaled
 	 */
@@ -70,7 +70,7 @@ public class ResourceImageFactory
 	{
 		return (int) (m_scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
 	}
-	
+
 	/**
 	 * Return the height of scaled
 	 */
@@ -78,14 +78,14 @@ public class ResourceImageFactory
 	{
 		return (int) (m_scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
 	}
-	
+
 	// Clear the image and icon cache
 	private void clearImageCache()
 	{
 		m_images.clear();
 		m_icons.clear();
 	}
-	
+
 	/**
 	 * Return the appropriate image.
 	 */
@@ -116,7 +116,7 @@ public class ResourceImageFactory
 		m_images.put(fullName, scaledImage);
 		return scaledImage;
 	}
-	
+
 	private Image getBaseImage(final String baseImageName)
 	{
 		// URL uses '/' not '\'
@@ -134,7 +134,7 @@ public class ResourceImageFactory
 		}
 		return image;
 	}
-	
+
 	/**
 	 * Return a icon image.
 	 */

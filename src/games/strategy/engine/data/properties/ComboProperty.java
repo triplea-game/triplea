@@ -31,9 +31,9 @@ public class ComboProperty<T> extends AEditableProperty
 	private static final long serialVersionUID = -3098612299805630587L;
 	private final List<T> m_possibleValues;
 	private T m_value;
-	
+
 	/**
-	 * 
+	 *
 	 * @param name
 	 *            name of the property
 	 * @param defaultValue
@@ -45,7 +45,7 @@ public class ComboProperty<T> extends AEditableProperty
 	{
 		this(name, description, defaultValue, possibleValues, false);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public ComboProperty(final String name, final String description, final T defaultValue, final Collection<T> possibleValues, final boolean allowNone)
 	{
@@ -68,23 +68,23 @@ public class ComboProperty<T> extends AEditableProperty
 			m_value = defaultValue;
 		m_possibleValues = new ArrayList<T>(possibleValues);
 	}
-	
+
 	public Object getValue()
 	{
 		return m_value;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_value = (T) value;
 	}
-	
+
 	public void setValueT(final T value)
 	{
 		m_value = value;
 	}
-	
+
 	public JComponent getEditorComponent()
 	{
 		final JComboBox box = new JComboBox(new Vector<T>(m_possibleValues));
@@ -99,7 +99,7 @@ public class ComboProperty<T> extends AEditableProperty
 		});
 		return box;
 	}
-	
+
 	public boolean validate(final Object value)
 	{
 		if (m_possibleValues == null || m_possibleValues.isEmpty())

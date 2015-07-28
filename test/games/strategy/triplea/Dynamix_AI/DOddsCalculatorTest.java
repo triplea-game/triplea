@@ -30,26 +30,26 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class DOddsCalculatorTest extends TestCase
 {
 	private GameData m_data;
 	private final IOddsCalculator m_calc = new Dynamix_AI("Superior", "Dynamix (AI)").getCalc();
-	
+
 	@Override
 	protected void setUp() throws Exception
 	{
 		m_data = LoadGameUtil.loadGame("Great Lakes War Test", "Great Lakes War v1.4 test.xml");
 	}
-	
+
 	@Override
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
 	}
-	
+
 	public void testBattleCalculator()
 	{
 		final PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");

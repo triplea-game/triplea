@@ -13,7 +13,7 @@
  */
 /*
  * UnitAutoChooser.java
- * 
+ *
  * Created on July 29, 2007, 7:32 PM
  */
 package games.strategy.triplea.util;
@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
- * 
+ *
  * @author: Tony Clayton
  * @version: 1.0
  */
@@ -143,13 +143,13 @@ class UnitAutoChooser
 	// categories don't categorize dependents but candidate categories do.
 	// More than one candidate category may map to a single chosen category.
 	private final Map<UnitCategory, UnitCategory> m_candidateToChosenCategories;
-	
+
 	public UnitAutoChooser(final Collection<Unit> allUnits, final Collection<Unit> chosenUnits, final Map<Unit, Collection<Unit>> dependentsMap, final boolean bAllowImplicitDependents,
 				final boolean bCategorizeMovement)
 	{
 		this(allUnits, chosenUnits, dependentsMap, bAllowImplicitDependents, bCategorizeMovement, false);
 	}
-	
+
 	public UnitAutoChooser(final Collection<Unit> allUnits, final Collection<Unit> chosenUnits, final Map<Unit, Collection<Unit>> dependentsMap, final boolean bAllowImplicitDependents,
 				final boolean bCategorizeMovement, final boolean bCategorizeTrnMovement)
 	{
@@ -211,7 +211,7 @@ class UnitAutoChooser
 		// assemble the solution and solve the members
 		chooseUnits();
 	}
-	
+
 	public List<Unit> getCandidateUnits(final boolean selectDependents)
 	{
 		// always select dependents for candidate units
@@ -230,32 +230,32 @@ class UnitAutoChooser
 		}
 		return candidateUnits;
 	}
-	
+
 	public Collection<Unit> getChosenUnits()
 	{
 		return m_chosenUnits;
 	}
-	
+
 	public Iterator<Set<Unit>> solutionIterator()
 	{
 		return m_selectedUnitSolutions.iterator();
 	}
-	
+
 	public int solutionCount()
 	{
 		return m_selectedUnitSolutions.size();
 	}
-	
+
 	public int exactSolutionCount()
 	{
 		return m_exactSolutionCount;
 	}
-	
+
 	public boolean foundCompleteSolution()
 	{
 		return m_bFoundCompleteSolution;
 	}
-	
+
 	public List<Set<Unit>> getAllSolutions(final boolean selectImplicitDependents)
 	{
 		final List<Set<Unit>> allSolutions = new ArrayList<Set<Unit>>(solutionCount());
@@ -263,12 +263,12 @@ class UnitAutoChooser
 			allSolutions.add(getSolution(i, selectImplicitDependents));
 		return allSolutions;
 	}
-	
+
 	public Set<Unit> getSolution(final int solutionIndex)
 	{
 		return getSolution(solutionIndex, false);
 	}
-	
+
 	public Set<Unit> getSolution(final int solutionIndex, final boolean selectImplicitDependents)
 	{
 		final Set<Unit> selectedUnits = new LinkedHashSet<Unit>(m_allUnits.size() + 1, 1);
@@ -308,12 +308,12 @@ class UnitAutoChooser
 		}
 		return selectedUnits;
 	}
-	
+
 	public boolean isMovementCategorized()
 	{
 		return m_bCategorizeMovement;
 	}
-	
+
 	public Match<Collection<Unit>> getChooserBoundaryMatch()
 	{
 		final Match<Collection<Unit>> unitCategoryCountMatch = new Match<Collection<Unit>>()
@@ -329,7 +329,7 @@ class UnitAutoChooser
 		};
 		return unitCategoryCountMatch;
 	}
-	
+
 	private void chooseUnits()
 	{
 		// System.out.println("chosenCounts: "+m_chosenCategoryCounts);
@@ -482,7 +482,7 @@ class UnitAutoChooser
 		}
 		// System.out.println("candidateUnits: "+m_candidateUnits);
 	}
-	
+
 	// solveCandidateCompositeCategories()
 	//
 	// IN: allCategoriesNoMovement (with dependents, movement not categorized)

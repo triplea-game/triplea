@@ -11,7 +11,7 @@ public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegat
 {
 	private boolean m_needToInitialize = true;
 	private boolean m_hasPostedTurnSummary = false;
-	
+
 	@Override
 	public void start()
 	{
@@ -19,17 +19,17 @@ public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegat
 		if (!m_needToInitialize)
 			return;
 		m_hasPostedTurnSummary = false;
-		
+
 		m_needToInitialize = false;// at the very end
 	}
-	
+
 	@Override
 	public void end()
 	{
 		super.end();
 		m_needToInitialize = true;
 	}
-	
+
 	@Override
 	public Serializable saveState()
 	{
@@ -40,7 +40,7 @@ public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegat
 		state.m_hasPostedTurnSummary = m_hasPostedTurnSummary;
 		return state;
 	}
-	
+
 	@Override
 	public void loadState(final Serializable state)
 	{
@@ -50,29 +50,29 @@ public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegat
 		m_needToInitialize = s.m_needToInitialize;
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
-	
+
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		// we could have a pbem/forum post to do
 		return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData());
 	}
-	
+
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
 		m_hasPostedTurnSummary = hasPostedTurnSummary;
 	}
-	
+
 	public boolean getHasPostedTurnSummary()
 	{
 		return m_hasPostedTurnSummary;
 	}
-	
+
 	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
 	{
 		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
 		return m_hasPostedTurnSummary;
 	}
-	
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

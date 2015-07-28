@@ -38,14 +38,14 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 	protected JScrollPane scroll;
 	protected Integer scrollBarPreviousValue = null;
 	protected Integer previousVisibleIndex = null;
-	
+
 	public AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel)
 	{
 		m_data = data;
 		m_movePanel = movePanel;
 		m_moves = Collections.emptyList();
 	}
-	
+
 	public void setMoves(final List moves)
 	{
 		m_moves = moves;
@@ -57,7 +57,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 			}
 		});
 	}
-	
+
 	private void initLayout()
 	{
 		removeAll();
@@ -91,7 +91,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		scroll = new JScrollPane(items)
 		{
 			private static final long serialVersionUID = -1064967105431785533L;
-			
+
 			@Override
 			public void paint(final Graphics g)
 			{
@@ -125,7 +125,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 			}
 		});
 	}
-	
+
 	private JComponent createComponentForMove(final AbstractUndoableMove move)
 	{
 		final Box unitsBox = new Box(BoxLayout.X_AXIS);
@@ -161,31 +161,31 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		rVal.add(new JLabel(" "));
 		return rVal;
 	}
-	
+
 	public int getCountOfMovesMade()
 	{
 		return m_moves.size();
 	}
-	
+
 	protected void setSize(final Dimension buttonSize, final JButton cancelButton)
 	{
 		cancelButton.setMinimumSize(buttonSize);
 		cancelButton.setPreferredSize(buttonSize);
 		cancelButton.setMaximumSize(buttonSize);
 	}
-	
-	
+
+
 	class UndoMoveAction extends AbstractAction
 	{
 		private static final long serialVersionUID = -397312652244693138L;
 		private final int m_moveIndex;
-		
+
 		public UndoMoveAction(final int index)
 		{
 			super("Undo");
 			m_moveIndex = index;
 		}
-		
+
 		public void actionPerformed(final ActionEvent e)
 		{
 			// Record position of scroll bar as percentage.
@@ -197,19 +197,19 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 				previousVisibleIndex = null;
 		}
 	}
-	
-	
+
+
 	class ViewAction extends AbstractAction
 	{
 		private static final long serialVersionUID = -6999284663802575467L;
 		private final AbstractUndoableMove m_move;
-		
+
 		public ViewAction(final AbstractUndoableMove move)
 		{
 			super("Show");
 			m_move = move;
 		}
-		
+
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_movePanel.cancelMove();
@@ -218,7 +218,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 			specificViewAction(m_move);
 		}
 	}
-	
+
 	protected void specificViewAction(final AbstractUndoableMove move)
 	{
 		// do nothing if not overwritten in child class

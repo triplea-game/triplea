@@ -43,9 +43,9 @@ import javax.swing.JSeparator;
 /**
  * A panel that shows the current political state, this has no other
  * functionality then a view on the current politics.
- * 
+ *
  * @author Edwin van der Wal
- * 
+ *
  */
 public class PoliticalStateOverview extends JPanel
 {
@@ -55,10 +55,10 @@ public class PoliticalStateOverview extends JPanel
 	private final GameData m_data;
 	private final boolean m_editable;
 	private final Set<Triple<PlayerID, PlayerID, RelationshipType>> m_editChanges = new HashSet<Triple<PlayerID, PlayerID, RelationshipType>>();
-	
+
 	/**
 	 * Constructs this panel
-	 * 
+	 *
 	 * @param data
 	 *            gamedata to get the info from
 	 * @param uiContext
@@ -71,7 +71,7 @@ public class PoliticalStateOverview extends JPanel
 		m_editable = editable;
 		drawPoliticsUI();
 	}
-	
+
 	/**
 	 * does the actual adding of elements to this panel.
 	 */
@@ -112,11 +112,11 @@ public class PoliticalStateOverview extends JPanel
 			x = 1;
 		}
 	}
-	
+
 	/**
 	 * Gets a label showing the coloured relationshipName between these two
 	 * players.
-	 * 
+	 *
 	 * @param player1
 	 * @param player2
 	 * @return
@@ -146,7 +146,7 @@ public class PoliticalStateOverview extends JPanel
 		relationshipLabelPanel.setBackground(getRelationshipTypeColor(relType));
 		return relationshipLabelPanel;
 	}
-	
+
 	private JComponent getRelationshipComponent(final PlayerID player1, final PlayerID player2, final RelationshipType relType)
 	{
 		if (!m_editable)
@@ -158,7 +158,7 @@ public class PoliticalStateOverview extends JPanel
 			final JButton button = new JButton(new AbstractAction(relType.getName())
 			{
 				private static final long serialVersionUID = 629987410235293178L;
-				
+
 				public void actionPerformed(final ActionEvent e)
 				{
 					final List<RelationshipType> types = new ArrayList<RelationshipType>(m_data.getRelationshipTypeList().getAllRelationshipTypes());
@@ -206,10 +206,10 @@ public class PoliticalStateOverview extends JPanel
 			return button;
 		}
 	}
-	
+
 	/**
 	 * returns a color to represent the relationship
-	 * 
+	 *
 	 * @param relType
 	 *            which relationship to get the color for
 	 * @return the color to represent this relationship
@@ -225,10 +225,10 @@ public class PoliticalStateOverview extends JPanel
 			return Color.red;
 		throw new IllegalStateException("PoliticsUI: RelationshipType: " + relType.getName() + " can only be of archeType Allied, Neutral or War");
 	}
-	
+
 	/**
 	 * Gets a label showing the flag + name of this player
-	 * 
+	 *
 	 * @param player
 	 *            the player to get the label for
 	 * @return the label representing this player
@@ -237,10 +237,10 @@ public class PoliticalStateOverview extends JPanel
 	{
 		return new JLabel(player.getName(), new ImageIcon(m_uic.getFlagImageFactory().getFlag(player)), JLabel.LEFT);
 	}
-	
+
 	/**
 	 * Redraw this panel (because of changed politics)
-	 * 
+	 *
 	 */
 	public void redrawPolitics()
 	{
@@ -249,7 +249,7 @@ public class PoliticalStateOverview extends JPanel
 		this.revalidate();
 		// this.updateUI();
 	}
-	
+
 	public Collection<Triple<PlayerID, PlayerID, RelationshipType>> getEditChanges()
 	{
 		if (!m_editable)

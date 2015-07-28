@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class UI
@@ -32,7 +32,7 @@ public class UI
 		s_frame = frame;
 		s_settingsWindow = new SettingsWindow(frame);
 	}
-	
+
 	public static void clearCachedInstances()
 	{
 		s_frame = null;
@@ -40,10 +40,10 @@ public class UI
 			s_settingsWindow.clear();
 		s_settingsWindow = null;
 	}
-	
+
 	private static TripleAFrame s_frame = null;
 	private static SettingsWindow s_settingsWindow = null;
-	
+
 	public static void ShowSettingsWindow()
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
@@ -51,14 +51,14 @@ public class UI
 		s_settingsWindow.setVisible(true);
 		s_settingsWindow.setLocationRelativeTo(s_frame);
 	}
-	
+
 	public static void NotifyAILogMessage(final Level level, final String message)
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
 			return;
 		s_settingsWindow.addMessage(level, message);
 	}
-	
+
 	public static void NotifyStartOfRound(final int round)
 	{
 		if (s_settingsWindow == null) // Shouldn't happen

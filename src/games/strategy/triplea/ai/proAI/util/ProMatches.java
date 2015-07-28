@@ -32,13 +32,13 @@ import java.util.List;
 
 /**
  * Pro AI matches.
- * 
+ *
  * @author Ron Murhammer
  * @since 2014
  */
 public class ProMatches
 {
-	
+
 	public static Match<Territory> territoryCanLandAirUnits(final PlayerID player, final GameData data, final boolean isCombatMove, final List<Territory> enemyTerritories)
 	{
 		return new Match<Territory>()
@@ -52,7 +52,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveAirUnits(final PlayerID player, final GameData data, final boolean isCombatMove)
 	{
 		return new Match<Territory>()
@@ -66,7 +66,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanPotentiallyMoveAirUnits(final PlayerID player, final GameData data, final boolean isCombatMove)
 	{
 		return new Match<Territory>()
@@ -80,7 +80,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveAirUnitsAndNoAA(final PlayerID player, final GameData data, final boolean isCombatMove)
 	{
 		return new Match<Territory>()
@@ -94,7 +94,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveSpecificLandUnit(final PlayerID player, final GameData data, final boolean isCombatMove, final Unit u)
 	{
 		return new Match<Territory>()
@@ -109,7 +109,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanPotentiallyMoveSpecificLandUnit(final PlayerID player, final GameData data, final boolean isCombatMove, final Unit u)
 	{
 		return new Match<Territory>()
@@ -124,7 +124,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveLandUnits(final PlayerID player, final GameData data, final boolean isCombatMove)
 	{
 		return new Match<Territory>()
@@ -138,7 +138,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanPotentiallyMoveLandUnits(final PlayerID player, final GameData data, final boolean isCombatMove)
 	{
 		return new Match<Territory>()
@@ -152,7 +152,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveLandUnitsAndIsAllied(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -165,7 +165,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveLandUnitsAndIsEnemy(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -178,7 +178,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveLandUnitsThrough(final PlayerID player, final GameData data, final Unit u, final Territory startTerritory, final boolean isCombatMove,
 				final List<Territory> enemyTerritories)
 	{
@@ -200,7 +200,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(final PlayerID player, final GameData data, final Unit u, final Territory startTerritory,
 				final boolean isCombatMove, final List<Territory> enemyTerritories)
 	{
@@ -221,7 +221,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsBlitzable(final PlayerID player, final GameData data, final Unit u)
 	{
 		return new Match<Territory>()
@@ -233,7 +233,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveSeaUnits(final PlayerID player, final GameData data, final boolean isCombatMove)
 	{
 		return new Match<Territory>()
@@ -250,7 +250,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveSeaUnitsThrough(final PlayerID player, final GameData data, final boolean isCombatMove)
 	{
 		return new Match<Territory>()
@@ -263,7 +263,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveSeaUnitsAndNotInList(final PlayerID player, final GameData data, final boolean isCombatMove, final List<Territory> notTerritories)
 	{
 		return new Match<Territory>()
@@ -276,7 +276,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(final PlayerID player, final GameData data, final boolean isCombatMove,
 				final List<Territory> clearedTerritories, final List<Territory> notTerritories)
 	{
@@ -291,7 +291,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasEnemyUnitsOrCantBeHeld(final PlayerID player, final GameData data, final List<Territory> territoriesThatCantBeHeld)
 	{
 		return new Match<Territory>()
@@ -304,7 +304,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasPotentialEnemyUnits(final PlayerID player, final GameData data, final List<PlayerID> players)
 	{
 		return new Match<Territory>()
@@ -317,7 +317,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasNoEnemyUnitsOrCleared(final PlayerID player, final GameData data, final List<Territory> clearedTerritories)
 	{
 		return new Match<Territory>()
@@ -330,7 +330,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(final PlayerID player, final GameData data, final List<Territory> territoriesThatCantBeHeld)
 	{
 		return new Match<Territory>()
@@ -344,7 +344,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasInfraFactoryAndIsLand(final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -358,7 +358,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasInfraFactoryAndIsEnemyLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -371,7 +371,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(final PlayerID player, final GameData data, final List<PlayerID> players,
 				final List<Territory> territoriesThatCantBeHeld)
 	{
@@ -387,7 +387,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasInfraFactoryAndIsNotConqueredOwnedLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -400,7 +400,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasInfraFactoryAndIsOwnedLand(final PlayerID player)
 	{
 		return new Match<Territory>()
@@ -414,7 +414,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasInfraFactoryAndIsAlliedLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -428,7 +428,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -441,7 +441,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -454,7 +454,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryHasNeighborOwnedByAndHasLandUnit(final GameData data, final PlayerID player, final List<PlayerID> players)
 	{
 		return new Match<Territory>()
@@ -468,7 +468,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsAlliedLandAndHasNoEnemyNeighbors(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -483,7 +483,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsEnemyLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -496,7 +496,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsEnemyNotNeutralLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -509,7 +509,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -524,7 +524,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsEnemyNotNeutralOrAllied(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -538,7 +538,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsEnemyOrCantBeHeld(final PlayerID player, final GameData data, final List<Territory> territoriesThatCantBeHeld)
 	{
 		return new Match<Territory>()
@@ -551,7 +551,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsPotentialEnemy(final PlayerID player, final GameData data, final List<PlayerID> players)
 	{
 		return new Match<Territory>()
@@ -564,7 +564,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsPotentialEnemyOrHasPotentialEnemyUnits(final PlayerID player, final GameData data, final List<PlayerID> players)
 	{
 		return new Match<Territory>()
@@ -577,7 +577,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsEnemyOrCantBeHeldAndIsAdjacentToMyLandUnits(final PlayerID player, final GameData data, final List<Territory> territoriesThatCantBeHeld)
 	{
 		return new Match<Territory>()
@@ -593,7 +593,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsNotConqueredAlliedLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -608,7 +608,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsNotConqueredOwnedLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -623,7 +623,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Territory> territoryIsWaterAndAdjacentToOwnedFactory(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
@@ -631,14 +631,14 @@ public class ProMatches
 			@Override
 			public boolean match(final Territory t)
 			{
-				
+
 				final Match<Territory> hasOwnedFactoryNeighbor = Matches.territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player));
 				final Match<Territory> match = new CompositeMatchAnd<Territory>(hasOwnedFactoryNeighbor, ProMatches.territoryCanMoveSeaUnits(player, data, true));
 				return match.match(t);
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCanBeMovedAndIsOwned(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -651,7 +651,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCanBeMovedAndIsOwnedAir(final PlayerID player, final boolean isCombatMove)
 	{
 		return new Match<Unit>()
@@ -666,7 +666,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCanBeMovedAndIsOwnedLand(final PlayerID player, final boolean isCombatMove)
 	{
 		return new Match<Unit>()
@@ -681,7 +681,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCanBeMovedAndIsOwnedSea(final PlayerID player, final boolean isCombatMove)
 	{
 		return new Match<Unit>()
@@ -696,7 +696,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCanBeMovedAndIsOwnedTransport(final PlayerID player, final boolean isCombatMove)
 	{
 		return new Match<Unit>()
@@ -711,7 +711,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCanBeMovedAndIsOwnedBombard(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -726,7 +726,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCanBeMovedAndIsOwnedNonCombatInfra(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -739,7 +739,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCantBeMovedAndIsAlliedDefender(final PlayerID player, final GameData data, final Territory t)
 	{
 		return new Match<Unit>()
@@ -755,7 +755,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitCantBeMovedAndIsAlliedDefenderAndNotInfra(final PlayerID player, final GameData data, final Territory t)
 	{
 		return new Match<Unit>()
@@ -768,7 +768,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsAlliedLandAndNotInfra(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -781,7 +781,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsAlliedNotLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -794,7 +794,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsAlliedNotOwned(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -807,7 +807,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsAlliedNotOwnedAir(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -820,7 +820,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsAlliedAir(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -833,7 +833,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsEnemyAir(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -846,7 +846,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsEnemyAndNotAA(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -859,7 +859,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsEnemyAndNotInfa(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -872,7 +872,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsEnemyLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -885,7 +885,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsEnemyNotLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -898,7 +898,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsEnemyNotNeutral(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -911,7 +911,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsEnemySea(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -924,7 +924,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsNeutral()
 	{
 		return new Match<Unit>()
@@ -938,7 +938,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedAir(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -951,7 +951,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedAndMatchesTypeAndIsTransporting(final PlayerID player, final UnitType unitType)
 	{
 		return new Match<Unit>()
@@ -964,7 +964,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedAndMatchesTypeAndNotTransporting(final PlayerID player, final UnitType unitType)
 	{
 		return new Match<Unit>()
@@ -977,7 +977,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static final Match<Unit> UnitIsOwnedCarrier(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -990,7 +990,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedLand(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -1003,7 +1003,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedNotLand(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -1016,7 +1016,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedTransport(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -1029,7 +1029,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedTransportableUnit(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -1042,7 +1042,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedCombatTransportableUnit(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -1055,7 +1055,7 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	public static Match<Unit> unitIsOwnedTransportableUnitAndCanBeLoaded(final PlayerID player, final boolean isCombatMove)
 	{
 		return new Match<Unit>()
@@ -1071,10 +1071,10 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 	/**
 	 * Check what units a territory can produce.
-	 * 
+	 *
 	 * @param t
 	 *            territory we are testing for required units
 	 * @return whether the territory contains one of the required combos of units
@@ -1104,5 +1104,5 @@ public class ProMatches
 			}
 		};
 	}
-	
+
 }

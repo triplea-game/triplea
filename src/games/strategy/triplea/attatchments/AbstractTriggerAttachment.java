@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * @author Abstraction done by Erik von der Osten, original TriggerAttachment writen by Squid Daddy and Mark Christopher Duncan
- * 
+ *
  */
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition
 {
@@ -29,21 +29,21 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	public static final String NOTIFICATION = "Notification";
 	public static final String AFTER = "after";
 	public static final String BEFORE = "before";
-	
+
 	// "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for backwards compatibility.
 	private int m_uses = -1;
 	@InternalDoNotExport
 	private boolean m_usedThisRound = false; // Do Not Export (do not include in IAttachment).
-	
+
 	private String m_notification = null;
-	
+
 	private ArrayList<Tuple<String, String>> m_when = new ArrayList<Tuple<String, String>>();
-	
+
 	public AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
 	}
-	
+
 	public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge aBridge)
 	{
 		final CompositeChange change = new CompositeChange();
@@ -61,11 +61,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		}
 		return change;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * DO NOT REMOVE THIS (or else you will break a lot of older xmls)
-	 * 
+	 *
 	 * @deprecated please use setConditions, getConditions, clearConditions, instead.
 	 * @param triggers
 	 * @throws GameParseException
@@ -76,7 +76,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	{
 		setConditions(conditions);
 	}
-	
+
 	/**
 	 * @deprecated please use setConditions, getConditions, clearConditions, instead.
 	 * @return
@@ -86,7 +86,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	{
 		return getConditions();
 	}
-	
+
 	/**
 	 * @deprecated please use setConditions, getConditions, clearConditions, instead.
 	 */
@@ -95,7 +95,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	{
 		clearConditions();
 	}
-	
+
 	/**
 	 * @deprecated please use setConditions, getConditions, clearConditions, instead.
 	 */
@@ -104,66 +104,66 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	{
 		resetConditions();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final String s)
 	{
 		m_uses = getInt(s);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final Integer u)
 	{
 		m_uses = u;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final int u)
 	{
 		m_uses = u;
 	}
-	
+
 	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUsedThisRound(final String s)
 	{
 		m_usedThisRound = getBool(s);
 	}
-	
+
 	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUsedThisRound(final boolean usedThisRound)
 	{
 		m_usedThisRound = usedThisRound;
 	}
-	
+
 	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUsedThisRound(final Boolean usedThisRound)
 	{
 		m_usedThisRound = usedThisRound;
 	}
-	
+
 	public boolean getUsedThisRound()
 	{
 		return m_usedThisRound;
 	}
-	
+
 	public void resetUsedThisRound()
 	{
 		m_usedThisRound = false;
 	}
-	
+
 	public int getUses()
 	{
 		return m_uses;
 	}
-	
+
 	public void resetUses()
 	{
 		m_uses = -1;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param when
 	 * @throws GameParseException
 	 */
@@ -177,28 +177,28 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			throw new GameParseException("when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
 		m_when.add(new Tuple<String, String>(s[0], s[1]));
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setWhen(final ArrayList<Tuple<String, String>> value)
 	{
 		m_when = value;
 	}
-	
+
 	public ArrayList<Tuple<String, String>> getWhen()
 	{
 		return m_when;
 	}
-	
+
 	public void clearWhen()
 	{
 		m_when.clear();
 	}
-	
+
 	public void resetWhen()
 	{
 		m_when = new ArrayList<Tuple<String, String>>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNotification(final String sNotification)
 	{
@@ -209,17 +209,17 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		}
 		m_notification = sNotification;
 	}
-	
+
 	public String getNotification()
 	{
 		return m_notification;
 	}
-	
+
 	public void resetNotification()
 	{
 		m_notification = null;
 	}
-	
+
 	protected void use(final IDelegateBridge aBridge)
 	{
 		// instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this round
@@ -234,7 +234,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses - 1).toString(), "uses"));
 		}*/
 	}
-	
+
 	protected boolean testChance(final IDelegateBridge aBridge)
 	{
 		// "chance" should ALWAYS be checked last! (always check all other conditions first)
@@ -267,7 +267,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
 		return testChance;
 	}
-	
+
 	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return new Match<TriggerAttachment>()
@@ -279,11 +279,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			}
 		};
 	}
-	
+
 	/**
 	 * If t.getWhen() is empty, and beforeOrAfter and stepName are both null, then this returns true.
 	 * Otherwise, all must be not null, and one of when's values must match the arguments.
-	 * 
+	 *
 	 * @param beforeOrAfter
 	 *            can be null, or must be "before" or "after"
 	 * @param stepName
@@ -313,7 +313,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> availableUses = new Match<TriggerAttachment>()
 	{
 		@Override
@@ -322,7 +322,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			return t.getUses() != 0;
 		}
 	};
-	
+
 	public static Match<TriggerAttachment> notificationMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -334,7 +334,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			}
 		};
 	}
-	
+
 	protected static String getValueFromStringArrayForAllSubStrings(final String[] s)
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -348,7 +348,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			sb.replace(0, 1, "");
 		return sb.toString();
 	}
-	
+
 	protected static String getValueFromStringArrayForAllExceptLastSubstring(final String[] s)
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -362,7 +362,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 			sb.replace(0, 1, "");
 		return sb.toString();
 	}
-	
+
 	public static int getEachMultiple(final AbstractTriggerAttachment t)
 	{
 		int eachMultiple = 1;
@@ -374,7 +374,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		}
 		return eachMultiple;
 	}
-	
+
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

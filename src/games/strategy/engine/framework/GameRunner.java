@@ -13,7 +13,7 @@
  */
 /*
  * GameRunner.java
- * 
+ *
  * Created on December 14, 2001, 12:05 PM
  */
 package games.strategy.engine.framework;
@@ -21,12 +21,12 @@ package games.strategy.engine.framework;
 import javax.swing.JOptionPane;
 
 /**
- * 
+ *
  * @author Sean Bridges
- * 
+ *
  *         This class starts and runs the game.
  *         <p>
- * 
+ *
  *         This class is compiled to run under older jdks (1.3 at least), and should not do anything more than check the java version number, and then delegate to GameRunner2
  *         <p>
  */
@@ -36,20 +36,20 @@ public class GameRunner
 	{
 		return System.getProperties().getProperty("os.name").toLowerCase().contains("windows");
 	}
-	
+
 	public static boolean isMac()
 	{
 		return System.getProperties().getProperty("os.name").toLowerCase().contains("mac");
 	}
-	
+
 	/**
 	 * Get version number of Java VM.
-	 * 
+	 *
 	 * @author NeKromancer
 	 */
 	private static void checkJavaVersion()
 	{
-		// note - this method should not use any new language features (this includes string concatention using +
+		// note - this method should not use any new language features (this includes string concatention using
 		// since this method must run on older vms.
 		final String version = System.getProperties().getProperty("java.version");
 		final boolean v12 = version.contains("1.2");
@@ -75,7 +75,7 @@ public class GameRunner
 			}
 		}
 	}// end checkJavaVersion()
-	
+
 	public static void main(final String[] args)
 	{
 		// we want this class to be executable in older jvm's

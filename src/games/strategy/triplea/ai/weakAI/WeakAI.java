@@ -61,28 +61,28 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /*
- * 
+ *
  * A very weak ai, based on some simple rules.<p>
- * 
- * 
+ *
+ *
  * @author Sean Bridges
  */
 @SuppressWarnings("deprecation")
 public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 {
 	private final static Logger s_logger = Logger.getLogger(WeakAI.class.getName());
-	
+
 	/** Creates new TripleAPlayer */
 	public WeakAI(final String name, final String type)
 	{
 		super(name, type);
 	}
-	
+
 	@Override
 	protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player)
 	{
 	}
-	
+
 	private Route getAmphibRoute(final PlayerID player, final GameData data)
 	{
 		if (!isAmphibAttack(player, data))
@@ -109,7 +109,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		return route;
 	}
-	
+
 	private boolean isAmphibAttack(final PlayerID player, final GameData data)
 	{
 		final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
@@ -121,7 +121,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, new InverseMatch<Territory>(Matches.TerritoryIsNeutralButNotWater)), data);
 		return invasionRoute == null;
 	}
-	
+
 	@Override
 	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
@@ -135,7 +135,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		pause();
 	}
-	
+
 	private void doNonCombatMove(final IMoveDelegate moveDel, final PlayerID player, final GameData data)
 	{
 		final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
@@ -166,7 +166,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		populateTransportUnloadNonCom(true, data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
 	}
-	
+
 	private void doCombatMove(final IMoveDelegate moveDel, final PlayerID player, final GameData data)
 	{
 		final List<Collection<Unit>> moveUnits = new ArrayList<Collection<Unit>>();
@@ -195,7 +195,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		populateCombatMoveSea(data, moveUnits, moveRoutes, player);
 		doMove(moveUnits, moveRoutes, null, moveDel);
 	}
-	
+
 	private void populateTransportLoad(final boolean nonCombat, final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
 				final List<Collection<Unit>> transportsToLoad, final PlayerID player)
 	{
@@ -242,7 +242,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
-	
+
 	private void populateTransportUnloadNonCom(final boolean nonCombat, final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
 		final Route amphibRoute = getAmphibRoute(player, data);
@@ -262,7 +262,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			moveRoutes.add(route);
 		}
 	}
-	
+
 	private List<Unit> load2Transports(final boolean reload, final GameData data, final List<Unit> transportsToLoad, final Territory loadFrom, final PlayerID player)
 	{
 		final List<Unit> units = new ArrayList<Unit>();
@@ -276,7 +276,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		return units;
 	}
-	
+
 	private void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel)
 	{
 		for (int i = 0; i < moveRoutes.size(); i++)
@@ -298,7 +298,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
-	
+
 	private void moveCombatSea(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player, final Route amphibRoute, final int maxTrans)
 	{
 		// TODO workaround - should check if amphibRoute is in moveRoutes
@@ -311,10 +311,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory lastSeaZoneOnAmphib = null;
 		if (amphibRoute == null)
 			return;
-		
+
 		firstSeaZoneOnAmphib = amphibRoute.getTerritories().get(0);
 		lastSeaZoneOnAmphib = amphibRoute.getTerritories().get(amphibRoute.getLength() - 1);
-		
+
 		final Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved, Transporting);
 		final List<Unit> unitsToMove = new ArrayList<Unit>();
 		final List<Unit> transports = firstSeaZoneOnAmphib.getUnits().getMatches(ownedAndNotMoved);
@@ -332,10 +332,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		unitsToMove.addAll(landUnits);
 		moveUnits.add(unitsToMove);
 	}
-	
+
 	/**
 	 * prepares moves for transports
-	 * 
+	 *
 	 * @param nonCombat
 	 * @param data
 	 * @param moveUnits
@@ -393,7 +393,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
-	
+
 	private Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination, final PlayerID player)
 	{
 		final Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(),
@@ -411,7 +411,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		return r;
 	}
-	
+
 	private void populateCombatMoveSea(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
 		final Collection<Unit> unitsAlreadyMoved = new HashSet<Unit>();
@@ -465,7 +465,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
-	
+
 	// searches for amphibious attack on empty territory
 	private Route getAlternativeAmphibRoute(final PlayerID player, final GameData data)
 	{
@@ -495,7 +495,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		return altRoute;
 	}
-	
+
 	private void populateNonCombat(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
 		final Collection<Territory> territories = data.getMap().getTerritories();
@@ -582,7 +582,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
-	
+
 	private void movePlanesHomeNonCom(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player, final GameData data)
 	{
 		// the preferred way to get the delegate
@@ -614,7 +614,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			moveRoutes.add(aaRoute);
 		}
 	}
-	
+
 	private void populateCombatMove(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
 		populateBomberCombat(data, moveUnits, moveRoutes, player);
@@ -627,7 +627,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Collections.sort(enemyOwned, new Comparator<Territory>()
 		{
 			// private final Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
-			
+
 			public int compare(final Territory o1, final Territory o2)
 			{
 				// -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
@@ -673,7 +673,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (!randomInts.containsKey(o2))
 					randomInts.put(o2, (int) (Math.random() * 1000));
 				return randomInts.get(o1) - randomInts.get(o2);*/
-				
+
 				// next take territories with largest PU value
 				return ta2.getProduction() - ta1.getProduction();
 			}
@@ -784,7 +784,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
-	
+
 	private void populateBomberCombat(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
 		final Match<Territory> enemyFactory = Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged);
@@ -800,7 +800,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			moveRoutes.add(bombRoute);
 		}
 	}
-	
+
 	private int countTransports(final GameData data, final PlayerID player)
 	{
 		final CompositeMatchAnd<Unit> ownedTransport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player));
@@ -811,7 +811,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		return sum;
 	}
-	
+
 	private int countLandUnits(final GameData data, final PlayerID player)
 	{
 		final CompositeMatchAnd<Unit> ownedLandUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsOwnedBy(player));
@@ -822,7 +822,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		return sum;
 	}
-	
+
 	@Override
 	public void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
@@ -1084,7 +1084,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		purchaseDelegate.purchase(purchase);
 		pause();
 	}
-	
+
 	@Override
 	public void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
@@ -1103,7 +1103,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		}
 	}
-	
+
 	private void placeAllWeCanOn(final GameData data, final Territory placeAt, final IAbstractPlaceDelegate placeDelegate, final PlayerID player)
 	{
 		final PlaceableUnits pu = placeDelegate.getPlaceableUnits(player.getUnits().getUnits(), placeAt);
@@ -1144,7 +1144,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			doPlace(placeAt, toPlace, placeDelegate);
 		}
 	}
-	
+
 	private void doPlace(final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del)
 	{
 		final String message = del.placeUnits(new ArrayList<Unit>(toPlace), where);
@@ -1155,7 +1155,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		pause();
 	}
-	
+
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
@@ -1164,7 +1164,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		return true;
 	}
-	
+
 	public static final Match<Unit> Transporting = new Match<Unit>()
 	{
 		@Override

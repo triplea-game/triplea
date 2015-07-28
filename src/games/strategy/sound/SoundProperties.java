@@ -11,9 +11,9 @@ import java.util.Set;
 
 /**
  * sounds.properties file helper class
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class SoundProperties
 {
@@ -26,7 +26,7 @@ public class SoundProperties
 	private static SoundProperties s_op = null;
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
-	
+
 	protected SoundProperties(final ResourceLoader loader)
 	{
 		final URL url = loader.getResource(PROPERTY_FILE);
@@ -45,7 +45,7 @@ public class SoundProperties
 			}
 		}
 	}
-	
+
 	public static SoundProperties getInstance(final ResourceLoader loader)
 	{
 		if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000)
@@ -55,14 +55,14 @@ public class SoundProperties
 		}
 		return s_op;
 	}
-	
+
 	public String getDefaultEraFolder()
 	{
 		return getProperty(PROPERTY_DEFAULT_FOLDER, DEFAULT_ERA_FOLDER);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param objectiveKey
 	 * @return the string property, or null if not found
 	 */
@@ -70,12 +70,12 @@ public class SoundProperties
 	{
 		return m_properties.getProperty(key);
 	}
-	
+
 	public String getProperty(final String key, final String defaultValue)
 	{
 		return m_properties.getProperty(key, defaultValue);
 	}
-	
+
 	public Set<Entry<Object, Object>> entrySet()
 	{
 		return m_properties.entrySet();

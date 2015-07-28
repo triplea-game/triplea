@@ -14,9 +14,9 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class SetMapClientAction extends AbstractAction
 {
@@ -24,7 +24,7 @@ public class SetMapClientAction extends AbstractAction
 	private final Component m_parent;
 	private final IClientMessenger m_clientMessenger;
 	final List<String> m_availableGames;
-	
+
 	public SetMapClientAction(final Component parent, final IClientMessenger clientMessenger, final List<String> availableGames)
 	{
 		super("Change Game To...");
@@ -33,7 +33,7 @@ public class SetMapClientAction extends AbstractAction
 		m_availableGames = availableGames;
 		Collections.sort(m_availableGames);
 	}
-	
+
 	public void actionPerformed(final ActionEvent e)
 	{
 		final INode serverNode = m_clientMessenger.getServerNode();

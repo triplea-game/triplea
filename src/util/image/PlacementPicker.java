@@ -93,19 +93,19 @@ public class PlacementPicker extends JFrame
 	private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
 	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
 	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
-	
+
 	public static String[] getProperties()
 	{
 		return new String[] { TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT };
 	}
-	
+
 	/**
 	 * main(java.lang.String[])
-	 * 
+	 *
 	 * Main program begins here.
 	 * Asks the user to select the map then runs the
 	 * the actual placement picker program.
-	 * 
+	 *
 	 * @param java
 	 *            .lang.String[] args the command line arguments
 	 * @see Picker(java.lang.String) picker
@@ -150,14 +150,14 @@ public class PlacementPicker extends JFrame
 			System.exit(0);
 		}
 	}// end main
-	
+
 	/**
 	 * Constructor PlacementPicker(java.lang.String)
-	 * 
+	 *
 	 * Setus up all GUI components, initializes variables with
 	 * default or needed values, and prepares the map for user
 	 * commands.
-	 * 
+	 *
 	 * @param java
 	 *            .lang.String mapName name of map file
 	 */
@@ -165,7 +165,7 @@ public class PlacementPicker extends JFrame
 	{
 		super("Placement Picker");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		if (!placeDimensionsSet)
 		{
 			try
@@ -184,7 +184,7 @@ public class PlacementPicker extends JFrame
 					final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
 					final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
 					final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-					
+
 					final FileReader reader = new FileReader(file);
 					final LineNumberReader reader2 = new LineNumberReader(reader);
 					int i = 0;
@@ -230,9 +230,9 @@ public class PlacementPicker extends JFrame
 					if (found)
 					{
 						final int result = JOptionPane.showConfirmDialog(new JPanel(),
-									"A map.properties file was found in the map's folder, " +
-												"\r\n do you want to use the file to supply the info for the placement box size? " +
-												"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height +
+									"A map.properties file was found in the map's folder, "
+												"\r\n do you want to use the file to supply the info for the placement box size? "
+												"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height
 												",    Result = (" + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")", "File Suggestion", 1);
 						// if (result == 2)
 						// return;
@@ -250,7 +250,7 @@ public class PlacementPicker extends JFrame
 			}
 		}
 		if (!placeDimensionsSet
-					|| JOptionPane.showConfirmDialog(new JPanel(), "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), " +
+					|| JOptionPane.showConfirmDialog(new JPanel(), "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), "
 								"do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.", "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1)
 		{
 			try
@@ -287,7 +287,7 @@ public class PlacementPicker extends JFrame
 			{
 			}
 		}
-		
+
 		File file = null;
 		if (s_mapFolderLocation != null && s_mapFolderLocation.exists())
 			file = new File(s_mapFolderLocation, "polygons.txt");
@@ -345,7 +345,7 @@ public class PlacementPicker extends JFrame
 		/*
 		   Add a mouse listener to monitor
 		for right mouse button being
-		clicked.	
+		clicked.
 		*/
 		imagePanel.addMouseListener(new MouseAdapter()
 		{
@@ -367,7 +367,7 @@ public class PlacementPicker extends JFrame
 		final Action openAction = new AbstractAction("Load Placements")
 		{
 			private static final long serialVersionUID = -2894085191455411106L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadPlacements();
@@ -377,7 +377,7 @@ public class PlacementPicker extends JFrame
 		final Action saveAction = new AbstractAction("Save Placements")
 		{
 			private static final long serialVersionUID = -3341738809601318716L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				savePlacements();
@@ -387,7 +387,7 @@ public class PlacementPicker extends JFrame
 		final Action exitAction = new AbstractAction("Exit")
 		{
 			private static final long serialVersionUID = -9093426903644867897L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -459,13 +459,13 @@ public class PlacementPicker extends JFrame
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
 	}// end constructor
-	
+
 	/**
 	 * createImage(java.lang.String)
-	 * 
+	 *
 	 * creates the image map and makes sure
 	 * it is properly loaded.
-	 * 
+	 *
 	 * @param java
 	 *            .lang.String mapName the path of image map
 	 */
@@ -480,13 +480,13 @@ public class PlacementPicker extends JFrame
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * javax.swing.JPanel createMainPanel()
-	 * 
+	 *
 	 * Creates the main panel and returns
 	 * a JPanel object.
-	 * 
+	 *
 	 * @return javax.swing.JPanel the panel to return
 	 */
 	private JPanel createMainPanel()
@@ -494,7 +494,7 @@ public class PlacementPicker extends JFrame
 		final JPanel imagePanel = new JPanel()
 		{
 			private static final long serialVersionUID = -3941975573431195136L;
-			
+
 			@Override
 			public void paint(final Graphics g)
 			{
@@ -544,7 +544,7 @@ public class PlacementPicker extends JFrame
 						}
 					}
 				}
-				
+
 				g.setColor(Color.red);
 				if (m_currentSquare != null)
 				{
@@ -570,10 +570,10 @@ public class PlacementPicker extends JFrame
 		};
 		return imagePanel;
 	}
-	
+
 	/**
 	 * savePlacements()
-	 * 
+	 *
 	 * Saves the placements to disk.
 	 */
 	private void savePlacements()
@@ -601,10 +601,10 @@ public class PlacementPicker extends JFrame
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * loadPlacements()
-	 * 
+	 *
 	 * Loads a pre-defined file with map placement points.
 	 */
 	private void loadPlacements()
@@ -631,13 +631,13 @@ public class PlacementPicker extends JFrame
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * java.lang.String findTerritoryName(java.awt.Point)
-	 * 
+	 *
 	 * Finds a land territory name or
 	 * some sea zone name.
-	 * 
+	 *
 	 * @param java
 	 *            .awt.point p a point on the map
 	 */
@@ -666,16 +666,16 @@ public class PlacementPicker extends JFrame
 		}// while
 		return seaName;
 	}
-	
+
 	/**
 	 * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
-	 * 
+	 *
 	 * Usage:
 	 * left button start in territory
 	 * left button + control, add point
 	 * right button and ctrl write
 	 * right button remove last
-	 * 
+	 *
 	 * @param java
 	 *            .awt.Point point a point clicked by mouse
 	 * @param java
@@ -710,7 +710,7 @@ public class PlacementPicker extends JFrame
 					m_placements = new HashMap<String, List<Point>>();
 				}
 				m_placements.put(m_currentCountry, m_currentPlacements);
-				
+
 				m_currentPlacements = new ArrayList<Point>();
 				System.out.println("done:" + m_currentCountry);
 			}
@@ -724,7 +724,7 @@ public class PlacementPicker extends JFrame
 		}
 		repaint();
 	}
-	
+
 	private static String getUnitsScale()
 	{
 		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
@@ -737,7 +737,7 @@ public class PlacementPicker extends JFrame
 			return "1";
 		}
 	}
-	
+
 	private static String getValue(final String arg)
 	{
 		final int index = arg.indexOf('=');
@@ -745,7 +745,7 @@ public class PlacementPicker extends JFrame
 			return "";
 		return arg.substring(index + 1);
 	}
-	
+
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		final String[] properties = getProperties();
@@ -786,7 +786,7 @@ public class PlacementPicker extends JFrame
 			} catch (final Exception ex)
 			{
 			}
-			
+
 			String value1;
 			if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT))
 			{
@@ -804,7 +804,7 @@ public class PlacementPicker extends JFrame
 			{
 			}
 		}
-		
+
 		boolean usagePrinted = false;
 		for (int argIndex = 0; argIndex < args.length; argIndex++)
 		{

@@ -13,21 +13,21 @@
  */
 /*
  * AttachmentExportException.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
 
 /**
  * Exception used by the AttachmentExporters
- * 
+ *
  * @author Edwin van der Wal
- * 
+ *
  */
 public class AttachmentExportException extends Exception
 {
 	private static final long serialVersionUID = 6134166689856636372L;
-	
+
 	public AttachmentExportException(final String error)
 	{
 		super(error);

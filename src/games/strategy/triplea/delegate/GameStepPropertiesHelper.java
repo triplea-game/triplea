@@ -11,9 +11,9 @@ import java.util.Set;
  * A helper class for determining Game Step Properties.
  * These are things such as whether a move phase is combat move or noncombat move,
  * or whether we are going to post to a forum during this end turn phase.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class GameStepPropertiesHelper
 {
@@ -33,10 +33,10 @@ public class GameStepPropertiesHelper
 		}
 		return skipPosting;
 	}
-	
+
 	/**
 	 * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we will summarize for all those phases.
-	 * 
+	 *
 	 * @return colon separated list of player names. could be empty. can be null if not set.
 	 */
 	public static Set<PlayerID> getTurnSummaryPlayers(final GameData data)
@@ -67,7 +67,7 @@ public class GameStepPropertiesHelper
 		}
 		return allowedIDs;
 	}
-	
+
 	/**
 	 * For various things related to movement validation.
 	 */
@@ -90,7 +90,7 @@ public class GameStepPropertiesHelper
 		}
 		return isAirborneMove;
 	}
-	
+
 	/**
 	 * For various things related to movement validation.
 	 */
@@ -117,7 +117,7 @@ public class GameStepPropertiesHelper
 		}
 		return isCombatMove;
 	}
-	
+
 	/**
 	 * For various things related to movement validation.
 	 */
@@ -144,7 +144,7 @@ public class GameStepPropertiesHelper
 		}
 		return isNonCombatMove;
 	}
-	
+
 	/**
 	 * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat move for WW2v1.
 	 */
@@ -176,7 +176,7 @@ public class GameStepPropertiesHelper
 		}
 		return isFireRockets;
 	}
-	
+
 	/**
 	 * Repairs damaged units. Normally would occur at either start of combat move or end of turn, depending.
 	 */
@@ -209,7 +209,7 @@ public class GameStepPropertiesHelper
 		}
 		return isRepairUnits;
 	}
-	
+
 	/**
 	 * Resets then gives bonus movement. Normally would occur at the start of combat movement phase.
 	 */
@@ -232,7 +232,7 @@ public class GameStepPropertiesHelper
 		}
 		return isBonus;
 	}
-	
+
 	/**
 	 * Kills all air that can not land. Normally would occur both at the end of noncombat movement and also at end of placement phase.
 	 */
@@ -259,12 +259,12 @@ public class GameStepPropertiesHelper
 		}
 		return isRemoveAir;
 	}
-	
+
 	/**
 	 * For situations where player phases are intermeshed.
 	 * Effects so far:
 	 * Lets air live if the other players could put a carrier under it.
-	 * 
+	 *
 	 * @return a set of player ids. if argument player is not null this set will definitely include that player, but if not the set could be empty. never null.
 	 */
 	public static Set<PlayerID> getCombinedTurns(final GameData data, final PlayerID player)
@@ -294,7 +294,7 @@ public class GameStepPropertiesHelper
 		}
 		return allowedIDs;
 	}
-	
+
 	/**
 	 * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally does not occur.
 	 */
@@ -315,7 +315,7 @@ public class GameStepPropertiesHelper
 		}
 		return isReset;
 	}
-	
+
 	/**
 	 * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of noncombat move phase.
 	 */
@@ -338,7 +338,7 @@ public class GameStepPropertiesHelper
 		}
 		return isReset;
 	}
-	
+
 	public static boolean isBid(final GameData data)
 	{
 		final boolean isBid;
@@ -360,7 +360,7 @@ public class GameStepPropertiesHelper
 		}
 		return isBid;
 	}
-	
+
 	/**
 	 * @return a set of player ids. if argument player is not null this set will definitely include that player, but if not the set could be empty. never null.
 	 */
@@ -391,7 +391,7 @@ public class GameStepPropertiesHelper
 		}
 		return allowedIDs;
 	}
-	
+
 	//
 	// private static members for testing default situation based on name of delegate
 	//
@@ -401,7 +401,7 @@ public class GameStepPropertiesHelper
 			return true;
 		return false;
 	}
-	
+
 	private static boolean isCombatDelegate(final GameData data)
 	{
 		if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) // we have to do this check, because otherwise all NonCombatMove delegates become CombatMove delegates too
@@ -410,21 +410,21 @@ public class GameStepPropertiesHelper
 			return true;
 		return false;
 	}
-	
+
 	private static boolean isAirborneDelegate(final GameData data)
 	{
 		if (data.getSequence().getStep().getName().endsWith("AirborneCombatMove")) // AirborneCombatMove is ALSO a combat move, it is just a special combat move
 			return true;
 		return false;
 	}
-	
+
 	private static boolean isBidPurchaseDelegate(final GameData data)
 	{
 		if (data.getSequence().getStep().getName().endsWith("Bid"))
 			return true;
 		return false;
 	}
-	
+
 	private static boolean isBidPlaceDelegate(final GameData data)
 	{
 		if (data.getSequence().getStep().getName().endsWith("BidPlace"))

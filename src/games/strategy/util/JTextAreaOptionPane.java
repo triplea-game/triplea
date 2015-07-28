@@ -18,9 +18,9 @@ import javax.swing.WindowConstants;
 
 /**
  * A text area that can show updates scrolling by.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class JTextAreaOptionPane
 {
@@ -32,7 +32,7 @@ public class JTextAreaOptionPane
 	private final WeakReference<Window> m_parentComponentReference;
 	private int m_counter;
 	private final CountDownLatch m_countDownLatch;
-	
+
 	public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText, final String title, final Image icon, final int editorSizeX,
 				final int editorSizeY, final boolean logToSystemOut, final int latchCount, final CountDownLatch countDownLatch)
 	{
@@ -73,32 +73,32 @@ public class JTextAreaOptionPane
 			}
 		});
 	}
-	
+
 	private void setWidgetActivation()
 	{
 		if (m_counter <= 0)
 			m_okButton.setEnabled(true);
 	}
-	
+
 	public void show()
 	{
 		m_windowFrame.pack();
 		m_windowFrame.setLocationRelativeTo(m_parentComponentReference.get());
 		m_windowFrame.setVisible(true);
 	}
-	
+
 	public void dispose()
 	{
 		m_windowFrame.setVisible(false);
 		m_windowFrame.dispose();
 	}
-	
+
 	public void countDown()
 	{
 		m_counter--;
 		setWidgetActivation();
 	}
-	
+
 	public void append(final String text)
 	{
 		if (m_logToSystemOut)
@@ -106,12 +106,12 @@ public class JTextAreaOptionPane
 		m_editor.append(text);
 		m_editor.setCaretPosition(m_editor.getText().length());
 	}
-	
+
 	public void appendNewLine(final String text)
 	{
 		append(text + "\r\n");
 	}
-	
+
 	/*
 	public static void main(final String[] args)
 	{

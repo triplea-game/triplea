@@ -7,12 +7,12 @@ import java.io.InputStreamReader;
 
 /**
  * A class for loading help files from the data folder (merged with src at runtime)
- * 
+ *
  * @author Klaus Groenbaek
  */
 public class HelpSupport
 {
-	
+
 	// -----------------------------------------------------------------------
 	// class methods
 	// -----------------------------------------------------------------------
@@ -36,7 +36,7 @@ public class HelpSupport
 		{
 			return "<html><body>Unable to load help file" + fileName + " And with error message: " + e.getMessage() + "</body></html>";
 		}
-		
+
 	}
-	
+
 }

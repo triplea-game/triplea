@@ -30,22 +30,22 @@ import java.util.Set;
  * Either divide all neutral territories between players randomly, or let them pick one by one.
  * After that, any remaining units get placed one by one.
  * (Note that m_player may not be used here, because this delegate is not run by any player [it is null])
- * 
+ *
  * @author veqryn (mark christopher duncan)
- * 
+ *
  */
 public class RandomStartDelegate extends BaseTripleADelegate
 {
 	private static final int UNITS_PER_PICK = 1;
 	protected PlayerID m_currentPickingPlayer = null;
-	
+
 	@Override
 	public void start()
 	{
 		super.start();
 		setupBoard();
 	}
-	
+
 	/**
 	 * Called before the delegate will stop running.
 	 */
@@ -55,7 +55,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 		super.end();
 		m_currentPickingPlayer = null;
 	}
-	
+
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (Match.noneMatch(getData().getMap().getTerritories(), getTerritoryPickableMatch())
@@ -63,7 +63,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public Serializable saveState()
 	{
@@ -73,7 +73,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 		state.m_currentPickingPlayer = this.m_currentPickingPlayer;
 		return state;
 	}
-	
+
 	@Override
 	public void loadState(final Serializable state)
 	{
@@ -82,7 +82,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 		// load other variables from state here:
 		this.m_currentPickingPlayer = s.m_currentPickingPlayer;
 	}
-	
+
 	protected void setupBoard()
 	{
 		final GameData data = getData();
@@ -111,7 +111,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 			} catch (final InterruptedException e)
 			{
 			}
-			
+
 			Territory picked;
 			if (randomTerritories)
 			{
@@ -174,7 +174,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 		{
 			if (m_currentPickingPlayer == null || !playersCanPick.contains(m_currentPickingPlayer))
 				m_currentPickingPlayer = playersCanPick.get(0);
-			
+
 			final List<Territory> territoriesToPickFrom = data.getMap().getTerritoriesOwnedBy(m_currentPickingPlayer);
 			Tuple<Territory, Set<Unit>> pick;
 			Territory picked;
@@ -200,7 +200,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 			m_bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " places " + MyFormatter.unitsToTextNoOwner(unitsToPlace) + " in territory " + picked.getName(),
 						unitsToPlace);
 			m_bridge.addChange(change);
-			
+
 			final PlayerID lastPlayer = m_currentPickingPlayer;
 			m_currentPickingPlayer = getNextPlayer(playersCanPick, m_currentPickingPlayer);
 			if (!playerCanPickMatch.match(lastPlayer))
@@ -209,7 +209,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 				m_currentPickingPlayer = null;
 		}
 	}
-	
+
 	protected PlayerID getNextPlayer(final List<PlayerID> playersCanPick, final PlayerID currentPlayer)
 	{
 		int index = playersCanPick.indexOf(currentPlayer);
@@ -220,12 +220,12 @@ public class RandomStartDelegate extends BaseTripleADelegate
 			index = 0;
 		return playersCanPick.get(index);
 	}
-	
+
 	public Match<Territory> getTerritoryPickableMatch()
 	{
 		return new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable, Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
 	}
-	
+
 	public Match<PlayerID> getPlayerCanPickMatch()
 	{
 		return new Match<PlayerID>()
@@ -243,7 +243,7 @@ public class RandomStartDelegate extends BaseTripleADelegate
 			}
 		};
 	}
-	
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -264,17 +264,17 @@ class RandomStartExtendedDelegateState implements Serializable
 class UnitCostComparator implements Comparator<Unit>
 {
 	private final IntegerMap<UnitType> m_costs;
-	
+
 	public UnitCostComparator(final IntegerMap<UnitType> costs)
 	{
 		m_costs = costs;
 	}
-	
+
 	public UnitCostComparator(final PlayerID player, final GameData data)
 	{
 		m_costs = BattleCalculator.getCostsForTUV(player, data);
 	}
-	
+
 	public int compare(final Unit u1, final Unit u2)
 	{
 		return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
@@ -285,17 +285,17 @@ class UnitCostComparator implements Comparator<Unit>
 class UnitTypeCostComparator implements Comparator<UnitType>
 {
 	private final IntegerMap<UnitType> m_costs;
-	
+
 	public UnitTypeCostComparator(final IntegerMap<UnitType> costs)
 	{
 		m_costs = costs;
 	}
-	
+
 	public UnitTypeCostComparator(final PlayerID player, final GameData data)
 	{
 		m_costs = BattleCalculator.getCostsForTUV(player, data);
 	}
-	
+
 	public int compare(final UnitType u1, final UnitType u2)
 	{
 		return m_costs.getInt(u1) - m_costs.getInt(u2);

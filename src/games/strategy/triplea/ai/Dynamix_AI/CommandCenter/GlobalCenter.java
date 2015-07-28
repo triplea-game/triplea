@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class GlobalCenter
@@ -42,7 +42,7 @@ public class GlobalCenter
 	public static PlayerID FirstDynamixPlayer;
 	public static int GameRound;
 	private static Resource PUResource;
-	
+
 	public static PlayerID CurrentPlayer;
 	public static int MapTerCount;
 	/** Please use this for all hard-coded values. (Multiply the hard-coded value by this float, and the hard-coded value will scale up or down with the maps */
@@ -55,12 +55,12 @@ public class GlobalCenter
 	public static int PUsAtEndOfLastTurn;
 	private static ProductionFrontier MergedAndAveragedProductionFronter;
 	public static List<UnitType> AllMapUnitTypes;
-	
+
 	public static Resource GetPUResource()
 	{
 		return PUResource;
 	}
-	
+
 	public static void clearStaticInstances()
 	{
 		// This part just resets all the static variables to their default value so that other code will be able to fill in the real info
@@ -81,7 +81,7 @@ public class GlobalCenter
 		MergedAndAveragedProductionFronter = null;
 		AllMapUnitTypes = null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static void Initialize(final GameData data)
 	{
@@ -103,7 +103,7 @@ public class GlobalCenter
 		HighestTerProduction = DUtils.GetHighestTerProduction(data);
 		GenerateMergedAndAveragedProductionFrontier(data);
 	}
-	
+
 	/**
 	 * Generates a merged and averaged production frontier that can be used to determine TUV of units even when player is neutral or unknown.
 	 * This method also sets the global FastestUnitMovement value and the AllMapUnitTypes list.
@@ -152,7 +152,7 @@ public class GlobalCenter
 			MergedAndAveragedProductionFronter.addRule(rule);
 		}
 	}
-	
+
 	public static ProductionFrontier GetMergedAndAveragedProductionFrontier()
 	{
 		return MergedAndAveragedProductionFronter;

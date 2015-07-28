@@ -32,21 +32,21 @@ class TestUnit
 	static final Map<TripleAUnit, TestUnit> m_map = new HashMap<TripleAUnit, TestUnit>();
 	TripleAUnit m_unit;
 	String m_name;
-	
+
 	public static TripleAUnit createUnit(final String name, final UnitType type, final PlayerID owner)
 	{
 		final TripleAUnit u = (TripleAUnit) type.create(owner);
 		add(name, u);
 		return u;
 	}
-	
+
 	public static TestUnit add(final String name, final Unit unit)
 	{
 		final TestUnit testUnit = new TestUnit(name, unit);
 		m_map.put((TripleAUnit) unit, testUnit);
 		return testUnit;
 	}
-	
+
 	public static TestUnit get(final String name)
 	{
 		for (final TestUnit testUnit : m_map.values())
@@ -56,12 +56,12 @@ class TestUnit
 		}
 		return null;
 	}
-	
+
 	public static TestUnit get(final Unit unit)
 	{
 		return m_map.get(unit);
 	}
-	
+
 	public static List<TestUnit> createList(final Collection<Unit> units)
 	{
 		final List<TestUnit> testUnitList = new ArrayList<TestUnit>();
@@ -74,7 +74,7 @@ class TestUnit
 		}
 		return testUnitList;
 	}
-	
+
 	public static Set<TestUnit> createSet(final Collection<Unit> units)
 	{
 		final Set<TestUnit> testUnitSet = new HashSet<TestUnit>();
@@ -87,36 +87,36 @@ class TestUnit
 		}
 		return testUnitSet;
 	}
-	
+
 	public TestUnit(final Unit unit)
 	{
 		m_unit = (TripleAUnit) unit;
 		m_name = m_unit.getType().getName() + ":" + m_unit.hashCode();
 	}
-	
+
 	public TestUnit(final String name, final Unit unit)
 	{
 		m_unit = (TripleAUnit) unit;
 		m_name = name;
 	}
-	
+
 	public String getName()
 	{
 		return m_name;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return m_name;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		return m_unit.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(final Object o)
 	{
@@ -133,7 +133,7 @@ public class UnitAutoChooserTest extends TestCase
 	private UnitType armour;
 	private UnitType transport;
 	private UnitType battleship;
-	
+
 	@Override
 	public void setUp() throws Exception
 	{
@@ -144,18 +144,18 @@ public class UnitAutoChooserTest extends TestCase
 		transport = m_data.getUnitTypeList().getUnitType(Constants.TRANSPORT_TYPE);
 		battleship = m_data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
 	}
-	
+
 	@Override
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
 	}
-	
+
 	protected ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
 		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
-	
+
 	private void loadTransport(final Map<Unit, Collection<Unit>> mustMoveWith, final Unit trn, final Unit... units)
 	{
 		// the transport determines which unit it is transporting by
@@ -175,7 +175,7 @@ public class UnitAutoChooserTest extends TestCase
 		assertTrue(TripleAUnit.get(trn).getTransporting().size() == units.length);
 		assertTrue(TripleAUnit.get(trn).getTransporting().containsAll(Arrays.asList(units)));
 	}
-	
+
 	private void ensureIn(final Territory t, final Unit u)
 	{
 		// make sure the given unit is in the given territory
@@ -186,14 +186,14 @@ public class UnitAutoChooserTest extends TestCase
 		final Change c = ChangeFactory.addUnits(t, Collections.singleton(u));
 		new ChangePerformer(m_data).perform(c);
 	}
-	
+
 	private void setUnits(final Collection<Unit> c, final Unit... objects)
 	{
 		c.clear();
 		for (int i = 0; i < objects.length; i++)
 			c.add(objects[i]);
 	}
-	
+
 	// The MovePanel and EditPanel use the UnitAutoChooser in this mode
 	// when finding initial solutions
 	public void testUnitAutoChooserWithImplicitDependentsNoMovementCategorized()
@@ -744,7 +744,7 @@ public class UnitAutoChooserTest extends TestCase
 		assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(9, true)));
 		assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(9, false)));
 	}
-	
+
 	// This mode is currently unused.
 	public void testUnitAutoChooserNoImplicitDependentsNoMovementCategorized()
 	{
@@ -992,7 +992,7 @@ public class UnitAutoChooserTest extends TestCase
 		assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
 		assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
 	}
-	
+
 	// The MovePanel and EditPanel use the UnitAutoChooser in this mode
 	// when running the UnitChooser
 	public void testUnitAutoChooserWithImplicitDependentsWithMovementCategorized()

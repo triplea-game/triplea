@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up the run count
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
- * 
+ *
  * @author Ron Murhammer (redrum) & Mark Christopher Duncan (veqryn)
  * @since 2014
  */
@@ -37,7 +37,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 {
 	private static final Logger s_logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
 	private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
-	
+
 	private int m_currentThreads = MAX_THREADS;
 	private final ExecutorService m_executor;
 	private final CopyOnWriteArrayList<OddsCalculator> m_workers = new CopyOnWriteArrayList<OddsCalculator>();
@@ -50,13 +50,13 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 	private final Object m_mutexSetGameData = new Object(); // do not let setting of game data happen at same time
 	private final Object m_mutexCalcIsRunning = new Object(); // do not let multiple calculations or setting calc data happen at same time
 	private final List<OddsCalculatorListener> m_listeners = new ArrayList<OddsCalculatorListener>();
-	
+
 	public ConcurrentOddsCalculator(final String threadNamePrefix)
 	{
 		m_executor = Executors.newFixedThreadPool(MAX_THREADS, new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
 		s_logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
 	}
-	
+
 	public void setGameData(final GameData data)
 	{
 		m_latchSetData.increment(); // increment so that a new calc doesn't take place (since they all wait on this latch)
@@ -93,12 +93,12 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public int getThreadCount()
 	{
 		return m_currentThreads;
 	}
-	
+
 	private static int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy)
 	{ // use both time and memory left to determine how many copies to make
 		if (timeToCopyInMillis > 20000 || MAX_THREADS == 1)
@@ -112,7 +112,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			return Math.min(numberOfTimesWeCanCopyMax, Math.max(1, (MAX_THREADS / 2))); // use half the number of threads available if we took more than 3 seconds to copy
 		return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS); // use all threads
 	}
-	
+
 	private void createWorkers(final GameData data)
 	{
 		m_workers.clear();
@@ -186,7 +186,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		m_latchSetData.countDown(); // allow calcing and other stuff to go ahead
 		s_logger.fine("Initialized worker thread pool with size: " + m_workers.size());
 	}
-	
+
 	public void shutdown()
 	{
 		m_isShutDown = true;
@@ -198,14 +198,14 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			m_listeners.clear();
 		}
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable
 	{
 		shutdown();
 		super.finalize();
 	}
-	
+
 	private void awaitLatch()
 	{
 		try
@@ -215,7 +215,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		{
 		}
 	}
-	
+
 	public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
 				final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, int runCount)
 	{
@@ -241,7 +241,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			m_isCalcSet = true;
 		}
 	}
-	
+
 	/**
 	 * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits for all the future results and combines them together.
 	 */
@@ -271,7 +271,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 					list.add(workerResult);
 				}
 			}
-			
+
 			// Wait for all worker futures to complete and combine results
 			final AggregateResults results = new AggregateResults(totalRunCount);
 			final Set<InterruptedException> interruptExceptions = new HashSet<InterruptedException>();
@@ -318,7 +318,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			return results;
 		}
 	}
-	
+
 	public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
 				final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
 	{
@@ -328,12 +328,12 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			return calculate();
 		}
 	}
-	
+
 	public boolean getIsReady()
 	{
 		return m_isDataSet && m_isCalcSet && !m_isShutDown;
 	}
-	
+
 	public int getRunCount()
 	{
 		int totalRunCount = 0;
@@ -343,7 +343,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 		}
 		return totalRunCount;
 	}
-	
+
 	public void setKeepOneAttackingLandUnit(final boolean bool)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -355,7 +355,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public void setAmphibious(final boolean bool)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -367,7 +367,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public void setRetreatAfterRound(final int value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -379,7 +379,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public void setRetreatAfterXUnitsLeft(final int value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -391,7 +391,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public void setRetreatWhenOnlyAirLeft(final boolean value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -403,7 +403,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public void setRetreatWhenMetaPowerIsLower(final boolean value)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -415,7 +415,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public void setAttackerOrderOfLosses(final String attackerOrderOfLosses)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -427,7 +427,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	public void setDefenderOrderOfLosses(final String defenderOrderOfLosses)
 	{
 		synchronized (m_mutexCalcIsRunning)
@@ -439,7 +439,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			}
 		}
 	}
-	
+
 	// not on purpose, we need to be able to cancel at any time
 	public void cancel()
 	{
@@ -448,7 +448,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			worker.cancel();
 		}
 	}
-	
+
 	public void addOddsCalculatorListener(final OddsCalculatorListener listener)
 	{
 		synchronized (m_listeners)
@@ -456,7 +456,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			m_listeners.add(listener);
 		}
 	}
-	
+
 	public void removeOddsCalculatorListener(final OddsCalculatorListener listener)
 	{
 		synchronized (m_listeners)
@@ -464,7 +464,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 			m_listeners.remove(listener);
 		}
 	}
-	
+
 	private void notifyListenersGameDataIsSet()
 	{
 		synchronized (m_listeners)
@@ -480,9 +480,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator
 
 /**
  * Borrowed from Executors$DefaultThreadFactory, but allows for custom name and daemon.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 class DaemonThreadFactory implements ThreadFactory
 {
@@ -491,7 +491,7 @@ class DaemonThreadFactory implements ThreadFactory
 	private final AtomicInteger threadNumber = new AtomicInteger(1);
 	private final String namePrefix;
 	private final boolean daemon;
-	
+
 	DaemonThreadFactory(final boolean isDaemon, final String name)
 	{
 		daemon = isDaemon;
@@ -499,7 +499,7 @@ class DaemonThreadFactory implements ThreadFactory
 		group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
 		namePrefix = name + ": pool-" + poolNumber.getAndIncrement() + "-thread-";
 	}
-	
+
 	public Thread newThread(final Runnable r)
 	{
 		final Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);

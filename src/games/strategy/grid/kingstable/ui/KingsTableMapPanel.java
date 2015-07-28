@@ -19,31 +19,31 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Lane Schwartz (original) and Veqryn (abstraction)
- * 
+ *
  */
 public class KingsTableMapPanel extends GridMapPanel
 {
 	private static final long serialVersionUID = 9111624780451084800L;
-	
+
 	public KingsTableMapPanel(final GameData data, final GridMapData mapData, final GridGameFrame parentGridGameFrame, final ImageScrollModel imageScrollModel)
 	{
 		super(data, mapData, parentGridGameFrame, imageScrollModel);
 	}
-	
+
 	@Override
 	protected String isValidPlay(final IGridPlayData play)
 	{
 		return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData);
 	}
-	
+
 	@Override
 	protected Collection<Territory> getCapturesForPlay(final IGridPlayData play)
 	{
 		return PlayDelegate.checkForCaptures(play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData);
 	}
-	
+
 	/**
 	 * Draw the current map and pieces.
 	 */
@@ -85,5 +85,5 @@ public class KingsTableMapPanel extends GridMapPanel
 			g2d.drawPolygon(p);
 		}
 	}
-	
+
 }

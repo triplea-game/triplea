@@ -11,7 +11,7 @@
  */
 /*
  * PoliticsDelegate.java
- * 
+ *
  * Created on July 16, 2011
  */
 package games.strategy.triplea.delegate;
@@ -50,23 +50,23 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * 
+ *
  * Responsible allowing players to perform politicalActions
- * 
+ *
  * @author Edwin van der Wal
  * @version 1.0
- * 
+ *
  */
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate
 {
 	// protected HashMap<ICondition, Boolean> m_testedConditions = null;
 	// private final boolean m_needToInitialize = true;
-	
+
 	/** Creates new PoliticsDelegate */
 	public PoliticsDelegate()
 	{
 	}
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -83,7 +83,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			m_needToInitialize = false;
 		}*/
 	}
-	
+
 	@Override
 	public void end()
 	{
@@ -115,7 +115,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		givesBackOriginalTerritories(m_bridge);
 		// m_needToInitialize = true;
 	}
-	
+
 	@Override
 	public Serializable saveState()
 	{
@@ -125,7 +125,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		// add other variables to state here:
 		return state;
 	}
-	
+
 	@Override
 	public void loadState(final Serializable state)
 	{
@@ -134,7 +134,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		// m_testedConditions = s.m_testedConditions;
 		// load other variables from state here:
 	}
-	
+
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!m_player.amNotDeadYet(getData()))
@@ -145,14 +145,14 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			return false;
 		return true;
 	}
-	
+
 	public HashMap<ICondition, Boolean> getTestedConditions()
 	{
 		final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
 					new HashSet<ICondition>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
 		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
-	
+
 	public Collection<PoliticalActionAttachment> getValidActions()
 	{
 		final GameData data = m_bridge.getData();
@@ -167,7 +167,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		}
 		return PoliticalActionAttachment.getValidActions(m_player, testedConditions, data);
 	}
-	
+
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
@@ -176,7 +176,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 	{
 		return IPoliticsDelegate.class;
 	}
-	
+
 	public void attemptAction(final PoliticalActionAttachment paa)
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(getData()))
@@ -217,11 +217,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			notifyNoValidAction(paa); // notify the player the action isn't valid anymore (shouldn't happen)
 		}
 	}
-	
+
 	/**
 	 * Get a list of players that should accept this action and then ask each
 	 * player if it accepts this action.
-	 * 
+	 *
 	 * @param paa
 	 *            the politicalActionAttachment that should be accepted
 	 * @return
@@ -277,28 +277,28 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Let the player know this action isn't valid anymore, this shouldn't
 	 * happen as the player shouldn't get an option to push the button on
 	 * non-valid actions.
-	 * 
+	 *
 	 * @param paa
 	 */
 	private void notifyNoValidAction(final PoliticalActionAttachment paa)
 	{
 		sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
 	}
-	
+
 	private void notifyPoliticsTurnedOff()
 	{
 		sendNotification("Politics is turned off in the game options");
 	}
-	
+
 	/**
 	 * Let the player know he is being charged for money or that he hasn't got
 	 * enough money
-	 * 
+	 *
 	 * @param paa
 	 *            the actionattachment the player is notified about
 	 * @param enough
@@ -315,10 +315,10 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			sendNotification("You don't have ennough money, you need " + paa.getCostPU() + " PU's to perform this action");
 		}
 	}
-	
+
 	/**
 	 * Subtract money from the players wallet
-	 * 
+	 *
 	 * @param paa
 	 *            the politicalactionattachment this the money is charged for.
 	 */
@@ -341,7 +341,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			m_bridge.getHistoryWriter().startEvent(transcriptText); // we must start an event anyway
 		}
 	}
-	
+
 	/**
 	 * @param paa
 	 *            The Political Action the player should be charged for
@@ -354,10 +354,10 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
 		return has >= cost;
 	}
-	
+
 	/**
 	 * Let all players involved in this action know the action has failed.
-	 * 
+	 *
 	 * @param paa
 	 *            the political action attachment that just failed.
 	 */
@@ -370,10 +370,10 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		sendNotification(PoliticsText.getInstance().getNotificationFailure(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
 	}
-	
+
 	/**
 	 * Let all players involved in this action know the action was successful
-	 * 
+	 *
 	 * @param paa
 	 *            the political action attachment that just succeeded.
 	 */
@@ -384,11 +384,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		sendNotification(PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
 	}
-	
+
 	/**
 	 * Send a notification to the other players involved in this action (all
 	 * players except the player starting the action)
-	 * 
+	 *
 	 * @param paa
 	 * @param notification
 	 */
@@ -404,22 +404,22 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			this.getDisplay().reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
 		}
 	}
-	
+
 	/**
 	 * Send a notification to the current player
-	 * 
+	 *
 	 * @param text
 	 *            if NONE don't send a notification
 	 */
 	private void sendNotification(final String text)
 	{
 		if (!"NONE".equals(text))
-			this.getRemotePlayer().reportMessage(text, text); // "To " + m_player.getName() + ": " +
+			this.getRemotePlayer().reportMessage(text, text); // "To " + m_player.getName() + ": "
 	}
-	
+
 	/**
 	 * Changes all relationships
-	 * 
+	 *
 	 * @param paa
 	 *            the political action to change the relationships for
 	 */
@@ -450,7 +450,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			m_bridge.addChange(change);
 		chainAlliancesTogether(m_bridge);
 	}
-	
+
 	/**
 	 * @param paa
 	 *            the action to check if it succeeds
@@ -478,11 +478,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		sendNotification(notificationMessage);
 		return success;
 	}
-	
+
 	/**
 	 * Reset the attempts-counter for this action, so next round the player can
 	 * try again for a number of attempts.
-	 * 
+	 *
 	 */
 	private void resetAttempts()
 	{
@@ -491,7 +491,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			paa.resetAttempts(getBridge());
 		}
 	}
-	
+
 	public static void getMyselfOutOfAlliance(final PoliticalActionAttachment paa, final PlayerID player, final IDelegateBridge aBridge)
 	{
 		final GameData data = aBridge.getData();
@@ -530,7 +530,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void getNeutralOutOfWarWithAllies(final PoliticalActionAttachment paa, final PlayerID player, final IDelegateBridge aBridge)
 	{
 		final GameData data = aBridge.getData();
@@ -576,7 +576,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void chainAlliancesTogether(final IDelegateBridge aBridge)
 	{
 		final GameData data = aBridge.getData();
@@ -643,7 +643,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 			}
 		}
 	}
-	
+
 	public static void givesBackOriginalTerritories(final IDelegateBridge aBridge)
 	{
 		final GameData data = aBridge.getData();

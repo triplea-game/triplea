@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * Class to manage log window display.
- * 
+ *
  * @author Ron Murhammer
  * @since 2014
  */
@@ -31,7 +31,7 @@ public class LogUI
 	private static LogWindow s_settingsWindow = null;
 	private static String currentName = "";
 	private static int currentRound = 0;
-	
+
 	public static void initialize(final TripleAFrame frame)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -39,7 +39,7 @@ public class LogUI
 		s_frame = frame;
 		s_settingsWindow = new LogWindow(frame);
 	}
-	
+
 	public static void clearCachedInstances()
 	{
 		s_frame = null;
@@ -47,21 +47,21 @@ public class LogUI
 			s_settingsWindow.clear();
 		s_settingsWindow = null;
 	}
-	
+
 	public static void showSettingsWindow()
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
 			return;
 		s_settingsWindow.setVisible(true);
 	}
-	
+
 	public static void notifyAILogMessage(final Level level, final String message)
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
 			return;
 		s_settingsWindow.addMessage(level, message);
 	}
-	
+
 	public static void notifyStartOfRound(final int round, final String name)
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
@@ -73,5 +73,5 @@ public class LogUI
 			s_settingsWindow.notifyNewRound(round, name);
 		}
 	}
-	
+
 }

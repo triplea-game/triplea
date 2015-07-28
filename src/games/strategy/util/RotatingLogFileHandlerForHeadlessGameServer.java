@@ -26,7 +26,7 @@ public class RotatingLogFileHandlerForHeadlessGameServer extends FileHandler
 		logFile = new File(logDir, "headless-game-server-" + serverInstanceName + "-log%g.txt").getAbsolutePath();
 		System.out.print("logging to :" + logFile);
 	}
-	
+
 	public RotatingLogFileHandlerForHeadlessGameServer() throws IOException, SecurityException
 	{
 		super(logFile, Integer.parseInt(System.getProperty(LOG_FILE_SIZE_PROP, DEFAULT_SIZE)), 10, true);

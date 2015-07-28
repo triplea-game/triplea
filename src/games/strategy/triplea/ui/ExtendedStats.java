@@ -22,34 +22,34 @@ import java.util.List;
 
 public class ExtendedStats extends StatPanel
 {
-	
+
 	private static final long serialVersionUID = 2502397606419491543L;
 	private IStat[] m_statsExtended = new IStat[] {};
-	
+
 	public ExtendedStats(final GameData data, final IUIContext uiContext)
 	{
 		super(data, uiContext);
 	}
-	
+
 	@Override
 	protected void initLayout()
 	{
 		// no layout necessary
 	}
-	
+
 	@Override
 	public void setGameData(final GameData data)
 	{
 		super.setGameData(data);
 	}
-	
+
 	public IStat[] getStatsExtended(final GameData data)
 	{
 		if (m_statsExtended.length == 0)
 			fillExtendedStats(data);
 		return m_statsExtended;
 	}
-	
+
 	private void fillExtendedStats(final GameData data)
 	{
 		// add other resources, other than PUs and tech tokens
@@ -106,15 +106,15 @@ public class ExtendedStats extends StatPanel
 			m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 		}
 	}
-	
-	
+
+
 	class TechCountStat extends AbstractStat
 	{
 		public String getName()
 		{
 			return "Techs";
 		}
-		
+
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int count = 0;
@@ -155,43 +155,43 @@ public class ExtendedStats extends StatPanel
 			return count;
 		}
 	}
-	
-	
+
+
 	class GenericResourceStat extends AbstractStat
 	{
 		private String m_name = null;
-		
+
 		public void init(final String name)
 		{
 			m_name = name;
 		}
-		
+
 		public String getName()
 		{
 			return "Resource: " + m_name;
 		}
-		
+
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			return player.getResources().getQuantity(m_name);
 		}
 	}
-	
-	
+
+
 	class GenericTechNameStat extends AbstractStat
 	{
 		private TechAdvance m_ta = null;
-		
+
 		public void init(final TechAdvance ta)
 		{
 			m_ta = ta;
 		}
-		
+
 		public String getName()
 		{
 			return "TechAdvance: " + m_ta.getName();
 		}
-		
+
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			if (m_ta.hasTech(TechAttachment.get(player)))
@@ -199,22 +199,22 @@ public class ExtendedStats extends StatPanel
 			return 0;
 		}
 	}
-	
-	
+
+
 	class GenericUnitNameStat extends AbstractStat
 	{
 		private UnitType m_ut = null;
-		
+
 		public void init(final UnitType ut)
 		{
 			m_ut = ut;
 		}
-		
+
 		public String getName()
 		{
 			return "UnitType: " + m_ut.getName();
 		}
-		
+
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int rVal = 0;
@@ -226,8 +226,8 @@ public class ExtendedStats extends StatPanel
 			return rVal;
 		}
 	}
-	
-	
+
+
 	class TechTokenStat extends ResourceStat
 	{
 		public TechTokenStat()
@@ -235,10 +235,10 @@ public class ExtendedStats extends StatPanel
 			super(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
 		}
 	}
-	
+
 	public IStat[] getStats()
 	{
 		return m_stats;
 	}
-	
+
 }

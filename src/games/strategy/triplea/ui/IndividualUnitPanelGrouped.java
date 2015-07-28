@@ -33,11 +33,11 @@ import javax.swing.JTextArea;
  * For when you want multiple individual unit panels, perhaps one for each territory, etc.
  * <p>
  * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same MAX.
- * 
+ *
  * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each unit.
- * 
+ *
  * @author Veqryn
- * 
+ *
  */
 public class IndividualUnitPanelGrouped extends JPanel
 {
@@ -53,7 +53,7 @@ public class IndividualUnitPanelGrouped extends JPanel
 	private JButton m_autoSelectButton;
 	private JButton m_selectNoneButton;
 	private final boolean m_showSelectAll;
-	
+
 	private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener()
 	{
 		public void changedValue(final ScrollableTextField field)
@@ -61,12 +61,12 @@ public class IndividualUnitPanelGrouped extends JPanel
 			updateLeft();
 		}
 	};
-	
+
 	/**
 	 * For when you want multiple individual unit panels, perhaps one for each territory, etc.
 	 * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same MAX.
 	 * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each unit.
-	 * 
+	 *
 	 * @param unitsToChooseFrom
 	 * @param data
 	 * @param uiContext
@@ -90,18 +90,18 @@ public class IndividualUnitPanelGrouped extends JPanel
 		m_showSelectAll = showSelectAll;
 		layoutEntries();
 	}
-	
+
 	private void setMaxAndShowMaxButton(final int max)
 	{
 		m_max = max;
 		m_textFieldListener.changedValue(null);
 	}
-	
+
 	public void setTitle(final String title)
 	{
 		m_title.setText(title);
 	}
-	
+
 	private void updateLeft()
 	{
 		if (m_max == -1)
@@ -117,7 +117,7 @@ public class IndividualUnitPanelGrouped extends JPanel
 		}
 		m_leftToSelect.setText("Left to select:" + newMax);
 	}
-	
+
 	protected int getSelectedCount()
 	{
 		int selected = 0;
@@ -127,7 +127,7 @@ public class IndividualUnitPanelGrouped extends JPanel
 		}
 		return selected;
 	}
-	
+
 	private void layoutEntries()
 	{
 		this.setLayout(new GridBagLayout());
@@ -189,7 +189,7 @@ public class IndividualUnitPanelGrouped extends JPanel
 		}
 		add(m_leftToSelect, new GridBagConstraints(0, 3, 5, 2, 0, 0.5, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
 	}
-	
+
 	public Map<String, IntegerMap<Unit>> getSelected()
 	{
 		final HashMap<String, IntegerMap<Unit>> selectedUnits = new HashMap<String, IntegerMap<Unit>>();
@@ -199,7 +199,7 @@ public class IndividualUnitPanelGrouped extends JPanel
 		}
 		return selectedUnits;
 	}
-	
+
 	protected void selectNone()
 	{
 		for (final Tuple<String, IndividualUnitPanel> entry : m_entries)
@@ -207,7 +207,7 @@ public class IndividualUnitPanelGrouped extends JPanel
 			entry.getSecond().selectNone();
 		}
 	}
-	
+
 	protected void autoSelect()
 	{
 		for (final Tuple<String, IndividualUnitPanel> entry : m_entries)

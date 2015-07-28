@@ -33,23 +33,23 @@ import java.util.Set;
 
 /**
  * SpecialMoveDelegate is a move delegate made for special movements like the new paratrooper/airborne movement.
- * 
+ *
  * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by naming yet another thing Paratroopers, so this is now getting a new name.
  * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an airbase) to another territory, instead of carrying them.
- * 
+ *
  * @author veqryn [Mark Christopher Duncan]
- * 
+ *
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 {
 	private boolean m_needToInitialize = true;
-	
+
 	// private boolean m_allowAirborne = true;
-	
+
 	public SpecialMoveDelegate()
 	{
 	}
-	
+
 	/**
 	 * Called before the delegate will run, AND before "start" is called.
 	 */
@@ -58,7 +58,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	{
 		super.setDelegateBridgeAndPlayer(new GameDelegateBridge(iDelegateBridge));
 	}
-	
+
 	@Override
 	public void start()
 	{
@@ -78,7 +78,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 			m_needToInitialize = false;
 		}
 	}
-	
+
 	@Override
 	public void end()
 	{
@@ -86,7 +86,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		m_needToInitialize = true;
 		// m_allowAirborne = true;
 	}
-	
+
 	@Override
 	public Serializable saveState()
 	{
@@ -97,7 +97,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		// state.m_allowAirborne = m_allowAirborne;
 		return state;
 	}
-	
+
 	@Override
 	public void loadState(final Serializable state)
 	{
@@ -107,14 +107,14 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		m_needToInitialize = s.m_needToInitialize;
 		// m_allowAirborne = s.m_allowAirborne;
 	}
-	
+
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		if (!allowAirborne(m_player, getData()))
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents)
 	{
@@ -163,7 +163,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		final Collection<Unit> basesAtStart = route.getStart().getUnits().getMatches(getAirborneBaseMatch(player, data));
 		final Change fillLaunchCapacity = getNewAssignmentOfNumberLaunchedChange(units.size(), basesAtStart, player, data);
 		currentMove.addChange(fillLaunchCapacity);
-		
+
 		// start event
 		final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
 		m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
@@ -176,7 +176,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		m_tempMovePerformer = null;
 		return null;
 	}
-	
+
 	public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
 				final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data)
 	{
@@ -198,7 +198,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 			return result;
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static MoveValidationResult validateAirborneMovements(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
 	{
@@ -295,23 +295,23 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		}
 		return result;
 	}
-	
+
 	public static Match<Unit> getAirborneTypesMatch(final PlayerID player, final GameData data)
 	{
 		return getAirborneMatch(player, TechAbilityAttachment.getAirborneTypes(player, data), Collections.singleton(player));
 	}
-	
+
 	public static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data)
 	{
 		return getAirborneMatch(player, TechAbilityAttachment.getAirborneBases(player, data), data.getRelationshipTracker().getAllies(player, true));
 	}
-	
+
 	public static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types, final Collection<PlayerID> unitOwners)
 	{
 		return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners), Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
 					Matches.UnitIsAirborne.invert());
 	}
-	
+
 	private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases, final PlayerID player, final GameData data)
 	{
 		final CompositeChange launchedChange = new CompositeChange();
@@ -332,7 +332,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		}
 		return launchedChange;
 	}
-	
+
 	public static int getNumberOfAirborneAlreadyLaunchedBy(final Collection<Unit> bases, final GameData data)
 	{
 		int rVal = 0;
@@ -342,12 +342,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		}
 		return rVal;
 	}
-	
+
 	public static int getNumberOfAirborneAlreadyLaunchedBy(final Unit base, final GameData data)
 	{
 		return Math.max(0, (((TripleAUnit) base).getLaunched()));
 	}
-	
+
 	public static boolean allowAirborne(final PlayerID player, final GameData data)
 	{
 		if (!TechAbilityAttachment.getAllowAirborneForces(player, data))
@@ -371,19 +371,19 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		}
 		return true;
 	}
-	
+
 	private static boolean getEditMode(final GameData data)
 	{
 		return BaseEditDelegate.getEditMode(data);
 	}
-	
+
 	@Override
 	public int PUsAlreadyLost(final Territory t)
 	{
 		// Auto-generated method stub
 		return 0;
 	}
-	
+
 	@Override
 	public void PUsLost(final Territory t, final int amt)
 	{

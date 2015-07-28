@@ -38,9 +38,9 @@ import javax.swing.WindowConstants;
 
 /**
  * The game frame for a headless server.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
- * 
+ *
  */
 public class HeadlessGameServerUI extends MainGameFrame
 {
@@ -59,7 +59,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 	private JPanel m_mainPanel;
 	private JSplitPane m_chatSplit;
 	private ChatPanel m_chatPanel;
-	
+
 	public HeadlessGameServerUI(final IGame game, final LocalPlayers players, final IUIContext uiContext)
 	{
 		super("TripleA Headless Server - " + game.getData().getGameName(), players);
@@ -77,7 +77,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 		m_leaveGame.addActionListener(new AbstractAction()
 		{
 			private static final long serialVersionUID = 699780405180654825L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				leaveGame();
@@ -87,7 +87,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 		m_quit.addActionListener(new AbstractAction()
 		{
 			private static final long serialVersionUID = -3485076131973126967L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				shutdown();
@@ -133,7 +133,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 		if (m_uiContext != null)
 			m_uiContext.addShutdownWindow(this);
 	}
-	
+
 	private WindowListener WINDOW_LISTENER = new WindowAdapter()
 	{
 		@Override
@@ -142,7 +142,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 			leaveGame();
 		}
 	};
-	
+
 	GameStepListener m_stepListener = new GameStepListener()
 	{
 		public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String stepDisplayName)
@@ -150,7 +150,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 			updateStep();
 		}
 	};
-	
+
 	GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
 	{
 		public void gameDataChanged(final Change change)
@@ -172,7 +172,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 			}
 		}
 	};
-	
+
 	private void updateStep()
 	{
 		final IUIContext context = m_uiContext;
@@ -232,18 +232,18 @@ public class HeadlessGameServerUI extends MainGameFrame
 		else
 			m_player.setText("Player: " + player.getName());
 	}
-	
+
 	public IUIContext getUIContext()
 	{
 		return m_uiContext;
 	}
-	
+
 	@Override
 	public IGame getGame()
 	{
 		return m_game;
 	}
-	
+
 	@Override
 	public void leaveGame()
 	{
@@ -258,7 +258,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 		else
 			throw new IllegalStateException("Should be leaving a server game.");
 	}
-	
+
 	@Override
 	public void stopGame()
 	{
@@ -300,7 +300,7 @@ public class HeadlessGameServerUI extends MainGameFrame
 		removeWindowListener(WINDOW_LISTENER);
 		WINDOW_LISTENER = null;
 	}
-	
+
 	@Override
 	public void shutdown()
 	{
@@ -311,19 +311,19 @@ public class HeadlessGameServerUI extends MainGameFrame
 		stopGame();
 		System.exit(0);
 	}
-	
+
 	@Override
 	public void notifyError(final String error)
 	{
 		System.out.println(error);
 	}
-	
+
 	@Override
 	public JComponent getMainPanel()
 	{
 		return m_mainPanel;
 	}
-	
+
 	@Override
 	public void setShowChatTime(final boolean showTime)
 	{

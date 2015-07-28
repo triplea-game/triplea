@@ -7,26 +7,26 @@ import javax.swing.JEditorPane;
 /**
  * For when your component contains images or data that is very very big, and you want it to be reclaimed as needed by the GC.
  * Example, when a JEditorPane has rich HTML in it, with huge images.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class SoftJEditorPane
 {
 	protected SoftReference<JEditorPane> m_component;
 	protected final String m_text;
-	
+
 	public SoftJEditorPane(final String text)
 	{
 		m_text = text;
 	}
-	
+
 	protected JEditorPane createComponent()
 	{
 		final JEditorPane pane = new JEditorPane()
 		/* {
 			private static final long serialVersionUID = -7445877574463005826L;
-			
+
 			@Override
 			protected void finalize()
 			{
@@ -40,7 +40,7 @@ public class SoftJEditorPane
 		// System.out.println("JEditorPane created: " + pane);
 		return pane;
 	}
-	
+
 	public synchronized JEditorPane getComponent()
 	{
 		if (m_component == null)
@@ -55,12 +55,12 @@ public class SoftJEditorPane
 		}
 		return component;
 	}
-	
+
 	public String getText()
 	{
 		return m_text;
 	}
-	
+
 	public void dispose()
 	{
 		if (m_component != null)
@@ -75,7 +75,7 @@ public class SoftJEditorPane
 			m_component = null;
 		}
 	}
-	
+
 	/*
 	public static void main(final String[] args)
 	{
@@ -86,7 +86,7 @@ public class SoftJEditorPane
 		for (int id = 0; true; id++)
 		{
 			blocks.add(new SoftReference(new MemoryBlock(id, size), queue));
-			
+
 			while (true)
 			{
 				final java.lang.ref.Reference ref = queue.poll();
@@ -108,7 +108,7 @@ class MemoryBlock
 	int id;
 	int size;
 	byte[] block;
-	
+
 	public MemoryBlock(final int id, final int size)
 	{
 		this.id = id;
@@ -116,13 +116,13 @@ class MemoryBlock
 		block = new byte[size];
 		System.out.println("MemoryBlock created: " + this);
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "{id=" + id + ",size=" + size + "}";
 	}
-	
+
 	@Override
 	protected void finalize()
 	{

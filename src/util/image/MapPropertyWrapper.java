@@ -34,9 +34,9 @@ import javax.swing.JFrame;
  * This will take ANY object, and then look at every method that begins with 'set[name]' and if there also exists a method 'get[name]'
  * and a field '[name]' which is public, then it will take these and create an editable UI component
  * for each of these based on the games.strategy.engine.data.properties classes.
- * 
+ *
  * @author veqryn [Mark Christopher Duncan]
- * 
+ *
  * @param <T>
  *            parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
@@ -49,7 +49,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 	// private final T m_defaultValue;
 	private final Method m_setter;
 	private final Method m_getter;
-	
+
 	public MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter, final Method getter)
 	{
 		super(name, description);
@@ -78,7 +78,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		else
 			throw new IllegalArgumentException("Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
 	}
-	
+
 	public MapPropertyWrapper(final String name, final String description, final T defaultValue, final Collection<T> possibleValues, final Method setter, final Method getter)
 	{
 		super(name, description);
@@ -91,7 +91,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		else
 			throw new IllegalArgumentException("Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
 	}
-	
+
 	public MapPropertyWrapper(final String name, final String description, final int max, final int min, final int defaultValue, final Method setter, final Method getter)
 	{
 		super(name, description);
@@ -101,7 +101,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		// m_defaultValue = defaultValue;
 		m_property = new NumberProperty(name, description, max, min, defaultValue);
 	}
-	
+
 	public MapPropertyWrapper(final String name, final String description, final double max, final double min, final double defaultValue, final int places, final Method setter, final Method getter)
 	{
 		super(name, description);
@@ -111,7 +111,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		// m_defaultValue = defaultValue;
 		m_property = new DoubleProperty(name, description, max, min, defaultValue, places);
 	}
-	
+
 	public MapPropertyWrapper(final String name, final String description, final File defaultValue, final String[] acceptableSuffixes, final Method setter, final Method getter)
 	{
 		super(name, description);
@@ -121,38 +121,38 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		// m_defaultValue = defaultValue;
 		m_property = new FileProperty(name, description, defaultValue, acceptableSuffixes);
 	}
-	
+
 	@Override
 	public int getRowsNeeded()
 	{
 		return m_property.getRowsNeeded();
 	}
-	
+
 	public Object getValue()
 	{
 		return m_property.getValue();
 	}
-	
+
 	public T getValueT()
 	{
 		return (T) m_property.getValue();
 	}
-	
+
 	public void setValue(final Object value) throws ClassCastException
 	{
 		m_property.setValue(value);
 	}
-	
+
 	public void setValueT(final T value)
 	{
 		m_property.setValue(value);
 	}
-	
+
 	public JComponent getEditorComponent()
 	{
 		return m_property.getEditorComponent();
 	}
-	
+
 	public T getFromObject(final Object object)
 	{
 		try
@@ -170,7 +170,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		}
 		return null;
 	}
-	
+
 	public void setToObject(final Object object)
 	{
 		final Object value = getValue();
@@ -190,7 +190,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static List<MapPropertyWrapper> createProperties(final Object object)
 	{
 		final List<MapPropertyWrapper> properties = new ArrayList<MapPropertyWrapper>();
@@ -241,7 +241,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 		}
 		return properties;
 	}
-	
+
 	public static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper> properties)
 	{
 		for (final MapPropertyWrapper p : properties)
@@ -249,24 +249,24 @@ public class MapPropertyWrapper<T> extends AEditableProperty
 			p.setToObject(object);
 		}
 	}
-	
+
 	public static PropertiesUI createPropertiesUI(final List<? extends IEditableProperty> properties, final boolean editable)
 	{
 		return new PropertiesUI(properties, editable);
 	}
-	
+
 	public static Tuple<PropertiesUI, List<MapPropertyWrapper>> createPropertiesUI(final Object object, final boolean editable)
 	{
 		final List<MapPropertyWrapper> properties = createProperties(object);
 		final PropertiesUI ui = new PropertiesUI(properties, editable);
 		return new Tuple<PropertiesUI, List<MapPropertyWrapper>>(ui, properties);
 	}
-	
+
 	public boolean validate(final Object value)
 	{
 		return m_property.validate(value);
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		final MapProperties mapProperties = new MapProperties();

@@ -13,7 +13,7 @@
  */
 /*
  * SelectCasualtyQueryMessage.java
- * 
+ *
  * Created on November 19, 2001, 2:59 PM
  */
 package games.strategy.triplea.delegate.dataObjects;
@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Mark Christopher Duncan (veqryn)
  * @version 1.0
  */
@@ -35,10 +35,10 @@ public class CasualtyList implements Serializable
 	private static final long serialVersionUID = 6501752134047891398L;
 	protected List<Unit> m_killed;
 	protected List<Unit> m_damaged;
-	
+
 	/**
 	 * Creates a new CasualtyList
-	 * 
+	 *
 	 * @param killed
 	 * @param damaged
 	 *            (can have multiple of the same unit, to show multiple hits to that unit)
@@ -52,7 +52,7 @@ public class CasualtyList implements Serializable
 		m_killed = new ArrayList<Unit>(killed);
 		m_damaged = new ArrayList<Unit>(damaged);
 	}
-	
+
 	/**
 	 * Creates a new blank CasualtyList with empty lists
 	 */
@@ -61,7 +61,7 @@ public class CasualtyList implements Serializable
 		m_killed = new ArrayList<Unit>();
 		m_damaged = new ArrayList<Unit>();
 	}
-	
+
 	/**
 	 * @return list of killed units
 	 */
@@ -69,7 +69,7 @@ public class CasualtyList implements Serializable
 	{
 		return m_killed;
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -77,7 +77,7 @@ public class CasualtyList implements Serializable
 	{
 		return m_damaged;
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -87,17 +87,17 @@ public class CasualtyList implements Serializable
 		all.addAll(m_damaged);
 		return all;
 	}
-	
+
 	public void addToKilled(final Unit deadUnit)
 	{
 		m_killed.add(deadUnit);
 	}
-	
+
 	public void addToKilled(final Collection<Unit> deadUnits)
 	{
 		m_killed.addAll(deadUnits);
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -105,7 +105,7 @@ public class CasualtyList implements Serializable
 	{
 		m_damaged.add(damagedUnit);
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -113,17 +113,17 @@ public class CasualtyList implements Serializable
 	{
 		m_damaged.addAll(damagedUnits);
 	}
-	
+
 	public void removeFromKilled(final Unit deadUnit)
 	{
 		m_killed.remove(deadUnit);
 	}
-	
+
 	public void removeFromKilled(final Collection<Unit> deadUnits)
 	{
 		m_killed.removeAll(deadUnits);
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -131,7 +131,7 @@ public class CasualtyList implements Serializable
 	{
 		m_damaged.remove(damagedUnit);
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -139,7 +139,7 @@ public class CasualtyList implements Serializable
 	{
 		m_damaged.removeAll(damagedUnits);
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -150,7 +150,7 @@ public class CasualtyList implements Serializable
 			m_damaged.remove(damagedUnit);
 		}
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -164,7 +164,7 @@ public class CasualtyList implements Serializable
 			}
 		}
 	}
-	
+
 	/**
 	 * Can have multiple of the same unit, to show multiple hits to that unit.
 	 */
@@ -173,18 +173,18 @@ public class CasualtyList implements Serializable
 		m_damaged.addAll(casualtyList.getDamaged());
 		m_killed.addAll(casualtyList.getKilled());
 	}
-	
+
 	public void clear()
 	{
 		m_killed.clear();
 		m_damaged.clear();
 	}
-	
+
 	public int size()
 	{
 		return m_killed.size() + m_damaged.size();
 	}
-	
+
 	@Override
 	public String toString()
 	{

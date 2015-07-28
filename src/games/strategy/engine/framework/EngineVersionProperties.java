@@ -45,12 +45,12 @@ public class EngineVersionProperties
 	private volatile boolean m_done = false;
 	// private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties"; // only for testing when sourceforge is down
 	private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
-	
+
 	private EngineVersionProperties(final URL url)
 	{
 		this(getProperties(url));
 	}
-	
+
 	private EngineVersionProperties(final Properties props)
 	{
 		m_latestVersionOut = new Version(props.getProperty("LATEST", EngineVersion.VERSION.toStringFull(".")));
@@ -75,7 +75,7 @@ public class EngineVersionProperties
 		}
 		m_done = true;
 	}
-	
+
 	public static EngineVersionProperties contactServerForEngineVersionProperties()
 	{
 		final URL engineversionPropsURL;
@@ -89,7 +89,7 @@ public class EngineVersionProperties
 		}
 		return contactServerForEngineVersionProperties(engineversionPropsURL);
 	}
-	
+
 	private static EngineVersionProperties contactServerForEngineVersionProperties(final URL engineversionPropsURL)
 	{
 		// sourceforge sometimes takes a long while to return results
@@ -122,7 +122,7 @@ public class EngineVersionProperties
 					// e.printStackTrace();
 				}
 			}
-			
+
 			private void spawnRequest(final URL engineversionPropsURL, final AtomicReference<EngineVersionProperties> ref, final CountDownLatch latch)
 			{
 				final Thread t1 = new Thread(new Runnable()
@@ -140,14 +140,14 @@ public class EngineVersionProperties
 		final EngineVersionProperties props = ref.get();
 		return props;
 	}
-	
+
 	private static void runInBackground(final Component parent, final String waitMessage, final Runnable r)
 	{
 		// we do not need to alert the user to this, or have a waiting window or progress window. just check in the background.
 		// BackgroundTaskRunner.runInBackground(parent, waitMessage, r);
 		r.run();
 	}
-	
+
 	private static Properties getProperties(final URL url)
 	{
 		Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.SEVERE);
@@ -157,7 +157,7 @@ public class EngineVersionProperties
 		config.setHost(url.getHost());
 		// add the proxy
 		GameRunner2.addProxy(config);
-		
+
 		final GetMethod method = new GetMethod(url.getPath());
 		// pretend to be ie
 		method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
@@ -176,42 +176,42 @@ public class EngineVersionProperties
 		Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.INFO);
 		return props;
 	}
-	
+
 	public boolean isDone()
 	{
 		return m_done;
 	}
-	
+
 	public Version getLatestVersionOut()
 	{
 		return m_latestVersionOut;
 	}
-	
+
 	public Version getShowUpdatesFrom()
 	{
 		return m_showUpdatesFrom;
 	}
-	
+
 	public String getLinkToDownloadLatestVersion()
 	{
 		return m_link;
 	}
-	
+
 	public String getLinkAltToDownloadLatestVersion()
 	{
 		return m_linkAlt;
 	}
-	
+
 	public String getChangeLogLink()
 	{
 		return m_changelogLink;
 	}
-	
+
 	public Map<Version, String> getReleaseNotes()
 	{
 		return m_releaseNotes;
 	}
-	
+
 	private String getOutOfDateMessage()
 	{
 		final StringBuilder text = new StringBuilder("<html>");
@@ -226,7 +226,7 @@ public class EngineVersionProperties
 		text.append("</html>");
 		return text.toString();
 	}
-	
+
 	private String getOutOfDateReleaseUpdates(final boolean showAll)
 	{
 		final StringBuilder text = new StringBuilder("<html>");
@@ -244,7 +244,7 @@ public class EngineVersionProperties
 		text.append("</html>");
 		return text.toString();
 	}
-	
+
 	public Component getCurrentFeaturesComponent()
 	{
 		final JPanel panel = new JPanel(new BorderLayout());
@@ -296,7 +296,7 @@ public class EngineVersionProperties
 		panel.setPreferredSize(maxDimension);
 		return panel;
 	}
-	
+
 	public Component getOutOfDateComponent(final boolean showAll)
 	{
 		final JPanel panel = new JPanel(new BorderLayout());
@@ -332,7 +332,7 @@ public class EngineVersionProperties
 		panel.setPreferredSize(maxDimension);
 		return panel;
 	}
-	
+
 	public static void main(final String[] args) throws Exception
 	{
 		final URL url = new URL(s_linkToTripleA);

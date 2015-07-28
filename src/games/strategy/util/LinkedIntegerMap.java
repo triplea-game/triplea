@@ -22,51 +22,51 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * 
+ *
  * A utility class for mapping Objects to ints. <br>
  * Supports adding and comparing of maps. <br>
  * Uses LinkedHashMap to keep insert order.
- * 
+ *
  * @author Ron Murhammer
- * 
+ *
  */
 public class LinkedIntegerMap<T> implements Cloneable, Serializable
 {
 	private static final long serialVersionUID = 6856531659284300930L;
 	private final LinkedHashMap<T, Integer> m_values;
-	
+
 	/** Creates new IntegerMap */
 	public LinkedIntegerMap()
 	{
 		m_values = new LinkedHashMap<T, Integer>();
 	}
-	
+
 	public LinkedIntegerMap(final int size)
 	{
 		m_values = new LinkedHashMap<T, Integer>(size);
 	}
-	
+
 	public LinkedIntegerMap(final int size, final float loadFactor)
 	{
 		m_values = new LinkedHashMap<T, Integer>(size, loadFactor);
 	}
-	
+
 	public LinkedIntegerMap(final T object, final int value)
 	{
 		this();
 		add(object, value);
 	}
-	
+
 	public LinkedIntegerMap(final Collection<T> objects, final int value)
 	{
 		this(objects.size());
 		addAll(objects, value);
 	}
-	
+
 	/**
 	 * This will make a new IntegerMap.
 	 * The Objects will be linked, but the integers mapped to them will not be linked.
-	 * 
+	 *
 	 * @param integerMap
 	 */
 	public LinkedIntegerMap(final LinkedIntegerMap<T> integerMap)
@@ -80,11 +80,11 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			m_values.put(t, integerMap.getInt(t));
 		}
 	}
-	
+
 	/**
 	 * This will make a new IntegerMap.
 	 * The Objects will be linked, but the integers mapped to them will not be linked.
-	 * 
+	 *
 	 * @param integerMap
 	 */
 	public LinkedIntegerMap(final LinkedIntegerMap<T>[] integerMaps)
@@ -95,23 +95,23 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			this.add(integerMap);
 		}
 	}
-	
+
 	public int size()
 	{
 		return m_values.size();
 	}
-	
+
 	public void put(final T key, final Integer value)
 	{
 		m_values.put(key, value);
 	}
-	
+
 	public void put(final T key, final int value)
 	{
 		final Integer obj = Integer.valueOf(value);
 		m_values.put(key, obj);
 	}
-	
+
 	public void putAll(final Collection<T> keys, final int value)
 	{
 		final Integer obj = Integer.valueOf(value);
@@ -121,7 +121,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			put(iter.next(), obj);
 		}
 	}
-	
+
 	public void addAll(final Collection<T> keys, final int value)
 	{
 		final Iterator<T> iter = keys.iterator();
@@ -130,7 +130,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			add(iter.next(), value);
 		}
 	}
-	
+
 	/**
 	 * returns 0 if no key found.
 	 */
@@ -141,12 +141,12 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			return 0;
 		return val.intValue();
 	}
-	
+
 	public void add(final T key, final Integer value)
 	{
 		add(key, value.intValue());
 	}
-	
+
 	public void add(final T key, final int value)
 	{
 		if (m_values.get(key) == null)
@@ -158,12 +158,12 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			put(key, newVal);
 		}
 	}
-	
+
 	/**
 	 * Will multiply all values by a given double.
 	 * Can be used to divide all numbers, if given a fractional double
 	 * (ie: to divide by 2, use 0.5 as the double)
-	 * 
+	 *
 	 * @param multiplyBy
 	 * @param RoundType
 	 *            (1 = floor, 2 = round, 3 = ceil)
@@ -191,25 +191,25 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			put(t, (int) val);
 		}
 	}
-	
+
 	public void clear()
 	{
 		m_values.clear();
 	}
-	
+
 	public Set<T> keySet()
 	{
 		return m_values.keySet();
 	}
-	
+
 	public Collection<Integer> values()
 	{
 		return m_values.values();
 	}
-	
+
 	/**
 	 * If empty, will return false.
-	 * 
+	 *
 	 * @return true if at least one value and all values are the same.
 	 */
 	public boolean allValuesAreSame()
@@ -224,10 +224,10 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	/**
 	 * If empty, will return false.
-	 * 
+	 *
 	 * @return true if all values are equal to the given integer.
 	 */
 	public boolean allValuesEqual(final int integer)
@@ -241,10 +241,10 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Will return zero if empty.
-	 * 
+	 *
 	 * @return
 	 */
 	public int highestValue()
@@ -259,10 +259,10 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return max;
 	}
-	
+
 	/**
 	 * Will return zero if empty.
-	 * 
+	 *
 	 * @return
 	 */
 	public int lowestValue()
@@ -277,7 +277,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return min;
 	}
-	
+
 	/**
 	 * Will return null if empty.
 	 */
@@ -297,7 +297,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * Will return null if empty.
 	 */
@@ -317,7 +317,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * @return the sum of all keys.
 	 */
@@ -330,7 +330,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return sum;
 	}
-	
+
 	public void add(final LinkedIntegerMap<T> map)
 	{
 		for (final T key : map.keySet())
@@ -338,7 +338,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			add(key, map.getInt(key));
 		}
 	}
-	
+
 	public void subtract(final LinkedIntegerMap<T> map)
 	{
 		for (final T key : map.keySet())
@@ -346,7 +346,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			add(key, -map.getInt(key));
 		}
 	}
-	
+
 	/**
 	 * By >= we mean that each of our entries is greater
 	 * than or equal to each entry in the other map. We do not take into
@@ -364,7 +364,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	/**
 	 * True if all values are >= 0.
 	 */
@@ -377,20 +377,20 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	public LinkedIntegerMap<T> copy()
 	{
 		final LinkedIntegerMap<T> copy = new LinkedIntegerMap<T>();
 		copy.add(this);
 		return copy;
 	}
-	
+
 	@Override
 	public Object clone()
 	{
 		return copy();
 	}
-	
+
 	/**
 	 * Add map * multiple
 	 */
@@ -401,7 +401,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			add(key, map.getInt(key) * multiple);
 		}
 	}
-	
+
 	public boolean someKeysMatch(final Match<T> matcher)
 	{
 		for (final T obj : m_values.keySet())
@@ -411,7 +411,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return false;
 	}
-	
+
 	public boolean allKeysMatch(final Match<T> matcher)
 	{
 		for (final T obj : m_values.keySet())
@@ -421,7 +421,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return true;
 	}
-	
+
 	public Collection<T> getKeyMatches(final Match<T> matcher)
 	{
 		final Collection<T> values = new ArrayList<T>();
@@ -432,7 +432,7 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return values;
 	}
-	
+
 	public int sumMatches(final Match<T> matcher)
 	{
 		int sum = 0;
@@ -443,24 +443,24 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return sum;
 	}
-	
+
 	public void removeNonMatchingKeys(final Match<T> aMatch)
 	{
 		final Match<T> match = new InverseMatch<T>(aMatch);
 		removeMatchingKeys(match);
 	}
-	
+
 	public void removeMatchingKeys(final Match<T> aMatch)
 	{
 		final Collection<T> badKeys = getKeyMatches(aMatch);
 		removeKeys(badKeys);
 	}
-	
+
 	public void removeKey(final T key)
 	{
 		m_values.remove(key);
 	}
-	
+
 	private void removeKeys(final Collection<T> keys)
 	{
 		for (final T key : keys)
@@ -468,22 +468,22 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 			removeKey(key);
 		}
 	}
-	
+
 	public boolean containsKey(final T key)
 	{
 		return m_values.containsKey(key);
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return m_values.isEmpty();
 	}
-	
+
 	public Set<Entry<T, Integer>> entrySet()
 	{
 		return m_values.entrySet();
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -499,13 +499,13 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable
 		}
 		return buf.toString();
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		return m_values.hashCode();
 	}
-	
+
 	/**
 	 * The equals method will only return true if both the keys and values
 	 * match exactly. If a has entries that b doesn't have or vice versa,

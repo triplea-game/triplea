@@ -18,9 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 {
@@ -46,7 +46,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		}
 		return null;
 	}
-	
+
 	public static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units)
 	{
 		final String result = null;
@@ -59,7 +59,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		*/
 		return result;
 	}
-	
+
 	public String addUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
@@ -73,7 +73,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		m_bridge.addChange(ChangeFactory.addUnits(territory, units));
 		return null;
 	}
-	
+
 	public static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units)
 	{
 		final String result = null;
@@ -83,7 +83,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 			return "Territory already contains units";
 		return result;
 	}
-	
+
 	public String changeTerritoryOwner(final Territory territory, final PlayerID player)
 	{
 		String result = null;
@@ -97,7 +97,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 		m_bridge.addChange(ChangeFactory.changeOwner(territory, player));
 		return null;
 	}
-	
+
 	public static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player)
 	{
 		final String result = null;
@@ -106,7 +106,7 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate
 			return "Territory has no attachment";
 		return result;
 	}
-	
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

@@ -17,23 +17,23 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class ChangeGameOptionsClientAction extends AbstractAction
 {
 	private static final long serialVersionUID = -6419002646689952824L;
 	private final Component m_parent;
 	private final IServerStartupRemote m_serverRemote;
-	
+
 	public ChangeGameOptionsClientAction(final Component parent, final IServerStartupRemote serverRemote)
 	{
 		super("Edit Game Options...");
 		m_parent = JOptionPane.getFrameForComponent(parent);
 		m_serverRemote = serverRemote;
 	}
-	
+
 	public void actionPerformed(final ActionEvent e)
 	{
 		final byte[] oldBytes = m_serverRemote.getGameOptions();

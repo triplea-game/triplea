@@ -51,15 +51,15 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * Utility for loading and playing sound clips.
- * 
+ *
  * Stores a preference in the user preferences for being silent.
  * The property will persist and be reloaded after the virtual machine
  * has been stopped and restarted.
- * 
+ *
  * <br>
  * <br>
  * <br>
- * 
+ *
  * <br>
  * <br>
  * How it works: <br>
@@ -111,8 +111,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * 5. If no sounds are found, then use all the sounds located at "generic/sound_key/" (which for us would be "generic/game_start").
  * (if any sounds are found in step 4 above, then we ignore the generic folder completely) <br>
  * 6. Randomize the list's order, then pick one, and play the sound.
- * 
- * 
+ *
+ *
  * @author veqryn & frigoref
  */
 public class ClipPlayer
@@ -124,13 +124,13 @@ public class ClipPlayer
 	private final ResourceLoader m_resourceLoader;
 	private final Set<String> m_subFolders = new HashSet<String>();
 	private final ClipCache m_clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time, so we'll be safe and pick 24
-	
+
 	// standard settings
 	private static final String ASSETS_SOUNDS_FOLDER = "sounds";
 	private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
 	private static final String SOUND_PREFERENCE_PREFIX = "sound_";
 	private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
-	
+
 	public static synchronized ClipPlayer getInstance()
 	{
 		if (s_clipPlayer == null)
@@ -140,7 +140,7 @@ public class ClipPlayer
 		}
 		return s_clipPlayer;
 	}
-	
+
 	public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader, final GameData data)
 	{
 		// make a new clip player if we switch resource loaders (ie: if we switch maps)
@@ -155,7 +155,7 @@ public class ClipPlayer
 		}
 		return s_clipPlayer;
 	}
-	
+
 	private ClipPlayer(final ResourceLoader resourceLoader)
 	{
 		m_resourceLoader = resourceLoader;
@@ -174,7 +174,7 @@ public class ClipPlayer
 				m_mutedClips.add(sound);
 		}
 	}
-	
+
 	private ClipPlayer(final ResourceLoader resourceLoader, final GameData data)
 	{
 		this(resourceLoader);
@@ -183,13 +183,13 @@ public class ClipPlayer
 			m_subFolders.add(p.getName());
 		}
 	}
-	
+
 	/**
 	 * If set to true, no sounds will play.
-	 * 
+	 *
 	 * This property is persisted using the java.util.prefs API, and will
 	 * persist after the vm has stopped.
-	 * 
+	 *
 	 * @param aBool
 	 *            new value for m_beSilent
 	 */
@@ -199,7 +199,7 @@ public class ClipPlayer
 		clipPlayer.m_beSilent = aBool;
 		setBeSilentInPreferencesWithoutAffectingCurrent(aBool);
 	}
-	
+
 	public static void setBeSilentInPreferencesWithoutAffectingCurrent(final boolean silentBool)
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
@@ -227,13 +227,13 @@ public class ClipPlayer
 			}
 		}
 	}
-	
+
 	public static boolean getBeSilent()
 	{
 		final ClipPlayer clipPlayer = getInstance();
 		return clipPlayer.m_beSilent;
 	}
-	
+
 	public static boolean isSilencedClip(final String clipName)
 	{
 		final ClipPlayer clipPlayer = getInstance();
@@ -241,7 +241,7 @@ public class ClipPlayer
 			return true;
 		return false;
 	}
-	
+
 	public boolean isMuted(final String clipName)
 	{
 		if (m_mutedClips.contains(clipName))
@@ -262,7 +262,7 @@ public class ClipPlayer
 		}
 		return false;
 	}
-	
+
 	public void setMute(final String clipName, final boolean value)
 	{
 		// we want to avoid unnecessary calls to preferences
@@ -275,7 +275,7 @@ public class ClipPlayer
 			m_mutedClips.remove(clipName);
 		putSoundInPreferences(clipName, value);
 	}
-	
+
 	// please avoid unnecessary calls of this
 	private void putSoundInPreferences(final String clip, final boolean isMuted)
 	{
@@ -290,14 +290,14 @@ public class ClipPlayer
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public ArrayList<IEditableProperty> getSoundOptions(final SoundPath.SoundType sounds)
 	{
 		return SoundPath.getSoundOptions(sounds);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param clipName
 	 *            String - the file name of the clip
 	 * @param subFolder
@@ -307,9 +307,9 @@ public class ClipPlayer
 	{
 		getInstance().playClip(clipName, subFolder);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param clipName
 	 *            String - the file name of the clip
 	 */
@@ -338,10 +338,10 @@ public class ClipPlayer
 		};
 		(new Thread(loadSounds, "Triplea sound loader for " + clipName)).start();
 	}
-	
+
 	/**
 	 * To reduce the delay when the clip is first played, we can preload clips here.
-	 * 
+	 *
 	 * @param clipName
 	 *            name of the clip
 	 */
@@ -353,7 +353,7 @@ public class ClipPlayer
 			loadClip(clipName, sub, true);
 		}
 	}
-	
+
 	private synchronized Clip loadClip(final String clipName, final String subFolder, final boolean parseThenTestOnly)
 	{
 		if (m_beSilent || isMuted(clipName))
@@ -378,7 +378,7 @@ public class ClipPlayer
 		}
 		return null;
 	}
-	
+
 	private Clip loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly)
 	{
 		if (!m_sounds.containsKey(pathName))
@@ -393,7 +393,7 @@ public class ClipPlayer
 		final URL clipFile = availableSounds.get(0);
 		return m_clipCache.get(clipFile);
 	}
-	
+
 	/**
 	 * The user may or may not have a sounds.properties file. If they do not, we should have a default folder (ww2) that we use for sounds.
 	 * Because we do not want a lot of duplicate sound files, we also have a "generic" sound folder.
@@ -405,7 +405,7 @@ public class ClipPlayer
 	 * Sound.Default.Folder=ww2<br>
 	 * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.wav;ww2/battle_aa_miss/battle_aa_miss_02_just_aa_artillery.wav<br>
 	 * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.wav
-	 * 
+	 *
 	 * @param pathName
 	 * @param subFolder
 	 * @return
@@ -436,9 +436,9 @@ public class ClipPlayer
 		}
 		m_sounds.put(pathName, availableSounds);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param resourceAndPathURL
 	 *            (URL uses '/', not File.separator or '\')
 	 * @return
@@ -588,7 +588,7 @@ public class ClipPlayer
 		}
 		return availableSounds;
 	}
-	
+
 	static synchronized Clip createClip(final URL clipFile, final boolean testOnly)
 	{
 		try
@@ -619,7 +619,7 @@ public class ClipPlayer
 		}
 		return null;
 	}
-	
+
 	static synchronized boolean testClipSuccessful(final URL clipFile)
 	{
 		Clip clip = null;
@@ -660,10 +660,10 @@ public class ClipPlayer
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Simple stupid test to see if it works (and to see if our cache stays at or below its max), and to make sure there are no memory leaks.
-	 * 
+	 *
 	 * @param args
 	 */
 	public static void main(final String[] args)
@@ -716,14 +716,14 @@ class ClipCache
 	private final HashMap<URL, Clip> m_clipMap = new HashMap<URL, Clip>();
 	private final List<URL> m_cacheOrder = new ArrayList<URL>();
 	private final int MAXSIZE;
-	
+
 	ClipCache(final int max)
 	{
 		if (max < 1)
 			throw new IllegalArgumentException("ClipCache max must be at least 1");
 		MAXSIZE = max;
 	}
-	
+
 	public synchronized Clip get(final URL file)
 	{
 		Clip clip = m_clipMap.get(file);
@@ -748,7 +748,7 @@ class ClipCache
 		m_cacheOrder.add(file);
 		return clip;
 	}
-	
+
 	public synchronized void removeAll()
 	{
 		for (final Clip clip : m_clipMap.values())

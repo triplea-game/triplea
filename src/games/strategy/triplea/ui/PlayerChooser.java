@@ -13,7 +13,7 @@
  */
 /*
  * UnitChooser.java
- * 
+ *
  * Created on December 3, 2001, 7:32 PM
  */
 package games.strategy.triplea.ui;
@@ -35,7 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 /**
- * 
+ *
  * @author Tony Clayton
  * @version 1.0
  */
@@ -47,15 +47,15 @@ public class PlayerChooser extends JOptionPane
 	private final PlayerID m_defaultPlayer;
 	private final IUIContext m_uiContext;
 	private final boolean m_allowNeutral;
-	
+
 	// private JOptionPane m_pane;
-	
+
 	/** Creates new PlayerChooser */
 	public PlayerChooser(final PlayerList players, final IUIContext uiContext, final boolean allowNeutral)
 	{
 		this(players, null, uiContext, allowNeutral);
 	}
-	
+
 	/** Creates new PlayerChooser */
 	public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final IUIContext uiContext, final boolean allowNeutral)
 	{
@@ -68,7 +68,7 @@ public class PlayerChooser extends JOptionPane
 		m_allowNeutral = allowNeutral;
 		createComponents();
 	}
-	
+
 	private void createComponents()
 	{
 		final Collection<PlayerID> players = new ArrayList<PlayerID>(m_players.getPlayers());
@@ -79,7 +79,7 @@ public class PlayerChooser extends JOptionPane
 		m_list.setSelectedValue(m_defaultPlayer, true);
 		m_list.setFocusable(false);
 		m_list.setCellRenderer(new PlayerChooserRenderer(m_players, m_uiContext));
-		
+
 		m_list.addMouseListener(new MouseAdapter()
 		{
 			@Override
@@ -92,13 +92,13 @@ public class PlayerChooser extends JOptionPane
 				}
 			}
 		});
-		
+
 		setMessage(m_list);
 	}
-	
+
 	/**
 	 * Returns the selected player or null, or null if the dialog was closed
-	 * 
+	 *
 	 * @return the player or null
 	 */
 	public PlayerID getSelected()
@@ -109,7 +109,7 @@ public class PlayerChooser extends JOptionPane
 		}
 		return null;
 	}
-	
+
 }
 
 
@@ -117,12 +117,12 @@ class PlayerChooserRenderer extends DefaultListCellRenderer
 {
 	private static final long serialVersionUID = -2185921124436293304L;
 	private final IUIContext m_uiContext;
-	
+
 	PlayerChooserRenderer(final PlayerList players, final IUIContext uiContext)
 	{
 		m_uiContext = uiContext;
 	}
-	
+
 	@Override
 	public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
 	{

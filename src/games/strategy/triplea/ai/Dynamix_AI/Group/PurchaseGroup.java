@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class PurchaseGroup
@@ -43,7 +43,7 @@ public class PurchaseGroup
 	private final IntegerMap<ProductionRule> m_generatedRules = new IntegerMap<ProductionRule>();
 	private final List<Unit> m_generatedSampleUnits = new ArrayList<Unit>();
 	private int m_totalPurchasePrice = 0;
-	
+
 	public PurchaseGroup(final Unit unit, final IPurchaseDelegate purchaser, final GameData data, final PlayerID player)
 	{
 		m_units = Collections.singleton(unit);
@@ -52,7 +52,7 @@ public class PurchaseGroup
 		m_player = player;
 		GenerateProductionRulesAndSampleUnits();
 	}
-	
+
 	public PurchaseGroup(final Collection<Unit> units, final IPurchaseDelegate purchaser, final GameData data, final PlayerID player)
 	{
 		m_units = units;
@@ -61,7 +61,7 @@ public class PurchaseGroup
 		m_player = player;
 		GenerateProductionRulesAndSampleUnits();
 	}
-	
+
 	private void GenerateProductionRulesAndSampleUnits()
 	{
 		final List<ProductionRule> rules = m_player.getProductionFrontier().getRules();
@@ -109,15 +109,15 @@ public class PurchaseGroup
 			}
 		}
 	}
-	
+
 	public int GetCost()
 	{
 		return m_totalPurchasePrice;
 	}
-	
+
 	private int m_maxPurchaseCost = Integer.MAX_VALUE;
 	private int m_maxPurchaseCount = 1;
-	
+
 	public void ApplyMaxValues(final int maxPurchaseCost, final int maxPurchaseCount)
 	{
 		if (maxPurchaseCost != m_maxPurchaseCost || maxPurchaseCount != m_maxPurchaseCount)
@@ -127,7 +127,7 @@ public class PurchaseGroup
 			GenerateProductionRulesAndSampleUnits();
 		}
 	}
-	
+
 	public int Purchase()
 	{
 		Dynamix_AI.Pause();
@@ -135,7 +135,7 @@ public class PurchaseGroup
 		DUtils.Log(Level.FINER, "      Purchase made. Units: {0}", DUtils.UnitList_ToString(GetSampleUnits()));
 		return m_totalPurchasePrice;
 	}
-	
+
 	public List<Unit> GetSampleUnits()
 	{
 		return m_generatedSampleUnits;

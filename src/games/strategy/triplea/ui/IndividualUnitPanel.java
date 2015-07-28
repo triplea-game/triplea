@@ -31,11 +31,11 @@ import javax.swing.JTextArea;
  * For when you do not want things condensed into categories.
  * <p>
  * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
- * 
+ *
  * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per unit.
- * 
+ *
  * @author Veqryn
- * 
+ *
  */
 public class IndividualUnitPanel extends JPanel
 {
@@ -51,7 +51,7 @@ public class IndividualUnitPanel extends JPanel
 	private ScrollableTextField m_textFieldPurelyForListening;
 	private final ScrollableTextFieldListener m_countOptionalTextFieldListener;
 	private final boolean m_showSelectAll;
-	
+
 	private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener()
 	{
 		public void changedValue(final ScrollableTextField field)
@@ -59,12 +59,12 @@ public class IndividualUnitPanel extends JPanel
 			updateLeft();
 		}
 	};
-	
+
 	/**
 	 * For when you do not want things condensed into categories.
 	 * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
 	 * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per unit.
-	 * 
+	 *
 	 * @param units
 	 * @param title
 	 * @param data
@@ -93,12 +93,12 @@ public class IndividualUnitPanel extends JPanel
 		}
 		layoutEntries();
 	}
-	
+
 	/**
 	 * For when you do not want things condensed into categories.
 	 * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
 	 * It lets you set a max number of points total AND per unit. It can return an IntegerMap with the points per unit.
-	 * 
+	 *
 	 * @param units
 	 *            mapped to their individual max, then min, then current values
 	 * @param title
@@ -140,7 +140,7 @@ public class IndividualUnitPanel extends JPanel
 		}
 		layoutEntries();
 	}
-	
+
 	private void setMaxAndShowMaxButton(final int max)
 	{
 		m_max = max;
@@ -149,24 +149,24 @@ public class IndividualUnitPanel extends JPanel
 		if (m_countOptionalTextFieldListener != null)
 			m_textFieldPurelyForListening.addChangeListener(m_countOptionalTextFieldListener);
 	}
-	
+
 	public void setTitle(final String title)
 	{
 		m_title.setText(title);
 	}
-	
+
 	public int getMax()
 	{
 		return m_max;
 	}
-	
+
 	public void setMaxAndUpdate(final int newMax)
 	{
 		m_max = newMax;
 		updateLeft();
 		m_textFieldPurelyForListening.setValue(0);
 	}
-	
+
 	private void updateLeft()
 	{
 		if (m_max == -1)
@@ -182,7 +182,7 @@ public class IndividualUnitPanel extends JPanel
 		m_leftToSelect.setText("Left to select:" + newMax);
 		m_textFieldPurelyForListening.setValue(0);
 	}
-	
+
 	protected int getSelectedCount()
 	{
 		int selected = 0;
@@ -192,7 +192,7 @@ public class IndividualUnitPanel extends JPanel
 		}
 		return selected;
 	}
-	
+
 	private void layoutEntries()
 	{
 		this.setLayout(new GridBagLayout());
@@ -230,7 +230,7 @@ public class IndividualUnitPanel extends JPanel
 		}
 		add(m_leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
 	}
-	
+
 	public IntegerMap<Unit> getSelected()
 	{
 		final IntegerMap<Unit> selectedUnits = new IntegerMap<Unit>();
@@ -240,7 +240,7 @@ public class IndividualUnitPanel extends JPanel
 		}
 		return selectedUnits;
 	}
-	
+
 	protected void selectNone()
 	{
 		for (final SingleUnitPanel entry : m_entries)
@@ -248,7 +248,7 @@ public class IndividualUnitPanel extends JPanel
 			entry.selectNone();
 		}
 	}
-	
+
 	protected void autoSelect()
 	{
 		if (m_max == -1)
@@ -291,13 +291,13 @@ class SingleUnitPanel extends JPanel
 	private final GameData m_data;
 	private static Insets nullInsets = new Insets(0, 0, 0, 0);
 	private final ScrollableTextFieldListener m_countTextFieldListener;
-	
+
 	public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext uiContext, final ScrollableTextFieldListener textFieldListener, final int max, final int min,
 				final boolean showMaxAndMin)
 	{
 		this(unit, data, uiContext, textFieldListener, max, min, 0, showMaxAndMin);
 	}
-	
+
 	public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext context, final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
 				final boolean showMaxAndMin)
 	{
@@ -318,47 +318,47 @@ class SingleUnitPanel extends JPanel
 		add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
 		add(m_textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 	}
-	
+
 	public int getCount()
 	{
 		return m_textField.getValue();
 	}
-	
+
 	public void setCount(final int value)
 	{
 		m_textField.setValue(value);
 	}
-	
+
 	public void selectAll()
 	{
 		m_textField.setValue(m_textField.getMax());
 	}
-	
+
 	public void selectNone()
 	{
 		m_textField.setValue(0);
 	}
-	
+
 	public void setMax(final int value)
 	{
 		m_textField.setMax(value);
 	}
-	
+
 	public int getMax()
 	{
 		return m_textField.getMax();
 	}
-	
+
 	public void setMin(final int value)
 	{
 		m_textField.setMin(value);
 	}
-	
+
 	public Unit getUnit()
 	{
 		return m_unit;
 	}
-	
+
 	public void createComponents(final JPanel panel, final int yIndex)
 	{
 		panel.add(this, new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));

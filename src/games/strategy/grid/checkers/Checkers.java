@@ -18,22 +18,22 @@ import java.util.Set;
 
 /**
  * Main class responsible for Checkers game.
- * 
+ *
  * @author Mark Christopher Duncan (veqryn)
- * 
+ *
  */
 public class Checkers extends GridGame implements IGameLoader
 {
 	private static final long serialVersionUID = 1697055013624548205L;
 	private static final String HUMAN_PLAYER_TYPE = "Human";
 	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-	
+
 	@Override
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
 	}
-	
+
 	@Override
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
@@ -58,19 +58,19 @@ public class Checkers extends GridGame implements IGameLoader
 		}
 		return iplayers;
 	}
-	
+
 	@Override
 	protected Class<? extends GridMapPanel> getGridMapPanelClass()
 	{
 		return CheckersMapPanel.class;
 	}
-	
+
 	@Override
 	protected Class<? extends GridMapData> getGridMapDataClass()
 	{
 		return GridMapData.class;
 	}
-	
+
 	@Override
 	protected Class<? extends GridGameMenu<GridGameFrame>> getGridTableMenuClass()
 	{

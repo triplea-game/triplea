@@ -13,7 +13,7 @@
  */
 /*
  * NOPUPurchaseDelegate.java
- * 
+ *
  * Created on August 11, 2005, 10:38 AM
  */
 package games.strategy.triplea.delegate;
@@ -33,22 +33,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * 
+ *
  * @author Adam Jette
  * @version 1.0
- * 
+ *
  *          At the end of the turn collect units, not income!
  */
 public class NoPUPurchaseDelegate extends PurchaseDelegate
 {
 	private boolean isPacific;
-	
+
 	@Override
 	public boolean delegateCurrentlyRequiresUserInput()
 	{
 		return false;
 	}
-	
+
 	@Override
 	public void start()
 	{
@@ -65,7 +65,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 			m_bridge.addChange(productionChange);
 		}
 	}
-	
+
 	private Collection<Unit> getProductionUnits(final Collection<Territory> territories, final PlayerID player)
 	{
 		final Collection<Unit> productionUnits = new ArrayList<Unit>();
@@ -103,7 +103,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 		}
 		return productionUnits;
 	}
-	
+
 	private int getBurmaRoad(final PlayerID player)
 	{
 		int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf
@@ -118,17 +118,17 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 			return 1;
 		return 0;
 	}
-	
+
 	private boolean isPacificTheater()
 	{
 		return games.strategy.triplea.Properties.getPacificTheater(getData());
 	}
-	
+
 	private boolean isProductionPerValuedTerritoryRestricted()
 	{
 		return games.strategy.triplea.Properties.getProductionPerValuedTerritoryRestricted(getData());
 	}
-	
+
 	private boolean isProductionPerXTerritoriesRestricted()
 	{
 		return games.strategy.triplea.Properties.getProductionPerXTerritoriesRestricted(getData());

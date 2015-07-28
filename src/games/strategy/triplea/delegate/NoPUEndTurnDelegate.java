@@ -13,7 +13,7 @@
  */
 /*
  * NOPUEndTurnDelegate.java
- * 
+ *
  * Created on August 11, 205, 2:16 PM
  */
 package games.strategy.triplea.delegate;
@@ -25,10 +25,10 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import java.util.Collection;
 
 /**
- * 
+ *
  * @author Adam Jette
  * @version 1.0
- * 
+ *
  *          At the end of the turn collect NO income.
  */
 @AutoSave(afterStepEnd = true)
@@ -39,13 +39,13 @@ public class NoPUEndTurnDelegate extends EndTurnDelegate
 	{
 		return 0;
 	}
-	
+
 	@Override
 	protected void showEndTurnReport(final String endTurnReport)
 	{
 		// show nothing on purpose
 	}
-	
+
 	/**
 	 * Default behavior for this delegate is that we do not collect PU/resource income from territories, but we do collect and do any national objectives and triggers.
 	 */
@@ -55,7 +55,7 @@ public class NoPUEndTurnDelegate extends EndTurnDelegate
 		// TODO: add a step properties boolean for this (default = do this)
 		return super.doNationalObjectivesAndOtherEndTurnEffects(bridge);
 	}
-	
+
 	@Override
 	protected String addOtherResources(final IDelegateBridge aBridge)
 	{

@@ -47,7 +47,7 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 /**
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings({ "unchecked", "deprecation" })
@@ -354,7 +354,7 @@ public class DoCombatMove
 			}
 		}
 	}
-	
+
 	private static List<CM_Task> GenerateTasks(final MovePackage pack)
 	{
 		final List<CM_Task> result = new ArrayList<CM_Task>();
@@ -503,7 +503,7 @@ public class DoCombatMove
 		}
 		return result;
 	}
-	
+
 	private static boolean considerAndPerformWorthwhileTasks(final MovePackage pack, final List<CM_Task> tasks)
 	{
 		@SuppressWarnings("unused")

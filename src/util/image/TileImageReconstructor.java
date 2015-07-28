@@ -32,9 +32,9 @@ import javax.swing.JOptionPane;
 
 /**
  * For taking a folder of basetiles and putting them back together into an image.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class TileImageReconstructor
 {
@@ -46,7 +46,7 @@ public class TileImageReconstructor
 	private static int sizeX = -1;
 	private static int sizeY = -1;
 	private static Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
-	
+
 	public static void main(final String[] args) throws Exception
 	{
 		handleCommandLineArgs(args);
@@ -77,7 +77,7 @@ public class TileImageReconstructor
 								return true;
 							return false;
 						}
-						
+
 						@Override
 						public String getDescription()
 						{
@@ -143,7 +143,7 @@ public class TileImageReconstructor
 		}
 		createMap();
 	}
-	
+
 	public static void createMap()
 	{
 		textOptionPane.show();
@@ -199,7 +199,7 @@ public class TileImageReconstructor
 		JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
 		System.exit(0);
 	}
-	
+
 	private static String getValue(final String arg)
 	{
 		final int index = arg.indexOf('=');
@@ -207,7 +207,7 @@ public class TileImageReconstructor
 			return "";
 		return arg.substring(index + 1);
 	}
-	
+
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		// arg can only be the map folder location.

@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public class NCM_TargetCalculator

@@ -13,7 +13,7 @@
  */
 /*
  * TerritoryAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -43,7 +43,7 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter
 			return mOriginalOwnerHandler(field, attachment);
 		return super.printOption(field, attachment);
 	}
-	
+
 	private String mOriginalOwnerHandler(final Field field, final IAttachment attachment)
 	{
 		final TerritoryAttachment att = (TerritoryAttachment) attachment;
@@ -59,7 +59,7 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter
 			return printDefaultOption("originalOwner", originalOwner.getName());
 		return "";
 	}
-	
+
 	private String mUnitProductionHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		final TerritoryAttachment att = (TerritoryAttachment) attachment;
@@ -67,12 +67,12 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter
 			return printIntegerOption(field, "unitProduction", attachment, true);
 		return "";
 	}
-	
+
 	private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
-	
+
 	private String mChangeUnitOwnersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);

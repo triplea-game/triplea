@@ -28,9 +28,9 @@ import java.util.Set;
 /**
  * A sort of scripted battle made for blitzed/conquered territories without a fight.
  * TODO: expand to cover all possible scripting battle needs.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class FinishedBattle extends AbstractBattle
 {
@@ -38,7 +38,7 @@ public class FinishedBattle extends AbstractBattle
 	private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
 	private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
 	private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-	
+
 	public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean isBombingRun, final BattleType battleType, final GameData data,
 				final BattleResultDescription battleResultDescription, final WhoWon whoWon, final Collection<Unit> attackingUnits)
 	{
@@ -46,18 +46,18 @@ public class FinishedBattle extends AbstractBattle
 		m_battleResultDescription = battleResultDescription;
 		m_whoWon = whoWon;
 	}
-	
+
 	public void setDefendingUnits(final List<Unit> defendingUnits)
 	{
 		m_defendingUnits = defendingUnits;
 	}
-	
+
 	@Override
 	public boolean isEmpty()
 	{
 		return m_attackingUnits.isEmpty();
 	}
-	
+
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{
@@ -67,7 +67,7 @@ public class FinishedBattle extends AbstractBattle
 		m_battleTracker.removeBattle(this);
 		m_isOver = true;
 	}
-	
+
 	@Override
 	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
 	{
@@ -97,7 +97,7 @@ public class FinishedBattle extends AbstractBattle
 		}
 		return ChangeFactory.EMPTY_CHANGE;
 	}
-	
+
 	@Override
 	public void removeAttack(final Route route, final Collection<Unit> units)
 	{
@@ -141,7 +141,7 @@ public class FinishedBattle extends AbstractBattle
 			dependent.removeAll(units);
 		}
 	}
-	
+
 	@Override
 	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn)
 	{
@@ -168,7 +168,7 @@ public class FinishedBattle extends AbstractBattle
 			}
 		}
 	}
-	
+
 	/**
 	 * @return territories where there are amphibious attacks
 	 */
@@ -176,15 +176,15 @@ public class FinishedBattle extends AbstractBattle
 	{
 		return m_amphibiousAttackFrom;
 	}
-	
+
 	public Collection<Territory> getAttackingFrom()
 	{
 		return m_attackingFrom;
 	}
-	
+
 	public Map<Territory, Collection<Unit>> getAttackingFromMap()
 	{
 		return m_attackingFromMap;
 	}
-	
+
 }

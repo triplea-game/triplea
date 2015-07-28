@@ -13,7 +13,7 @@
  */
 /*
  * PlayerAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -34,12 +34,12 @@ public class PlayerAttachmentExporter extends DefaultAttachmentExporter
 			return mGiveUnitControlHandler(field, attachment);
 		return super.printOption(field, attachment);
 	}
-	
+
 	private String mGiveUnitControlHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
-	
+
 	private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);

@@ -28,7 +28,7 @@ public class ProPurchaseTerritory
 	private Territory territory;
 	private int unitProduction;
 	private List<ProPlaceTerritory> canPlaceTerritories;
-	
+
 	public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player, final int unitProduction)
 	{
 		this.territory = territory;
@@ -44,7 +44,7 @@ public class ProPurchaseTerritory
 			}
 		}
 	}
-	
+
 	public int getRemainingUnitProduction()
 	{
 		int remainingUnitProduction = unitProduction;
@@ -54,41 +54,41 @@ public class ProPurchaseTerritory
 		}
 		return remainingUnitProduction;
 	}
-	
+
 	public Territory getTerritory()
 	{
 		return territory;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return territory + " | unitProduction=" + unitProduction + " | placeTerritories=" + canPlaceTerritories;
 	}
-	
+
 	public void setTerritory(final Territory territory)
 	{
 		this.territory = territory;
 	}
-	
+
 	public int getUnitProduction()
 	{
 		return unitProduction;
 	}
-	
+
 	public void setUnitProduction(final int unitProduction)
 	{
 		this.unitProduction = unitProduction;
 	}
-	
+
 	public List<ProPlaceTerritory> getCanPlaceTerritories()
 	{
 		return canPlaceTerritories;
 	}
-	
+
 	public void setCanPlaceTerritories(final List<ProPlaceTerritory> canPlaceTerritories)
 	{
 		this.canPlaceTerritories = canPlaceTerritories;
 	}
-	
+
 }

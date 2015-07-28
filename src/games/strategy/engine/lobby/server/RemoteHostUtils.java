@@ -9,26 +9,26 @@ import games.strategy.net.IServerMessenger;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class RemoteHostUtils implements IRemoteHostUtils
 {
 	private final INode m_serverNode;
 	private final IServerMessenger m_serverMessenger;
-	
+
 	public static final RemoteName getRemoteHostUtilsName(final INode node)
 	{
 		return new RemoteName(IRemoteHostUtils.class, "games.strategy.engine.lobby.server.RemoteHostUtils:" + node.toString());
 	}
-	
+
 	public RemoteHostUtils(final INode serverNode, final IServerMessenger gameServerMessenger)
 	{
 		m_serverNode = serverNode;
 		m_serverMessenger = gameServerMessenger;
 	}
-	
+
 	public String getConnections()
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -50,7 +50,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 		}
 		return "Not a server.";
 	}
-	
+
 	public String getChatLogHeadlessHostBot(final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -60,7 +60,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 			return "Not a headless host bot!";
 		return instance.remoteGetChatLog(hashedPassword, salt);
 	}
-	
+
 	public String mutePlayerHeadlessHostBot(final String playerNameToBeMuted, final int minutes, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -70,7 +70,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 			return "Not a headless host bot!";
 		return instance.remoteMutePlayer(playerNameToBeMuted, minutes, hashedPassword, salt);
 	}
-	
+
 	public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -80,7 +80,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 			return "Not a headless host bot!";
 		return instance.remoteBootPlayer(playerNameToBeBooted, hashedPassword, salt);
 	}
-	
+
 	public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours, final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -90,7 +90,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 			return "Not a headless host bot!";
 		return instance.remoteBanPlayer(playerNameToBeBanned, hours, hashedPassword, salt);
 	}
-	
+
 	public String stopGameHeadlessHostBot(final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -100,7 +100,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 			return "Not a headless host bot!";
 		return instance.remoteStopGame(hashedPassword, salt);
 	}
-	
+
 	public String shutDownHeadlessHostBot(final String hashedPassword, final String salt)
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))
@@ -110,7 +110,7 @@ public class RemoteHostUtils implements IRemoteHostUtils
 			return "Not a headless host bot!";
 		return instance.remoteShutdown(hashedPassword, salt);
 	}
-	
+
 	public String getSalt()
 	{
 		if (!MessageContext.getSender().equals(m_serverNode))

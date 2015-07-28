@@ -11,12 +11,12 @@ import java.util.Comparator;
 public class PlayerOrderComparator implements Comparator<PlayerID>
 {
 	private final GameData m_data;
-	
+
 	public PlayerOrderComparator(final GameData data)
 	{
 		m_data = data;
 	}
-	
+
 	/**
 	 * sort based on first step that isn't a bid related step.
 	 */

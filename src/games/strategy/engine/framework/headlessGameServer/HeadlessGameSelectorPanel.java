@@ -38,9 +38,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * Simple selector panel for the headless game ui.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
- * 
+ *
  */
 public class HeadlessGameSelectorPanel extends JPanel implements Observer
 {
@@ -60,7 +60,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 	// private final IGamePropertiesCache m_gamePropertiesCache = new FileBackedGamePropertiesCache();
 	private final Map<String, Object> m_originalPropertiesMap = new HashMap<String, Object>();
 	private final AvailableGames m_availableGames;
-	
+
 	public HeadlessGameSelectorPanel(final GameSelectorModel model, final AvailableGames availableGames)
 	{
 		m_availableGames = availableGames;
@@ -78,7 +78,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 		setWidgetActivation();
 		updateGameData();
 	}
-	
+
 	private void updateGameData()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -110,7 +110,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 		m_fileNameText.setText(getLimitedFileNameText(fileName));
 		m_fileNameText.setToolTipText(fileName);
 	}
-	
+
 	private String getLimitedFileNameText(final String fileName)
 	{
 		final int maxLength = 25;
@@ -128,7 +128,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 		final int length = fileName.length();
 		return fileName.substring(0, cuttoff) + "..." + fileName.substring(length - (maxLength - cuttoff) - 2, length);
 	}
-	
+
 	private void createComponents()
 	{
 		m_nameLabel = new JLabel("Game Name:");
@@ -143,7 +143,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 		m_loadSavedGame = new JButton("Load Saved Game...");
 		m_gameOptions = new JButton("Game Options...");
 	}
-	
+
 	private void layoutComponents()
 	{
 		setLayout(new GridBagLayout());
@@ -161,7 +161,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 		// spacer
 		add(new JPanel(), new GridBagConstraints(0, 8, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 	}
-	
+
 	private void setupListeners()
 	{
 		m_loadNewGame.addActionListener(new ActionListener()
@@ -186,7 +186,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 			}
 		});
 	}
-	
+
 	/*
 	private void setOriginalPropertiesMap(final GameData data)
 	{
@@ -199,7 +199,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 			}
 		}
 	}*/
-	
+
 	private void selectGameOptions()
 	{
 		// backup current game properties before showing dialog
@@ -208,12 +208,12 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 		{
 			currentPropertiesMap.put(property.getName(), property.getValue());
 		}
-		
+
 		final PropertiesUI panel = new PropertiesUI(m_model.getGameData().getProperties(), true);
 		final JScrollPane scroll = new JScrollPane(panel);
 		scroll.setBorder(null);
 		scroll.getViewport().setBorder(null);
-		
+
 		final JOptionPane pane = new JOptionPane(scroll, JOptionPane.PLAIN_MESSAGE);
 		final String ok = "OK";
 		final String cancel = "Cancel";
@@ -222,7 +222,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 		pane.setOptions(new Object[] { ok, /*makeDefault,*/reset, cancel });
 		final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Game Options");
 		window.setVisible(true);
-		
+
 		final Object buttonPressed = pane.getValue();
 		if (buttonPressed == null || buttonPressed.equals(cancel))
 		{
@@ -258,7 +258,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 			// ok was clicked, and we have modified the properties already
 		}
 	}
-	
+
 	private void setWidgetActivation()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -289,13 +289,13 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer
 			// m_loadSavedGame.setToolTipText("This is disabled on older engine jars, please open savegames from the latest version of TripleA.");
 		}
 	}
-	
+
 	public void update(final Observable o, final Object arg)
 	{
 		updateGameData();
 		setWidgetActivation();
 	}
-	
+
 	private void selectGameFile(final boolean saved)
 	{
 		// For some strange reason,

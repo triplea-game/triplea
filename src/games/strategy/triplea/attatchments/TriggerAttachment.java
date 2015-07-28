@@ -51,16 +51,16 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author SquidDaddy and Veqryn [Mark Christopher Duncan]
- * 
+ *
  */
 public class TriggerAttachment extends AbstractTriggerAttachment implements ICondition
 {
 	private static final long serialVersionUID = -3327739180569606093L;
 	private static final String PREFIX_CLEAR = "-clear-";
 	private static final String PREFIX_RESET = "-reset-";
-	
+
 	private ProductionFrontier m_frontier = null;
 	private ArrayList<String> m_productionRule = null;
 	private ArrayList<TechAdvance> m_tech = new ArrayList<TechAdvance>();
@@ -75,7 +75,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private String m_victory = null;
 	private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<Tuple<String, String>>();
 	private ArrayList<String> m_changeOwnership = new ArrayList<String>();
-	
+
 	// raw property changes below:
 	private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
 	private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
@@ -92,15 +92,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private ArrayList<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
 	private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
 	private ArrayList<Tuple<String, String>> m_territoryEffectProperty = null;
-	
+
 	public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
 	}
-	
+
 	/**
 	 * Convenience method for returning TriggerAttachments.
-	 * 
+	 *
 	 * @param player
 	 * @param nameOfAttachment
 	 * @return a new trigger attachment
@@ -109,7 +109,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		return get(player, nameOfAttachment, null);
 	}
-	
+
 	public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment, final Collection<PlayerID> playersToSearch)
 	{
 		TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
@@ -134,10 +134,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * Convenience method for return all TriggerAttachments attached to a player.
-	 * 
+	 *
 	 * @param player
 	 * @param data
 	 * @param cond
@@ -159,12 +159,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		return trigs;
 	}
-	
+
 	/**
 	 * This will collect all triggers for the desired players, based on a match provided,
 	 * and then it will gather all the conditions necessary, then test all the conditions,
 	 * and then it will fire all the conditions which are satisfied.
-	 * 
+	 *
 	 * @param players
 	 * @param triggerMatch
 	 * @param aBridge
@@ -181,7 +181,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			return;
 		TriggerAttachment.fireTriggers(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), testedConditions, aBridge, beforeOrAfter, stepName, true, true, true, true);
 	}
-	
+
 	public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players, final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge)
 	{
 		final GameData data = aBridge.getData();
@@ -192,24 +192,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		return toFirePossible;
 	}
-	
+
 	public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge)
 	{
 		return collectTestsForAllTriggers(toFirePossible, aBridge, null, null);
 	}
-	
+
 	public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge,
 				final HashSet<ICondition> allConditionsNeededSoFar, final HashMap<ICondition, Boolean> allConditionsTestedSoFar)
 	{
 		final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), allConditionsNeededSoFar);
 		return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, allConditionsTestedSoFar, aBridge);
 	}
-	
+
 	/**
 	 * This will fire all triggers, and it will not test to see if they are satisfied or not first. Please use collectAndFireTriggers instead of using this directly.
 	 * To see if they are satisfied, first create the list of triggers using Matches + TriggerAttachment.getTriggers.
 	 * Then test the triggers using RulesAttachment.getAllConditionsRecursive, and RulesAttachment.testAllConditions
-	 * 
+	 *
 	 * @param triggersToBeFired
 	 * @param aBridge
 	 * @param beforeOrAfter
@@ -228,17 +228,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			triggersToFire.add(t);
 		}
 		// Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit), Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
-		
+
 		// Notifications to current player
 		triggerNotifications(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-		
+
 		// Attachment property changes
 		triggerPlayerPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerRelationshipTypePropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerTerritoryPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerTerritoryEffectPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerUnitPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-		
+
 		// Misc changes that only need to happen once (twice or more is meaningless)
 		triggerRelationshipChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerAvailableTechChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
@@ -247,24 +247,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		triggerProductionFrontierEditChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerSupportChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerChangeOwnership(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-		
+
 		// Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore can use "each")
 		triggerUnitRemoval(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerPurchase(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerUnitPlacement(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		triggerResourceChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-		
+
 		// Activating other triggers, and trigger victory, should ALWAYS be LAST in this list!
 		triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen); // Triggers firing other triggers
-		
+
 		// Victory messages and recording of winners
 		triggerVictory(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-		
+
 		// for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of each round)
 		if (useUses)
 			setUsesForWhenTriggers(triggersToFire, aBridge, useUses);
 	}
-	
+
 	protected static void setUsesForWhenTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final IDelegateBridge aBridge, final boolean useUses)
 	{
 		if (!useUses)
@@ -287,10 +287,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 		}
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param value
 	 * @throws GameParseException
 	 */
@@ -330,28 +330,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		getBool(s[5]);
 		m_activateTrigger.add(new Tuple<String, String>(s[0], options));
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setActivateTrigger(final ArrayList<Tuple<String, String>> value)
 	{
 		m_activateTrigger = value;
 	}
-	
+
 	public ArrayList<Tuple<String, String>> getActivateTrigger()
 	{
 		return m_activateTrigger;
 	}
-	
+
 	public void clearActivateTrigger()
 	{
 		m_activateTrigger.clear();
 	}
-	
+
 	public void resetActivateTrigger()
 	{
 		m_activateTrigger = new ArrayList<Tuple<String, String>>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFrontier(final String s) throws GameParseException
 	{
@@ -365,26 +365,26 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("Could not find frontier. name:" + s + thisErrorMsg());
 		m_frontier = front;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFrontier(final ProductionFrontier value)
 	{
 		m_frontier = value;
 	}
-	
+
 	public ProductionFrontier getFrontier()
 	{
 		return m_frontier;
 	}
-	
+
 	public void resetFrontier()
 	{
 		m_frontier = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param prop
 	 * @throws GameParseException
 	 */
@@ -410,50 +410,50 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("Could not find production rule. name:" + rule + thisErrorMsg());
 		m_productionRule.add(prop);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setProductionRule(final ArrayList<String> value)
 	{
 		m_productionRule = value;
 	}
-	
+
 	public ArrayList<String> getProductionRule()
 	{
 		return m_productionRule;
 	}
-	
+
 	public void clearProductionRule()
 	{
 		m_productionRule.clear();
 	}
-	
+
 	public void resetProductionRule()
 	{
 		m_productionRule = null;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResourceCount(final String s)
 	{
 		m_resourceCount = getInt(s);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResourceCount(final Integer s)
 	{
 		m_resourceCount = s;
 	}
-	
+
 	public int getResourceCount()
 	{
 		return m_resourceCount;
 	}
-	
+
 	public void resetResourceCount()
 	{
 		m_resourceCount = 0;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setVictory(final String s)
 	{
@@ -464,20 +464,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		m_victory = s;
 	}
-	
+
 	public String getVictory()
 	{
 		return m_victory;
 	}
-	
+
 	public void resetVictory()
 	{
 		m_victory = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param techs
 	 * @throws GameParseException
 	 */
@@ -494,31 +494,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_tech.add(ta);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTech(final ArrayList<TechAdvance> value)
 	{
 		m_tech = value;
 	}
-	
+
 	public ArrayList<TechAdvance> getTech()
 	{
 		return m_tech;
 	}
-	
+
 	public void clearTech()
 	{
 		m_tech.clear();
 	}
-	
+
 	public void resetTech()
 	{
 		m_tech = new ArrayList<TechAdvance>();
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param techs
 	 * @throws GameParseException
 	 */
@@ -556,31 +556,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			tlist.putAll(m_availableTech.get(cat));
 		m_availableTech.put(cat, tlist);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAvailableTech(final HashMap<String, LinkedHashMap<TechAdvance, Boolean>> value)
 	{
 		m_availableTech = value;
 	}
-	
+
 	public HashMap<String, LinkedHashMap<TechAdvance, Boolean>> getAvailableTech()
 	{
 		return m_availableTech;
 	}
-	
+
 	public void clearAvailableTech()
 	{
 		m_availableTech.clear();
 	}
-	
+
 	public void resetAvailableTech()
 	{
 		m_availableTech = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param sup
 	 * @throws GameParseException
 	 */
@@ -617,28 +617,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				throw new GameParseException("Could not find unitSupportAttachment. name:" + s[i] + thisErrorMsg());
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setSupport(final LinkedHashMap<String, Boolean> value)
 	{
 		m_support = value;
 	}
-	
+
 	public LinkedHashMap<String, Boolean> getSupport()
 	{
 		return m_support;
 	}
-	
+
 	public void clearSupport()
 	{
 		m_support.clear();
 	}
-	
+
 	public void resetSupport()
 	{
 		m_support = null;
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResource(final String s) throws GameParseException
 	{
@@ -653,20 +653,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		else
 			m_resource = s;
 	}
-	
+
 	public String getResource()
 	{
 		return m_resource;
 	}
-	
+
 	public void resetResource()
 	{
 		m_resource = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param relChange
 	 * @throws GameParseException
 	 */
@@ -687,31 +687,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[3] + " unknown " + thisErrorMsg());
 		m_relationshipChange.add(relChange);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipChange(final ArrayList<String> value)
 	{
 		m_relationshipChange = value;
 	}
-	
+
 	public ArrayList<String> getRelationshipChange()
 	{
 		return m_relationshipChange;
 	}
-	
+
 	public void clearRelationshipChange()
 	{
 		m_relationshipChange.clear();
 	}
-	
+
 	public void resetRelationshipChange()
 	{
 		m_relationshipChange = new ArrayList<String>();
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param names
 	 * @throws GameParseException
 	 */
@@ -727,28 +727,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_unitType.add(type);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitType(final ArrayList<UnitType> value)
 	{
 		m_unitType = value;
 	}
-	
+
 	public ArrayList<UnitType> getUnitType()
 	{
 		return m_unitType;
 	}
-	
+
 	public void clearUnitType()
 	{
 		m_unitType.clear();
 	}
-	
+
 	public void resetUnitType()
 	{
 		m_unitType = new ArrayList<UnitType>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitAttachmentName(final String name) throws GameParseException
 	{
@@ -772,28 +772,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_unitAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitAttachmentName(final Tuple<String, String> value)
 	{
 		m_unitAttachmentName = value;
 	}
-	
+
 	public Tuple<String, String> getUnitAttachmentName()
 	{
 		if (m_unitAttachmentName == null)
 			return new Tuple<String, String>("UnitAttachment", Constants.UNIT_ATTACHMENT_NAME);
 		return m_unitAttachmentName;
 	}
-	
+
 	public void resetUnitAttachmentName()
 	{
 		m_unitAttachmentName = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param prop
 	 * @throws GameParseException
 	 */
@@ -811,31 +811,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_unitProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_unitProperty = value;
 	}
-	
+
 	public ArrayList<Tuple<String, String>> getUnitProperty()
 	{
 		return m_unitProperty;
 	}
-	
+
 	public void clearUnitProperty()
 	{
 		m_unitProperty.clear();
 	}
-	
+
 	public void resetUnitProperty()
 	{
 		m_unitProperty = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param names
 	 * @throws GameParseException
 	 */
@@ -851,28 +851,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_territories.add(terr);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritories(final ArrayList<Territory> value)
 	{
 		m_territories = value;
 	}
-	
+
 	public ArrayList<Territory> getTerritories()
 	{
 		return m_territories;
 	}
-	
+
 	public void clearTerritories()
 	{
 		m_territories.clear();
 	}
-	
+
 	public void resetTerritories()
 	{
 		m_territories = new ArrayList<Territory>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryAttachmentName(final String name) throws GameParseException
 	{
@@ -896,28 +896,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_territoryAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryAttachmentName(final Tuple<String, String> value)
 	{
 		m_territoryAttachmentName = value;
 	}
-	
+
 	public Tuple<String, String> getTerritoryAttachmentName()
 	{
 		if (m_territoryAttachmentName == null)
 			return new Tuple<String, String>("TerritoryAttachment", Constants.TERRITORY_ATTACHMENT_NAME);
 		return m_territoryAttachmentName;
 	}
-	
+
 	public void resetTerritoryAttachmentName()
 	{
 		m_territoryAttachmentName = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param prop
 	 * @throws GameParseException
 	 */
@@ -935,31 +935,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_territoryProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_territoryProperty = value;
 	}
-	
+
 	public ArrayList<Tuple<String, String>> getTerritoryProperty()
 	{
 		return m_territoryProperty;
 	}
-	
+
 	public void clearTerritoryProperty()
 	{
 		m_territoryProperty.clear();
 	}
-	
+
 	public void resetTerritoryProperty()
 	{
 		m_territoryProperty = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param names
 	 * @throws GameParseException
 	 */
@@ -975,13 +975,13 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_players.add(player);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlayers(final ArrayList<PlayerID> value)
 	{
 		m_players = value;
 	}
-	
+
 	public ArrayList<PlayerID> getPlayers()
 	{
 		if (m_players.isEmpty())
@@ -989,17 +989,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		else
 			return m_players;
 	}
-	
+
 	public void clearPlayers()
 	{
 		m_players.clear();
 	}
-	
+
 	public void resetPlayers()
 	{
 		m_players = new ArrayList<PlayerID>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlayerAttachmentName(final String name) throws GameParseException
 	{
@@ -1035,28 +1035,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_playerAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlayerAttachmentName(final Tuple<String, String> value)
 	{
 		m_playerAttachmentName = value;
 	}
-	
+
 	public Tuple<String, String> getPlayerAttachmentName()
 	{
 		if (m_playerAttachmentName == null)
 			return new Tuple<String, String>("PlayerAttachment", Constants.PLAYER_ATTACHMENT_NAME);
 		return m_playerAttachmentName;
 	}
-	
+
 	public void resetPlayerAttachmentName()
 	{
 		m_playerAttachmentName = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param prop
 	 * @throws GameParseException
 	 */
@@ -1074,31 +1074,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_playerProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlayerProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_playerProperty = value;
 	}
-	
+
 	public ArrayList<Tuple<String, String>> getPlayerProperty()
 	{
 		return m_playerProperty;
 	}
-	
+
 	public void clearPlayerProperty()
 	{
 		m_playerProperty.clear();
 	}
-	
+
 	public void resetPlayerProperty()
 	{
 		m_playerProperty = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param names
 	 * @throws GameParseException
 	 */
@@ -1114,28 +1114,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_relationshipTypes.add(relation);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipTypes(final ArrayList<RelationshipType> value)
 	{
 		m_relationshipTypes = value;
 	}
-	
+
 	public ArrayList<RelationshipType> getRelationshipTypes()
 	{
 		return m_relationshipTypes;
 	}
-	
+
 	public void clearRelationshipTypes()
 	{
 		m_relationshipTypes.clear();
 	}
-	
+
 	public void resetRelationshipTypes()
 	{
 		m_relationshipTypes = new ArrayList<RelationshipType>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipTypeAttachmentName(final String name) throws GameParseException
 	{
@@ -1157,28 +1157,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_relationshipTypeAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipTypeAttachmentName(final Tuple<String, String> value)
 	{
 		m_relationshipTypeAttachmentName = value;
 	}
-	
+
 	public Tuple<String, String> getRelationshipTypeAttachmentName()
 	{
 		if (m_relationshipTypeAttachmentName == null)
 			return new Tuple<String, String>("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
 		return m_relationshipTypeAttachmentName;
 	}
-	
+
 	public void resetRelationshipTypeAttachmentName()
 	{
 		m_relationshipTypeAttachmentName = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param prop
 	 * @throws GameParseException
 	 */
@@ -1196,31 +1196,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_relationshipTypeProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipTypeProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_relationshipTypeProperty = value;
 	}
-	
+
 	public ArrayList<Tuple<String, String>> getRelationshipTypeProperty()
 	{
 		return m_relationshipTypeProperty;
 	}
-	
+
 	public void clearRelationshipTypeProperty()
 	{
 		m_relationshipTypeProperty.clear();
 	}
-	
+
 	public void resetRelationshipTypeProperty()
 	{
 		m_relationshipTypeProperty = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param names
 	 * @throws GameParseException
 	 */
@@ -1236,28 +1236,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_territoryEffects.add(effect);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryEffects(final ArrayList<TerritoryEffect> value)
 	{
 		m_territoryEffects = value;
 	}
-	
+
 	public ArrayList<TerritoryEffect> getTerritoryEffects()
 	{
 		return m_territoryEffects;
 	}
-	
+
 	public void clearTerritoryEffects()
 	{
 		m_territoryEffects.clear();
 	}
-	
+
 	public void resetTerritoryEffects()
 	{
 		m_territoryEffects = new ArrayList<TerritoryEffect>();
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryEffectAttachmentName(final String name) throws GameParseException
 	{
@@ -1279,28 +1279,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_territoryEffectAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryEffectAttachmentName(final Tuple<String, String> value)
 	{
 		m_territoryEffectAttachmentName = value;
 	}
-	
+
 	public Tuple<String, String> getTerritoryEffectAttachmentName()
 	{
 		if (m_territoryEffectAttachmentName == null)
 			return new Tuple<String, String>("TerritoryEffectAttachment", Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
 		return m_territoryEffectAttachmentName;
 	}
-	
+
 	public void resetTerritoryEffectAttachmentName()
 	{
 		m_territoryEffectAttachmentName = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param prop
 	 * @throws GameParseException
 	 */
@@ -1318,32 +1318,32 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_territoryEffectProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryEffectProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_territoryEffectProperty = value;
 	}
-	
+
 	public ArrayList<Tuple<String, String>> getTerritoryEffectProperty()
 	{
 		return m_territoryEffectProperty;
 	}
-	
+
 	public void clearTerritoryEffectProperty()
 	{
 		m_territoryEffectProperty.clear();
 	}
-	
+
 	public void resetTerritoryEffectProperty()
 	{
 		m_territoryEffectProperty = null;
 	}
-	
+
 	/**
 	 * Fudging this, it really represents adding placements.
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param place
 	 * @throws GameParseException
 	 */
@@ -1391,31 +1391,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_placement.put(territory, map);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlacement(final HashMap<Territory, IntegerMap<UnitType>> value)
 	{
 		m_placement = value;
 	}
-	
+
 	public HashMap<Territory, IntegerMap<UnitType>> getPlacement()
 	{
 		return m_placement;
 	}
-	
+
 	public void clearPlacement()
 	{
 		m_placement.clear();
 	}
-	
+
 	public void resetPlacement()
 	{
 		m_placement = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param value
 	 * @throws GameParseException
 	 */
@@ -1456,7 +1456,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			territories.add(terr);
 		}
-		
+
 		i++;
 		final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 		for (; i < s.length; i++)
@@ -1479,7 +1479,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				map.add(type, count);
 			}
 		}
-		
+
 		for (final Territory t : territories)
 		{
 			if (m_removeUnits.containsKey(t))
@@ -1487,31 +1487,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_removeUnits.put(t, map);
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRemoveUnits(final HashMap<Territory, IntegerMap<UnitType>> value)
 	{
 		m_removeUnits = value;
 	}
-	
+
 	public HashMap<Territory, IntegerMap<UnitType>> getRemoveUnits()
 	{
 		return m_removeUnits;
 	}
-	
+
 	public void clearRemoveUnits()
 	{
 		m_removeUnits.clear();
 	}
-	
+
 	public void resetRemoveUnits()
 	{
 		m_removeUnits = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param place
 	 * @throws GameParseException
 	 */
@@ -1551,31 +1551,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPurchase(final IntegerMap<UnitType> value)
 	{
 		m_purchase = value;
 	}
-	
+
 	public IntegerMap<UnitType> getPurchase()
 	{
 		return m_purchase;
 	}
-	
+
 	public void clearPurchase()
 	{
 		m_purchase.clear();
 	}
-	
+
 	public void resetPurchase()
 	{
 		m_purchase = null;
 	}
-	
+
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
+	 *
 	 * @param place
 	 * @throws GameParseException
 	 */
@@ -1605,28 +1605,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		getBool(s[3]);
 		m_changeOwnership.add(value);
 	}
-	
+
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChangeOwnership(final ArrayList<String> value)
 	{
 		m_changeOwnership = value;
 	}
-	
+
 	public ArrayList<String> getChangeOwnership()
 	{
 		return m_changeOwnership;
 	}
-	
+
 	public void clearChangeOwnership()
 	{
 		m_changeOwnership.clear();
 	}
-	
+
 	public void resetChangeOwnership()
 	{
 		m_changeOwnership = new ArrayList<String>();
 	}
-	
+
 	private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap, final PlayerID player, final IDelegateBridge aBridge)
 	{
 		final CompositeChange change = new CompositeChange();
@@ -1649,12 +1649,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 		}
 	}
-	
+
 	private static void placeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap, final PlayerID player, final GameData data, final IDelegateBridge aBridge)
 	{
 		// createUnits
 		final List<Unit> units = new ArrayList<Unit>();
-		
+
 		for (final UnitType u : uMap.keySet())
 		{
 			units.addAll(u.create(uMap.getInt(u), player));
@@ -1680,7 +1680,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			int prod = 0;
 			if(ta != null)
 				prod = ta.getProduction();
-			
+
 		    Change unitProd = ChangeFactory.changeUnitProduction(terr, prod);
 		    change.add(unitProd);
 		}*/
@@ -1690,7 +1690,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(terr))
 			getBattleTracker(data).addBattle(new RouteScripted(terr), units, false, player, aBridge, null);*/
 	}
-	
+
 	/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 	public static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)
 	{
@@ -1701,18 +1701,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new RouteScripted(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, aBridge, null);
 		}
 	}
-	
+
 	private static BattleTracker getBattleTracker(GameData data)
 	{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
 	}*/
-	
+
 	//
 	// And now for the actual triggers, as called throughout the engine.
 	// Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for when 'when' is not used.
 	// Should be void.
 	//
-	
+
 	public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -1757,7 +1757,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -1871,7 +1871,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -1920,7 +1920,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -1992,7 +1992,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2041,7 +2041,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2103,7 +2103,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2146,7 +2146,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2187,7 +2187,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2215,7 +2215,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2241,7 +2241,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
 				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2292,7 +2292,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
 	}
-	
+
 	public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2349,7 +2349,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (!change.isEmpty())
 			aBridge.addChange(change);
 	}
-	
+
 	public static void triggerChangeOwnership(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2403,7 +2403,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2439,7 +2439,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2467,7 +2467,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2497,7 +2497,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static String triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2538,7 +2538,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		return strbuf.toString();
 	}
-	
+
 	public static void triggerActivateTriggerOther(final HashMap<ICondition, Boolean> testedConditionsSoFar, final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
 				final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2598,7 +2598,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2645,7 +2645,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		}
 	}
-	
+
 	//
 	// All triggers can be activated in only 1 of 2 places: default or when
 	//
@@ -2653,7 +2653,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	//
 	// when = !t.getWhen.isEmpty() (this means when was set, and so the trigger should not activate in its default place, and instead should activate before or after a specific stepName
 	//
-	
+
 	public static Match<TriggerAttachment> prodMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2665,7 +2665,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> prodFrontierEditMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2677,7 +2677,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> techMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2689,7 +2689,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> techAvailableMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2701,7 +2701,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> removeUnitsMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2713,7 +2713,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> placeMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2725,7 +2725,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> purchaseMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2737,7 +2737,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> resourceMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2749,7 +2749,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> supportMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2761,7 +2761,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> changeOwnershipMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2773,7 +2773,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> unitPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2785,7 +2785,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> territoryPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2797,7 +2797,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> playerPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2809,7 +2809,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> relationshipTypePropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2821,7 +2821,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> territoryEffectPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2833,7 +2833,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> relationshipChangeMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2845,7 +2845,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> victoryMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2857,7 +2857,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	public static Match<TriggerAttachment> activateTriggerMatch()
 	{
 		return new Match<TriggerAttachment>()
@@ -2869,7 +2869,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			}
 		};
 	}
-	
+
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

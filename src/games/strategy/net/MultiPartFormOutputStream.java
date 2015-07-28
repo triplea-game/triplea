@@ -13,7 +13,7 @@ import java.net.URLConnection;
  * MultiPartFormOutputStream is used to write
  * "multipart/form-data" to a java.net.URLConnection for
  * POSTing. This is primarily for file uploading to HTTP servers.
- * 
+ *
  * @since JDK1.3
  */
 public class MultiPartFormOutputStream
@@ -34,7 +34,7 @@ public class MultiPartFormOutputStream
 	 * The multipart boundary string.
 	 */
 	private String boundary = null;
-	
+
 	/**
 	 * Creates a new <code>MultiPartFormOutputStream</code> object using
 	 * the specified output stream and boundary. The boundary is required
@@ -43,7 +43,7 @@ public class MultiPartFormOutputStream
 	 * The boundary is only checked for <code>null</code> or empty string,
 	 * but it is recommended to be at least 6 characters. (Or use the
 	 * static createBoundary() method to create one.)
-	 * 
+	 *
 	 * @param os
 	 *            the output stream
 	 * @param boundary
@@ -64,10 +64,10 @@ public class MultiPartFormOutputStream
 		this.out = new DataOutputStream(os);
 		this.boundary = boundary;
 	}
-	
+
 	/**
 	 * Writes an boolean field value.
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -79,10 +79,10 @@ public class MultiPartFormOutputStream
 	{
 		writeField(name, Boolean.toString(value));
 	}
-	
+
 	/**
 	 * Writes an double field value.
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -94,10 +94,10 @@ public class MultiPartFormOutputStream
 	{
 		writeField(name, Double.toString(value));
 	}
-	
+
 	/**
 	 * Writes an float field value.
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -109,10 +109,10 @@ public class MultiPartFormOutputStream
 	{
 		writeField(name, Float.toString(value));
 	}
-	
+
 	/**
 	 * Writes an long field value.
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -124,10 +124,10 @@ public class MultiPartFormOutputStream
 	{
 		writeField(name, Long.toString(value));
 	}
-	
+
 	/**
 	 * Writes an int field value.
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -139,10 +139,10 @@ public class MultiPartFormOutputStream
 	{
 		writeField(name, Integer.toString(value));
 	}
-	
+
 	/**
 	 * Writes an short field value.
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -154,10 +154,10 @@ public class MultiPartFormOutputStream
 	{
 		writeField(name, Short.toString(value));
 	}
-	
+
 	/**
 	 * Writes an char field value.
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -169,11 +169,11 @@ public class MultiPartFormOutputStream
 	{
 		writeField(name, new Character(value).toString());
 	}
-	
+
 	/**
 	 * Writes an string field value. If the value is null, an empty string
 	 * is sent ("").
-	 * 
+	 *
 	 * @param name
 	 *            the field name (required)
 	 * @param value
@@ -210,11 +210,11 @@ public class MultiPartFormOutputStream
 		out.writeBytes(NEWLINE);
 		out.flush();
 	}
-	
+
 	/**
 	 * Writes a file's contents. If the file is null, does not exists, or
 	 * is a directory, a <code>java.lang.IllegalArgumentException</code> will be thrown.
-	 * 
+	 *
 	 * @param name
 	 *            the field name
 	 * @param mimeType
@@ -240,10 +240,10 @@ public class MultiPartFormOutputStream
 		}
 		writeFile(name, mimeType, file.getCanonicalPath(), new FileInputStream(file));
 	}
-	
+
 	/**
 	 * Writes a input stream's contents. If the input stream is null, a <code>java.lang.IllegalArgumentException</code> will be thrown.
-	 * 
+	 *
 	 * @param name
 	 *            the field name
 	 * @param mimeType
@@ -302,11 +302,11 @@ public class MultiPartFormOutputStream
 		out.writeBytes(NEWLINE);
 		out.flush();
 	}
-	
+
 	/**
 	 * Writes the given bytes. The bytes are assumed to be the contents
 	 * of a file, and will be sent as such. If the data is null, a <code>java.lang.IllegalArgumentException</code> will be thrown.
-	 * 
+	 *
 	 * @param name
 	 *            the field name
 	 * @param mimeType
@@ -353,11 +353,11 @@ public class MultiPartFormOutputStream
 		out.writeBytes(NEWLINE);
 		out.flush();
 	}
-	
+
 	/**
 	 * Flushes the stream. Actually, this method does nothing, as the only
 	 * write methods are highly specialized and automatically flush.
-	 * 
+	 *
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
@@ -365,13 +365,13 @@ public class MultiPartFormOutputStream
 	{
 		// out.flush();
 	}
-	
+
 	/**
 	 * Closes the stream. <br />
 	 * <br />
 	 * <b>NOTE:</b> This method <b>MUST</b> be called to finalize the
 	 * multipart stream.
-	 * 
+	 *
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
@@ -385,23 +385,23 @@ public class MultiPartFormOutputStream
 		out.flush();
 		out.close();
 	}
-	
+
 	/**
 	 * Gets the multipart boundary string being used by this stream.
-	 * 
+	 *
 	 * @return the boundary
 	 */
 	public String getBoundary()
 	{
 		return this.boundary;
 	}
-	
+
 	/**
 	 * Creates a new <code>java.net.URLConnection</code> object from the
 	 * specified <code>java.net.URL</code>. This is a convenience method
 	 * which will set the <code>doInput</code>, <code>doOutput</code>, <code>useCaches</code> and <code>defaultUseCaches</code> fields to
 	 * the appropriate settings in the correct order.
-	 * 
+	 *
 	 * @return a <code>java.net.URLConnection</code> object for the URL
 	 * @throws java.io.IOException
 	 *             on input/output errors
@@ -420,12 +420,12 @@ public class MultiPartFormOutputStream
 		urlConn.setDefaultUseCaches(false);
 		return urlConn;
 	}
-	
+
 	/**
 	 * Creates a multipart boundary string by concatenating 20 hyphens (-)
 	 * and the hexadecimal (base-16) representation of the current time in
 	 * milliseconds.
-	 * 
+	 *
 	 * @return a multipart boundary string
 	 * @see #getContentType(String)
 	 */
@@ -433,7 +433,7 @@ public class MultiPartFormOutputStream
 	{
 		return "--------------------" + Long.toString(System.currentTimeMillis(), 16);
 	}
-	
+
 	/**
 	 * Gets the content type string suitable for the <code>java.net.URLConnection</code> which includes the multipart
 	 * boundary string. <br />
@@ -443,7 +443,7 @@ public class MultiPartFormOutputStream
 	 * type (or any other request parameter). So one has to create a
 	 * multipart boundary string first before using this class, such as
 	 * with the <code>createBoundary()</code> method.
-	 * 
+	 *
 	 * @param boundary
 	 *            the boundary string
 	 * @return the content type string

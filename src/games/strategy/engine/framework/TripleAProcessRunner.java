@@ -21,7 +21,7 @@ public class TripleAProcessRunner
 	{
 		startGame(System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY), null, maxMemory);
 	}
-	
+
 	public static void startGame(final String savegamePath, final String classpath, final Long maxMemory)
 	{
 		final List<String> commands = new ArrayList<String>();
@@ -58,7 +58,7 @@ public class TripleAProcessRunner
 		// System.out.println("Commands: " + commands);
 		ProcessRunnerUtil.exec(commands);
 	}
-	
+
 	public static void hostGame(final int port, final String playerName, final String comments, final String password, final Messengers messengers)
 	{
 		final List<String> commands = new ArrayList<String>();
@@ -79,7 +79,7 @@ public class TripleAProcessRunner
 		commands.add(javaClass);
 		ProcessRunnerUtil.exec(commands);
 	}
-	
+
 	public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent)
 	{
 		final GameStatus status = description.getStatus();
@@ -96,8 +96,8 @@ public class TripleAProcessRunner
 			{
 				if (GameRunner2.areWeOldExtraJar())
 				{
-					JOptionPane.showMessageDialog(parent, "<html>Please run the default TripleA and try joining the online lobby for it instead. " +
-								"<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. " +
+					JOptionPane.showMessageDialog(parent, "<html>Please run the default TripleA and try joining the online lobby for it instead. "
+								"<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
 								"<br><br>Host is using a different engine than you, and can not find correct engine: " + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
 								"Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
 				}
@@ -124,7 +124,7 @@ public class TripleAProcessRunner
 		}
 		joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
 	}
-	
+
 	// newClassPath can be null
 	public static void joinGame(final int port, final String hostAddressIP, final String newClassPath, final Messengers messengers)
 	{
@@ -138,7 +138,7 @@ public class TripleAProcessRunner
 		commands.add(javaClass);
 		ProcessRunnerUtil.exec(commands);
 	}
-	
+
 	public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException
 	{
 		if (EngineVersion.VERSION.equals(oldVersionNeeded, ignoreMicro))

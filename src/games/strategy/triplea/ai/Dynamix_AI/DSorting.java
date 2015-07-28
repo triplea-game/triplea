@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Stephen
  */
 @SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
@@ -44,7 +44,7 @@ public class DSorting
 		Collections.sort(result, comparator);
 		return result;
 	}
-	
+
 	public static List SortListByScores_HashMap_A(final Collection list, final HashMap<?, ? extends Number> scores)
 	{
 		final List result = new ArrayList(list);
@@ -61,7 +61,7 @@ public class DSorting
 				else
 					return -1;
 			}
-			
+
 			private double safeGet(final HashMap<?, ? extends Number> map, final Object key)
 			{
 				if (!map.containsKey(key))
@@ -71,23 +71,23 @@ public class DSorting
 		});
 		return result;
 	}
-	
+
 	public static List SortListByScores_HashMap_D(final Collection list, final HashMap<?, ? extends Number> scores)
 	{
 		return DUtils.InvertList(SortListByScores_HashMap_A(list, scores));
 	}
-	
+
 	public static List SortListByScores_List_A(final Collection list, final Collection scoreList)
 	{
 		final HashMap scores = DUtils.ToHashMap(list, scoreList);
 		return SortListByScores_HashMap_A(list, scores);
 	}
-	
+
 	public static List SortListByScores_List_D(final Collection list, final Collection scoreList)
 	{
 		return DUtils.InvertList(SortListByScores_List_A(list, scoreList));
 	}
-	
+
 	// /////////////////////////////////////////////End List Sorting///////////////////////////////////////////////
 	// /////////////////////////////////////////////Territory Sorting///////////////////////////////////////////////
 	public static List<Territory> SortTerritoriesByDistance_A(final List<Territory> ters, final GameData data, final Territory target, final Match<Territory> routeMatch)
@@ -112,12 +112,12 @@ public class DSorting
 			}
 		});
 	}
-	
+
 	public static List<Territory> SortTerritoriesByDistance_D(final List<Territory> ters, final GameData data, final Territory target, final Match<Territory> routeMatch)
 	{
 		return DUtils.InvertList(SortTerritoriesByDistance_A(ters, data, target, routeMatch));
 	}
-	
+
 	public static List<Territory> SortTerritoriesByLandDistance_A(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return SortListByX(ters, new Comparator<Territory>()
@@ -140,12 +140,12 @@ public class DSorting
 			}
 		});
 	}
-	
+
 	public static List<Territory> SortTerritoriesByLandDistance_D(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return DUtils.InvertList(SortTerritoriesByLandDistance_A(ters, data, target));
 	}
-	
+
 	public static List<Territory> SortTerritoriesBySeaDistance_A(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return SortListByX(ters, new Comparator<Territory>()
@@ -168,12 +168,12 @@ public class DSorting
 			}
 		});
 	}
-	
+
 	public static List<Territory> SortTerritoriesBySeaDistance_D(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return DUtils.InvertList(SortTerritoriesBySeaDistance_A(ters, data, target));
 	}
-	
+
 	public static List<Territory> SortTerritoriesByNoCondDistance_A(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return SortListByX(ters, new Comparator<Territory>()
@@ -196,12 +196,12 @@ public class DSorting
 			}
 		});
 	}
-	
+
 	public static List<Territory> SortTerritoriesByNoCondDistance_D(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return DUtils.InvertList(SortTerritoriesByNoCondDistance_A(ters, data, target));
 	}
-	
+
 	public static List<Territory> SortTerritoriesByLandThenNoCondDistance_A(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return SortListByX(ters, new Comparator<Territory>()
@@ -228,12 +228,12 @@ public class DSorting
 			}
 		});
 	}
-	
+
 	public static List<Territory> SortTerritoriesByLandThenNoCondDistance_D(final List<Territory> ters, final GameData data, final Territory target)
 	{
 		return DUtils.InvertList(SortTerritoriesByLandThenNoCondDistance_A(ters, data, target));
 	}
-	
+
 	// /////////////////////////////////////////////End Territory Sorting///////////////////////////////////////////////
 	// /////////////////////////////////////////////Unit Sorting///////////////////////////////////////////////
 	public static List<Unit> SortUnitsByCost_A(final List<Unit> units, final Resource resource)

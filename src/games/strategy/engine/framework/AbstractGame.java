@@ -30,9 +30,9 @@ import java.util.Set;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
- * 
+ *
  * @author abstraction done by Frigoref, original code by Sean
- * 
+ *
  */
 abstract public class AbstractGame implements IGame
 {
@@ -50,7 +50,7 @@ abstract public class AbstractGame implements IGame
 	protected final PlayerManager m_playerManager;
 	protected boolean m_firstRun = true;
 	protected final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
-	
+
 	public AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers, final Map<String, INode> remotePlayerMapping, final Messengers messengers)
 	{
 		m_data = data;
@@ -70,7 +70,7 @@ abstract public class AbstractGame implements IGame
 			throw new IllegalArgumentException("Player manager cant be null");
 		setupLocalPlayers(gamePlayers);
 	}
-	
+
 	/**
 	 * @param localPlayers
 	 */
@@ -87,7 +87,7 @@ abstract public class AbstractGame implements IGame
 			m_remoteMessenger.registerRemote(gp, descriptor);
 		}
 	}
-	
+
 	/**
 	 * @param stepName
 	 *            step name
@@ -107,7 +107,7 @@ abstract public class AbstractGame implements IGame
 			listener.gameStepChanged(stepName, delegateName, player, round, displayName);
 		}
 	}
-	
+
 	/*protected void shutDown()
 	{
 		if (m_isGameOver)
@@ -118,82 +118,82 @@ abstract public class AbstractGame implements IGame
 		m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
 		m_data.getGameLoader().shutDown();
 	}*/
-	
+
 	public GameData getData()
 	{
 		return m_data;
 	}
-	
+
 	public Vault getVault()
 	{
 		return m_vault;
 	}
-	
+
 	public boolean isGameOver()
 	{
 		return m_isGameOver;
 	}
-	
+
 	public IRemoteMessenger getRemoteMessenger()
 	{
 		return m_remoteMessenger;
 	}
-	
+
 	public IChannelMessenger getChannelMessenger()
 	{
 		return m_channelMessenger;
 	}
-	
+
 	public IMessenger getMessenger()
 	{
 		return m_messenger;
 	}
-	
+
 	public PlayerManager getPlayerManager()
 	{
 		return m_playerManager;
 	}
-	
+
 	public void addGameStepListener(final GameStepListener listener)
 	{
 		m_gameStepListeners.add(listener);
 	}
-	
+
 	public void removeGameStepListener(final GameStepListener listener)
 	{
 		m_gameStepListeners.remove(listener);
 	}
-	
+
 	public static RemoteName getDisplayChannel(final GameData data)
 	{
 		return new RemoteName(DISPLAY_CHANNEL, data.getGameLoader().getDisplayType());
 	}
-	
+
 	public void addDisplay(final IDisplay display)
 	{
 		display.initialize(new DefaultDisplayBridge(m_data));
 		m_channelMessenger.registerChannelSubscriber(display, getDisplayChannel(getData()));
 	}
-	
+
 	public void removeDisplay(final IDisplay display)
 	{
 		m_channelMessenger.unregisterChannelSubscriber(display, getDisplayChannel(getData()));
 	}
-	
+
 	public static RemoteName getSoundChannel(final GameData data)
 	{
 		return new RemoteName(SOUND_CHANNEL, data.getGameLoader().getSoundType());
 	}
-	
+
 	public void addSoundChannel(final ISound soundChannel)
 	{
 		soundChannel.initialize();
 		m_channelMessenger.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
 	}
-	
+
 	public void removeSoundChannel(final ISound soundChannel)
 	{
 		m_channelMessenger.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
 	}
-	
+
 }

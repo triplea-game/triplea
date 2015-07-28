@@ -22,9 +22,9 @@ import java.util.Set;
 
 /**
  * Terminal line console.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
- * 
+ *
  */
 public class HeadlessGameServerConsole
 {
@@ -33,14 +33,14 @@ public class HeadlessGameServerConsole
 	private final BufferedReader in;
 	private boolean m_shutDown = false;
 	private boolean m_chatMode = false;
-	
+
 	public HeadlessGameServerConsole(final HeadlessGameServer server, final InputStream in, final PrintStream out)
 	{
 		this.out = out;
 		this.in = new BufferedReader(new InputStreamReader(in));
 		this.server = server;
 	}
-	
+
 	public void start()
 	{
 		final Thread t = new Thread(new Runnable()
@@ -61,7 +61,7 @@ public class HeadlessGameServerConsole
 			}
 		}));
 	}
-	
+
 	private void printEvalLoop()
 	{
 		out.println();
@@ -83,7 +83,7 @@ public class HeadlessGameServerConsole
 			}
 		}
 	}
-	
+
 	private void process(final String command)
 	{
 		if (command.equals(""))
@@ -157,7 +157,7 @@ public class HeadlessGameServerConsole
 			showHelp();
 		}
 	}
-	
+
 	private void send(final String command)
 	{
 		if (server == null || command == null)
@@ -183,7 +183,7 @@ public class HeadlessGameServerConsole
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void chatlog()
 	{
 		if (server == null)
@@ -195,7 +195,7 @@ public class HeadlessGameServerConsole
 		out.println(chat.getAllText());
 		out.println();
 	}
-	
+
 	private void chatmode()
 	{
 		if (server == null)
@@ -208,7 +208,7 @@ public class HeadlessGameServerConsole
 		final HeadlessChat headlessChat = (HeadlessChat) chat;
 		headlessChat.setPrintStream(m_chatMode ? out : null);
 	}
-	
+
 	private void printThreadDumpsAndStatus()
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -224,22 +224,22 @@ public class HeadlessGameServerConsole
 		sb.append("\n\nDump finished.\n");
 		HeadlessGameServer.log(sb.toString());
 	}
-	
+
 	private void threads()
 	{
 		out.println(DebugUtils.getThreadDumps());
 	}
-	
+
 	private void memory()
 	{
 		out.println(DebugUtils.getMemory());
 	}
-	
+
 	public void println(final String string)
 	{
 		out.println(string);
 	}
-	
+
 	private void mute(final String command)
 	{
 		if (server == null || server.getServerModel() == null)
@@ -308,7 +308,7 @@ public class HeadlessGameServerConsole
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void boot(final String command)
 	{
 		if (server == null || server.getServerModel() == null)
@@ -352,7 +352,7 @@ public class HeadlessGameServerConsole
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void ban(final String command)
 	{
 		if (server == null || server.getServerModel() == null)
@@ -439,7 +439,7 @@ public class HeadlessGameServerConsole
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void save(final String command)
 	{
 		final ServerGame game = server.getIGame();
@@ -484,7 +484,7 @@ public class HeadlessGameServerConsole
 			}
 		}
 	}
-	
+
 	private void stop()
 	{
 		final ServerGame game = server.getIGame();
@@ -524,7 +524,7 @@ public class HeadlessGameServerConsole
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void quit()
 	{
 		out.println("Are you sure? (y/n)");
@@ -549,12 +549,12 @@ public class HeadlessGameServerConsole
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void showConnections()
 	{
 		out.println(getConnections());
 	}
-	
+
 	private String getConnections()
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -576,17 +576,17 @@ public class HeadlessGameServerConsole
 			sb.append("Not Connected to Anything");
 		return sb.toString();
 	}
-	
+
 	private void showStatus()
 	{
 		out.println(getStatus());
 	}
-	
+
 	private String getStatus()
 	{
 		return server == null ? "null" : server.getStatus();
 	}
-	
+
 	private void showHelp()
 	{
 		out.println("Available commands:\n"

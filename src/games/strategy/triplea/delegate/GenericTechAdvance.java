@@ -9,13 +9,13 @@ public class GenericTechAdvance extends TechAdvance
 {
 	private static final long serialVersionUID = -5985281030083508185L;
 	private final TechAdvance m_advance;
-	
+
 	public GenericTechAdvance(final String name, final TechAdvance techAdvance, final GameData data)
 	{
 		super(name, data);
 		m_advance = techAdvance;
 	}
-	
+
 	@Override
 	public String getProperty()
 	{
@@ -24,19 +24,19 @@ public class GenericTechAdvance extends TechAdvance
 		else
 			return getName();
 	}
-	
+
 	@Override
 	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 		if (m_advance != null)
 			m_advance.perform(id, bridge);
 	}
-	
+
 	public TechAdvance getAdvance()
 	{
 		return m_advance;
 	}
-	
+
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{

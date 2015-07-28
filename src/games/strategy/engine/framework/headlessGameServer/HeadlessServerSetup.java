@@ -22,9 +22,9 @@ import javax.swing.Action;
 
 /**
  * Server setup model.
- * 
+ *
  * @author veqryn (Mark Christopher Duncan)
- * 
+ *
  */
 public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 {
@@ -33,7 +33,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 	private final ServerModel m_model;
 	private final GameSelectorModel m_gameSelectorModel;
 	private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();
-	
+
 	public HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel)
 	{
 		m_model = model;
@@ -44,7 +44,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		setWidgetActivation();
 		internalPlayerListChanged();
 	}
-	
+
 	public void createLobbyWatcher()
 	{
 		if (m_lobbyWatcher != null)
@@ -53,7 +53,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 			m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
 		}
 	}
-	
+
 	public synchronized void repostLobbyWatcher(final IGame iGame)
 	{
 		if (iGame != null)
@@ -71,7 +71,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		HeadlessGameServer.resetLobbyHostOldExtensionProperties();
 		createLobbyWatcher();
 	}
-	
+
 	public void shutDownLobbyWatcher()
 	{
 		if (m_lobbyWatcher != null)
@@ -79,15 +79,15 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 			m_lobbyWatcher.shutDown();
 		}
 	}
-	
+
 	private void setupListeners()
 	{
 	}
-	
+
 	public void setWidgetActivation()
 	{
 	}
-	
+
 	public void shutDown()
 	{
 		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
@@ -97,7 +97,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 			m_lobbyWatcher.shutDown();
 		}
 	}
-	
+
 	public void cancel()
 	{
 		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
@@ -107,7 +107,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 			m_lobbyWatcher.shutDown();
 		}
 	}
-	
+
 	public boolean canGameStart()
 	{
 		if (m_gameSelectorModel.getGameData() == null || m_model == null)
@@ -129,37 +129,37 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		}
 		return false;
 	}
-	
+
 	public void playerListChanged()
 	{
 		internalPlayerListChanged();
 	}
-	
+
 	public void playersTakenChanged()
 	{
 		internalPlayersTakenChanged();
 	}
-	
+
 	private void internalPlayersTakenChanged()
 	{
 		notifyObservers();
 	}
-	
+
 	private void internalPlayerListChanged()
 	{
 		internalPlayersTakenChanged();
 	}
-	
+
 	public IChatPanel getChatPanel()
 	{
 		return m_model.getChatPanel();
 	}
-	
+
 	public ServerModel getModel()
 	{
 		return m_model;
 	}
-	
+
 	public synchronized ILauncher getLauncher()
 	{
 		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
@@ -168,22 +168,22 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 		launcher.setInGameLobbyWatcher(m_lobbyWatcher);
 		return launcher;
 	}
-	
+
 	public List<Action> getUserActions()
 	{
 		return null;
 	}
-	
+
 	public void addObserver(final Observer observer)
 	{
 		m_listeners.add(observer);
 	}
-	
+
 	public void removeObserver(final Observer observer)
 	{
 		m_listeners.add(observer);
 	}
-	
+
 	public void notifyObservers()
 	{
 		for (final Observer observer : m_listeners)
@@ -191,11 +191,11 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel
 			observer.update(null, null);
 		}
 	}
-	
+
 	public void preStartGame()
 	{
 	}
-	
+
 	public void postStartGame()
 	{
 		final GameData data = m_gameSelectorModel.getGameData();

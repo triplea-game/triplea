@@ -26,13 +26,13 @@ import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted macs (there is no update).
- * 
+ *
  * @author Wisconsin
  */
 public class MutedMacController
 {
 	private static final Logger s_logger = Logger.getLogger(MutedMacController.class.getName());
-	
+
 	/**
 	 * Mute the mac permanently
 	 */
@@ -40,11 +40,11 @@ public class MutedMacController
 	{
 		addMutedMac(mac, null);
 	}
-	
+
 	/**
 	 * Mute the given mac. If muteTill is not null, the mute will expire when muteTill is reached.
 	 * <p>
-	 * 
+	 *
 	 * If this mac is already muted, this call will update the mute_end.
 	 */
 	public void addMutedMac(final String mac, final Date muteTill)
@@ -82,7 +82,7 @@ public class MutedMacController
 			DbUtil.closeConnection(con);
 		}
 	}
-	
+
 	public void removeMutedMac(final String mac)
 	{
 		s_logger.fine("Removing muted mac:" + mac);
@@ -103,7 +103,7 @@ public class MutedMacController
 			DbUtil.closeConnection(con);
 		}
 	}
-	
+
 	/**
 	 * Is the given mac muted? This may have the side effect of removing from the
 	 * database any mac's whose mute has expired
@@ -113,7 +113,7 @@ public class MutedMacController
 		final long muteTill = getMacUnmuteTime(mac);
 		return muteTill > System.currentTimeMillis();
 	}
-	
+
 	public long getMacUnmuteTime(final String mac)
 	{
 		long result = -1;
@@ -156,7 +156,7 @@ public class MutedMacController
 		}
 		return result;
 	}
-	
+
 	public List<String> getMacsThatAreStillMuted(final List<String> macs)
 	{
 		final List<String> results = new ArrayList<String>();

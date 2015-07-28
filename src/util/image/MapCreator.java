@@ -35,9 +35,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * A frame that will run the different map making utilities we have.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public class MapCreator extends JFrame
 {
@@ -52,7 +52,7 @@ public class MapCreator extends JFrame
 	private static int s_unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static int s_unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static boolean s_runUtilitiesAsSeperateProcesses = true;
-	
+
 	final JPanel m_mainPanel;
 	final JPanel m_sidePanel;
 	final JButton m_part1;
@@ -63,12 +63,12 @@ public class MapCreator extends JFrame
 	final JPanel m_panel2 = new JPanel();
 	final JPanel m_panel3 = new JPanel();
 	final JPanel m_panel4 = new JPanel();
-	
+
 	public static String[] getProperties()
 	{
 		return new String[] { TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT };
 	}
-	
+
 	public static void main(final String[] args)
 	{
 		/*try
@@ -84,7 +84,7 @@ public class MapCreator extends JFrame
 		creator.setLocationRelativeTo(null);
 		creator.setVisible(true);
 	}
-	
+
 	public MapCreator()
 	{
 		super("TripleA Map Creator");
@@ -114,11 +114,11 @@ public class MapCreator extends JFrame
 		createPart2Panel();
 		createPart3Panel();
 		createPart4Panel();
-		
+
 		m_part1.addActionListener(new AbstractAction("Part 1")
 		{
 			private static final long serialVersionUID = 5363944759664271421L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				setupMainPanel(m_panel1);
@@ -127,7 +127,7 @@ public class MapCreator extends JFrame
 		m_part2.addActionListener(new AbstractAction("Part 2")
 		{
 			private static final long serialVersionUID = -8158213072422149296L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				setupMainPanel(m_panel2);
@@ -136,7 +136,7 @@ public class MapCreator extends JFrame
 		m_part3.addActionListener(new AbstractAction("Part 3")
 		{
 			private static final long serialVersionUID = 881434681054088699L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				setupMainPanel(m_panel3);
@@ -145,18 +145,18 @@ public class MapCreator extends JFrame
 		m_part4.addActionListener(new AbstractAction("Part 4")
 		{
 			private static final long serialVersionUID = 2794249359841059679L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				setupMainPanel(m_panel4);
 			}
 		});
-		
+
 		// set up the menu actions
 		final Action exitAction = new AbstractAction("Exit")
 		{
 			private static final long serialVersionUID = 5363944759664271421L;
-			
+
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -180,14 +180,14 @@ public class MapCreator extends JFrame
 		// now set up the main screen
 		setupMainPanel(m_panel1);
 	}
-	
+
 	private void setupMainPanel(final JPanel panel)
 	{
 		m_mainPanel.removeAll();
 		m_mainPanel.add(panel);
 		setWidgetActivation();
 	}
-	
+
 	private void setWidgetActivation()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -206,7 +206,7 @@ public class MapCreator extends JFrame
 		this.validate();
 		this.repaint();
 	}
-	
+
 	private void createPart1Panel()
 	{
 		m_panel1.removeAll();
@@ -215,19 +215,19 @@ public class MapCreator extends JFrame
 		final JTextArea text = new JTextArea(12, 10);
 		text.setWrapStyleWord(true);
 		text.setLineWrap(true);
-		text.setText("Welcome to Veqryn's map creator program for TripleA." +
-					"\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily " +
-					"run them yourself from the command line by reading the docs/developer_documentation.html" +
-					"\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps" +
-					"\r\nName the folder with a short name of your map, do not use any special characters in the name." +
-					"\r\nNext, create 5 folders inside your map folder, with these names: " +
-					"flags, units, baseTiles, reliefTiles, games" +
-					"\r\nThen, create a text file and rename it \"map.properties\" or use one created by this utility." +
-					"\r\n\r\nTo start the Map Utilities, have a png image of your map with just the territory borders " +
-					"and nothing else. The borders must be in black (hex: 000000) and there should not be any " +
-					"anti-aliasing (smoothing) of the lines or edges that stick out." +
-					"\r\nCreate a small image of the map (approx 250 pixels wide) and name it \"smallMap.jpeg\"." +
-					"\r\nPut these in the map's root folder. You can now start the map maker by clicking and filling " +
+		text.setText("Welcome to Veqryn's map creator program for TripleA."
+					"\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily "
+					"run them yourself from the command line by reading the docs/developer_documentation.html"
+					"\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps"
+					"\r\nName the folder with a short name of your map, do not use any special characters in the name."
+					"\r\nNext, create 5 folders inside your map folder, with these names: "
+					"flags, units, baseTiles, reliefTiles, games"
+					"\r\nThen, create a text file and rename it \"map.properties\" or use one created by this utility."
+					"\r\n\r\nTo start the Map Utilities, have a png image of your map with just the territory borders "
+					"and nothing else. The borders must be in black (hex: 000000) and there should not be any "
+					"anti-aliasing (smoothing) of the lines or edges that stick out."
+					"\r\nCreate a small image of the map (approx 250 pixels wide) and name it \"smallMap.jpeg\"."
+					"\r\nPut these in the map's root folder. You can now start the map maker by clicking and filling "
 					"in the details below, before moving on to 'Step 2' and running the map utilities.");
 		final JScrollPane scrollText = new JScrollPane(text);
 		m_panel1.add(scrollText);
@@ -255,7 +255,7 @@ public class MapCreator extends JFrame
 		mapFolderButton.addActionListener(new AbstractAction("Select Map Folder")
 		{
 			private static final long serialVersionUID = 3918797244306320614L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String path = new FileSave("Where is your map's folder?", null, s_mapFolderLocation).getPathString();
@@ -281,7 +281,7 @@ public class MapCreator extends JFrame
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -298,7 +298,7 @@ public class MapCreator extends JFrame
 		unitZoomText.addActionListener(new AbstractAction("Set the unit scaling (unit image zoom)")
 		{
 			private static final long serialVersionUID = -1453970155236023493L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -320,7 +320,7 @@ public class MapCreator extends JFrame
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -337,7 +337,7 @@ public class MapCreator extends JFrame
 		unitWidthText.addActionListener(new AbstractAction("Set the width of the unit images")
 		{
 			private static final long serialVersionUID = 7853232919699181788L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -359,7 +359,7 @@ public class MapCreator extends JFrame
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -376,7 +376,7 @@ public class MapCreator extends JFrame
 		unitHeightText.addActionListener(new AbstractAction("Set the height of the unit images")
 		{
 			private static final long serialVersionUID = 3141138787371791705L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -390,7 +390,7 @@ public class MapCreator extends JFrame
 		});*/
 		m_panel1.add(unitHeightText);
 		m_panel1.add(Box.createVerticalStrut(30));
-		m_panel1.add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>" +
+		m_panel1.add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>"
 					"This is useful is you have a very large map, or ever get any Java Heap Space errors.</html>"));
 		m_panel1.add(new JLabel("Set the amount of memory to use when running new processes (in megabytes [mb]):"));
 		final JTextField memoryText = new JTextField("" + (s_memory / (1024 * 1024)));
@@ -400,7 +400,7 @@ public class MapCreator extends JFrame
 			public void focusGained(final FocusEvent e)
 			{
 			}
-			
+
 			public void focusLost(final FocusEvent e)
 			{
 				try
@@ -416,7 +416,7 @@ public class MapCreator extends JFrame
 		memoryText.addActionListener(new AbstractAction("Set the amount of memory to use when running these utilities (in megabytes [mb])")
 		{
 			private static final long serialVersionUID = 4620736097666227543L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -434,7 +434,7 @@ public class MapCreator extends JFrame
 		runTypeBox.addActionListener(new AbstractAction("Run All Utilities as Separate Processes")
 		{
 			private static final long serialVersionUID = 363422421871497915L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				s_runUtilitiesAsSeperateProcesses = runTypeBox.isSelected();
@@ -444,7 +444,7 @@ public class MapCreator extends JFrame
 		m_panel1.add(Box.createVerticalStrut(30));
 		m_panel1.validate();
 	}
-	
+
 	private void createPart2Panel()
 	{
 		m_panel2.removeAll();
@@ -456,7 +456,7 @@ public class MapCreator extends JFrame
 		mapPropertiesMakerButton.addActionListener(new AbstractAction("Run the Map Properties Maker")
 		{
 			private static final long serialVersionUID = -5708777348010034859L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -480,7 +480,7 @@ public class MapCreator extends JFrame
 		centerPickerButton.addActionListener(new AbstractAction("Run the Center Picker")
 		{
 			private static final long serialVersionUID = -2070004374472175438L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -504,7 +504,7 @@ public class MapCreator extends JFrame
 		polygonGrabberButton.addActionListener(new AbstractAction("Run the Polygon Grabber")
 		{
 			private static final long serialVersionUID = -5708777348010034859L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -528,7 +528,7 @@ public class MapCreator extends JFrame
 		autoPlacerButton.addActionListener(new AbstractAction("Run the Automatic Placement Finder")
 		{
 			private static final long serialVersionUID = 7557803418683843877L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -552,7 +552,7 @@ public class MapCreator extends JFrame
 		placementPickerButton.addActionListener(new AbstractAction("Run the Placement Picker")
 		{
 			private static final long serialVersionUID = 2456185407945946528L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -576,7 +576,7 @@ public class MapCreator extends JFrame
 		tileBreakerButton.addActionListener(new AbstractAction("Run the Tile Image Breaker")
 		{
 			private static final long serialVersionUID = 8636496829644907047L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -606,7 +606,7 @@ public class MapCreator extends JFrame
 		decorationPlacerButton.addActionListener(new AbstractAction("Run the Decoration Placer")
 		{
 			private static final long serialVersionUID = 8981678371888002420L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -634,7 +634,7 @@ public class MapCreator extends JFrame
 		m_panel2.add(Box.createVerticalStrut(30));
 		m_panel2.validate();
 	}
-	
+
 	private void createPart3Panel()
 	{
 		m_panel3.removeAll();
@@ -648,7 +648,7 @@ public class MapCreator extends JFrame
 		goToWebButton.addActionListener(new AbstractAction("Go To Dev Forum")
 		{
 			private static final long serialVersionUID = 5059004450673029377L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
@@ -666,7 +666,7 @@ public class MapCreator extends JFrame
 		connectionFinderButton.addActionListener(new AbstractAction("Run the Connection Finder")
 		{
 			private static final long serialVersionUID = 8778155499250138516L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -694,7 +694,7 @@ public class MapCreator extends JFrame
 		m_panel3.add(Box.createVerticalStrut(30));
 		m_panel3.validate();
 	}
-	
+
 	private void createPart4Panel()
 	{
 		m_panel4.removeAll();
@@ -706,7 +706,7 @@ public class MapCreator extends JFrame
 		reliefBreakerButton.addActionListener(new AbstractAction("Run the Relief Image Breaker")
 		{
 			private static final long serialVersionUID = 8981678371888002420L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -736,7 +736,7 @@ public class MapCreator extends JFrame
 		imageShrinkerButton.addActionListener(new AbstractAction("Run the Image Shrinker")
 		{
 			private static final long serialVersionUID = 8778155499250138516L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -766,7 +766,7 @@ public class MapCreator extends JFrame
 		tileImageReconstructorButton.addActionListener(new AbstractAction("Run the Tile Image Reconstructor")
 		{
 			private static final long serialVersionUID = -1743544461266802405L;
-			
+
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (s_runUtilitiesAsSeperateProcesses)
@@ -794,7 +794,7 @@ public class MapCreator extends JFrame
 		m_panel4.add(Box.createVerticalStrut(30));
 		m_panel4.validate();
 	}
-	
+
 	private void runUtility(final String javaClass)
 	{
 		final List<String> commands = new ArrayList<String>();
@@ -810,7 +810,7 @@ public class MapCreator extends JFrame
 		ProcessRunnerUtil.exec(commands);
 		// example: java -classpath triplea.jar -Dtriplea.map.folder="C:/Users" util/image/CenterPicker
 	}
-	
+
 	private static String getValue(final String arg)
 	{
 		final int index = arg.indexOf('=');
@@ -818,7 +818,7 @@ public class MapCreator extends JFrame
 			return "";
 		return arg.substring(index + 1);
 	}
-	
+
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		final String[] properties = getProperties();
@@ -839,7 +839,7 @@ public class MapCreator extends JFrame
 			else
 				System.out.println("Could not find directory: " + value);
 		}
-		
+
 		boolean usagePrinted = false;
 		for (int argIndex = 0; argIndex < args.length; argIndex++)
 		{

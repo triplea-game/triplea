@@ -14,7 +14,7 @@
 package games.strategy.triplea.ai.Dynamix_AI.Others;
 
 /**
- * 
+ *
  * @author Stephen
  */
 public enum CM_TaskType

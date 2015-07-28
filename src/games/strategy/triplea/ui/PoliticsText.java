@@ -22,9 +22,9 @@ import java.util.Properties;
 
 /**
  * Returns a bunch of messages from politicstext.properties
- * 
+ *
  * @author Edwin van der Wal
- * 
+ *
  */
 public class PoliticsText
 {
@@ -40,7 +40,7 @@ public class PoliticsText
 	private final static String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
 	private final static String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
 	private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
-	
+
 	protected PoliticsText()
 	{
 		final ResourceLoader loader = AbstractUIContext.getResourceLoader();
@@ -60,7 +60,7 @@ public class PoliticsText
 			}
 		}
 	}
-	
+
 	public static PoliticsText getInstance()
 	{
 		if (s_pt == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000)
@@ -70,47 +70,47 @@ public class PoliticsText
 		}
 		return s_pt;
 	}
-	
+
 	private String getString(final String value)
 	{
 		return m_properties.getProperty(value, "NO: " + value + " set.");
 	}
-	
+
 	private String getMessage(final String politicsKey, final String messageKey)
 	{
 		return getString(politicsKey + "." + messageKey);
 	}
-	
+
 	public String getButtonText(final String politicsKey)
 	{
 		return getMessage(politicsKey, BUTTON);
 	}
-	
+
 	public String getDescription(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.DESCRIPTION);
 	}
-	
+
 	public String getNotificationSucccess(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.NOTIFICATION_SUCCESS);
 	}
-	
+
 	public String getNotificationSuccessOthers(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.OTHER_NOTIFICATION_SUCCESS);
 	}
-	
+
 	public String getNotificationFailure(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.NOTIFICATION_FAILURE);
 	}
-	
+
 	public String getNotificationFailureOthers(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.OTHER_NOTIFICATION_FAILURE);
 	}
-	
+
 	public String getAcceptanceQuestion(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.ACCEPT_QUESTION);

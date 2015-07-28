@@ -9,8 +9,8 @@ import java.util.Set;
 public interface IGridEndTurnData extends Serializable
 {
 	public PlayerID getPlayer();
-	
+
 	public Set<Territory> getTerritoryUnitsRemovalAdjustment();
-	
+
 	public boolean getWantToContinuePlaying();
 }

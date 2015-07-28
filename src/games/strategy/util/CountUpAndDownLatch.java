@@ -10,7 +10,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * except that you can increment the latch.
  * Implements AQS behind the scenes similar to CountDownLatch.
  * Class is hobbled together from various learnings and tickets on stackexchange/stackoverflow.
- * 
+ *
  * @author Mark Christopher Duncan (veqryn)
  */
 public class CountUpAndDownLatch implements Serializable
@@ -18,7 +18,7 @@ public class CountUpAndDownLatch implements Serializable
 	private static final long serialVersionUID = -1656388212821764097L;
 	private final Sync sync;
 	private final int originalCount;
-	
+
 	/**
 	 * Constructs a {@link CountUpAndDownLatch} initialized with zero.
 	 */
@@ -27,10 +27,10 @@ public class CountUpAndDownLatch implements Serializable
 		sync = new Sync();
 		originalCount = 0;
 	}
-	
+
 	/**
 	 * Constructs a {@link CountUpAndDownLatch} initialized with the given count.
-	 * 
+	 *
 	 * @param count
 	 *            the number of times {@link #countDown} must be invoked before threads can pass through {@link #await}
 	 * @throws IllegalArgumentException
@@ -45,7 +45,7 @@ public class CountUpAndDownLatch implements Serializable
 		sync = new Sync(initialCount);
 		originalCount = initialCount;
 	}
-	
+
 	/**
 	 * Increment the count by one.
 	 */
@@ -53,7 +53,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		sync.releaseShared(1);
 	}
-	
+
 	/**
 	 * @see CountDownLatch#countDown()
 	 */
@@ -61,7 +61,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		sync.releaseShared(-1);
 	}
-	
+
 	/**
 	 * @see CountDownLatch#countDown()
 	 * @param delta
@@ -71,7 +71,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		sync.releaseShared(delta);
 	}
-	
+
 	/**
 	 * countDown to zero.
 	 */
@@ -79,7 +79,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		applyDelta(Integer.MIN_VALUE);
 	}
-	
+
 	/**
 	 * Reset the latch to its original count.
 	 */
@@ -95,7 +95,7 @@ public class CountUpAndDownLatch implements Serializable
 			applyDelta(diff);
 		}
 	}
-	
+
 	/**
 	 * @see CountDownLatch#getCount()
 	 */
@@ -103,7 +103,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		return sync.getCount();
 	}
-	
+
 	/**
 	 * @return the original count this latch was created with
 	 */
@@ -111,7 +111,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		return originalCount;
 	}
-	
+
 	/**
 	 * @see CountDownLatch#await()
 	 */
@@ -119,7 +119,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		sync.acquireSharedInterruptibly(1);
 	}
-	
+
 	/**
 	 * @see CountDownLatch#await(long,TimeUnit)
 	 */
@@ -127,7 +127,7 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
 	}
-	
+
 	/**
 	 * Returns a string identifying this latch, as well as its state.
 	 * The state, in brackets, includes the String "Count =" followed by the current count.
@@ -137,8 +137,8 @@ public class CountUpAndDownLatch implements Serializable
 	{
 		return super.toString() + "[Count = " + sync.getCount() + "]";
 	}
-	
-	
+
+
 	/**
 	 * Synchronization control for CountingLatch.
 	 * Uses AQS state to represent count.
@@ -146,27 +146,27 @@ public class CountUpAndDownLatch implements Serializable
 	private static final class Sync extends AbstractQueuedSynchronizer
 	{
 		private static final long serialVersionUID = -7639904478060101736L;
-		
+
 		private Sync()
 		{
 		}
-		
+
 		private Sync(final int initialState)
 		{
 			setState(initialState);
 		}
-		
+
 		int getCount()
 		{
 			return getState();
 		}
-		
+
 		@Override
 		protected int tryAcquireShared(final int acquires)
 		{
 			return getState() == 0 ? 1 : -1;
 		}
-		
+
 		@Override
 		protected boolean tryReleaseShared(final int delta)
 		{
@@ -204,16 +204,16 @@ public class CountUpAndDownLatch implements Serializable
  * Class is hobbled together from various learnings and tickets on stackexchange/stackoverflow.
  * If you have access to Java 7, you should probably use Phaser instead, despite its name.
  * All calls to increment, or to wait if zero, will be synchronized on an internal mutex.
- * 
+ *
  * @author Mark Christopher Duncan (veqryn)
  *
 public class CountUpAndDownLatch implements Serializable {
 	private static final long serialVersionUID = -1656388212821764097L;
-	
+
 	private final Sync sync;
 	private final Sync waitIfZeroSync;
 	private final int originalCount;
-	
+
 	**
 	 * Constructs a {@link CountUpAndDownLatch} initialized with zero.
 	 *
@@ -222,10 +222,10 @@ public class CountUpAndDownLatch implements Serializable {
 		sync = new Sync();
 		waitIfZeroSync = new Sync();
 	}
-	
+
 	**
 	 * Constructs a {@link CountUpAndDownLatch} initialized with the given count.
-	 * 
+	 *
 	 * @param count
 	 *          the number of times {@link #countDown} must be invoked before threads can pass through {@link #await}
 	 * @throws IllegalArgumentException
@@ -239,7 +239,7 @@ public class CountUpAndDownLatch implements Serializable {
 		sync = new Sync(count);
 		waitIfZeroSync = new Sync();
 	}
-	
+
 	**
 	 * Increment the count by one.
 	 *
@@ -249,10 +249,10 @@ public class CountUpAndDownLatch implements Serializable {
 			waitIfZeroSync.releaseShared(-1);
 		}
 	}
-	
+
 	**
 	 * If our state is already at zero, we will wait until it becomes positive again before counting down.
-	 * 
+	 *
 	 * @see CountDownLatch#countDown()
 	 * @see CountDownLatch#await()
 	 * @param countDownIfInterrupted
@@ -262,10 +262,10 @@ public class CountUpAndDownLatch implements Serializable {
 	public void countDownOrWaitIfZero(final boolean countDownIfInterrupted) throws InterruptedException {
 		countDownOrWaitIfZero(countDownIfInterrupted, 0L, TimeUnit.MILLISECONDS);
 	}
-	
+
 	**
 	 * If our state is already at zero, we will wait until it becomes positive again before counting down.
-	 * 
+	 *
 	 * @see CountDownLatch#countDown()
 	 * @see CountDownLatch#await(long,TimeUnit)
 	 * @param countDownIfInterrupted
@@ -281,7 +281,7 @@ public class CountUpAndDownLatch implements Serializable {
 				throws InterruptedException {
 		return applyDeltaOrWaitIfZero(-1, countDownIfInterrupted, timeout, unit);
 	}
-	
+
 	**
 	 * @see CountDownLatch#countDown()
 	 * @param delta
@@ -297,10 +297,10 @@ public class CountUpAndDownLatch implements Serializable {
 			sync.releaseShared(delta);
 		}
 	}
-	
+
 	**
 	 * If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
-	 * 
+	 *
 	 * @see CountDownLatch#countDown()
 	 * @see CountDownLatch#await()
 	 * @param delta
@@ -312,10 +312,10 @@ public class CountUpAndDownLatch implements Serializable {
 	public void applyDeltaOrWaitIfZero(final int delta, final boolean applyDeltaIfInterrupted) throws InterruptedException {
 		applyDeltaOrWaitIfZero(delta, applyDeltaIfInterrupted, 0L, TimeUnit.MILLISECONDS);
 	}
-	
+
 	**
 	 * If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
-	 * 
+	 *
 	 * @see CountDownLatch#countDown()
 	 * @see CountDownLatch#await(long,TimeUnit)
 	 * @param delta
@@ -354,7 +354,7 @@ public class CountUpAndDownLatch implements Serializable {
 		applyDelta(delta);
 		return didNotTimeOut;
 	}
-	
+
 	**
 	 * countDown until zero.
 	 *
@@ -366,7 +366,7 @@ public class CountUpAndDownLatch implements Serializable {
 			}
 		}
 	}
-	
+
 	**
 	 * Reset the latch to its original count.
 	 *
@@ -377,19 +377,19 @@ public class CountUpAndDownLatch implements Serializable {
 			applyDelta(diff);
 		}
 	}
-	
+
 	**
 	 * If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
-	 * 
+	 *
 	 * @see CountDownLatch#await()
 	 *
 	public void awaitOrWaitIfZeroToStartAwaiting() throws InterruptedException {
 		awaitOrWaitIfZeroToStartAwaiting(0, 0, TimeUnit.MILLISECONDS);
 	}
-	
+
 	**
 	 * If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
-	 * 
+	 *
 	 * @see CountDownLatch#await(long,TimeUnit)
 	 *
 	public boolean awaitOrWaitIfZeroToStartAwaiting(final long timeoutToWaitOnceAwaiting, final long timeoutToWaitIfZeroToStartAwaiting,

@@ -22,26 +22,26 @@ import java.util.Map;
 
 /**
  * An abstraction of MoveDelegate in order to allow other delegates to extend this.
- * 
+ *
  * @author veqryn
- * 
+ *
  */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate
 {
 	protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();// A collection of UndoableMoves
 	// protected final TransportTracker m_transportTracker = new TransportTracker();
 	protected MovePerformer m_tempMovePerformer;// if we are in the process of doing a move. this instance will allow us to resume the move
-	
-	
+
+
 	public static enum MoveType
 	{
 		DEFAULT, SPECIAL
 	}
-	
+
 	public AbstractMoveDelegate()
 	{
 	}
-	
+
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -56,7 +56,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 			m_tempMovePerformer = null;
 		}
 	}
-	
+
 	/**
 	 * Called before the delegate will stop running.
 	 */
@@ -66,7 +66,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		super.end();
 		m_movesToUndo.clear();
 	}
-	
+
 	@Override
 	public Serializable saveState()
 	{
@@ -77,7 +77,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		state.m_tempMovePerformer = m_tempMovePerformer;
 		return state;
 	}
-	
+
 	@Override
 	public void loadState(final Serializable state)
 	{
@@ -89,18 +89,18 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 			m_movesToUndo = s.m_movesToUndo;
 		m_tempMovePerformer = s.m_tempMovePerformer;
 	}
-	
+
 	/*
 	public TransportTracker getTransportTracker()
 	{
 		return m_transportTracker;
 	}*/
-	
+
 	public List<UndoableMove> getMovesMade()
 	{
 		return new ArrayList<UndoableMove>(m_movesToUndo);
 	}
-	
+
 	public String undoMove(final int moveIndex)
 	{
 		if (m_movesToUndo.isEmpty())
@@ -115,7 +115,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		updateUndoableMoveIndexes();
 		return null;
 	}
-	
+
 	private void updateUndoableMoveIndexes()
 	{
 		for (int i = 0; i < m_movesToUndo.size(); i++)
@@ -123,14 +123,14 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 			m_movesToUndo.get(i).setIndex(i);
 		}
 	}
-	
+
 	protected void updateUndoableMoves(final UndoableMove currentMove)
 	{
 		currentMove.initializeDependencies(m_movesToUndo);
 		m_movesToUndo.add(currentMove);
 		updateUndoableMoveIndexes();
 	}
-	
+
 	protected PlayerID getUnitsOwner(final Collection<Unit> units)
 	{
 		// if we are not in edit mode, return m_player. if we are in edit mode, we use whoever's units these are.
@@ -139,19 +139,19 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		else
 			return units.iterator().next().getOwner();
 	}
-	
+
 	public String move(final Collection<Unit> units, final Route route)
 	{
 		return move(units, route, Collections.<Unit> emptyList());
 	}
-	
+
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded)
 	{
 		return move(units, route, transportsThatCanBeLoaded, new HashMap<Unit, Collection<Unit>>());
 	}
-	
+
 	public abstract String move(final Collection<Unit> units, final Route route, final Collection<Unit> m_transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
-	
+
 	public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units, final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
 				final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data)
 	{
@@ -159,22 +159,22 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 			return SpecialMoveDelegate.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
 		return MoveValidator.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
 	}
-	
+
 	public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player)
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(player);
 	}
-	
+
 	public Collection<Territory> getTerritoriesWhereAirCantLand()
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
 	}
-	
+
 	public Collection<Territory> getTerritoriesWhereUnitsCantFight()
 	{
 		return new UnitsThatCantFightUtil(getData()).getTerritoriesWhereUnitsCantFight(m_player);
 	}
-	
+
 	/**
 	 * @param unit
 	 *            referring unit
@@ -186,10 +186,10 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 	{
 		return AbstractMoveDelegate.getRouteUsedToMoveInto(m_movesToUndo, unit, end);
 	}
-	
+
 	/**
 	 * This method is static so it can be called from the client side.
-	 * 
+	 *
 	 * @param undoableMoves
 	 *            list of moves that have been done
 	 * @param unit
@@ -211,41 +211,41 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 		}
 		return null;
 	}
-	
+
 	public static BattleTracker getBattleTracker(final GameData data)
 	{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
 	}
-	
+
 	protected boolean isWW2V2()
 	{
 		return games.strategy.triplea.Properties.getWW2V2(getData());
 	}
-	
+
 	/*protected boolean isWW2V3()
 	{
 		return games.strategy.triplea.Properties.getWW2V3(getData());
 	}*/
-	
+
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
 		// nothing for now
 	}
-	
+
 	public boolean getHasPostedTurnSummary()
 	{
 		return false;
 	}
-	
+
 	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame)
 	{
 		return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
 	}
-	
+
 	public abstract int PUsAlreadyLost(final Territory t);
-	
+
 	public abstract void PUsLost(final Territory t, final int amt);
-	
+
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */

@@ -11,21 +11,21 @@ import java.util.Map.Entry;
 
 /**
  * A holder for BattleRecords
- * 
+ *
  * @author Veqryn
- * 
+ *
  */
 public class BattleRecordsList extends GameDataComponent implements Serializable
 {
 	private static final long serialVersionUID = 7515693859612849475L;
-	
+
 	private final Map<Integer, BattleRecords> m_battleRecords = new HashMap<Integer, BattleRecords>();
-	
+
 	public BattleRecordsList(final GameData data)
 	{
 		super(data);
 	}
-	
+
 	public static void addRecords(final Map<Integer, BattleRecords> recordList, final Integer currentRound, final BattleRecords other)
 	{
 		final BattleRecords current = recordList.get(currentRound);
@@ -37,7 +37,7 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		current.addRecord(other);
 		recordList.put(currentRound, current);
 	}
-	
+
 	public static void removeRecords(final Map<Integer, BattleRecords> recordList, final Integer round, final BattleRecords other)
 	{
 		final BattleRecords current = recordList.get(round);
@@ -46,12 +46,12 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		else
 			current.removeRecord(other);
 	}
-	
+
 	public BattleRecords getCurrentRound()
 	{
 		return m_battleRecords.get(getData().getSequence().getRound());
 	}
-	
+
 	public BattleRecords getCurrentRoundCopy()
 	{
 		final BattleRecords current = m_battleRecords.get(getData().getSequence().getRound());
@@ -60,17 +60,17 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		else
 			return new BattleRecords(current);
 	}
-	
+
 	public Map<Integer, BattleRecords> getBattleRecordsMap()
 	{
 		return m_battleRecords;
 	}
-	
+
 	public Map<Integer, BattleRecords> getBattleRecordsMapCopy()
 	{
 		return copyList(m_battleRecords);
 	}
-	
+
 	private static Map<Integer, BattleRecords> copyList(final Map<Integer, BattleRecords> records)
 	{
 		final Map<Integer, BattleRecords> copy = new HashMap<Integer, BattleRecords>();
@@ -80,7 +80,7 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		}
 		return copy;
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -95,7 +95,7 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		}
 		return sb.toString();
 	}
-	
+
 	// Interpretation stuff below
 	public static int getTUVdamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl, final int beginningRound, final int endRound,
 				final boolean currentRoundOnly, final boolean includeNullPlayer)
@@ -133,10 +133,10 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		}
 		return damageCausedByAttacker;
 	}
-	
+
 	/**
 	 * Determines if there were any battles that match the following criteria:
-	 * 
+	 *
 	 * @param attacker
 	 *            if null then any player
 	 * @param defender

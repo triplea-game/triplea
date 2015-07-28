@@ -13,7 +13,7 @@
  */
 /*
  * TriggerAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
@@ -59,7 +59,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			return mAvailableTechsHandler(field, attachment);
 		return super.printOption(field, attachment);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mAvailableTechsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -93,7 +93,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mAvailableTechsHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mUnitPropertyHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -117,7 +117,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mUnitPropertyHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mPlacementHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -149,12 +149,12 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mPlacementHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	private String mPurchaseHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mSupportHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -182,7 +182,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mSupportHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mPlayersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -208,7 +208,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mTechHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
@@ -234,7 +234,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	private String mFrontierHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
@@ -251,7 +251,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			throw new AttachmentExportException("e: " + e + " for mFrontierHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private String mTriggerHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
