@@ -34,7 +34,6 @@ import java.util.Random;
  * Responsible for initializing an N-Puzzle game.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class InitializationDelegate extends AbstractDelegate
 {

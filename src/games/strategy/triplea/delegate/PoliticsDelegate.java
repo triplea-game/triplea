@@ -54,7 +54,6 @@ import java.util.Set;
  * Responsible allowing players to perform politicalActions
  * 
  * @author Edwin van der Wal
- * @version 1.0
  * 
  */
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate

@@ -35,7 +35,6 @@ import java.util.Collection;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Tracks the original owner of things.
  *          Needed since territories and factories must revert

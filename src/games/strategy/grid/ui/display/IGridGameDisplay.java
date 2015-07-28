@@ -24,7 +24,6 @@ import java.util.Collection;
 
 /**
  * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public interface IGridGameDisplay extends IDisplay
 {

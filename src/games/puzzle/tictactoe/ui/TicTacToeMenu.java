@@ -27,7 +27,6 @@ import javax.swing.JScrollPane;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class TicTacToeMenu extends GridGameMenu<GridGameFrame>
 {

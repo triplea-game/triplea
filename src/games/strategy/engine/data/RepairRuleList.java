@@ -25,7 +25,6 @@ import java.util.Map;
 /**
  * 
  * @author Kevin Comcowich
- * @version 1.0
  */
 public class RepairRuleList extends GameDataComponent
 {

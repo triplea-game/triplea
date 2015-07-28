@@ -23,7 +23,6 @@ import java.io.Serializable;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Not an interface because we want the perform() method to be protected.
  * 

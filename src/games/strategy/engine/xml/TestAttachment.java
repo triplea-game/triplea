@@ -25,7 +25,6 @@ import games.strategy.engine.data.GameData;
 /**
  * 
  * @author Sean Bridges
- * @version
  */
 public class TestAttachment extends DefaultAttachment
 {

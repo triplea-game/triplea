@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public abstract class TechAdvance extends NamedAttachable implements Serializable

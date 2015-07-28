@@ -23,7 +23,6 @@ import games.strategy.engine.data.annotations.GameProperty;
  * Represents a sliding tile in a sliding tile game.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class Tile extends DefaultAttachment
 {

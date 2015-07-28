@@ -72,7 +72,6 @@ import java.util.TreeSet;
  * the adding or removing of resources is done.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate
 {

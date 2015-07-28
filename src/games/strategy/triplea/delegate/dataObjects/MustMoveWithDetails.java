@@ -26,7 +26,6 @@ import java.util.Map;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A response to a must move query.
  *          Returns a mapping of unit -> collection of units.

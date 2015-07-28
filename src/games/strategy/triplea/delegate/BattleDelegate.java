@@ -66,7 +66,6 @@ import java.util.Set;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate

@@ -87,7 +87,6 @@ import java.io.Serializable;
  * <h3>License</h3>
  * 
  * 
- @version 8
  */
 public class MersenneTwister extends java.util.Random implements Serializable
 {

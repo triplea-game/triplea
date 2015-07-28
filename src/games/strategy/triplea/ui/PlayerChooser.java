@@ -37,7 +37,6 @@ import javax.swing.ListSelectionModel;
 /**
  * 
  * @author Tony Clayton
- * @version 1.0
  */
 public class PlayerChooser extends JOptionPane
 {

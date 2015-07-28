@@ -35,7 +35,6 @@ import javax.swing.filechooser.FileFilter;
  * Presents a clickable label with the currently selected file name, through which a file dialog panel is accessible to change the file.
  * 
  * @author Lane O.B. Schwartz
- * @version $LastChangedDate$
  */
 public class FileProperty extends AEditableProperty
 {

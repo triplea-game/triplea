@@ -71,7 +71,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Utiltity class for determing casualties and selecting casualties. The code
  *          was being dduplicated all over the place.

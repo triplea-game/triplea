@@ -44,7 +44,6 @@ import java.util.List;
  * <p>
  * 
  * @author sgb
- * @version $LastChangedDate: 2008-06-10 12:09:22 -0600 (Thu, 14 Feb 2008) $
  */
 public class TripleAUnit extends Unit
 {

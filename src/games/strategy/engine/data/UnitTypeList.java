@@ -28,7 +28,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A collection of unit types
  */

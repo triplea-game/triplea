@@ -32,7 +32,6 @@ import javax.swing.JScrollPane;
  * </p>
  * 
  * @author unascribed
- * @version 1.0
  */
 public class TechResultsDisplay extends JPanel
 {

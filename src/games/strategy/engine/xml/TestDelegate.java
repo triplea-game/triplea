@@ -26,7 +26,6 @@ import java.io.Serializable;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A simple dumb delegate, dont acutally call these methods.
  *          Simply to satisfy the interface requirements for testing.

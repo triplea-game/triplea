@@ -23,7 +23,6 @@ package games.strategy.triplea;
  * Constants used throughout the game.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public interface Constants
 {

@@ -42,7 +42,6 @@ import java.util.HashSet;
  * 
  * @author Adam Jette, and Mark Christopher Duncan
  * 
- * @version 1.0
  */
 public class PlayerAttachment extends DefaultAttachment
 {

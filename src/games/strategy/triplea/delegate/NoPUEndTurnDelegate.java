@@ -27,7 +27,6 @@ import java.util.Collection;
 /**
  * 
  * @author Adam Jette
- * @version 1.0
  * 
  *          At the end of the turn collect NO income.
  */

@@ -38,7 +38,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Tony Clayton, but abstracted by Veqryn
- * @version 1.0
  */
 public abstract class AbstractForumPosterPanel extends ActionPanel
 {

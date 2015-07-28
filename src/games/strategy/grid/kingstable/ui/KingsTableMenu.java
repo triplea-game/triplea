@@ -27,7 +27,6 @@ import javax.swing.JScrollPane;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate: 2012-04-19 18:13:58 +0800 (Thu, 19 Apr 2012) $
  */
 public class KingsTableMenu extends GridGameMenu<GridGameFrame>
 {

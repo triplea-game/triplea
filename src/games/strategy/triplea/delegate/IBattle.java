@@ -35,7 +35,6 @@ import java.util.List;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Represents a battle.
  */

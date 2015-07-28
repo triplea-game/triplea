@@ -17,7 +17,6 @@ import javax.swing.JComponent;
  * </p>
  * 
  * @author unascribed
- * @version 1.0
  */
 public interface IEditableProperty
 {

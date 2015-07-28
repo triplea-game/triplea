@@ -44,7 +44,6 @@ import java.util.Set;
  * TechnologyDelegate to run correctly.
  * 
  * @author Ali Ibrahim
- * @version 1.0
  */
 public class TechActivationDelegate extends BaseTripleADelegate
 {

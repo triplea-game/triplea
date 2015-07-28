@@ -42,7 +42,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Kevin Comcowich
- * @version 1.0
  */
 public class RepairPanel extends ActionPanel
 {

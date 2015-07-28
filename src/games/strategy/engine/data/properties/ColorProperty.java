@@ -30,7 +30,6 @@ import javax.swing.SwingUtilities;
  * Presents a clickable label with the currently selected color, through which a color swatch panel is accessable to change the color.
  * 
  * @author Lane O.B. Schwartz
- * @version $LastChangedDate$
  */
 public class ColorProperty extends AEditableProperty
 {

@@ -29,7 +29,6 @@ import javax.swing.JScrollPane;
  * Represents the menu bar for an n-puzzle game.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class NPuzzleMenu extends GridGameMenu<GridGameFrame>
 {

@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameSequence extends GameDataComponent implements Iterable<GameStep>
 {

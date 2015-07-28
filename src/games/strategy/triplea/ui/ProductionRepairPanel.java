@@ -63,7 +63,6 @@ import javax.swing.border.EtchedBorder;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  * 
  */

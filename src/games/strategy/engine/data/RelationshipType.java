@@ -1,7 +1,6 @@
 /**
  * 
  * @author Edwin van der Wal
- * @version 0.1
  * 
  *          A Type of Relationship between PlayerIDs
  */

@@ -33,7 +33,6 @@ import java.util.Collection;
  * Responsible for performing a move in a game of Tic Tac Toe.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 {

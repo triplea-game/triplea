@@ -30,7 +30,6 @@ import javax.swing.JComponent;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          An image that can be zoomed in and out.
  * 

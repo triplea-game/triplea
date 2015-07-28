@@ -51,7 +51,6 @@ import java.util.Set;
  * 
  * 
  * @author Sean Bridges, last major modification by edwinvanderwal
- * @version 1.0
  * 
  */
 public class Route implements java.io.Serializable, Iterable<Territory>

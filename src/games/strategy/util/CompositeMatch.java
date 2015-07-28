@@ -29,7 +29,6 @@ import java.util.List;
  * matches added.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public abstract class CompositeMatch<T> extends Match<T>
 {

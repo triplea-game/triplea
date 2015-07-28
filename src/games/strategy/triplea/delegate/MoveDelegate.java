@@ -62,7 +62,6 @@ import java.util.Set;
  * Responsible for checking the validity of a move, and for moving the units. <br>
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate

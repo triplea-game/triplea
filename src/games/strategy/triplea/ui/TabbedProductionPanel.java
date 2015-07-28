@@ -50,7 +50,6 @@ import javax.swing.JTabbedPane;
 /**
  * 
  * @author Edwin van der Wal
- * @version 1.0
  * 
  * 
  */

@@ -33,7 +33,6 @@ import java.io.Serializable;
  * Responsible for performing a move in a game of n-puzzle.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 {

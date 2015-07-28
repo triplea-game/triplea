@@ -28,7 +28,6 @@ import java.util.List;
  * which correspond to the piece to be moved, and the desination for the move.
  * 
  * @author Lane Schwartz (original), Veqryn (abstraction)
- * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
 public class GridPlayData implements IGridPlayData
 {

@@ -74,7 +74,6 @@ import javax.swing.JOptionPane;
 /**
  * 
  * @author Sean Bridges, modified by Erik von der Osten
- * @version 1.1
  */
 public class MovePanel extends AbstractMovePanel
 {

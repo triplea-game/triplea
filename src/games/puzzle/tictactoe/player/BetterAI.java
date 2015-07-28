@@ -34,7 +34,6 @@ import java.util.Map.Entry;
  * Capable of playing using either the minimax algorithm or alpha-beta algorithm.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class BetterAI extends GridAbstractAI
 {

@@ -35,7 +35,6 @@ import javax.swing.SwingUtilities;
  * Represents a human player of Grid Games.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2012-07-25 15:19:19 +0800 (Wed, 25 Jul 2012) $
  */
 public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implements IGridGamePlayer
 {

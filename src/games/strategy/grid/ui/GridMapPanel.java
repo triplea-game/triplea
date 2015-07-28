@@ -76,7 +76,6 @@ import javax.swing.border.EmptyBorder;
  * Custom component for displaying a Grid Game gameboard and pieces.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction and major rewrite)
- * @version $LastChangedDate: 2012-04-19 18:13:58 +0800 (Thu, 19 Apr 2012) $
  */
 public abstract class GridMapPanel extends ImageScrollerLargeView implements MouseListener
 {

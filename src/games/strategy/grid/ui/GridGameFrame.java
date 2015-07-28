@@ -115,7 +115,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * User interface for Grid Games.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction and major rewrite)
- * @version $LastChangedDate: 2012-11-11 02:04:07 +0800 (Sun, 11 Nov 2012) $
  */
 public class GridGameFrame extends MainGameFrame
 {

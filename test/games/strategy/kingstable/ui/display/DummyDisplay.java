@@ -27,7 +27,6 @@ import java.util.Collection;
  * Dummy display for a King's Table game, for use in testing.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class DummyDisplay implements IGridGameDisplay
 {

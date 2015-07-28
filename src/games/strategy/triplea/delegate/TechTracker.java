@@ -33,7 +33,6 @@ import java.util.Collection;
  * Tracks which players have which technology advances.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class TechTracker implements java.io.Serializable
 {

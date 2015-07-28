@@ -37,7 +37,6 @@ import javax.swing.border.EtchedBorder;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A small image that tracks a selection area within a small image. Generally
  *          used in conjunction with a ImageScrollerLarrgeView.

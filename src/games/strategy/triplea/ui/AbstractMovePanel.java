@@ -27,7 +27,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Erik von der Osten (based on original move panel by Sean Bridges)
- * @version 1.0
  */
 public abstract class AbstractMovePanel extends ActionPanel
 {

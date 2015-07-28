@@ -23,7 +23,6 @@ import games.strategy.engine.data.PlayerID;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public interface GameStepListener
 {

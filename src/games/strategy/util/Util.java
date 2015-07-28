@@ -29,7 +29,6 @@ import java.util.List;
  * Some utility methods for dealing with collections.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class Util
 {

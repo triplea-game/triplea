@@ -25,7 +25,6 @@ import java.awt.Image;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class FlagIconImageFactory extends ImageFactory
 {

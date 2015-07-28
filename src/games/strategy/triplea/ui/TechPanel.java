@@ -58,7 +58,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class TechPanel extends ActionPanel
 {

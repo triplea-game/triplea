@@ -26,7 +26,6 @@ import java.util.List;
  * True if one match returns true.
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public class CompositeMatchOr<T> extends CompositeMatch<T>

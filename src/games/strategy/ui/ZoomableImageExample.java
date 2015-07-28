@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Start with one arg that is the filename
  *          press z to set the zoom.

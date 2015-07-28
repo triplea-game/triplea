@@ -35,7 +35,6 @@ import java.util.Stack;
  * Capable of playing using depth-limited iterative deepening depth-first search algorithm.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class BetterAI extends GridAbstractAI
 {

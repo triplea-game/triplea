@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable
 {

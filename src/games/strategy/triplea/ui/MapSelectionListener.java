@@ -23,7 +23,6 @@ import games.strategy.engine.data.Territory;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public interface MapSelectionListener
 {

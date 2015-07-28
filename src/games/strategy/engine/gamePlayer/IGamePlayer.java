@@ -27,7 +27,6 @@ import games.strategy.engine.data.PlayerID;
  * Game players communicate to the game through a PlayerBridge.
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public interface IGamePlayer extends IRemotePlayer

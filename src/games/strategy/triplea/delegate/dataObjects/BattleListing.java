@@ -33,7 +33,6 @@ import java.util.Set;
  * which battles are left to be fought.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class BattleListing implements Serializable
 {

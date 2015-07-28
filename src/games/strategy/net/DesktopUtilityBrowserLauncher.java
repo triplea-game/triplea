@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
  * Author: Dem Pilafian<br>
  * Public Domain Software -- Free to Use as You Like
  * 
- * @version 3.1, June 6, 2010
  */
 public class DesktopUtilityBrowserLauncher
 {

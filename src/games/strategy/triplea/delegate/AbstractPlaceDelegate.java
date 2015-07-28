@@ -63,7 +63,6 @@ import java.util.Map.Entry;
  * <p>
  * 
  * @author Sean Bridges and Veqryn
- * @version 1.0
  *          Known limitations.
  *          Doesn't take into account limits on number of factories that can be produced.
  *          Solved (by frigoref):

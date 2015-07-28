@@ -21,7 +21,6 @@ package games.strategy.engine.data;
 /**
  * 
  * @author Edwin van der Wal
- * @version 0.1
  * 
  *          A collection of Relationship types
  */

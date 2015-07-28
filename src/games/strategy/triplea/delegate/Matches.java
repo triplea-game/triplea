@@ -16,7 +16,6 @@
  * 
  * Created on November 8, 2001, 4:29 PM
  * 
- * @version $LastChangedDate$
  */
 package games.strategy.triplea.delegate;
 
@@ -93,7 +92,6 @@ import java.util.Set;
  * The benefits should be obvious to any right minded person.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class Matches
 {

@@ -39,7 +39,6 @@ import java.util.Set;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Holds a collection of territories, and the links between them.
  *          Utility methods for finding routes and distances between different territories.

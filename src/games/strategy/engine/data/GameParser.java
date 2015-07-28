@@ -72,7 +72,6 @@ import org.xml.sax.SAXParseException;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameParser
 {

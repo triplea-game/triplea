@@ -34,7 +34,6 @@ import java.util.Iterator;
 /**
  * 
  * @author Edwin van der Wal
- * @version 1.0
  */
 public class TerritoryEffectAttachment extends DefaultAttachment
 {

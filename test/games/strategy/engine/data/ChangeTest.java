@@ -33,7 +33,6 @@ import junit.framework.TestCase;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class ChangeTest extends TestCase
 {

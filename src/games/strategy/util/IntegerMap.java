@@ -32,7 +32,6 @@ import java.util.Set;
  * Supports adding and comparing of maps.
  * 
  * @author Sean Bridges
- * @version 2.0
  * 
  */
 public class IntegerMap<T> implements Cloneable, Serializable

@@ -43,7 +43,6 @@ import javax.swing.ImageIcon;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class UnitImageFactory
 {

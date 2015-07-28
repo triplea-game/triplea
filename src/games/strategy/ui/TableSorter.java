@@ -56,7 +56,6 @@ import javax.swing.table.TableModel;
  * @author Brendon McLean
  * @author Dan van Enckevort
  * @author Parwinder Sekhon
- * @version 2.0 02/27/04
  */
 public class TableSorter extends AbstractTableModel
 {

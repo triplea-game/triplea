@@ -63,7 +63,6 @@ import javax.swing.SwingUtilities;
 
 /**
  * @author Sean Bridges
- * @version 1.0
  */
 public class TripleA extends AbstractGameLoader implements IGameLoader
 {

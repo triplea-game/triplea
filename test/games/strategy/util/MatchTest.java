@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 @SuppressWarnings("unchecked")
 public class MatchTest extends TestCase

@@ -49,7 +49,6 @@ import javax.swing.SwingUtilities;
  * Custom component for displaying a n-puzzle gameboard.
  * 
  * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2013-02-03 04:49:39 +0800 (Sun, 03 Feb 2013) $
  */
 public class NPuzzleMapPanel extends GridMapPanel
 {

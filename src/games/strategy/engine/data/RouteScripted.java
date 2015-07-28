@@ -26,7 +26,6 @@ import java.util.List;
  * If the Route only has a start, it will return the start when you call .end(), and it will return a length of 1 if the length is really zero.
  * 
  * @author Chris Duncan
- * @version 1.0
  * 
  */
 public class RouteScripted extends Route

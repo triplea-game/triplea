@@ -53,7 +53,6 @@ import javax.swing.JTextArea;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class UnitChooser extends JPanel
 {

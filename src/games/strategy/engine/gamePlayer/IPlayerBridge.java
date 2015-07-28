@@ -26,7 +26,6 @@ import java.util.Properties;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Communication with the GamePlayer goes through the PlayerBridge to
  *          make the game network transparent.

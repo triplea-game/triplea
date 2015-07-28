@@ -49,7 +49,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Sean Bridges, edited by Erik von der Osten
- * @version 1.1
  */
 public class PlacePanel extends AbstractMovePanel
 {

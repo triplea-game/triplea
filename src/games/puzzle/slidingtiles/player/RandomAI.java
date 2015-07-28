@@ -33,7 +33,6 @@ import java.util.Random;
  * Plays by attempting to play on a random square on the board.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class RandomAI extends GridAbstractAI
 {

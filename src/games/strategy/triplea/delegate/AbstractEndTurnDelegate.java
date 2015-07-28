@@ -60,7 +60,6 @@ import java.util.List;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          At the end of the turn collect income.
  */

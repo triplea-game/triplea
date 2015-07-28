@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * 
  * @author Sean Bridges & Mark Christopher Duncan
- * @version 1.1
  */
 public class CasualtyDetails extends CasualtyList implements Serializable
 {

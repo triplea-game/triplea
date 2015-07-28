@@ -70,7 +70,6 @@ import javax.swing.WindowConstants;
  * UI for fighting battles.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class BattlePanel extends ActionPanel
 {

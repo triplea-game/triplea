@@ -28,7 +28,6 @@ import java.io.ObjectInputStream;
  * Please refer to the comments on GameObjectOutputStream
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class GameObjectInputStream extends ObjectInputStream
 {

@@ -30,7 +30,6 @@ import java.util.Map;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID>

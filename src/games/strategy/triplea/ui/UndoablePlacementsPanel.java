@@ -19,7 +19,6 @@ import games.strategy.engine.data.Route;
 /**
  * 
  * @author Erik von der Osten
- * @version 1.0
  */
 public class UndoablePlacementsPanel extends AbstractUndoableMovesPanel
 {

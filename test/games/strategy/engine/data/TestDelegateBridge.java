@@ -38,7 +38,6 @@ import java.util.Properties;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          Not for actual use, suitable for testing. Never returns messages, but can get
  *          random and implements changes immediately.

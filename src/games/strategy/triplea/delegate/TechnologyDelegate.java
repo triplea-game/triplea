@@ -63,7 +63,6 @@ import java.util.Map.Entry;
  * TechActivationDelegate which actually activates the tech.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate
 {

@@ -21,7 +21,6 @@ package games.strategy.net;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public interface IMessengerErrorListener
 {

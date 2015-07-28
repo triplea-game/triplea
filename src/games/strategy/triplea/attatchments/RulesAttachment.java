@@ -58,7 +58,6 @@ import java.util.Set;
 /**
  * 
  * @author Kevin Comcowich and Veqryn (Mark Christopher Duncan)
- * @version 1.2
  */
 public class RulesAttachment extends AbstractPlayerRulesAttachment implements ICondition
 {

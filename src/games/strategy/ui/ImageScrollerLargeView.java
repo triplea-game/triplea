@@ -42,7 +42,6 @@ import javax.swing.SwingUtilities;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  *          A large image that can be scrolled according to a ImageScrollModel.
  *          Generally used in conjunction with a ImageScrollerSmallView.

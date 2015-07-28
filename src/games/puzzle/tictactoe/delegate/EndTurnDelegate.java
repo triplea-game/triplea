@@ -25,7 +25,6 @@ import java.io.Serializable;
  * Responsible for checking for a winner in a game of Tic Tac Toe.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate$
  */
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate
 {

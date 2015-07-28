@@ -38,7 +38,6 @@ import javax.swing.JPanel;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class ScrollableTextField extends JPanel
 {

@@ -23,7 +23,6 @@ import java.io.Serializable;
 /**
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class Territory extends NamedAttachable implements NamedUnitHolder, Serializable, Comparable<Territory>
 {

@@ -83,7 +83,6 @@ import javax.swing.SwingUtilities;
  * It should be using a Change done in a delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer
 {

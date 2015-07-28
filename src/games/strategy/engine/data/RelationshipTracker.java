@@ -18,7 +18,6 @@
  */
 /**
  * @author Edwin van der Wal
- * @version 1.0
  * 
  */
 package games.strategy.engine.data;

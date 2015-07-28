@@ -21,7 +21,6 @@ import java.util.Collection;
  * @param <Play>
  *            class capable of representing a game play
  * @author Lane Schwartz
- * @version $LastChangedDate$
  * @see "Chapter 6 of Artificial Intelligence, 2nd ed. by Stuart Russell & Peter Norvig"
  */
 public abstract class GameState<Play>

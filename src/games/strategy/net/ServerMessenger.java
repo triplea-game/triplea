@@ -60,7 +60,6 @@ import java.util.logging.Logger;
  * A Messenger that can have many clients connected to it.
  * 
  * @author Sean Bridges
- * @version 1.0
  */
 public class ServerMessenger implements IServerMessenger, NIOSocketListener
 {

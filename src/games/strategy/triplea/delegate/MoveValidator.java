@@ -16,7 +16,6 @@
  * 
  * Created on November 9, 2001, 4:05 PM
  * 
- * @version $LastChangedDate$
  */
 package games.strategy.triplea.delegate;
 

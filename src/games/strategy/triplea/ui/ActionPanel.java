@@ -34,7 +34,6 @@ import javax.swing.border.EmptyBorder;
  * 
  * 
  * @author Sean Bridges
- * @version 1.0
  * 
  */
 public abstract class ActionPanel extends JPanel

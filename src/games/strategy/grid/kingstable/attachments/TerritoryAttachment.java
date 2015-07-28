@@ -23,7 +23,6 @@ import games.strategy.engine.data.annotations.GameProperty;
  * Territory attachment for King's Table.
  * 
  * @author Lane Schwartz
- * @version $LastChangedDate: 2012-07-06 21:37:33 +0800 (Fri, 06 Jul 2012) $
  */
 public class TerritoryAttachment extends DefaultAttachment
 {
