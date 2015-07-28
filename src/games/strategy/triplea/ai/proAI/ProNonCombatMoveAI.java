@@ -66,7 +66,7 @@ import java.util.logging.Level;
 public class ProNonCombatMoveAI
 {
 	public static double WIN_PERCENTAGE = 95;
-	public static double MIN_WIN_PERCENTAGE = 80;
+	public static double MIN_WIN_PERCENTAGE = 75;
 	
 	// Utilities
 	private final ProUtils utils;
@@ -271,25 +271,28 @@ public class ProNonCombatMoveAI
 			final Unit u = it.next();
 			if (unitMoveMap.get(u).size() == 1)
 			{
-				final Territory currentTerritory = unitMoveMap.get(u).iterator().next();
-				boolean canBeTransported = false;
-				for (final ProAmphibData pad : transportMapList)
+				final Territory onlyTerritory = unitMoveMap.get(u).iterator().next();
+				if (onlyTerritory.equals(unitTerritoryMap.get(u)))
 				{
-					for (final Territory t : pad.getTransportMap().keySet())
+					boolean canBeTransported = false;
+					for (final ProAmphibData pad : transportMapList)
 					{
-						if (pad.getTransportMap().get(t).contains(currentTerritory))
-							canBeTransported = true;
+						for (final Territory t : pad.getTransportMap().keySet())
+						{
+							if (pad.getTransportMap().get(t).contains(onlyTerritory))
+								canBeTransported = true;
+						}
+						for (final Territory t : pad.getSeaTransportMap().keySet())
+						{
+							if (pad.getSeaTransportMap().get(t).contains(onlyTerritory))
+								canBeTransported = true;
+						}
 					}
-					for (final Territory t : pad.getSeaTransportMap().keySet())
+					if (!canBeTransported)
 					{
-						if (pad.getSeaTransportMap().get(t).contains(currentTerritory))
-							canBeTransported = true;
+						moveMap.get(onlyTerritory).getCantMoveUnits().add(u);
+						it.remove();
 					}
-				}
-				if (!canBeTransported)
-				{
-					moveMap.get(currentTerritory).getCantMoveUnits().add(u);
-					it.remove();
 				}
 			}
 		}
@@ -355,7 +358,7 @@ public class ProNonCombatMoveAI
 		for (final Territory t : moveMap.keySet())
 		{
 			final boolean hasAlliedLandUnits = Match.someMatch(moveMap.get(t).getCantMoveUnits(), ProMatches.unitIsAlliedLandAndNotInfra(player, data));
-			if (!t.isWater() && !hasAlliedLandUnits && Matches.territoryHasEnemyNonNeutralNeighborWithEnemyUnitMatching(data, player, Matches.UnitIsLand).match(t))
+			if (!t.isWater() && !hasAlliedLandUnits && ProMatches.territoryHasNeighborOwnedByAndHasLandUnit(data, player, utils.getPotentialEnemyPlayers(player)).match(t))
 			{
 				territoriesToDefendWithOneUnit.add(t);
 			}
@@ -546,7 +549,8 @@ public class ProNonCombatMoveAI
 			final boolean isNotFactoryAndShouldHold = !hasFactory && (minResult.getTUVSwing() <= 0 || !minResult.isHasLandUnitRemaining());
 			final boolean canAlreadyBeHeld = minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - WIN_PERCENTAGE);
 			final boolean isNotFactoryAndHasNoEnemyNeighbors = !t.isWater() && !hasFactory
-						&& data.getMap().getNeighbors(t, ProMatches.territoryCanMoveLandUnitsAndIsEnemy(player, data)).isEmpty();
+						&& !ProMatches.territoryHasNeighborOwnedByAndHasLandUnit(data, player, utils.getPotentialEnemyPlayers(player)).match(t);
+			// && data.getMap().getNeighbors(t, ProMatches.territoryCanMoveLandUnitsAndIsEnemy(player, data)).isEmpty();
 			final boolean isNotFactoryAndOnlyAmphib = !t.isWater() && !hasFactory && Match.noneMatch(moveMap.get(t).getMaxUnits(), Matches.UnitIsLand) && cantMoveUnitValue < 5;
 			if (!patd.isCanHold() || patd.getValue() <= 0 || isLandAndCanOnlyBeAttackedByAir || isNotFactoryAndShouldHold || canAlreadyBeHeld
 						|| isNotFactoryAndHasNoEnemyNeighbors || isNotFactoryAndOnlyAmphib)
@@ -1065,7 +1069,6 @@ public class ProNonCombatMoveAI
 			{
 				final ProAmphibData amphibData = it.next();
 				final Unit transport = amphibData.getTransport();
-				final Territory currentTerritory = unitTerritoryMap.get(transport);
 				
 				// Get all units that have already moved
 				final List<Unit> alreadyMovedUnits = new ArrayList<Unit>();
@@ -1130,7 +1133,7 @@ public class ProNonCombatMoveAI
 				// Transport amphib units to best sea territory
 				for (final Territory t : amphibData.getSeaTransportMap().keySet())
 				{
-					if (moveMap.get(t) != null && moveMap.get(t).getValue() > maxValue && !t.equals(currentTerritory))
+					if (moveMap.get(t) != null && moveMap.get(t).getValue() > maxValue) // && !t.equals(currentTerritory))
 					{
 						// Find units to load
 						final Set<Territory> territoriesCanLoadFrom = amphibData.getSeaTransportMap().get(t);
@@ -1153,7 +1156,8 @@ public class ProNonCombatMoveAI
 					for (final Territory t : possibleUnloadTerritories)
 					{
 						final int numSeaNeighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size();
-						if (moveMap.get(t) != null && moveMap.get(t).isCanHold() && numSeaNeighbors > maxNumSeaNeighbors)
+						final boolean isAdjacentToEnemy = ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data).match(t);
+						if (moveMap.get(t) != null && (moveMap.get(t).isCanHold() || !isAdjacentToEnemy) && numSeaNeighbors > maxNumSeaNeighbors)
 						{
 							unloadToTerritory = t;
 							maxNumSeaNeighbors = numSeaNeighbors;
@@ -1615,8 +1619,6 @@ public class ProNonCombatMoveAI
 				int maxNeedAmphibUnitValue = Integer.MIN_VALUE;
 				for (final Territory t : unitMoveMap.get(u))
 				{
-					LogUtils.log(Level.FINEST, t + " with value=" + moveMap.get(t).getValue());
-					
 					if (moveMap.get(t).isCanHold() && moveMap.get(t).getValue() >= maxValue)
 					{
 						// Find transport capacity of neighboring (distance 1) transports
@@ -2038,6 +2040,23 @@ public class ProNonCombatMoveAI
 			for (final String key : printMap.keySet())
 			{
 				LogUtils.log(Level.FINEST, "    " + printMap.get(key) + " " + key);
+			}
+			LogUtils.log(Level.FINEST, "  --- My max amphib units ---");
+			final Map<String, Integer> printMap5 = new HashMap<String, Integer>();
+			for (final Unit unit : moveMap.get(t).getMaxAmphibUnits())
+			{
+				if (printMap5.containsKey(unit.toStringNoOwner()))
+				{
+					printMap5.put(unit.toStringNoOwner(), printMap5.get(unit.toStringNoOwner()) + 1);
+				}
+				else
+				{
+					printMap5.put(unit.toStringNoOwner(), 1);
+				}
+			}
+			for (final String key : printMap5.keySet())
+			{
+				LogUtils.log(Level.FINEST, "    " + printMap5.get(key) + " " + key);
 			}
 			final List<Unit> units3 = moveMap.get(t).getUnits();
 			LogUtils.log(Level.FINEST, "  --- My actual units ---");

@@ -1162,8 +1162,8 @@ public class ProPurchaseAI
 				if (!t.isWater() && placeTerritory.getStrategicValue() >= 1 && placeTerritory.isCanHold())
 				{
 					final boolean hasEnemyNeighbors = !data.getMap().getNeighbors(t, ProMatches.territoryIsEnemyLand(player, data)).isEmpty();
-					final Set<Territory> nearbyLandTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
-					final int numNearbyEnemyTerritories = Match.countMatches(nearbyLandTerritories, Matches.isTerritoryEnemy(player, data));
+					final Set<Territory> nearbyLandTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, false));
+					final int numNearbyEnemyTerritories = Match.countMatches(nearbyLandTerritories, Matches.isTerritoryOwnedBy(utils.getPotentialEnemyPlayers(player)));
 					final boolean hasLocalLandSuperiority = battleUtils.territoryHasLocalLandSuperiority(t, 2, player);
 					if (hasEnemyNeighbors || numNearbyEnemyTerritories >= 3 || !hasLocalLandSuperiority)
 						prioritizedLandTerritories.add(placeTerritory);
@@ -1558,7 +1558,7 @@ public class ProPurchaseAI
 			
 			// Find number of local naval units
 			final List<Unit> units = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
-			units.addAll(getPlaceUnits(t, purchaseTerritories));
+			units.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
 			final List<Unit> myUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
 			final int numMyTransports = Match.countMatches(myUnits, Matches.UnitIsTransport);
 			final int numSeaDefenders = Match.countMatches(units, Matches.UnitIsNotTransport);
@@ -1571,7 +1571,7 @@ public class ProPurchaseAI
 				if (strengthDifference > 50)
 					needDefenders = 1;
 			}
-			final boolean hasLocalNavalSuperiority = battleUtils.territoryHasLocalNavalSuperiority(t, player, new ArrayList<Unit>(), new ArrayList<Unit>());
+			final boolean hasLocalNavalSuperiority = battleUtils.territoryHasLocalNavalSuperiority(t, player, null, new ArrayList<Unit>());
 			if (!hasLocalNavalSuperiority)
 				needDefenders = 1;
 			
@@ -1638,7 +1638,7 @@ public class ProPurchaseAI
 				int PUsSpent = 0;
 				final List<Unit> unitsToPlace = new ArrayList<Unit>();
 				final List<Unit> initialDefendingUnits = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
-				initialDefendingUnits.addAll(getPlaceUnits(t, purchaseTerritories));
+				initialDefendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
 				ProBattleResultData result = battleUtils.calculateBattleResults(player, t, enemyAttackMap.get(t).getMaxUnits(), initialDefendingUnits, enemyAttackMap.get(t).getMaxBombardUnits(),
 							false);
 				boolean hasOnlyRetreatingSubs = Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(initialDefendingUnits, Matches.UnitIsSub)
@@ -1690,7 +1690,7 @@ public class ProPurchaseAI
 						
 						// Find current battle result
 						final List<Unit> defendingUnits = new ArrayList<Unit>(placeTerritory.getDefendingUnits());
-						defendingUnits.addAll(getPlaceUnits(t, purchaseTerritories));
+						defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
 						defendingUnits.addAll(unitsToPlace);
 						result = battleUtils.estimateDefendBattleResults(player, t, enemyAttackMap.get(t).getMaxUnits(), defendingUnits, enemyAttackMap.get(t).getMaxBombardUnits());
 						hasOnlyRetreatingSubs = Properties.getSubRetreatBeforeBattle(data) && Match.allMatch(defendingUnits, Matches.UnitIsSub)
@@ -1750,7 +1750,7 @@ public class ProPurchaseAI
 			for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories)
 			{
 				myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
-				myUnitsInSeaTerritories.addAll(getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
+				myUnitsInSeaTerritories.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
 				alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
 			}
 			
@@ -1785,24 +1785,8 @@ public class ProPurchaseAI
 					if (seaPurchaseOptionsForTerritory.isEmpty())
 						break;
 					
-					// Find current naval defense strength
-					final List<Unit> myUnits = new ArrayList<Unit>(myUnitsInSeaTerritories);
-					myUnits.addAll(unitsToPlace);
-					myUnits.addAll(alliedUnitsInSeaTerritories);
-					final List<Unit> enemyAttackers = new ArrayList<Unit>(enemyUnitsInSeaTerritories);
-					enemyAttackers.addAll(enemyUnitsInLandTerritories);
-					final double defenseStrengthDifference = battleUtils.estimateStrengthDifference(t, enemyAttackers, myUnits);
-					LogUtils.log(Level.FINEST, t + ", current enemy naval attack strengthDifference=" + defenseStrengthDifference + ", enemySize=" + enemyAttackers.size() + ", alliedSize="
-								+ myUnits.size());
-					
-					// Find current naval attack strength
-					double attackStrengthDifference = battleUtils.estimateStrengthDifference(t, myUnits, enemyUnitsInSeaTerritories);
-					attackStrengthDifference += 0.5 * battleUtils.estimateStrengthDifference(t, alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
-					LogUtils.log(Level.FINEST, t + ", current allied naval attack strengthDifference=" + attackStrengthDifference + ", alliedSize=" + myUnits.size() + ", enemySize="
-								+ enemyUnitsInSeaTerritories.size());
-					
 					// If I have naval attack/defense superiority then break
-					if (defenseStrengthDifference < 50 && attackStrengthDifference > 50)
+					if (battleUtils.territoryHasLocalNavalSuperiority(t, player, purchaseTerritories, unitsToPlace))
 						break;
 					
 					// Select purchase option
@@ -1856,7 +1840,7 @@ public class ProPurchaseAI
 				final Set<Territory> seaTerritories = data.getMap().getNeighbors(landTerritory, distance, ProMatches.territoryCanMoveSeaUnits(player, data, false));
 				for (final Territory seaTerritory : seaTerritories)
 				{
-					final List<Unit> unitsInTerritory = getPlaceUnits(seaTerritory, purchaseTerritories);
+					final List<Unit> unitsInTerritory = ProPurchaseUtils.getPlaceUnits(seaTerritory, purchaseTerritories);
 					unitsInTerritory.addAll(seaTerritory.getUnits().getUnits());
 					final List<Unit> transports = Match.getMatches(unitsInTerritory, ProMatches.unitIsOwnedTransport(player));
 					for (final Unit transport : transports)
@@ -1882,7 +1866,7 @@ public class ProPurchaseAI
 					if (territoryValueMap.get(neighbor) <= 0.25)
 					{
 						final List<Unit> unitsInTerritory = new ArrayList<Unit>(neighbor.getUnits().getUnits());
-						unitsInTerritory.addAll(getPlaceUnits(neighbor, purchaseTerritories));
+						unitsInTerritory.addAll(ProPurchaseUtils.getPlaceUnits(neighbor, purchaseTerritories));
 						potentialUnitsToLoad.addAll(Match.getMatches(unitsInTerritory, ProMatches.unitIsOwnedCombatTransportableUnit(player)));
 					}
 				}
@@ -2416,20 +2400,6 @@ public class ProPurchaseAI
 					ppt.setCanHold(false);
 			}
 		}
-	}
-	
-	private List<Unit> getPlaceUnits(final Territory t, final Map<Territory, ProPurchaseTerritory> purchaseTerritories)
-	{
-		final List<Unit> placeUnits = new ArrayList<Unit>();
-		for (final Territory purchaseTerritory : purchaseTerritories.keySet())
-		{
-			for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
-			{
-				if (t.equals(ppt.getTerritory()))
-					placeUnits.addAll(ppt.getPlaceUnits());
-			}
-		}
-		return placeUnits;
 	}
 	
 	private List<ProPurchaseTerritory> getPurchaseTerritories(final ProPlaceTerritory placeTerritory, final Map<Territory, ProPurchaseTerritory> purchaseTerritories)

@@ -81,7 +81,7 @@ public class ProMoveUtils
 				
 				// Skip if unit is already in move to territory
 				final Territory startTerritory = unitTerritoryMap.get(u);
-				if (startTerritory.equals(t))
+				if (startTerritory == null || startTerritory.equals(t))
 					continue;
 				
 				// Add unit to move list
@@ -198,11 +198,13 @@ public class ProMoveUtils
 									maxUnitDistance = distance;
 							}
 							if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance <= minUnitDistance && distanceFromUnloadTerritory < movesLeft
-										&& (maxUnitDistance < minUnitDistance || neighborDistanceFromEnd > maxDistanceFromEnd))
+										&& (maxUnitDistance < minUnitDistance || (maxUnitDistance > 1 && neighborDistanceFromEnd > maxDistanceFromEnd)
+													|| (maxUnitDistance <= 1 && neighborDistanceFromEnd < maxDistanceFromEnd)))
 							{
 								territoryToMoveTo = neighbor;
 								minUnitDistance = maxUnitDistance;
-								maxDistanceFromEnd = neighborDistanceFromEnd;
+								if (neighborDistanceFromEnd > maxDistanceFromEnd)
+									maxDistanceFromEnd = neighborDistanceFromEnd;
 							}
 						}
 						if (territoryToMoveTo != null)

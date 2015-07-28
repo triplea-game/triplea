@@ -421,4 +421,20 @@ public class ProPurchaseUtils
 		return null;
 	}
 	
+	public static List<Unit> getPlaceUnits(final Territory t, final Map<Territory, ProPurchaseTerritory> purchaseTerritories)
+	{
+		final List<Unit> placeUnits = new ArrayList<Unit>();
+		if (purchaseTerritories == null)
+			return placeUnits;
+		for (final Territory purchaseTerritory : purchaseTerritories.keySet())
+		{
+			for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories())
+			{
+				if (t.equals(ppt.getTerritory()))
+					placeUnits.addAll(ppt.getPlaceUnits());
+			}
+		}
+		return placeUnits;
+	}
+	
 }

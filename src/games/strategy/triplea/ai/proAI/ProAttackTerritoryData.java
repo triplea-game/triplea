@@ -167,6 +167,12 @@ public class ProAttackTerritoryData
 		return defenders;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return territory.getName();
+	}
+	
 	public void addUnit(final Unit unit)
 	{
 		this.units.add(unit);

@@ -14,8 +14,10 @@ package games.strategy.triplea.ai.proAI.util;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -27,6 +29,7 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +87,20 @@ public class ProUtils
 		return alliedPlayers;
 	}
 	
+	public List<PlayerID> getPotentialEnemyPlayers(final PlayerID player)
+	{
+		final GameData data = ai.getGameData();
+		final List<PlayerID> otherPlayers = data.getPlayerList().getPlayers();
+		for (final Iterator<PlayerID> it = otherPlayers.iterator(); it.hasNext();)
+		{
+			final PlayerID otherPlayer = it.next();
+			final RelationshipType relation = data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
+			if (Matches.RelationshipTypeIsAllied.match(relation) || isNeutralPlayer(otherPlayer))
+				it.remove();
+		}
+		return otherPlayers;
+	}
+	
 	public double getPlayerProduction(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;
@@ -108,7 +125,7 @@ public class ProUtils
 			enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
 		}
 		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
-		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryEnemy(player, data)));
+		enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
 		return enemyCapitals;
 	}
 	
@@ -127,12 +144,12 @@ public class ProUtils
 	
 	public int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t)
 	{
-		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, true));
-		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, ProMatches.territoryIsEnemyNotNeutralLand(player, data));
+		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player)));
 		int minDistance = 10;
 		for (final Territory enemyLandTerritory : enemyLandTerritories)
 		{
-			final int distance = data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanMoveLandUnits(player, data, true));
+			final int distance = data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
 			if (distance < minDistance)
 				minDistance = distance;
 		}
@@ -144,14 +161,14 @@ public class ProUtils
 	
 	public int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t, final Map<Territory, Double> territoryValueMap)
 	{
-		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, true));
-		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, ProMatches.territoryIsEnemyLand(player, data));
+		final Set<Territory> landTerritories = data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+		final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));
 		int minDistance = 10;
 		for (final Territory enemyLandTerritory : enemyLandTerritories)
 		{
 			if (territoryValueMap.get(enemyLandTerritory) <= 0)
 				continue;
-			int distance = data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanMoveLandUnits(player, data, true));
+			int distance = data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
 			if (enemyLandTerritory.getOwner().isNull())
 				distance++;
 			if (distance < minDistance)
@@ -194,6 +211,19 @@ public class ProUtils
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean isNeutralPlayer(final PlayerID player)
+	{
+		final GameData data = ai.getGameData();
+		
+		for (final Iterator<GameStep> it = data.getSequence().iterator(); it.hasNext();)
+		{
+			final GameStep gameStep = it.next();
+			if (player.equals(gameStep.getPlayerID()))
+				return false;
+		}
+		return true;
 	}
 	
 	/**

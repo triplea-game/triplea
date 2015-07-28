@@ -58,9 +58,10 @@ public class ProTransportUtils
 	public int findMaxMovementForTransports(final List<ProPurchaseOption> seaTransportPurchaseOptions)
 	{
 		int maxMovement = 2;
+		final int maxTransportEfficiency = 0;
 		for (final ProPurchaseOption ppo : seaTransportPurchaseOptions)
 		{
-			if (ppo.getMovement() > maxMovement)
+			if (ppo.getTransportEfficiency() > maxTransportEfficiency)
 				maxMovement = ppo.getMovement();
 		}
 		return maxMovement;

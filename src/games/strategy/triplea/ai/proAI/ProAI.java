@@ -37,6 +37,7 @@ import games.strategy.triplea.ai.proAI.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.ai.strongAI.SUtils;
+import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
@@ -45,6 +46,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -97,12 +99,14 @@ public class ProAI extends AbstractAI
 	private final ProPurchaseAI purchaseAI;
 	private final ProRetreatAI retreatAI;
 	private final ProScrambleAI scrambleAI;
+	private final ProPoliticsAI politicsAI;
 	
 	// Data
 	private GameData data;
 	private Map<Territory, ProAttackTerritoryData> storedCombatMoveMap;
 	private Map<Territory, ProAttackTerritoryData> storedFactoryMoveMap;
 	private Map<Territory, ProPurchaseTerritory> storedPurchaseTerritories;
+	private List<PoliticalActionAttachment> storedPoliticalActions;
 	
 	public ProAI(final String name, final String type)
 	{
@@ -120,6 +124,7 @@ public class ProAI extends AbstractAI
 		purchaseAI = new ProPurchaseAI(this, utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
 		retreatAI = new ProRetreatAI(this, battleUtils);
 		scrambleAI = new ProScrambleAI(this, battleUtils, attackOptionsUtils);
+		politicsAI = new ProPoliticsAI(this, utils, attackOptionsUtils);
 		data = null;
 		storedCombatMoveMap = null;
 		storedPurchaseTerritories = null;
@@ -286,6 +291,14 @@ public class ProAI extends AbstractAI
 					storedPurchaseTerritories = purchaseAI.purchase(PUsToSpend, purchaseDelegate, dataCopy, data, player);
 					this.data = null;
 					break;
+				}
+				else if (stepName.endsWith("Politics"))
+				{
+					final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
+					politicsDelegate.setDelegateBridgeAndPlayer(bridge);
+					final List<PoliticalActionAttachment> actions = politicsAI.politicalActions();
+					if (storedPoliticalActions == null)
+						storedPoliticalActions = actions;
 				}
 			}
 		}
@@ -528,4 +541,17 @@ public class ProAI extends AbstractAI
 		return false;
 	}
 	
+	@Override
+	public void politicalActions()
+	{
+		if (storedPoliticalActions == null)
+		{
+			politicsAI.politicalActions();
+		}
+		else
+		{
+			politicsAI.doActions(storedPoliticalActions);
+			storedPoliticalActions = null;
+		}
+	}
 }

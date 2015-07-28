@@ -304,7 +304,7 @@ public class ProBattleUtils
 			return true;
 	}
 	
-	public boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerID player, final List<Unit> placedUnits, final List<Unit> unitsToPlace)
+	public boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerID player, final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<Unit> unitsToPlace)
 	{
 		final GameData data = ai.getGameData();
 		
@@ -342,7 +342,7 @@ public class ProBattleUtils
 		for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories)
 		{
 			myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
-			myUnitsInSeaTerritories.addAll(placedUnits);
+			myUnitsInSeaTerritories.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
 			alliedUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
 		}
 		LogUtils.log(Level.FINEST, t + ", enemyDistance=" + enemyDistance + ", alliedDistance=" + alliedDistance + ", enemyAirUnits=" + enemyUnitsInLandTerritories
