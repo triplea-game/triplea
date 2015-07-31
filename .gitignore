@@ -1,6 +1,15 @@
 ### Project specific files
 bin/
 derby_db/
+access_logs/
+logs/
+release/
+apidoc/
+classes/
+temp-build/
+testclasses/
+test-results/
+savedGames/
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
@@ -52,6 +61,8 @@ tmp/
 local.properties
 .settings/
 .loadpath
+temp_eclipse/
+classes.jar
 
 # Eclipse Core
 .project
