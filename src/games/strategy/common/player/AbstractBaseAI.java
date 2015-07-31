@@ -17,34 +17,28 @@ import games.strategy.triplea.ui.AbstractUIContext;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
- * 
+ *
  * @author Lane Schwartz
  */
-public abstract class AbstractBaseAI extends AbstractBasePlayer
-{
-	/**
-	 * @param name
-	 *            - the name of the player.
-	 */
-	public AbstractBaseAI(final String name, final String type)
-	{
-		super(name, type);
-	}
-	
-	/**
-	 * Pause the game to allow the human player to see what is going on.
-	 * 
-	 */
-	protected void pause()
-	{
-		try
-		{
-			Thread.sleep(AbstractUIContext.getAIPauseDuration());
-		} catch (final InterruptedException e)
-		{
-			e.printStackTrace();
-		} catch (final Exception ex)
-		{
-		}
-	}
+public abstract class AbstractBaseAI extends AbstractBasePlayer {
+  /**
+   * @param name
+   *        - the name of the player.
+   */
+  public AbstractBaseAI(final String name, final String type) {
+    super(name, type);
+  }
+
+  /**
+   * Pause the game to allow the human player to see what is going on.
+   *
+   */
+  protected void pause() {
+    try {
+      Thread.sleep(AbstractUIContext.getAIPauseDuration());
+    } catch (final InterruptedException e) {
+      e.printStackTrace();
+    } catch (final Exception ex) {
+    }
+  }
 }

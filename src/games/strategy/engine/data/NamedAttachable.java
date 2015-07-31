@@ -13,7 +13,7 @@
  */
 /*
  * NamedAttachable.java
- * 
+ *
  * Created on October 22, 2001, 6:49 PM
  */
 package games.strategy.engine.data;
@@ -23,38 +23,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
-public class NamedAttachable extends DefaultNamed implements Attachable
-{
-	private static final long serialVersionUID = 8597712929519099255L;
-	private final Map<String, IAttachment> m_attachments = new HashMap<String, IAttachment>();
-	
-	/** Creates new NamedAttachable */
-	public NamedAttachable(final String name, final GameData data)
-	{
-		super(name, data);
-	}
-	
-	public IAttachment getAttachment(final String key)
-	{
-		return m_attachments.get(key);
-	}
-	
-	public Map<String, IAttachment> getAttachments()
-	{
-		return Collections.unmodifiableMap(m_attachments);
-	}
-	
-	public void addAttachment(final String key, final IAttachment value)
-	{
-		m_attachments.put(key, value);
-	}
-	
-	public void removeAttachment(final String keyString)
-	{
-		m_attachments.remove(keyString);
-	}
+public class NamedAttachable extends DefaultNamed implements Attachable {
+  private static final long serialVersionUID = 8597712929519099255L;
+  private final Map<String, IAttachment> m_attachments = new HashMap<String, IAttachment>();
+
+  /** Creates new NamedAttachable */
+  public NamedAttachable(final String name, final GameData data) {
+    super(name, data);
+  }
+
+  @Override
+  public IAttachment getAttachment(final String key) {
+    return m_attachments.get(key);
+  }
+
+  @Override
+  public Map<String, IAttachment> getAttachments() {
+    return Collections.unmodifiableMap(m_attachments);
+  }
+
+  @Override
+  public void addAttachment(final String key, final IAttachment value) {
+    m_attachments.put(key, value);
+  }
+
+  @Override
+  public void removeAttachment(final String keyString) {
+    m_attachments.remove(keyString);
+  }
 }

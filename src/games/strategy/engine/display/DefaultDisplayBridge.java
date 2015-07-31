@@ -16,26 +16,24 @@ package games.strategy.engine.display;
 import games.strategy.engine.data.GameData;
 
 /**
- * 
- * 
- * 
+ *
+ *
+ *
  * @author Sean Bridges
  */
-public class DefaultDisplayBridge implements IDisplayBridge
-{
-	private final GameData m_gameData;
-	
-	/**
-	 * @param gameData
-	 */
-	public DefaultDisplayBridge(final GameData gameData)
-	{
-		super();
-		m_gameData = gameData;
-	}
-	
-	public GameData getGameData()
-	{
-		return m_gameData;
-	}
+public class DefaultDisplayBridge implements IDisplayBridge {
+  private final GameData m_gameData;
+
+  /**
+   * @param gameData
+   */
+  public DefaultDisplayBridge(final GameData gameData) {
+    super();
+    m_gameData = gameData;
+  }
+
+  @Override
+  public GameData getGameData() {
+    return m_gameData;
+  }
 }

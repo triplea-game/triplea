@@ -13,7 +13,7 @@
  */
 /*
  * RepairFrontierList.java
- * 
+ *
  * Created on October 22, 2001, 10:20 AM
  */
 package games.strategy.engine.data;
@@ -23,37 +23,31 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Kevin Comcowich
  * @version 1.0
  */
-public class RepairFrontierList extends GameDataComponent
-{
-	private static final long serialVersionUID = -5877933681560908405L;
-	private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<String, RepairFrontier>();
-	
-	public RepairFrontierList(final GameData data)
-	{
-		super(data);
-	}
-	
-	protected void addRepairFrontier(final RepairFrontier pf)
-	{
-		m_repairFrontiers.put(pf.getName(), pf);
-	}
-	
-	public int size()
-	{
-		return m_repairFrontiers.size();
-	}
-	
-	public RepairFrontier getRepairFrontier(final String name)
-	{
-		return m_repairFrontiers.get(name);
-	}
-	
-	public Set<String> getRepairFrontierNames()
-	{
-		return m_repairFrontiers.keySet();
-	}
+public class RepairFrontierList extends GameDataComponent {
+  private static final long serialVersionUID = -5877933681560908405L;
+  private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<String, RepairFrontier>();
+
+  public RepairFrontierList(final GameData data) {
+    super(data);
+  }
+
+  protected void addRepairFrontier(final RepairFrontier pf) {
+    m_repairFrontiers.put(pf.getName(), pf);
+  }
+
+  public int size() {
+    return m_repairFrontiers.size();
+  }
+
+  public RepairFrontier getRepairFrontier(final String name) {
+    return m_repairFrontiers.get(name);
+  }
+
+  public Set<String> getRepairFrontierNames() {
+    return m_repairFrontiers.keySet();
+  }
 }

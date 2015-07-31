@@ -13,34 +13,31 @@
  */
 /*
  * BuyMessage.java
- * 
+ *
  * Created on November 6, 2001, 8:26 PM
  */
 package games.strategy.triplea.delegate.dataObjects;
 
-import games.strategy.engine.data.Unit;
-
 import java.util.Collection;
 
+import games.strategy.engine.data.Unit;
+
 /**
- * 
+ *
  * @author Erik von der Osten
  */
-abstract public class AbstractMoveDescription implements java.io.Serializable
-{
-	private static final long serialVersionUID = -6615899716448836002L;
-	private final Collection<Unit> m_units;
-	
-	public AbstractMoveDescription(final Collection<Unit> units)
-	{
-		m_units = units;
-	}
-	
-	public Collection<Unit> getUnits()
-	{
-		return m_units;
-	}
-	
-	@Override
-	abstract public String toString();
+abstract public class AbstractMoveDescription implements java.io.Serializable {
+  private static final long serialVersionUID = -6615899716448836002L;
+  private final Collection<Unit> m_units;
+
+  public AbstractMoveDescription(final Collection<Unit> units) {
+    m_units = units;
+  }
+
+  public Collection<Unit> getUnits() {
+    return m_units;
+  }
+
+  @Override
+  abstract public String toString();
 }

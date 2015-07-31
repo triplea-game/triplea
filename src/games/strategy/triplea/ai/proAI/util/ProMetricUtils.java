@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.logging.Level;
+
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,23 +18,19 @@ package games.strategy.triplea.ai.proAI.util;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.util.IntegerMap;
 
-import java.util.logging.Level;
-
 /**
  * Pro AI metrics.
- * 
+ *
  * @author Ron Murhammer
  * @since 2014
  */
-public class ProMetricUtils
-{
-	
-	private static IntegerMap<ProductionRule> totalPurchaseMap = new IntegerMap<ProductionRule>();
-	
-	public static void collectPurchaseStats(final IntegerMap<ProductionRule> purchaseMap)
-	{
-		totalPurchaseMap.add(purchaseMap);
-		LogUtils.log(Level.FINER, totalPurchaseMap.toString());
-	}
-	
+public class ProMetricUtils {
+
+  private static IntegerMap<ProductionRule> totalPurchaseMap = new IntegerMap<ProductionRule>();
+
+  public static void collectPurchaseStats(final IntegerMap<ProductionRule> purchaseMap) {
+    totalPurchaseMap.add(purchaseMap);
+    LogUtils.log(Level.FINER, totalPurchaseMap.toString());
+  }
+
 }

@@ -13,22 +13,21 @@
  */
 /*
  * MessengerErrorListener.java
- * 
+ *
  * Created on December 12, 2001, 10:46 AM
  */
 package games.strategy.net;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
-public interface IMessengerErrorListener
-{
-	/**
-	 * The messenger is no longer able to send or receive messages.
-	 * This signals that an error has occured, will not be sent if the
-	 * node was shutdown.
-	 */
-	public void messengerInvalid(IMessenger messenger, Exception reason);
+public interface IMessengerErrorListener {
+  /**
+   * The messenger is no longer able to send or receive messages.
+   * This signals that an error has occured, will not be sent if the
+   * node was shutdown.
+   */
+  public void messengerInvalid(IMessenger messenger, Exception reason);
 }

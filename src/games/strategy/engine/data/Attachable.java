@@ -13,7 +13,7 @@
  */
 /*
  * Attachable.java
- * 
+ *
  * Created on October 14, 2001, 12:46 PM
  */
 package games.strategy.engine.data;
@@ -21,17 +21,16 @@ package games.strategy.engine.data;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
-public interface Attachable
-{
-	public void addAttachment(String key, IAttachment value);
-	
-	public void removeAttachment(String keyString);
-	
-	public IAttachment getAttachment(String key);
-	
-	public Map<String, IAttachment> getAttachments();
+public interface Attachable {
+  public void addAttachment(String key, IAttachment value);
+
+  public void removeAttachment(String keyString);
+
+  public IAttachment getAttachment(String key);
+
+  public Map<String, IAttachment> getAttachments();
 }

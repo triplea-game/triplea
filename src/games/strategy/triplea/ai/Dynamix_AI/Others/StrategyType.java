@@ -14,10 +14,9 @@
 package games.strategy.triplea.ai.Dynamix_AI.Others;
 
 /**
- * 
+ *
  * @author Stephen
  */
-public enum StrategyType
-{
-	Enemy_Offensive, Enemy_Defensive, Ally_OffensiveAssist, Ally_DefensiveAssist
+public enum StrategyType {
+  Enemy_Offensive, Enemy_Defensive, Ally_OffensiveAssist, Ally_DefensiveAssist
 }

@@ -13,7 +13,7 @@
  */
 /*
  * GameDataChangeListener.java
- * 
+ *
  * Created on January 9, 2002, 4:05 PM
  */
 package games.strategy.engine.data.events;
@@ -22,10 +22,9 @@ import games.strategy.engine.data.Change;
 
 /**
  * A GameDataChangeListener will be notified on changes to the GameData
- * 
+ *
  * @author Sean Bridges
  */
-public interface GameDataChangeListener
-{
-	public void gameDataChanged(Change aChange);
+public interface GameDataChangeListener {
+  public void gameDataChanged(Change aChange);
 }

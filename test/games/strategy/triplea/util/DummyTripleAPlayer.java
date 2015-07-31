@@ -13,6 +13,12 @@
  */
 package games.strategy.triplea.util;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -27,153 +33,154 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+public class DummyTripleAPlayer implements ITripleaPlayer {
+  public void politics(final boolean firstRun) {}
 
-public class DummyTripleAPlayer implements ITripleaPlayer
-{
-	public void politics(final boolean firstRun)
-	{
-	}
-	
-	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
-	{
-	}
-	
-	public boolean confirmMoveHariKari()
-	{
-		return false;
-	}
-	
-	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
-	{
-		return false;
-	}
-	
-	public boolean confirmMoveKamikaze()
-	{
-		return false;
-	}
-	
-	public void confirmOwnCasualties(final GUID battleId, final String message)
-	{
-	}
-	
-	public PlayerID getPlayerID()
-	{
-		return null;
-	}
-	
-	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
-	{
-		return null;
-	}
-	
-	public void reportError(final String error)
-	{
-	}
-	
-	public void reportMessage(final String message, final String title)
-	{
-	}
-	
-	public boolean acceptAction(final PlayerID playerSendingProposal, final String message, final boolean politics)
-	{
-		return true;
-	}
-	
-	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite, final Collection<Territory> possibleTerritories, final String message)
-	{
-		return null;
-	}
-	
-	/*public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
-	{
-		return null;
-	}*/
-	
-	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
-	{
-		return null;
-	}
-	
-	public boolean selectAttackSubs(final Territory unitTerritory)
-	{
-		return false;
-	}
-	
-	public boolean selectAttackTransports(final Territory unitTerritory)
-	{
-		return false;
-	}
-	
-	public boolean selectAttackUnits(final Territory unitTerritory)
-	{
-		return false;
-	}
-	
-	public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
-	{
-		return null;
-	}
-	
-	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-				final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits, final boolean amphibious,
-				final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite, final boolean allowMultipleHitsPerUnit)
-	{
-		return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
-	}
-	
-	public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides)
-	{
-		return null;
-	}
-	
-	public boolean selectShoreBombard(final Territory unitTerritory)
-	{
-		return false;
-	}
-	
-	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
-	{
-		return null;
-	}
-	
-	public boolean shouldBomberBomb(final Territory territory)
-	{
-		return false;
-	}
-	
-	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
-	{
-		if (potentialTargets == null || potentialTargets.isEmpty())
-			return null; // is null even allowed?
-		final Collection<Unit> typicalFactories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
-		if (typicalFactories.isEmpty())
-			return potentialTargets.iterator().next();
-		return typicalFactories.iterator().next();
-	}
-	
-	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
-	{
-		return null;
-	}
-	
-	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
-	{
-		return null;
-	}
-	
-	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
-	{
-		return null;
-	}
-	
-	public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick)
-	{
-		return null;
-	}
+  @Override
+  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
+
+  @Override
+  public boolean confirmMoveHariKari() {
+    return false;
+  }
+
+  @Override
+  public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
+    return false;
+  }
+
+  @Override
+  public boolean confirmMoveKamikaze() {
+    return false;
+  }
+
+  @Override
+  public void confirmOwnCasualties(final GUID battleId, final String message) {}
+
+  @Override
+  public PlayerID getPlayerID() {
+    return null;
+  }
+
+  @Override
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
+    return null;
+  }
+
+  @Override
+  public void reportError(final String error) {}
+
+  @Override
+  public void reportMessage(final String message, final String title) {}
+
+  @Override
+  public boolean acceptAction(final PlayerID playerSendingProposal, final String message, final boolean politics) {
+    return true;
+  }
+
+  @Override
+  public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite,
+      final Collection<Territory> possibleTerritories, final String message) {
+    return null;
+  }
+
+  /*
+   * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final
+   * PlayerID player)
+   * {
+   * return null;
+   * }
+   */
+
+  @Override
+  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
+    return null;
+  }
+
+  @Override
+  public boolean selectAttackSubs(final Territory unitTerritory) {
+    return false;
+  }
+
+  @Override
+  public boolean selectAttackTransports(final Territory unitTerritory) {
+    return false;
+  }
+
+  @Override
+  public boolean selectAttackUnits(final Territory unitTerritory) {
+    return false;
+  }
+
+  @Override
+  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
+      final boolean noneAvailable) {
+    return null;
+  }
+
+  @Override
+  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
+      final String message, final DiceRoll dice,
+      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits,
+      final boolean amphibious,
+      final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+      final boolean allowMultipleHitsPerUnit) {
+    return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
+  }
+
+  @Override
+  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides) {
+    return null;
+  }
+
+  @Override
+  public boolean selectShoreBombard(final Territory unitTerritory) {
+    return false;
+  }
+
+  @Override
+  public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
+      final String unitMessage) {
+    return null;
+  }
+
+  @Override
+  public boolean shouldBomberBomb(final Territory territory) {
+    return false;
+  }
+
+  @Override
+  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
+    if (potentialTargets == null || potentialTargets.isEmpty()) {
+      return null; // is null even allowed?
+    }
+    final Collection<Unit> typicalFactories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
+    if (typicalFactories.isEmpty()) {
+      return potentialTargets.iterator().next();
+    }
+    return typicalFactories.iterator().next();
+  }
+
+  @Override
+  public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from) {
+    return null;
+  }
+
+  @Override
+  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message) {
+    return null;
+  }
+
+  @Override
+  public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+      final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack) {
+    return null;
+  }
+
+  @Override
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices,
+      final int unitsPerPick) {
+    return null;
+  }
 }

@@ -17,24 +17,20 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Povide access to the raw buffer.
- * 
+ *
  * @author sgb
- * 
+ *
  */
-class ByteArrayOutputStream2 extends ByteArrayOutputStream
-{
-	public ByteArrayOutputStream2()
-	{
-		super();
-	}
-	
-	public ByteArrayOutputStream2(final int size)
-	{
-		super(size);
-	}
-	
-	public byte[] getBuffer()
-	{
-		return buf;
-	}
+class ByteArrayOutputStream2 extends ByteArrayOutputStream {
+  public ByteArrayOutputStream2() {
+    super();
+  }
+
+  public ByteArrayOutputStream2(final int size) {
+    super(size);
+  }
+
+  public byte[] getBuffer() {
+    return buf;
+  }
 }

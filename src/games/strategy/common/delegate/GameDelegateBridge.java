@@ -13,6 +13,8 @@
  */
 package games.strategy.common.delegate;
 
+import java.util.Properties;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -23,131 +25,131 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ISound;
 
-import java.util.Properties;
-
 /**
- * 
+ *
  * TripleA implementation of DelegateBridge
- * 
+ *
  * @author Tony Clayton
  */
-public class GameDelegateBridge implements IDelegateBridge
-{
-	private final IDelegateBridge m_bridge;
-	private final GameDelegateHistoryWriter m_historyWriter;
-	
-	/**
-	 * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge
-	 * 
-	 * @param bridge
-	 *            delegate bridge
-	 * @param data
-	 *            GameData object
-	 * */
-	public GameDelegateBridge(final IDelegateBridge bridge)
-	{
-		m_bridge = bridge;
-		m_historyWriter = new GameDelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
-	}
-	
-	public GameData getData()
-	{
-		return m_bridge.getData();
-	}
-	
-	/**
-	 * Return our custom historyWriter instead of the default one
-	 * 
-	 */
-	public IDelegateHistoryWriter getHistoryWriter()
-	{
-		return m_historyWriter;
-	}
-	
-	public PlayerID getPlayerID()
-	{
-		return m_bridge.getPlayerID();
-	}
-	
-	/**
-	 * All delegates should use random data that comes from both players so that
-	 * neither player cheats.
-	 */
-	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
-	{
-		return m_bridge.getRandom(max, player, diceType, annotation);
-	}
-	
-	/**
-	 * Delegates should not use random data that comes from any other source.
-	 */
-	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
-	{
-		return m_bridge.getRandom(max, count, player, diceType, annotation);
-	}
-	
-	public void addChange(final Change aChange)
-	{
-		m_bridge.addChange(aChange);
-	}
-	
-	/**
-	 * Returns the current step name
-	 */
-	public String getStepName()
-	{
-		return m_bridge.getStepName();
-	}
-	
-	/*
-	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
-	 */
-	public IRemotePlayer getRemotePlayer()
-	{
-		return m_bridge.getRemotePlayer();
-	}
-	
-	/*
-	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
-	 */
-	public IRemotePlayer getRemotePlayer(final PlayerID id)
-	{
-		return m_bridge.getRemotePlayer(id);
-	}
-	
-	/* (non-Javadoc)
-	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
-	 */
-	public IDisplay getDisplayChannelBroadcaster()
-	{
-		return m_bridge.getDisplayChannelBroadcaster();
-	}
-	
-	/* (non-Javadoc)
-	 * @see games.strategy.engine.delegate.IDelegateBridge#getSoundChannelBroadcaster()
-	 */
-	public ISound getSoundChannelBroadcaster()
-	{
-		return m_bridge.getSoundChannelBroadcaster();
-	}
-	
-	public Properties getStepProperties()
-	{
-		return m_bridge.getStepProperties();
-	}
-	
-	public void leaveDelegateExecution()
-	{
-		m_bridge.leaveDelegateExecution();
-	}
-	
-	public void enterDelegateExecution()
-	{
-		m_bridge.enterDelegateExecution();
-	}
-	
-	public void stopGameSequence()
-	{
-		m_bridge.stopGameSequence();
-	}
+public class GameDelegateBridge implements IDelegateBridge {
+  private final IDelegateBridge m_bridge;
+  private final GameDelegateHistoryWriter m_historyWriter;
+
+  /**
+   * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge
+   *
+   * @param bridge
+   *        delegate bridge
+   * @param data
+   *        GameData object
+   */
+  public GameDelegateBridge(final IDelegateBridge bridge) {
+    m_bridge = bridge;
+    m_historyWriter = new GameDelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
+  }
+
+  @Override
+  public GameData getData() {
+    return m_bridge.getData();
+  }
+
+  /**
+   * Return our custom historyWriter instead of the default one
+   *
+   */
+  @Override
+  public IDelegateHistoryWriter getHistoryWriter() {
+    return m_historyWriter;
+  }
+
+  @Override
+  public PlayerID getPlayerID() {
+    return m_bridge.getPlayerID();
+  }
+
+  /**
+   * All delegates should use random data that comes from both players so that
+   * neither player cheats.
+   */
+  @Override
+  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
+    return m_bridge.getRandom(max, player, diceType, annotation);
+  }
+
+  /**
+   * Delegates should not use random data that comes from any other source.
+   */
+  @Override
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) {
+    return m_bridge.getRandom(max, count, player, diceType, annotation);
+  }
+
+  @Override
+  public void addChange(final Change aChange) {
+    m_bridge.addChange(aChange);
+  }
+
+  /**
+   * Returns the current step name
+   */
+  @Override
+  public String getStepName() {
+    return m_bridge.getStepName();
+  }
+
+  /*
+   * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
+   */
+  @Override
+  public IRemotePlayer getRemotePlayer() {
+    return m_bridge.getRemotePlayer();
+  }
+
+  /*
+   * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
+   */
+  @Override
+  public IRemotePlayer getRemotePlayer(final PlayerID id) {
+    return m_bridge.getRemotePlayer(id);
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
+   */
+  @Override
+  public IDisplay getDisplayChannelBroadcaster() {
+    return m_bridge.getDisplayChannelBroadcaster();
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see games.strategy.engine.delegate.IDelegateBridge#getSoundChannelBroadcaster()
+   */
+  @Override
+  public ISound getSoundChannelBroadcaster() {
+    return m_bridge.getSoundChannelBroadcaster();
+  }
+
+  @Override
+  public Properties getStepProperties() {
+    return m_bridge.getStepProperties();
+  }
+
+  @Override
+  public void leaveDelegateExecution() {
+    m_bridge.leaveDelegateExecution();
+  }
+
+  @Override
+  public void enterDelegateExecution() {
+    m_bridge.enterDelegateExecution();
+  }
+
+  @Override
+  public void stopGameSequence() {
+    m_bridge.stopGameSequence();
+  }
 }

@@ -25,60 +25,57 @@ import javax.swing.JTextField;
 /**
  * A string property with a simple text field editor
  */
-public class StringProperty extends AEditableProperty
-{
-	private static final long serialVersionUID = 4382624884674152208L;
-	private String m_value;
-	
-	public StringProperty(final String name, final String description, final String defaultValue)
-	{
-		super(name, description);
-		m_value = defaultValue;
-	}
-	
-	public JComponent getEditorComponent()
-	{
-		final JTextField text = new JTextField(m_value);
-		text.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				m_value = text.getText();
-			}
-		});
-		text.addFocusListener(new FocusListener()
-		{
-			public void focusGained(final FocusEvent e)
-			{
-			}
-			
-			public void focusLost(final FocusEvent e)
-			{
-				m_value = text.getText();
-			}
-		});
-		final Dimension ourMinimum = new Dimension(80, 20);
-		text.setMinimumSize(ourMinimum);
-		text.setPreferredSize(ourMinimum);
-		return text;
-	}
-	
-	public Object getValue()
-	{
-		return m_value;
-	}
-	
-	public void setValue(final Object value) throws ClassCastException
-	{
-		m_value = (String) value;
-	}
-	
-	public boolean validate(final Object value)
-	{
-		if (value == null)
-			return true;
-		if (value instanceof String)
-			return true;
-		return false;
-	}
+public class StringProperty extends AEditableProperty {
+  private static final long serialVersionUID = 4382624884674152208L;
+  private String m_value;
+
+  public StringProperty(final String name, final String description, final String defaultValue) {
+    super(name, description);
+    m_value = defaultValue;
+  }
+
+  @Override
+  public JComponent getEditorComponent() {
+    final JTextField text = new JTextField(m_value);
+    text.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        m_value = text.getText();
+      }
+    });
+    text.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(final FocusEvent e) {}
+
+      @Override
+      public void focusLost(final FocusEvent e) {
+        m_value = text.getText();
+      }
+    });
+    final Dimension ourMinimum = new Dimension(80, 20);
+    text.setMinimumSize(ourMinimum);
+    text.setPreferredSize(ourMinimum);
+    return text;
+  }
+
+  @Override
+  public Object getValue() {
+    return m_value;
+  }
+
+  @Override
+  public void setValue(final Object value) throws ClassCastException {
+    m_value = (String) value;
+  }
+
+  @Override
+  public boolean validate(final Object value) {
+    if (value == null) {
+      return true;
+    }
+    if (value instanceof String) {
+      return true;
+    }
+    return false;
+  }
 }

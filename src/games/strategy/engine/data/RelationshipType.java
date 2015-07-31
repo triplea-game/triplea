@@ -1,8 +1,8 @@
 /**
- * 
+ *
  * @author Edwin van der Wal
  * @version 0.1
- * 
+ *
  *          A Type of Relationship between PlayerIDs
  */
 /*
@@ -20,40 +20,36 @@
  */
 package games.strategy.engine.data;
 
-import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
-
 import java.io.Serializable;
 
-public class RelationshipType extends NamedAttachable implements Serializable
-{
-	private static final long serialVersionUID = 5348310616624709971L;
-	
-	/**
-	 * create new RelationshipType
-	 * 
-	 * @param name
-	 *            name of the relationshipType
-	 * @param data
-	 *            GameData Object used for construction
-	 */
-	public RelationshipType(final String name, final GameData data)
-	{
-		super(name, data);
-	}
-	
-	/**
-	 * convenience method to get the relationshipTypeAttachment of this relationshipType
-	 * 
-	 * @return the relationshipTypeAttachment of this relationshipType
-	 */
-	public RelationshipTypeAttachment getRelationshipTypeAttachment()
-	{
-		return RelationshipTypeAttachment.get(this);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return this.getName();
-	}
+import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
+
+public class RelationshipType extends NamedAttachable implements Serializable {
+  private static final long serialVersionUID = 5348310616624709971L;
+
+  /**
+   * create new RelationshipType
+   *
+   * @param name
+   *        name of the relationshipType
+   * @param data
+   *        GameData Object used for construction
+   */
+  public RelationshipType(final String name, final GameData data) {
+    super(name, data);
+  }
+
+  /**
+   * convenience method to get the relationshipTypeAttachment of this relationshipType
+   *
+   * @return the relationshipTypeAttachment of this relationshipType
+   */
+  public RelationshipTypeAttachment getRelationshipTypeAttachment() {
+    return RelationshipTypeAttachment.get(this);
+  }
+
+  @Override
+  public String toString() {
+    return this.getName();
+  }
 }

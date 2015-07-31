@@ -14,10 +14,9 @@
 package games.strategy.triplea.ai.Dynamix_AI.Others;
 
 /**
- * 
+ *
  * @author Stephen
  */
-public enum ThreatInvalidationType
-{
-	None, Global, AroundHotspot
+public enum ThreatInvalidationType {
+  None, Global, AroundHotspot
 }

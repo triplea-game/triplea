@@ -13,132 +13,120 @@
  */
 package games.puzzle.slidingtiles.delegate;
 
+import java.io.Serializable;
+
 import games.puzzle.slidingtiles.attachments.Tile;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
-import java.io.Serializable;
-
 /**
  * Responsible for checking for a winner in a game of n-puzzle.
- * 
+ *
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate
-{
-	// private CountDownLatch m_waiting;
-	
-	/**
-	 * Called before the delegate will run.
-	 */
-	@Override
-	public void start()
-	{
-		super.start();
-		if (gameOver(getData().getMap()))
-		{
-			signalGameOver("Board solved!");
-			/*try
-			{
-				m_waiting = new CountDownLatch(1);
-				m_waiting.await();
-			} catch (final InterruptedException e)
-			{
-			}*/
-		}
-	}
-	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	@Override
-	public void end()
-	{
-		super.end();
-		/*
-		if (m_waiting == null)
-			return;
-		else
-			while (m_waiting.getCount() > 0)
-				m_waiting.countDown();
-		*/
-	}
-	
-	@Override
-	public Serializable saveState()
-	{
-		final SlidingTilesEndTurnExtendedDelegateState state = new SlidingTilesEndTurnExtendedDelegateState();
-		state.superState = super.saveState();
-		// add other variables to state here:
-		return state;
-	}
-	
-	@Override
-	public void loadState(final Serializable state)
-	{
-		final SlidingTilesEndTurnExtendedDelegateState s = (SlidingTilesEndTurnExtendedDelegateState) state;
-		super.loadState(s.superState);
-		// load other variables from state here:
-	}
-	
-	public boolean gameOver(final GameMap map)
-	{
-		final int width = map.getXDimension();
-		final int height = map.getYDimension();
-		int previous = -1 * Integer.MAX_VALUE;
-		for (int y = 0; y < height; y++)
-		{
-			for (int x = 0; x < width; x++)
-			{
-				final Territory t = map.getTerritoryFromCoordinates(x, y);
-				if (t != null)
-				{
-					final Tile tile = (Tile) t.getAttachment("tile");
-					if (tile != null)
-					{
-						final int current = tile.getValue();
-						if (current > previous)
-							previous = current;
-						else
-							return false;
-					}
-					else
-						return false;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Notify all players that the game is over.
-	 * 
-	 * @param status
-	 *            the "game over" text to be displayed to each user.
-	 */
-	private void signalGameOver(final String status)
-	{
-		// If the game is over, we need to be able to alert all UIs to that fact.
-		// The display object can send a message to all UIs.
-		m_bridge.getHistoryWriter().startEvent(status);
-		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
-		display.setStatus(status);
-		display.setGameOver();
-		m_bridge.stopGameSequence();
-	}
+public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
+  // private CountDownLatch m_waiting;
+
+  /**
+   * Called before the delegate will run.
+   */
+  @Override
+  public void start() {
+    super.start();
+    if (gameOver(getData().getMap())) {
+      signalGameOver("Board solved!");
+      /*
+       * try
+       * {
+       * m_waiting = new CountDownLatch(1);
+       * m_waiting.await();
+       * } catch (final InterruptedException e)
+       * {
+       * }
+       */
+    }
+  }
+
+  /**
+   * Called before the delegate will stop running.
+   */
+  @Override
+  public void end() {
+    super.end();
+    /*
+     * if (m_waiting == null)
+     * return;
+     * else
+     * while (m_waiting.getCount() > 0)
+     * m_waiting.countDown();
+     */
+  }
+
+  @Override
+  public Serializable saveState() {
+    final SlidingTilesEndTurnExtendedDelegateState state = new SlidingTilesEndTurnExtendedDelegateState();
+    state.superState = super.saveState();
+    // add other variables to state here:
+    return state;
+  }
+
+  @Override
+  public void loadState(final Serializable state) {
+    final SlidingTilesEndTurnExtendedDelegateState s = (SlidingTilesEndTurnExtendedDelegateState) state;
+    super.loadState(s.superState);
+    // load other variables from state here:
+  }
+
+  public boolean gameOver(final GameMap map) {
+    final int width = map.getXDimension();
+    final int height = map.getYDimension();
+    int previous = -1 * Integer.MAX_VALUE;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        final Territory t = map.getTerritoryFromCoordinates(x, y);
+        if (t != null) {
+          final Tile tile = (Tile) t.getAttachment("tile");
+          if (tile != null) {
+            final int current = tile.getValue();
+            if (current > previous) {
+              previous = current;
+            } else {
+              return false;
+            }
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Notify all players that the game is over.
+   *
+   * @param status
+   *        the "game over" text to be displayed to each user.
+   */
+  private void signalGameOver(final String status) {
+    // If the game is over, we need to be able to alert all UIs to that fact.
+    // The display object can send a message to all UIs.
+    m_bridge.getHistoryWriter().startEvent(status);
+    final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
+    display.setStatus(status);
+    display.setGameOver();
+    m_bridge.stopGameSequence();
+  }
 }
 
 
-class SlidingTilesEndTurnExtendedDelegateState implements Serializable
-{
-	private static final long serialVersionUID = 8240451114219646419L;
-	Serializable superState;
-	// add other variables here:
+class SlidingTilesEndTurnExtendedDelegateState implements Serializable {
+  private static final long serialVersionUID = 8240451114219646419L;
+  Serializable superState;
+  // add other variables here:
 }

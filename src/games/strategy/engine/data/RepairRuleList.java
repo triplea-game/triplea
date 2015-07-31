@@ -13,7 +13,7 @@
  */
 /*
  * RepairRuleList.java
- * 
+ *
  * Created on October 22, 2001, 10:23 AM
  */
 package games.strategy.engine.data;
@@ -23,37 +23,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Kevin Comcowich
  * @version 1.0
  */
-public class RepairRuleList extends GameDataComponent
-{
-	private static final long serialVersionUID = 8153102637443800391L;
-	private final Map<String, RepairRule> m_repairRules = new HashMap<String, RepairRule>();
-	
-	public RepairRuleList(final GameData data)
-	{
-		super(data);
-	}
-	
-	protected void addRepairRule(final RepairRule pf)
-	{
-		m_repairRules.put(pf.getName(), pf);
-	}
-	
-	public int size()
-	{
-		return m_repairRules.size();
-	}
-	
-	public RepairRule getRepairRule(final String name)
-	{
-		return m_repairRules.get(name);
-	}
-	
-	public Collection<RepairRule> getRepairRules()
-	{
-		return m_repairRules.values();
-	}
+public class RepairRuleList extends GameDataComponent {
+  private static final long serialVersionUID = 8153102637443800391L;
+  private final Map<String, RepairRule> m_repairRules = new HashMap<String, RepairRule>();
+
+  public RepairRuleList(final GameData data) {
+    super(data);
+  }
+
+  protected void addRepairRule(final RepairRule pf) {
+    m_repairRules.put(pf.getName(), pf);
+  }
+
+  public int size() {
+    return m_repairRules.size();
+  }
+
+  public RepairRule getRepairRule(final String name) {
+    return m_repairRules.get(name);
+  }
+
+  public Collection<RepairRule> getRepairRules() {
+    return m_repairRules.values();
+  }
 }

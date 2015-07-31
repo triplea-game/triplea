@@ -15,10 +15,9 @@ package games.strategy.net.nio;
 
 import java.nio.channels.SocketChannel;
 
-public interface IErrorReporter
-{
-	/**
-	 * An io error occured while reading or writing to the socket, and it should be removed from the network
-	 */
-	public void error(SocketChannel channel, Exception e);
+public interface IErrorReporter {
+  /**
+   * An io error occured while reading or writing to the socket, and it should be removed from the network
+   */
+  public void error(SocketChannel channel, Exception e);
 }
