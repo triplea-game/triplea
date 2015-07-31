@@ -13,7 +13,7 @@
  */
 /*
  * DefaultMapSelectionListener.java
- * 
+ *
  * Created on November 7, 2001, 8:36 PM
  */
 package games.strategy.triplea.ui;
@@ -21,21 +21,17 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Territory;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
-public class DefaultMapSelectionListener implements MapSelectionListener
-{
-	public void territorySelected(final Territory territory, final MouseDetails me)
-	{
-	}
-	
-	public void mouseEntered(final Territory territory)
-	{
-	}
-	
-	public void mouseMoved(final Territory territory, final MouseDetails me)
-	{
-	}
+public class DefaultMapSelectionListener implements MapSelectionListener {
+  @Override
+  public void territorySelected(final Territory territory, final MouseDetails me) {}
+
+  @Override
+  public void mouseEntered(final Territory territory) {}
+
+  @Override
+  public void mouseMoved(final Territory territory, final MouseDetails me) {}
 }

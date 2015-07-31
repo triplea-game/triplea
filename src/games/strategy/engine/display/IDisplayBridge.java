@@ -17,11 +17,10 @@ import games.strategy.engine.data.GameData;
 
 /**
  * A bridge between the IDisplay and the game.
- * 
- * 
+ *
+ *
  * @author Sean Bridges
  */
-public interface IDisplayBridge
-{
-	public GameData getGameData();
+public interface IDisplayBridge {
+  public GameData getGameData();
 }

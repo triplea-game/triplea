@@ -13,24 +13,23 @@
  */
 /*
  * UnitHolder.java
- * 
+ *
  * Created on October 26, 2001, 2:27 PM
  */
 package games.strategy.engine.data;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
-public interface UnitHolder
-{
-	public static final String TERRITORY = "T";
-	public static final String PLAYER = "P";
-	
-	public UnitCollection getUnits();
-	
-	public void notifyChanged();
-	
-	public String getType();
+public interface UnitHolder {
+  public static final String TERRITORY = "T";
+  public static final String PLAYER = "P";
+
+  public UnitCollection getUnits();
+
+  public void notifyChanged();
+
+  public String getType();
 }

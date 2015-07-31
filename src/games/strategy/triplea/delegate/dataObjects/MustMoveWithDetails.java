@@ -13,47 +13,44 @@
  */
 /*
  * MustMoveWithReply.java
- * 
+ *
  * Created on December 3, 2001, 6:25 PM
  */
 package games.strategy.triplea.delegate.dataObjects;
 
-import games.strategy.engine.data.Unit;
-
 import java.util.Collection;
 import java.util.Map;
 
+import games.strategy.engine.data.Unit;
+
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
- * 
+ *
  *          A response to a must move query.
  *          Returns a mapping of unit -> collection of units.
  *          Units that must move are land units in transports,
  *          and friendly aircraft that must move with carriers.
  */
-public class MustMoveWithDetails implements java.io.Serializable
-{
-	private static final long serialVersionUID = 936060269327534445L;
-	/**
-	 * Maps Unit -> Collection of units.
-	 */
-	private final Map<Unit, Collection<Unit>> m_mapping;
-	
-	/**
-	 * Creates new MustMoveWithReplay
-	 * 
-	 * @param mapping
-	 *            a mapping of unit (that must move) -> collection of units
-	 */
-	public MustMoveWithDetails(final Map<Unit, Collection<Unit>> mapping)
-	{
-		m_mapping = mapping;
-	}
-	
-	public Map<Unit, Collection<Unit>> getMustMoveWith()
-	{
-		return m_mapping;
-	}
+public class MustMoveWithDetails implements java.io.Serializable {
+  private static final long serialVersionUID = 936060269327534445L;
+  /**
+   * Maps Unit -> Collection of units.
+   */
+  private final Map<Unit, Collection<Unit>> m_mapping;
+
+  /**
+   * Creates new MustMoveWithReplay
+   *
+   * @param mapping
+   *        a mapping of unit (that must move) -> collection of units
+   */
+  public MustMoveWithDetails(final Map<Unit, Collection<Unit>> mapping) {
+    m_mapping = mapping;
+  }
+
+  public Map<Unit, Collection<Unit>> getMustMoveWith() {
+    return m_mapping;
+  }
 }

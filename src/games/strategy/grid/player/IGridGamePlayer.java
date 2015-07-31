@@ -13,6 +13,8 @@
  */
 package games.strategy.grid.player;
 
+import java.util.Collection;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -20,14 +22,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 
-import java.util.Collection;
-
 /**
  * Interface which all Grid Game players classes must implement.
- * 
+ *
  * @author Veqryn
  */
-public interface IGridGamePlayer extends IRemotePlayer
-{
-	public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player, final GameData data, final String message);
+public interface IGridGamePlayer extends IRemotePlayer {
+  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player,
+      final GameData data, final String message);
 }

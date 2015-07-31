@@ -14,12 +14,11 @@
 package games.strategy.ui;
 
 /**
- * 
- * 
- * 
+ *
+ *
+ *
  * @author Sean Bridges
  */
-public interface ScrollListener
-{
-	public void scrolled(int x, int y);
+public interface ScrollListener {
+  public void scrolled(int x, int y);
 }

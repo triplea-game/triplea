@@ -13,6 +13,10 @@
  */
 package games.strategy.engine.framework;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
+
 /**
  * <p>
  * Title: TripleA
@@ -24,40 +28,30 @@ package games.strategy.engine.framework;
  * </p>
  * <p>
  * </p>
- * 
+ *
  * @author Sean Bridges
- * 
+ *
  */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
-
-public class SavedGamedDataLoader implements IGameDataLoader
-{
-	public GameData loadData()
-	{
-		final SaveGameFileChooser fileChooser = SaveGameFileChooser.getInstance();
-		final int rVal = fileChooser.showOpenDialog(null);
-		if (rVal == JFileChooser.APPROVE_OPTION)
-		{
-			final File f = fileChooser.getSelectedFile();
-			try
-			{
-				return new GameDataManager().loadGame(f);
-			} catch (final Exception e)
-			{
-				e.printStackTrace();
-				System.exit(0);
-				return null;
-			}
-		}
-		else
-		{
-			System.exit(0);
-			return null;
-		}
-	}
+public class SavedGamedDataLoader implements IGameDataLoader {
+  @Override
+  public GameData loadData() {
+    final SaveGameFileChooser fileChooser = SaveGameFileChooser.getInstance();
+    final int rVal = fileChooser.showOpenDialog(null);
+    if (rVal == JFileChooser.APPROVE_OPTION) {
+      final File f = fileChooser.getSelectedFile();
+      try {
+        return new GameDataManager().loadGame(f);
+      } catch (final Exception e) {
+        e.printStackTrace();
+        System.exit(0);
+        return null;
+      }
+    } else {
+      System.exit(0);
+      return null;
+    }
+  }
 }

@@ -19,12 +19,11 @@ import games.strategy.engine.data.GameData;
  * <p>
  * Title: TripleA
  * </p>
- * 
+ *
  * @author Sean Bridges
- * 
+ *
  *         Performs the loading of game data.
  */
-public interface IGameDataLoader
-{
-	public GameData loadData();
+public interface IGameDataLoader {
+  public GameData loadData();
 }

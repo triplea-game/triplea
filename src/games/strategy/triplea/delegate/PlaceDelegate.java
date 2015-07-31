@@ -13,7 +13,7 @@
  */
 /*
  * PlaceDelegate.java
- * 
+ *
  * Created on November 2, 2001, 12:29 PM
  */
 package games.strategy.triplea.delegate;
@@ -22,18 +22,18 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 /**
- * 
+ *
  * Logic for placing units.
  * <p>
- * 
- * 
+ *
+ *
  * @author Sean Bridges
  * @version 1.0
- * 
+ *
  *          Known limitations.
- * 
+ *
  *          Doesnt take into account limits on number of factories that can be produced.
- * 
+ *
  *          The situation where one has two non original factories a,b each with production 2.
  *          If sea zone e neighbors a,b and sea zone f neighbors b. Then producing 2 in e
  *          could make it such that you cannot produce in f
@@ -42,18 +42,17 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
  *          If anyone ever accidently runs into this situation then they can
  *          undo the production, produce in f first, and then produce in e.
  */
-public class PlaceDelegate extends AbstractPlaceDelegate
-{
-	/**
-	 * 
-	 * @return gets the production of the territory
-	 */
-	@Override
-	protected int getProduction(final Territory territory)
-	{
-		final TerritoryAttachment ta = TerritoryAttachment.get(territory); // Can be null!
-		if (ta != null)
-			return ta.getProduction();
-		return 0;
-	}
+public class PlaceDelegate extends AbstractPlaceDelegate {
+  /**
+   *
+   * @return gets the production of the territory
+   */
+  @Override
+  protected int getProduction(final Territory territory) {
+    final TerritoryAttachment ta = TerritoryAttachment.get(territory); // Can be null!
+    if (ta != null) {
+      return ta.getProduction();
+    }
+    return 0;
+  }
 }

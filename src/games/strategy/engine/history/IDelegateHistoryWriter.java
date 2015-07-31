@@ -19,15 +19,14 @@ package games.strategy.engine.history;
  * The rest of the history writers functions should only
  * be used by the GameData
  */
-public interface IDelegateHistoryWriter
-{
-	public void startEvent(String eventName);
-	
-	public void startEvent(String eventName, Object renderingData);
-	
-	public void addChildToEvent(String child);
-	
-	public void addChildToEvent(String child, Object renderingData);
-	
-	// public void setRenderingData(Object renderingData);
+public interface IDelegateHistoryWriter {
+  public void startEvent(String eventName);
+
+  public void startEvent(String eventName, Object renderingData);
+
+  public void addChildToEvent(String child);
+
+  public void addChildToEvent(String child, Object renderingData);
+
+  // public void setRenderingData(Object renderingData);
 }

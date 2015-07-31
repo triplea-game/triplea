@@ -19,19 +19,17 @@ import games.strategy.triplea.delegate.BattleTracker;
 
 /**
  * Note that this class will most likely be removed when the AI is completed...
- * 
+ *
  * @author Stephen
  */
-public class CachedInstanceCenter
-{
-	public static GameData CachedGameData = null;
-	public static DefaultDelegateBridge CachedDelegateBridge = null;
-	public static BattleTracker CachedBattleTracker = null;
-	
-	public static void clearCachedDelegatesAndData()
-	{
-		CachedInstanceCenter.CachedBattleTracker = null;
-		CachedInstanceCenter.CachedGameData = null;
-		CachedInstanceCenter.CachedDelegateBridge = null;
-	}
+public class CachedInstanceCenter {
+  public static GameData CachedGameData = null;
+  public static DefaultDelegateBridge CachedDelegateBridge = null;
+  public static BattleTracker CachedBattleTracker = null;
+
+  public static void clearCachedDelegatesAndData() {
+    CachedInstanceCenter.CachedBattleTracker = null;
+    CachedInstanceCenter.CachedGameData = null;
+    CachedInstanceCenter.CachedDelegateBridge = null;
+  }
 }

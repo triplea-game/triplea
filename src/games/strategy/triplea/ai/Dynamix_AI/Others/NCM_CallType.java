@@ -5,10 +5,9 @@
 package games.strategy.triplea.ai.Dynamix_AI.Others;
 
 /**
- * 
+ *
  * @author Stephen
  */
-public enum NCM_CallType
-{
-	Land_ForLandGrab, Land_ForDefensiveFront, Land_ForCapitalDefense, Empty
+public enum NCM_CallType {
+  Land_ForLandGrab, Land_ForDefensiveFront, Land_ForCapitalDefense, Empty
 }

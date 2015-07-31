@@ -13,29 +13,27 @@
  */
 package games.strategy.test;
 
-public class TestUtil
-{
-	/**
-	 * A server socket has a time to live after it is closed in which it is still
-	 * bound to its port. For testing, we need to use a new port each time
-	 * to prevent socket already bound errors
-	 */
-	public static int getUniquePort()
-	{
-		// store/get from SystemProperties
-		// to get around junit reloading
-		final String KEY = "triplea.test.port";
-		String prop = System.getProperties().getProperty(KEY);
-		if (prop == null)
-		{
-			// start off with something fairly random, between 12000 - 14000
-			prop = Integer.toString(12000 + (int) (Math.random() % 2000));
-		}
-		int val = Integer.parseInt(prop);
-		val++;
-		if (val > 15000)
-			val = 12000;
-		System.getProperties().put(KEY, "" + val);
-		return val;
-	}
+public class TestUtil {
+  /**
+   * A server socket has a time to live after it is closed in which it is still
+   * bound to its port. For testing, we need to use a new port each time
+   * to prevent socket already bound errors
+   */
+  public static int getUniquePort() {
+    // store/get from SystemProperties
+    // to get around junit reloading
+    final String KEY = "triplea.test.port";
+    String prop = System.getProperties().getProperty(KEY);
+    if (prop == null) {
+      // start off with something fairly random, between 12000 - 14000
+      prop = Integer.toString(12000 + (int) (Math.random() % 2000));
+    }
+    int val = Integer.parseInt(prop);
+    val++;
+    if (val > 15000) {
+      val = 12000;
+    }
+    System.getProperties().put(KEY, "" + val);
+    return val;
+  }
 }

@@ -13,7 +13,7 @@
  */
 /*
  * EngineVersion.java
- * 
+ *
  * Created on January 18, 2002, 3:37 PM
  */
 package games.strategy.engine;
@@ -21,10 +21,9 @@ package games.strategy.engine;
 import games.strategy.util.Version;
 
 /**
- * 
+ *
  * @author Sean Bridges
  */
-public class EngineVersion
-{
-	public static final Version VERSION = new Version(1, 8, 0, 5);
+public class EngineVersion {
+  public static final Version VERSION = new Version(1, 8, 0, 5);
 }

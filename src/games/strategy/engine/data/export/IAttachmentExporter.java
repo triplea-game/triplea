@@ -13,14 +13,13 @@
  */
 /*
  * IAttachmentExporter.java
- * 
+ *
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
 package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.IAttachment;
 
-public interface IAttachmentExporter
-{
-	public String getAttachmentOptions(IAttachment attachment);
+public interface IAttachmentExporter {
+  public String getAttachmentOptions(IAttachment attachment);
 }

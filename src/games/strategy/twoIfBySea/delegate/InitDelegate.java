@@ -24,18 +24,16 @@ package games.strategy.twoIfBySea.delegate;
  * </p>
  * <p>
  * </p>
- * 
+ *
  * @author Sean Bridges
- * 
+ *
  */
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.InitializationDelegate;
 
-public class InitDelegate extends InitializationDelegate
-{
-	@Override
-	protected void init(final IDelegateBridge aBridge)
-	{
-		super.init(aBridge);
-	}
+public class InitDelegate extends InitializationDelegate {
+  @Override
+  protected void init(final IDelegateBridge aBridge) {
+    super.init(aBridge);
+  }
 }

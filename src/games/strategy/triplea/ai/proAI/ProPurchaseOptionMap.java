@@ -1,5 +1,11 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,220 +28,193 @@ import games.strategy.triplea.ai.proAI.util.LogUtils;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
+public class ProPurchaseOptionMap {
+  private final List<ProPurchaseOption> landFodderOptions;
+  private final List<ProPurchaseOption> landAttackOptions;
+  private final List<ProPurchaseOption> landDefenseOptions;
+  private final List<ProPurchaseOption> airOptions;
+  private final List<ProPurchaseOption> seaDefenseOptions;
+  private final List<ProPurchaseOption> seaTransportOptions;
+  private final List<ProPurchaseOption> seaCarrierOptions;
+  private final List<ProPurchaseOption> seaSubOptions;
+  private final List<ProPurchaseOption> aaOptions;
+  private final List<ProPurchaseOption> factoryOptions;
+  private final List<ProPurchaseOption> specialOptions;
 
-public class ProPurchaseOptionMap
-{
-	private final List<ProPurchaseOption> landFodderOptions;
-	private final List<ProPurchaseOption> landAttackOptions;
-	private final List<ProPurchaseOption> landDefenseOptions;
-	private final List<ProPurchaseOption> airOptions;
-	private final List<ProPurchaseOption> seaDefenseOptions;
-	private final List<ProPurchaseOption> seaTransportOptions;
-	private final List<ProPurchaseOption> seaCarrierOptions;
-	private final List<ProPurchaseOption> seaSubOptions;
-	private final List<ProPurchaseOption> aaOptions;
-	private final List<ProPurchaseOption> factoryOptions;
-	private final List<ProPurchaseOption> specialOptions;
-	
-	public ProPurchaseOptionMap(final PlayerID player, final GameData data)
-	{
-		LogUtils.log(Level.FINE, "Purchase Options");
-		
-		// Initialize lists
-		landFodderOptions = new ArrayList<ProPurchaseOption>();
-		landAttackOptions = new ArrayList<ProPurchaseOption>();
-		landDefenseOptions = new ArrayList<ProPurchaseOption>();
-		airOptions = new ArrayList<ProPurchaseOption>();
-		seaDefenseOptions = new ArrayList<ProPurchaseOption>();
-		seaTransportOptions = new ArrayList<ProPurchaseOption>();
-		seaCarrierOptions = new ArrayList<ProPurchaseOption>();
-		seaSubOptions = new ArrayList<ProPurchaseOption>();
-		aaOptions = new ArrayList<ProPurchaseOption>();
-		factoryOptions = new ArrayList<ProPurchaseOption>();
-		specialOptions = new ArrayList<ProPurchaseOption>();
-		
-		// Add each production rule to appropriate list(s)
-		final List<ProductionRule> rules = player.getProductionFrontier().getRules();
-		for (final ProductionRule rule : rules)
-		{
-			// Check if rule is for a unit
-			final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
-			if (!(resourceOrUnit instanceof UnitType))
-				continue;
-			final UnitType unitType = (UnitType) resourceOrUnit;
-			
-			// Add rule to appropriate purchase option list
-			if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
-						|| Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
-						|| UnitAttachment.get(unitType).getIsSuicide())
-			{
-				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-				specialOptions.add(ppo);
-				LogUtils.log(Level.FINER, "Special: " + ppo);
-			}
-			else if (Matches.UnitTypeCanProduceUnits.match(unitType) && Matches.UnitTypeIsInfrastructure.match(unitType))
-			{
-				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-				factoryOptions.add(ppo);
-				LogUtils.log(Level.FINER, "Factory: " + ppo);
-			}
-			else if (Matches.UnitTypeIsAAforBombingThisUnitOnly.match(unitType))
-			{
-				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-				aaOptions.add(ppo);
-				LogUtils.log(Level.FINER, "AA: " + ppo);
-			}
-			else if (Matches.UnitTypeIsLand.match(unitType))
-			{
-				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-				landFodderOptions.add(ppo);
-				if (ppo.getAttack() >= ppo.getDefense() || ppo.isAttackSupport() || ppo.getMovement() > 1)
-					landAttackOptions.add(ppo);
-				if (ppo.getDefense() >= ppo.getAttack() || ppo.isDefenseSupport() || ppo.getMovement() > 1)
-					landDefenseOptions.add(ppo);
-				LogUtils.log(Level.FINER, "Land: " + ppo);
-			}
-			else if (Matches.UnitTypeIsAir.match(unitType))
-			{
-				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-				airOptions.add(ppo);
-				LogUtils.log(Level.FINER, "Air: " + ppo);
-			}
-			else if (Matches.UnitTypeIsSea.match(unitType))
-			{
-				final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-				if (!ppo.isSub())
-					seaDefenseOptions.add(ppo);
-				if (ppo.isTransport())
-					seaTransportOptions.add(ppo);
-				if (ppo.isCarrier())
-					seaCarrierOptions.add(ppo);
-				if (ppo.isSub())
-					seaSubOptions.add(ppo);
-				LogUtils.log(Level.FINER, "Sea: " + ppo);
-			}
-		}
-		if (landAttackOptions.isEmpty())
-			landAttackOptions.addAll(landDefenseOptions);
-		if (landDefenseOptions.isEmpty())
-			landDefenseOptions.addAll(landAttackOptions);
-		
-		// Print categorized options
-		LogUtils.log(Level.FINE, "Purchase Categories");
-		logOptions(landFodderOptions, "Land Fodder Options: ");
-		logOptions(landAttackOptions, "Land Attack Options: ");
-		logOptions(landDefenseOptions, "Land Defense Options: ");
-		logOptions(airOptions, "Air Options: ");
-		logOptions(seaDefenseOptions, "Sea Defense Options: ");
-		logOptions(seaTransportOptions, "Sea Transport Options: ");
-		logOptions(seaCarrierOptions, "Sea Carrier Options: ");
-		logOptions(seaSubOptions, "Sea Sub Options: ");
-		logOptions(aaOptions, "AA Options: ");
-		logOptions(factoryOptions, "Factory Options: ");
-		logOptions(specialOptions, "Special Options: ");
-	}
-	
-	public List<ProPurchaseOption> getAllOptions()
-	{
-		final Set<ProPurchaseOption> allOptions = new HashSet<ProPurchaseOption>();
-		allOptions.addAll(getLandOptions());
-		allOptions.addAll(airOptions);
-		allOptions.addAll(getSeaOptions());
-		allOptions.addAll(aaOptions);
-		allOptions.addAll(factoryOptions);
-		allOptions.addAll(specialOptions);
-		return new ArrayList<ProPurchaseOption>(allOptions);
-	}
-	
-	public List<ProPurchaseOption> getLandOptions()
-	{
-		final Set<ProPurchaseOption> landOptions = new HashSet<ProPurchaseOption>();
-		landOptions.addAll(landFodderOptions);
-		landOptions.addAll(landAttackOptions);
-		landOptions.addAll(landDefenseOptions);
-		return new ArrayList<ProPurchaseOption>(landOptions);
-	}
-	
-	public List<ProPurchaseOption> getSeaOptions()
-	{
-		final Set<ProPurchaseOption> seaOptions = new HashSet<ProPurchaseOption>();
-		seaOptions.addAll(seaDefenseOptions);
-		seaOptions.addAll(seaTransportOptions);
-		seaOptions.addAll(seaCarrierOptions);
-		seaOptions.addAll(seaSubOptions);
-		return new ArrayList<ProPurchaseOption>(seaOptions);
-	}
-	
-	public List<ProPurchaseOption> getLandFodderOptions()
-	{
-		return landFodderOptions;
-	}
-	
-	public List<ProPurchaseOption> getLandAttackOptions()
-	{
-		return landAttackOptions;
-	}
-	
-	public List<ProPurchaseOption> getLandDefenseOptions()
-	{
-		return landDefenseOptions;
-	}
-	
-	public List<ProPurchaseOption> getAirOptions()
-	{
-		return airOptions;
-	}
-	
-	public List<ProPurchaseOption> getSeaDefenseOptions()
-	{
-		return seaDefenseOptions;
-	}
-	
-	public List<ProPurchaseOption> getSeaTransportOptions()
-	{
-		return seaTransportOptions;
-	}
-	
-	public List<ProPurchaseOption> getSeaCarrierOptions()
-	{
-		return seaCarrierOptions;
-	}
-	
-	public List<ProPurchaseOption> getSeaSubOptions()
-	{
-		return seaSubOptions;
-	}
-	
-	public List<ProPurchaseOption> getAAOptions()
-	{
-		return aaOptions;
-	}
-	
-	public List<ProPurchaseOption> getFactoryOptions()
-	{
-		return factoryOptions;
-	}
-	
-	public List<ProPurchaseOption> getSpecialOptions()
-	{
-		return specialOptions;
-	}
-	
-	private void logOptions(final List<ProPurchaseOption> purchaseOptions, final String name)
-	{
-		final StringBuilder sb = new StringBuilder(name);
-		for (final ProPurchaseOption ppo : purchaseOptions)
-		{
-			sb.append(ppo.getUnitType().getName());
-			sb.append(", ");
-		}
-		sb.delete(sb.length() - 2, sb.length());
-		LogUtils.log(Level.FINER, sb.toString());
-	}
-	
+  public ProPurchaseOptionMap(final PlayerID player, final GameData data) {
+    LogUtils.log(Level.FINE, "Purchase Options");
+
+    // Initialize lists
+    landFodderOptions = new ArrayList<ProPurchaseOption>();
+    landAttackOptions = new ArrayList<ProPurchaseOption>();
+    landDefenseOptions = new ArrayList<ProPurchaseOption>();
+    airOptions = new ArrayList<ProPurchaseOption>();
+    seaDefenseOptions = new ArrayList<ProPurchaseOption>();
+    seaTransportOptions = new ArrayList<ProPurchaseOption>();
+    seaCarrierOptions = new ArrayList<ProPurchaseOption>();
+    seaSubOptions = new ArrayList<ProPurchaseOption>();
+    aaOptions = new ArrayList<ProPurchaseOption>();
+    factoryOptions = new ArrayList<ProPurchaseOption>();
+    specialOptions = new ArrayList<ProPurchaseOption>();
+
+    // Add each production rule to appropriate list(s)
+    final List<ProductionRule> rules = player.getProductionFrontier().getRules();
+    for (final ProductionRule rule : rules) {
+      // Check if rule is for a unit
+      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+      if (!(resourceOrUnit instanceof UnitType)) {
+        continue;
+      }
+      final UnitType unitType = (UnitType) resourceOrUnit;
+
+      // Add rule to appropriate purchase option list
+      if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
+          || Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
+          || UnitAttachment.get(unitType).getIsSuicide()) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+        specialOptions.add(ppo);
+        LogUtils.log(Level.FINER, "Special: " + ppo);
+      } else if (Matches.UnitTypeCanProduceUnits.match(unitType) && Matches.UnitTypeIsInfrastructure.match(unitType)) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+        factoryOptions.add(ppo);
+        LogUtils.log(Level.FINER, "Factory: " + ppo);
+      } else if (Matches.UnitTypeIsAAforBombingThisUnitOnly.match(unitType)) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+        aaOptions.add(ppo);
+        LogUtils.log(Level.FINER, "AA: " + ppo);
+      } else if (Matches.UnitTypeIsLand.match(unitType)) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+        landFodderOptions.add(ppo);
+        if (ppo.getAttack() >= ppo.getDefense() || ppo.isAttackSupport() || ppo.getMovement() > 1) {
+          landAttackOptions.add(ppo);
+        }
+        if (ppo.getDefense() >= ppo.getAttack() || ppo.isDefenseSupport() || ppo.getMovement() > 1) {
+          landDefenseOptions.add(ppo);
+        }
+        LogUtils.log(Level.FINER, "Land: " + ppo);
+      } else if (Matches.UnitTypeIsAir.match(unitType)) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+        airOptions.add(ppo);
+        LogUtils.log(Level.FINER, "Air: " + ppo);
+      } else if (Matches.UnitTypeIsSea.match(unitType)) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
+        if (!ppo.isSub()) {
+          seaDefenseOptions.add(ppo);
+        }
+        if (ppo.isTransport()) {
+          seaTransportOptions.add(ppo);
+        }
+        if (ppo.isCarrier()) {
+          seaCarrierOptions.add(ppo);
+        }
+        if (ppo.isSub()) {
+          seaSubOptions.add(ppo);
+        }
+        LogUtils.log(Level.FINER, "Sea: " + ppo);
+      }
+    }
+    if (landAttackOptions.isEmpty()) {
+      landAttackOptions.addAll(landDefenseOptions);
+    }
+    if (landDefenseOptions.isEmpty()) {
+      landDefenseOptions.addAll(landAttackOptions);
+    }
+
+    // Print categorized options
+    LogUtils.log(Level.FINE, "Purchase Categories");
+    logOptions(landFodderOptions, "Land Fodder Options: ");
+    logOptions(landAttackOptions, "Land Attack Options: ");
+    logOptions(landDefenseOptions, "Land Defense Options: ");
+    logOptions(airOptions, "Air Options: ");
+    logOptions(seaDefenseOptions, "Sea Defense Options: ");
+    logOptions(seaTransportOptions, "Sea Transport Options: ");
+    logOptions(seaCarrierOptions, "Sea Carrier Options: ");
+    logOptions(seaSubOptions, "Sea Sub Options: ");
+    logOptions(aaOptions, "AA Options: ");
+    logOptions(factoryOptions, "Factory Options: ");
+    logOptions(specialOptions, "Special Options: ");
+  }
+
+  public List<ProPurchaseOption> getAllOptions() {
+    final Set<ProPurchaseOption> allOptions = new HashSet<ProPurchaseOption>();
+    allOptions.addAll(getLandOptions());
+    allOptions.addAll(airOptions);
+    allOptions.addAll(getSeaOptions());
+    allOptions.addAll(aaOptions);
+    allOptions.addAll(factoryOptions);
+    allOptions.addAll(specialOptions);
+    return new ArrayList<ProPurchaseOption>(allOptions);
+  }
+
+  public List<ProPurchaseOption> getLandOptions() {
+    final Set<ProPurchaseOption> landOptions = new HashSet<ProPurchaseOption>();
+    landOptions.addAll(landFodderOptions);
+    landOptions.addAll(landAttackOptions);
+    landOptions.addAll(landDefenseOptions);
+    return new ArrayList<ProPurchaseOption>(landOptions);
+  }
+
+  public List<ProPurchaseOption> getSeaOptions() {
+    final Set<ProPurchaseOption> seaOptions = new HashSet<ProPurchaseOption>();
+    seaOptions.addAll(seaDefenseOptions);
+    seaOptions.addAll(seaTransportOptions);
+    seaOptions.addAll(seaCarrierOptions);
+    seaOptions.addAll(seaSubOptions);
+    return new ArrayList<ProPurchaseOption>(seaOptions);
+  }
+
+  public List<ProPurchaseOption> getLandFodderOptions() {
+    return landFodderOptions;
+  }
+
+  public List<ProPurchaseOption> getLandAttackOptions() {
+    return landAttackOptions;
+  }
+
+  public List<ProPurchaseOption> getLandDefenseOptions() {
+    return landDefenseOptions;
+  }
+
+  public List<ProPurchaseOption> getAirOptions() {
+    return airOptions;
+  }
+
+  public List<ProPurchaseOption> getSeaDefenseOptions() {
+    return seaDefenseOptions;
+  }
+
+  public List<ProPurchaseOption> getSeaTransportOptions() {
+    return seaTransportOptions;
+  }
+
+  public List<ProPurchaseOption> getSeaCarrierOptions() {
+    return seaCarrierOptions;
+  }
+
+  public List<ProPurchaseOption> getSeaSubOptions() {
+    return seaSubOptions;
+  }
+
+  public List<ProPurchaseOption> getAAOptions() {
+    return aaOptions;
+  }
+
+  public List<ProPurchaseOption> getFactoryOptions() {
+    return factoryOptions;
+  }
+
+  public List<ProPurchaseOption> getSpecialOptions() {
+    return specialOptions;
+  }
+
+  private void logOptions(final List<ProPurchaseOption> purchaseOptions, final String name) {
+    final StringBuilder sb = new StringBuilder(name);
+    for (final ProPurchaseOption ppo : purchaseOptions) {
+      sb.append(ppo.getUnitType().getName());
+      sb.append(", ");
+    }
+    sb.delete(sb.length() - 2, sb.length());
+    LogUtils.log(Level.FINER, sb.toString());
+  }
+
 }

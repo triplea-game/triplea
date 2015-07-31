@@ -13,24 +13,23 @@
  */
 /*
  * IServerMessageListener.java
- * 
+ *
  * Created on December 14, 2001, 1:03 PM
  */
 package games.strategy.net;
 
 /**
- * 
+ *
  * @author Sean Bridges
  */
-public interface IConnectionChangeListener
-{
-	/**
-	 * A connection has been added.
-	 */
-	public void connectionAdded(INode to);
-	
-	/**
-	 * A connection has been removed.
-	 */
-	public void connectionRemoved(INode to);
+public interface IConnectionChangeListener {
+  /**
+   * A connection has been added.
+   */
+  public void connectionAdded(INode to);
+
+  /**
+   * A connection has been removed.
+   */
+  public void connectionRemoved(INode to);
 }

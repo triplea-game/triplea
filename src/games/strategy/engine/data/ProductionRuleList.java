@@ -13,7 +13,7 @@
  */
 /*
  * ProductionRuleList.java
- * 
+ *
  * Created on October 22, 2001, 10:23 AM
  */
 package games.strategy.engine.data;
@@ -23,37 +23,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Sean Bridges
  * @version 1.0
  */
-public class ProductionRuleList extends GameDataComponent
-{
-	private static final long serialVersionUID = -5313215563006788188L;
-	private final Map<String, ProductionRule> m_productionRules = new HashMap<String, ProductionRule>();
-	
-	public ProductionRuleList(final GameData data)
-	{
-		super(data);
-	}
-	
-	protected void addProductionRule(final ProductionRule pf)
-	{
-		m_productionRules.put(pf.getName(), pf);
-	}
-	
-	public int size()
-	{
-		return m_productionRules.size();
-	}
-	
-	public ProductionRule getProductionRule(final String name)
-	{
-		return m_productionRules.get(name);
-	}
-	
-	public Collection<ProductionRule> getProductionRules()
-	{
-		return m_productionRules.values();
-	}
+public class ProductionRuleList extends GameDataComponent {
+  private static final long serialVersionUID = -5313215563006788188L;
+  private final Map<String, ProductionRule> m_productionRules = new HashMap<String, ProductionRule>();
+
+  public ProductionRuleList(final GameData data) {
+    super(data);
+  }
+
+  protected void addProductionRule(final ProductionRule pf) {
+    m_productionRules.put(pf.getName(), pf);
+  }
+
+  public int size() {
+    return m_productionRules.size();
+  }
+
+  public ProductionRule getProductionRule(final String name) {
+    return m_productionRules.get(name);
+  }
+
+  public Collection<ProductionRule> getProductionRules() {
+    return m_productionRules.values();
+  }
 }

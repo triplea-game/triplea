@@ -11,14 +11,13 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.delegate.IDelegateBridge;
-
 import java.io.Serializable;
 
-public interface IExecutable extends Serializable
-{
-	/**
-	 * See the documentation to IExecutionStack.
-	 */
-	public void execute(ExecutionStack stack, IDelegateBridge bridge);
+import games.strategy.engine.delegate.IDelegateBridge;
+
+public interface IExecutable extends Serializable {
+  /**
+   * See the documentation to IExecutionStack.
+   */
+  public void execute(ExecutionStack stack, IDelegateBridge bridge);
 }

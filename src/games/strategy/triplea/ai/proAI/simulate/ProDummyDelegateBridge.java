@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.proAI.simulate;
 
+import java.util.Properties;
+
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,110 +33,101 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 
-import java.util.Properties;
+public class ProDummyDelegateBridge implements IDelegateBridge {
+  private final PlainRandomSource m_randomSource = new PlainRandomSource();
+  private final DummyTripleaDisplay m_display = new DummyTripleaDisplay();
+  private final DummySoundChannel m_soundChannel = new DummySoundChannel();
+  private final PlayerID m_player;
+  private final ProAI m_proAI;
+  private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
+  private final GameData m_data;
+  private final ChangePerformer m_changePerformer;
+  private final CompositeChange m_allChanges = new CompositeChange();
+  private MustFightBattle m_battle = null;
 
-public class ProDummyDelegateBridge implements IDelegateBridge
-{
-	private final PlainRandomSource m_randomSource = new PlainRandomSource();
-	private final DummyTripleaDisplay m_display = new DummyTripleaDisplay();
-	private final DummySoundChannel m_soundChannel = new DummySoundChannel();
-	private final PlayerID m_player;
-	private final ProAI m_proAI;
-	private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
-	private final GameData m_data;
-	private final ChangePerformer m_changePerformer;
-	private final CompositeChange m_allChanges = new CompositeChange();
-	private MustFightBattle m_battle = null;
-	
-	public ProDummyDelegateBridge(final ProAI proAI, final PlayerID player, final GameData data)
-	{
-		m_proAI = proAI;
-		m_data = data;
-		m_player = player;
-		m_changePerformer = new ChangePerformer(m_data);
-	}
-	
-	public GameData getData()
-	{
-		return m_data;
-	}
-	
-	public void leaveDelegateExecution()
-	{
-	}
-	
-	public Properties getStepProperties()
-	{
-		throw new UnsupportedOperationException();
-	}
-	
-	public String getStepName()
-	{
-		throw new UnsupportedOperationException();
-	}
-	
-	public IRemotePlayer getRemotePlayer(final PlayerID id)
-	{
-		return m_proAI;
-	}
-	
-	public IRemotePlayer getRemotePlayer()
-	{
-		return m_proAI;
-	}
-	
-	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
-	{
-		return m_randomSource.getRandom(max, count, annotation);
-	}
-	
-	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
-	{
-		return m_randomSource.getRandom(max, annotation);
-	}
-	
-	public PlayerID getPlayerID()
-	{
-		return m_player;
-	}
-	
-	public IDelegateHistoryWriter getHistoryWriter()
-	{
-		return m_writer;
-	}
-	
-	public IDisplay getDisplayChannelBroadcaster()
-	{
-		return m_display;
-	}
-	
-	public ISound getSoundChannelBroadcaster()
-	{
-		return m_soundChannel;
-	}
-	
-	public void enterDelegateExecution()
-	{
-	}
-	
-	public void addChange(final Change aChange)
-	{
-		m_allChanges.add(aChange);
-		m_changePerformer.perform(aChange);
-	}
-	
-	public void stopGameSequence()
-	{
-	}
-	
-	public MustFightBattle getBattle()
-	{
-		return m_battle;
-	}
-	
-	public void setBattle(final MustFightBattle battle)
-	{
-		m_battle = battle;
-	}
-	
+  public ProDummyDelegateBridge(final ProAI proAI, final PlayerID player, final GameData data) {
+    m_proAI = proAI;
+    m_data = data;
+    m_player = player;
+    m_changePerformer = new ChangePerformer(m_data);
+  }
+
+  @Override
+  public GameData getData() {
+    return m_data;
+  }
+
+  @Override
+  public void leaveDelegateExecution() {}
+
+  @Override
+  public Properties getStepProperties() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String getStepName() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public IRemotePlayer getRemotePlayer(final PlayerID id) {
+    return m_proAI;
+  }
+
+  @Override
+  public IRemotePlayer getRemotePlayer() {
+    return m_proAI;
+  }
+
+  @Override
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) {
+    return m_randomSource.getRandom(max, count, annotation);
+  }
+
+  @Override
+  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
+    return m_randomSource.getRandom(max, annotation);
+  }
+
+  @Override
+  public PlayerID getPlayerID() {
+    return m_player;
+  }
+
+  @Override
+  public IDelegateHistoryWriter getHistoryWriter() {
+    return m_writer;
+  }
+
+  @Override
+  public IDisplay getDisplayChannelBroadcaster() {
+    return m_display;
+  }
+
+  @Override
+  public ISound getSoundChannelBroadcaster() {
+    return m_soundChannel;
+  }
+
+  @Override
+  public void enterDelegateExecution() {}
+
+  @Override
+  public void addChange(final Change aChange) {
+    m_allChanges.add(aChange);
+    m_changePerformer.perform(aChange);
+  }
+
+  @Override
+  public void stopGameSequence() {}
+
+  public MustFightBattle getBattle() {
+    return m_battle;
+  }
+
+  public void setBattle(final MustFightBattle battle) {
+    m_battle = battle;
+  }
+
 }

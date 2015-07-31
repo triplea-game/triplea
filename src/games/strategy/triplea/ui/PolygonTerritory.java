@@ -44,7 +44,7 @@
 // Territory territory = data.getMap().getTerritory(name);
 // //we must find the territory
 // if(territory == null)
-// throw new IllegalStateException("Error parsing PolygonTerritory.  No territory found named <" + name + ">");
+// throw new IllegalStateException("Error parsing PolygonTerritory. No territory found named <" + name + ">");
 //
 // Polygon poly = new Polygon();
 //
