@@ -1,30 +1,18 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.GameOverException;
+import java.lang.Thread.UncaughtExceptionHandler;
 
-/**
- * NOt entirly safe or elegant.
- *
- * We want to ignore game over exceptions when the game is actually over.
- *
- * This assumes only 1 game in a vm at a time.
- *
- * @author sgb
- */
-public class ErrorHandler {
-  private static volatile boolean m_isGameOver;
+import games.strategy.debug.ClientLogger;
 
-  public static void setGameOver(final boolean aBool) {
-    m_isGameOver = aBool;
-  }
+public class ErrorHandler implements UncaughtExceptionHandler {
 
   public ErrorHandler() {}
 
-  public void handle(final Throwable t) {
-    if (t instanceof GameOverException && m_isGameOver) {
-      // ignore
-      return;
-    }
-    t.printStackTrace();
+  @Override
+  public void uncaughtException(Thread thread, Throwable throwable) {
+    String msgToLog = "Error on thread: " + thread.getName() + ", message: "
+        + throwable.getMessage() + "; Diagnostic stack trace printed below.";
+    ClientLogger.logQuietly(msgToLog);
+    throwable.printStackTrace(System.out);
   }
 }
