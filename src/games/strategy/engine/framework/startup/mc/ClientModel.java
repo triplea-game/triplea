@@ -100,7 +100,7 @@ public class ClientModel implements IMessengerErrorListener {
   private Collection<String> m_playersAllowedToBeDisabled = new HashSet<String>();
   private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
 
-  ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
+ public ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     m_typePanelModel = typePanelModel;
     m_gameSelectorModel = gameSelectorModel;
   }
