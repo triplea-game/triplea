@@ -213,25 +213,21 @@ public class GameSelectorModel extends Observable {
     JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game", JOptionPane.ERROR_MESSAGE);
   }
 
-  public synchronized GameData getGameData() {
+  public GameData getGameData() {
     return m_data;
   }
 
   public void setCanSelect(final boolean aBool) {
-    synchronized (this) {
-      m_canSelect = aBool;
-    }
+    m_canSelect = aBool;
     notifyObs();
   }
 
-  public synchronized boolean canSelect() {
+  public boolean canSelect() {
     return m_canSelect;
   }
 
   public void setIsHostHeadlessBot(final boolean aBool) {
-    synchronized (this) {
-      m_isHostHeadlessBot = aBool;
-    }
+    m_isHostHeadlessBot = aBool;
     notifyObs();
   }
 
@@ -240,9 +236,7 @@ public class GameSelectorModel extends Observable {
   }
 
   public void setClientModelForHostBots(final ClientModel clientModel) {
-    synchronized (this) {
-      m_clientModelForHostBots = clientModel;
-    }
+    m_clientModelForHostBots = clientModel;
   }
 
   public synchronized ClientModel getClientModelForHostBots() {
@@ -254,16 +248,14 @@ public class GameSelectorModel extends Observable {
    * we still want to display game info
    */
   public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
-    synchronized (this) {
-      m_data = null;
-      m_gameName = gameName;
-      m_gameRound = gameRound;
-      m_gameVersion = gameVersion;
-    }
+    m_data = null;
+    m_gameName = gameName;
+    m_gameRound = gameRound;
+    m_gameVersion = gameVersion;
     notifyObs();
   }
 
-  public synchronized String getFileName() {
+  public String getFileName() {
     if (m_data == null) {
       return "-";
     } else {
@@ -271,27 +263,25 @@ public class GameSelectorModel extends Observable {
     }
   }
 
-  public synchronized String getGameName() {
+  public String getGameName() {
     return m_gameName;
   }
 
-  public synchronized String getGameRound() {
+  public String getGameRound() {
     return m_gameRound;
   }
 
-  public synchronized String getGameVersion() {
+  public String getGameVersion() {
     return m_gameVersion;
   }
 
   public void setGameData(final GameData data) {
-    synchronized (this) {
-      if (data == null) {
-        m_gameName = m_gameRound = m_gameVersion = "-";
-      } else {
-        m_gameName = data.getGameName();
-        m_gameRound = "" + data.getSequence().getRound();
-        m_gameVersion = data.getGameVersion().toString();
-      }
+    if (data == null) {
+      m_gameName = m_gameRound = m_gameVersion = "-";
+    } else {
+      m_gameName = data.getGameName();
+      m_gameRound = "" + data.getSequence().getRound();
+      m_gameVersion = data.getGameVersion().toString();
       m_data = data;
     }
     notifyObs();
