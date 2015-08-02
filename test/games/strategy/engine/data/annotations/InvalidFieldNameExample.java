@@ -17,14 +17,8 @@ public class InvalidFieldNameExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private String attribute; // should have been prefixed with "m_". Should cause test to fail.
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   public String getAttribute() {
     return attribute;

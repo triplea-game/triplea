@@ -47,14 +47,8 @@ import games.strategy.triplea.help.HelpSupport;
  * @author Klaus Groenbaek
  */
 public class AxisAndAlliesForumPoster extends AbstractForumPoster {
-  // -----------------------------------------------------------------------
-  // constants
-  // -----------------------------------------------------------------------
   private static final long serialVersionUID = 8896923978584346664L;
 
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   // the patterns used to extract values from hidden form fields posted to the server
   public static final Pattern NUM_REPLIES_PATTERN =
       Pattern.compile(".*name=\"num_replies\" value=\"(\\d+)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
@@ -74,16 +68,10 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   public static final Pattern ERROR_LIST_PATTERN =
       Pattern.compile(".*id=\"error_list[^>]*>\\s+([^<]*)\\s+<.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private transient HttpState m_httpState;
   private transient HostConfiguration m_hostConfiguration;
   private transient HttpClient m_client;
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Logs into axisandallies.org

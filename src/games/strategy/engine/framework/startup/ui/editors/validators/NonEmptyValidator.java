@@ -6,9 +6,6 @@ package games.strategy.engine.framework.startup.ui.editors.validators;
  * @author Klaus Groenbaek
  */
 public class NonEmptyValidator implements IValidator {
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @Override
   public boolean isValid(final String text) {

@@ -28,18 +28,12 @@ import games.strategy.ui.ProgressWindow;
  *
  */
 public class PBEMMessagePoster implements Serializable {
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   public static final String FORUM_POSTER_PROP_NAME = "games.strategy.engine.pbem.IForumPoster";
   public static final String EMAIL_SENDER_PROP_NAME = "games.strategy.engine.pbem.IEmailSender";
   public static final String WEB_POSTER_PROP_NAME = "games.strategy.engine.pbem.IWebPoster";
   public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PBEMMessagePoster";
   private static final long serialVersionUID = 2256265436928530566L;
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private final IForumPoster m_forumPoster;
   private final IEmailSender m_emailSender;
   private final IWebPoster m_webSitePoster;
@@ -54,9 +48,6 @@ public class PBEMMessagePoster implements Serializable {
   private transient int m_roundNumber;
   private transient String m_gameNameAndInfo;
 
-  // -----------------------------------------------------------------------
-  // Constructors
-  // -----------------------------------------------------------------------
 
   public PBEMMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber, final String title) {
     m_gameData = gameData;
@@ -68,9 +59,6 @@ public class PBEMMessagePoster implements Serializable {
     m_gameNameAndInfo = "TripleA " + title + " for game: " + gameData.getGameName() + ", version: " + gameData.getGameVersion();
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
   public boolean hasMessengers() {
     return (m_forumPoster != null || m_emailSender != null || m_webSitePoster != null);
   }

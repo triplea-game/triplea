@@ -12,19 +12,10 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * @author Klaus Groenbaek
  */
 public abstract class AbstractForumPoster implements IForumPoster {
-  // -----------------------------------------------------------------------
-  // constants
-  // -----------------------------------------------------------------------
   private static final String USE_TRANSITIVE_PASSWORD = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
   private static final long serialVersionUID = -734015230309508040L;
 
-  // -----------------------------------------------------------------------
-  // class methods
-  // -----------------------------------------------------------------------
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   protected String m_username = null;
   protected String m_password = null;
   protected transient String m_transPassword;
@@ -32,16 +23,10 @@ public abstract class AbstractForumPoster implements IForumPoster {
   protected boolean m_includeSaveGame = true;
   protected boolean m_alsoPostAfterCombatMove = false;
 
-  // -----------------------------------------------------------------------
-  // transitive fields
-  // -----------------------------------------------------------------------
   protected transient File m_saveGameFile = null;
   protected transient String m_turnSummaryRef = null;
   protected transient String m_saveGameFileName = null;
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @Override
   public String getTurnSummaryRef() {

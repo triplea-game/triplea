@@ -99,7 +99,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<UnitType>();
 
   //
-  // constructor
   //
   public TechAbilityAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);

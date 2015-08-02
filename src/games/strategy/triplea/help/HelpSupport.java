@@ -12,9 +12,6 @@ import java.io.InputStreamReader;
  */
 public class HelpSupport {
 
-  // -----------------------------------------------------------------------
-  // class methods
-  // -----------------------------------------------------------------------
   public static String loadHelp(final String fileName) {
     try {
       final InputStream is = HelpSupport.class.getResourceAsStream(fileName);

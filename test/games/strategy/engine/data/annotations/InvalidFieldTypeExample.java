@@ -19,15 +19,9 @@ public class InvalidFieldTypeExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   @SuppressWarnings("unused")
   private String m_givesMovement; // this should be an integermap, since that is what we are returning. should cause test to fail.
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {
 

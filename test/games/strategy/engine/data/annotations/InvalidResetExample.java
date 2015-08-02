@@ -19,14 +19,8 @@ public class InvalidResetExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setGivesMovement(final String value) {}
 

@@ -31,9 +31,6 @@ import games.strategy.ui.ProgressWindow;
  * @author Klaus Groenbaek
  */
 public class EmailSenderEditor extends EditorPanel {
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
 
   private static final long serialVersionUID = -4647781117491269926L;
   private final GenericEmailSender m_bean;
@@ -53,9 +50,6 @@ public class EmailSenderEditor extends EditorPanel {
   private final JButton m_testEmail = new JButton("Test Email");
   private final JCheckBox m_alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   /**
    * creates a new instance
@@ -145,9 +139,6 @@ public class EmailSenderEditor extends EditorPanel {
     setupListeners();
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
 
   private void setupListeners() {
     final EditorChangedFiringDocumentListener listener = new EditorChangedFiringDocumentListener();
@@ -259,9 +250,6 @@ public class EmailSenderEditor extends EditorPanel {
   }
 
 
-  // -----------------------------------------------------------------------
-  // inner classes
-  // -----------------------------------------------------------------------
 
   /**
    * class for configuring the editor so some fields can be hidden

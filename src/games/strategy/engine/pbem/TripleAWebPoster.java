@@ -32,17 +32,8 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.help.HelpSupport;
 
 public class TripleAWebPoster implements IWebPoster {
-  // -----------------------------------------------------------------------
-  // constants
-  // -----------------------------------------------------------------------
   private static final long serialVersionUID = -3013355800798928625L;
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
 
   private String m_host = MicroWebPosterEditor.HTTP_BLANK;
   private Vector<String> m_allHosts = new Vector<String>();
@@ -55,9 +46,6 @@ public class TripleAWebPoster implements IWebPoster {
   private transient String m_saveGameFileName = "";
   private String[] parties;
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   private static Collection<String> getAlliances(final GameData gameData) {
 

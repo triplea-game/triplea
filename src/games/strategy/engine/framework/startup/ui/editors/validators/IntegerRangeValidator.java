@@ -6,15 +6,9 @@ package games.strategy.engine.framework.startup.ui.editors.validators;
  * @author Klaus Groenbaek
  */
 public class IntegerRangeValidator implements IValidator {
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private final int m_min;
   private final int m_max;
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   /**
    * create a new instance
@@ -29,9 +23,6 @@ public class IntegerRangeValidator implements IValidator {
     m_max = max;
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @Override
   public boolean isValid(final String text) {

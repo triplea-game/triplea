@@ -11,9 +11,6 @@ public class EmailValidator implements IValidator {
 
   private final boolean m_validIfEmpty;
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * create a new instance

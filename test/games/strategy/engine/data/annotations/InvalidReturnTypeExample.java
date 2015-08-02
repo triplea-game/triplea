@@ -17,15 +17,9 @@ public class InvalidReturnTypeExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   @SuppressWarnings("unused")
   private String m_attribute;
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
   public int getAttribute() // is not returning our variable, so should cause test to fail
   {
     return 1;

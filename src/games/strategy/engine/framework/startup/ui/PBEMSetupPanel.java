@@ -64,14 +64,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
 
   private static final long serialVersionUID = 9006941131918034674L;
 
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private final GameSelectorModel m_gameSelectorModel;
   private final SelectAndViewEditor m_diceServerEditor;
   private final SelectAndViewEditor m_forumPosterEditor;
@@ -81,9 +75,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private final JPanel m_localPlayerPanel = new JPanel();
   private final JButton m_localPlayerSelection = new JButton("Select Local Players and AI's");
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   /**
    * Creates a new instance
@@ -153,9 +144,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   @Override
   public void setWidgetActivation() {}
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   private void setupListeners() {
     // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects another game)
@@ -451,9 +439,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   }
 
 
-  // -----------------------------------------------------------------------
-  // inner classes
-  // -----------------------------------------------------------------------
 
   /**
    * A property change listener that notify our observers

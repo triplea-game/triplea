@@ -9,9 +9,6 @@ import games.strategy.engine.data.GameData;
  * @author Klaus Groenbaek
  */
 public interface IGamePropertiesCache {
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Caches the gameOptions stored in the game data, and associates with this game

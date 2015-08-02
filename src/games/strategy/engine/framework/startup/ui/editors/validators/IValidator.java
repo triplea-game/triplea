@@ -7,9 +7,6 @@ package games.strategy.engine.framework.startup.ui.editors.validators;
  */
 public interface IValidator {
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Validates that the give input is valid

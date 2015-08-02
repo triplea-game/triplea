@@ -15,9 +15,6 @@ import games.strategy.util.IntegerMap;
  */
 public class ExampleAttachment extends DefaultAttachment {
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
 
   private static final long serialVersionUID = -5820318094331518742L;
   private int m_techCost;
@@ -28,17 +25,11 @@ public class ExampleAttachment extends DefaultAttachment {
   @InternalDoNotExport
   private String m_notAProperty = "str";
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   public ExampleAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTechCost(final String techCost) {
