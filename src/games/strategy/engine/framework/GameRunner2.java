@@ -116,7 +116,7 @@ public class GameRunner2 {
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900), DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME
           + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
-  private static UncaughtExceptionHandler exceptionHandler = null;
+  private static UncaughtExceptionHandler exceptionHandler = new ErrorHandler();
 
 
 
@@ -161,9 +161,6 @@ public class GameRunner2 {
   public static void main(String[] args) {
     if( args == null ) {
       args = new String[0];
-    }
-    if( exceptionHandler == null ) {
-      exceptionHandler = new ErrorHandler();
     }
     Thread.setDefaultUncaughtExceptionHandler( exceptionHandler);
 
