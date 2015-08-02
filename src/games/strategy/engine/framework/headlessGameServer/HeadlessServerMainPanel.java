@@ -115,7 +115,7 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
     m_chatPanelHolder.removeAll();
     final ChatPanel chat;
     if (m_gameTypePanelModel != null && m_gameTypePanelModel.getPanel() != null && m_gameTypePanelModel.getPanel().getChatPanel() != null
-        && m_gameTypePanelModel.getPanel().getChatPanel() instanceof ChatPanel) {
+        && !m_gameTypePanelModel.getPanel().getChatPanel().isHeadless()) {
       chat = (ChatPanel) m_gameTypePanelModel.getPanel().getChatPanel();
       m_chatPanelHolder = new JPanel();
       m_chatPanelHolder.setLayout(new BorderLayout());
