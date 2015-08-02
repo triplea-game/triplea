@@ -26,14 +26,7 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.util.Version;
 
 /**
- * <p>
- * Title: TripleA
- * </p>
- * <p>
- * Description: Responsible for loading saved games, new games from xml, and saving games
- * </p>
- *
- * @author Sean Bridges
+ * Responsible for loading saved games, new games from xml, and saving games
  */
 public class GameDataManager {
   private final static String DELEGATE_START = "<DelegateStart>";
@@ -65,6 +58,10 @@ public class GameDataManager {
 
   public GameData loadGame(final InputStream input, final String path) throws IOException {
     return loadGame(new ObjectInputStream(new GZIPInputStream(input)), path);
+  }
+
+  public GameData loadGame(final ObjectInputStream input) throws IOException {
+    return loadGame(input,null);
   }
 
   public GameData loadGame(final ObjectInputStream input, final String savegamePath) throws IOException {

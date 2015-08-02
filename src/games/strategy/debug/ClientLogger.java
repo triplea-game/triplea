@@ -6,13 +6,13 @@ public class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
   private static final PrintStream userOutputStream = System.err;
 
-  public static void logQuietly(final Exception e) {
+  public static void logQuietly(final Throwable e) {
     log(developerOutputStream, e);
   }
 
-  private static void log(final PrintStream stream, final Exception e) {
-    stream.println("Exception: " + e.getMessage());
-    for (final StackTraceElement stackTraceElement : e.getStackTrace()) {
+  private static void log(final PrintStream stream, final Throwable t) {
+    stream.println("Exception: " + t.getMessage());
+    for (final StackTraceElement stackTraceElement : t.getStackTrace()) {
       stream.println(stackTraceElement.toString());
     }
   }
@@ -21,7 +21,12 @@ public class ClientLogger {
     developerOutputStream.println(msg);
   }
 
-  public static void logError(final Exception e) {
-    log(userOutputStream, e);
+  public static void logError(final Throwable t) {
+    log(userOutputStream, t);
+  }
+
+  public static void logQuietly(final String msg, final Throwable t) {
+    logQuietly(msg);
+    logQuietly(t);
   }
 }

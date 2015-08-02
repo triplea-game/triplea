@@ -52,6 +52,11 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     setChat(chat);
   }
 
+  @Override
+  public boolean isHeadless() {
+    return true;
+  }
+
   public Set<INode> getAllChatters() {
     return new HashSet<INode>(m_players);
   }
