@@ -24,22 +24,13 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
   public static final String EDITOR_CHANGE = "EditorChange";
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   protected final Color m_labelColor;
 
-  // -----------------------------------------------------------------------
-  // constructor
-  // -----------------------------------------------------------------------
   public EditorPanel() {
     super(new GridBagLayout());
     m_labelColor = new JLabel().getForeground();
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * registers a listener for editor changes
@@ -176,9 +167,6 @@ public abstract class EditorPanel extends JPanel {
   }
 
 
-  // -----------------------------------------------------------------------
-  // inner classes
-  // -----------------------------------------------------------------------
   /**
    * Document listener which calls fireEditorChanged in response to any document change
    */

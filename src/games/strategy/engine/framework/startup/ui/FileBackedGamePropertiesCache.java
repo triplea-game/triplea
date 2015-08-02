@@ -21,16 +21,10 @@ import games.strategy.engine.framework.GameRunner2;
  * @author Klaus Groenbaek
  */
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
-  // -----------------------------------------------------------------------
-  // class constants
-  // -----------------------------------------------------------------------
   // chars illegal on windows (on linux/mac anything that is allowed on windows works fine)
   final static char[] s_illegalChars = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
       27, 28, 29, 30, 31, 34, 42, 58, 60, 62, 63, 92, 124};
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Caches the gameOptions stored in the game data, and associates with this game. only values that are serializable

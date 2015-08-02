@@ -77,9 +77,6 @@ public class JButtonDialog {
     return (String) pane.getValue();
   }
 
-  // -----------------------------------------------------------------------
-  // constructor
-  // -----------------------------------------------------------------------
 
   private JButtonDialog() {}
 }

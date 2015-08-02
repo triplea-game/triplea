@@ -28,33 +28,18 @@ import games.strategy.triplea.help.HelpSupport;
  * @author Klaus Groenbaek
  */
 public class TripleAWarClubForumPoster extends AbstractForumPoster {
-  // -----------------------------------------------------------------------
-  // constants
-  // -----------------------------------------------------------------------
   private static final long serialVersionUID = -4017550807078258152L;
   private static String m_host = "www.tripleawarclub.org";
   private static String s_forumId = "20";
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   private static Pattern s_XOOPS_TOKEN_REQUEST =
       Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
 
   private transient HttpState m_httpState;
   private transient HostConfiguration m_hostConfiguration;
   private transient HttpClient m_client;
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Logs into the website

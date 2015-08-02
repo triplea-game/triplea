@@ -43,14 +43,8 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * @author sgb
  */
 public class PropertiesDiceRoller implements IRemoteDiceServer {
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   private static final long serialVersionUID = 6481409417543119539L;
 
-  // -----------------------------------------------------------------------
-  // class methods
-  // -----------------------------------------------------------------------
 
   /**
    * Loads the property dice rollers from the properties file
@@ -98,24 +92,15 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     return rollers;
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private final Properties m_props;
   private String m_toAddress;
   private String m_ccAddress;
   private String m_gameId;
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
   public PropertiesDiceRoller(final Properties props) {
     m_props = props;
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @Override
   public String getDisplayName() {

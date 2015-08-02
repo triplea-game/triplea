@@ -12,14 +12,8 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * @author Klaus Groenbaek
  */
 public class NullEmailSender implements IEmailSender {
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   private static final long serialVersionUID = 9138507282128548506L;
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @Override
   public String getDisplayName() {

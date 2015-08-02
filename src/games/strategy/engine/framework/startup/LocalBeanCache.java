@@ -21,28 +21,16 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * @author Klaus Groenbaek
  */
 public class LocalBeanCache {
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   private static final LocalBeanCache s_INSTANCE = new LocalBeanCache();
   private final File m_file;
   private final Object m_mutex = new Object();
 
-  // -----------------------------------------------------------------------
-  // class methods
-  // -----------------------------------------------------------------------
   public static LocalBeanCache getInstance() {
     return s_INSTANCE;
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   Map<String, IBean> m_map = new HashMap<String, IBean>();
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   private LocalBeanCache() {
     m_file = new File(GameRunner2.getUserRootFolder(), "local.cache");
@@ -108,9 +96,6 @@ public class LocalBeanCache {
 
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * adds a new Serializable to the cache

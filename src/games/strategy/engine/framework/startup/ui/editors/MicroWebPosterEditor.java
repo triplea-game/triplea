@@ -41,9 +41,6 @@ import games.strategy.ui.ProgressWindow;
 public class MicroWebPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
   public static final String HTTP_BLANK = "http://";
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private final JButton m_viewSite = new JButton("View Web Site");
   private final JButton m_testSite = new JButton("Test Web Site");
   private final JButton m_initGame = new JButton("Initialize Game");
@@ -59,9 +56,6 @@ public class MicroWebPosterEditor extends EditorPanel {
   private final JLabel m_gameNameLabel = new JLabel("Game Name:");
   private final JTextField m_gameName = new JTextField();
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   public MicroWebPosterEditor(final IWebPoster bean, final String[] parties) {
     m_bean = bean;
@@ -110,9 +104,6 @@ public class MicroWebPosterEditor extends EditorPanel {
     setupListeners();
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Configures the listeners for the gui components

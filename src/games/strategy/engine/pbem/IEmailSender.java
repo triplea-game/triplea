@@ -14,9 +14,6 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  */
 public interface IEmailSender extends IBean {
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Sends an email with the given subject, optionally attaches a save game file.

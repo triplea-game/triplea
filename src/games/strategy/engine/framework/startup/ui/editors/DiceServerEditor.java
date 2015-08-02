@@ -20,9 +20,6 @@ import games.strategy.engine.random.PBEMDiceRoller;
  * @author Klaus Groenbaek
  */
 public class DiceServerEditor extends EditorPanel {
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
 
   private static final long serialVersionUID = -451810815037661114L;
   private final JButton m_testDiceyButton = new JButton("Test Server");
@@ -35,9 +32,6 @@ public class DiceServerEditor extends EditorPanel {
   private final JLabel m_gameIdLabel = new JLabel("Game ID:");
   private final IRemoteDiceServer m_bean;
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   /**
    * Creating a new instance
@@ -82,9 +76,6 @@ public class DiceServerEditor extends EditorPanel {
     setupListeners();
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Configures the listeners for the gui components

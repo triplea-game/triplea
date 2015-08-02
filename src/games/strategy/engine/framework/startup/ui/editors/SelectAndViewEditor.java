@@ -34,9 +34,6 @@ import games.strategy.triplea.ui.JButtonDialog;
  */
 public class SelectAndViewEditor extends EditorPanel {
   private static final long serialVersionUID = 1580648148539524876L;
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   JComboBox m_selector = new JComboBox();
   JPanel m_view = new JPanel();
   JButton m_helpButton = new JButton("Help?");
@@ -46,9 +43,6 @@ public class SelectAndViewEditor extends EditorPanel {
   private final JEditorPane m_helpPanel;
   private final String m_defaultHelp;
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   /**
    * creates a new editor
@@ -127,9 +121,6 @@ public class SelectAndViewEditor extends EditorPanel {
 
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Updates the view panel below the combo box.

@@ -17,14 +17,8 @@ public class InvalidGetterExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private String m_attribute;
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public String getAttribute() // annotation put on a getter instead of a setter, should cause test to fail

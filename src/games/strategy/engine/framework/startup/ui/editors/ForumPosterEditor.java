@@ -34,9 +34,6 @@ import games.strategy.ui.ProgressWindow;
  */
 public class ForumPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private final JButton m_viewPosts = new JButton("View Forum");
   private final JButton m_testForum = new JButton("Test Post");
 
@@ -52,9 +49,6 @@ public class ForumPosterEditor extends EditorPanel {
   private final JCheckBox m_alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final IForumPoster m_bean;
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   public ForumPosterEditor(final IForumPoster bean) {
     m_bean = bean;
@@ -106,9 +100,6 @@ public class ForumPosterEditor extends EditorPanel {
     setupListeners();
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Configures the listeners for the gui components

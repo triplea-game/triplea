@@ -25,9 +25,6 @@ import junit.framework.TestCase;
  * @author Klaus Groenbaek
  */
 public class ValidateAttachmentsTest extends TestCase {
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Test that the Example Attachment is valid

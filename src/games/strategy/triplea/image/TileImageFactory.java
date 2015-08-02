@@ -161,7 +161,6 @@ public final class TileImageFactory {
     }
   }
 
-  // constructor
   public TileImageFactory() {}
 
   /**

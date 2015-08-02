@@ -37,9 +37,6 @@ import games.strategy.triplea.help.HelpSupport;
  * @author Klaus Groenbaek
  */
 public class GenericEmailSender implements IEmailSender {
-  // -----------------------------------------------------------------------
-  // class fields
-  // -----------------------------------------------------------------------
   private static final long serialVersionUID = 4644748856027574157L;
   /**
    * a value to assign to the non-transitive password, as we can see that is was cleared
@@ -47,9 +44,6 @@ public class GenericEmailSender implements IEmailSender {
   private static final String USE_TRANSITIVE_PASSWORD = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
 
 
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
 
   /**
    * Currently only message encryption is allowed. Later connect based encryption through SSL may be implementes
@@ -58,9 +52,6 @@ public class GenericEmailSender implements IEmailSender {
     NONE, TLS
   }
 
-  // -----------------------------------------------------------------------
-  // constructors
-  // -----------------------------------------------------------------------
 
   private long m_timeout = TimeUnit.SECONDS.toMillis(60);
   private String m_subjectPrefix;
@@ -73,9 +64,6 @@ public class GenericEmailSender implements IEmailSender {
   private Encryption m_encryption;
   private boolean m_alsoPostAfterCombatMove = false;
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @Override
   public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName) throws IOException {

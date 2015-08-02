@@ -9,9 +9,6 @@ import java.io.Serializable;
  * @author Klaus Groenbaek
  */
 public interface IBean extends Serializable {
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   /**
    * Get the displayName of the bean

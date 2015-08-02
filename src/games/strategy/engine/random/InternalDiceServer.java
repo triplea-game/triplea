@@ -19,22 +19,13 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  */
 public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
-  // -----------------------------------------------------------------------
-  // instance fields
-  // -----------------------------------------------------------------------
   private transient IRandomSource _randomSource;
 
-  // -----------------------------------------------------------------------
-  // constructor
-  // -----------------------------------------------------------------------
 
   public InternalDiceServer() {
     _randomSource = new PlainRandomSource();
   }
 
-  // -----------------------------------------------------------------------
-  // instance methods
-  // -----------------------------------------------------------------------
 
   @Override
   public EditorPanel getEditor() {
