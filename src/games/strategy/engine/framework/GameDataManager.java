@@ -61,7 +61,7 @@ public class GameDataManager {
   }
 
   public GameData loadGame(final ObjectInputStream input) throws IOException {
-    return loadGame(input);
+    return loadGame(input,null);
   }
 
   public GameData loadGame(final ObjectInputStream input, final String savegamePath) throws IOException {
