@@ -1,5 +1,10 @@
 package games.strategy.engine.framework;
 
+
+
+import games.strategy.debug.ClientLogger;
+import java.io.InputStream;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
@@ -30,6 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.apache.commons.codec.CharEncoding;
 import org.apache.commons.httpclient.HostConfiguration;
 
 import games.strategy.common.ui.BasicGameMenuBar;
@@ -58,6 +64,7 @@ public class GameRunner2 {
   public static final String HTTP_PROXYPORT = "http.proxyPort";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
+
   // argument options below:
   public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
   public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
@@ -95,13 +102,15 @@ public class GameRunner2 {
   public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx"; // what should our xmx be approximately?
   public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
   public static final String SYSTEM_INI = "system.ini";
+
   private static WaitWindow s_waitWindow;
   private static CountDownLatch s_countDownLatch;
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
-  // need time for network transmission of a large game data
-  public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10;
+  public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10; // need time for network
+                                                                                                                 // transmission of a large
+                                                                                                                 // game data
   public static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
       Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
   public static final int ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME = 10;
@@ -162,13 +171,24 @@ public class GameRunner2 {
         }
       });
     } catch (final Exception e) {
-      // just don't show the wait window
+      ClientLogger.logQuietly(e);
+      if(s_waitWindow != null ) {
+        s_waitWindow.dispose();
+      }
     }
     setupProxies();
     showMainFrame();
-    // lastly, check and see if there are new versions of TripleA out
-    checkForUpdates();
+    checkForGameEngineUpdates();
   }
+
+  /**
+   * Used to set the object that will handle uncaught exceptions, generally these are exceptions
+   * thrown from the Swing and other threads. Generally useful to help test.
+   */
+  public static void setErrorHandler(UncaughtExceptionHandler handler) {
+    exceptionHandler = handler;
+  }
+
 
   private static void showMainFrame() {
     SwingUtilities.invokeLater(new Runnable() {
@@ -193,6 +213,7 @@ public class GameRunner2 {
    */
   private static void handleCommandLineArgs(final String[] args) {
     final String[] properties = getProperties();
+
     // if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
     // optionally, it may not start with the property name
     if (args.length == 1) {
@@ -208,6 +229,7 @@ public class GameRunner2 {
         args[0] = TRIPLEA_GAME_PROPERTY + "=" + args[0];
       }
     }
+
     boolean usagePrinted = false;
     for (final String arg1 : args) {
       boolean found = false;
@@ -270,11 +292,9 @@ public class GameRunner2 {
           try {
             UIManager.setLookAndFeel(getDefaultLookAndFeel());
             // FYI if you are getting a null pointer exception in Substance, like this:
-            // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
-            // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
+            // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities.getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
             // Then it is because you included the swingx substance library without including swingx.
-            // You can solve by including both swingx libraries or removing both,
-            // or by setting the look and feel twice in a row.
+            // You can solve by including both swingx libraries or removing both, or by setting the look and feel twice in a row.
           } catch (final Throwable t) {
             if (!GameRunner.isMac()) {
               try {
@@ -293,9 +313,14 @@ public class GameRunner2 {
   public static void setupLogging() {
     // setup logging to read our logging.properties
     try {
-      LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
+      InputStream inputStream = ClassLoader.getSystemResourceAsStream(fileName);
+      if( inputStream == null ) {
+        ClientLogger.logQuietly("Could not load logging properties file: " + fileName);
+      } else {
+        LogManager.getLogManager().readConfiguration(inputStream);
+      }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -332,8 +357,7 @@ public class GameRunner2 {
   private static void checkForMemoryXMX() {
     final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, "false");
     final boolean memSet = Boolean.parseBoolean(memSetString);
-    // if we have already set the memory, then return.
-    // (example: we used process runner to create a new triplea with a specific memory)
+    // if we have already set the memory, then return. (example: we used process runner to create a new triplea with a specific memory)
     if (memSet) {
       return;
     }
@@ -354,8 +378,8 @@ public class GameRunner2 {
     final long currentMaxMemory = Runtime.getRuntime().maxMemory();
     System.out.println("Current max memory: " + currentMaxMemory + ";  and new xmx should be: " + xmx);
     final long diff = Math.abs(currentMaxMemory - xmx);
-    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%,
-    // so if our difference is less than 22% we should just ignore the difference
+    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%, so if our difference is less than 22% we should just ignore the
+    // difference
     if (diff <= xmx * 0.22) {
       return;
     }
@@ -381,8 +405,7 @@ public class GameRunner2 {
     final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
     final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
     final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
-    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value.
-    // Just something to be aware of.
+    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value. Just something to be aware of.
     long max = Runtime.getRuntime().maxMemory();
     if (!useDefaultMaxMemory && maxMemoryString.length() > 0) {
       try {
@@ -723,7 +746,7 @@ public class GameRunner2 {
     }
   }
 
-  public static void checkForUpdates() {
+  private static void checkForGameEngineUpdates() {
     final Thread t = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -751,8 +774,7 @@ public class GameRunner2 {
           } catch (final InterruptedException e) {
           }
         }
-        // the main screen may take just a little bit longer after releasing the latch,
-        // so sleep for just a little bit.
+        // the main screen may take just a little itty bit longer after releasing the latch, so sleep for just a little bit.
         try {
           Thread.sleep(500);
         } catch (final InterruptedException e) {
@@ -973,28 +995,28 @@ public class GameRunner2 {
    * Get the root folder for the application
    */
   public static File getRootFolder() {
-    // We know that the class file is in a directory one above the games root folder,
-    // So navigate up from the class file, and we have root.
-    // Find the url of our class
-    final URL url = GameRunner2.class.getResource("GameRunner2.class");
-    // We want to move up 1 directory for each package
-    final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
-    String fileName = url.getFile();
+    String pathOfThisClass = GameRunner2.class.getResource(GameRunner2.class.getSimpleName() + ".class").getFile();
     try {
-      // Deal with spaces in the file name which would be url encoded
-      fileName = URLDecoder.decode(fileName, "UTF-8");
+      pathOfThisClass = URLDecoder.decode(pathOfThisClass, CharEncoding.UTF_8);
     } catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
+      throw new RuntimeException("Non " + CharEncoding.UTF_8 + " encoding in path is not supported", e);
     }
-    final String tripleaJarName = "triplea.jar!";
-    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    // We are in a jar file
-    if (fileName.indexOf(tripleaJarName) != -1) {
-      final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
-          fileName.indexOf(tripleaJarName) - 1);
-      final File f = new File(subString).getParentFile();
-      if (!f.exists()) {
-        throw new IllegalStateException("File not found:" + f);
+    final String insideJar = ".jar!";
+    final int jarIndex = pathOfThisClass.indexOf(insideJar);
+    File f;
+    if (jarIndex != -1) {
+      final int protocolUntil = "file:".length();
+      final String jarPath = pathOfThisClass.substring(protocolUntil, jarIndex + insideJar.length() - 1);
+      f = new File(jarPath).getParentFile();
+      if (f.getName().equals("libs")) {
+        // gradle build
+        f = f.getParentFile();
+        if (f.getName().equals("build")) {
+          f = f.getParentFile();
+        }
+      } else if (f.getName().equals("bin")) {
+        // ant build
+        f = f.getParentFile();
       }
       return f;
     } else if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1) {
@@ -1006,15 +1028,27 @@ public class GameRunner2 {
       }
       return f;
     } else {
-      File f = new File(fileName);
+      final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1; // one level above the class
+      f = new File(pathOfThisClass);
       for (int i = 0; i < moveUpCount; i++) {
         f = f.getParentFile();
       }
-      if (!f.exists()) {
-        System.err.println("Could not find root folder, does  not exist:" + f);
-        return new File(System.getProperties().getProperty("user.dir"));
+      if (f.getName().equals("classes")) {
+        f = f.getParentFile();
+        if (f.getName().equals("build")) {
+          f = f.getParentFile();
+        }
       }
-      return f;
+      if (!f.exists()) {
+        final File fallback = new File(System.getProperties().getProperty("user.dir"));
+        System.err.println(String.format("Could not find root folder %s fallback to %s (env variable user.dir)",
+            f.getAbsolutePath(), fallback.getAbsolutePath()));
+        f = fallback;
+      }
     }
+    if (!f.exists()) {
+      throw new IllegalStateException(String.format("Root folder %s does not exist", f.getAbsolutePath()));
+    }
+    return f;
   }
 }

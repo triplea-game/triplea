@@ -696,7 +696,6 @@ public class HeadlessGameServer {
   private synchronized static boolean startHeadlessGame(final SetupPanelModel setupPanelModel) {
     try {
       if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
-        ErrorHandler.setGameOver(false);
         System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
             + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
         setupPanelModel.getPanel().preStartGame();
@@ -833,6 +832,7 @@ public class HeadlessGameServer {
         args[0] = GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + args[0];
       }
     }
+
     boolean printUsage = false;
     for (final String arg2 : args) {
       boolean found = false;
@@ -855,6 +855,7 @@ public class HeadlessGameServer {
         printUsage = true;
       }
     }
+
     { // now check for required fields
       final String playerName = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, "");
       final String hostName = System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, "");
