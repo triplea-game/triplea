@@ -1,5 +1,10 @@
 package games.strategy.engine.framework;
 
+
+
+import games.strategy.debug.ClientLogger;
+import java.io.InputStream;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
@@ -112,6 +117,9 @@ public class GameRunner2 {
       Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900), DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME
           + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
+  private static UncaughtExceptionHandler exceptionHandler = new ErrorHandler();
+
+
 
   public static enum ProxyChoice {
     NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
@@ -151,11 +159,12 @@ public class GameRunner2 {
         + "   to start a server, you can optionally password protect the game using triplea.server.password=foo");
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
+    Thread.setDefaultUncaughtExceptionHandler( exceptionHandler);
+
     setupLogging();
     Console.getConsole().displayStandardError();
     Console.getConsole().displayStandardOutput();
-    System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
     System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
     handleCommandLineArgs(args);
     // do after we handle command line args
@@ -172,13 +181,24 @@ public class GameRunner2 {
         }
       });
     } catch (final Exception e) {
-      // just don't show the wait window
+      ClientLogger.logQuietly(e);
+      if(s_waitWindow != null ) {
+        s_waitWindow.dispose();
+      }
     }
     setupProxies();
     showMainFrame();
-    // lastly, check and see if there are new versions of TripleA out
-    checkForUpdates();
+    checkForGameEngineUpdates();
   }
+
+  /**
+   * Used to set the object that will handle uncaught exceptions, generally these are exceptions
+   * thrown from the Swing and other threads. Generally useful to help test.
+   */
+  public static void setErrorHandler(UncaughtExceptionHandler handler) {
+    exceptionHandler = handler;
+  }
+
 
   private static void showMainFrame() {
     SwingUtilities.invokeLater(new Runnable() {
@@ -301,11 +321,17 @@ public class GameRunner2 {
   }
 
   public static void setupLogging() {
+    String fileName = "logging.properties";
     // setup logging to read our logging.properties
     try {
-      LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
+      InputStream inputStream = ClassLoader.getSystemResourceAsStream(fileName);
+      if( inputStream == null ) {
+        ClientLogger.logQuietly("Could not load logging properties file: " + fileName);
+      } else {
+        LogManager.getLogManager().readConfiguration(inputStream);
+      }
     } catch (final Exception e) {
-      e.printStackTrace();
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -731,7 +757,7 @@ public class GameRunner2 {
     }
   }
 
-  public static void checkForUpdates() {
+  private static void checkForGameEngineUpdates() {
     final Thread t = new Thread(new Runnable() {
       @Override
       public void run() {
