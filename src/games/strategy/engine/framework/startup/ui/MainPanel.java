@@ -32,6 +32,12 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.ui.ErrorHandler;
 
+/**
+ * When the game launches, the MainFrame is loaded which will contain
+ * the MainPanel. The contents of the MainPanel are swapped out
+ * until a new game has been started (TODO: check if the lobby
+ * uses mainpanel at all)
+ */
 public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
   private JScrollPane m_gameSetupPanelScroll;
@@ -168,7 +174,6 @@ public class MainPanel extends JPanel implements Observer {
     if (panelHasChat != m_isChatShowing) {
       addChat();
     }
-    invalidate();
     revalidate();
   }
 
