@@ -31,6 +31,7 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
 
+/** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 2284030734590389060L;
   private final GameSelectorModel m_gameSelectorModel;
