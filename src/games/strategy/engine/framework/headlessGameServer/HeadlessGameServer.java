@@ -24,6 +24,7 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -158,27 +159,6 @@ public class HeadlessGameServer {
   }
 
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
-    // don't change mid-game
-    if (m_setupPanelModel.getPanel() != null && m_iGame == null) {
-      if (input == null || fileName == null) {
-        return;
-      }
-      final GameData data = m_gameSelectorModel.getGameData(input, fileName);
-      if (data == null) {
-        System.out.println("Loading GameData failed for: " + fileName);
-        return;
-      }
-      final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-      if (!m_availableGames.getAvailableMapFolderOrZipNames().contains(mapNameProperty)) {
-        System.out.println("Game mapName not in available games listing: " + mapNameProperty);
-        return;
-      }
-      m_gameSelectorModel.load(data, fileName);
-      System.out.println("Changed to user savegame: " + fileName);
-    }
-  }
-
-  public synchronized void loadGameSave(final ObjectInputStream input, final String fileName) {
     // don't change mid-game
     if (m_setupPanelModel.getPanel() != null && m_iGame == null) {
       if (input == null || fileName == null) {
