@@ -63,12 +63,6 @@ public class TabbedProductionPanel extends ProductionPanel {
     super(uiContext);
   }
 
-  public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
-      final IntegerMap<ProductionRule> initialPurchase,
-      final IUIContext uiContext) {
-    return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
-  }
-
   @Override
   protected void initLayout(final PlayerID id) {
     this.removeAll();

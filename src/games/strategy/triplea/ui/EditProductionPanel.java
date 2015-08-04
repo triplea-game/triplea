@@ -54,9 +54,6 @@ public class EditProductionPanel extends ProductionPanel {
     super(uiContext);
   }
 
-  protected void setLeft(final int left) {
-    // no limits, so do nothing here
-  }
 
   @Override
   protected void calculateLimits() {
