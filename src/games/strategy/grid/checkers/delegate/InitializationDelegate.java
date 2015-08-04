@@ -5,11 +5,7 @@ import java.io.Serializable;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.message.IRemote;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class InitializationDelegate extends AbstractDelegate {
   /**
    * Called before the delegate will run.

@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package util.image;
 
 import java.awt.GraphicsConfiguration;
@@ -110,14 +97,12 @@ public class TileImageBreaker {
     // m_baseMap = doBaseMap(); //ask user wether it is sea zone only or
     // not
     // String mapDir = getMapDirectory(); //ask user where the map is
-    //
     // if (mapDir == null || mapDir.equals(""))
     // {
     // System.out.println("You need to specify a map name for this to work");
     // System.out.println("Shutting down");
     // System.exit(0);
     // }
-    //
     // try
     // {
     // MapData.setMapDir(mapDir); //makes TripleA read all the text data
@@ -151,7 +136,6 @@ public class TileImageBreaker {
         // (territoryBounds.contains(bounds) || bounds.contains(territoryBounds) || bounds.intersects(territoryBounds))
         // )
         // {
-        //
         // //match = true;
         // break;
         // }
@@ -183,18 +167,15 @@ public class TileImageBreaker {
   // private static boolean doBaseMap()
   // {
   // String ans = "";
-  //
   // while (true)
   // {
   // ans = JOptionPane.showInputDialog(null, "Do Base map (ie not relief map)? Enter [Y/N]");
-  //
   // if (ans == null)
   // {
   // System.out.println("Cannot leave this blank!");
   // System.out.println("Retry");
   // } else
   // {
-  //
   // if (ans.equalsIgnoreCase("Y"))
   // {
   // return true;
@@ -206,7 +187,6 @@ public class TileImageBreaker {
   // System.out.println("You must enter Y or N");
   // }
   // }
-  //
   // }//while
   // }
   /**
@@ -224,7 +204,6 @@ public class TileImageBreaker {
   // private static String getMapDirectory()
   // {
   // String mapDir = JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
-  //
   // if (mapDir != null)
   // {
   // return mapDir;

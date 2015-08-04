@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.strategy.grid.kingstable.player;
 
 import java.util.ArrayList;
@@ -31,11 +18,7 @@ import games.strategy.grid.player.GridAbstractAI;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridPlayData;
 
-/**
- *
- * @author Lane Schwartz
- *
- */
+
 public class BetterAI extends GridAbstractAI {
   private int m_xDimension;
   private int m_yDimension;
@@ -88,7 +71,6 @@ public class BetterAI extends GridAbstractAI {
     // for (PlayerID player : m_bridge.getGameData().getPlayerList().getPlayers())
     // {
     // PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
-    //
     // if (pa==null)
     // m_attacker = player;
     // else if (pa.needsKing())

@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version. This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * Battle.java
- *
- * Created on November 15, 2001, 12:39 PM
- *
- * @version $LastChangedDate$
- */
 package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
@@ -67,7 +49,6 @@ import games.strategy.util.Util;
  *
  * Handles logic for battles in which fighting actually occurs.
  *
- * @author Sean Bridges
  *
  */
 public class MustFightBattle extends AbstractBattle implements BattleStepStrings {
@@ -311,7 +292,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   /**
    * @deprecated use: route.getTerritoryBeforeEnd();
    * @param route
-   * @return
    */
   @Deprecated
   private Territory getAttackFrom(final Route route) {
@@ -824,7 +804,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // called from one of those methods, the exception will be propogated out of execute(),
     // and the execute method can be called again
     // it is allowed for an iexecutable to add other iexecutables to the stack
-    //
     // if you read the code in linear order, ignore wrapping stuff in annonymous iexecutables, then the code
     // can be read as it will execute
     // store the steps in a list
@@ -1199,16 +1178,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return isWW2V2() || isDefendingSubsSneakAttack();
   }
 
-  /**
-   * @return
-   */
+
   private boolean canAttackerRetreatPlanes() {
     return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && m_isAmphibious
         && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
   }
 
   /**
-   * @return
    */
   private boolean canAttackerRetreatPartialAmphib() {
     if (m_isAmphibious && isPartialAmphibiousRetreat()) {
@@ -2204,7 +2180,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   /**
-   * @return
    */
   private boolean isWW2V2() {
     return games.strategy.triplea.Properties.getWW2V2(m_data);
@@ -2227,42 +2202,36 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   /**
-   * @return
    */
   private boolean isAlliedAirIndependent() {
     return games.strategy.triplea.Properties.getAlliedAirIndependent(m_data);
   }
 
   /**
-   * @return
    */
   private boolean isDefendingSubsSneakAttack() {
     return games.strategy.triplea.Properties.getDefendingSubsSneakAttack(m_data);
   }
 
   /**
-   * @return
    */
   private boolean isAttackerRetreatPlanes() {
     return games.strategy.triplea.Properties.getAttackerRetreatPlanes(m_data);
   }
 
   /**
-   * @return
    */
   private boolean isNavalBombardCasualtiesReturnFire() {
     return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFireRestricted(m_data);
   }
 
   /**
-   * @return
    */
   private boolean isSuicideAndMunitionCasualtiesRestricted() {
     return games.strategy.triplea.Properties.getSuicideAndMunitionCasualtiesRestricted(m_data);
   }
 
   /**
-   * @return
    */
   private boolean isDefendingSuicideAndMunitionUnitsDoNotFire() {
     return games.strategy.triplea.Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(m_data);
@@ -2276,21 +2245,18 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
    */
 
   /**
-   * @return
    */
   private boolean isAirAttackSubRestricted() {
     return games.strategy.triplea.Properties.getAirAttackSubRestricted(m_data);
   }
 
   /**
-   * @return
    */
   private boolean isSubRetreatBeforeBattle() {
     return games.strategy.triplea.Properties.getSubRetreatBeforeBattle(m_data);
   }
 
   /**
-   * @return
    */
   private boolean isTransportCasualtiesRestricted() {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);

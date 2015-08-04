@@ -6,7 +6,6 @@ import java.io.Serializable;
  * An interface specifying that this component is a bean that can provide an editor
  * Beans must have a default constructor
  *
- * @author Klaus Groenbaek
  */
 public interface IBean extends Serializable {
 

@@ -5,9 +5,7 @@ import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.triplea.help.HelpSupport;
 
-/**
- * @author Klaus Groenbaek
- */
+
 public class GmailEmailSender extends GenericEmailSender {
   private static final long serialVersionUID = 3511375113962472063L;
 

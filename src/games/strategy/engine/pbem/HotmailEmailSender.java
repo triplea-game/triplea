@@ -8,7 +8,6 @@ import games.strategy.triplea.help.HelpSupport;
 /**
  * A pre configured Email sender that uses Hotmail's SMTP server
  *
- * @author Klaus Groenbaek
  */
 public class HotmailEmailSender extends GenericEmailSender {
   private static final long serialVersionUID = 3511375113962472063L;

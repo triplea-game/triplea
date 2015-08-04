@@ -16,7 +16,6 @@ import games.strategy.util.Match;
 /**
  * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment
  *
- * @author Edwin van der Wal and Veqryn
  *
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment implements ICondition {

@@ -5,11 +5,7 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class MoveForumPosterPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -533962696697230277L;
 

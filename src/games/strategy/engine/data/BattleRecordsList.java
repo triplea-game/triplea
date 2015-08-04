@@ -12,7 +12,6 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 /**
  * A holder for BattleRecords
  *
- * @author Veqryn
  *
  */
 public class BattleRecordsList extends GameDataComponent implements Serializable {
@@ -131,7 +130,6 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
    * @param beginningRound
    * @param endRound
    * @param currentRoundOnly
-   * @return
    */
   public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender, final String battleType,
       final Collection<Territory> anyOfTheseTerritories,

@@ -20,7 +20,6 @@ import games.strategy.util.Version;
  * the connection from getting enough information to log in (since the salt will change
  * on the next login attempt)
  *
- * @author sgb
  */
 public class ClientLoginValidator implements ILoginValidator {
   public static final String SALT_PROPERTY = "Salt";

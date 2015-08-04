@@ -39,7 +39,6 @@ import games.strategy.util.EventThreadJOptionPane;
 /**
  * The game frame for a headless server.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class HeadlessGameServerUI extends MainGameFrame {

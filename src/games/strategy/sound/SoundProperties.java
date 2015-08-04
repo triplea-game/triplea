@@ -12,7 +12,6 @@ import games.strategy.triplea.ResourceLoader;
 /**
  * sounds.properties file helper class
  *
- * @author veqryn
  *
  */
 public class SoundProperties {

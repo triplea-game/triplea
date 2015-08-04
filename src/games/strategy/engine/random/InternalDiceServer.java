@@ -15,7 +15,6 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  *
  * Because DiceServers must be serializable read resolve must be implemented
  *
- * @author Klaus Groenbaek
  */
 public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;

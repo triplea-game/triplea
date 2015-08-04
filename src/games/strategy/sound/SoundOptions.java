@@ -1,6 +1,3 @@
-/**
- * Created on 12.03.2012
- */
 package games.strategy.sound;
 
 import java.awt.event.ActionEvent;
@@ -23,7 +20,6 @@ import games.strategy.sound.SoundPath.SoundType;
 /**
  * Sound option window framework.
  *
- * @author Frigoref
  *
  */
 public final class SoundOptions {

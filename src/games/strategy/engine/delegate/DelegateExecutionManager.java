@@ -27,7 +27,6 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
  * <p>
  *
  *
- * @author sgb
  */
 public class DelegateExecutionManager {
   private final Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName());
@@ -58,7 +57,6 @@ public class DelegateExecutionManager {
    * <p>
    *
    * @param timeToWait
-   * @return
    */
   public boolean blockDelegateExecution(final int timeToWaitMS) throws InterruptedException {
     final boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);

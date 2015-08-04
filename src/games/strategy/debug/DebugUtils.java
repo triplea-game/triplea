@@ -16,7 +16,6 @@ import games.strategy.engine.framework.GameRunner2;
 /**
  * Moved out of Console class, so that we don't need swing.
  *
- * @author veqryn
  */
 public class DebugUtils {
   private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();

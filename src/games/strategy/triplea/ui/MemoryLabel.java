@@ -75,7 +75,6 @@ public class MemoryLabel extends JLabel {
  *
  * This thread will stop when the label is garbage collected
  *
- * @author sgb
  */
 class Updater implements Runnable {
   private final WeakReference<MemoryLabel> m_label;

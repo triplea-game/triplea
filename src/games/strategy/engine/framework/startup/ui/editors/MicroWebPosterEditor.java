@@ -36,7 +36,6 @@ import games.strategy.ui.ProgressWindow;
 /**
  * A class for displaying settings for the micro web site poster
  *
- * @author weigo
  */
 public class MicroWebPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;

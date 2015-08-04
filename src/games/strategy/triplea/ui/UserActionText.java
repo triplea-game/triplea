@@ -10,7 +10,6 @@ import games.strategy.triplea.ResourceLoader;
 /**
  * Same as PoliticsText but for user actions.
  *
- * @author veqryn
  *
  */
 public class UserActionText {

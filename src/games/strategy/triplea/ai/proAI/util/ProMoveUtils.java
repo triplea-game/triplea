@@ -40,7 +40,6 @@ import games.strategy.util.Match;
 /**
  * Pro AI move utilities.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProMoveUtils {

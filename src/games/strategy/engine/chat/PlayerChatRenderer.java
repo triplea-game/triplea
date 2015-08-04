@@ -1,6 +1,3 @@
-/**
- * Created on 19.02.2012
- */
 package games.strategy.engine.chat;
 
 import java.awt.Component;

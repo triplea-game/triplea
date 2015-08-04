@@ -17,7 +17,6 @@ import games.strategy.engine.random.PBEMDiceRoller;
 /**
  * An class for editing a Dice Server bean
  *
- * @author Klaus Groenbaek
  */
 public class DiceServerEditor extends EditorPanel {
 

@@ -1,23 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * MoveValidator.java
- *
- * Created on November 9, 2001, 4:05 PM
- *
- * @version $LastChangedDate$
- */
 package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
@@ -59,7 +39,6 @@ import games.strategy.util.Match;
 
 /**
  *
- * @author Sean Bridges
  *
  *         Provides some static methods for validating movement.
  */
@@ -730,7 +709,6 @@ public class MoveValidator {
    *
    * @param targets
    * @param data
-   * @return
    */
   public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units, final GameData data) {
     // just worry about transports
@@ -748,7 +726,6 @@ public class MoveValidator {
    * @deprecated use Match.allMatch(units, Matches.UnitHasEnoughMovementForRoute(route));
    * @param units
    * @param length
-   * @return
    */
   @Deprecated
   public static boolean hasEnoughMovement(final Collection<Unit> units, final int length) {
@@ -892,7 +869,6 @@ public class MoveValidator {
   /**
    * @deprecated use: route.isLoad();
    * @param route
-   * @return
    */
   @Deprecated
   public static boolean isLoad(final Route route) {
@@ -941,7 +917,6 @@ public class MoveValidator {
   /**
    * @deprecated use route.hasNeutralBeforeEnd()
    * @param route
-   * @return
    */
   @Deprecated
   public static boolean hasNeutralBeforeEnd(final Route route) {
@@ -986,7 +961,6 @@ public class MoveValidator {
   /**
    * @deprecated use route.hasWater();
    * @param route
-   * @return
    */
   @Deprecated
   public static boolean hasWater(final Route route) {
@@ -996,7 +970,6 @@ public class MoveValidator {
   /**
    * @deprecated use route.hasLand();
    * @param route
-   * @return
    */
   @Deprecated
   public static boolean hasLand(final Route route) {
@@ -1410,7 +1383,6 @@ public class MoveValidator {
    *        (Can be null. If null we will assume all units would be stopped by the canal.)
    * @param player
    * @param data
-   * @return
    */
   public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player, final GameData data) {
     for (final Territory routeTerritory : route.getAllTerritories()) {
@@ -1433,7 +1405,6 @@ public class MoveValidator {
    *        (Can be null. If null we will assume all units would be stopped by the canal.)
    * @param player
    * @param data
-   * @return
    */
   public static String validateCanal(final Territory territory, final Route route, final Collection<Unit> units, final PlayerID player,
       final GameData data) {

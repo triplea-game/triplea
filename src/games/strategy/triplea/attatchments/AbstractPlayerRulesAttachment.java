@@ -18,7 +18,6 @@ import games.strategy.util.IntegerMap;
  * or m_objectiveValue (the money given if the condition is true), would NOT go in This class. <br>
  * Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  */
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {

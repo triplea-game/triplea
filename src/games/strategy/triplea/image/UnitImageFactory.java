@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * UnitIconImageFactory.java
- *
- * Created on November 25, 2001, 8:27 PM
- */
 package games.strategy.triplea.image;
 
 import java.awt.AlphaComposite;
@@ -40,11 +22,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
-/**
- *
- * @author Sean Bridges
- * @version 1.0
- */
+
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   /**
@@ -108,7 +86,6 @@ public class UnitImageFactory {
    * @param img
    * Image to test for width * scalefactor. If null, will use default UNIT_ICON_WIDTH.
    *
-   * @return
    * public int getUnitImageWidth(final Image img)
    * {
    * final int width = (img == null ? UNIT_ICON_WIDTH : img.getWidth(null));
@@ -129,7 +106,6 @@ public class UnitImageFactory {
    * @param img
    * Image to test for height * scalefactor. If null, will use default UNIT_ICON_HEIGHT.
    *
-   * @return
    * public int getUnitImageHeight(final Image img)
    * {
    * final int height = (img == null ? UNIT_ICON_HEIGHT : img.getHeight(null));

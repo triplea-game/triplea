@@ -17,11 +17,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate {
   @Override
   public String removeUnits(final Territory territory, final Collection<Unit> units) {

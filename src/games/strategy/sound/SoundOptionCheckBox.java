@@ -1,6 +1,3 @@
-/**
- * Created on 12.03.2012
- */
 package games.strategy.sound;
 
 import games.strategy.engine.data.properties.BooleanProperty;
@@ -8,7 +5,6 @@ import games.strategy.engine.data.properties.BooleanProperty;
 /**
  * Checkbox wrapper for a sound option.
  *
- * @author Frigoref
  *
  */
 class SoundOptionCheckBox extends BooleanProperty {

@@ -27,7 +27,6 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
  * triplea.name=myName
  *
  *
- * @author Sean Bridges
  *
  */
 public class MainFrame extends JFrame {

@@ -30,7 +30,6 @@ import games.strategy.util.CountUpAndDownLatch;
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up the run count
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  *
- * @author Ron Murhammer (redrum) & Mark Christopher Duncan (veqryn)
  * @since 2014
  */
 public class ConcurrentOddsCalculator implements IOddsCalculator {
@@ -444,7 +443,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 /**
  * Borrowed from Executors$DefaultThreadFactory, but allows for custom name and daemon.
  *
- * @author veqryn
  *
  */
 class DaemonThreadFactory implements ThreadFactory {

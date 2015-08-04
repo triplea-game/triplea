@@ -36,7 +36,6 @@ import games.strategy.util.Tuple;
  *
  * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each unit.
  *
- * @author Veqryn
  *
  */
 public class IndividualUnitPanelGrouped extends JPanel {

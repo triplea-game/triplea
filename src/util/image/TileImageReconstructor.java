@@ -33,7 +33,6 @@ import games.strategy.util.PointFileReaderWriter;
 /**
  * For taking a folder of basetiles and putting them back together into an image.
  *
- * @author veqryn
  *
  */
 public class TileImageReconstructor {

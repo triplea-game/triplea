@@ -10,11 +10,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.Constants;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public abstract class BaseEditDelegate extends BasePersistentDelegate {
   public static String EDITMODE_ON = "Turning on Edit Mode";
   public static String EDITMODE_OFF = "Turning off Edit Mode";

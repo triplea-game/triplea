@@ -7,7 +7,6 @@ import games.strategy.engine.data.PlayerID;
 /**
  * Just a dummy sound channel that doesn't do squat.
  *
- * @author veqryn
  *
  */
 public class DummySoundChannel implements ISound {

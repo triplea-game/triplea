@@ -95,7 +95,6 @@ import games.strategy.util.Util;
  * 17) *fixed* AI needs to keep fighters home when attackers are near the capital
  *
  *
- * @author Kevin Moore
  * 2008-2009
  */
 @SuppressWarnings("deprecation")
@@ -7359,7 +7358,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
    *
    * @param data
    * @param player
-   * @return
    */
   private int countSeaUnits(final GameData data, final PlayerID player) {
     final CompositeMatchAnd<Unit> ownedSeaUnit =

@@ -12,11 +12,7 @@ import javax.swing.JScrollPane;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridGameMenu;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class GoMenu extends GridGameMenu<GridGameFrame> {
   private static final long serialVersionUID = 2522152740134093334L;
 

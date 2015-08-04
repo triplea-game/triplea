@@ -28,7 +28,6 @@ import games.strategy.util.Tuple;
 /**
  * For choosing territories and units for them, during RandomStartDelegate.
  *
- * @author veqryn
  *
  */
 public class PickTerritoryAndUnitsPanel extends ActionPanel {

@@ -12,7 +12,6 @@ import games.strategy.util.Version;
 /**
  * To hold various static utility methods for running a java program.
  *
- * @author veqryn
  *
  */
 public class ProcessRunnerUtil {

@@ -2,11 +2,7 @@ package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.message.IRemote;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public interface IRemoteHostUtils extends IRemote {
   public String getConnections();
 

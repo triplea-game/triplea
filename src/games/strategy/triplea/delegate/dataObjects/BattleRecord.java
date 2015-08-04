@@ -11,7 +11,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  *
- * @author Veqryn [Mark Christopher Duncan]
  *
  */
 public class BattleRecord extends GameDataComponent {
@@ -30,7 +29,6 @@ public class BattleRecord extends GameDataComponent {
    * NO_BATTLE = No battle was fought, possibly because the territory you were about to bomb was conquered before the bombing could begin,
    * etc.<br>
    *
-   * @author veqryn
    *
    */
   public enum BattleResultDescription {

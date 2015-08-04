@@ -9,11 +9,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
 import games.strategy.grid.chess.attachments.PlayerAttachment;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class InitializationDelegate extends AbstractDelegate {
   /**
    * Called before the delegate will run.

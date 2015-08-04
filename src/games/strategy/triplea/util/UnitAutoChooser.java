@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * UnitAutoChooser.java
- *
- * Created on July 29, 2007, 7:32 PM
- */
 package games.strategy.triplea.util;
 
 import java.util.ArrayList;
@@ -35,11 +17,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-/**
- *
- * @author: Tony Clayton
- * @version: 1.0
- */
+
 // TODO - the move computation explodes when multiple transports are selected
 // https://sourceforge.net/tracker/index.php?func=detail&aid=1890628&group_id=44492&atid=439737
 // for now this class is not to be used
@@ -84,7 +62,6 @@ class UnitAutoChooser {
   // 2. GREEDY SOLUTION : All chosen units are accounted for, but some
   // unchosen dependents are also included
   // 3. INCOMPLETE SOLUTION : Not all chosen units are accounted for.
-  //
   // There are also three ways in which a solution can be found:
   // 1. COMPOSITE SOLUTION : Dependent units were involved, and at least
   // one solution was found containing composite categories.
@@ -187,7 +164,6 @@ class UnitAutoChooser {
     m_chosenCategoryCounts = new IntegerMap<UnitCategory>(chosenCategories.size() + 1, 1);
     // store occurrence count for candidate categories (based on chosen categories)
     m_candidateCategoryCounts = new IntegerMap<UnitCategory>(allCategories.size() + 1, 1);
-    //
     m_candidateToChosenCategories = new HashMap<UnitCategory, UnitCategory>(allCategories.size() + 1, 1);
     // preserve insertion order
     m_candidateCompositeCategories = new LinkedHashSet<List<UnitCategory>>(allCategories.size() + 1, 1);
@@ -445,12 +421,10 @@ class UnitAutoChooser {
   }
 
   // solveCandidateCompositeCategories()
-  //
   // IN: allCategoriesNoMovement (with dependents, movement not categorized)
   // IN: allCategories (with dependents, movement may be categorized)
   // IN: chosenCategories (no dependents, movement not categorized)
   // OUT: n/a
-  //
   // This method will populate m_candidateCompositeCategories, which is
   // a Set of Lists of UnitCategories. Each inner-List groups the categories of all of
   // our chosen units that are dependent on, or are depended on by other units.
@@ -458,7 +432,6 @@ class UnitAutoChooser {
   // required to satisfy the chosenCategories completely for these unit categories.
   // If no exact groupings are found, the closest greedy grouping is used
   // and the solution is not marked as exact.
-  //
   private void solveCandidateCompositeCategories(final Collection<UnitCategory> allCategoriesNoMovement,
       final Collection<UnitCategory> allCategories, final Collection<UnitCategory> chosenCategories) {
     // Don't preserve insertion order. It will be preserved via m_candidateCategories.
@@ -618,7 +591,6 @@ class UnitAutoChooser {
     // System.out.println("candidateCategoriesWithDependentsList: "+candidateCategoriesWithDependentsList);
     // System.out.println("chosenCountsWithDependents: "+chosenCategoryCountsWithDependents);
     // System.out.println("chosenCountsNoDependents: "+chosenCategoryCountsNoDependents);
-    //
     // The remainder of this method implements a recursive algorithm (without recursion)
     // to group individual categories into composite category solutions.
     // A composite category solution is just a List<UnitCategory>, where every category in the list
@@ -626,7 +598,6 @@ class UnitAutoChooser {
     // Exact solutions are always added to the beginning of the composite category LinkedHashSet,
     // followed by greedy solutions, so a later on a given solution can be determined to be exact or
     // greedy by comparing its index in the solution set to the total number of exact solutions.
-    //
     // Here's a simple example:
     // The following units are in a sea zone: trn, trn[inf,arm], trn[inf]
     // The user chose trn, inf, inf, arm with the mouse.
@@ -635,7 +606,6 @@ class UnitAutoChooser {
     // That was a simple example but it can get much more complicated.
     // This algorithm should satisfy all cases.
     // See test cases for more examples.
-    //
     // intitialize structures for use during recursive processing
     final List<UnitCategory> currentCandidateCategories = new ArrayList<UnitCategory>(candidateCategoriesWithDependents.size());
     final IntegerMap<UnitCategory> currentCandidateCategoryCounts =

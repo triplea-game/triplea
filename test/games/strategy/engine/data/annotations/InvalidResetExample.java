@@ -10,7 +10,6 @@ import games.strategy.util.IntegerMap;
 /**
  * Class with an invalidly named clear method
  *
- * @author Veqryn [Mark Christopher Duncan]
  */
 public class InvalidResetExample extends DefaultAttachment {
   private static final long serialVersionUID = 113427104352979892L;

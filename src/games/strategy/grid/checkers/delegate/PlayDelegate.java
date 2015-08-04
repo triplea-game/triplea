@@ -28,11 +28,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author veqryn
- *
- */
+
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate {
   public static String ALLOW_JUMPING_OVER_YOUR_OWN_PIECES = "Allow Jumping Over Your Own Pieces";
@@ -148,7 +144,6 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    *
    * @param end
    *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
-   * @return
    */
   public static Collection<Territory> checkForCaptures(final IGridPlayData play, final PlayerID player, final GameData data) {
     // assume it is a legal move

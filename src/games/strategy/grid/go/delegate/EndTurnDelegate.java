@@ -24,11 +24,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implements IGoEndTurnDelegate {
   protected Tuple<PlayerID, IGridEndTurnData> m_groupsThatShouldDie = null;
   protected boolean m_canScore = false;

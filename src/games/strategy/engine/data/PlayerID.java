@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * PlayerID.java
- *
- * Created on October 13, 2001, 9:34 AM
- */
 package games.strategy.engine.data;
 
 import java.io.Serializable;
@@ -24,11 +6,7 @@ import java.util.LinkedHashMap;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
 
-/**
- *
- * @author Sean Bridges
- * @version 1.0
- */
+
 public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable {
   private static final long serialVersionUID = -2284878450555315947L;
   private final boolean m_optional;
@@ -153,7 +131,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
    * And I own zero factories or have have no owned land,
    * then I am basically dead, and therefore should not participate in things like politics.
    *
-   * @return
    */
   public boolean amNotDeadYet(final GameData data) {
     boolean hasFactory = false;

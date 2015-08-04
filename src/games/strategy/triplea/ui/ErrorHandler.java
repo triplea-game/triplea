@@ -9,7 +9,6 @@ import games.strategy.engine.GameOverException;
  *
  * This assumes only 1 game in a vm at a time.
  *
- * @author sgb
  */
 public class ErrorHandler {
   private static volatile boolean m_isGameOver;

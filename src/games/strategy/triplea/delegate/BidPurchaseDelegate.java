@@ -28,8 +28,6 @@ import games.strategy.util.IntegerMap;
  * Company:
  * </p>
  *
- * @author unascribed
- * @version 1.0
  */
 public class BidPurchaseDelegate extends PurchaseDelegate {
   private int m_bid;

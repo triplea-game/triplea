@@ -4,7 +4,6 @@ package games.strategy.engine.message;
  *
  * Description for a Channel or a Remote end point.
  *
- * @author Sean Bridges
  */
 public class RemoteName {
   private final String m_name;
