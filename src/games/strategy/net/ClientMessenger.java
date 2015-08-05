@@ -327,22 +327,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     try {
       is = new FileInputStream(file);
       is.read(bytes);
-      /*
-       * Read in the bytes
-       * int offset = 0;
-       * int numRead = 0;
-       * while (offset < bytes.length
-       * && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-       * {
-       * offset += numRead;
-       * }
-       * // Ensure all the bytes have been read in
-       * if (offset < bytes.length)
-       * {
-       * is.close();
-       * throw new IOException("Could not completely read file " + file.getName());
-       * }
-       */
     } catch (final IOException e) {
       e.printStackTrace();
     } finally {

@@ -398,27 +398,6 @@ public class EnginePreferences extends JDialog {
         }
       }
     });
-    /*
-     * m_runAutoHost.addActionListener(new AbstractAction("Run an Automated Game Host Bot")
-     * {
-     * private static final long serialVersionUID = -3582932190184978286L;
-     *
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * final List<String> commands = new ArrayList<String>();
-     * ProcessRunnerUtil.populateBasicJavaArgs(commands, 1024 * 1024 * 64);
-     * final String javaClass = "games.strategy.engine.framework.HeadlessGameServer";
-     * commands.add(javaClass);
-     * commands.addAll(Arrays.asList(new String[] {
-     * "triplea.game.host.console=true", "triplea.game.host.ui=true", "triplea.game=", "triplea.server=true", "triplea.port=3300",
-     * "triplea.name=BotTest1",
-     * "triplea.lobby.game.hostedBy=BotTest1", "triplea.lobby.host=173.255.229.134", "triplea.lobby.port=3303",
-     * "triplea.lobby.game.comments=\"automated_hosting_service\""
-     * }));
-     * ProcessRunnerUtil.exec(commands);
-     * }
-     * });
-     */
     m_mapCreator.addActionListener(new AbstractAction("Run the Map Creator") {
       private static final long serialVersionUID = -3588932790184974286L;
 

@@ -52,10 +52,4 @@ public abstract class MainGameFrame extends JFrame {
   public LocalPlayers getLocalPlayers() {
     return m_localPlayers;
   }
-  /*
-   * public boolean playing(final PlayerID id)
-   * {
-   * return m_localPlayers.playing(id);
-   * }
-   */
 }

@@ -82,13 +82,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     m_tempMovePerformer = s.m_tempMovePerformer;
   }
 
-  /*
-   * public TransportTracker getTransportTracker()
-   * {
-   * return m_transportTracker;
-   * }
-   */
-
   @Override
   public List<UndoableMove> getMovesMade() {
     return new ArrayList<UndoableMove>(m_movesToUndo);
@@ -215,13 +208,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   protected boolean isWW2V2() {
     return games.strategy.triplea.Properties.getWW2V2(getData());
   }
-
-  /*
-   * protected boolean isWW2V3()
-   * {
-   * return games.strategy.triplea.Properties.getWW2V3(getData());
-   * }
-   */
 
   @Override
   public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary) {

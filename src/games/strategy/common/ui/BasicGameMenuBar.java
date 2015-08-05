@@ -229,27 +229,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   /**
    * @param parentMenu
    */
-  protected void addAllowObserversToJoin(final JMenu parentMenu) {
-    /*
-     * // People can use setpassword instead of this. It is annoying joining a game only to get socket errors that confuse people and stuff.
-     * // Either setup a new column or some kind of indicator to show that a lobby game isn't accepting new connections, or keep this off.
-     * if (!getGame().getMessenger().isServer())
-     * return;
-     * final IServerMessenger messeneger = (IServerMessenger) getGame().getMessenger();
-     * final JCheckBoxMenuItem allowObservers = new JCheckBoxMenuItem("Allow New Observers");
-     * allowObservers.setSelected(messeneger.isAcceptNewConnections());
-     * allowObservers.addActionListener(new AbstractAction()
-     * {
-     * private static final long serialVersionUID = 6876563887595464809L;
-     *
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * messeneger.setAcceptNewConnections(allowObservers.isSelected());
-     * }
-     * });
-     * parentMenu.add(allowObservers);
-     * return;
-     */
+  protected final void addAllowObserversToJoin(final JMenu parentMenu) {
   }
 
   /**
@@ -560,21 +540,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
           fileName += ".tsvg";
         }
         final File f = new File(dirName, fileName);
-        // TODO check this on a MAC
-        // disallow sub directories to be entered (in the form directory/name
-        /*
-         * String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
-         * if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
-         * {
-         * int choice = JOptionPane.showConfirmDialog(m_frame,
-         * "Special characters are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
-         * JOptionPane.WARNING_MESSAGE);
-         * return;
-         * }
-         */
-        // If the user selects a filename that already exists,
-        // the AWT Dialog on Mac OS X will ask the user for confirmation
-        // so, we don't need to explicitly ask user if they want to overwrite the old file
         return f;
       }
     }
@@ -601,8 +566,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       if (!f.getName().toLowerCase().endsWith(".tsvg")) {
         f = new File(f.getParent(), f.getName() + ".tsvg");
       }
-      // A small warning so users will not over-write a file,
-      // added by NeKromancer
+      // A small warning so users will not over-write a file
       if (f.exists()) {
         final int choice = JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
             "Over-write?", JOptionPane.YES_NO_OPTION,
@@ -610,14 +574,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         if (choice != JOptionPane.OK_OPTION) {
           return null;
         }
-      } // end if exists
+      }
       return f;
     }
   }
 
-  /**
-   * @param parent
-   */
   protected void addSaveMenu(final JMenu parent) {
     final JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...") {
       private static final long serialVersionUID = -8835148465905355231L;
@@ -670,9 +631,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     parent.add(menuPBEM);
   }
 
-  /**
-   * @param parentMenu
-   */
   protected void addExitMenu(final JMenu parentMenu) {
     final boolean isMac = GameRunner.isMac();
     final JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game") {
@@ -731,29 +689,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     }
     if (isJavaGreatThan5()) {
       substanceLooks.addAll(new ArrayList<String>(Arrays.asList(new String[] {
-          // UIManager.getSystemLookAndFeelClassName(),
-          // MetalLookAndFeel.class.getName(),
-          // UIManager.getCrossPlatformLookAndFeelClassName(),
-          /*
-           * Substance 5.x
-           * "org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceCremeLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceDustLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceMagmaLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceModerateLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceTwilightLookAndFeel"
-           */
-
-          // Substance (insubstantial) 7.x
           "org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
           "org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
           "org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",

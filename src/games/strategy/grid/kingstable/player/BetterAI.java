@@ -123,20 +123,8 @@ public class BetterAI extends GridAbstractAI {
     }
   }
 
-  private State getInitialState() {/*
-                                    * PlayerID currentPlayer = m_id;
-                                    * PlayerID otherPlayer = null;
-                                    * for (PlayerID p : m_bridge.getGameData().getPlayerList().getPlayers())
-                                    * {
-                                    * if (!p.equals(currentPlayer))
-                                    * {
-                                    * otherPlayer = p;
-                                    * break;
-                                    * }
-                                    * }
-                                    */
+  private State getInitialState() {
     return new State(getGameData().getMap().getTerritories());
-    // return new State(currentPlayer, otherPlayer, m_xDimension, m_yDimension, m_bridge.getGameData().getMap().getTerritories());
   }
 
   public static int counter = 0;
@@ -387,12 +375,6 @@ public class BetterAI extends GridAbstractAI {
       return squareOwner.get((m_xDimension * x + y));
     }
 
-    /*
-     * private float getUtilityBasedOnMobility()
-     * {
-     *
-     * }
-     */
     @Override
     public float getUtility() {
       // if the king has been captured...

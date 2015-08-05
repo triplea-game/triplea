@@ -585,27 +585,11 @@ public class ServerGame extends AbstractGame {
     final IGamePlayer player = m_gamePlayers.get(playerID);
     if (player != null) {
       // a local player
-      /*
-       * if (HeadlessGameServer.headless())
-       * {
-       * System.out.println("Local Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName() + ", player name: "
-       * + player.getName() + ", player type: "
-       * + player.getType() + ". All local players: " + m_gamePlayers + ". All players: " + m_playerManager);
-       * }
-       */
       player.start(getCurrentStep().getName());
     } else {
       // a remote player
       final INode destination = m_playerManager.getNode(playerID.getName());
       final IGameStepAdvancer advancer = (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
-      /*
-       * if (HeadlessGameServer.headless())
-       * {
-       * System.out.println("Remote Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName() + ", Player Node: "
-       * + destination + ". All local players: "
-       * + m_gamePlayers + ". All players: " + m_playerManager);
-       * }
-       */
       advancer.startPlayerStep(getCurrentStep().getName(), playerID);
     }
   }

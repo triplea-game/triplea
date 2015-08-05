@@ -190,29 +190,11 @@ public abstract class AbstractUIContext implements IUIContext {
   @Override
   public void addShutdownLatch(final CountDownLatch latch) {
     m_latchesToCloseOnShutdown.addShutdownLatch(latch);
-    /*
-     * synchronized (this)
-     * {
-     * if (m_isShutDown)
-     * {
-     * releaseLatch(latch);
-     * return;
-     * }
-     * m_latchesToCloseOnShutdown.add(latch);
-     * }
-     */
   }
 
   @Override
   public void removeShutdownLatch(final CountDownLatch latch) {
     m_latchesToCloseOnShutdown.removeShutdownLatch(latch);
-    /*
-     * synchronized (this)
-     * {
-     * releaseLatch(latch);
-     * m_latchesToCloseOnShutdown.remove(latch);
-     * }
-     */
   }
 
   @Override
@@ -301,15 +283,6 @@ public abstract class AbstractUIContext implements IUIContext {
     }
   }
 
-  /*
-   * protected void releaseLatch(final CountDownLatch latch)
-   * {
-   * while (latch.getCount() > 0)
-   * {
-   * latch.countDown();
-   * }
-   * }
-   */
 
   @Override
   public boolean isShutDown() {
@@ -324,12 +297,7 @@ public abstract class AbstractUIContext implements IUIContext {
       }
       m_isShutDown = true;
       m_latchesToCloseOnShutdown.shutDown();
-      /*
-       * for (final CountDownLatch latch : m_latchesToCloseOnShutdown)
-       * {
-       * releaseLatch(latch);
-       * }
-       */
+
       for (final Window window : m_windowsToCloseOnShutdown) {
         closeWindow(window);
       }
@@ -338,8 +306,6 @@ public abstract class AbstractUIContext implements IUIContext {
       }
       m_activeToDeactivate.clear();
       m_windowsToCloseOnShutdown.clear();
-      // m_latchesToCloseOnShutdown.clear();
-      // m_mapData.close();
     }
   }
 

@@ -88,15 +88,6 @@ public class UniversalPlugAndPlayHelper {
       return addPortError;
     }
     textArea.append("Port Forwarding map added successfully.\r\n");
-    /*
-     * final String testError = testConnection();
-     * if (testError != null)
-     * {
-     * textArea.append(testError);
-     * return testError;
-     * }
-     * textArea.append("Test Connection made!");
-     */
     s_lastInstance = this;
     return null;
   }

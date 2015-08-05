@@ -36,22 +36,6 @@ import javax.swing.SwingUtilities;
  * @author Sean Bridges
  */
 public class EventThreadJOptionPane {
-  /*
-   * public static void showNonBlockingMessageDialog(final Component parentComponent, final String message, final String title)
-   * {
-   * SwingUtilities.invokeLater(new Runnable()
-   * {
-   * public void run()
-   * {
-   * final JOptionPane optionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-   * final JDialog dialog = optionPane.createDialog(parentComponent, title);
-   * dialog.setContentPane(optionPane);
-   * dialog.setAlwaysOnTop(true);
-   * dialog.setVisible(true);
-   * }
-   * });
-   * }
-   */
 
   public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType,
       final CountDownLatchHandler latchHandler) {

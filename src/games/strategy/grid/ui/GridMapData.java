@@ -98,13 +98,6 @@ public class GridMapData {
 
   public void initializeGridMapData(final GameMap map) {}
 
-  /*
-   * public GameData getGameData()
-   * {
-   * return m_gameData;
-   * }
-   */
-
   public synchronized Map<String, Polygon> getStringPolygons() {
     return m_polys;
   }

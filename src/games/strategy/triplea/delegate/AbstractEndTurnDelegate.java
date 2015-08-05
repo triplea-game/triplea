@@ -516,38 +516,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return IAbstractForumPosterDelegate.class;
   }
 
-  /*
-   * private static Comparator<Territory> getHighestToLowestProduction()
-   * {
-   * return new Comparator<Territory>()
-   * {
-   * public int compare(final Territory t1, final Territory t2)
-   * {
-   * if (t1 == t2 || t1.equals(t2) || (t1 == null && t2 == null))
-   * return 0;
-   * if (t1 == null)
-   * return 1;
-   * if (t2 == null)
-   * return -1;
-   * final TerritoryAttachment ta1 = TerritoryAttachment.get(t1);
-   * final TerritoryAttachment ta2 = TerritoryAttachment.get(t2);
-   * if (ta1 == null && ta2 == null)
-   * return 0;
-   * if (ta1 == null)
-   * return 1;
-   * if (ta2 == null)
-   * return -1;
-   * final int p1 = ta1.getProduction();
-   * final int p2 = ta2.getProduction();
-   * if (p1 == p2)
-   * return 0;
-   * if (p1 > p2)
-   * return -1;
-   * return 1;
-   * }
-   * };
-   * }
-   */
 
   private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(final Collection<Territory> blockadeZones,
       final GameMap map) {

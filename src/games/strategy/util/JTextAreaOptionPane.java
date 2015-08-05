@@ -109,31 +109,4 @@ public class JTextAreaOptionPane {
     append(text + "\r\n");
   }
 
-  /*
-   * public static void main(final String[] args)
-   * {
-   * final JTextAreaOptionPane pane = new JTextAreaOptionPane(null, "initial text\r\n", "label goes here", "testing text area option pane",
-   * null, 400, 300, true, 1);
-   * pane.show();
-   * for (int i = 0; i <= 20; i++)
-   * {
-   * pane.appendNewLine("blah: " + i);
-   * try
-   * {
-   * Thread.sleep(120);
-   * } catch (final InterruptedException e)
-   * {
-   * e.printStackTrace();
-   * }
-   * }
-   * try
-   * {
-   * Thread.sleep(1000);
-   * } catch (final InterruptedException e)
-   * {
-   * e.printStackTrace();
-   * }
-   * pane.countDown();
-   * }
-   */
 }

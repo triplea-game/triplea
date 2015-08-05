@@ -211,15 +211,6 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
         }
       }
     });
-    /*
-     * m_cancelButton.addActionListener(new ActionListener()
-     * {
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * m_gameTypePanelModel.showSelectType();
-     * }
-     * });
-     */
     m_gameSelectorModel.addObserver(this);
   }
 

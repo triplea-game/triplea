@@ -66,17 +66,6 @@ public class BattleResults extends GameDataComponent implements Serializable {
     m_whoWon = whoWon;
   }
 
-  /*
-   * public int getAttackingUnitsLeft()
-   * {
-   * return m_attackingUnitsLeft;
-   * }
-   *
-   * public int getDefendingUnitsLeft()
-   * {
-   * return m_defendingUnitsLeft;
-   * }
-   */
 
   public List<Unit> getRemainingAttackingUnits() {
     return m_remainingAttackingUnits;

@@ -296,12 +296,7 @@ public class ProductionPanel extends JPanel {
 
     protected JPanel getPanelComponent() {
       final JPanel panel = new JPanel();
-      /*
-       * String eol = "  ";
-       * try {
-       * eol = System.getProperty("line.separator");
-       * } catch (Exception e) { }
-       */
+
       final ScrollableTextField i_text = new ScrollableTextField(0, Integer.MAX_VALUE);
       i_text.setValue(m_quantity);
       panel.setLayout(new GridBagLayout());

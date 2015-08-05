@@ -2812,17 +2812,6 @@ public class SettingsWindow extends javax.swing.JDialog {
     }
   }
 
-  /*
-   * private static String getIndentationCompensation(Level level)
-   * {
-   * if (level.equals(Level.FINE))
-   * return "  ";
-   * else if (level.equals(Level.FINER))
-   * return " ";
-   * else
-   * return " ";
-   * }
-   */
   public void notifyNewRound(final int roundNumber) {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {

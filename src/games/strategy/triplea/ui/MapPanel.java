@@ -348,17 +348,11 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private final MouseListener MOUSE_LISTENER = new MouseAdapter() {
-    /*
-     * public void mouseEntered(MouseEvent e) {
-     * MOUSE_MOTION_LISTENER.mouseMoved(e);
-     * };
-     */
     /**
      * Invoked when the mouse exits a component.
      */
     @Override
     public void mouseExited(final MouseEvent e) {
-      // m_currentTerritory = null;
       if (unitsChanged(null)) {
         final MouseDetails md = convert(e);
         m_currentUnits = null;
@@ -385,25 +379,7 @@ public class MapPanel extends ImageScrollerLargeView {
         }
         notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
       }
-      // requestFocusInWindow();
     }
-
-    /*
-     * @Override
-     * public void mousePressed(MouseEvent e)
-     * {
-     * }
-     *
-     * @Override
-     * public void mouseWheelMoved(MouseWheelEvent e)
-     * {
-     * }
-     *
-     * @Override
-     * public void mouseMoved(MouseEvent e)
-     * {
-     * }
-     */
   };
 
   private MouseDetails convert(final MouseEvent me) {

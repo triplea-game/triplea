@@ -65,21 +65,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     }
   }
 
-  /*
-   * protected static char getChar(final String aString)
-   * {
-   * if (aString.equalsIgnoreCase(Constants.PROPERTY_DEFAULT))
-   * return Constants.VALUE_DEFAULT;
-   * else if (aString.equalsIgnoreCase(Constants.PROPERTY_TRUE))
-   * return Constants.VALUE_TRUE;
-   * else if (aString.equalsIgnoreCase(Constants.PROPERTY_FALSE))
-   * return Constants.VALUE_FALSE;
-   * else
-   * throw new IllegalArgumentException("Attachments: " + aString + " should equal "
-   * + Constants.PROPERTY_DEFAULT + " or " + Constants.PROPERTY_TRUE + " or " + Constants.PROPERTY_FALSE);
-   * }
-   */
-
   /**
    * Throws an error if format is invalid. Must be either true or false ignoring case.
    */

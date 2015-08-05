@@ -187,24 +187,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
     return rVal;
   }
 
-  /*
-   * public static String whoIsAI(GameData data)
-   * {
-   * StringBuilder buf = new StringBuilder("AIs are playing the following players: ");
-   * boolean areThereAIs = false;
-   * for (PlayerID player : data.getPlayerList().getPlayers())
-   * {
-   * if (player.isAI())
-   * {
-   * areThereAIs = true;
-   * buf.append(", " + player.getName());
-   * }
-   * }
-   * if (!areThereAIs)
-   * return null;
-   * return buf.toString().replaceFirst(", ", "");
-   * }
-   */
 
   /**
    * Do not use this ever. The Null PlayerID has no GameData associated with it, so you WILL get a Null Pointer error.

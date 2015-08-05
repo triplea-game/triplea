@@ -308,12 +308,6 @@ abstract public class AbstractBattle implements IBattle, Serializable {
           defender = current;
         }
       }
-      /*
-       * if (max == -1)
-       * {
-       * // this is ok, we are a headless battle
-       * }
-       */
     }
     if (defender == null) {
       return PlayerID.NULL_PLAYERID;

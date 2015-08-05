@@ -495,17 +495,6 @@ public class GoMapPanel extends GridMapPanel {
         m_wantToContinuePlaying = false;
       }
     }
-    /*
-     * if (waitForPBEM)
-     * {
-     * final CountDownLatch waitingPBEM = new CountDownLatch(1);
-     * this.addShutdownLatch(waitingPBEM);
-     * showPlayByEmailOrForumPosterPanel(player, bridge, waitingPBEM);
-     * m_parentGridGameFrame.setStatus("Click Done To Continue");
-     * waitingPBEM.await();
-     * this.removeShutdownLatch(waitingPBEM);
-     * }
-     */
     return endPhaseData;
   }
 

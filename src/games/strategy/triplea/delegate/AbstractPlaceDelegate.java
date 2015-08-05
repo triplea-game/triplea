@@ -546,46 +546,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + producer.getName() + " to "
         + at.getName();
     return transcriptText;
-    /*
-     * final Collection<Territory> neighbors = getData().getMap().getNeighbors(at, 1);
-     * final Iterator<Territory> iter = neighbors.iterator();
-     * while (iter.hasNext())
-     * {
-     * final Territory neighbor = iter.next();
-     * if (neighbor.isWater())
-     * continue;
-     * // check to see if we have a factory, only fighters from territories
-     * // that could
-     * // have produced the carrier can move there
-     * if (!neighbor.getUnits().someMatch(Matches.UnitCanProduceUnits))
-     * continue;
-     * // are there some fighers there that can be moved?
-     * if (!neighbor.getUnits().someMatch(ownedFighters))
-     * continue;
-     * if (wasConquered(neighbor))
-     * continue;
-     * if (Match.someMatch(getAlreadyProduced(neighbor), Matches.UnitCanProduceUnits))
-     * continue;
-     * final List<Unit> fighters = neighbor.getUnits().getMatches(ownedFighters);
-     * while (fighters.size() > 0 && AirMovementValidator.carrierCost(fighters) > capacity)
-     * {
-     * fighters.remove(0);
-     * }
-     * if (fighters.size() == 0)
-     * continue;
-     * final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
-     * final Change change = ChangeFactory.moveUnits(neighbor, at, movedFighters);
-     * placeChange.add(change);
-     * final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName() + " to " +
-     * at.getName();
-     * // only allow 1 movement
-     * // technically only the territory that produced the
-     * // carrier should be able to move fighters to the new
-     * // territory
-     * return transcriptText;
-     * }
-     * return null;
-     */
   }
 
   /**
@@ -806,13 +766,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // if its an original factory then unlimited production
     Collections.sort(producers, getBestProducerComparator(to, units, player));
     final TerritoryAttachment ta = TerritoryAttachment.get(producers.iterator().next()); // Can be null!
-    // WW2V2, you can not place factories in territories with no production
-    /*
-     * if (isWW2V2() && (ta == null || ta.getProduction() <= 0) && !Match.someMatch(units, Matches.UnitIsConstruction))
-     * {
-     * return "Cannot place factory, that territory cant produce any units";
-     * }
-     */
+
     if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to)) {
       return "Cannot place more units which require units, than production capacity of territories with the required units";
     }
@@ -1400,10 +1354,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         .getMaxConstructionsPerTypePerTerr() < 1)) {
       return 0;
     }
-    /*
-     * if (ua.getIsFactory() && !ua.getIsConstruction())
-     * return constructionsMap.getInt("factory");
-     */
     return Math.max(0, constructionsMap.getInt(ua.getConstructionType()));
   }
 
@@ -1476,34 +1426,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return false;
   }
 
-  /*
-   * public Map<Unit, Collection<Territory>> getTerritoriesWhereUnitsWithRequiresUnitsCanBeProducedFrom(final Collection<Unit> units, final
-   * Territory to)
-   * {
-   * final Map<Unit, Collection<Territory>> rVal = new HashMap<Unit, Collection<Territory>>();
-   * for (final Unit u : units)
-   * {
-   * final Collection<Territory> allowedTerrs = new ArrayList<Territory>();
-   * final Collection<Territory> allProducers = getAllProducers(to, m_player, Collections.singletonList(u));
-   * // if our units has the required unit in the territory it is being produced to, then we are all good (ex: the sea unit requires a
-   * Wet_Dock in the sea zone)
-   * if (!Matches.UnitRequiresUnitsOnCreation.match(u) || unitWhichRequiresUnitsHasRequiredUnits(to, true).match(u))
-   * {
-   * allowedTerrs.addAll(allProducers);
-   * }
-   * else
-   * {
-   * for (final Territory t : allProducers)
-   * {
-   * if (unitWhichRequiresUnitsHasRequiredUnits(t, true).match(u))
-   * allowedTerrs.add(t);
-   * }
-   * }
-   * rVal.put(u, allowedTerrs);
-   * }
-   * return rVal;
-   * }
-   */
 
   protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units, final PlayerID player) {
     return new Comparator<Territory>() {
@@ -1788,52 +1710,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return rVal;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IAbstractPlaceDelegate.class;
   }
-
-  /*
-   * protected boolean isSBRAffectsUnitProduction()
-   * {
-   * return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
-   * }
-   * protected boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()
-   * {
-   * return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
-   * }
-   * protected boolean isPlacementRestrictedByFactory()
-   * {
-   * return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
-   * }
-   * protected boolean isIncreasedFactoryProduction(PlayerID player)
-   * {
-   * TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-   * if(ta == null)
-   * return false;
-   * return ta.hasIncreasedFactoryProduction();
-   * }
-   * protected boolean hasConstruction(Territory to)
-   * {
-   * return to.getUnits().someMatch(Matches.UnitIsConstruction);
-   * }
-   * protected boolean isWW2V3()
-   * {
-   * return games.strategy.triplea.Properties.getWW2V3(getData());
-   * }
-   * protected boolean isMultipleAAPerTerritory()
-   * {
-   * return games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData());
-   * }
-   * protected boolean isOriginalOwner(final Territory t, final PlayerID id)
-   * {
-   * final OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
-   * return tracker.getOriginalOwner(t).equals(id);
-   * }
-   */
 }
 
 

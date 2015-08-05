@@ -112,40 +112,11 @@ public class TripleaDisplay implements ITripleaDisplay {
     m_ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits, dependents);
   }
 
-  /*
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll,
-   * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
-   *
-   * public void scrambleNotification(final GUID battleID, final String step, final PlayerID player, final Collection<Unit> scrambled, final
-   * Map<Unit, Collection<Unit>> dependents)
-   * {
-   * m_ui.getBattlePanel().scrambleNotification(step, player, scrambled, dependents);
-   * }
-   *
-   * public void notifyScramble(final String shortMessage, final String message, final String step, final PlayerID scramblingPlayer)
-   * {
-   * // we just told the game to scramble, so we already know
-   * if (m_ui.playing(scramblingPlayer))
-   * return;
-   * m_ui.getBattlePanel().notifyScramble(shortMessage, message, step, scramblingPlayer);
-   * }
-   */
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
-   */
   @Override
   public void battleEnd(final GUID battleID, final String message) {
     m_ui.getBattlePanel().battleEndMessage(battleID, message);
   }
 
-  /*
-   * )
-   *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#bombingResults(games.strategy.net.GUID, int[], int)
-   */
   @Override
   public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
     m_ui.getBattlePanel().bombingResults(battleID, dice, cost);

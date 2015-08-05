@@ -166,24 +166,6 @@ public class ProcessRunnerUtil {
     } catch (final InterruptedException e) {
       e.printStackTrace();
     }
-    /*
-     * System.out.println("Awaiting Latch");
-     * try
-     * {
-     * latch.await();
-     * } catch (final InterruptedException e)
-     * {
-     * e.printStackTrace();
-     * }
-     */
-    /*
-     * if (t != null)
-     * {
-     * System.out.println("Interrupting and Stopping");
-     * t.interrupt();
-     * t.stop();
-     * }
-     */
     System.out.println("Finished");
   }
 }

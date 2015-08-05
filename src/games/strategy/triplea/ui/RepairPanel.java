@@ -160,64 +160,10 @@ public class RepairPanel extends ActionPanel {
           return;
         }
       }
-      // give a warning if the player tries to produce too much
-      // does this piece of code even do anything? why is it here?
-      /*
-       * if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction() || isDamageFromBombingDoneToUnitsInsteadOfTerritories())
-       * {
-       * int totalProd = 0;
-       * getData().acquireReadLock();
-       * try
-       * {
-       * if(isSBRAffectsUnitProduction())
-       * {
-       * int addedProd = 0;
-       * PlayerID player = getCurrentPlayer();
-       * if(isIncreasedFactoryProduction(player))
-       * addedProd = 2;
-       *
-       * for(Territory t : Match.getMatches(getData().getMap().getTerritories(),
-       * Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer())))
-       * {
-       * TerritoryAttachment ta = TerritoryAttachment.get(t);
-       * int terrProd = ta.getUnitProduction();
-       * if(ta.getProduction() > 2)
-       * totalProd += Math.max(0, terrProd + addedProd);
-       * else
-       * totalProd += Math.max(0, terrProd);
-       * }
-       * }
-       * else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
-       * {
-       * // check to make sure we did not over repair the individual unit?
-       * }
-       * else
-       * {
-       * for(Territory t : Match.getMatches(getData().getMap().getTerritories(),
-       * Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer())))
-       * {
-       * totalProd += TerritoryAttachment.get(t).getProduction();
-       * }
-       * }
-       * } finally
-       * {
-       * getData().releaseReadLock();
-       * }
-       * }
-       */
       release();
     }
   };
 
-  /*
-   * private boolean isIncreasedFactoryProduction(PlayerID player)
-   * {
-   * TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-   * if (ta == null)
-   * return false;
-   * return ta.hasIncreasedFactoryProduction();
-   * }
-   */
   @Override
   public String toString() {
     return "RepairPanel";

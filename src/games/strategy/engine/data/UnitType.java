@@ -107,17 +107,6 @@ public class UnitType extends NamedAttachable implements Serializable {
     if (customTip == null || customTip.trim().length() <= 0) {
       return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId),
           useHTML, false);
-      /*
-       * for(IAttachment at:this.getAttachments().values()) {
-       * try {
-       * UnitAttachment ut = (UnitAttachment) at;
-       * return ut.toStringShortAndOnlyImportantDifferences(playerId);
-       * } catch (ClassCastException cce) {
-       * // this wasn't a UnitAttachment: just ignore
-       * }
-       * }
-       * return ""; //Apparently no unitattachments.
-       */
     } else {
       return LocalizeHTML.localizeImgLinksInHTML(customTip.trim());
     }

@@ -45,10 +45,6 @@ public class LocalLauncher extends AbstractLauncher {
 
   @Override
   protected void launchInNewThread(final Component parent) {
-    // final Runnable runner = new Runnable()
-    // {
-    // public void run()
-    // {
     Exception exceptionLoadingGame = null;
     ServerGame game = null;
     try {
@@ -105,20 +101,5 @@ public class LocalLauncher extends AbstractLauncher {
         }
       });
     }
-    // }
-    // };
-    /*
-     * final Thread thread = new Thread(runner, "Triplea start local thread");
-     * thread.start();
-     * if (SwingUtilities.isEventDispatchThread())
-     * throw new IllegalStateException("Wrong thread");
-     * try
-     * {
-     * thread.join();
-     * } catch (final InterruptedException e)
-     * {
-     * }
-     * s_logger.fine("Thread done!");
-     */
   }
 }

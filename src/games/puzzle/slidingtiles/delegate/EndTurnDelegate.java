@@ -38,15 +38,6 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
     super.start();
     if (gameOver(getData().getMap())) {
       signalGameOver("Board solved!");
-      /*
-       * try
-       * {
-       * m_waiting = new CountDownLatch(1);
-       * m_waiting.await();
-       * } catch (final InterruptedException e)
-       * {
-       * }
-       */
     }
   }
 

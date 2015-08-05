@@ -302,21 +302,6 @@ public class MyFormatter {
       }
     }
     return buf.toString();
-    /*
-     * final Iterator<? extends DefaultNamed> iter = list.iterator();
-     * final StringBuilder buffer = new StringBuilder();
-     * while (iter.hasNext())
-     * {
-     * final DefaultNamed named = iter.next();
-     * if (named != null)
-     * {
-     * buffer.append(named.getName());
-     * if (iter.hasNext())
-     * buffer.append(seperator);
-     * }
-     * }
-     * return buffer.toString();
-     */
   }
 
   public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map, final String separator,

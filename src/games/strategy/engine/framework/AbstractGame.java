@@ -104,19 +104,6 @@ abstract public class AbstractGame implements IGame {
     }
   }
 
-  /*
-   * protected void shutDown()
-   * {
-   * if (m_isGameOver)
-   * return;
-   * m_isGameOver = true;
-   * ErrorHandler.setGameOver(true);
-   * m_vault.shutDown();
-   * m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-   * m_data.getGameLoader().shutDown();
-   * }
-   */
-
   @Override
   public GameData getData() {
     return m_data;

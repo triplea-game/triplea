@@ -276,13 +276,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return getBridge();
   }
 
-  /*
-   * public OriginalOwnerTracker getOriginalOwnerTracker()
-   * {
-   * return m_originalOwnerTracker;
-   * }
-   */
-
   /**
    * Add bombardment units to battles.
    */
@@ -551,18 +544,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
               battle.cancelBattle(aBridge);
               battleTracker.removeBattle(battle);
-              // TODO perhaps try to reverse the setting of 0 movement left
-              /*
-               * CompositeChange change = new CompositeChange();
-               * Iterator<Unit> attackIter = attackingUnits.iterator();
-               * while(attackIter.hasNext())
-               * {
-               * TripleAUnit attacker = (TripleAUnit) attackIter.next();
-               * change.add(ChangeFactory.unitPropertyChange(attacker, TripleAUnit.get(unit).getMaxMovementAllowed(),
-               * TripleAUnit.ALREADY_MOVED));
-               * //change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(attackingUnits)); + attacker.getMovementLeft()
-               * }
-               */
             }
             continue;
           }
@@ -653,36 +634,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           .startEvent(player.getName() + " has abandoned " + territory.getName() + " to " + abandonedToPlayer.getName(), abandonedToUnits);
       battleTracker.takeOver(territory, abandonedToPlayer, aBridge, null, abandonedToUnits);
       // TODO: if there are multiple defending unit owners, allow picking which one takes over the territory
-      /*
-       * below way could be changed to use a FinishedBattle, but this is overly complicated and would only be needed if people plan to use
-       * BattleRecords or a condition based on BattleRecords to find the 'conquering' of an abandoned territory
-       * // nonFightingBattle = new FinishedBattle(territory, abandonedToPlayer, battleTracker, false, BattleType.NORMAL, data,
-       * BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, abandonedToUnits);
-       * // m_pendingBattles.add(nonFightingBattle);
-       * // getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFightingBattle.getBattleType(), data);
-       * aBridge.getHistoryWriter().startEvent(abandonedToPlayer.getName() + " creates battle in territory " + territory.getName());
-       * battleTracker.addBattle(new RouteScripted(territory), abandonedToUnits, false, abandonedToPlayer, aBridge, null, null);
-       * nonFightingBattle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
-       * if (nonFightingBattle == null)
-       * continue;
-       * // There is a potential bug, where if we are bombing a territory that would otherwise be taken over by the enemy (through this
-       * method), the bomber will 'defend' against the 'abandonedToPlayer'.
-       * if (nonFightingBattle.isEmpty())
-       * nonFightingBattle.addAttackChange(new RouteScripted(territory), abandonedToUnits, null);
-       * if (!nonFightingBattle.getAttackingUnits().containsAll(abandonedToUnits))
-       * {
-       * List<Unit> attackingUnitsNeedToBeAdded = new ArrayList<Unit>(abandonedToUnits);
-       * attackingUnitsNeedToBeAdded.removeAll(nonFightingBattle.getAttackingUnits());
-       * if (territory.isWater())
-       * attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
-       * else
-       * attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsSea.invert());
-       * if (!attackingUnitsNeedToBeAdded.isEmpty())
-       * {
-       * nonFightingBattle.addAttackChange(new RouteScripted(territory), attackingUnitsNeedToBeAdded, null);
-       * }
-       * }
-       */
     }
   }
 
@@ -1547,13 +1498,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (maxDistance < 1 || strandedAir == null || strandedAir.isEmpty()) {
       return Collections.singletonList(currentTerr);
     }
-    /*
-     * for (final Unit u : strandedAir)
-     * {
-     * if (!data.getRelationshipTracker().isAllied(u.getOwner(), alliedPlayer))
-     * throw new IllegalStateException("whereCanAirLand all air units must be allied with alliedPlayer");
-     * }
-     */
+
     final boolean areNeutralsPassableByAir = (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data)
         && !games.strategy.triplea.Properties.getNeutralsImpassable(data));
     final HashSet<Territory> canNotLand = new HashSet<Territory>();

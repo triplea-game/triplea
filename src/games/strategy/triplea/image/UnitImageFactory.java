@@ -102,19 +102,6 @@ public class UnitImageFactory {
     return m_scaleFactor;
   }
 
-  /*
-   * Return the width of scaled units.
-   *
-   * @param img
-   * Image to test for width * scalefactor. If null, will use default UNIT_ICON_WIDTH.
-   *
-   * @return
-   * public int getUnitImageWidth(final Image img)
-   * {
-   * final int width = (img == null ? UNIT_ICON_WIDTH : img.getWidth(null));
-   * return (int) (m_scaleFactor * (width < 0 ? UNIT_ICON_WIDTH : width));
-   * }
-   */
 
   /**
    * Return the width of scaled units.
@@ -123,19 +110,6 @@ public class UnitImageFactory {
     return (int) (m_scaleFactor * UNIT_ICON_WIDTH);
   }
 
-  /*
-   * Return the height of scaled units
-   *
-   * @param img
-   * Image to test for height * scalefactor. If null, will use default UNIT_ICON_HEIGHT.
-   *
-   * @return
-   * public int getUnitImageHeight(final Image img)
-   * {
-   * final int height = (img == null ? UNIT_ICON_HEIGHT : img.getHeight(null));
-   * return (int) (m_scaleFactor * (height < 0 ? UNIT_ICON_HEIGHT : height));
-   * }
-   */
 
   /**
    * Return the height of scaled units

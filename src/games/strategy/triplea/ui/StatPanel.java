@@ -183,49 +183,6 @@ public class StatPanel extends AbstractStatPanel {
   }
 
 
-  /*
-   * helper that populates the icons for the column headers
-   * assuming that the column names are matched with icons
-   *
-   * @param table
-   * the table to set icons in the headers
-   *
-   * protected final void setupIconHeaders(final JTable table)
-   * {
-   * final TableModel model = table.getModel();
-   * final JTableHeader header = table.getTableHeader();
-   * final TableCellRenderer headerRenderer = header.getDefaultRenderer();
-   *
-   * final TableColumnModel cmodel = table.getColumnModel();
-   * TableColumn column = cmodel.getColumn(0);
-   * column.setHeaderRenderer(headerRenderer);
-   *
-   * final ImageIconRenderer imageRenderer = new ImageIconRenderer();// headerRenderer, true
-   * header.setDefaultRenderer(imageRenderer);
-   *
-   * final int ccnt = model.getColumnCount();
-   *
-   * for (int c = 1; c < ccnt; c++)
-   * {
-   * final String name = model.getColumnName(c);
-   * final ImageIcon icon = getIcon(name);
-   * // System.out.println("icon for name " + name + " = " + icon);
-   * column = cmodel.getColumn(c);
-   * column.setHeaderValue(icon);
-   * }
-   * }
-   *
-   * class ImageIconRenderer extends DefaultTableCellRenderer
-   * {
-   * private static final long serialVersionUID = -8596751565205016905L;
-   *
-   * @Override
-   * protected void setValue(final Object value)
-   * {
-   * setIcon((ImageIcon) value);
-   * }
-   * }
-   */
 
   class JComponentTableCellRenderer implements TableCellRenderer {
     @Override
@@ -236,7 +193,7 @@ public class StatPanel extends AbstractStatPanel {
   }
 
 
-  /*
+  /**
    * Custom table model.
    *
    * This model is thread safe.

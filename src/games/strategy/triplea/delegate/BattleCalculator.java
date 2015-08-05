@@ -654,40 +654,11 @@ public class BattleCalculator {
     return killed;
   }
 
-  /*
-   * private static boolean s_enableCasualtySortingCaching = false;
-   *
-   * public static void EnableCasualtySortingCaching()
-   * {
-   * s_enableCasualtySortingCaching = true;
-   * }
-   *
-   * public static void DisableCasualtySortingCaching()
-   * {
-   * s_enableCasualtySortingCaching = false;
-   * synchronized (s_cachedLock)
-   * {
-   * s_cachedSortedCasualties.clear(); // Don't keep all this stuff in memory (basically, we just want this caching so if a battle is
-   * simulated 5000 times, we only sort units once)
-   * }
-   * }
-   *
-   * // Key is the hash of the possible casualties collection[targets], value is the cached sorted result[perfectlySortedUnitsList]
-   * private static HashMap<Integer, List<Unit>> s_cachedSortedCasualties = new HashMap<Integer, List<Unit>>();
-   * private static final Object s_cachedLock = new Object();
-   */
 
   /**
    * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged. The second time they
    * are listed, it is dead.
    *
-   * @param targets
-   * @param hits
-   * @param defending
-   * @param player
-   * @param costs
-   * @param data
-   * @return
    */
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom, final int hits,
       final boolean defending, final PlayerID player,
@@ -747,22 +718,6 @@ public class BattleCalculator {
       final Territory battlesite, final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data,
       final boolean allowMultipleHitsPerUnit,
       final boolean bonus) {
-    /*
-     * if (s_enableCasualtySortingCaching)
-     * {
-     * synchronized (s_cachedLock)
-     * {
-     * //if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() ||
-     * !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets)
-     * // || !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) ||
-     * s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
-     * // s_cachedSortedCasualties.clear();
-     * //else
-     * if (s_cachedSortedCasualties.containsKey(targets.hashCode()))
-     * return s_cachedSortedCasualties.get(targets.hashCode());
-     * }
-     * }
-     */
     if (!GameRunner2.getCasualtySelectionSlow()) {
       return sortUnitsForCasualtiesWithSupportNewWithCaching(targetsToPickFrom, hits, defending, player, friendlyUnits, enemyPlayer,
           enemyUnits, amphibious, amphibiousLandAttackers, battlesite,
@@ -772,16 +727,6 @@ public class BattleCalculator {
           amphibious, amphibiousLandAttackers, battlesite,
           costs, territoryEffects, data, allowMultipleHitsPerUnit, bonus);
     }
-    /*
-     * if (s_enableCasualtySortingCaching)
-     * {
-     * synchronized (s_cachedLock)
-     * {
-     * if (!s_cachedSortedCasualties.containsKey(targets.hashCode()))
-     * s_cachedSortedCasualties.put(targets.hashCode(), perfectlySortedUnitsList);
-     * }
-     * }
-     */
   }
 
   private static List<Unit> sortUnitsForCasualtiesWithSupportNewWithCaching(final Collection<Unit> targetsToPickFrom, final int hits,
@@ -1261,212 +1206,6 @@ public class BattleCalculator {
     return sortedWellEnoughUnitsList;
   }
 
-  /*
-   * private static List<Unit> sortUnitsForCasualtiesWithSupportLegacy(final Collection<Unit> targetsToPickFrom, final boolean defending,
-   * final PlayerID player, final IntegerMap<UnitType> costs,
-   * final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus)
-   * {
-   * final List<Unit> sortedUnitsList = new ArrayList<Unit>(targetsToPickFrom);
-   * Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * final List<Unit> perfectlySortedUnitsList = new ArrayList<Unit>();
-   * int artillerySupportAvailable = DiceRoll.getArtillerySupportAvailable(sortedUnitsList, defending, player);
-   * int supportableAvailable = DiceRoll.getSupportableAvailable(sortedUnitsList, defending, player);
-   * if (artillerySupportAvailable == 0 || supportableAvailable == 0)
-   * return sortedUnitsList;
-   * // reset, as we don't want to count units which support themselves
-   * artillerySupportAvailable = 0;
-   * supportableAvailable = 0;
-   * final List<List<Unit>> unitsByPowerAll = new ArrayList<List<Unit>>();
-   * final List<List<Unit>> unitsByPowerBoth = new ArrayList<List<Unit>>();
-   * final List<List<Unit>> unitsByPowerGives = new ArrayList<List<Unit>>();
-   * final List<List<Unit>> unitsByPowerReceives = new ArrayList<List<Unit>>();
-   * final List<List<Unit>> unitsByPowerNone = new ArrayList<List<Unit>>();
-   * // Decide what is the biggest size for the lists that we will support
-   * final int maxDiceTimesRolls = 1 + 2 * data.getDiceSides();
-   * // Find what the biggest unit we have is. If they are bigger than maxDiceTimesRolls, set to maxDiceTimesRolls.
-   * final int maxPower = Math.max(0, Math.min(getUnitPowerForSorting(sortedUnitsList.get(sortedUnitsList.size() - 1), defending, data,
-   * territoryEffects), maxDiceTimesRolls));
-   * // Fill the lists with the six dice numbers (plus Zero, and any above if we have units with multiple rolls), or unit powers, which we
-   * will populate with the units
-   * for (int i = 0; i <= maxPower; i++)
-   * {
-   * unitsByPowerAll.add(new ArrayList<Unit>());
-   * unitsByPowerBoth.add(new ArrayList<Unit>());
-   * unitsByPowerGives.add(new ArrayList<Unit>());
-   * unitsByPowerReceives.add(new ArrayList<Unit>());
-   * unitsByPowerNone.add(new ArrayList<Unit>());
-   * }
-   * // in order to merge lists, we need to separate sortedUnitsList into multiple lists by power
-   * for (final Unit current : sortedUnitsList)
-   * {
-   * int unitPower = getUnitPowerForSorting(current, defending, data, territoryEffects);
-   * unitPower = Math.max(0, Math.min(unitPower, maxPower)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power
-   * * DiceRolls goes over max_dice
-   * // TODO: if a unit supports itself, it should be in a different power list, as it will always support itself. getUnitPowerForSorting()
-   * should test for this and return a higher number.
-   * unitsByPowerAll.get(unitPower).add(current);
-   * if (UnitAttachment.get(current.getType()).getArtillery() && UnitAttachment.get(current.getType()).getArtillerySupportable())
-   * unitsByPowerBoth.get(unitPower).add(current);
-   * else if (UnitAttachment.get(current.getType()).getArtillery())
-   * {
-   * unitsByPowerGives.get(unitPower).add(current);
-   * artillerySupportAvailable += DiceRoll.getArtillerySupportAvailable(current, defending, player);
-   * }
-   * else if (UnitAttachment.get(current.getType()).getArtillerySupportable())
-   * {
-   * unitsByPowerReceives.get(unitPower).add(current);
-   * supportableAvailable += DiceRoll.getSupportableAvailable(current, defending, player);
-   * }
-   * else
-   * unitsByPowerNone.get(unitPower).add(current);
-   * }
-   * // now merge the lists
-   * final List<Unit> tempList1 = new ArrayList<Unit>();
-   * final List<Unit> tempList2 = new ArrayList<Unit>();
-   * for (int i = 0; i <= maxPower; i++)
-   * {
-   * int iArtillery = DiceRoll.getArtillerySupportAvailable(unitsByPowerGives.get(i), defending, player);
-   * int aboveArtillery = artillerySupportAvailable - iArtillery;
-   * artillerySupportAvailable -= iArtillery;
-   * int iSupportable = DiceRoll.getSupportableAvailable(unitsByPowerReceives.get(i), defending, player);
-   * int aboveSupportable = supportableAvailable - iSupportable;
-   * supportableAvailable -= iSupportable;
-   * if ((iArtillery == 0 && iSupportable == 0) || (iArtillery == 0 && aboveSupportable >= aboveArtillery) || ((iSupportable == 0 ||
-   * iArtillery == 0) && aboveSupportable == aboveArtillery)
-   * || (iSupportable == 0 && aboveSupportable <= aboveArtillery) || (i == maxDiceTimesRolls))
-   * perfectlySortedUnitsList.addAll(unitsByPowerAll.get(i));
-   * else
-   * {
-   * int count = 0;
-   * while (0 < unitsByPowerBoth.get(i).size() || 0 < unitsByPowerGives.get(i).size() || 0 < unitsByPowerReceives.get(i).size() || 0 <
-   * unitsByPowerNone.get(i).size())
-   * {
-   * count++;
-   * if (count > 100000)
-   * throw new IllegalStateException("Infinite loop in sortUnitsForCasualtiesWithSupport.");
-   * tempList1.clear();
-   * tempList2.clear();
-   * // four variables: we have artillery, we have support, above has artillery, above has support. need every combination covered.
-   * if (iArtillery == 0 && aboveArtillery - aboveSupportable > 0 && unitsByPowerReceives.get(i).size() > 0)
-   * {
-   * while (aboveArtillery - aboveSupportable > 0 && unitsByPowerReceives.get(i).size() > 0)
-   * {
-   * final int last = unitsByPowerReceives.get(i).size() - 1;
-   * tempList2.add(unitsByPowerReceives.get(i).get(last));
-   * aboveSupportable += DiceRoll.getSupportableAvailable(unitsByPowerReceives.get(i).get(last), defending, player);
-   * unitsByPowerReceives.get(i).remove(last);
-   * }
-   * tempList1.addAll(unitsByPowerNone.get(i));
-   * tempList1.addAll(unitsByPowerGives.get(i));
-   * tempList1.addAll(unitsByPowerReceives.get(i));
-   * tempList1.addAll(unitsByPowerBoth.get(i));
-   * unitsByPowerNone.get(i).clear();
-   * unitsByPowerGives.get(i).clear();
-   * unitsByPowerReceives.get(i).clear();
-   * unitsByPowerBoth.get(i).clear();
-   * Collections.sort(tempList1, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * Collections.sort(tempList2, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * perfectlySortedUnitsList.addAll(tempList1);
-   * perfectlySortedUnitsList.addAll(tempList2);
-   * continue;
-   * }
-   * if (iSupportable == 0 && aboveSupportable - aboveArtillery > 0 && unitsByPowerGives.get(i).size() > 0)
-   * {
-   * while (aboveSupportable - aboveArtillery > 0 && unitsByPowerGives.get(i).size() > 0)
-   * {
-   * final int last = unitsByPowerGives.get(i).size() - 1;
-   * tempList2.add(unitsByPowerGives.get(i).get(last));
-   * aboveArtillery += DiceRoll.getArtillerySupportAvailable(unitsByPowerGives.get(i).get(last), defending, player);
-   * unitsByPowerGives.get(i).remove(last);
-   * }
-   * tempList1.addAll(unitsByPowerNone.get(i));
-   * tempList1.addAll(unitsByPowerGives.get(i));
-   * tempList1.addAll(unitsByPowerReceives.get(i));
-   * tempList1.addAll(unitsByPowerBoth.get(i));
-   * unitsByPowerNone.get(i).clear();
-   * unitsByPowerGives.get(i).clear();
-   * unitsByPowerReceives.get(i).clear();
-   * unitsByPowerBoth.get(i).clear();
-   * Collections.sort(tempList1, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * Collections.sort(tempList2, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * perfectlySortedUnitsList.addAll(tempList1);
-   * perfectlySortedUnitsList.addAll(tempList2);
-   * continue;
-   * }
-   * if (iSupportable + aboveSupportable > iArtillery + aboveArtillery && unitsByPowerReceives.get(i).size() > 0)
-   * {
-   * while (iSupportable + aboveSupportable > iArtillery + aboveArtillery && unitsByPowerReceives.get(i).size() > 0)
-   * {
-   * final int first = 0;
-   * tempList1.add(unitsByPowerReceives.get(i).get(first));
-   * iSupportable -= DiceRoll.getSupportableAvailable(unitsByPowerReceives.get(i).get(first), defending, player);
-   * unitsByPowerReceives.get(i).remove(first);
-   * }
-   * tempList1.addAll(unitsByPowerNone.get(i));
-   * tempList1.addAll(unitsByPowerBoth.get(i));
-   * unitsByPowerNone.get(i).clear();
-   * unitsByPowerBoth.get(i).clear();
-   * Collections.sort(tempList1, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * perfectlySortedUnitsList.addAll(tempList1);
-   * continue;
-   * }
-   * if (iSupportable + aboveSupportable < iArtillery + aboveArtillery)
-   * {
-   * while (iSupportable + aboveSupportable < iArtillery + aboveArtillery && unitsByPowerGives.get(i).size() > 0)
-   * {
-   * final int first = 0;
-   * tempList1.add(unitsByPowerGives.get(i).get(first));
-   * iArtillery -= DiceRoll.getArtillerySupportAvailable(unitsByPowerGives.get(i).get(first), defending, player);
-   * unitsByPowerGives.get(i).remove(first);
-   * }
-   * tempList1.addAll(unitsByPowerNone.get(i));
-   * tempList1.addAll(unitsByPowerBoth.get(i));
-   * unitsByPowerNone.get(i).clear();
-   * unitsByPowerBoth.get(i).clear();
-   * Collections.sort(tempList1, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * perfectlySortedUnitsList.addAll(tempList1);
-   * continue;
-   * }
-   * if (iSupportable + aboveSupportable == iArtillery + aboveArtillery)
-   * {
-   * tempList1.addAll(unitsByPowerNone.get(i));
-   * tempList1.addAll(unitsByPowerBoth.get(i));
-   * unitsByPowerNone.get(i).clear();
-   * unitsByPowerBoth.get(i).clear();
-   * if (!unitsByPowerGives.get(i).isEmpty())
-   * tempList2.add(unitsByPowerGives.get(i).get(0));
-   * if (!unitsByPowerReceives.get(i).isEmpty())
-   * tempList2.add(unitsByPowerReceives.get(i).get(0));
-   * Collections.sort(tempList2, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * final Unit u = tempList2.get(0);
-   * tempList1.add(u);
-   * final UnitAttachment ua = UnitAttachment.get(u.getType());
-   * if (ua.getArtillery())
-   * {
-   * unitsByPowerGives.get(i).remove(0);
-   * iArtillery -= DiceRoll.getArtillerySupportAvailable(u, defending, player);
-   * }
-   * else
-   * {
-   * unitsByPowerReceives.get(i).remove(0);
-   * iSupportable -= DiceRoll.getSupportableAvailable(u, defending, player);
-   * }
-   * Collections.sort(tempList1, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
-   * perfectlySortedUnitsList.addAll(tempList1);
-   * continue;
-   * }
-   * // and we should never get down here
-   * throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
-   * }
-   * }
-   * }
-   * if (perfectlySortedUnitsList.isEmpty() || !perfectlySortedUnitsList.containsAll(sortedUnitsList) ||
-   * !sortedUnitsList.containsAll(perfectlySortedUnitsList)
-   * || perfectlySortedUnitsList.size() != sortedUnitsList.size())
-   * throw new IllegalStateException("Possibility not accounted for in sortUnitsForCasualtiesWithSupport.");
-   * return perfectlySortedUnitsList;
-   * }
-   */
 
   public static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> targets, final GameData data) {
     // just worry about transports
@@ -1528,14 +1267,6 @@ public class BattleCalculator {
     return costs;
   }
 
-  /*
-   * This clears out the variable map keeping track of the average costs of units on this game. Should use this any time you load a game or
-   * switch games.
-   *
-   * public static void clearCostsForTuvForAllPlayersMergedAndAveraged() {
-   * s_costsForTuvForAllPlayersMergedAndAveraged.clear();
-   * }
-   */
   /**
    * Return a map where key are unit types and values are the AVERAGED for all RULES (not for all players).
    *
@@ -1875,20 +1606,6 @@ public class BattleCalculator {
       rolls = 0;
     }
 
-    /*
-     * (getAttackRolls no longer returns zero when unit has zero attack power, so this is no longer needed)
-     * // Don't forget that units can have zero attack, and then be given attack power by support, and therefore be able to roll
-     * if (rolls == 0 && (defend ? unitAttachment.getDefense(id) : unitAttachment.getAttack(id)) == 0)
-     * {
-     * if (DiceRoll.getSupport(unit.getType(), supportRulesFriendly, supportLeftFriendlyCopy, true, false) > 0)
-     * rolls += 1;
-     * }
-     * if (rolls == 0 && (defend ? unitAttachment.getDefense(id) : unitAttachment.getAttack(id)) == 0)
-     * {
-     * if (TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defend) > 0)
-     * rolls += 1;
-     * }
-     */
     return rolls;
   }
 
@@ -1946,12 +1663,6 @@ public class BattleCalculator {
    */
   public static int getUnitPowerForSorting(final Unit current, final boolean defending, final GameData data,
       final Collection<TerritoryEffect> territoryEffects) {
-    /*
-     * this is needed if i plan to have it account for support
-     * Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
-     * IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
-     * DiceRoll.getSupport(sortedUnitsList,supportRules,supportLeft,data,defending);
-     */
     final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
     int rolls;
@@ -1973,8 +1684,6 @@ public class BattleCalculator {
       strengthWithoutSupport += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
       // just add one like LL if we are LHTR bombers
       strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
-      // strength += DiceRoll.getSupport(current.getType(), supportRules, supportLeft);
-      // strength = Math.min(Math.max(strength+1, 0), Constants.MAX_DICE);
     } else {
       for (int i = 0; i < rolls; i++) {
         int tempStrength;
@@ -1983,63 +1692,10 @@ public class BattleCalculator {
         } else {
           tempStrength = ua.getAttack(current.getOwner());
         }
-        if (defending) {
-          // if (DiceRoll.isFirstTurnLimitedRoll(player))
-          // tempStrength = Math.min(1, tempStrength);
-        } else {
-          /*
-           * TODO: figure out how to find if we are in a battle, and if that battle is amphibious
-           * if (ua.getIsMarine() && battle.isAmphibious())
-           * {
-           * Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
-           * if(landUnits.contains(current))
-           * ++tempStrength;
-           * }
-           */
-        }
         strengthWithoutSupport += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
         strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());
-        // tempStrength += DiceRoll.getSupport(current.getType(), supportRules, supportLeft);
-        // strength += Math.min(Math.max(tempStrength, 0), Constants.MAX_DICE);
       }
     }
     return strengthWithoutSupport;
-    /*
-     * //Find the strength this unit gives to other units
-     * Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
-     * while(iter.hasNext())
-     * {
-     * UnitSupportAttachment rule = iter.next();
-     * if(rule.getPlayers().isEmpty())
-     * continue;
-     * if( defending && rule.getDefence() ||
-     * !defending && rule.getOffence() )
-     * {
-     * CompositeMatchAnd<Unit> canSupport = new
-     * CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType)rule.getAttachedTo()),Matches.unitOwnedBy(rule.getPlayers()));
-     * List<Unit> supporters = Match.getMatches(sortedUnitsList, canSupport);
-     * int numSupport = supporters.size();
-     * if(rule.getImpArtTech())
-     * numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
-     * String bonusType = rule.getBonusType();
-     * //supportLeft.put(rule, numSupport*rule.getNumber());
-     * Iterator<List<UnitSupportAttachment>> iter2 = supportRules.iterator();
-     * List<UnitSupportAttachment> ruleType = null;
-     * boolean found = false;
-     * while( iter2.hasNext()){
-     * ruleType = iter2.next();
-     * if( ruleType.get(0).getBonusType().equals(bonusType) ){
-     * found = true;
-     * break;
-     * }
-     * }
-     * if( !found ) {
-     * ruleType = new ArrayList<UnitSupportAttachment>();
-     * supportRules.add(ruleType);
-     * }
-     * ruleType.add(rule);
-     * }
-     * }
-     */
-  }
+   }
 }

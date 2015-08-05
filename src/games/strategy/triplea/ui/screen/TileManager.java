@@ -143,27 +143,6 @@ public class TileManager {
     }
   }
 
-  /*
-   * public List<Tile> getTilesOldWay(final Rectangle2D bounds)
-   * {
-   * Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
-   * try
-   * {
-   * final List<Tile> rVal = new ArrayList<Tile>();
-   * final Iterator<Tile> iter = m_tiles.iterator();
-   * while (iter.hasNext())
-   * {
-   * final Tile tile = iter.next();
-   * if (bounds.contains(tile.getBounds()) || tile.getBounds().intersects(bounds))
-   * rVal.add(tile);
-   * }
-   * return rVal;
-   * } finally
-   * {
-   * Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
-   * }
-   * }
-   */
 
   public Collection<UnitsDrawer> getUnitDrawables() {
     Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
@@ -533,95 +512,6 @@ public class TileManager {
     }
   }
 
-  /*
-   * private Image createTerritoryImageOldWay(final Territory selected, final Territory focusOn, final GameData data, final MapData mapData,
-   * final boolean drawOutline)
-   * {
-   * Tile.S_TILE_LOCKUTIL.acquireLock(m_lock);
-   * try
-   * {
-   * final Rectangle bounds = mapData.getBoundingRect(focusOn);
-   * // make it square
-   * if (bounds.width > bounds.height)
-   * bounds.height = bounds.width;
-   * else
-   * bounds.width = bounds.height;
-   * final int grow = bounds.width / 4;
-   * bounds.x -= grow;
-   * bounds.y -= grow;
-   * bounds.width += grow * 2;
-   * bounds.height += grow * 2;
-   * // make sure it is not bigger than the whole map
-   * if (bounds.width > mapData.getMapDimensions().width)
-   * bounds.width = mapData.getMapDimensions().width;
-   * if (bounds.height > mapData.getMapDimensions().height)
-   * bounds.height = mapData.getMapDimensions().height;
-   * // make sure it is still square
-   * if (bounds.width > bounds.height)
-   * bounds.width = bounds.height;
-   * else
-   * bounds.height = bounds.width;
-   *
-   * // keep it in bounds
-   * if (bounds.x < 0 && !mapData.scrollWrapX())
-   * {
-   * bounds.x = 0;
-   * }
-   * if (bounds.y < 0 && !mapData.scrollWrapY())
-   * {
-   * bounds.y = 0;
-   * }
-   * if (bounds.width + bounds.x > mapData.getMapDimensions().width && !mapData.scrollWrapX())
-   * {
-   * final int move = bounds.width + bounds.x - mapData.getMapDimensions().width;
-   * bounds.x -= move;
-   * }
-   * if (bounds.height + bounds.y > mapData.getMapDimensions().height && !mapData.scrollWrapY())
-   * {
-   * final int move = bounds.height + bounds.y - mapData.getMapDimensions().height;
-   * bounds.y -= move;
-   * }
-   * if (bounds.width != bounds.height)
-   * throw new IllegalStateException("NOT equal");
-   * final Image rVal = Util.createImage(bounds.width, bounds.height, false);
-   * final Graphics2D graphics = (Graphics2D) rVal.getGraphics();
-   * graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-   * graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-   * graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-   * if (bounds.x < 0)
-   * {
-   * bounds.x += mapData.getMapDimensions().width;
-   * drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
-   * bounds.x -= mapData.getMapDimensions().width;
-   * }
-   * if (bounds.y < 0)
-   * {
-   * bounds.y += mapData.getMapDimensions().height;
-   * drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
-   * bounds.y -= mapData.getMapDimensions().height;
-   * }
-   * // start as a set to prevent duplicates
-   * drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
-   * if (bounds.x + bounds.height > mapData.getMapDimensions().width)
-   * {
-   * bounds.x -= mapData.getMapDimensions().width;
-   * drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
-   * bounds.x += mapData.getMapDimensions().width;
-   * }
-   * if (bounds.y + bounds.width > mapData.getMapDimensions().height)
-   * {
-   * bounds.y -= mapData.getMapDimensions().height;
-   * drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
-   * bounds.y += mapData.getMapDimensions().height;
-   * }
-   * graphics.dispose();
-   * return rVal;
-   * } finally
-   * {
-   * Tile.S_TILE_LOCKUTIL.releaseLock(m_lock);
-   * }
-   * }
-   */
 
   private void drawForCreate(final Territory selected, final GameData data, final MapData mapData, final Rectangle bounds,
       final Graphics2D graphics, final boolean drawOutline) {

@@ -64,14 +64,6 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     m_availableGames = availableGames;
     m_model = model;
     m_model.addObserver(this);
-    /*
-     * final GameData data = model.getGameData();
-     * if (data != null)
-     * {
-     * setOriginalPropertiesMap(data);
-     * m_gamePropertiesCache.loadCachedGamePropertiesInto(data);
-     * }
-     */
     createComponents();
     layoutComponents();
     setupListeners();
@@ -183,19 +175,6 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     });
   }
 
-  /*
-   * private void setOriginalPropertiesMap(final GameData data)
-   * {
-   * m_originalPropertiesMap.clear();
-   * if (data != null)
-   * {
-   * for (final IEditableProperty property : data.getProperties().getEditableProperties())
-   * {
-   * m_originalPropertiesMap.put(property.getName(), property.getValue());
-   * }
-   * }
-   * }
-   */
 
   private void selectGameOptions() {
     // backup current game properties before showing dialog
@@ -237,14 +216,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
         selectGameOptions();
         return;
       }
-    }
-    /*
-     * else if (buttonPressed.equals(makeDefault))
-     * {
-     * m_gamePropertiesCache.cacheGameProperties(m_model.getGameData());
-     * }
-     */
-    else {
+    } else {
       // ok was clicked, and we have modified the properties already
     }
   }

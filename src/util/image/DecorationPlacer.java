@@ -697,12 +697,6 @@ public class DecorationPlacer extends JFrame {
           System.out.println("Did NOT find point for: " + possibleTerritoryName);
           points.add(new Point(50, 50));
         } else {
-          /*
-           * if (!s_imagePointType.isUsesCentersPoint())
-           * {
-           * final Rectangle territoryBounds = MapData.getBoundingRect(possibleTerritoryName, m_polygons);
-           * }
-           */
           p = new Point(p.x - (image.getWidth(null) / 2), p.y + addY + ((s_showFromTopLeft ? -1 : 1) * (image.getHeight(null) / 2)));
           points.add(p);
           allTerritories.remove(possibleTerritoryName);

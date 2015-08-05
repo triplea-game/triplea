@@ -2768,13 +2768,6 @@ public class UnitAttachment extends DefaultAttachment {
     return rVal;
   }
 
-  /*
-   * private boolean isWW2V3TechModel(final GameData data)
-   * {
-   * return games.strategy.triplea.Properties.getWW2V3TechModel(data);
-   * }
-   */
-
   private boolean playerHasRockets(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     if (ta == null) {

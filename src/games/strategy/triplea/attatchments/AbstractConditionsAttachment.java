@@ -64,14 +64,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         condition = (RulesAttachment) p.getAttachment(subString);
         if (condition != null) {
           break;
-          /*
-           * try {
-           * m_conditions = RulesAttachment.get(p, conditionName);
-           * } catch (IllegalStateException ise) {
-           * }
-           * if (m_conditions != null)
-           * break;
-           */
         }
       }
       if (condition == null) {

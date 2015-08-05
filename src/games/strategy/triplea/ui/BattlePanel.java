@@ -504,39 +504,6 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  /*
-   * public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
-   * {
-   * SwingUtilities.invokeLater(new Runnable()
-   * {
-   * public void run()
-   * {
-   * if (m_battleDisplay != null)
-   * m_battleDisplay.battleInfo(messageShort, messageLong, step);
-   * }
-   * });
-   * }
-   * public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled, final Map<Unit,
-   * Collection<Unit>> dependents)
-   * {
-   * SwingUtilities.invokeLater(new Runnable()
-   * {
-   * public void run()
-   * {
-   * if (m_battleDisplay != null)
-   * m_battleDisplay.scrambleNotification(step, player, scrambled, dependents);
-   * }
-   * });
-   * }
-   * public Collection<Unit> getScramble(final IPlayerBridge bridge, final GUID battleID, final String message, final Collection<Territory>
-   * possible, final PlayerID player)
-   * {
-   * // something is really wrong
-   * if (!ensureBattleIsDisplayed(battleID))
-   * return null;
-   * return m_battleDisplay.getScramble(bridge, message, possible, player);
-   * }
-   */
 
   public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
     SwingUtilities.invokeLater(new Runnable() {

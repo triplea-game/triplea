@@ -76,11 +76,4 @@ public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
     }
   }
 
-  /*
-   * Set the rendering data for the current event.
-   * public void setRenderingData(final Object renderingData)
-   * {
-   * m_delegateHistoryWriter.setRenderingData(renderingData);
-   * }
-   */
 }

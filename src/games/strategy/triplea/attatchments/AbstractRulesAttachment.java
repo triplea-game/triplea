@@ -369,18 +369,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   protected void validateNames(final String[] terrList) throws GameParseException {
-    /*
-     * if (terrList != null && (!terrList.equals("controlled") && !terrList.equals("controlledNoWater") && !terrList.equals("original") &&
-     * !terrList.equals("originalNoWater") && !terrList.equals("all") && !terrList.equals("map") && !terrList.equals("enemy")))
-     * {
-     * if (terrList.length != 2)
-     * getListedTerritories(terrList);
-     * else if (terrList.length == 2 && (!terrList[1].equals("controlled") && !terrList[1].equals("controlledNoWater") &&
-     * !terrList[1].equals("original") && !terrList.equals("originalNoWater") && !terrList[1].equals("all") && !terrList[1].equals("map") &&
-     * !terrList[1].equals("enemy")))
-     * getListedTerritories(terrList);
-     * }
-     */
     if (terrList != null && terrList.length > 0) {
       getListedTerritories(terrList, true, true);
       // removed checks for length & group commands because it breaks the setTerritoryCount feature.

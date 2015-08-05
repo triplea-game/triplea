@@ -2555,31 +2555,6 @@ public class TripleAFrame extends MainGameFrame {
     return m_actionButtons.getBattlePanel();
   }
 
-  /*
-   * public AbstractMovePanel getMovePanel()
-   * {
-   * //m_messageAndDialogThreadPool.waitForAll();
-   * return m_actionButtons.getMovePanel();
-   * }
-   *
-   * public TechPanel getTechPanel()
-   * {
-   * //m_messageAndDialogThreadPool.waitForAll();
-   * return m_actionButtons.getTechPanel();
-   * }
-   *
-   * public PlacePanel getPlacePanel()
-   * {
-   * //m_messageAndDialogThreadPool.waitForAll();
-   * return m_actionButtons.getPlacePanel();
-   * }
-   *
-   * public PurchasePanel getPurchasePanel()
-   * {
-   * //m_messageAndDialogThreadPool.waitForAll();
-   * return m_actionButtons.getPurchasePanel();
-   * }
-   */
 
   Action getShowGameAction() {
     return m_showGameAction;

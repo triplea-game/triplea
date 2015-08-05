@@ -386,29 +386,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return costs;
   }
 
-  /*
-   * private IntegerMap<NamedAttachable> getRepairResults(final Map<Unit, IntegerMap<RepairRule>> repairRules)
-   * {
-   * final Collection<Unit> units = repairRules.keySet();
-   * final Iterator<Unit> iter = units.iterator();
-   * final IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
-   * while (iter.hasNext())
-   * {
-   * final Unit u = iter.next();
-   * final Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
-   * while (rules.hasNext())
-   * {
-   * final RepairRule rule = rules.next();
-   * costs.addMultiple(rule.getResults(), repairRules.get(u).getInt(rule));
-   * }
-   * }
-   * return costs;
-   * }
-   */
-
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IPurchaseDelegate.class;
