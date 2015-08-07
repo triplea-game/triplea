@@ -177,6 +177,9 @@ public class ValidateAttachmentsTest extends TestCase {
       final int index = fileName.indexOf(classesRoot) + classesRoot.length();
       String className = fileName.substring(index);
       className = className.replace(File.separator, ".");
+      if( !className.endsWith(".class")) {
+        return "";
+      }
       className = className.substring(0, className.lastIndexOf(".class"));
 
       if (isSkipClass(className)) {
