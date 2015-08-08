@@ -80,6 +80,12 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
         items.add(seperator);
       }
     }
+    if( m_movePanel.getUndoableMoves() != null && m_movePanel.getUndoableMoves().size() > 1 ) {
+      JButton undoAllButton = new JButton("Undo All");
+      undoAllButton.addActionListener( new UndoAllMovesActionListener());
+      items.add(undoAllButton);
+    }
+
     final int scrollIncrementFinal = scrollIncrement + seperatorSize.height;
     // JScrollPane scroll = new JScrollPane(items);
     scroll = new JScrollPane(items) {
@@ -136,7 +142,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final Box textBox = new Box(BoxLayout.X_AXIS);
     textBox.add(text);
     textBox.add(Box.createHorizontalGlue());
-    final JButton cancelButton = new JButton(new UndoMoveAction(move.getIndex()));
+    final JButton cancelButton = new JButton(new UndoMoveActionListener(move.getIndex()));
     setSize(buttonSize, cancelButton);
     final JButton viewbutton = new JButton(new ViewAction(move));
     setSize(buttonSize, viewbutton);
@@ -163,11 +169,11 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
   }
 
 
-  class UndoMoveAction extends AbstractAction {
+  class UndoMoveActionListener extends AbstractAction {
     private static final long serialVersionUID = -397312652244693138L;
     private final int m_moveIndex;
 
-    public UndoMoveAction(final int index) {
+    public UndoMoveActionListener(final int index) {
       super("Undo");
       m_moveIndex = index;
     }
@@ -181,6 +187,27 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
         previousVisibleIndex = Math.max(0, m_moveIndex - 1);
       } else {
         previousVisibleIndex = null;
+      }
+    }
+  }
+
+  class UndoAllMovesActionListener extends AbstractAction {
+    private static final long serialVersionUID = 7908136093303143896L;
+
+    public UndoAllMovesActionListener() {
+      super("UndoAllMoves");
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      int moveCount = m_movePanel.getUndoableMoves().size();
+      boolean suppressErrorMsgToUser = true;
+      int indexToRemove = 0;
+      for( int i = 0; i < moveCount; i ++ ) {
+        String errMsgResult = m_movePanel.undoMove(indexToRemove, suppressErrorMsgToUser);
+        if(errMsgResult != null ) {
+          indexToRemove++;
+        }
       }
     }
   }
