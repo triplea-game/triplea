@@ -10,11 +10,7 @@ import javax.swing.JOptionPane;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.net.IClientMessenger;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
   private final Component m_parent;

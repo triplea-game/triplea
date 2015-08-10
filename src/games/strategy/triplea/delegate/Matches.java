@@ -1,23 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * Matches.java
- *
- * Created on November 8, 2001, 4:29 PM
- *
- * @version $LastChangedDate$
- */
 package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
@@ -90,8 +70,6 @@ import games.strategy.util.Util;
  *
  * The benefits should be obvious to any right minded person.
  *
- * @author Sean Bridges
- * @version 1.0
  */
 public class Matches {
   public static final Match<Object> IsTerritory = new Match<Object>() {
@@ -570,7 +548,6 @@ public class Matches {
    * @param attack
    * @param player
    * @param data
-   * @return
    */
   public static final Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final GameData data) {
     return new Match<Unit>() {
@@ -587,7 +564,6 @@ public class Matches {
    * @param attack
    * @param player
    * @param data
-   * @return
    */
   public static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player,
       final GameData data) {
@@ -1228,7 +1204,6 @@ public class Matches {
    *
    * @param player
    * @param data
-   * @return
    */
   public static Match<Territory> territoryCanCollectIncomeFrom(final PlayerID player, final GameData data) {
     final boolean contestedDoNotProduce = games.strategy.triplea.Properties.getContestedTerritoriesProduceNoIncome(data);
@@ -3359,7 +3334,6 @@ public class Matches {
    * Accounts for OccupiedTerrOf. Returns false if there is no territory attachment (like if it is water).
    *
    * @param player
-   * @return
    */
   public static final Match<Territory> TerritoryIsOriginallyOwnedBy(final PlayerID player) {
     return new Match<Territory>() {
@@ -3445,7 +3419,6 @@ public class Matches {
    *        can NOT be null
    * @param data
    *        can NOT be null
-   * @return
    */
   public static final Match<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(final PlayerID player,
       final Match<RelationshipType> currentRelation,

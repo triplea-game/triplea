@@ -56,7 +56,6 @@ import games.strategy.util.Match;
 /**
  * Pro AI purchase utilities.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProPurchaseUtils {

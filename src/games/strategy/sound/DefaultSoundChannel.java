@@ -13,7 +13,6 @@ import games.strategy.triplea.TripleAPlayer;
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move delegate) to also be played
  * on clients.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class DefaultSoundChannel implements ISound {

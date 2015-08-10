@@ -23,7 +23,6 @@ import games.strategy.util.Match;
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment implements ICondition {
@@ -143,7 +142,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * Used to determine if there is a multiple on this national objective (if the user specified 'each' in the count.
    * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of territories.
    *
-   * @return
    */
   public int getEachMultiple() {
     if (!getCountEach()) {
@@ -170,7 +168,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not
    * be tested for in isSatisfied.
    *
-   * @return
    */
   public int getUses() {
     return m_uses;
@@ -280,7 +277,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * actual list of territories.
    * Also sets territoryCount.
    *
-   * @author veqryn
    */
   protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players, final GameData data) {
     final GameMap gameMap = data.getMap();
@@ -344,7 +340,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * Takes the raw data from the xml, and turns it into an actual territory list.
    * Will also set territoryCount.
    *
-   * @author veqryn
    * @throws GameParseException
    */
   protected Set<Territory> getTerritoryListBasedOnInputFromXML(final String[] terrs, final Collection<PlayerID> players,
@@ -392,7 +387,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * only a "" string.
    *
    * @param list
-   * @return
    * @throws GameParseException
    */
   public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount,

@@ -176,7 +176,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    *
    * @param uaa
    *        the UserActionAttachment that should be accepted
-   * @return
    */
   private boolean actionIsAccepted(final UserActionAttachment uaa) {
     for (final PlayerID player : uaa.getActionAccept()) {

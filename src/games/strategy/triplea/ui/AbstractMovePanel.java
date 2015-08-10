@@ -24,11 +24,7 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 
-/**
- *
- * @author Erik von der Osten (based on original move panel by Sean Bridges)
- * @version 1.0
- */
+
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
   private static final String s_MOVE_PANEL_CANCEL = "movePanel.cancel";

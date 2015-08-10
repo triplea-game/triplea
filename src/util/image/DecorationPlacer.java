@@ -86,7 +86,6 @@ import games.strategy.util.Tuple;
  * Do not forget to save the points when finished. To save and continue with another set of images, choose the <br>
  * option to 'Save Current And Keep On Map And Load New'. To reset all currently image points, use 'Load Image Points'.
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  */
 public class DecorationPlacer extends JFrame {

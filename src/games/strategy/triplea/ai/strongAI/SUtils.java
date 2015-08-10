@@ -82,7 +82,6 @@ public class SUtils {
    * @param data
    * @param allTerr
    *        - List of Territories
-   * @return
    */
   public static List<Territory> stripLandLockedTerr(final GameData data, final List<Territory> allTerr) {
     final List<Territory> waterTerrs = new ArrayList<Territory>(allTerr);
@@ -113,7 +112,6 @@ public class SUtils {
    * Determine if a List has any bombers in it
    *
    * @param units
-   * @return
    */
   public static Collection<Territory> bomberTerrInList(final List<Collection<Unit>> units, final List<Route> routes) {
     final Collection<Territory> bTerrs = new ArrayList<Territory>();
@@ -138,7 +136,6 @@ public class SUtils {
    * @param data
    * @param player
    * @param enemyMap
-   * @return
    */
   public static Territory landAttackMap(final GameData data, final PlayerID player, final HashMap<Territory, Float> enemyMap) {
     Territory largestTerr = null;
@@ -168,7 +165,6 @@ public class SUtils {
    * Assumes that water is passable to air units always
    *
    * @param data
-   * @return
    */
   public static Match<Territory> TerritoryIsImpassableToAirUnits(final GameData data) {
     return new Match<Territory>() {
@@ -221,7 +217,6 @@ public class SUtils {
    * @param data
    * @param player
    * @param continentTerr
-   * @return
    */
   public static float strengthOnContinent(final GameData data, final PlayerID player, final Territory continentTerr) {
     float continentStrength = 0.0F;
@@ -302,7 +297,6 @@ public class SUtils {
    *
    * @param data
    * @param player
-   * @return
    */
   public static IntegerMap<Territory> targetTerritories(final GameData data, final PlayerID player, final int tDistance) {
     final CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitCanProduceUnits);
@@ -531,7 +525,6 @@ public class SUtils {
    * @param startTerr
    * @param targetTerr
    * @param data
-   * @return
    */
   public static Collection<Territory> islandCapitalTerritories(final Territory startTerr, final Territory targetTerr, final GameData data) {
     final Collection<Territory> goTerrs = new ArrayList<Territory>();
@@ -560,7 +553,6 @@ public class SUtils {
    *        - Set of 3 potential landing points
    * @param player
    * @param tFirst
-   * @return
    */
   public static Territory closestAmphibAlliedTerritory(final Territory startTerr, final Territory targetTerr,
       final List<Territory> contiguousTerritories, final GameData data,
@@ -614,7 +606,6 @@ public class SUtils {
    * @param startTerr
    * @param data
    * @param player
-   * @return
    */
   public static Territory closestEnemyCapital(final Territory startTerr, final GameData data, final PlayerID player) {
     final List<Territory> eCapitols = SUtils.getEnemyCapitals(data, player);
@@ -907,7 +898,6 @@ public class SUtils {
    *        - Territory which enemy would blitz
    * @param data
    * @param player
-   * @return
    */
   public static List<Territory> possibleBlitzTerritories(final Territory checkTerr, final GameData data, final PlayerID player) {
     final CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz, Matches.enemyUnit(player, data));
@@ -1629,7 +1619,6 @@ public class SUtils {
    * Returns all Territories which contain Allied Units within a radius of 4 Territories of t
    * Works for land units as well as ships
    *
-   * @return
    */
   public static List<Territory> findOurShips(final Territory t, final GameData data, final PlayerID player) {
     // Return territories of Allied Ships within a sea radius of 4
@@ -1748,7 +1737,6 @@ public class SUtils {
    * Returns a list of territories within maxDist which meat the requirement of unitCondition
    * No requirements of ownership or allied units
    *
-   * @return
    */
   public static List<Territory> findUnits(final Territory t, final GameData data, final Match<Unit> unitCondition, final int maxDist) {
     // Return territories of our Units within maxDist of this Territory
@@ -1873,7 +1861,6 @@ public class SUtils {
    * @param data
    * @param ignore
    * @param checked
-   * @return
    */
   public static List<Unit> findPlaneAttackersThatCanLand(final Territory start, final int maxDistance, final PlayerID player,
       final GameData data, final List<Territory> ignore,
@@ -1977,7 +1964,6 @@ public class SUtils {
    * @param routeCondition
    *        - condition for each Territory in Route
    * @param data
-   * @return
    */
   public static Route findNearest(final Territory start, final Match<Territory> endCondition, final Match<Territory> routeCondition,
       final GameData data) {
@@ -2025,7 +2011,6 @@ public class SUtils {
    *        condition that all traversed internal territories must satisy
    * @param distance
    * @param data
-   * @return
    */
   public static List<Territory> findFontier(final Territory start, final Match<Territory> endCondition,
       final Match<Territory> routeCondition, final int distance, final GameData data) {
@@ -2072,7 +2057,6 @@ public class SUtils {
    * @param routeCondition
    *        - condition for each Territory in Route
    * @param data
-   * @return
    */
   /*
    * public static Route findNearestOld(Territory start, Match<Territory> endCondition, Match<Territory> routeCondition, GameData data)
@@ -2365,7 +2349,6 @@ public class SUtils {
    *        - are the units on attack or defense
    * @param sea
    *        - calculate the strength of the units in a sea or land battle?
-   * @return
    */
   public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea, final boolean transportsFirst) {
     float strength = 0.0F;
@@ -2428,7 +2411,6 @@ public class SUtils {
    * @param risk
    *        - not really used...should pass a relative risk back
    * @param buyfactory
-   * @return
    */
   public static Territory findFactoryTerritory(final GameData data, final PlayerID player, final float risk, boolean buyfactory,
       final boolean onWater) {
@@ -3729,7 +3711,6 @@ public class SUtils {
    * Map a list of units
    *
    * @param units
-   * @return
    */
   public static IntegerMap<UnitType> convertListToMap(final Collection<Unit> units) {
     final IntegerMap<UnitType> ourList = new IntegerMap<UnitType>();
@@ -3873,7 +3854,6 @@ public class SUtils {
    * @param tFirst
    * @param allied
    *        - allied = true - all allied units --> false - owned units only
-   * @return
    */
   public static float strengthOfTerritory(final GameData data, final Territory thisTerr, final PlayerID player, final boolean attacking,
       final boolean sea, final boolean tFirst, final boolean allied) {
@@ -3897,7 +3877,6 @@ public class SUtils {
    * @param xMoveRoutes
    * @param player
    * @param alreadyAttacked
-   * @return
    */
   public static float verifyPlaneAttack(final GameData data, final List<Collection<Unit>> xMoveUnits, final List<Route> xMoveRoutes,
       final PlayerID player, final List<Territory> alreadyAttacked) {
@@ -3992,7 +3971,6 @@ public class SUtils {
    * @param attacking
    * @param killNum
    *        - # of units to kill
-   * @return
    */
   public static IntegerMap<UnitType> removeUnits(final IntegerMap<UnitType> units, final boolean attacking, int killNum,
       final PlayerID player, final boolean sea) {
@@ -4065,7 +4043,6 @@ public class SUtils {
    *        - total advantage the enemy has
    * @param tFirst
    *        - can transports be killed before other units
-   * @return
    */
   public static int shipThreatToTerr(final Territory checkTerr, final GameData data, final PlayerID player, final boolean tFirst) {
     final CompositeMatchAnd<Unit> enemyUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
@@ -4653,7 +4630,6 @@ public class SUtils {
    * @param player
    * @param aggressiveFactor
    *        - float which will set how much more TUV is needed to allow aggressive
-   * @return
    */
   public static boolean determineAggressiveAttack(final GameData data, final PlayerID player, final float aggressiveFactor) {
     final int alliedTUV = getAlliedEnemyTUV(data, player, true);
@@ -4668,7 +4644,6 @@ public class SUtils {
    * @param player
    * @param allied
    *        - boolean indicating for which set to gather TUV
-   * @return
    */
   public static int getAlliedEnemyTUV(final GameData data, final PlayerID player, final boolean allied) {
     final IntegerMap<PlayerID> unitMap = getPlayerTUV(data);
@@ -4826,7 +4801,6 @@ public class SUtils {
    *
    * @param data
    * @param player
-   * @return
    */
   public static int getLeftToSpend(final GameData data, final PlayerID player) {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
@@ -4840,7 +4814,6 @@ public class SUtils {
    * @param data
    * @param eTerr
    * @param player
-   * @return
    */
   public static boolean territoryHasThreatenedAlliedFactoryNeighbor(final GameData data, final Territory eTerr, final PlayerID player) {
     if (Matches.territoryHasAlliedNeighborWithAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).invert().match(eTerr)) {
@@ -5127,7 +5100,6 @@ public class SUtils {
    * @param player
    * @param tFirst
    * @param nonCombat
-   * @return
    */
   public static HashMap<Territory, Float> rankAmphibReinforcementTerritories(final GameData data, final List<Territory> ignoreTerr,
       final PlayerID player, final boolean tFirst) {

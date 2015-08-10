@@ -11,7 +11,6 @@ import games.strategy.engine.data.Unit;
 /**
  * Interface to ensure different implementations of the odds calculator all have the same public methods.
  *
- * @author veqryn
  *
  */
 public interface IOddsCalculator {

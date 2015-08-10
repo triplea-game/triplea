@@ -39,7 +39,6 @@ import games.strategy.util.Match;
  * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an airbase) to another
  * territory, instead of carrying them.
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDelegate {

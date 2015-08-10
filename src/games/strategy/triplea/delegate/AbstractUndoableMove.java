@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.dataObjects.AbstractMoveDescription;
 /**
  * Contains all the data to describe an abstract move (move or placement) and to undo it.
  *
- * @author Erik von der Osten
  */
 abstract public class AbstractUndoableMove implements Serializable {
   private static final long serialVersionUID = -3164832285286161069L;

@@ -20,7 +20,6 @@ import games.strategy.grid.ui.GridMapPanel;
 /**
  * Main class responsible for Go game.
  *
- * @author Mark Christopher Duncan (veqryn)
  *
  */
 public class Go extends GridGame implements IGameLoader {

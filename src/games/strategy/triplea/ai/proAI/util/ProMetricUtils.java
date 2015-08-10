@@ -21,7 +21,6 @@ import games.strategy.util.IntegerMap;
 /**
  * Pro AI metrics.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProMetricUtils {

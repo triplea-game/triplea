@@ -165,7 +165,6 @@ public final class TileImageFactory {
 
   /**
    * @param fileName
-   * @return
    */
   private Image isImageLoaded(final String fileName) {
     if (getM_imageCache().get(fileName) == null) {
@@ -194,7 +193,6 @@ public final class TileImageFactory {
   /**
    * @param x
    * @param y
-   * @return
    */
   private String getBaseTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
@@ -204,7 +202,6 @@ public final class TileImageFactory {
 
   /**
    * @param fileName
-   * @return
    */
   private Image getImage(final String fileName, final boolean transparent) {
     synchronized (m_mutex) {
@@ -244,7 +241,6 @@ public final class TileImageFactory {
   /**
    * @param x
    * @param y
-   * @return
    */
   private String getReliefTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
@@ -269,7 +265,6 @@ public final class TileImageFactory {
 
   /**
    * @param imageLocation
-   * @return
    */
   private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent, final boolean cache,
       final boolean scale) {
@@ -439,26 +434,22 @@ public final class TileImageFactory {
   // throw new IIOException("Can't get input stream from URL!", e);
   // }
   // ImageInputStream stream = ImageIO.createImageInputStream(istream);
-  //
   // Iterator iter = ImageIO.getImageReaders(stream);
   // if (!iter.hasNext()) {
   // return null;
   // }
-  //
   // ImageReader reader = (ImageReader)iter.next();
   // ImageReadParam param = new ImageReadParam(); //reader.getDefaultReadParam();
   // BufferedImage destination = Util.createImage(TileManager.TILE_SIZE, TileManager.TILE_SIZE, transparent);
   // //param.setDestination(destination);
   // //param.setDestinationBands(null);
   // //param.setDestinationType(ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_4BYTE_ABGR));
-  //
   // //param.setDestinationType(new ImageTypeSpecifier(Util.createImage(1,1, transparent)));
   // reader.setInput(stream, true, true);
   // BufferedImage bi = reader.read(0, param);
   // stream.close();
   // reader.dispose();
   // return bi;
-  //
   // }
 }
 
@@ -470,7 +461,6 @@ public final class TileImageFactory {
  * Also, the image may not have finished watching when we are created, but the
  * getImage method ensures that the image will be loaded before returning.
  *
- * @author Sean Bridges
  */
 class ImageRef {
   public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<Image>();
@@ -519,7 +509,6 @@ class ImageRef {
 /**
  * This class handles the various types of blends for base/relief tiles
  *
- * @author Kevin Comcowich
  */
 class BlendComposite implements java.awt.Composite {
   public enum BlendingMode {

@@ -41,7 +41,6 @@ import games.strategy.util.Tuple;
 /**
  * Pro scramble AI.
  *
- * @author Ron Murhammer
  * @since 2015
  */
 public class ProScrambleAI {

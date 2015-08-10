@@ -65,7 +65,6 @@ import games.strategy.util.Util;
  * A very weak ai, based on some simple rules.<p>
  *
  *
- * @author Sean Bridges
  */
 @SuppressWarnings("deprecation")
 public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {

@@ -7,7 +7,6 @@ import games.strategy.net.INode;
 /**
  * An interface to allow for testing.
  *
- * @author sgb
  */
 public interface IChatListener {
   public void updatePlayerList(final Collection<INode> players);

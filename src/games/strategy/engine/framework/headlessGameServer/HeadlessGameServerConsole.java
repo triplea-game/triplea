@@ -23,7 +23,6 @@ import games.strategy.net.IServerMessenger;
 /**
  * Terminal line console.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class HeadlessGameServerConsole {

@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * Attachment.java
- *
- * Created on November 8, 2001, 3:09 PM
- */
 package games.strategy.engine.data;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -33,7 +15,6 @@ import games.strategy.util.PropertyUtil;
  * so that a .get(attachment1) will result in a null instead of giving the key for attachment1. So just don't have maps of attachments, in
  * an attachment. Thx, Veqryn.
  *
- * @author Sean Bridges
  */
 public abstract class DefaultAttachment extends GameDataComponent implements IAttachment {
   private static final long serialVersionUID = -1985116207387301730L;

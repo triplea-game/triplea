@@ -23,7 +23,6 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 /**
  * Server setup model.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {

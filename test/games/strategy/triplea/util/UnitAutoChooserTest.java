@@ -209,9 +209,7 @@ public class UnitAutoChooserTest extends TestCase {
     final TripleAUnit i7 = TestUnit.createUnit("i7", infantry, british);
     final TripleAUnit I7 = TestUnit.createUnit("I7", infantry, british);
     loadTransport(mustMoveWith, t7, i7, I7);
-    //
     // BEGIN TESTS
-    //
     // implicitDependents:
     // YES
     // categorizeMovement:
@@ -754,9 +752,7 @@ public class UnitAutoChooserTest extends TestCase {
     loadTransport(mustMoveWith, t4, a4);
     final TripleAUnit t5 = TestUnit.createUnit("t5", transport, british);
     final TripleAUnit t6 = TestUnit.createUnit("t6", transport, british);
-    //
     // BEGIN TESTS
-    //
     // implicitDependents:
     // NO
     // categorizeMovement:
@@ -1006,9 +1002,7 @@ public class UnitAutoChooserTest extends TestCase {
     final TripleAUnit i7 = TestUnit.createUnit("i7", infantry, british);
     final TripleAUnit I7 = TestUnit.createUnit("I7", infantry, british);
     loadTransport(mustMoveWith, t7, i7, I7);
-    //
     // BEGIN TESTS
-    //
     // implicitDependents:
     // YES
     // categorizeMovement:

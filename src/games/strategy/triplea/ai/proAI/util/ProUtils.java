@@ -37,7 +37,6 @@ import games.strategy.util.Match;
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProUtils {

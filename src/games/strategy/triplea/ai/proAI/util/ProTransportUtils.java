@@ -41,7 +41,6 @@ import games.strategy.util.Match;
 /**
  * Pro AI transport utilities.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProTransportUtils {

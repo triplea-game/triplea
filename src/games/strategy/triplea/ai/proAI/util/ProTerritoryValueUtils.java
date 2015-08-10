@@ -36,7 +36,6 @@ import games.strategy.util.Match;
 /**
  * Pro AI battle utilities.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProTerritoryValueUtils {

@@ -34,11 +34,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Quadruple;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author veqryn
- *
- */
+
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate {
   /**
@@ -136,7 +132,6 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    *
    * @param end
    *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
-   * @return
    */
   public static Collection<Territory> checkForCaptures(final Territory start, final Territory end, final PlayerID player,
       final GameData data) {

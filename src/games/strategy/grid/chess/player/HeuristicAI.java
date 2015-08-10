@@ -26,7 +26,6 @@ import games.strategy.util.Tuple;
 /**
  * A not good AI for Chess that uses some heuristics to be slightly better than random.
  *
- * @author veqryn
  *
  */
 public class HeuristicAI extends GridAbstractAI {

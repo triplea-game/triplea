@@ -25,7 +25,6 @@ import games.strategy.triplea.help.HelpSupport;
  * A poster for www.tripleawarclub.org forum
  * We log in and out every time we post, so we don't need to keep state.
  *
- * @author Klaus Groenbaek
  */
 public class TripleAWarClubForumPoster extends AbstractForumPoster {
   private static final long serialVersionUID = -4017550807078258152L;

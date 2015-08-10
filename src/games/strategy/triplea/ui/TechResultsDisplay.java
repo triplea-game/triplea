@@ -31,8 +31,6 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
  * Company:
  * </p>
  *
- * @author unascribed
- * @version 1.0
  */
 public class TechResultsDisplay extends JPanel {
   private static final long serialVersionUID = -8303376983862918107L;

@@ -54,7 +54,6 @@ import games.strategy.util.Match;
 /**
  * Pro AI simulate turn utilities.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProSimulateTurnUtils {

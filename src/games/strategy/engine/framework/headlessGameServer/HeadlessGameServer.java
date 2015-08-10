@@ -46,7 +46,6 @@ import games.strategy.util.Util;
 /**
  * A way of hosting a game, but headless.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class HeadlessGameServer {

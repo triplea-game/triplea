@@ -18,7 +18,6 @@ import games.strategy.engine.framework.GameRunner2;
 /**
  * A game options cache that uses files to store the game options
  *
- * @author Klaus Groenbaek
  */
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   // chars illegal on windows (on linux/mac anything that is allowed on windows works fine)

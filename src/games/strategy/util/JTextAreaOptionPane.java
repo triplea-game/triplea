@@ -19,7 +19,6 @@ import javax.swing.WindowConstants;
 /**
  * A text area that can show updates scrolling by.
  *
- * @author veqryn
  *
  */
 public class JTextAreaOptionPane {

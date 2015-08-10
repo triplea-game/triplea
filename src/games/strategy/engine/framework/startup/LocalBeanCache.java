@@ -18,7 +18,6 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * This is used to store settings which are not game related, and should therefore not go into the options cache
  * This is often used by editors to remember previous values
  *
- * @author Klaus Groenbaek
  */
 public class LocalBeanCache {
   private static final LocalBeanCache s_INSTANCE = new LocalBeanCache();

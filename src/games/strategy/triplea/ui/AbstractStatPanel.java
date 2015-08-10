@@ -17,7 +17,6 @@ import games.strategy.triplea.util.PlayerOrderComparator;
 /**
  * Hold some common things like GameData for stats panels and other tab panels.
  *
- * @author veqryn
  *
  */
 public abstract class AbstractStatPanel extends JPanel {

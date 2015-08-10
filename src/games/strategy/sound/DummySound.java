@@ -4,11 +4,7 @@ import java.util.Collection;
 
 import games.strategy.engine.data.PlayerID;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class DummySound implements ISound {
   @Override
   public void initialize() {}

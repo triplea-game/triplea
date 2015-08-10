@@ -60,7 +60,6 @@ import games.strategy.util.Match;
 /**
  * Pro non-combat move AI.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProNonCombatMoveAI {

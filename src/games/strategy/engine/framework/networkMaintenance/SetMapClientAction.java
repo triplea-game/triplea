@@ -13,11 +13,7 @@ import javax.swing.JOptionPane;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.INode;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class SetMapClientAction extends AbstractAction {
   private static final long serialVersionUID = -9156920997678163614L;
   private final Component m_parent;
