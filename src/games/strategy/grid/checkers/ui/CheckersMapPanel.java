@@ -29,11 +29,7 @@ import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class CheckersMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 1086068265270157799L;
   protected List<Territory> m_middleClickedTerritories = null;

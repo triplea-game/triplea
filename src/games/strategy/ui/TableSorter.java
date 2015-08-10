@@ -59,11 +59,6 @@ import javax.swing.table.TableModel;
  * <p/>
  * This is a long overdue rewrite of a class of the same name that first appeared in the swing table demos in 1997.
  *
- * @author Philip Milne
- * @author Brendon McLean
- * @author Dan van Enckevort
- * @author Parwinder Sekhon
- * @version 2.0 02/27/04
  */
 public class TableSorter extends AbstractTableModel {
   private static final long serialVersionUID = 718385567037094138L;
@@ -351,14 +346,11 @@ public class TableSorter extends AbstractTableModel {
       }
       // We can map a cell event through to the view without widening
       // when the following conditions apply:
-      //
       // a) all the changes are on one row (e.getFirstRow() == e.getLastRow()) and,
       // b) all the changes are in one column (column != TableModelEvent.ALL_COLUMNS) and,
       // c) we are not sorting on that column (getSortingStatus(column) == NOT_SORTED) and,
       // d) a reverse lookup will not trigger a sort (modelToView != null)
-      //
       // Note: INSERT and DELETE events fail this test as they have column == ALL_COLUMNS.
-      //
       // The last check, for (modelToView != null) is to see if modelToView
       // is already allocated. If we don't do this check; sorting can become
       // a performance bottleneck for applications where cells

@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * TechAdvance.java
- *
- * Created on November 25, 2001, 4:22 PM
- */
 package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
@@ -40,11 +22,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.util.Tuple;
 
-/**
- * @author Sean Bridges
- * @version 1.0
- *
- */
+
 public abstract class TechAdvance extends NamedAttachable implements Serializable {
   private static final long serialVersionUID = -1076712297024403156L;
 
@@ -284,7 +262,6 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
    * Returns all tech advances possible in this game.
    *
    * @param data
-   * @return
    */
   public static List<TechAdvance> getTechAdvances(final GameData data) {
     return getTechAdvances(data, null);
@@ -295,7 +272,6 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
    *
    * @param data
    * @param player
-   * @return
    */
   public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player) {
     final TechnologyFrontier technologyFrontier;
@@ -322,7 +298,6 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
    *
    * @param data
    * @param player
-   * @return
    */
   public static List<TechnologyFrontier> getPlayerTechCategories(final GameData data, final PlayerID player) {
     /*

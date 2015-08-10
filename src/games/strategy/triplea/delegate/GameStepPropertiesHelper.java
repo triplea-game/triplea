@@ -12,7 +12,6 @@ import games.strategy.engine.data.PlayerID;
  * These are things such as whether a move phase is combat move or noncombat move,
  * or whether we are going to post to a forum during this end turn phase.
  *
- * @author veqryn
  *
  */
 public class GameStepPropertiesHelper {
@@ -367,9 +366,7 @@ public class GameStepPropertiesHelper {
     return allowedIDs;
   }
 
-  //
   // private static members for testing default situation based on name of delegate
-  //
   private static boolean isNonCombatDelegate(final GameData data) {
     if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) {
       return true;

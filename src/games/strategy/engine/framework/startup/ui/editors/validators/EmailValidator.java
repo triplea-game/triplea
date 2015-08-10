@@ -5,7 +5,6 @@ import games.strategy.util.Util;
 /**
  * A validator which validates that a text string is an email
  *
- * @author Klaus Groenbaek
  */
 public class EmailValidator implements IValidator {
 

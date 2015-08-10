@@ -7,7 +7,6 @@ import games.strategy.net.INode;
 /**
  * Chat messages occur on this channel
  *
- * @author sgb
  */
 public interface IChatChannel extends IChannelSubscribor {
   // we get the sender from MessageContext

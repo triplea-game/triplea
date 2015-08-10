@@ -1,26 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
-/*
- * using algorithms from by eu.hansolo.steelseries.tools.Scaler.java from Gerrit Grunwald
- * Twitter: @hansolo_
- * URL:http://harmoniccode.blogspot.nl/
- * email: han.solo at muenster.de
- *
- * @author Edwin van der Wal
- */
-
 package util.image;
 
 import java.awt.Dimension;
@@ -59,7 +36,6 @@ import games.strategy.util.PointFileReaderWriter;
  * Inputs - a polygons.txt file
  * Outputs - a list of connections between the Polygons
  *
- * @author edwin
  *
  */
 public class ConnectionFinder {

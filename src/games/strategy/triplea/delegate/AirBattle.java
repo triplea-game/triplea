@@ -35,10 +35,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-/**
- * @author Mark Christopher Duncan (veqryn)
- *
- */
+
 public class AirBattle extends AbstractBattle {
   private static final long serialVersionUID = 4686241714027216395L;
   protected final static String AIR_BATTLE = "Air Battle";

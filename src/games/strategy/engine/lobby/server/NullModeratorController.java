@@ -9,7 +9,6 @@ import games.strategy.net.Messengers;
 /**
  * For Server Games, not the Lobby.
  *
- * @author veqryn
  *
  */
 public class NullModeratorController extends AbstractModeratorController implements IModeratorController {

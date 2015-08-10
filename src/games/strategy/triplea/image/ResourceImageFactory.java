@@ -13,11 +13,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class ResourceImageFactory {
   public static final int DEFAULT_RESOURCE_ICON_SIZE = 12;
   public static final int LARGE_RESOURCE_ICON_SIZE = 24;

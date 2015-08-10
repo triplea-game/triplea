@@ -8,11 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.message.IRemote;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public interface IGridEditDelegate extends IRemote, IPersistentDelegate {
   public boolean getEditMode();
 

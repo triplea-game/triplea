@@ -11,7 +11,6 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * Implements AQS behind the scenes similar to CountDownLatch.
  * Class is hobbled together from various learnings and tickets on stackexchange/stackoverflow.
  *
- * @author Mark Christopher Duncan (veqryn)
  */
 public class CountUpAndDownLatch implements Serializable {
   private static final long serialVersionUID = -1656388212821764097L;
@@ -176,7 +175,6 @@ public class CountUpAndDownLatch implements Serializable {
  * If you have access to Java 7, you should probably use Phaser instead, despite its name.
  * All calls to increment, or to wait if zero, will be synchronized on an internal mutex.
  *
- * @author Mark Christopher Duncan (veqryn)
  *
  * public class CountUpAndDownLatch implements Serializable {
  * private static final long serialVersionUID = -1656388212821764097L;

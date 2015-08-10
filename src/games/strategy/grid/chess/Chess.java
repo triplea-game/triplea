@@ -20,7 +20,6 @@ import games.strategy.grid.ui.GridMapPanel;
 /**
  * Main class responsible for Chess game.
  *
- * @author Mark Christopher Duncan (veqryn)
  *
  */
 public class Chess extends GridGame implements IGameLoader {

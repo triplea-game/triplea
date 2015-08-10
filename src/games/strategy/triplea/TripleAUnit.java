@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.strategy.triplea;
 
 import java.util.ArrayList;
@@ -44,8 +31,6 @@ import games.strategy.util.Tuple;
  * not serialize the changes across the network.
  * <p>
  *
- * @author sgb
- * @version $LastChangedDate: 2008-06-10 12:09:22 -0600 (Thu, 14 Feb 2008) $
  */
 public class TripleAUnit extends Unit {
   // compatable with 0.9.2
@@ -117,7 +102,6 @@ public class TripleAUnit extends Unit {
   /**
    * This is a very slow method because it checks all territories on the map. Try not to use this method if possible.
    *
-   * @return
    */
   public List<Unit> getTransporting() {
     // we don't store the units we are transporting

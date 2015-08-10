@@ -472,7 +472,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
   /**
    * @param parentMenu
-   * @return
    */
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
@@ -790,7 +789,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   /**
    * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
    *
-   * @return
    */
   public static Triple<JList, Map<String, String>, String> getLookAndFeelList() {
     final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();

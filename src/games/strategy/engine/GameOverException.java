@@ -10,7 +10,6 @@ package games.strategy.engine;
  *
  * Displays and players should handle this as it may be thrown by delegates remotes if a method is executed after the game is finished.
  *
- * @author sgb
  */
 public class GameOverException extends RuntimeException {
   private static final long serialVersionUID = -167666722695780120L;

@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * Util.java
- *
- * Created on October 30, 2001, 6:29 PM
- */
 package games.strategy.ui;
 
 import java.awt.Color;
@@ -41,11 +23,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
-/**
- *
- * @author Sean Bridges
- * @version 1.0
- */
+
 public class Util {
   // all we have is static methods
   private Util() {}
@@ -116,18 +94,15 @@ public class Util {
 
   // public static Image createVolatileImage(int width, int height)
   // {
-  //
   // GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
   // .getDefaultConfiguration();
   // return localGraphicSystem.createCompatibleVolatileImage(width, height);
-  //
   // }
   /**
    * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
    * problems. Fix is to use 3Byte rather than INT.
    */
   public static BufferedImage createImage(final int width, final int height, final boolean needAlpha) {
-    //
     if (needAlpha) {
       return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     } else {
@@ -144,12 +119,10 @@ public class Util {
     // local graphic system is used to create compatible bitmaps
     // GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
     // .getDefaultConfiguration();
-    //
     // // Create a buffered image in the most optimal format, which allows a
     // // fast blit to the screen.
     // BufferedImage workImage = localGraphicSystem.createCompatibleImage(width, height, needAlpha ? Transparency.TRANSLUCENT :
     // Transparency.OPAQUE);
-    //
     // return workImage;
   }
 

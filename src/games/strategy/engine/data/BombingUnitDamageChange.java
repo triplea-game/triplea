@@ -7,11 +7,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class BombingUnitDamageChange extends Change {
   private static final long serialVersionUID = -6425858423179501847L;
   private final IntegerMap<Unit> m_hits;

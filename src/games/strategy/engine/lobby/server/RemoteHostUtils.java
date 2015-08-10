@@ -8,11 +8,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class RemoteHostUtils implements IRemoteHostUtils {
   private final INode m_serverNode;
   private final IServerMessenger m_serverMessenger;

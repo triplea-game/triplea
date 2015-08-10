@@ -20,11 +20,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.triplea.ui.history.IHistoryDetailsPanel;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel {
   private static final long serialVersionUID = 7703367732080472172L;
   protected final GameData m_data;

@@ -30,11 +30,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author veqryn
- *
- */
+
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
   protected List<Map<Territory, PlayerID>> m_previousMapStates = new ArrayList<Map<Territory, PlayerID>>();
@@ -188,7 +184,6 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
    *
    * @param end
    *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
-   * @return
    */
   public static Collection<Territory> checkForCaptures(final IGridPlayData play, final PlayerID player, final GameData data) {
     // assume it is a legal move

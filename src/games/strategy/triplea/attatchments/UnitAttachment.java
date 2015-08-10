@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * UnitAttachment.java
- *
- * Created on November 8, 2001, 1:35 PM
- */
 package games.strategy.triplea.attatchments;
 
 import java.util.ArrayList;
@@ -59,8 +41,6 @@ import games.strategy.util.Tuple;
  * and if the set method adds to a list or map, then you also need a "clearFooBar".
  * Do not change the name fooBar to make it plural or any other crap.
  *
- * @author Sean Bridges and Mark Christopher Duncan
- * @version 1.0
  */
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;

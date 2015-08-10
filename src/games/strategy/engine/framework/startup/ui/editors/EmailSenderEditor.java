@@ -28,7 +28,6 @@ import games.strategy.ui.ProgressWindow;
 /**
  * An editor for modifying email senders
  *
- * @author Klaus Groenbaek
  */
 public class EmailSenderEditor extends EditorPanel {
 

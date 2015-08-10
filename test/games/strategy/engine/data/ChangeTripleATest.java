@@ -11,11 +11,7 @@ import java.util.Collection;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-/**
- *
- * @author Sean Bridges
- * @version 1.0
- */
+
 public class ChangeTripleATest extends TestCase {
   private GameData m_data;
 

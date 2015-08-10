@@ -1,23 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version. This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/**
- * PlaceDelegate.java
- * Overriding
- * Subclasses can over ride one of these methods to change the way this class
- * works. playerHasEnoughUnits(...), canProduce(...), canUnitsBePlaced(...)
- * For a simpler way you can override getProduction(...) which is called in the
- * default canProduce(...) method
- * Created on November 2, 2001, 12:29 PM
- */
 package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
@@ -62,8 +42,6 @@ import games.strategy.util.Tuple;
  * Logic for placing units.
  * <p>
  *
- * @author Sean Bridges and Veqryn
- * @version 1.0
  *          Known limitations.
  *          Doesn't take into account limits on number of factories that can be produced.
  *          Solved (by frigoref):

@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.strategy.sound;
 
 import java.io.File;
@@ -118,7 +105,6 @@ import games.strategy.triplea.ResourceLoader;
  * 6. Randomize the list's order, then pick one, and play the sound.
  *
  *
- * @author veqryn & frigoref
  */
 public class ClipPlayer {
   private static ClipPlayer s_clipPlayer;
@@ -393,7 +379,6 @@ public class ClipPlayer {
    *
    * @param pathName
    * @param subFolder
-   * @return
    */
   private void parseClipPaths(final String pathName, final boolean subFolder) {
     String resourcePath = SoundProperties.getInstance(m_resourceLoader).getProperty(pathName);
@@ -423,7 +408,6 @@ public class ClipPlayer {
    *
    * @param resourceAndPathURL
    *        (URL uses '/', not File.separator or '\')
-   * @return
    */
   private List<URL> createAndAddClips(final String resourceAndPathURL) {
     final List<URL> availableSounds = new ArrayList<URL>();

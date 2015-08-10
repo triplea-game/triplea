@@ -19,11 +19,7 @@ import javax.swing.JTextArea;
 import net.sbbi.upnp.impls.InternetGatewayDevice;
 import net.sbbi.upnp.messages.UPNPResponseException;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class UniversalPlugAndPlayHelper {
   private int m_port = 3300;
   private InetAddress m_local = null;

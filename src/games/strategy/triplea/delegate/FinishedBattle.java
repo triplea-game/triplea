@@ -29,7 +29,6 @@ import games.strategy.util.Util;
  * A sort of scripted battle made for blitzed/conquered territories without a fight.
  * TODO: expand to cover all possible scripting battle needs.
  *
- * @author veqryn
  *
  */
 public class FinishedBattle extends AbstractBattle {

@@ -19,7 +19,6 @@ import games.strategy.grid.ui.GridMapPanel;
 /**
  * Main class responsible for Checkers game.
  *
- * @author Mark Christopher Duncan (veqryn)
  *
  */
 public class Checkers extends GridGame implements IGameLoader {

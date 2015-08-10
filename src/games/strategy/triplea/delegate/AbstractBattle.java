@@ -1,6 +1,3 @@
-/**
- * Created on Oct 23, 2011
- */
 package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
@@ -29,10 +26,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.IntegerMap;
 
-/**
- * @author abstraction done by Erik von der Osten & Chris Duncan
- *
- */
+
 abstract public class AbstractBattle implements IBattle, Serializable {
   private static final long serialVersionUID = 871090498661731337L;
   protected final GUID m_battleID = new GUID();

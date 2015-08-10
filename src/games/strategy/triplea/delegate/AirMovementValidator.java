@@ -31,7 +31,6 @@ import games.strategy.util.Match;
 /**
  * Provides static methods for evaluating movement of air units.
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  */
 public class AirMovementValidator {
@@ -656,7 +655,6 @@ public class AirMovementValidator {
    *
    * @param units
    * @param territory
-   * @return
    */
   public static int carrierCapacity(final Collection<Unit> units, final Territory territoryUnitsAreCurrentlyIn) {
     int sum = 0;
@@ -673,7 +671,6 @@ public class AirMovementValidator {
    *
    * @param unit
    * @param territoryUnitsAreCurrentlyIn
-   * @return
    */
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
     if (Matches.UnitIsCarrier.match(unit)) {

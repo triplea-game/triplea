@@ -17,7 +17,6 @@ import games.strategy.util.Tuple;
  * changes &lt; the version number returned in the init message.
  * <p>
  *
- * @author sgb
  */
 public interface IChatController extends IRemote {
   /**

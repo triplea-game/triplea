@@ -20,7 +20,6 @@ import games.strategy.engine.data.GameData;
  * Title: TripleA
  * </p>
  *
- * @author Sean Bridges
  *
  *         Performs the loading of game data.
  */

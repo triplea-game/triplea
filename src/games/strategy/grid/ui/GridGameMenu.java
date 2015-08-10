@@ -30,7 +30,6 @@ import games.strategy.triplea.ui.PlayerChooser;
 
 /**
  *
- * @author veqryn
  *
  * @param <CustomGridGameFrame>
  */

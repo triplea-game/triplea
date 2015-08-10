@@ -10,7 +10,6 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * Implementers must be serialized, as the sender is stored as part of the save game.
  * It is also the job of the implementer to store the to address, host/port, credentials etc.
  *
- * @author Klaus Groenbaek
  */
 public interface IEmailSender extends IBean {
 

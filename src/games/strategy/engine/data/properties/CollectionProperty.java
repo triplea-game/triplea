@@ -11,7 +11,6 @@ import javax.swing.JTable;
 
 /**
  *
- * @author veqryn
  *
  * @param <T>
  */

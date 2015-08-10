@@ -9,10 +9,7 @@ import java.util.regex.Pattern;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.AbstractUIContext;
 
-/**
- * @author veqryn
- *
- */
+
 public class LocalizeHTML {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
   public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
@@ -109,7 +106,6 @@ public class LocalizeHTML {
    * resource loader.
    *
    * @param htmlText
-   * @return
    */
   public static String localizeImgLinksInHTML(final String htmlText) {
     return localizeImgLinksInHTML(htmlText, AbstractUIContext.getResourceLoader(), null);

@@ -57,7 +57,6 @@ import games.strategy.util.Tuple;
  * To use, just fill in the information in the fields below, and click on 'Show More' to
  * show other, optional, fields.
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  */
 public class MapPropertiesMaker extends JFrame {

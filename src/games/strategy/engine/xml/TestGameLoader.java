@@ -1,8 +1,3 @@
-/*
- * TestGameLoader.java
- *
- * Created on January 29, 2002, 12:38 PM
- */
 package games.strategy.engine.xml;
 
 import java.util.Map;
@@ -16,10 +11,7 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 
-/**
- *
- * @author Sean Bridges
- */
+
 public class TestGameLoader implements IGameLoader {
   private static final long serialVersionUID = -8019996788216172034L;
 

@@ -1,19 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version. This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/**
- * ChangeFactory.java
- *
- * Created on October 25, 2001, 1:26 PM
- */
 package games.strategy.engine.data;
 
 import java.io.IOException;
@@ -48,8 +32,6 @@ import games.strategy.util.PropertyUtil;
  * <p>
  * In this way changes to the game data can be co-ordinated across the network.
  *
- * @author Sean Bridges
- * @version 1.0
  */
 public class ChangeFactory {
   public static final Change EMPTY_CHANGE = new Change() {
@@ -389,9 +371,7 @@ class AttachmentPropertyResetUndo extends Change {
  *
  */
 class RelationshipChange extends Change {
-  /**
-   *
-   */
+
   private static final long serialVersionUID = 2694339584633196289L;
   private final String m_player1;
   private final String m_player2;
@@ -1418,7 +1398,6 @@ class GenericTechChange extends Change {
 
 /**
  *
- * @author veqryn
  *
  */
 class AddBattleRecordsChange extends Change {
@@ -1465,7 +1444,6 @@ class AddBattleRecordsChange extends Change {
 
 /**
  *
- * @author veqryn
  *
  */
 class RemoveBattleRecordsChange extends Change {
