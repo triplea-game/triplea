@@ -50,11 +50,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author SquidDaddy and Veqryn [Mark Christopher Duncan]
- *
- */
+
 public class TriggerAttachment extends AbstractTriggerAttachment implements ICondition {
   private static final long serialVersionUID = -3327739180569606093L;
   private static final String PREFIX_CLEAR = "-clear-";
@@ -1593,12 +1589,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     aBridge.addChange(change);
   }
 
-  //
   // And now for the actual triggers, as called throughout the engine.
   // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for
   // when 'when' is not used.
   // Should be void.
-  //
 
   public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
       final String beforeOrAfter, final String stepName, final boolean useUses,
@@ -2575,15 +2569,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     }
   }
 
-  //
   // All triggers can be activated in only 1 of 2 places: default or when
-  //
   // default = t.getWhen.isEmpty() (this means when was not set, and so the trigger should activate in its default place, like before
   // purchase phase for production frontier trigger changes
-  //
   // when = !t.getWhen.isEmpty() (this means when was set, and so the trigger should not activate in its default place, and instead should
   // activate before or after a specific stepName
-  //
 
   public static Match<TriggerAttachment> prodMatch() {
     return new Match<TriggerAttachment>() {

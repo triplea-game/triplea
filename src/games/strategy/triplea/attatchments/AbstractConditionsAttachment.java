@@ -22,7 +22,6 @@ import games.strategy.util.Match;
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold conditions (ie: RulesAttachments),
  * should extend this instead of DefaultAttachment.
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
@@ -200,8 +199,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * conditions to get the final list.
    *
    * @param startingListOfConditions
-   * @return
-   * @author veqryn
    */
   public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions,
       HashSet<ICondition> allConditionsNeededSoFar) {
@@ -226,8 +223,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    *
    * @param rules
    * @param data
-   * @return
-   * @author veqryn
    */
   public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules,
       HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge aBridge) {
@@ -253,8 +248,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * @param rules
    * @param conditionType
    * @param data
-   * @return
-   * @author veqryn
    */
   public static boolean areConditionsMet(final List<ICondition> rulesToTest, final HashMap<ICondition, Boolean> testedConditions,
       final String conditionType) {

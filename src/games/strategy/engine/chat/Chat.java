@@ -1,19 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version. This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * Chat.java
- *
- * Created on January 14, 2002, 11:10 AM
- */
 package games.strategy.engine.chat;
 
 import java.util.ArrayList;
@@ -44,7 +28,6 @@ import games.strategy.util.Tuple;
  * A chat can be bound to multiple chat panels.
  * <p>
  *
- * @author Sean Bridges
  */
 public class Chat {
   private final List<IChatListener> m_listeners = new CopyOnWriteArrayList<IChatListener>();
@@ -147,20 +130,15 @@ public class Chat {
       @Override
       public void run() {
         // the order of events is significant.
-        //
-        //
         // 1 register our channel listener
         // once the channel is registered, we are guaranteed that
         // when we receive the response from our init(...) message, our channel
         // subscriber has been added, and will see any messages broadcasted by the server
-        //
         // 2 call the init message on the server remote. Any add or join messages sent from the server
         // will queue until we receive the init return value (they queue since they see the init version is -1)
-        //
         // 3 when we receive the init message response, acquire the lock, and initialize our state
         // and run any queued messages. Queued messages may be ignored if the
         // server version is incorrect.
-        //
         // this all seems a lot more involved than it needs to be.
         final IChatController controller =
             (IChatController) m_messengers.getRemoteMessenger().getRemote(ChatController.getChatControlerRemoteName(m_chatName));

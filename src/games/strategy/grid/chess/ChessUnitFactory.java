@@ -7,11 +7,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class ChessUnitFactory extends DefaultUnitFactory implements IUnitFactory {
   private static final long serialVersionUID = 6864854940846487873L;
 

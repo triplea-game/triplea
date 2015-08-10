@@ -19,10 +19,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-/**
- * @author Abstraction done by Erik von der Osten, original TriggerAttachment writen by Squid Daddy and Mark Christopher Duncan
- *
- */
+
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition {
   private static final long serialVersionUID = 5866039180681962697L;
   public static final String NOTIFICATION = "Notification";
@@ -73,7 +70,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   /**
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
-   * @return
    */
   @Deprecated
   public List<RulesAttachment> getTrigger() {

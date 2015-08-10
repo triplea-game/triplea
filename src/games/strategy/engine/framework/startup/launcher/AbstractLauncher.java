@@ -1,6 +1,3 @@
-/**
- * Created on 15.03.2012
- */
 package games.strategy.engine.framework.startup.launcher;
 
 import java.awt.Component;
@@ -16,7 +13,6 @@ import games.strategy.engine.framework.ui.background.WaitWindow;
 /**
  * Abstract class for launching a game.
  *
- * @author Abstraction done by Frigoref, Original code by Sean Bridges
  *
  */
 abstract public class AbstractLauncher implements ILauncher {

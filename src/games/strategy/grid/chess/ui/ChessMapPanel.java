@@ -17,11 +17,7 @@ import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.ui.ImageScrollModel;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class ChessMapPanel extends GridMapPanel {
   private static final long serialVersionUID = -8631830615396608727L;
 

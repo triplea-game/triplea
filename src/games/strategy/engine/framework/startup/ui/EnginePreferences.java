@@ -49,7 +49,6 @@ import games.strategy.util.Triple;
 /**
  * Class for holding various engine related options and preferences.
  *
- * @author Veqryn
  *
  */
 public class EnginePreferences extends JDialog {

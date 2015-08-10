@@ -21,7 +21,6 @@ import games.strategy.engine.message.IRemote;
 /**
  * Remote interface for MoveDelegate and PlaceDelegate
  *
- * @author Sean Bridges
  */
 public interface IAbstractMoveDelegate extends IRemote, IDelegate {
   /**

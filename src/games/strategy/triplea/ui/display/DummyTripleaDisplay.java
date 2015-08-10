@@ -14,11 +14,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class DummyTripleaDisplay implements ITripleaDisplay {
   private final MainGameFrame m_ui;
 

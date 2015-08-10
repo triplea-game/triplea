@@ -35,7 +35,6 @@ import games.strategy.triplea.ui.ErrorHandler;
 /**
  * Main panel for headless server.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class HeadlessServerMainPanel extends JPanel implements Observer {

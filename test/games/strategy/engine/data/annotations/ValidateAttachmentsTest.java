@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 /**
  * A test that validates that all attachment classes have properties with valid setters and getters
  *
- * @author Klaus Groenbaek
  */
 public class ValidateAttachmentsTest extends TestCase {
 
@@ -177,6 +176,9 @@ public class ValidateAttachmentsTest extends TestCase {
       final int index = fileName.indexOf(classesRoot) + classesRoot.length();
       String className = fileName.substring(index);
       className = className.replace(File.separator, ".");
+      if( !className.endsWith(".class")) {
+        return "";
+      }
       className = className.substring(0, className.lastIndexOf(".class"));
 
       if (isSkipClass(className)) {

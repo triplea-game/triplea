@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * TerritoryAttachment.java
- *
- * Created on November 8, 2001, 3:08 PM
- */
 package games.strategy.triplea.attatchments;
 
 import java.util.ArrayList;
@@ -55,11 +37,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author Kevin Comcowich and Veqryn (Mark Christopher Duncan)
- * @version 1.2
- */
+
 public class RulesAttachment extends AbstractPlayerRulesAttachment implements ICondition {
   private static final long serialVersionUID = 7301965634079412516L;
 
@@ -150,7 +128,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
    *
    * @param player
    * @param data
-   * @return
    */
   public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data) {
     final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
@@ -685,9 +662,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     boolean objectiveMet = true;
     final List<PlayerID> players = getPlayers();
     final GameData data = aBridge.getData();
-    //
     // check meta conditions (conditions which hold other conditions)
-    //
     if (objectiveMet && m_conditions.size() > 0) {
       if (testedConditions == null) {
         testedConditions =
@@ -695,72 +670,54 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       }
       objectiveMet = areConditionsMet(new ArrayList<ICondition>(m_conditions), testedConditions, m_conditionType);
     }
-    //
     // check switch (on/off)
-    //
     if (objectiveMet) {
       objectiveMet = m_switch;
     }
-    //
     // check turn limits
-    //
     if (objectiveMet && m_turns != null) {
       objectiveMet = checkTurns(data);
     }
-    //
     // check custom game property options
-    //
     if (objectiveMet && m_gameProperty != null) {
       objectiveMet = this.getGamePropertyState(data);
     }
-    //
     // Check for unit presence (Veqryn)
-    //
     if (objectiveMet && getDirectPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectPresenceTerritories();
       objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "direct",
           getTerritoryCount(), players, data);
     }
-    //
     // Check for unit presence (Veqryn)
-    //
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedPresenceTerritories();
       objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "allied",
           getTerritoryCount(), players, data);
     }
-    //
     // Check for unit presence (Veqryn)
-    //
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyPresenceTerritories();
       objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy",
           getTerritoryCount(), players, data);
     }
-    //
     // Check for direct unit exclusions (veqryn)
-    //
     if (objectiveMet && getDirectExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectExclusionTerritories();
       objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "direct",
           getTerritoryCount(), players, data);
     }
-    //
     // Check for allied unit exclusions
-    //
     if (objectiveMet && getAlliedExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedExclusionTerritories();
       objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "allied",
           getTerritoryCount(), players, data);
     }
-    //
     // Check for enemy unit exclusions (ANY UNITS)
-    //
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyExclusionTerritories();
@@ -774,9 +731,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy_surface",
           getTerritoryCount(), players, data);
     }
-    //
     // Check for Territory Ownership rules
-    //
     if (objectiveMet && getAlliedOwnershipTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedOwnershipTerritories();
@@ -810,9 +765,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       }
       objectiveMet = checkAlliedOwnership(objectiveMet, listedTerritories, getTerritoryCount(), players, data);
     }
-    //
     // Check for Direct Territory Ownership rules
-    //
     if (objectiveMet && getDirectOwnershipTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectOwnershipTerritories();
@@ -898,9 +851,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       }
     }
 
-    //
     // "chance" should ALWAYS be checked last!
-    //
     final int hitTarget = getChanceToHit();
     final int diceSides = getChanceDiceSides();
     final int incrementOnFailure = this.getChanceIncrementOnFailure();

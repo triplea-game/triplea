@@ -22,7 +22,6 @@ import games.strategy.sound.SoundPath;
 /**
  * Headless version of ChatPanel.
  *
- * @author veqryn
  *
  */
 public class HeadlessChat implements IChatListener, IChatPanel {

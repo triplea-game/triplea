@@ -66,7 +66,6 @@ import games.strategy.util.Tuple;
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
  * <p>
  *
- * @author sgb
  */
 public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlayer, IGamePlayer {
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());

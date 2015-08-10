@@ -28,7 +28,6 @@ import games.strategy.util.CountDownLatchHandler;
 /**
  * Abstraction by veqryn.
  *
- * @author veqryn
  *
  */
 public abstract class AbstractUIContext implements IUIContext {
@@ -236,10 +235,8 @@ public abstract class AbstractUIContext implements IUIContext {
         window.dispose();
         // there is a bug in java (1.50._06 for linux at least)
         // where frames are not garbage collected.
-        //
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6364875
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6368950
-        //
         // so remove all references to everything
         // to minimize the damage
         if (window instanceof JFrame) {

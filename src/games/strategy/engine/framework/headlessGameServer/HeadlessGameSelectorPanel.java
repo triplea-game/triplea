@@ -39,7 +39,6 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 /**
  * Simple selector panel for the headless game ui.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class HeadlessGameSelectorPanel extends JPanel implements Observer {

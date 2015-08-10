@@ -59,7 +59,6 @@ import games.strategy.util.Match;
  * <li>Add support for considering carrier landing when calculating air routes</li>
  * </ol>
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProAttackOptionsUtils {

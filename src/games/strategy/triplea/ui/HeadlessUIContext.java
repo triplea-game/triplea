@@ -18,7 +18,6 @@ import games.strategy.triplea.util.Stopwatch;
 /**
  * Headless version, so that we don't get error in linux when the system has no graphics configuration.
  *
- * @author veqryn
  *
  */
 public class HeadlessUIContext extends AbstractUIContext implements IUIContext {

@@ -11,7 +11,6 @@ import games.strategy.engine.delegate.IPersistentDelegate;
  * It is supposed to be separate, as Persistent Delegates do not do many things that normal delegates do, like Triggers, etc.
  * Persistent Delegates are active all the time.
  *
- * @author Chris Duncan
  */
 public abstract class BasePersistentDelegate extends AbstractDelegate implements IDelegate, IPersistentDelegate {
   public BasePersistentDelegate() {

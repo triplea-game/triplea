@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * EndRoundDelegate.java
- *
- * Created on January 18, 2002, 9:50 PM
- */
 package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
@@ -56,7 +38,6 @@ import games.strategy.util.Match;
  *
  * A delegate used to check for end of game conditions.
  *
- * @author Sean Bridges
  */
 public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean m_gameOver = false;
@@ -327,7 +308,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   /**
    * if null, the game is not over yet
    *
-   * @return
    */
   public Collection<PlayerID> getWinners() {
     if (!m_gameOver) {

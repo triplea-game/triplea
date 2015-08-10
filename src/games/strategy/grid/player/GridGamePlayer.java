@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.strategy.grid.player;
 
 import java.awt.event.ActionEvent;
@@ -34,8 +21,6 @@ import games.strategy.grid.ui.IGridPlayData;
 /**
  * Represents a human player of Grid Games.
  *
- * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2012-07-25 15:19:19 +0800 (Wed, 25 Jul 2012) $
  */
 public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements IGridGamePlayer {
   public GridGamePlayer(final String name, final String type) {

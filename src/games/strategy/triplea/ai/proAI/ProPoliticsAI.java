@@ -42,7 +42,6 @@ import games.strategy.util.Match;
 /**
  * Pro politics AI.
  *
- * @author Ron Murhammer
  * @since 2015
  */
 public class ProPoliticsAI {

@@ -45,11 +45,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class GoMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 2560185139493126853L;
   protected Set<Territory> m_territoryGroupsThatShouldDie = null; // which stones are dead?

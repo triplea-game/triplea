@@ -35,7 +35,6 @@ import games.strategy.util.Tuple;
  * and a field '[name]' which is public, then it will take these and create an editable UI component
  * for each of these based on the games.strategy.engine.data.properties classes.
  *
- * @author veqryn [Mark Christopher Duncan]
  *
  * @param <T>
  *        parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map

@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.strategy.triplea.ui.screen;
 
 import java.awt.BasicStroke;
@@ -53,12 +40,7 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
-/**
- *
- *
- *
- * @author Sean Bridges
- */
+
 public class TileManager {
   private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
   public final static int TILE_SIZE = 256;
@@ -378,20 +360,16 @@ public class TileManager {
     // synchronized(m_mutex)
     // {
     // Rectangle bounds = mapData.getBoundingRect(t);
-    //
     // Image rVal = Util.createImage( bounds.width, bounds.height, false);
     // Graphics2D graphics = (Graphics2D) rVal.getGraphics();
-    //
     // //start as a set to prevent duplicates
     // Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
     // Iterator<Tile> tiles = getTiles(bounds).iterator();
-    //
     // while(tiles.hasNext())
     // {
     // Tile tile = tiles.next();
     // drawablesSet.addAll(tile.getDrawables());
     // }
-    //
     // List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
     // Collections.sort(orderedDrawables, new DrawableComparator());
     // Iterator<IDrawable> drawers = orderedDrawables.iterator();
@@ -404,12 +382,9 @@ public class TileManager {
     // continue;
     // drawer.draw(bounds, data, graphics, mapData);
     // }
-    //
     // Iterator iter = mapData.getPolygons(t).iterator();
-    //
     // graphics.setStroke(new BasicStroke(5));
     // graphics.setColor(Color.RED);
-    //
     // while (iter.hasNext())
     // {
     // Polygon poly = (Polygon) iter.next();
@@ -417,7 +392,6 @@ public class TileManager {
     // poly.translate(-bounds.x, -bounds.y);
     // graphics.drawPolygon(poly);
     // }
-    //
     // graphics.dispose();
     // return rVal;
     // }

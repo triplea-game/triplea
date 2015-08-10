@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * GameProperties.java
- *
- * Created on January 15, 2002, 2:21 PM
- */
 package games.strategy.engine.data.properties;
 
 import java.io.BufferedInputStream;
@@ -41,7 +23,6 @@ import games.strategy.engine.data.GameDataComponent;
  * Maps string -> Object <br>
  * Set through changeFactory.setProperty.
  *
- * @author Sean Bridges
  */
 public class GameProperties extends GameDataComponent {
   private static final long serialVersionUID = -1448163357090677564L;

@@ -35,7 +35,6 @@ import games.strategy.util.Triple;
  * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per
  * unit.
  *
- * @author Veqryn
  *
  */
 public class IndividualUnitPanel extends JPanel {

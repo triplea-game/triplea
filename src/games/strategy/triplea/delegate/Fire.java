@@ -269,9 +269,7 @@ public class Fire implements IExecutable {
     return;
   }
 
-  /**
-   * @return
-   */
+
   private boolean isTransportCasualtiesRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
   }

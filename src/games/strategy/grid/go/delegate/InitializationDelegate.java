@@ -10,11 +10,7 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class InitializationDelegate extends AbstractDelegate {
   /**
    * Called before the delegate will run.

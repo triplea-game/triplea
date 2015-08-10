@@ -83,7 +83,6 @@ import games.strategy.util.Tuple;
 /**
  * A panel that will show all objectives for all players, including if the objective is filled or not.
  *
- * @author veqryn
  *
  */
 public class ObjectivePanel extends AbstractStatPanel {

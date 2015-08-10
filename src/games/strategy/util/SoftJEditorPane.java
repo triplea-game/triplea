@@ -8,7 +8,6 @@ import javax.swing.JEditorPane;
  * For when your component contains images or data that is very very big, and you want it to be reclaimed as needed by the GC.
  * Example, when a JEditorPane has rich HTML in it, with huge images.
  *
- * @author veqryn
  *
  */
 public class SoftJEditorPane {

@@ -23,7 +23,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 /**
  * An abstraction of MoveDelegate in order to allow other delegates to extend this.
  *
- * @author veqryn
  *
  */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {

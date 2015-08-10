@@ -1,6 +1,3 @@
-/**
- * Created on 16.03.2012
- */
 package games.strategy.engine.framework;
 
 import java.util.HashMap;
@@ -31,7 +28,6 @@ import games.strategy.util.ListenerList;
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
  *
- * @author abstraction done by Frigoref, original code by Sean
  *
  */
 abstract public class AbstractGame implements IGame {

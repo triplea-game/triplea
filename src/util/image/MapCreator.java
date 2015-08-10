@@ -36,7 +36,6 @@ import games.strategy.triplea.image.UnitImageFactory;
 /**
  * A frame that will run the different map making utilities we have.
  *
- * @author veqryn
  *
  */
 public class MapCreator extends JFrame {

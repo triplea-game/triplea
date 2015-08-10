@@ -34,7 +34,6 @@ import games.strategy.triplea.help.HelpSupport;
  * the game starts. This is done for security reasons so save games will not include passwords.
  * The non-transitive password is used when the object is stored in the local cache
  *
- * @author Klaus Groenbaek
  */
 public class GenericEmailSender implements IEmailSender {
   private static final long serialVersionUID = 4644748856027574157L;

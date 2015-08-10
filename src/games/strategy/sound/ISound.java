@@ -9,7 +9,6 @@ import games.strategy.engine.message.IChannelSubscribor;
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move delegate) to also be played
  * on clients.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public interface ISound extends IChannelSubscribor {

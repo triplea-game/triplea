@@ -9,11 +9,7 @@ import games.strategy.engine.framework.GameRunner2;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.DoubleTextFieldChangeListener;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;
   private final double m_max;

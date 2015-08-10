@@ -154,7 +154,6 @@ public class ResourceLoader {
    *
    * @param pathURL
    *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or File.separator)
-   * @return
    */
   public URL getResource(final String pathURL) {
     final URL rVal = m_loader.getResource(pathURL);

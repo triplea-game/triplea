@@ -59,7 +59,6 @@ import games.strategy.util.Match;
  * 2. attacker submerges sub at start or end of battle
  * 3. defender submerges (or moves if Classic rules) sub at start or end of battle
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProRetreatAI {

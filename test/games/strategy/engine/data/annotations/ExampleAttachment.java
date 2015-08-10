@@ -11,7 +11,6 @@ import games.strategy.util.IntegerMap;
  *
  * Test attachment that demonstrates how @GameProperty is used
  *
- * @author Klaus Groenbaek
  */
 public class ExampleAttachment extends DefaultAttachment {
 

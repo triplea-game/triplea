@@ -14,7 +14,6 @@ import javax.swing.JComponent;
 /**
  * Basically creates a map of other properties.
  *
- * @author veqryn
  *
  * @param <T>
  *        String or something with a valid toString()

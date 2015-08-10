@@ -14,7 +14,6 @@ import games.strategy.util.Tuple;
 /**
  * An object to hold all the map.properties values.
  *
- * @author veqryn
  *
  */
 public class MapProperties {

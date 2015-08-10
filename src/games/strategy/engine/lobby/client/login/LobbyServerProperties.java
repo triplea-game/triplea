@@ -24,7 +24,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
  * <p>
  *
  *
- * @author sgb
  */
 public class LobbyServerProperties {
   private final static Logger s_logger = Logger.getLogger(LobbyServerProperties.class.getName());

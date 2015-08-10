@@ -1,13 +1,7 @@
-/*
- * DestinationChangeMessage.java
- *
- * Created on December 27, 2001, 11:43 AM
- */
 package games.strategy.engine.message;
 
 /**
  *
- * @author Sean Bridges
  *
  *         A destination has been added or removed
  */

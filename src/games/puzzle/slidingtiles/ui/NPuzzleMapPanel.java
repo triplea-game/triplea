@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.puzzle.slidingtiles.ui;
 
 import java.awt.Color;
@@ -48,8 +35,6 @@ import games.strategy.util.Tuple;
 /**
  * Custom component for displaying a n-puzzle gameboard.
  *
- * @author Lane Schwartz (original) and Veqryn (abstraction)
- * @version $LastChangedDate: 2013-02-03 04:49:39 +0800 (Sun, 03 Feb 2013) $
  */
 public class NPuzzleMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 981372652838512191L;

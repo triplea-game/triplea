@@ -58,7 +58,6 @@ import games.strategy.sound.SoundPath;
  *
  * We can change the chat we are connected to using the setChat(...) method.
  *
- * @author Sean Bridges
  */
 public class ChatMessagePanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = 118727200083595226L;

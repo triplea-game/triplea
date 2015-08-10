@@ -1,8 +1,3 @@
-/*
- * ThreadPoolTest.java
- *
- * Created on January 25, 2002, 3:34 PM
- */
 package games.strategy.thread;
 
 import java.util.ArrayList;
@@ -11,10 +6,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-/**
- *
- * @author Sean Bridges
- */
+
 public class ThreadPoolTest extends TestCase {
   /** Creates a new instance of ThreadPoolTest */
   public ThreadPoolTest(final String s) {

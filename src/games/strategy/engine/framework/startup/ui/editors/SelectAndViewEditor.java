@@ -30,7 +30,6 @@ import games.strategy.triplea.ui.JButtonDialog;
  * Use <code>setBeans</code> to set the beans edited by this editor, and <code>setSelectedBean</code> to select a specific bean
  * The editor automatically realigns the label of nested editors
  *
- * @author Klaus Groenbaek
  */
 public class SelectAndViewEditor extends EditorPanel {
   private static final long serialVersionUID = 1580648148539524876L;

@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.strategy.triplea.delegate;
 
 import java.io.Externalizable;
@@ -406,7 +393,6 @@ public class DiceRoll implements Externalizable {
    * @param territoryEffects
    * @param isAmphibiousBattle
    * @param amphibiousLandAttackers
-   * @return
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor,
       final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -436,7 +422,6 @@ public class DiceRoll implements Externalizable {
    * @param amphibiousLandAttackers
    * @param unitSupportPowerMap
    * @param unitSupportRollsMap
-   * @return
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(final List<Unit> unitsGettingPowerFor,
       final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -629,7 +614,6 @@ public class DiceRoll implements Externalizable {
    * @param units
    * @param defending
    * @param player
-   * @return
    */
   public static int getArtillerySupportAvailable(final List<Unit> units, final boolean defending, final PlayerID player) {
     int artillerySupportAvailable = 0;
@@ -906,7 +890,6 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
-   * @author veqryn
    *
    * @param unitsList
    * @param defending
@@ -914,7 +897,6 @@ public class DiceRoll implements Externalizable {
    * @param bridge
    * @param battle
    * @param annotation
-   * @return
    */
   public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge,
       final IBattle battle, final String annotation) {
@@ -1148,7 +1130,6 @@ public class DiceRoll implements Externalizable {
    * @param units
    * @param player
    * @param battle
-   * @return
    */
   public static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);

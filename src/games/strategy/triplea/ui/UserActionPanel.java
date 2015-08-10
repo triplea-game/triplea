@@ -35,7 +35,6 @@ import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 /**
  * Similar to PoliticsPanel, but for UserActionAttachment/Delegate.
  *
- * @author veqryn
  *
  */
 public class UserActionPanel extends ActionPanel {

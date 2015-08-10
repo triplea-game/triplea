@@ -1,16 +1,8 @@
-/*
- * Created on Feb 18, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package games.strategy.engine.framework;
 
 import games.strategy.triplea.formatter.MyFormatter;
 
-/**
- * @author sgb
- */
+
 public class VerifiedRandomNumbers {
   private final int[] m_values;
   private final String m_annotation;

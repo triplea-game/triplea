@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * TripleAFrame.java
- *
- * Created on November 5, 2001, 1:32 PM
- */
 package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
@@ -179,7 +161,6 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
- * @author Sean Bridges
  *         Main frame for the triple a game
  */
 public class TripleAFrame extends MainGameFrame {
@@ -500,10 +481,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     // there is a bug in java (1.50._06 for linux at least)
     // where frames are not garbage collected.
-    //
     // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6364875
     // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6368950
-    //
     // so remove all references to everything
     // to minimize the damage
     m_game.removeGameStepListener(m_stepListener);

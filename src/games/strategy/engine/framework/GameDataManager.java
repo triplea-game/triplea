@@ -33,7 +33,6 @@ import games.strategy.util.Version;
  * Description: Responsible for loading saved games, new games from xml, and saving games
  * </p>
  *
- * @author Sean Bridges
  */
 public class GameDataManager {
   private final static String DELEGATE_START = "<DelegateStart>";

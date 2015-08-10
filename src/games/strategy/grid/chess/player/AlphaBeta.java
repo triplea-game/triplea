@@ -23,7 +23,6 @@ import games.strategy.util.Tuple;
 /**
  * A simple alpha-beta pruning AI.
  *
- * @author veqryn
  *
  */
 public class AlphaBeta extends HeuristicAI {

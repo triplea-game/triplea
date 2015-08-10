@@ -1,6 +1,3 @@
-/**
- * Created on 12.03.2012
- */
 package games.strategy.engine.framework.ui;
 
 import java.util.ArrayList;
@@ -18,7 +15,6 @@ import games.strategy.engine.data.properties.PropertiesUI;
 /**
  * Wrapper for properties selection window.
  *
- * @author Frigoref
  *
  */
 public class PropertiesSelector {

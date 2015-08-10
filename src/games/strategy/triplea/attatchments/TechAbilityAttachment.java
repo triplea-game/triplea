@@ -30,7 +30,6 @@ import games.strategy.util.Match;
  * Attaches to technologies.
  * Also contains static methods of interpreting data from all technology attachments that a player has.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 public class TechAbilityAttachment extends DefaultAttachment {
@@ -68,9 +67,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   // unitAbilitiesGained Static Strings
   public static final String ABILITY_CAN_BLITZ = "canBlitz";
   public static final String ABILITY_CAN_BOMBARD = "canBombard";
-  //
   // attachment fields
-  //
   private IntegerMap<UnitType> m_attackBonus = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_defenseBonus = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_movementBonus = new IntegerMap<UnitType>();
@@ -98,15 +95,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<UnitType>();
 
-  //
-  //
   public TechAbilityAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
-  //
   // setters and getters
-  //
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -888,9 +881,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_bombingBonus = new IntegerMap<UnitType>();
   }
 
-  //
   // Static Methods for interpreting data in attachments
-  //
   public static int getAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
@@ -1335,25 +1326,20 @@ public class TechAbilityAttachment extends DefaultAttachment {
             }
           }
         }
-        //
         // The following technologies should NOT have ability attachments for them:
         // shipyards and industrialTechnology = because it is better to use a Trigger to change player's production
         // improvedArtillerySupport = because it is already completely atomized and controlled through support attachments
         // paratroopers = because it is already completely atomized and controlled through unit attachments + game options
         // mechanizedInfantry = because it is already completely atomized and controlled through unit attachments
-        //
         // IF one of the above named techs changes what it does in a future version of a&a, and the change is large enough or different
         // enough that it can not be done easily with a new game option,
         // then it is better to create a new tech rather than change the old one, and give the new one a new name, like paratroopers2 or
         // paratroopersAttack or Airborne_Forces, or some crap.
-        //
       }
     }
   }
 
-  //
   // validator
-  //
   @Override
   public void validate(final GameData data) throws GameParseException {
     final TechAdvance ta = (TechAdvance) this.getAttachedTo();

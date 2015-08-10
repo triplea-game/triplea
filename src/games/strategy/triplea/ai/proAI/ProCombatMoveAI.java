@@ -55,7 +55,6 @@ import games.strategy.util.Match;
 /**
  * Pro combat move AI.
  *
- * @author Ron Murhammer
  * @since 2014
  */
 public class ProCombatMoveAI {

@@ -30,7 +30,6 @@ import games.strategy.ui.ProgressWindow;
 /**
  * A class for selecting which Forum poster to use
  *
- * @author Klaus Groenbaek
  */
 public class ForumPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;

@@ -1,16 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
@@ -20,7 +7,6 @@ import games.strategy.engine.data.GameData;
  * Title: TripleA
  * </p>
  *
- * @author Sean Bridges
  *
  */
 public class Properties implements Constants {
@@ -402,16 +388,10 @@ public class Properties implements Constants {
     return data.getProperties().get(LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS, false);
   }
 
-  /*
-   *
-   */
-  public static int getHeavyBomberDiceRolls(final GameData data) {
+   public static int getHeavyBomberDiceRolls(final GameData data) {
     return data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS, 2);
   }
 
-  /*
-   *
-   */
   public static boolean getBattleshipsRepairAtEndOfRound(final GameData data) {
     return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN, false);
   }
@@ -420,51 +400,30 @@ public class Properties implements Constants {
     return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN, false);
   }
 
-  /*
-   *
-   */
   public static boolean getTwoHitPointUnitsRequireRepairFacilities(final GameData data) {
     return data.getProperties().get(TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES, false);
   }
 
-  /*
-   *
-   */
   public static boolean getChoose_AA_Casualties(final GameData data) {
     return data.getProperties().get(CHOOSE_AA, false);
   }
 
-  /*
-   *
-   */
   public static boolean getSubmersible_Subs(final GameData data) {
     return data.getProperties().get(SUBMERSIBLE_SUBS, false);
   }
 
-  /*
-   *
-   */
   public static boolean getUse_Destroyers_And_Artillery(final GameData data) {
     return data.getProperties().get(USE_DESTROYERS_AND_ARTILLERY, false);
   }
 
-  /*
-   *
-   */
   public static boolean getUse_Shipyards(final GameData data) {
     return data.getProperties().get(USE_SHIPYARDS, false);
   }
 
-  /*
-   *
-   */
   public static boolean getLow_Luck(final GameData data) {
     return data.getProperties().get(LOW_LUCK, false);
   }
 
-  /*
-   *
-   */
   public static boolean getLL_AA_ONLY(final GameData data) {
     return data.getProperties().get(LL_AA_ONLY, false);
   }
@@ -476,6 +435,7 @@ public class Properties implements Constants {
   public static boolean getLL_DAMAGE_ONLY(final GameData data) {
     return data.getProperties().get(LL_DAMAGE_ONLY, false);
   }
+
 
   public static boolean getKamikaze_Airplanes(final GameData data) {
     return data.getProperties().get(KAMIKAZE, false);

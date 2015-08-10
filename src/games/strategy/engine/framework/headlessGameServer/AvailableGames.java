@@ -30,7 +30,6 @@ import games.strategy.util.ClassLoaderUtil;
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
  *
- * @author veqryn (Mark Christopher Duncan)
  */
 public class AvailableGames {
   private static final boolean s_delayedParsing = false;

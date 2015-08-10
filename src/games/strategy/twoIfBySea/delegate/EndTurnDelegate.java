@@ -20,7 +20,6 @@ import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
  * <p>
  * </p>
  *
- * @author Sean Bridges
  *
  */
 public class EndTurnDelegate extends AbstractEndTurnDelegate {

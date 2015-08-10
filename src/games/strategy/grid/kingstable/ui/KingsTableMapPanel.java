@@ -18,11 +18,7 @@ import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.ui.ImageScrollModel;
 
-/**
- *
- * @author Lane Schwartz (original) and Veqryn (abstraction)
- *
- */
+
 public class KingsTableMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 9111624780451084800L;
 

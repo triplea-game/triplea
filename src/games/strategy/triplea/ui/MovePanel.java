@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * MovePanel.java
- *
- * Created on December 4, 2001, 6:59 PM
- */
 package games.strategy.triplea.ui;
 
 import java.awt.Image;
@@ -71,11 +53,7 @@ import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
-/**
- *
- * @author Sean Bridges, modified by Erik von der Osten
- * @version 1.1
- */
+
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int s_defaultMinTransportCost = 5;
@@ -626,7 +604,6 @@ public class MovePanel extends AbstractMovePanel {
     }
     final Set<Unit> defaultSelections = new HashSet<Unit>();
     // Algorithm to choose defaultSelections (transports to load)
-    //
     // This algorithm uses mapTransports(), except mapTransports operates on
     // transports that have already been selected for loading.
     // We are trying to determine which transports are the best defaults to select for loading,
@@ -636,7 +613,6 @@ public class MovePanel extends AbstractMovePanel {
     // - finally, incapable transports are chosen last (will generate errors)
     // Note that if any allied transports qualify as defaults, we will always prompt with a
     // UnitChooser later on so that it is obvious to the player.
-    //
     boolean useAlliedTransports = false;
     final Collection<Unit> capableTransports = new ArrayList<Unit>(candidateTransports);
     // only allow incapable transports for updateUnitsThatCanMoveOnRoute

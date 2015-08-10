@@ -58,7 +58,6 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 /**
  * A Comment logging window.
  *
- * @author Tony Clayton
  */
 public class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;

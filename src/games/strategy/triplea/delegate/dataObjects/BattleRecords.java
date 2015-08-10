@@ -19,7 +19,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  *
- * @author Veqryn [Mark Christopher Duncan]
  *
  */
 public class BattleRecords extends GameDataComponent implements Serializable {

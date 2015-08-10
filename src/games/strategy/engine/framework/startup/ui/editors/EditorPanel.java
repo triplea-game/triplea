@@ -19,7 +19,6 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
  * Base class for editors.
  * Editors fire property Events in response when changed, so other editors or GUI can be notified
  *
- * @author Klaus Groenbaek
  */
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;

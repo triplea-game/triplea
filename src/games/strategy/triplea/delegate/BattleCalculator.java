@@ -1,21 +1,3 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * BattleCalculator.java
- *
- * Created on November 29, 2001, 2:27 PM
- */
 package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
@@ -70,8 +52,6 @@ import games.strategy.util.Tuple;
 
 /**
  *
- * @author Sean Bridges
- * @version 1.0
  *
  *          Utiltity class for determing casualties and selecting casualties. The code
  *          was being dduplicated all over the place.
@@ -1276,7 +1256,6 @@ public class BattleCalculator {
    * Therefore, this map should NOT be used for Purchasing information!
    *
    * @param data
-   * @return
    */
   public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
     /*
@@ -1335,7 +1314,6 @@ public class BattleCalculator {
    *
    * @param data
    * @param includeAverageForMissingUnits
-   * @return
    */
   public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTUV(final GameData data,
       final boolean includeAverageForMissingUnits) {
@@ -1405,7 +1383,6 @@ public class BattleCalculator {
    * Therefore, this map should NOT be used for Purchasing information!
    *
    * @param data
-   * @return
    */
   public static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(final GameData data) {
     final Map<UnitType, ResourceCollection> average = new HashMap<UnitType, ResourceCollection>();

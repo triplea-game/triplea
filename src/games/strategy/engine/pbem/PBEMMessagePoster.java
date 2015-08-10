@@ -23,8 +23,6 @@ import games.strategy.ui.ProgressWindow;
  * The needs to be serialized since it is invoked through the IAbstractEndTurnDelegate which require all objects to be serializable
  * although the PBEM games will always be local
  *
- * @author unascribed
- * @author Klaus Groenbaek
  *
  */
 public class PBEMMessagePoster implements Serializable {

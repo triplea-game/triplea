@@ -58,7 +58,6 @@ import sun.misc.URLClassPath;
  * This class uses undocumented, unpublished, private data structures inside
  * java.net.URLClassLoader and sun.misc.URLClassPath. Use with extreme caution.
  *
- * @author tjquinn
  */
 public class ClassLoaderUtil {
   /** records whether initialization has been completed */

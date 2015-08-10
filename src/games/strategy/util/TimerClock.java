@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * we can also notify observers about the time left to complete, notify them that it completed successfully or not,
  * and we can also return a default object if needed.
  *
- * @author veqryn (Mark Christopher Duncan)
  *
  */
 // this is an ill-fated at a shot clock for the game...

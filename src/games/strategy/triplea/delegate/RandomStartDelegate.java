@@ -31,7 +31,6 @@ import games.strategy.util.Tuple;
  * After that, any remaining units get placed one by one.
  * (Note that m_player may not be used here, because this delegate is not run by any player [it is null])
  *
- * @author veqryn (mark christopher duncan)
  *
  */
 public class RandomStartDelegate extends BaseTripleADelegate {

@@ -7,11 +7,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
-/**
- *
- * @author veqryn
- *
- */
+
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
   /**
    * Called before the delegate will run.
