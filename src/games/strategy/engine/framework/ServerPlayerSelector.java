@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
 public class ServerPlayerSelector extends JFrame {
   private static final long serialVersionUID = 8902742935005060145L;
   private final Collection<PlayerChoice> m_playerChoices;

@@ -242,7 +242,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, bb1);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, bb1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // YES
@@ -281,23 +282,27 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t5);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3, t4, a4);
     setUnits(expectedSelectedUnits, t1, a1, i1, t3, i3, t4, a4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     // setUnits(expectedSelectedUnitsWithDependents ,t1,a1,i1,t2,a2,i2,t3,i3);
     // setUnits(expectedSelectedUnits ,t1,a1,i1,t2,a2,i2,t3);
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t4, a4);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     // setUnits(expectedSelectedUnitsWithDependents ,t1,a1,i1,t2,a2,i2,t4,a4);
     // setUnits(expectedSelectedUnits ,t1,a1,i1,t2,a2,i2,t4);
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t3, i3);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     // implicitDependents:
     // YES
@@ -331,7 +336,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, bb1);
     setUnits(expectedSelectedUnits, bb1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // YES
@@ -365,7 +371,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, bb1, bb2);
     setUnits(expectedSelectedUnits, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // YES
@@ -412,35 +419,43 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t5, t6, bb1, bb2);
     setUnits(expectedSelectedUnits, t5, t6, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, bb1, bb2);
     setUnits(expectedSelectedUnits, t1, t2, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t4, a4, bb1, bb2);
     setUnits(expectedSelectedUnits, t1, t4, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3, bb1, bb2);
     setUnits(expectedSelectedUnits, t1, t3, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t5, bb1, bb2);
     setUnits(expectedSelectedUnits, t1, t5, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(4, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(4, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(4, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t4, a4, bb1, bb2);
     setUnits(expectedSelectedUnits, t3, t4, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(5, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(5, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(5, false)));
     setUnits(expectedSelectedUnitsWithDependents, t4, a4, t5, bb1, bb2);
     setUnits(expectedSelectedUnits, t4, t5, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(6, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(6, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(6, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t5, bb1, bb2);
     setUnits(expectedSelectedUnits, t3, t5, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(7, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(7, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(7, false)));
     // implicitDependents:
     // YES
@@ -476,11 +491,13 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2);
     setUnits(expectedSelectedUnits, t1, a1, t2, a2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t4, a4);
     setUnits(expectedSelectedUnits, t1, a1, t4, a4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     // implicitDependents:
     // YES
@@ -518,15 +535,18 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1);
     setUnits(expectedSelectedUnits, t1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t4, a4);
     setUnits(expectedSelectedUnits, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3);
     setUnits(expectedSelectedUnits, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     // implicitDependents:
     // YES
@@ -565,19 +585,23 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t5);
     setUnits(expectedSelectedUnits, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1);
     setUnits(expectedSelectedUnits, t1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t4, a4);
     setUnits(expectedSelectedUnits, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3);
     setUnits(expectedSelectedUnits, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     // implicitDependents:
     // YES
@@ -617,19 +641,23 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t3, i3, t4, a4, t5);
     setUnits(expectedSelectedUnits, t1, t2, t3, t4, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t4, a4, t5, t6);
     setUnits(expectedSelectedUnits, t1, t2, t4, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t3, i3, t5, t6);
     setUnits(expectedSelectedUnits, t1, t2, t3, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3, t4, a4, t5, t6);
     setUnits(expectedSelectedUnits, t1, t3, t4, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     // implicitDependents:
     // YES
@@ -680,43 +708,53 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t5);
     setUnits(expectedSelectedUnits, t3, i3, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2);
     setUnits(expectedSelectedUnits, t1, i1, t2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t4, a4);
     setUnits(expectedSelectedUnits, t1, i1, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t7, i7, I7);
     setUnits(expectedSelectedUnits, t1, i1, t7);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3);
     setUnits(expectedSelectedUnits, t1, i1, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(4, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(4, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(4, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t5);
     setUnits(expectedSelectedUnits, t1, i1, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(5, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(5, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(5, false)));
     setUnits(expectedSelectedUnitsWithDependents, t7, i7, I7, t4, a4);
     setUnits(expectedSelectedUnits, t7, i7, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(6, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(6, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(6, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t4, a4);
     setUnits(expectedSelectedUnits, t3, i3, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(7, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(7, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(7, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t7, i7, I7);
     setUnits(expectedSelectedUnits, t3, t7, i7);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(8, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(8, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(8, false)));
     setUnits(expectedSelectedUnitsWithDependents, t5, t7, i7, I7);
     setUnits(expectedSelectedUnits, t5, t7, i7);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(9, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(9, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(9, false)));
   }
 
@@ -785,7 +823,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, bb1);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, bb1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // NO
@@ -821,11 +860,13 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t5);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3, t4, a4);
     setUnits(expectedSelectedUnits, t1, a1, i1, t3, i3, t4, a4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     // implicitDependents:
     // NO
@@ -859,7 +900,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t5, t6, bb1, bb2);
     setUnits(expectedSelectedUnits, t5, t6, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // NO
@@ -893,7 +935,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t4, a4, t5);
     setUnits(expectedSelectedUnits, t4, a4, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // NO
@@ -927,7 +970,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1);
     setUnits(expectedSelectedUnits, t1); // simple solution
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // NO
@@ -961,7 +1005,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t5, t6);
     setUnits(expectedSelectedUnits, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
   }
 
@@ -1035,7 +1080,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, bb1);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, bb1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // YES
@@ -1076,23 +1122,28 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t5);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t3, i3, t4, a4);
     setUnits(expectedSelectedUnits, t2, a2, i2, t3, i3, t4, a4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3, t4, a4);
     setUnits(expectedSelectedUnits, t1, a1, i1, t3, i3, t4, a4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t4, a4);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t3, i3);
     setUnits(expectedSelectedUnits, t1, a1, i1, t2, a2, i2, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(4, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(4, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(4, false)));
     // implicitDependents:
     // YES
@@ -1126,7 +1177,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, bb1);
     setUnits(expectedSelectedUnits, bb1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // YES
@@ -1160,7 +1212,8 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, bb1, bb2);
     setUnits(expectedSelectedUnits, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     // implicitDependents:
     // YES
@@ -1213,47 +1266,58 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t5, t6, bb1, bb2);
     setUnits(expectedSelectedUnits, t5, t6, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, bb1, bb2);
     setUnits(expectedSelectedUnits, t1, t2, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t4, a4, bb1, bb2);
     setUnits(expectedSelectedUnits, t2, t4, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t3, i3, bb1, bb2);
     setUnits(expectedSelectedUnits, t2, t3, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t5, bb1, bb2);
     setUnits(expectedSelectedUnits, t2, t5, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(4, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(4, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(4, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t4, a4, bb1, bb2);
     setUnits(expectedSelectedUnits, t1, t4, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(5, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(5, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(5, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3, bb1, bb2);
     setUnits(expectedSelectedUnits, t3, t1, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(6, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(6, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(6, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t5, bb1, bb2);
     setUnits(expectedSelectedUnits, t1, t5, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(7, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(7, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(7, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t4, a4, bb1, bb2);
     setUnits(expectedSelectedUnits, t3, t4, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(8, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(8, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(8, false)));
     setUnits(expectedSelectedUnitsWithDependents, t4, a4, t5, bb1, bb2);
     setUnits(expectedSelectedUnits, t4, t5, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(9, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(9, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(9, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t5, bb1, bb2);
     setUnits(expectedSelectedUnits, t3, t5, bb1, bb2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(10, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(10, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(10, false)));
     // implicitDependents:
     // YES
@@ -1291,15 +1355,18 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2);
     setUnits(expectedSelectedUnits, t1, a1, t2, a2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t4, a4);
     setUnits(expectedSelectedUnits, t2, a2, t4, a4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t4, a4);
     setUnits(expectedSelectedUnits, t1, a1, t4, a4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     // implicitDependents:
     // YES
@@ -1339,19 +1406,23 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2);
     setUnits(expectedSelectedUnits, t2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1);
     setUnits(expectedSelectedUnits, t1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t4, a4);
     setUnits(expectedSelectedUnits, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3);
     setUnits(expectedSelectedUnits, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     // implicitDependents:
     // YES
@@ -1392,23 +1463,28 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t5);
     setUnits(expectedSelectedUnits, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2);
     setUnits(expectedSelectedUnits, t2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1);
     setUnits(expectedSelectedUnits, t1);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t4, a4);
     setUnits(expectedSelectedUnits, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3);
     setUnits(expectedSelectedUnits, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(4, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(4, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(4, false)));
     // implicitDependents:
     // YES
@@ -1450,23 +1526,28 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t3, i3, t4, a4, t5);
     setUnits(expectedSelectedUnits, t1, t2, t3, t4, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t4, a4, i1, t1, a1, t5, t6);
     setUnits(expectedSelectedUnits, t1, t2, t4, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2, t3, i3, t5, t6);
     setUnits(expectedSelectedUnits, t1, t2, t3, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, i2, a2, t3, i3, t4, a4, t5, t6);
     setUnits(expectedSelectedUnits, t2, t3, t4, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3, t4, a4, t5, t6);
     setUnits(expectedSelectedUnits, t1, t3, t4, t5, t6);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(4, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(4, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(4, false)));
     // implicitDependents:
     // YES
@@ -1525,59 +1606,73 @@ public class UnitAutoChooserTest extends TestCase {
     assertEquals(TestUnit.createSet(expectedCandidateUnits), TestUnit.createSet(autoChooser.getCandidateUnits(true)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t5);
     setUnits(expectedSelectedUnits, t3, i3, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(0, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(0, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(0, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t2, a2, i2);
     setUnits(expectedSelectedUnits, t1, i2, t2);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(1, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(1, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(1, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t4, a4);
     setUnits(expectedSelectedUnits, t2, i2, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(2, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(2, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(2, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t7, i7, I7);
     setUnits(expectedSelectedUnits, t2, i2, t7);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(3, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(3, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(3, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t3, i3);
     setUnits(expectedSelectedUnits, t2, i2, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(4, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(4, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(4, false)));
     setUnits(expectedSelectedUnitsWithDependents, t2, a2, i2, t5);
     setUnits(expectedSelectedUnits, t2, i2, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(5, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(5, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(5, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t4, a4);
     setUnits(expectedSelectedUnits, t1, i1, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(6, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(6, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(6, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t7, i7, I7);
     setUnits(expectedSelectedUnits, t1, i1, t7);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(7, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(7, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(7, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t3, i3);
     setUnits(expectedSelectedUnits, t1, i1, t3);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(8, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(8, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(8, false)));
     setUnits(expectedSelectedUnitsWithDependents, t1, a1, i1, t5);
     setUnits(expectedSelectedUnits, t1, i1, t5);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(9, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(9, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(9, false)));
     setUnits(expectedSelectedUnitsWithDependents, t7, i7, t4, a4, I7);
     setUnits(expectedSelectedUnits, t7, i7, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(10, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(10, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(10, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t4, a4);
     setUnits(expectedSelectedUnits, t3, i3, t4);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(11, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(11, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(11, false)));
     setUnits(expectedSelectedUnitsWithDependents, t3, i3, t7, i7, I7);
     setUnits(expectedSelectedUnits, t3, t7, i7);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(12, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(12, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(12, false)));
     setUnits(expectedSelectedUnitsWithDependents, t5, t7, i7, I7);
     setUnits(expectedSelectedUnits, t5, t7, i7);
-    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents), TestUnit.createSet(autoChooser.getSolution(13, true)));
+    assertEquals(TestUnit.createSet(expectedSelectedUnitsWithDependents),
+        TestUnit.createSet(autoChooser.getSolution(13, true)));
     assertEquals(TestUnit.createSet(expectedSelectedUnits), TestUnit.createSet(autoChooser.getSolution(13, false)));
   }
 }

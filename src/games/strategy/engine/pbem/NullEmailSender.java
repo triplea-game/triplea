@@ -8,11 +8,9 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * A dummy Email sender, to use when Email sending is disabled
- *
  */
 public class NullEmailSender implements IEmailSender {
   private static final long serialVersionUID = 9138507282128548506L;
-
 
   @Override
   public String getDisplayName() {
@@ -20,7 +18,8 @@ public class NullEmailSender implements IEmailSender {
   }
 
   @Override
-  public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String fileName) throws IOException {}
+  public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String fileName)
+      throws IOException {}
 
   @Override
   public String getToAddress() {
@@ -28,9 +27,7 @@ public class NullEmailSender implements IEmailSender {
   }
 
   @Override
-  public void clearSensitiveInfo() {
-
-  }
+  public void clearSensitiveInfo() {}
 
   @Override
   public IEmailSender doClone() {
@@ -58,14 +55,10 @@ public class NullEmailSender implements IEmailSender {
   }
 
   @Override
-  public void setUserName(final String userName) {
-
-  }
+  public void setUserName(final String userName) {}
 
   @Override
-  public void setPassword(final String password) {
-
-  }
+  public void setPassword(final String password) {}
 
   @Override
   public String getHelpText() {

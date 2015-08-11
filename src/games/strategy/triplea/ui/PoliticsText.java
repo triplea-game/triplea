@@ -9,8 +9,6 @@ import games.strategy.triplea.ResourceLoader;
 
 /**
  * Returns a bunch of messages from politicstext.properties
- *
- *
  */
 public class PoliticsText {
   // Filename
@@ -41,7 +39,8 @@ public class PoliticsText {
   }
 
   public static PoliticsText getInstance() {
-    if (s_pt == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) { // cache properties for 10 seconds
+    if (s_pt == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) { // cache properties for 10
+                                                                                          // seconds
       s_pt = new PoliticsText();
       s_timestamp = Calendar.getInstance().getTimeInMillis();
     }

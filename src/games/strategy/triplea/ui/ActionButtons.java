@@ -32,9 +32,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
 /**
- *
  * Root panel for all action buttons in a triplea game. <br>
- *
  */
 public class ActionButtons extends JPanel {
   private static final long serialVersionUID = 2175685892863042399L;
@@ -135,7 +133,6 @@ public class ActionButtons extends JPanel {
   }
 
   public void changeToProduce(final PlayerID id) {
-
     changeTo(id, m_purchasePanel);
   }
 
@@ -204,10 +201,10 @@ public class ActionButtons extends JPanel {
    * Blocks until the user selects their purchase.
    *
    * @param allowedPlayersToRepair
-   *
    * @return null if no move was made.
    */
-  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid, final Collection<PlayerID> allowedPlayersToRepair) {
+  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+      final Collection<PlayerID> allowedPlayersToRepair) {
     return m_repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 
@@ -233,10 +230,10 @@ public class ActionButtons extends JPanel {
    * Blocks until the user selects a political action to attempt
    *
    * @param firstRun
-   *
    * @return null if no action was picked.
    */
-  public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate) {
+  public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
+      final IPoliticsDelegate iPoliticsDelegate) {
     return m_politicsPanel.waitForPoliticalAction(firstRun, iPoliticsDelegate);
   }
 
@@ -244,10 +241,10 @@ public class ActionButtons extends JPanel {
    * Blocks until the user selects a user action to attempt
    *
    * @param firstRun
-   *
    * @return null if no action was picked.
    */
-  public UserActionAttachment waitForUserActionAction(final boolean firstRun, final IUserActionDelegate iUserActionDelegate) {
+  public UserActionAttachment waitForUserActionAction(final boolean firstRun,
+      final IUserActionDelegate iUserActionDelegate) {
     return m_userActionPanel.waitForUserActionAction(firstRun, iUserActionDelegate);
   }
 
@@ -280,8 +277,8 @@ public class ActionButtons extends JPanel {
     return m_battlePanel.waitForBattleSelection();
   }
 
-  public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices,
-      final int unitsPerPick) {
+  public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
+      final List<Unit> unitChoices, final int unitsPerPick) {
     return m_pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
   }
 

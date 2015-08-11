@@ -26,7 +26,6 @@ import games.strategy.ui.IntTextField;
 
 /**
  * UI for choosing server options.
- *
  */
 public class ServerOptions extends JDialog {
   private static final long serialVersionUID = -9074816386666798281L;
@@ -41,7 +40,8 @@ public class ServerOptions extends JDialog {
   /**
    * Creates a new instance of ServerOptions
    */
-  public ServerOptions(final Component owner, final String defaultName, final int defaultPort, final boolean showComment) {
+  public ServerOptions(final Component owner, final String defaultName, final int defaultPort,
+      final boolean showComment) {
     super(owner == null ? null : JOptionPane.getFrameForComponent(owner), "Server options", true);
     m_showComment = showComment;
     initComponents();
@@ -163,7 +163,8 @@ public class ServerOptions extends JDialog {
     m_passwordField.setEnabled(m_requirePasswordCheckBox.isSelected());
     final Color backGround = m_passwordField.isEnabled() ? m_portField.getBackground() : getBackground();
     m_passwordField.setBackground(backGround);
-    if (GameRunner2.areWeOldExtraJar() && System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
+    if (GameRunner2.areWeOldExtraJar()
+        && System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
       setNameEditable(false);
     }
   }

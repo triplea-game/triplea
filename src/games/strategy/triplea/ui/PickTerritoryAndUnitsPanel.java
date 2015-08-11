@@ -27,8 +27,6 @@ import games.strategy.util.Tuple;
 
 /**
  * For choosing territories and units for them, during RandomStartDelegate.
- *
- *
  */
 public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private static final long serialVersionUID = -2672163347536778594L;
@@ -84,8 +82,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     });
   }
 
-  public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices,
-      final int unitsPerPick) {
+  public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
+      final List<Unit> unitChoices, final int unitsPerPick) {
     m_territoryChoices = territoryChoices;
     m_unitChoices = unitChoices;
     m_unitsPerPick = unitsPerPick;
@@ -138,8 +136,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       m_currentAction = DoneAction;
       setWidgetActivation();
       if (m_pickedTerritory == null || !m_territoryChoices.contains(m_pickedTerritory)) {
-        EventThreadJOptionPane.showMessageDialog(m_parent, "Must Pick An Unowned Territory", "Must Pick An Unowned Territory",
-            JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
+        EventThreadJOptionPane.showMessageDialog(m_parent, "Must Pick An Unowned Territory",
+            "Must Pick An Unowned Territory", JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
         m_currentAction = null;
         if (m_currentHighlightedTerritory != null) {
           getMap().clearTerritoryOverlay(m_currentHighlightedTerritory);
@@ -150,16 +148,16 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         return;
       }
       if (!m_pickedUnits.isEmpty() && !m_unitChoices.containsAll(m_pickedUnits)) {
-        EventThreadJOptionPane.showMessageDialog(m_parent, "Invalid Units?!?", "Invalid Units?!?", JOptionPane.WARNING_MESSAGE,
-            new CountDownLatchHandler(true));
+        EventThreadJOptionPane.showMessageDialog(m_parent, "Invalid Units?!?", "Invalid Units?!?",
+            JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
         m_currentAction = null;
         m_pickedUnits.clear();
         setWidgetActivation();
         return;
       }
       if (m_pickedUnits.size() > Math.max(0, m_unitsPerPick)) {
-        EventThreadJOptionPane.showMessageDialog(m_parent, "Too Many Units?!?", "Too Many Units?!?", JOptionPane.WARNING_MESSAGE,
-            new CountDownLatchHandler(true));
+        EventThreadJOptionPane.showMessageDialog(m_parent, "Too Many Units?!?", "Too Many Units?!?",
+            JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
         m_currentAction = null;
         m_pickedUnits.clear();
         setWidgetActivation();
@@ -174,9 +172,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           m_pickedUnits.clear();
           m_pickedUnits.addAll(Match.getNMatches(m_unitChoices, m_unitsPerPick, Match.<Unit>getAlwaysMatch()));
         } else {
-          EventThreadJOptionPane.showMessageDialog(m_parent, "Must Choose Units For This Territory", "Must Choose Units For This Territory",
-              JOptionPane.WARNING_MESSAGE,
-              new CountDownLatchHandler(true));
+          EventThreadJOptionPane.showMessageDialog(m_parent, "Must Choose Units For This Territory",
+              "Must Choose Units For This Territory", JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
           m_currentAction = null;
           setWidgetActivation();
           return;
@@ -191,7 +188,6 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       release();
     }
   };
-
   private final Action SelectUnitsAction = new AbstractAction("Select Units") {
     private static final long serialVersionUID = 4745335350716395600L;
 
@@ -199,8 +195,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     public void actionPerformed(final ActionEvent event) {
       m_currentAction = SelectUnitsAction;
       setWidgetActivation();
-      final UnitChooser unitChooser =
-          new UnitChooser(m_unitChoices, Collections.<Unit, Collection<Unit>>emptyMap(), getData(), false, getMap().getUIContext());
+      final UnitChooser unitChooser = new UnitChooser(m_unitChoices, Collections.<Unit, Collection<Unit>>emptyMap(),
+          getData(), false, getMap().getUIContext());
       unitChooser.setMaxAndShowMaxButton(m_unitsPerPick);
       if (JOptionPane.OK_OPTION == EventThreadJOptionPane.showConfirmDialog(m_parent, unitChooser, "Select Units",
           JOptionPane.OK_CANCEL_OPTION, new CountDownLatchHandler(true))) {
@@ -211,7 +207,6 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       setWidgetActivation();
     }
   };
-
   private final Action SelectTerritoryAction = new AbstractAction("Select Territory") {
     private static final long serialVersionUID = -8003634505955439651L;
 
@@ -230,9 +225,9 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       }
       if (m_currentAction == SelectTerritoryAction) {
         if (territory == null || !m_territoryChoices.contains(territory)) {
-          EventThreadJOptionPane.showMessageDialog(m_parent, "Must Pick An Unowned Territory (will have a white highlight)",
-              "Must Pick An Unowned Territory", JOptionPane.WARNING_MESSAGE,
-              new CountDownLatchHandler(true));
+          EventThreadJOptionPane.showMessageDialog(m_parent,
+              "Must Pick An Unowned Territory (will have a white highlight)", "Must Pick An Unowned Territory",
+              JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
           return;
         }
         m_pickedTerritory = territory;

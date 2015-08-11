@@ -15,7 +15,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 
 /**
  * Contains all the data to describe a placement and to undo it.
- *
  */
 class UndoablePlacement extends AbstractUndoableMove {
   private static final long serialVersionUID = -1493488646587233451L;
@@ -77,7 +76,8 @@ class UndoablePlacement extends AbstractUndoableMove {
   @Override
   public String toString() {
     if (m_producerTerritory != m_placeTerritory) {
-      return m_producerTerritory.getName() + " produces in " + m_placeTerritory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
+      return m_producerTerritory.getName() + " produces in " + m_placeTerritory.getName() + ": "
+          + MyFormatter.unitsToTextNoOwner(m_units);
     }
     return m_placeTerritory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
   }

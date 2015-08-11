@@ -15,9 +15,7 @@ import games.strategy.ui.Util;
 /**
  * Utility class to get image for a Unit.
  * <p>
- *
  * This class is a simplified version of Sean Bridges's games.strategy.triplea.image.UnitImageFactory.
- *
  */
 public class UnitImageFactory {
   private static final String FILE_NAME_BASE = "units/";
@@ -72,7 +70,8 @@ public class UnitImageFactory {
   }
 
   /*
-   * private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), ResourceLoader.RESOURCE_FOLDER + "/units/");
+   * private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), ResourceLoader.RESOURCE_FOLDER +
+   * "/units/");
    * private BufferedImage getBaseImage(final String baseImageName, final PlayerID id)
    * {
    * final String fileName = id.getName() + "/" + baseImageName + ".png";
@@ -91,7 +90,6 @@ public class UnitImageFactory {
    * return image;
    * }
    */
-
   private String getBaseImageName(final UnitType type, final PlayerID id, final GameData data) {
     final StringBuilder name = new StringBuilder(32);
     name.append(type.getName());

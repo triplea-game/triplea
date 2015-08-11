@@ -17,22 +17,15 @@ import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
- *
  * A route between two territories.
  * <p>
- *
  * A route consists of a start territory, and a sequence of steps. To create a route do,
- *
  * <code>
  * Route aRoute = new Route();
  * route.setStart(someTerritory);
  * route.add(anotherTerritory);
  * route.add(yetAnotherTerritory);
  * </code>
- *
- *
- *
- *
  */
 public class Route implements java.io.Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
@@ -71,7 +64,6 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
    * @return a new Route starting at r1.start() going to r2.end() along r1,
    *         r2, or null if the routes can't be joined it the joining would
    *         form a loop
-   *
    */
   public static Route join(final Route r1, final Route r2) {
     if (r1 == null || r2 == null) {
@@ -205,7 +197,8 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
   }
 
   /**
-   * @deprecated use: numberOfSteps(), getMovementCost(unit), getMiddleSteps(), getTerritories() or any other method in this class
+   * @deprecated use: numberOfSteps(), getMovementCost(unit), getMiddleSteps(), getTerritories() or any other method in
+   *             this class
    * @return the number of steps in this route.
    */
   @Deprecated
@@ -223,7 +216,6 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
   }
 
   /**
-   *
    * @return the number of steps in this route. Does not include start.
    */
   public int numberOfSteps() {
@@ -231,7 +223,6 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
   }
 
   /**
-   *
    * @return the number of steps in this route. DOES include start.
    */
   public int numberOfStepsIncludingStart() {
@@ -477,7 +468,8 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
     if (hasNoSteps()) {
       return false;
     }
-    // we should not check if there is only 1 step, because otherwise movement validation will let users move their tanks over water, so
+    // we should not check if there is only 1 step, because otherwise movement validation will let users move their
+    // tanks over water, so
     // long as they end on land
     return getStart().isWater() && !getEnd().isWater();
   }
@@ -574,10 +566,11 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
     return movementCharge;
   }
 
-  protected static Set<Unit> getOwnedAirMovingWithOwnedCarriers(final Collection<Unit> unitsAll, final PlayerID currentPlayer,
-      final GameData data) {
-    final Collection<Unit> ownedFighters = Match.getMatches(unitsAll,
-        new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.UnitIsAir, Matches.unitIsOwnedBy(currentPlayer)));
+  protected static Set<Unit> getOwnedAirMovingWithOwnedCarriers(final Collection<Unit> unitsAll,
+      final PlayerID currentPlayer, final GameData data) {
+    final Collection<Unit> ownedFighters =
+        Match.getMatches(unitsAll, new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.UnitIsAir,
+            Matches.unitIsOwnedBy(currentPlayer)));
     if (ownedFighters.isEmpty()) {
       return new HashSet<Unit>();
     }

@@ -40,10 +40,10 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
-
 @SuppressWarnings("unchecked")
 public class DoNonCombatMove {
-  public static void doPreCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover, final PlayerID player) {
+  public static void doPreCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover,
+      final PlayerID player) {
     DUtils.Log(Level.FINE, "  Beginning pre-combat move section");
     for (final Territory ourCap : TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
       if (DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ourCap) > .1F) // If our cap is in danger
@@ -62,7 +62,8 @@ public class DoNonCombatMove {
     }
   }
 
-  public static void doNonCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover, final PlayerID player) {
+  public static void doNonCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover,
+      final PlayerID player) {
     if (DSettings.LoadSettings().AIC_disableAllUnitMovements) {
       final String message = ai.getName() + " is skipping it's ncm phase, as instructed.";
       DUtils.Log(Level.FINE, message);
@@ -83,7 +84,8 @@ public class DoNonCombatMove {
     final MovePackage pack = new MovePackage(ai, data, mover, player, null, null, null);
     // First, we generate a list of ncm 'tasks', such as reinforcements of territories, blocking of enemies, etc.
     final List<NCM_Task> tasks = GenerateTasks(pack);
-    // We loop this part, because sometimes there are attacks that at first are too risky to perform, but after some nearby tasks are
+    // We loop this part, because sometimes there are attacks that at first are too risky to perform, but after some
+    // nearby tasks are
     // performed, the results are more favorable or predictable.
     DUtils.Log(Level.FINE, "  Beginning task consideration loop section");
     for (int i = 0; i < 5; i++) {
@@ -100,16 +102,17 @@ public class DoNonCombatMove {
       if (ReconsiderSignalCenter.get(data, player).ObjectsToReconsider.isEmpty()) {
         break;
       } else {
-        final List<Territory> tersToReconsider = DUtils.ToList(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider);
+        final List<Territory> tersToReconsider =
+            DUtils.ToList(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider);
         for (final NCM_Task task : tasks) {
           if (tersToReconsider.contains(task.GetTarget())) {
             if (task.IsCompleted()) {
               /*
                * if(!tersAttackedBeforeLoop.contains(task.GetTarget())) //If this ter was attacked this loop
                * continue;
-               *
                * for(UnitGroup ug : task.GetRecruitedUnits())
-               * UnitGroup.UndoMove_NotifyAllUGs(mover, ug.GetMoveIndex()); //Undo moves, and calculate again, cause we might not need this
+               * UnitGroup.UndoMove_NotifyAllUGs(mover, ug.GetMoveIndex()); //Undo moves, and calculate again, cause we
+               * might not need this
                * many after all
                * task.Reset();
                */
@@ -125,7 +128,8 @@ public class DoNonCombatMove {
     for (final NCM_Task task : tasks) {
       if (task.IsDisqualified()) {
         task.PerformTargetRetreat(tasks, mover);
-        StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasRetreatedFrom = true;
+        StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(task.GetTarget()).WasRetreatedFrom =
+            true;
       }
     }
     // We now allow the worthwhile tasks to recruit additional units to make the task even more favorable.
@@ -150,7 +154,8 @@ public class DoNonCombatMove {
         }
       }
     }
-    ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation(); // Suspend the threat invalidation center, as we want wave 4 to
+    ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation(); // Suspend the threat invalidation center,
+                                                                            // as we want wave 4 to
                                                                             // do as much as we'd ever want
     // We now allow the worthwhile tasks to recruit as many additional units as they could ever want
     DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 4)");
@@ -164,7 +169,8 @@ public class DoNonCombatMove {
       }
     }
     ThreatInvalidationCenter.get(data, player).ResumeThreatInvalidation();
-    // We generate a list of ncm 'calls', such as calls for more units on a defensive front, a call for a unit to grab an empty territory,
+    // We generate a list of ncm 'calls', such as calls for more units on a defensive front, a call for a unit to grab
+    // an empty territory,
     // etc.
     final List<NCM_Call> calls = GenerateCalls(pack);
     DUtils.Log(Level.FINE, "  Beginning call consideration section");
@@ -176,8 +182,8 @@ public class DoNonCombatMove {
       if (!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter)) {
         continue;
       }
-      final List<Unit> terUnits =
-          ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsNotAir));
+      final List<Unit> terUnits = ter.getUnits().getMatches(
+          DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsNotAir));
       // If this ter has a factory
       if (ter.getUnits().getMatches(Matches.UnitCanProduceUnitsAndCanBeDamaged).size() > 0) {
         final Unit firstAA = DUtils.GetFirstUnitMatching(terUnits, Matches.UnitIsAAforAnything, 0);
@@ -191,19 +197,22 @@ public class DoNonCombatMove {
       }
       doNonCombatMoveForTer(pack, ter, terUnits, tasks);
     }
-    // We get clear invalidated threats, because the enemy will come after air even if landing ter is next to resistant ter
+    // We get clear invalidated threats, because the enemy will come after air even if landing ter is next to resistant
+    // ter
     ThreatInvalidationCenter.get(data, player).ClearInvalidatedThreats();
     // Now that we've completed all the normal ncm moves, perform the special tasks
     DUtils.Log(Level.FINE, "  Attempting to land aircraft on safe territories.");
     for (final Territory ter : data.getMap().getTerritories()) {
-      final List<Unit> airUnits =
-          ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsAir));
+      final List<Unit> airUnits = ter.getUnits().getMatches(
+          DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsAir));
       if (airUnits.isEmpty()) {
         continue;
       }
-      final Territory landingLoc = NCM_AirLandingCalculator.CalculateLandingLocationForAirUnits(data, player, ter, airUnits, tasks);
+      final Territory landingLoc =
+          NCM_AirLandingCalculator.CalculateLandingLocationForAirUnits(data, player, ter, airUnits, tasks);
       if (landingLoc == null) {
-        DUtils.Log(Level.FINER, "    Landing location not found. Ter: {0} Air Units: {1}", ter, DUtils.UnitList_ToString(airUnits));
+        DUtils.Log(Level.FINER, "    Landing location not found. Ter: {0} Air Units: {1}", ter,
+            DUtils.UnitList_ToString(airUnits));
         continue;
       }
       final List<UnitGroup> ugs = DUtils.CreateUnitGroupsForUnits(airUnits, ter, data);
@@ -214,7 +223,8 @@ public class DoNonCombatMove {
         if (error != null) {
           DUtils.Log(Level.FINEST, "        Landing failed, reason: {0}", error);
         } else {
-          TacticalCenter.get(data, player).FreezeUnits(airUnits); // Freeze these aircraft, otherwise they might get moved somewhere unsafe
+          TacticalCenter.get(data, player).FreezeUnits(airUnits); // Freeze these aircraft, otherwise they might get
+                                                                  // moved somewhere unsafe
         }
       }
       final String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
@@ -242,21 +252,24 @@ public class DoNonCombatMove {
           return false; // If there are no attackers
         }
         // If this ter was not conquered and it is not owned by us or our allies, this can't be a ter we reinforce
-        if (!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter) && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter)) {
+        if (!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter)
+            && !CachedInstanceCenter.CachedBattleTracker.wasConquered(ter)) {
           return false;
         }
-        if (Match.getMatches(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1))
-            .size() > 0) {
+        if (Match.getMatches(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter),
+            Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1)).size() > 0) {
           return false;
         }
         if (data.getMap().getNeighbors(ter, DMatches.territoryIsOwnedByNNEnemy(data, player)).isEmpty()) {
           return false;
         }
-        final List<Unit> blitzers = DUtils.GetNNEnemyLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+        final List<Unit> blitzers =
+            DUtils.GetNNEnemyLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
         if (blitzers.isEmpty()) {
           return false;
         }
-        if (data.getMap().getNeighbors(ter, DMatches.terIsFriendlyEmptyAndWithoutEnemyNeighbors(data, player)).isEmpty()) {
+        if (data.getMap().getNeighbors(ter, DMatches.terIsFriendlyEmptyAndWithoutEnemyNeighbors(data, player))
+            .isEmpty()) {
           return false;
         }
         return true;
@@ -308,7 +321,8 @@ public class DoNonCombatMove {
         // The territory is owned by us or an ally
         // The territory has at least one non-null-enemy owned neighbor
         // The territory is either a link between two friendly neighbors, or has at least one unique enemy neighbor
-        // (though we don't let empty, friendly neighbors cause one of our enemy neighbors to be removed from the 'unique' list)
+        // (though we don't let empty, friendly neighbors cause one of our enemy neighbors to be removed from the
+        // 'unique' list)
         // If this ter is not owned by us or our allies, this can't be a ter we reinforce
         if (!DMatches.territoryIsOwnedByXOrAlly(data, player).match(ter)) {
           return false;
@@ -327,7 +341,8 @@ public class DoNonCombatMove {
               continue;
             }
             if (!data.getMap().isValidRoute(new Route(friendlyNeighbor, friendlyNeighbor2))) {
-              isTerLinkBetweenFriendlies = true; // Then we must be part of the front, if we have enemy neighbors(which we have)
+              isTerLinkBetweenFriendlies = true; // Then we must be part of the front, if we have enemy neighbors(which
+                                                 // we have)
             }
           }
         }
@@ -440,7 +455,8 @@ public class DoNonCombatMove {
           return false;
         }
         if (Match
-            .getMatches(DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater), Matches.UnitIsLand)
+            .getMatches(DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater),
+                Matches.UnitIsLand)
             .size() > 0) {
           return false;
         }
@@ -465,7 +481,8 @@ public class DoNonCombatMove {
         if (!data.getRelationshipTracker().isAllied(ter.getOwner(), player)) {
           return false;
         }
-        final List<Unit> attackers = DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+        final List<Unit> attackers =
+            DUtils.GetNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
         if (attackers.isEmpty()) {
           return false;
         }
@@ -474,11 +491,13 @@ public class DoNonCombatMove {
           return false;
         }
         final PlayerID mainAttacker = spAttackers.get(0).getOwner();
-        final StrategyType strategy = StrategyCenter.get(data, player).GetCalculatedStrategyAssignments().get(mainAttacker);
+        final StrategyType strategy =
+            StrategyCenter.get(data, player).GetCalculatedStrategyAssignments().get(mainAttacker);
         if (strategy != StrategyType.Enemy_Defensive) {
           return false;
         }
-        final List<Unit> defenders = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+        final List<Unit> defenders =
+            DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
         defenders.removeAll(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter));
         defenders.addAll(DUtils.GetTerUnitsAtEndOfTurn(data, player, ter));
         final AggregateResults results = DUtils.GetBattleResults(attackers, defenders, ter, data, 50, true);
@@ -583,19 +602,19 @@ public class DoNonCombatMove {
     Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, terUnits, tasks);
     if (target == null) {
       final List<Territory> reachableEmptyLand =
-          DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, Integer.MAX_VALUE,
-              DUtils.CompMatchAnd(DMatches.TerritoryIsLandAndPassable, Matches.territoryHasUnitsOwnedBy(player).invert()),
+          DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, Integer.MAX_VALUE, DUtils
+              .CompMatchAnd(DMatches.TerritoryIsLandAndPassable, Matches.territoryHasUnitsOwnedBy(player).invert()),
               DMatches.TerritoryIsLandAndPassable);
       if (reachableEmptyLand.size() > 0) {
         target = reachableEmptyLand.get(0);
       }
       if (target == null) {
-        final List<Territory> reachableLand = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter,
-            Integer.MAX_VALUE, DMatches.TerritoryIsLandAndPassable,
-            DMatches.TerritoryIsLandAndPassable);
+        final List<Territory> reachableLand = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(
+            data, ter, Integer.MAX_VALUE, DMatches.TerritoryIsLandAndPassable, DMatches.TerritoryIsLandAndPassable);
         target = DUtils.GetRandomTerritoryMatchingXInList(reachableLand, DMatches.TerritoryIsLandAndPassable);
       }
-      DUtils.Log(Level.FINER, "    NCM target not found, so using random reachable ter. Ter: {0} Target: {1}", ter, target);
+      DUtils.Log(Level.FINER, "    NCM target not found, so using random reachable ter. Ter: {0} Target: {1}", ter,
+          target);
       if (target == null) {
         return;
       }
@@ -618,15 +637,16 @@ public class DoNonCombatMove {
     }
     if (valueOfFrom >= valueOfHighestTo * 2) // If start from ter is more than twice as valuable as move-to
     {
-      final List<Float> fromDangerBeforeAndAfter = DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits,
-          DSettings.LoadSettings().CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove);
-      if (fromDangerBeforeAndAfter.get(1) > .5F && fromDangerBeforeAndAfter.get(0) < .5F) // If move-from-ter will be endangered after move,
+      final List<Float> fromDangerBeforeAndAfter =
+          DUtils.GetTerTakeoverChanceBeforeAndAfterMoves(data, player, ter, movedToTers, terUnits,
+              DSettings.LoadSettings().CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove);
+      if (fromDangerBeforeAndAfter.get(1) > .5F && fromDangerBeforeAndAfter.get(0) < .5F) // If move-from-ter will be
+                                                                                          // endangered after move,
                                                                                           // but wasn't before it
       {
         DUtils.Log(Level.FINER,
-            "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter. Units: {2}", ter,
-            target,
-            DUtils.UnitGroupList_ToString(ugs));
+            "    Regular ncm move-to-target from {0} to {1} canceled because of endangering of more valuable from ter. Units: {2}",
+            ter, target, DUtils.UnitGroupList_ToString(ugs));
         return; // Then skip this move. TODO: Get code to just leave enough for ter to be safe
       }
     }

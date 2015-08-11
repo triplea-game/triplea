@@ -18,13 +18,11 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 /**
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
- *
- *
  */
 public class BattleRecords extends GameDataComponent implements Serializable {
   private static final long serialVersionUID = 1473664374777905497L;
-
-  private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records = new HashMap<PlayerID, HashMap<GUID, BattleRecord>>();
+  private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records =
+      new HashMap<PlayerID, HashMap<GUID, BattleRecord>>();
 
   public BattleRecords(final GameData data) {
     super(data);
@@ -65,7 +63,8 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     return playerRecords;
   }
 
-  public static Collection<BattleRecord> getRecordsForPlayers(final Collection<PlayerID> players, final BattleRecords brs) {
+  public static Collection<BattleRecord> getRecordsForPlayers(final Collection<PlayerID> players,
+      final BattleRecords brs) {
     final Collection<BattleRecord> playersRecords = new ArrayList<BattleRecord>();
     for (final PlayerID player : players) {
       if (brs.m_records.get(player) == null) {
@@ -82,8 +81,8 @@ public class BattleRecords extends GameDataComponent implements Serializable {
       final boolean includeNullPlayer) {
     int totalLostTUV = 0;
     for (final BattleRecord br : brs) {
-      if (!includeNullPlayer
-          && (br.getDefender() == null || br.getAttacker() == null || br.getDefender().isNull() || br.getAttacker().isNull())) {
+      if (!includeNullPlayer && (br.getDefender() == null || br.getAttacker() == null || br.getDefender().isNull()
+          || br.getAttacker().isNull())) {
         continue;
       }
       if (attackerLostTUV) {
@@ -95,8 +94,8 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     return totalLostTUV;
   }
 
-  public static boolean getWereThereBattlesInTerritoriesMatching(final Collection<BattleRecord> brs, final PlayerID attacker,
-      final PlayerID defender, final String battleType,
+  public static boolean getWereThereBattlesInTerritoriesMatching(final Collection<BattleRecord> brs,
+      final PlayerID attacker, final PlayerID defender, final String battleType,
       final Collection<Territory> anyOfTheseTerritories) {
     for (final BattleRecord br : brs) {
       if (anyOfTheseTerritories.contains(br.getBattleSite())) {
@@ -110,8 +109,10 @@ public class BattleRecords extends GameDataComponent implements Serializable {
           continue;
         }
         return true;
-        // TODO: do more types.... (maybe make a much better enum class that covers both WhoWon and BattleResultDescription in a single enum
-        // with multiple variables for each enum to cover the different tiers of detail (ie: won/lost/draw vs conquer/blitz/etc.)
+        // TODO: do more types.... (maybe make a much better enum class that covers both WhoWon and
+        // BattleResultDescription in a single enum
+        // with multiple variables for each enum to cover the different tiers of detail (ie: won/lost/draw vs
+        // conquer/blitz/etc.)
       }
     }
     return false;
@@ -119,7 +120,8 @@ public class BattleRecords extends GameDataComponent implements Serializable {
 
   public void removeBattle(final PlayerID currentPlayer, final GUID battleID) {
     final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
-    // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be under a different
+    // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
+    // under a different
     // player.
     if (current == null || !current.containsKey(battleID)) {
       for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : m_records.entrySet()) {
@@ -137,16 +139,16 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     for (final PlayerID p : other.m_records.keySet()) {
       final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
       if (currentRecord != null) {
-        // this only comes up if we use edit mode to create an attack for a player who's already had their turn and therefore already has
+        // this only comes up if we use edit mode to create an attack for a player who's already had their turn and
+        // therefore already has
         // their record.
         final HashMap<GUID, BattleRecord> additionalRecords = other.m_records.get(p);
         for (final Entry<GUID, BattleRecord> entry : additionalRecords.entrySet()) {
           final GUID guid = entry.getKey();
           final BattleRecord br = entry.getValue();
           if (currentRecord.containsKey(guid)) {
-            throw new IllegalStateException(
-                "Should not be adding battle record for player " + p.getName() + " when they are already on the record. " +
-                    "Trying to add: " + br.toString());
+            throw new IllegalStateException("Should not be adding battle record for player " + p.getName()
+                + " when they are already on the record. " + "Trying to add: " + br.toString());
           } else {
             currentRecord.put(guid, br);
           }
@@ -187,9 +189,9 @@ public class BattleRecords extends GameDataComponent implements Serializable {
     m_records.put(currentPlayerAndAttacker, current);
   }
 
-  public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender, final int attackerLostTUV,
-      final int defenderLostTUV,
-      final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage) {
+  public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender,
+      final int attackerLostTUV, final int defenderLostTUV, final BattleResultDescription battleResultDescription,
+      final BattleResults battleResults, final int bombingDamage) {
     final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
     if (current == null) {
       throw new IllegalStateException("Trying to add info to battle records that do not exist");

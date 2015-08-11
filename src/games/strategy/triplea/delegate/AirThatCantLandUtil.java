@@ -71,7 +71,8 @@ public class AirThatCantLandUtil {
     }
   }
 
-  private void removeAirThatCantLand(final PlayerID player, final Territory territory, final Collection<Unit> airUnits) {
+  private void removeAirThatCantLand(final PlayerID player, final Territory territory,
+      final Collection<Unit> airUnits) {
     final Collection<Unit> toRemove = new ArrayList<Unit>(airUnits.size());
     // if we cant land on land then none can
     if (!territory.isWater()) {
@@ -95,8 +96,8 @@ public class AirThatCantLandUtil {
       }
     }
     final Change remove = ChangeFactory.removeUnits(territory, toRemove);
-    final String transcriptText = MyFormatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName() + " and "
-        + (toRemove.size() > 1 ? "were" : "was") + " removed";
+    final String transcriptText = MyFormatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName()
+        + " and " + (toRemove.size() > 1 ? "were" : "was") + " removed";
     m_bridge.getHistoryWriter().startEvent(transcriptText);
     m_bridge.addChange(remove);
   }

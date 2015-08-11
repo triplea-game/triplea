@@ -28,9 +28,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
 /**
- *
  * Edit game state
- *
  */
 public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   /**
@@ -62,9 +60,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     for (final PlayerID p : owners) {
       final List<Unit> unitsOwned = Match.getMatches(units, Matches.unitIsOwnedBy(p));
-      logEvent(
-          "Removing units owned by " + p.getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(unitsOwned),
-          unitsOwned);
+      logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": "
+          + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
       m_bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
     }
     return null;
@@ -112,8 +109,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       }
     }
     // now perform the changes
-    logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName() + ": "
-        + MyFormatter.unitsToTextNoOwner(units), units);
+    logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName()
+        + ": " + MyFormatter.unitsToTextNoOwner(units), units);
     m_bridge.addChange(ChangeFactory.addUnits(territory, units));
     if (mapLoading != null && !mapLoading.isEmpty()) {
       for (final Entry<Unit, Unit> entry : mapLoading.entrySet()) {
@@ -145,8 +142,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (null != (result = EditValidator.validateChangeTerritoryOwner(data, territory, player))) {
       return result;
     }
-    logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to " + player.getName(),
-        territory);
+    logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to "
+        + player.getName(), territory);
     if (!data.getRelationshipTracker().isAtWar(territory.getOwner(), player)) {
       // change ownership of friendly factories
       final Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsInfrastructure);
@@ -261,8 +258,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return null;
     }
     final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
-    logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: "
-        + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
+    logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName()
+        + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
     m_bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
     // territory.notifyChanged();
     return null;
@@ -291,15 +288,16 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     // we do damage to the unit
     final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
-    logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: "
-        + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
+    logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName()
+        + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
     m_bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap));
     // territory.notifyChanged();
     return null;
   }
 
   @Override
-  public String changePoliticalRelationships(final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
+  public String changePoliticalRelationships(
+      final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
     String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
       return result;
@@ -312,21 +310,20 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(getData());
     for (final Triple<PlayerID, PlayerID, RelationshipType> relationshipChange : relationshipChanges) {
-      final RelationshipType currentRelation =
-          getData().getRelationshipTracker().getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());
+      final RelationshipType currentRelation = getData().getRelationshipTracker()
+          .getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());
       if (!currentRelation.equals(relationshipChange.getThird())) {
         logEvent("Editing Political Relationship for " + relationshipChange.getFirst().getName() + " and "
-            + relationshipChange.getSecond().getName() + " from " +
-            currentRelation.getName() + " to " + relationshipChange.getThird().getName(), null);
-        m_bridge.addChange(ChangeFactory.relationshipChange(relationshipChange.getFirst(), relationshipChange.getSecond(), currentRelation,
-            relationshipChange.getThird()));
-        battleTracker.addRelationshipChangesThisTurn(relationshipChange.getFirst(), relationshipChange.getSecond(), currentRelation,
-            relationshipChange.getThird());
+            + relationshipChange.getSecond().getName() + " from " + currentRelation.getName() + " to "
+            + relationshipChange.getThird().getName(), null);
+        m_bridge.addChange(ChangeFactory.relationshipChange(relationshipChange.getFirst(),
+            relationshipChange.getSecond(), currentRelation, relationshipChange.getThird()));
+        battleTracker.addRelationshipChangesThisTurn(relationshipChange.getFirst(), relationshipChange.getSecond(),
+            currentRelation, relationshipChange.getThird());
       }
     }
     return null;
   }
-
 
   @Override
   public Class<? extends IRemote> getRemoteType() {

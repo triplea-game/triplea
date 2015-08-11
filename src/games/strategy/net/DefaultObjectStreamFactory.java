@@ -6,7 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-
 public class DefaultObjectStreamFactory implements IObjectStreamFactory {
   @Override
   public ObjectInputStream create(final InputStream stream) throws IOException {

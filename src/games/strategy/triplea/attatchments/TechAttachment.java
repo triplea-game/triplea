@@ -13,14 +13,14 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 
-
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
 
   // attaches to a PlayerID
   public static TechAttachment get(final PlayerID id) {
     final TechAttachment attachment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
+    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
+    // for them
     if (attachment == null) {
       return new TechAttachment();
     }
@@ -29,10 +29,12 @@ public class TechAttachment extends DefaultAttachment {
 
   public static TechAttachment get(final PlayerID id, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
-      throw new IllegalStateException("TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
+      throw new IllegalStateException(
+          "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
     }
     final TechAttachment attachment = (TechAttachment) id.getAttachment(nameOfAttachment);
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
+    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
+    // for them
     if (attachment == null) {
       return new TechAttachment();
     }
@@ -55,8 +57,10 @@ public class TechAttachment extends DefaultAttachment {
   private boolean m_aARadar = false;
   private boolean m_shipyards = false;
   @InternalDoNotExport
-  private HashMap<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point. currently map xml can not
-                                                                                   // define a player having a custom tech at start of game
+  private HashMap<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point.
+                                                                                   // currently map xml can not
+                                                                                   // define a player having a custom
+                                                                                   // tech at start of game
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -64,15 +68,18 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   /**
-   * Since many maps do not include a tech attachment for each player (and no maps include tech attachments for the Null Player),
-   * we must ensure a default tech attachment is available for all these players. It is preferred to use the full constructor. Do not delete
+   * Since many maps do not include a tech attachment for each player (and no maps include tech attachments for the Null
+   * Player),
+   * we must ensure a default tech attachment is available for all these players. It is preferred to use the full
+   * constructor. Do not delete
    * this.
    * TODO: create tech attachments all players that don't have one, as the map is initialized.
    */
   @Deprecated
   public TechAttachment() {
     super(Constants.TECH_ATTACHMENT_NAME, null, null);
-    // TODO: not having game data, and not having generic techs, causes problems. Fix by creating real tech attachments for all players who
+    // TODO: not having game data, and not having generic techs, causes problems. Fix by creating real tech attachments
+    // for all players who
     // are missing them, at the beginning of the game.
   }
 

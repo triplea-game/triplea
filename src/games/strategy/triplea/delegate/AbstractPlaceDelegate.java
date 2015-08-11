@@ -41,17 +41,16 @@ import games.strategy.util.Tuple;
 /**
  * Logic for placing units.
  * <p>
- *
- *          Known limitations.
- *          Doesn't take into account limits on number of factories that can be produced.
- *          Solved (by frigoref):
- *          The situation where one has two non original factories a,b each with
- *          production 2. If sea zone e neighbors a,b and sea zone f neighbors b. Then
- *          producing 2 in e was making it such that you cannot produce in f. The reason
- *          was that the production in e could be assigned to the factory in b, leaving no
- *          capacity to produce in f.
- *          A workaround was that if anyone ever accidently run into this situation
- *          then they could undo the production, produce in f first, and then produce in e.
+ * Known limitations.
+ * Doesn't take into account limits on number of factories that can be produced.
+ * Solved (by frigoref):
+ * The situation where one has two non original factories a,b each with
+ * production 2. If sea zone e neighbors a,b and sea zone f neighbors b. Then
+ * producing 2 in e was making it such that you cannot produce in f. The reason
+ * was that the production in e could be assigned to the factory in b, leaving no
+ * capacity to produce in f.
+ * A workaround was that if anyone ever accidently run into this situation
+ * then they could undo the production, produce in f first, and then produce in e.
  */
 public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implements IAbstractPlaceDelegate {
   // maps Territory-> Collection of units
@@ -83,7 +82,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> units = player.getUnits().getUnits();
     final GameData data = getData();
     if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty()) {
-      m_bridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed", units);
+      m_bridge.getHistoryWriter()
+          .startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed", units);
       final Change change = ChangeFactory.removeUnits(player, units);
       m_bridge.addChange(change);
     }
@@ -215,7 +215,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected void performPlace(final Collection<Unit> units, final Territory at, final PlayerID player) {
-    // System.out.println("Placing " + MyFormatter.unitsToTextNoOwner(units) + " at " + at.getName() + " by " + player.getName());
+    // System.out.println("Placing " + MyFormatter.unitsToTextNoOwner(units) + " at " + at.getName() + " by " +
+    // player.getName());
     final List<Territory> producers = getAllProducers(at, player, units);
     Collections.sort(producers, getBestProducerComparator(at, units, player));
     // System.out.println("Producers: " + producers);
@@ -230,8 +231,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         break;
       }
       // units may have special restrictions like RequiresUnits
-      final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(unitsLeftToPlace,
-          unitWhichRequiresUnitsHasRequiredUnits(producer, true))
+      final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()
+          ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true))
           : new ArrayList<Unit>(unitsLeftToPlace));
       Collections.sort(unitsCanBePlacedByThisProducer, getHardestToPlaceWithRequiresUnitsRestrictions(true));
       final int maxPlaceable = maxPlaceableMap.getInt(producer);
@@ -251,18 +252,20 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       // System.out.println("Needs Extra: " + neededExtra);
       if (maxPlaceable > maxForThisProducer) {
         freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
-        final int newMaxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
+        final int newMaxForThisProducer =
+            getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
         if (newMaxForThisProducer != maxPlaceable && neededExtra > newMaxForThisProducer) {
           throw new IllegalStateException("getMaxUnitsToBePlaced originally returned: " + maxPlaceable
               + ", \r\nWhich is not the same as it is returning after using freePlacementCapacity: "
-              + newMaxForThisProducer + ", \r\nFor territory: " + at.getName() + ", Current Producer: " + producer.getName()
-              + ", All Producers: " + producers
-              + ", \r\nUnits Total: " + MyFormatter.unitsToTextNoOwner(units) + ", Units Left To Place By This Producer: "
+              + newMaxForThisProducer + ", \r\nFor territory: " + at.getName() + ", Current Producer: "
+              + producer.getName() + ", All Producers: " + producers + ", \r\nUnits Total: "
+              + MyFormatter.unitsToTextNoOwner(units) + ", Units Left To Place By This Producer: "
               + MyFormatter.unitsToTextNoOwner(unitsCanBePlacedByThisProducer));
         }
       }
       @SuppressWarnings("unchecked")
-      final Collection<Unit> placedUnits = Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.ALWAYS_MATCH);
+      final Collection<Unit> placedUnits =
+          Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.ALWAYS_MATCH);
       performPlaceFrom(producer, placedUnits, at, player);
       unitsLeftToPlace.removeAll(placedUnits);
     }
@@ -303,8 +306,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
     }
     // can we move planes to land there
-    final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, producer, placeableUnits, player, change);
-
+    final String movedAirTranscriptTextForHistory =
+        moveAirOntoNewCarriers(at, producer, placeableUnits, player, change);
     final Change remove = ChangeFactory.removeUnits(player, placeableUnits);
     final Change place = ChangeFactory.addUnits(at, placeableUnits);
     change.add(remove);
@@ -338,7 +341,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * frees the requested amount of capacity for the given producer by trying to hand over already made placements to other territories.
+   * frees the requested amount of capacity for the given producer by trying to hand over already made placements to
+   * other territories.
    * This only works if one of the placements is done for another territory, more specific for a sea zone.
    * If such placements exists it will be tried to let them be done by other adjacent territories.
    *
@@ -347,14 +351,18 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param freeSize
    *        amount of capacity that is requested
    */
-  protected void freePlacementCapacity(final Territory producer, final int freeSize, final Collection<Unit> unitsLeftToPlace,
-      final Territory at, final PlayerID player) {
+  protected void freePlacementCapacity(final Territory producer, final int freeSize,
+      final Collection<Unit> unitsLeftToPlace, final Territory at, final PlayerID player) {
     // System.out.println("Freeing Placement Capacity of: " + freeSize + " at: " + producer);
     int foundSpaceTotal = 0;
-    final List<UndoablePlacement> redoPlacements = new ArrayList<UndoablePlacement>(); // placements of the producer that could be redone by
+    final List<UndoablePlacement> redoPlacements = new ArrayList<UndoablePlacement>(); // placements of the producer
+                                                                                       // that could be redone by
                                                                                        // other territories
-    final HashMap<Territory, Integer> redoPlacementsCount = new HashMap<Territory, Integer>(); // territories the producer produced for (but
-                                                                                               // not itself) and the amount of units it
+    final HashMap<Territory, Integer> redoPlacementsCount = new HashMap<Territory, Integer>(); // territories the
+                                                                                               // producer produced for
+                                                                                               // (but
+                                                                                               // not itself) and the
+                                                                                               // amount of units it
                                                                                                // produced
     // find map place territory -> possible free space for producer
     for (final UndoablePlacement placement : m_placements) {
@@ -362,8 +370,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (placement.getProducerTerritory().equals(producer)) {
         final Territory placeTerritory = placement.getPlaceTerritory();
         // units with requiresUnits are too difficult to mess with logically, so do not move them around at all
-        if (placeTerritory.isWater() && !placeTerritory.equals(producer)
-            && (!isUnitPlacementRestrictions() || !Match.someMatch(placement.getUnits(), Matches.UnitRequiresUnitsOnCreation))) {
+        if (placeTerritory.isWater() && !placeTerritory.equals(producer) && (!isUnitPlacementRestrictions()
+            || !Match.someMatch(placement.getUnits(), Matches.UnitRequiresUnitsOnCreation))) {
           // found placement move of producer that can be taken over
           // remember move and amount of placements in that territory
           redoPlacements.add(placement);
@@ -378,7 +386,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     // let other producers take over placements of producer
     // remember placement move and new territory if a placement has to be split up
-    final Collection<Tuple<UndoablePlacement, Territory>> splitPlacements = new ArrayList<Tuple<UndoablePlacement, Territory>>();
+    final Collection<Tuple<UndoablePlacement, Territory>> splitPlacements =
+        new ArrayList<Tuple<UndoablePlacement, Territory>>();
     for (final Entry<Territory, Integer> entry : redoPlacementsCount.entrySet()) {
       final Territory placeTerritory = entry.getKey();
       final int maxProductionThatCanBeTakenOverFromThisPlacement = entry.getValue();
@@ -387,11 +396,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       potentialNewProducers.remove(producer);
       Collections.sort(potentialNewProducers, getBestProducerComparator(placeTerritory, unitsLeftToPlace, player));
       // we can just free a certain amount or still need a certain amount of space
-      final int maxSpaceToBeFree = Math.min(maxProductionThatCanBeTakenOverFromThisPlacement, freeSize - foundSpaceTotal);
+      final int maxSpaceToBeFree =
+          Math.min(maxProductionThatCanBeTakenOverFromThisPlacement, freeSize - foundSpaceTotal);
       int spaceAlreadyFree = 0; // space that got free this on this placeTerritory
       for (final Territory potentialNewProducerTerritory : potentialNewProducers) {
-        int leftToPlace = getMaxUnitsToBePlacedFrom(potentialNewProducerTerritory, unitsPlacedInTerritorySoFar(placeTerritory),
-            placeTerritory, player);
+        int leftToPlace = getMaxUnitsToBePlacedFrom(potentialNewProducerTerritory,
+            unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
         if (leftToPlace == -1) {
           leftToPlace = maxProductionThatCanBeTakenOverFromThisPlacement;
         }
@@ -428,7 +438,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         break;
       }
     }
-    boolean unusedSplitPlacments = false; // we had a bug where we tried to split the same undoable placement twice (it can only be undone
+    boolean unusedSplitPlacments = false; // we had a bug where we tried to split the same undoable placement twice (it
+                                          // can only be undone
                                           // once!)
     final Collection<UndoablePlacement> usedUnoablePlacements = new ArrayList<UndoablePlacement>();
     if (foundSpaceTotal < freeSize) {
@@ -455,7 +466,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         unitsForOldProducer.removeAll(unitsForNewProducer);
         // split move, by undo and creating two new ones
         if (!unitsForNewProducer.isEmpty()) {
-          // there is a chance we have 2 or more splitPlacements that are using the same placement (trying to split the same placement).
+          // there is a chance we have 2 or more splitPlacements that are using the same placement (trying to split the
+          // same placement).
           // So we must make sure that after we undo it the first time, it can never be undone again.
           usedUnoablePlacements.add(placement);
           undoMove(placement.getIndex());
@@ -498,7 +510,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getUnits().someMatch(Matches.UnitCanProduceUnits)) {
       return null;
     }
-    final CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
+    final CompositeMatch<Unit> ownedFighters =
+        new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
     if (!producer.getUnits().someMatch(ownedFighters)) {
       return null;
     }
@@ -521,8 +534,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final Change change = ChangeFactory.moveUnits(producer, at, movedFighters);
     placeChange.add(change);
-    final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + producer.getName() + " to "
-        + at.getName();
+    final String transcriptText =
+        MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + producer.getName() + " to " + at.getName();
     return transcriptText;
     /*
      * final Collection<Territory> neighbors = getData().getMap().getNeighbors(at, 1);
@@ -551,10 +564,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
      * }
      * if (fighters.size() == 0)
      * continue;
-     * final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
+     * final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters,
+     * neighbor);
      * final Change change = ChangeFactory.moveUnits(neighbor, at, movedFighters);
      * placeChange.add(change);
-     * final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName() + " to " +
+     * final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName()
+     * + " to " +
      * at.getName();
      * // only allow 1 movement
      * // technically only the territory that produced the
@@ -627,7 +642,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final String errorP = canProduce(producer, to, units, player);
       if (errorP != null) {
         failingProducers.add(producer);
-        // do not include the error for same territory, if water, because users do not want to see this error report for 99.9% of games
+        // do not include the error for same territory, if water, because users do not want to see this error report for
+        // 99.9% of games
         if (!(producer.equals(to) && producer.isWater())) {
           error += ", " + errorP;
         }
@@ -639,7 +655,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return null;
   }
 
-  protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units,
+      final PlayerID player) {
     return canProduce(producer, to, units, player, false);
   }
 
@@ -655,30 +672,32 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param player
    *        - Player doing the placing.
    * @param simpleCheck
-   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers ->
+   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop
+   *        (getAllProducers ->
    *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - null if allowed to produce, otherwise an error String.
    */
-  protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player,
-      final boolean simpleCheck) {
+  protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units,
+      final PlayerID player, final boolean simpleCheck) {
     // units can be null if we are just testing the territory itself...
     final Collection<Unit> testUnits = (units == null ? new ArrayList<Unit>() : units);
     final boolean canProduceInConquered = isPlacementAllowedInCapturedTerritory(player);
     if (!producer.getOwner().equals(player)) {
-      if (producer.isWater() && Match.someMatch(testUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction))) { // sea
-                                                                                                                                          // constructions
-                                                                                                                                          // require
-                                                                                                                                          // either
-                                                                                                                                          // owning
-                                                                                                                                          // the
-                                                                                                                                          // sea
-                                                                                                                                          // zone
-                                                                                                                                          // or
-                                                                                                                                          // owning
-                                                                                                                                          // a
-                                                                                                                                          // surrounding
-                                                                                                                                          // land
-                                                                                                                                          // territory
+      if (producer.isWater()
+          && Match.someMatch(testUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsConstruction))) { // sea
+                                                                                                                       // constructions
+                                                                                                                       // require
+                                                                                                                       // either
+                                                                                                                       // owning
+                                                                                                                       // the
+                                                                                                                       // sea
+                                                                                                                       // zone
+                                                                                                                       // or
+                                                                                                                       // owning
+                                                                                                                       // a
+                                                                                                                       // surrounding
+                                                                                                                       // land
+                                                                                                                       // territory
         boolean ownedNeighbor = false;
         for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
           if (current.getOwner().equals(player) && (canProduceInConquered || !wasConquered(current))) {
@@ -713,7 +732,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         && !Match.someMatch(testUnits, unitWhichRequiresUnitsHasRequiredUnits(producer, true))) {
       return "You do not have the required units to build in " + producer.getName();
     }
-    if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, getData()))) {
+    if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas())
+        && to.getUnits().someMatch(Matches.enemyUnit(player, getData()))) {
       return "Cannot place sea units with enemy naval units";
     }
     // make sure there is a factory
@@ -736,7 +756,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an empty list if no
+   * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an
+   * empty list if no
    * suitable territory could be found.
    *
    * @param to
@@ -746,12 +767,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param unitsToPlace
    *        - Can be null, otherwise is the units that will be produced.
    * @param simpleCheck
-   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers ->
+   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop
+   *        (getAllProducers ->
    *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - List of territories that can produce here.
    */
-  protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace,
-      final boolean simpleCheck) {
+  protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
+      final Collection<Unit> unitsToPlace, final boolean simpleCheck) {
     final List<Territory> producers = new ArrayList<Territory>();
     // if not water then must produce in that territory
     if (!to.isWater()) {
@@ -819,7 +841,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!constructionMap.isPositive()) {
       return "Too many constructions in " + to.getName();
     }
-    final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, getData()));
+    final List<Territory> capitalsListOwned =
+        new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, getData()));
     if (!capitalsListOwned.contains(to) && isPlacementInCapitalRestricted(player)) {
       return "Cannot place these units outside of the capital";
     }
@@ -858,13 +881,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         continue;
       }
       typesAlreadyChecked.add(ut);
-      final int maxForThisType = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("placementLimit", ut, to, player,
-          getData());
+      final int maxForThisType = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("placementLimit", ut,
+          to, player, getData());
       if (Match.countMatches(units, Matches.unitIsOfType(ut)) > maxForThisType) {
         return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
       }
     }
-    if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit("placementLimit", units, to, player, getData())) {
+    if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit("placementLimit", units, to, player,
+        getData())) {
       return "Units Can Not Go Over Stacking Limit";
     }
     // now return null (valid placement) if we have placement restrictions disabled in game options
@@ -885,9 +909,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
       }
       if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit)) {
-        return "Cannot place these units in " + to.getName() + " as territory does not contain required units at start of turn";
+        return "Cannot place these units in " + to.getName()
+            + " as territory does not contain required units at start of turn";
       }
-      if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to)) {
+      if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit)
+          && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to)) {
         return "Cannot place these units in " + to.getName() + " as territory is not originally owned";
       }
     }
@@ -895,7 +921,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   // Separate it out so we can Override it in sub classes.
-  protected Collection<Unit> getUnitsToBePlaced(final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected Collection<Unit> getUnitsToBePlaced(final Territory to, final Collection<Unit> units,
+      final PlayerID player) {
     if (to.isWater()) {
       return getUnitsToBePlacedSea(to, units, player);
     }
@@ -903,39 +930,50 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return getUnitsToBePlacedLand(to, units, player);
   }
 
-  protected Collection<Unit> getUnitsToBePlacedSea(final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected Collection<Unit> getUnitsToBePlacedSea(final Territory to, final Collection<Unit> units,
+      final PlayerID player) {
     return getUnitsToBePlacedAllDefault(to, units, player);
   }
 
-  protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units,
+      final PlayerID player) {
     return getUnitsToBePlacedAllDefault(to, units, player);
   }
 
-  protected Collection<Unit> getUnitsToBePlacedAllDefault(final Territory to, final Collection<Unit> allUnits, final PlayerID player) {
+  protected Collection<Unit> getUnitsToBePlacedAllDefault(final Territory to, final Collection<Unit> allUnits,
+      final PlayerID player) {
     final boolean water = to.isWater();
-    if (water && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, getData()))) {
+    if (water && (!isWW2V2() && !isUnitPlacementInEnemySeas())
+        && to.getUnits().someMatch(Matches.enemyUnit(player, getData()))) {
       return null;
     }
     final Collection<Unit> units = new ArrayList<Unit>(allUnits);
-    units.removeAll(Match.getMatches(units, water ? Matches.UnitIsLand : Matches.UnitIsSea));// if water, remove land. if land, remove
+    units.removeAll(Match.getMatches(units, water ? Matches.UnitIsLand : Matches.UnitIsSea));// if water, remove land.
+                                                                                             // if land, remove
                                                                                              // water.
     final Collection<Unit> placeableUnits = new ArrayList<Unit>();
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> allProducedUnits = unitsPlacedInTerritorySoFar(to);
     final boolean isBid = GameStepPropertiesHelper.isBid(getData());
-    final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
-    if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {// we add factories and
-                                                                                                                 // constructions later
-      placeableUnits.addAll(Match.getMatches(units, new CompositeMatchAnd<Unit>(water ? Matches.UnitIsSea : Matches.UnitIsLand,
-          Matches.UnitIsNotConstruction)));
+    final boolean wasFactoryThereAtStart =
+        wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
+    if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {// we
+                                                                                                                 // add
+                                                                                                                 // factories
+                                                                                                                 // and
+                                                                                                                 // constructions
+                                                                                                                 // later
+      placeableUnits.addAll(Match.getMatches(units,
+          new CompositeMatchAnd<Unit>(water ? Matches.UnitIsSea : Matches.UnitIsLand, Matches.UnitIsNotConstruction)));
       if (!water) {
-        placeableUnits.addAll(Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
-      } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(
-          allProducedUnits, Matches.UnitIsCarrier))
-          || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match
-              .someMatch(to.getUnits().getUnits(),
-                  Matches.UnitIsCarrier))) {
-        placeableUnits.addAll(Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
+        placeableUnits.addAll(
+            Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
+      } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
+          && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier))
+          || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
+              && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier))) {
+        placeableUnits.addAll(
+            Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
       }
     }
     if (Match.someMatch(units, Matches.UnitIsConstruction)) {
@@ -944,7 +982,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
-          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be able to place the
+          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
+          // able to place the
           // max placement by constructionType of each unitType
           if (skipUnits.contains(currentUnit)) {
             continue;
@@ -972,9 +1011,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         continue;
       }
       typesAlreadyChecked.add(ut);
-      placeableUnits2.addAll(Match.getNMatches(placeableUnits,
-          UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("placementLimit", ut, to, player, getData()),
-          Matches.unitIsOfType(ut)));
+      placeableUnits2
+          .addAll(Match.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+              "placementLimit", ut, to, player, getData()), Matches.unitIsOfType(ut)));
     }
     if (!isUnitPlacementRestrictions()) {
       return placeableUnits2;
@@ -990,7 +1029,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit)) {
         continue;
       }
-      if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to)) {
+      if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit)
+          && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to)) {
         continue;
       }
       // account for any unit placement restrictions by territory
@@ -1016,18 +1056,19 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (!weCanConsume) {
         break;
       }
-      // remove units which are now consumed, then test the rest of the consuming units on the diminishing pile of units which were in the
+      // remove units which are now consumed, then test the rest of the consuming units on the diminishing pile of units
+      // which were in the
       // territory at start of turn
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
       for (final UnitType ut : requiredUnits) {
         final int requiredNumber = requiredUnitsMap.getInt(ut);
-        final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unit.getOwner()),
-            Matches.unitIsOfType(ut),
+        final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(
+            Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut),
             Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsNotDisabled);
-        final Collection<Unit> unitsBeingRemoved = Match.getNMatches(unitsAtStartOfTurnInTO, requiredNumber,
-            unitIsOwnedByAndOfTypeAndNotDamaged);
+        final Collection<Unit> unitsBeingRemoved =
+            Match.getNMatches(unitsAtStartOfTurnInTO, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
         unitsAtStartOfTurnInTO.removeAll(unitsBeingRemoved);
         // if we should actually do it, not just test, then add to bridge
         if (actuallyDoIt && change != null) {
@@ -1039,7 +1080,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent(
-          "Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits), removedUnits);
+          "Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits),
+          removedUnits);
     }
     return weCanConsume;
   }
@@ -1064,8 +1106,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   /**
    * Returns -1 somewhere in the map if can place unlimited units
    */
-  protected IntegerMap<Territory> getMaxUnitsToBePlacedMap(final Collection<Unit> units, final Territory to, final PlayerID player,
-      final boolean countSwitchedProductionToNeighbors) {
+  protected IntegerMap<Territory> getMaxUnitsToBePlacedMap(final Collection<Unit> units, final Territory to,
+      final PlayerID player, final boolean countSwitchedProductionToNeighbors) {
     final IntegerMap<Territory> rVal = new IntegerMap<Territory>();
     final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
@@ -1076,12 +1118,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     notUsableAsOtherProducers.addAll(producers);
     final Map<Territory, Integer> currentAvailablePlacementForOtherProducers = new HashMap<Territory, Integer>();
     for (final Territory producerTerritory : producers) {
-      final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(units,
-          unitWhichRequiresUnitsHasRequiredUnits(producerTerritory, true))
+      final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()
+          ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producerTerritory, true))
           : new ArrayList<Unit>(units));
       final int prodT = getMaxUnitsToBePlacedFrom(producerTerritory, unitsCanBePlacedByThisProducer, to, player,
-          countSwitchedProductionToNeighbors, notUsableAsOtherProducers,
-          currentAvailablePlacementForOtherProducers);
+          countSwitchedProductionToNeighbors, notUsableAsOtherProducers, currentAvailablePlacementForOtherProducers);
       rVal.put(producerTerritory, prodT);
     }
     return rVal;
@@ -1100,18 +1141,18 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to,
       final PlayerID player, final boolean countSwitchedProductionToNeighbors,
-      final Collection<Territory> notUsableAsOtherProducers, final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
+      final Collection<Territory> notUsableAsOtherProducers,
+      final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     // we may have special units with requiresUnits restrictions
-    final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(units,
-        unitWhichRequiresUnitsHasRequiredUnits(producer, true)) : new ArrayList<Unit>(
-            units));
+    final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()
+        ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) : new ArrayList<Unit>(units));
     if (unitsCanBePlacedByThisProducer.size() <= 0) {
       return 0;
     }
     // if its an original factory then unlimited production
     final TerritoryAttachment ta = TerritoryAttachment.get(producer); // Can be null!
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player),
-        Matches.unitIsBeingTransported().invert());
+    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(
+        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
     } else {
@@ -1121,11 +1162,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
     final boolean originalFactory = (ta == null ? false : ta.getOriginalFactory());
-    final boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
+    final boolean playerIsOriginalOwner =
+        factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     final Collection<Unit> alreadProducedUnits = getAlreadyProduced(producer);
     final int unitCountAlreadyProduced = alreadProducedUnits.size();
-    if (originalFactory && playerIsOriginalOwner) // && !placementRestrictedByFactory && !unitPlacementPerTerritoryRestricted
+    if (originalFactory && playerIsOriginalOwner) // && !placementRestrictedByFactory &&
+                                                  // !unitPlacementPerTerritoryRestricted
     {
       if (ra != null && ra.getMaxPlacePerTerritory() != -1) {
         return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
@@ -1146,12 +1189,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
       }
     }
-    // a factory can produce the same number of units as the number of PUs the territory generates each turn (or not, if it has
+    // a factory can produce the same number of units as the number of PUs the territory generates each turn (or not, if
+    // it has
     // canProduceXUnits)
     int production = 0;
     // int territoryValue = getProduction(producer);
-    final int maxConstructions = howManyOfEachConstructionCanPlace(to, producer, unitsCanBePlacedByThisProducer, player).totalValues();
-    final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(producer, player);
+    final int maxConstructions =
+        howManyOfEachConstructionCanPlace(to, producer, unitsCanBePlacedByThisProducer, player).totalValues();
+    final boolean wasFactoryThereAtStart =
+        wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(producer, player);
     // If there's NO factory, allow placement of the factory
     if (!wasFactoryThereAtStart) {
       if (ra != null && ra.getMaxPlacePerTerritory() > 0) {
@@ -1160,8 +1206,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return Math.max(0, maxConstructions);
     }
     // getHowMuchCanUnitProduce accounts for IncreasedFactoryProduction, but does not account for maxConstructions
-    production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer, player, getData(), true,
-        true);
+    production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer,
+        player, getData(), true, true);
     // increase the production by the number of constructions allowed
     if (maxConstructions > 0) {
       production += maxConstructions;
@@ -1171,12 +1217,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return 0;
     }
     production += Match.countMatches(alreadProducedUnits, Matches.UnitIsConstruction);
-
     // Now we check if units we have already produced here could be produced by a different producer
     int unitCountHaveToAndHaveBeenBeProducedHere = unitCountAlreadyProduced;
     if (countSwitchedProductionToNeighbors && unitCountAlreadyProduced > 0) {
       if (notUsableAsOtherProducers == null) {
-        throw new IllegalStateException("notUsableAsOtherProducers can not be null if countSwitchedProductionToNeighbors is true");
+        throw new IllegalStateException(
+            "notUsableAsOtherProducers can not be null if countSwitchedProductionToNeighbors is true");
       }
       if (currentAvailablePlacementForOtherProducers == null) {
         throw new IllegalStateException(
@@ -1189,31 +1235,34 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         if (placementMove.getProducerTerritory().equals(producer)) {
           final Territory placeTerritory = placementMove.getPlaceTerritory();
           final Collection<Unit> unitsPlacedByCurrentPlacementMove = placementMove.getUnits();
-          // TODO: Units which have the unit attachment property, requiresUnits, are too difficult to mess with logically, so we ignore them
+          // TODO: Units which have the unit attachment property, requiresUnits, are too difficult to mess with
+          // logically, so we ignore them
           // for our special 'move shit around' methods.
-          if (!placeTerritory.isWater()
-              || (isUnitPlacementRestrictions() && Match
-                  .someMatch(unitsPlacedByCurrentPlacementMove, Matches.UnitRequiresUnitsOnCreation))) {
+          if (!placeTerritory.isWater() || (isUnitPlacementRestrictions()
+              && Match.someMatch(unitsPlacedByCurrentPlacementMove, Matches.UnitRequiresUnitsOnCreation))) {
             productionCanNotBeMoved += unitsPlacedByCurrentPlacementMove.size();
           } else {
             final int maxProductionThatCanBeTakenOverFromThisPlacement = unitsPlacedByCurrentPlacementMove.size();
             int productionThatCanBeTakenOverFromThisPlacement = 0;
             // find other producers for this placement move to the same water territory
-            final List<Territory> newPotentialOtherProducers = getAllProducers(placeTerritory, player, unitsCanBePlacedByThisProducer);
+            final List<Territory> newPotentialOtherProducers =
+                getAllProducers(placeTerritory, player, unitsCanBePlacedByThisProducer);
             newPotentialOtherProducers.removeAll(notUsableAsOtherProducers);
-            Collections.sort(newPotentialOtherProducers, getBestProducerComparator(placeTerritory, unitsCanBePlacedByThisProducer, player));
+            Collections.sort(newPotentialOtherProducers,
+                getBestProducerComparator(placeTerritory, unitsCanBePlacedByThisProducer, player));
             for (final Territory potentialOtherProducer : newPotentialOtherProducers) {
               Integer potential = currentAvailablePlacementForOtherProducers.get(potentialOtherProducer);
               if (potential == null) {
-                potential = getMaxUnitsToBePlacedFrom(potentialOtherProducer, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory,
-                    player);
+                potential = getMaxUnitsToBePlacedFrom(potentialOtherProducer,
+                    unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
               }
               if (potential == -1) {
                 currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, potential);
                 productionThatCanBeTakenOverFromThisPlacement = maxProductionThatCanBeTakenOverFromThisPlacement;
                 break;
               } else {
-                final int needed = maxProductionThatCanBeTakenOverFromThisPlacement - productionThatCanBeTakenOverFromThisPlacement;
+                final int needed =
+                    maxProductionThatCanBeTakenOverFromThisPlacement - productionThatCanBeTakenOverFromThisPlacement;
                 final int surplus = potential - needed;
                 if (surplus > 0) {
                   currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, surplus);
@@ -1242,10 +1291,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       unitCountHaveToAndHaveBeenBeProducedHere = Math.max(0, unitCountAlreadyProduced - productionThatCanBeTakenOver);
     }
     if (ra != null && ra.getMaxPlacePerTerritory() > 0) {
-      return Math.max(
-          0,
-          Math.min(production - unitCountHaveToAndHaveBeenBeProducedHere, ra.getMaxPlacePerTerritory()
-              - unitCountHaveToAndHaveBeenBeProducedHere));
+      return Math.max(0, Math.min(production - unitCountHaveToAndHaveBeenBeProducedHere,
+          ra.getMaxPlacePerTerritory() - unitCountHaveToAndHaveBeenBeProducedHere));
     }
     return Math.max(0, production - unitCountHaveToAndHaveBeenBeProducedHere);
   }
@@ -1270,16 +1317,18 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    *        PlayerID
    * @return an empty IntegerMap if you can't produce any constructions (will never return null)
    */
-  public IntegerMap<String> howManyOfEachConstructionCanPlace(final Territory to, final Territory producer, final Collection<Unit> units,
-      final PlayerID player) {
+  public IntegerMap<String> howManyOfEachConstructionCanPlace(final Territory to, final Territory producer,
+      final Collection<Unit> units, final PlayerID player) {
     // constructions can ONLY be produced BY the same territory that they are going into!
-    if (!to.equals(producer) || units == null || units.isEmpty() || !Match.someMatch(units, Matches.UnitIsConstruction)) {
+    if (!to.equals(producer) || units == null || units.isEmpty()
+        || !Match.someMatch(units, Matches.UnitIsConstruction)) {
       return new IntegerMap<String>();
     }
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> unitsInTO = to.getUnits().getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-    // build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units and units per turn
+    // build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units
+    // and units per turn
     final IntegerMap<String> unitMapHeld = new IntegerMap<String>();
     final IntegerMap<String> unitMapMaxType = new IntegerMap<String>();
     final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
@@ -1300,7 +1349,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         if (listedTerrs.contains(to)) {
           continue;
         }
-        if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction) {
+        if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
+            && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction) {
           continue;
         }
         if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit)) {
@@ -1323,7 +1373,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(getData());
     final boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(getData());
     final boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(getData());
-    final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
+    final boolean wasFactoryThereAtStart =
+        wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
     // build an integer map of each construction unit in the territory
     final IntegerMap<String> unitMapTO = new IntegerMap<String>();
     if (Match.someMatch(unitsInTO, Matches.UnitIsConstruction)) {
@@ -1342,10 +1393,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         final String constructionType = mapString.next();
         int unitMax = unitMapMaxType.getInt(constructionType);
         if (wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure")) {
-          unitMax = Math.max(Math.max(unitMax, (moreWithFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
+          unitMax =
+              Math.max(Math.max(unitMax, (moreWithFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
         }
         if (!wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure")) {
-          unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
+          unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)),
+              (unlimitedConstructions ? 10000 : 0));
         }
         unitMapHeld.put(constructionType,
             Math.max(0, Math.min(unitMax - unitMapTO.getInt(constructionType), unitMapHeld.getInt(constructionType))));
@@ -1363,7 +1416,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Iterator<String> mapString2 = unitMapHeld.keySet().iterator();
     while (mapString2.hasNext()) {
       final String constructionType = mapString2.next();
-      final int unitAllowed = Math.max(0, Math.min(unitMapTypePerTurn.getInt(constructionType), unitMapHeld.getInt(constructionType)));
+      final int unitAllowed =
+          Math.max(0, Math.min(unitMapTypePerTurn.getInt(constructionType), unitMapHeld.getInt(constructionType)));
       if (unitAllowed > 0) {
         unitsAllowed.put(constructionType, unitAllowed);
       }
@@ -1374,8 +1428,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   public int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
     final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-    if (/* !ua.getIsFactory() && */(!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1 || ua
-        .getMaxConstructionsPerTypePerTerr() < 1)) {
+    if (/* !ua.getIsFactory() && */(!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1
+        || ua.getMaxConstructionsPerTypePerTerr() < 1)) {
       return 0;
     }
     /*
@@ -1389,10 +1443,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param to
    *        - Territory we are testing for required units
    * @param doNotCountNeighbors
-   *        - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the required units as
+   *        - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the
+   *        required units as
    *        well.
    * @return - Whether the territory contains one of the required combos of units
-   *         (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land territory has one of the
+   *         (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land
+   *         territory has one of the
    *         required combos as well).
    */
   public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
@@ -1404,14 +1460,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         }
         final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
         // do not need to remove unowned here, as this match will remove unowned units from consideration.
-        if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer).match(unitWhichRequiresUnits)) {
+        if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
+            .match(unitWhichRequiresUnits)) {
           return true;
         }
         if (!doNotCountNeighbors) {
           if (Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
-            for (final Territory current : getAllProducers(to, m_player, Collections.singletonList(unitWhichRequiresUnits), true)) {
+            for (final Territory current : getAllProducers(to, m_player,
+                Collections.singletonList(unitWhichRequiresUnits), true)) {
               final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
-              if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent).match(unitWhichRequiresUnits)) {
+              if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
+                  .match(unitWhichRequiresUnits)) {
                 return true;
               }
             }
@@ -1438,7 +1497,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         return true;
       }
       final int productionHere = producersMap.getInt(t);
-      final List<Unit> canBePlacedHere = Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(t, true));
+      final List<Unit> canBePlacedHere =
+          Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(t, true));
       if (productionHere == -1 || productionHere >= canBePlacedHere.size()) {
         unitsLeftToPlace.removeAll(canBePlacedHere);
         continue;
@@ -1455,7 +1515,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /*
-   * public Map<Unit, Collection<Territory>> getTerritoriesWhereUnitsWithRequiresUnitsCanBeProducedFrom(final Collection<Unit> units, final
+   * public Map<Unit, Collection<Territory>> getTerritoriesWhereUnitsWithRequiresUnitsCanBeProducedFrom(final
+   * Collection<Unit> units, final
    * Territory to)
    * {
    * final Map<Unit, Collection<Territory>> rVal = new HashMap<Unit, Collection<Territory>>();
@@ -1463,7 +1524,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * {
    * final Collection<Territory> allowedTerrs = new ArrayList<Territory>();
    * final Collection<Territory> allProducers = getAllProducers(to, m_player, Collections.singletonList(u));
-   * // if our units has the required unit in the territory it is being produced to, then we are all good (ex: the sea unit requires a
+   * // if our units has the required unit in the territory it is being produced to, then we are all good (ex: the sea
+   * unit requires a
    * Wet_Dock in the sea zone)
    * if (!Matches.UnitRequiresUnitsOnCreation.match(u) || unitWhichRequiresUnitsHasRequiredUnits(to, true).match(u))
    * {
@@ -1482,8 +1544,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * return rVal;
    * }
    */
-
-  protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units,
+      final PlayerID player) {
     return new Comparator<Territory>() {
       @Override
       public int compare(final Territory t1, final Territory t2) {
@@ -1613,11 +1675,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    *        PlayerID
    * @return whether there was an owned unit capable of producing, in this territory at the start of this phase/step
    */
-  public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to, final PlayerID player) {
+  public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to,
+      final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
-    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player),
-        Matches.unitIsBeingTransported().invert());
-    // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in land, and like sea if
+    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(
+        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+    // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in
+    // land, and like sea if
     // in water.
     if (to.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
@@ -1710,7 +1774,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData());
   }
 
-  protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace) {
+  protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
+      final Collection<Unit> unitsToPlace) {
     return getAllProducers(to, player, unitsToPlace, false);
   }
 
@@ -1766,12 +1831,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return rVal;
   }
 
-
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IAbstractPlaceDelegate.class;
   }
-
   /*
    * protected boolean isSBRAffectsUnitProduction()
    * {

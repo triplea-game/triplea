@@ -12,7 +12,6 @@ import javax.swing.JScrollPane;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridGameMenu;
 
-
 public class ChessMenu extends GridGameMenu<GridGameFrame> {
   private static final long serialVersionUID = 348421633415234065L;
 
@@ -31,10 +30,8 @@ public class ChessMenu extends GridGameMenu<GridGameFrame> {
       @Override
       public void actionPerformed(final ActionEvent e) {
         // html formatted string
-        final String hints = "<p><b>Chess</b>"
-            + "<br />http://en.wikipedia.org/wiki/Rules_of_chess."
-            + "<br />http://www.chess.com/learn-how-to-play-chess</p>"
-            + "<br /><br /><b>How To Move Pieces</b>"
+        final String hints = "<p><b>Chess</b>" + "<br />http://en.wikipedia.org/wiki/Rules_of_chess."
+            + "<br />http://www.chess.com/learn-how-to-play-chess</p>" + "<br /><br /><b>How To Move Pieces</b>"
             + "<br />Click (and hold) on the piece, and then Drag the piece to where you want it to go, then Release the mouse button."
             + "<br /><br /><br /><b>The Goal of Chess</b>"
             + "<br />Chess is a game played between two opponents on opposite sides of a board containing 64 squares of alternating colors. "
@@ -70,8 +67,7 @@ public class ChessMenu extends GridGameMenu<GridGameFrame> {
             + "<br />There must be no pieces between the king and the rook; "
             + "<br />The king may not currently be in check, nor may the king pass through or end up in a square that is under attack by an enemy piece "
             + "(though the rook is permitted to be under attack and to pass over an attacked square); "
-            + "<br />The king and the rook must be on the same row."
-            + "<br /><br /><b>En passant</b>"
+            + "<br />The king and the rook must be on the same row." + "<br /><br /><b>En passant</b>"
             + "<br />If player A's pawn moves forward two squares and player B has a pawn on its fifth rank on an adjacent file, "
             + "<br />B's pawn can capture A's pawn as if A's pawn had only moved one square. "
             + "<br />This capture can only be made on the immediately subsequent move. "
@@ -86,8 +82,7 @@ public class ChessMenu extends GridGameMenu<GridGameFrame> {
             + "<br />Capture the threatening piece (possibly with the king)."
             + "<br />Block the check by placing a piece between the king and the opponent's threatening piece. "
             + "<br />If it is not possible to get out of check, the king is checkmated and the game is over with that player losing, and their opponent winning. "
-            + "<br />It is not required to announce if your opponent is in check."
-            + "<br /><br /><b>Draws</b> "
+            + "<br />It is not required to announce if your opponent is in check." + "<br /><br /><b>Draws</b> "
             + "<br />The game ends in a draw if any of these conditions occur: "
             + "<br />The game is automatically a draw if the player to move is not in check but has no legal move. This situation is called a stalemate. "
             + "<br />The game is immediately drawn when there is no possibility of checkmate for either side with any series of legal moves. "

@@ -19,11 +19,8 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 /**
- *
- *
- *          Holds a collection of territories, and the links between them.
- *          Utility methods for finding routes and distances between different territories.
- *
+ * Holds a collection of territories, and the links between them.
+ * Utility methods for finding routes and distances between different territories.
  */
 public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private static final long serialVersionUID = -4606700588396439283L;
@@ -128,7 +125,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       if (!name1.equals(name2)) {
         return name1.compareTo(name2);
       }
-
       String tname1y = t1.getName().replaceFirst(name1 + "_", "");
       tname1y = tname1y.substring(tname1y.indexOf("_") + 1, tname1y.length());
       final int ty1 = Integer.parseInt(tname1y);
@@ -140,7 +136,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       } else if (ty1 > ty2) {
         return 1;
       }
-
       String tname1x = t1.getName().replaceFirst(name1 + "_", "");
       tname1x = tname1x.substring(0, tname1x.indexOf("_"));
       final int tx1 = Integer.parseInt(tname1x);
@@ -346,7 +341,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param distance
    * @param cond
    * @return All neighbors within a certain distance of the starting territory set that match the condition.
-   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each other.
+   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
+   *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Match<Territory> cond) {
     final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance, cond);
@@ -358,7 +354,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param frontier
    * @param distance
    * @return All neighbors within a certain distance of the starting territory set.
-   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each other.
+   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
+   *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance) {
     final Set<Territory> rVal = getNeighbors(frontier, new HashSet<Territory>(frontier), distance);
@@ -458,11 +455,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * A composite route between two territories
    * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
-   *
-   * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2 length neutral route.
+   * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2
+   * length neutral route.
    * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
-   *
-   * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
+   * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any
+   * way.
    * (Recommended that you use 2,3,4 as scores, unless you will allow routes to be much longer under certain conditions)
    * Returns null if there is no route that exists that matches any of the matches.
    *
@@ -474,7 +471,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *        HashMap of territory matches for covered territories
    * @return a composite route between two territories
    */
-  public Route getCompositeRoute(final Territory t1, final Territory t2, final HashMap<Match<Territory>, Integer> matches) {
+  public Route getCompositeRoute(final Territory t1, final Territory t2,
+      final HashMap<Match<Territory>, Integer> matches) {
     if (t1 == t2) {
       return new Route(t1);
     }
@@ -486,7 +484,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return engine.findRoute(t1, t2);
   }
 
-  public Route getCompositeRoute_IgnoreEnd(final Territory t1, final Territory t2, final HashMap<Match<Territory>, Integer> matches) {
+  public Route getCompositeRoute_IgnoreEnd(final Territory t1, final Territory t2,
+      final HashMap<Match<Territory>, Integer> matches) {
     matches.put(Matches.territoryIs(t2), 0);
     return getCompositeRoute(t1, t2, matches);
   }
@@ -544,14 +543,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   *
    * @param t1
    *        start territory of the route
    * @param t2
    *        end territory of the route
    * @param cond
    *        condition that covered territories of the route must match EXCEPT FOR THE END
-   * @return the distance between two territories where the covered territories of the route (except the end) satisfy the condition
+   * @return the distance between two territories where the covered territories of the route (except the end) satisfy
+   *         the condition
    *         or -1 if they are not connected. (Distance includes to the end)
    */
   public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Match<Territory> cond) {
@@ -563,8 +562,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Territories on the frontier are not target. They represent the extent of paths already searched.
    * Territories in searched have already been on the frontier.
    */
-  private int getDistance(final int distance, final Set<Territory> searched, final Set<Territory> frontier, final Territory target,
-      final Match<Territory> cond) {
+  private int getDistance(final int distance, final Set<Territory> searched, final Set<Territory> frontier,
+      final Territory target, final Match<Territory> cond) {
     // add the frontier to the searched
     searched.addAll(frontier);
     // find the new frontier

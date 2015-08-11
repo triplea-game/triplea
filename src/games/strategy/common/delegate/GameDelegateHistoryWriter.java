@@ -8,8 +8,6 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
  * Delegates should only have access to these functions.
  * The rest of the history writers functions should only
  * be used by the GameData
- *
- *
  */
 public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
   IDelegateHistoryWriter m_delegateHistoryWriter;
@@ -62,7 +60,6 @@ public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
       m_delegateHistoryWriter.addChildToEvent(getEventPrefix() + child, renderingData);
     }
   }
-
   /*
    * Set the rendering data for the current event.
    * public void setRenderingData(final Object renderingData)

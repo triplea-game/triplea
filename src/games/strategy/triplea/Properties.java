@@ -6,14 +6,13 @@ import games.strategy.engine.data.GameData;
  * <p>
  * Title: TripleA
  * </p>
- *
- *
  */
 public class Properties implements Constants {
-  // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior of TripleA.
-  // If you want something to default to "true", when change the wording of the constant to make it a negative of itself, then default to
+  // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior
+  // of TripleA.
+  // If you want something to default to "true", when change the wording of the constant to make it a negative of
+  // itself, then default to
   // false. (ex: "Do not do something", false; instead of "Do something", true;)
-
   public static int getNeutralCharge(final GameData data) {
     return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);
   }
@@ -36,7 +35,6 @@ public class Properties implements Constants {
    * return data.getProperties().get(PREVIOUS_UNITS_FIGHT, false);
    * }
    */
-
   public static boolean getPartialAmphibiousRetreat(final GameData data) {
     return data.getProperties().get(PARTIAL_AMPHIBIOUS_RETREAT, false);
   }
@@ -319,7 +317,6 @@ public class Properties implements Constants {
    * return data.getProperties().get(HARI_KARI_UNITS, false);
    * }
    */
-
   public static boolean getUnplacedUnitsLive(final GameData data) {
     return data.getProperties().get(UNPLACED_UNITS_LIVE, false);
   }
@@ -387,11 +384,9 @@ public class Properties implements Constants {
     return data.getProperties().get(TRIGGERS, false);
   }
 
-
   public static boolean getAlwaysOnAA(final GameData data) {
     return data.getProperties().get(ALWAYS_ON_AA_PROPERTY, false);
   }
-
 
   public static boolean getLHTRCarrierProductionRules(final GameData data) {
     return data.getProperties().get(LHTR_CARRIER_PRODUCTION_RULES, false);
@@ -416,11 +411,9 @@ public class Properties implements Constants {
     return data.getProperties().get(LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS, false);
   }
 
-
   public static int getHeavyBomberDiceRolls(final GameData data) {
     return data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS, 2);
   }
-
 
   public static boolean getBattleshipsRepairAtEndOfRound(final GameData data) {
     return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN, false);
@@ -430,36 +423,29 @@ public class Properties implements Constants {
     return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN, false);
   }
 
-
   public static boolean getTwoHitPointUnitsRequireRepairFacilities(final GameData data) {
     return data.getProperties().get(TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES, false);
   }
-
 
   public static boolean getChoose_AA_Casualties(final GameData data) {
     return data.getProperties().get(CHOOSE_AA, false);
   }
 
-
   public static boolean getSubmersible_Subs(final GameData data) {
     return data.getProperties().get(SUBMERSIBLE_SUBS, false);
   }
-
 
   public static boolean getUse_Destroyers_And_Artillery(final GameData data) {
     return data.getProperties().get(USE_DESTROYERS_AND_ARTILLERY, false);
   }
 
-
   public static boolean getUse_Shipyards(final GameData data) {
     return data.getProperties().get(USE_SHIPYARDS, false);
   }
 
-
   public static boolean getLow_Luck(final GameData data) {
     return data.getProperties().get(LOW_LUCK, false);
   }
-
 
   public static boolean getLL_AA_ONLY(final GameData data) {
     return data.getProperties().get(LL_AA_ONLY, false);
@@ -473,36 +459,29 @@ public class Properties implements Constants {
     return data.getProperties().get(LL_DAMAGE_ONLY, false);
   }
 
-
   public static boolean getKamikaze_Airplanes(final GameData data) {
     return data.getProperties().get(KAMIKAZE, false);
   }
-
 
   public static boolean getLHTR_Heavy_Bombers(final GameData data) {
     return data.getProperties().get(LHTR_HEAVY_BOMBERS, false);
   }
 
-
   public static int getSuper_Sub_Defense_Bonus(final GameData data) {
     return data.getProperties().get(SUPER_SUB_DEFENSE_BONUS, 0);
   }
-
 
   public static boolean getScramble_Rules_In_Effect(final GameData data) {
     return data.getProperties().get(SCRAMBLE_RULES_IN_EFFECT, false);
   }
 
-
   public static boolean getScrambled_Units_Return_To_Base(final GameData data) {
     return data.getProperties().get(SCRAMBLED_UNITS_RETURN_TO_BASE, false);
   }
 
-
   public static boolean getScramble_To_Sea_Only(final GameData data) {
     return data.getProperties().get(SCRAMBLE_TO_SEA_ONLY, false);
   }
-
 
   public static boolean getScramble_From_Island_Only(final GameData data) {
     return data.getProperties().get(SCRAMBLE_FROM_ISLAND_ONLY, false);

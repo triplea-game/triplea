@@ -28,22 +28,32 @@ import games.strategy.util.Util;
 /**
  * A sort of scripted battle made for blitzed/conquered territories without a fight.
  * TODO: expand to cover all possible scripting battle needs.
- *
- *
  */
 public class FinishedBattle extends AbstractBattle {
   private static final long serialVersionUID = -5852495231826940879L;
   private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units
-                                                                                                                  // (stores a collection of
-                                                                                                                  // who is attacking from
-                                                                                                                  // where, needed for
-                                                                                                                  // undoing moves)
+  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps
+                                                                                                                  // Territory->
+                                                                                                                  // units
+                                                                                                                  // (stores
+                                                                                                                  // a
+                                                                                                                  // collection
+                                                                                                                  // of
+                                                                                                                  // who
+                                                                                                                  // is
+                                                                                                                  // attacking
+                                                                                                                  // from
+                                                                                                                  // where,
+                                                                                                                  // needed
+                                                                                                                  // for
+                                                                                                                  // undoing
+                                                                                                                  // moves)
 
-  public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean isBombingRun,
-      final BattleType battleType, final GameData data,
-      final BattleResultDescription battleResultDescription, final WhoWon whoWon, final Collection<Unit> attackingUnits) {
+  public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+      final boolean isBombingRun, final BattleType battleType, final GameData data,
+      final BattleResultDescription battleResultDescription, final WhoWon whoWon,
+      final Collection<Unit> attackingUnits) {
     super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
     m_battleResultDescription = battleResultDescription;
     m_whoWon = whoWon;
@@ -61,16 +71,16 @@ public class FinishedBattle extends AbstractBattle {
   @Override
   public void fight(final IDelegateBridge bridge) {
     if (!m_headless) {
-      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV,
-          m_battleResultDescription,
-          new BattleResults(this, m_data), 0);
+      m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
     }
     m_battleTracker.removeBattle(this);
     m_isOver = true;
   }
 
   @Override
-  public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets) {
+  public Change addAttackChange(final Route route, final Collection<Unit> units,
+      final HashMap<Unit, HashSet<Unit>> targets) {
     final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
     for (final Unit unit : addedTransporting.keySet()) {
       if (m_dependentUnits.get(unit) != null) {
@@ -88,7 +98,8 @@ public class FinishedBattle extends AbstractBattle {
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     attackingFromMapUnits.addAll(units);
     // are we amphibious
-    if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand)) {
+    if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
+        && Match.someMatch(units, Matches.UnitIsLand)) {
       m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
       m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
       m_isAmphibious = true;
@@ -135,14 +146,15 @@ public class FinishedBattle extends AbstractBattle {
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge,
-      final boolean withdrawn) {
+  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+      final IDelegateBridge bridge, final boolean withdrawn) {
     final Collection<Unit> lost = getDependentUnits(units);
     lost.addAll(Util.intersection(units, m_attackingUnits));
     if (lost.size() != 0) {
       m_attackingUnits.removeAll(lost);
       /*
-       * TODO: these units are no longer in this territory, most probably. Plus they may have already been removed by another "real" battle
+       * TODO: these units are no longer in this territory, most probably. Plus they may have already been removed by
+       * another "real" battle
        * class.
        * final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
        * bridge.getHistoryWriter().startEvent(transcriptText);
@@ -155,8 +167,8 @@ public class FinishedBattle extends AbstractBattle {
         m_attackerLostTUV += tuvLostAttacker;
         m_whoWon = WhoWon.DEFENDER; // scripted?
         if (!m_headless) {
-          m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-              m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
+          m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender,
+              m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
               new BattleResults(this, m_data), 0);
         }
         m_battleTracker.removeBattle(this);
@@ -178,5 +190,4 @@ public class FinishedBattle extends AbstractBattle {
   public Map<Territory, Collection<Unit>> getAttackingFromMap() {
     return m_attackingFromMap;
   }
-
 }

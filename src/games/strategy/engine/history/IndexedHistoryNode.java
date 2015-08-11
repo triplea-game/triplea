@@ -13,7 +13,6 @@ package games.strategy.engine.history;
  * <p>
  * Company:
  * </p>
- *
  */
 public abstract class IndexedHistoryNode extends HistoryNode {
   private static final long serialVersionUID = 607716179473453685L;

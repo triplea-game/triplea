@@ -15,7 +15,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.util.IntegerMap;
 
-
 public class PlaceDelegateTest extends DelegateTest {
   protected PlaceDelegate m_delegate;
   protected ITestDelegateBridge m_bridge;

@@ -31,10 +31,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
-
 /*
  * CommentPanel.java Swing ui for comment logging.
- *
  * Created on September 24, 2007
  */
 import games.strategy.engine.data.GameData;
@@ -47,7 +45,6 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 
 /**
  * A Comment logging window.
- *
  */
 public class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;
@@ -139,8 +136,9 @@ public class CommentPanel extends JPanel {
           final Document doc = m_text.getDocument();
           final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
           final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
-          final String title = child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
-              : (node != null ? node.getTitle() : "");
+          final String title =
+              child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
+                  : (node != null ? node.getTitle() : "");
           final Pattern p = Pattern.compile("^COMMENT: (.*)");
           final Matcher m = p.matcher(title);
           if (m.matches()) {

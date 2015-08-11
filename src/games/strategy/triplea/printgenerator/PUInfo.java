@@ -12,7 +12,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 
-
 public class PUInfo {
   private GameData m_data;
   private final Map<PlayerID, Map<Resource, Integer>> m_infoMap = new HashMap<PlayerID, Map<Resource, Integer>>();

@@ -13,8 +13,6 @@ import games.strategy.util.Tuple;
 
 /**
  * An object to hold all the map.properties values.
- *
- *
  */
 public class MapProperties {
   public final String MAP_PROPERTIES_FILENAME = MapData.MAP_PROPERTIES;
@@ -115,7 +113,6 @@ public class MapProperties {
    * {
    * return UNITS_SCALE;
    * }
-   *
    * public void setUNITS_SCALE(final double value)
    * {
    * UNITS_SCALE = value;
@@ -397,13 +394,11 @@ public class MapProperties {
    * {
    * return DONT_DRAW_TERRITORY_NAMES;
    * }
-   *
    * public void setDONT_DRAW_TERRITORY_NAMES(final List<String> value)
    * {
    * DONT_DRAW_TERRITORY_NAMES = value;
    * }
    */
-
   public String getDONT_DRAW_TERRITORY_NAMES() {
     return DONT_DRAW_TERRITORY_NAMES;
   }
@@ -445,13 +440,11 @@ public class MapProperties {
    * {
    * return MAP_MAPBLENDALPHA;
    * }
-   *
    * public void setMAP_MAPBLENDALPHA(final double value)
    * {
    * MAP_MAPBLENDALPHA = value;
    * }
    */
-
   public String getMAP_MAPBLENDALPHA() {
     return MAP_MAPBLENDALPHA;
   }

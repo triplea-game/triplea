@@ -7,7 +7,6 @@ import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
-
 public class CasualtyList implements Serializable {
   private static final long serialVersionUID = 6501752134047891398L;
   protected List<Unit> m_killed;

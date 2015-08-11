@@ -52,10 +52,8 @@ import games.strategy.util.PointFileReaderWriter;
 
 /**
  * old comments
- *
  * Utility to break a map into polygons.
  * Not pretty, meant only for one time use.
- *
  * Inputs - a map with 1 pixel wide borders
  * - a list of centers - this is used to guess the territory name and to verify the
  * - territory name entered
@@ -68,7 +66,8 @@ public class PolygonGrabber extends JFrame {
   private List<Polygon> m_current; // the current set of polyongs
   // private Image m_image; // holds the map image
   private BufferedImage m_bufferedImage;
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // maps String -> List of polygons
+  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // maps String -> List of
+                                                                                        // polygons
   private Map<String, Point> m_centers; // holds the centers for the polygons
   private final JLabel location = new JLabel();
   private static File s_mapFolderLocation = null;
@@ -76,7 +75,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * main(java.lang.String[])
-   *
    * Main program begins here.
    * Asks the user to select the map then runs the
    * the actual polygon grabber program.
@@ -98,21 +96,20 @@ public class PolygonGrabber extends JFrame {
       grabber.setSize(800, 600);
       grabber.setLocationRelativeTo(null);
       grabber.setVisible(true);
-      JOptionPane.showMessageDialog(grabber, new JLabel("<html>"
-          + "This is the PolygonGrabber, it will create a polygons.txt file for you. "
-          + "<br>In order to run this, you must already have created a center.txt file. "
-          + "<br>Please click near the center of every single territory and sea zone on your map. "
-          + "<br>The grabber will then fill in the territory based on the borders it finds."
-          + "<br>If the territory shape or borders do not match what you intend, then your borders "
-          + "<br>might have a gap or differently colored pixel in the border."
-          + "<br>These borders will define the shape of the territory in TripleA."
-          + "<br><br>When a territory is inside of another territory, you can turn on 'island mode' to be able to see it."
-          + "<br><br>You can also load an existing polygons.txt file, then make modifications to it, then save it again."
-          + "<br><br>LEFT CLICK = fill in a territory's borders."
-          + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories together (eg: islands)."
-          + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
-          + "<br><br>When finished, save the polygons and exit."
-          + "</html>"));
+      JOptionPane.showMessageDialog(grabber,
+          new JLabel("<html>" + "This is the PolygonGrabber, it will create a polygons.txt file for you. "
+              + "<br>In order to run this, you must already have created a center.txt file. "
+              + "<br>Please click near the center of every single territory and sea zone on your map. "
+              + "<br>The grabber will then fill in the territory based on the borders it finds."
+              + "<br>If the territory shape or borders do not match what you intend, then your borders "
+              + "<br>might have a gap or differently colored pixel in the border."
+              + "<br>These borders will define the shape of the territory in TripleA."
+              + "<br><br>When a territory is inside of another territory, you can turn on 'island mode' to be able to see it."
+              + "<br><br>You can also load an existing polygons.txt file, then make modifications to it, then save it again."
+              + "<br><br>LEFT CLICK = fill in a territory's borders."
+              + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories together (eg: islands)."
+              + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
+              + "<br><br>When finished, save the polygons and exit." + "</html>"));
     } else {
       System.out.println("No Image Map Selected. Shutting down.");
       System.exit(0);
@@ -121,7 +118,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * Constructor PolygonGrabber(java.lang.String)
-   *
    * Asks user to specify a file with center points. If not
    * program will exit. We setup the mouse listenrs and toolbars
    * and load the actual image of the map here.
@@ -139,11 +135,9 @@ public class PolygonGrabber extends JFrame {
     if (file == null || !file.exists()) {
       file = new File(new File(mapName).getParent() + File.separator + "centers.txt");
     }
-    if (file.exists()
-        && JOptionPane.showConfirmDialog(new JPanel(),
-            "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
-            "File Suggestion",
-            1) == 0) {
+    if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
+        "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
+        "File Suggestion", 1) == 0) {
       try {
         System.out.println("Centers : " + file.getPath());
         m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(file.getPath()));
@@ -190,7 +184,6 @@ public class PolygonGrabber extends JFrame {
     imagePanel.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-
         mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
       }
     });
@@ -235,14 +228,15 @@ public class PolygonGrabber extends JFrame {
 
       @Override
       public void actionPerformed(final ActionEvent event) {
-        JOptionPane.showMessageDialog(null, new JLabel("<html>"
-            + "You will need to check and go back and do some polygons manually, as Auto does not catch them all. "
-            + "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
-            + "<br>redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
-            + "</html>"));
+        JOptionPane.showMessageDialog(null,
+            new JLabel("<html>"
+                + "You will need to check and go back and do some polygons manually, as Auto does not catch them all. "
+                + "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
+                + "<br>redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
+                + "</html>"));
         m_current = new ArrayList<Polygon>();
-        final BufferedImage imageCopy =
-            new BufferedImage(m_bufferedImage.getWidth(null), m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage imageCopy = new BufferedImage(m_bufferedImage.getWidth(null),
+            m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
         final Graphics g = imageCopy.getGraphics();
         g.drawImage(m_bufferedImage, 0, 0, null);
         final Iterator<String> territoryNames = m_centers.keySet().iterator();
@@ -251,12 +245,14 @@ public class PolygonGrabber extends JFrame {
           final Point center = m_centers.get(territoryName);
           System.out.println("Detecting Polygon for:" + territoryName);
           final Polygon p = findPolygon(center.x, center.y);
-          // test if the poly contains the center point (this often fails when there is an island right above (because findPolygon will grab
+          // test if the poly contains the center point (this often fails when there is an island right above (because
+          // findPolygon will grab
           // the island instead)
           if (!p.contains(center)) {
             continue;
           }
-          // test if this poly contains any other centers, and if so do not do this one. let the user manually do it to make sure it gets
+          // test if this poly contains any other centers, and if so do not do this one. let the user manually do it to
+          // make sure it gets
           // done properly
           boolean hasIslands = false;
           for (final Point otherCenterPoint : m_centers.values()) {
@@ -271,7 +267,8 @@ public class PolygonGrabber extends JFrame {
           if (hasIslands) {
             continue;
           }
-          // some islands do not have centers on them because they are island chains that are also part of an island or territory touching a
+          // some islands do not have centers on them because they are island chains that are also part of an island or
+          // territory touching a
           // sidewall or outside of this polygon. we should still skip them.
           if (doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
             continue;
@@ -321,7 +318,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * createImage(java.lang.String)
-   *
    * We create the image of the map here and
    * assure that it is loaded properly.
    *
@@ -343,7 +339,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * javax.swing.JPanel createMainPanel()
-   *
    * Creates a JPanel to be used. Dictates how the map is
    * painted. Current problem is that islands inside sea
    * zones are not recognized when filling in the sea zone
@@ -395,12 +390,12 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * savePolygons()
-   *
    * Saves the polygons to disk.
    */
   private void savePolygons() {
     try {
-      final String polyName = new FileSave("Where To Save Polygons.txt ?", "polygons.txt", s_mapFolderLocation).getPathString();
+      final String polyName =
+          new FileSave("Where To Save Polygons.txt ?", "polygons.txt", s_mapFolderLocation).getPathString();
       if (polyName == null) {
         return;
       }
@@ -420,7 +415,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * loadPolygons()
-   *
    * Loads a pre-defined file with map polygon points.
    */
   private void loadPolygons() {
@@ -478,7 +472,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * java.lang.boolean pointInCurrentPolygon(java.awt.Point)
-   *
    * returns false if there is no points in a current polygon.
    * returns true if there is.
    *
@@ -500,7 +493,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * doneCurrentGroup()
-   *
    * Does something with respect to check if the name
    * of a territory is valid or not.
    *
@@ -532,7 +524,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * guessCountryName(javax.swing.JTextField, java.util.Iterator)
-   *
    * Guess the country name based on the location of the previous centers
    *
    * @param javax
@@ -559,7 +550,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * java.lang.boolean isBlack(java.awt.Point)
-   *
    * Checks to see if the given point is of color black.
    *
    * @param java
@@ -572,7 +562,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * java.lang.boolean isBlack(java.lang.int, java.lang.int)
-   *
    * Checks to see if the x/y coordinates from a given point
    * are inbounds and if so is it black.
    *
@@ -604,7 +593,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * java.lang.boolean inBounds(java.lang.int, java.lang.int)
-   *
    * Checks if the given x/y coordinate point is inbounds or not
    *
    * @param java
@@ -623,9 +611,7 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * move(java.awt.Point, java.lang.int)
-   *
    * Moves to a specified direction
-   *
    * Directions
    * 0 - North
    * 1 - North east
@@ -661,7 +647,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * java.lang.boolean isOnEdge(java.lang.int, java.awt.Point)
-   *
    * Checks to see if the direction we're going is on the edge.
    * At least thats what I can understand from this.
    *
@@ -680,9 +665,11 @@ public class PolygonGrabber extends JFrame {
 
   private final boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
       final Graphics imageCopyGraphics) {
-    // we would like to just test if each point is both black and contained within the polygon, but contains counts the borders,
+    // we would like to just test if each point is both black and contained within the polygon, but contains counts the
+    // borders,
     // so we have to turn the border edges a different color (then later back to black again) using a copy of the image
-    // final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null), m_bufferedImage.getHeight(null),
+    // final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null),
+    // m_bufferedImage.getHeight(null),
     // BufferedImage.TYPE_INT_ARGB);
     imageCopyGraphics.setColor(Color.GREEN);
     imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
@@ -707,7 +694,6 @@ public class PolygonGrabber extends JFrame {
 
   /**
    * java.awt.Polygon findPolygon(java.lang.int, java.lang.int)
-   *
    * Algorithm to find a polygon given a x/y coordinates and
    * returns the found polygon.
    *
@@ -732,7 +718,10 @@ public class PolygonGrabber extends JFrame {
       iterCount++;
       if (iterCount > 100000) {
         JOptionPane.showMessageDialog(this,
-            "Failed to grab the polygon. Failed at point: " + currentPoint.getX() + "," + currentPoint.getY() + "\r\n"
+            "Failed to grab the polygon. Failed at point: " + currentPoint.getX() + ","
+                + currentPoint
+                    .getY()
+                + "\r\n"
                 + "Note that this is a common error and can usually be fixed by 'smoothing out' the territory border and removing any anti-aliasing.");
         return null;
       }

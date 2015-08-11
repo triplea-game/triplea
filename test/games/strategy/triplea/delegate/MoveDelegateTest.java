@@ -22,7 +22,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-
 public class MoveDelegateTest extends DelegateTest {
   MoveDelegate m_delegate;
   ITestDelegateBridge m_bridge;
@@ -37,7 +36,8 @@ public class MoveDelegateTest extends DelegateTest {
     super.setUp();
     m_bridge = super.getDelegateBridge(british);
     m_bridge.setStepName("britishCombatMove");
-    final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+    final InitializationDelegate initDel =
+        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(m_bridge);
     initDel.start();
     initDel.end();
@@ -270,7 +270,8 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(redSea);
     assertEquals(18, egypt.getUnits().size());
     assertEquals(4, redSea.getUnits().size());
-    final String results = m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+    final String results =
+        m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
     assertEquals(16, egypt.getUnits().size());
     assertEquals(6, redSea.getUnits().size());
@@ -300,7 +301,8 @@ public class MoveDelegateTest extends DelegateTest {
     route.setStart(egypt);
     route.add(libya);
     // Disable canBlitz attachment
-    new ChangePerformer(m_data).perform(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(armour), "false", "canBlitz"));
+    new ChangePerformer(m_data)
+        .perform(ChangeFactory.attachmentPropertyChange(UnitAttachment.get(armour), "false", "canBlitz"));
     String results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
     // Validate move happened
@@ -512,14 +514,15 @@ public class MoveDelegateTest extends DelegateTest {
     final Route load = new Route();
     load.setStart(japan);
     load.add(japanSeaZone);
-    String results = m_delegate.move(Match.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), load,
-        Match.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));
+    String results = m_delegate.move(Match.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)),
+        load, Match.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));
     assertNull(results);
     // Perform the first unload
     final Route unload = new Route();
     unload.setStart(japanSeaZone);
     unload.add(manchuria);
-    results = m_delegate.move(Match.getNMatches(japanSeaZone.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), unload);
+    results = m_delegate.move(Match.getNMatches(japanSeaZone.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)),
+        unload);
     assertNull(results);
     // Load another trn
     final Route route2 = new Route();
@@ -777,7 +780,8 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(westAfricaSea);
     route.add(northAtlantic);
     Collection<Unit> units = new ArrayList<Unit>();
-    units.addAll(Match.getMatches(m_data.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
+    units.addAll(Match.getMatches(m_data.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(),
+        Matches.UnitIsCarrier));
     results = m_delegate.move(units, route);
     assertValid(results);
     // move carriers to ensure they can't go anywhere
@@ -786,7 +790,8 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(eastMediteranean);
     route.add(blackSea);
     units = new ArrayList<Unit>();
-    units.addAll(Match.getMatches(m_data.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
+    units.addAll(
+        Match.getMatches(m_data.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
     results = m_delegate.move(units, route);
     assertValid(results);
     // make sure the place cant use it to land
@@ -884,11 +889,14 @@ public class MoveDelegateTest extends DelegateTest {
     map.put(infantry, 4);
     results = m_delegate.move(getUnits(map, route.getStart()), route);
     assertValid(results);
-    final IBattle inBrazil = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(brazil, false, null);
-    final IBattle inBrazilSea = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(southBrazilSeaZone, false, null);
+    final IBattle inBrazil =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(brazil, false, null);
+    final IBattle inBrazilSea =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(southBrazilSeaZone, false, null);
     assertNotNull(inBrazilSea);
     assertNotNull(inBrazil);
-    assertEquals(DelegateFinder.battleDelegate(m_data).getBattleTracker().getDependentOn(inBrazil).iterator().next(), inBrazilSea);
+    assertEquals(DelegateFinder.battleDelegate(m_data).getBattleTracker().getDependentOn(inBrazil).iterator().next(),
+        inBrazilSea);
   }
 
   public void testReloadTransportAfterRetreatAmphibious() {
@@ -923,11 +931,14 @@ public class MoveDelegateTest extends DelegateTest {
     defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
-    final IBattle inFinlandNorway = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false, null);
-    final IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
+    final IBattle inFinlandNorway =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false, null);
+    final IBattle inBalticSeaZone =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
     assertNotNull(balticSeaZone);
     assertNotNull(finlandNorway);
-    assertEquals(DelegateFinder.battleDelegate(m_data).getBattleTracker().getDependentOn(inFinlandNorway).iterator().next(),
+    assertEquals(
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getDependentOn(inFinlandNorway).iterator().next(),
         inBalticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);
@@ -981,11 +992,14 @@ public class MoveDelegateTest extends DelegateTest {
     defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
-    final IBattle inFinlandNorway = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false, null);
-    final IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
+    final IBattle inFinlandNorway =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false, null);
+    final IBattle inBalticSeaZone =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
     assertNotNull(balticSeaZone);
     assertNotNull(finlandNorway);
-    assertEquals(DelegateFinder.battleDelegate(m_data).getBattleTracker().getDependentOn(inFinlandNorway).iterator().next(),
+    assertEquals(
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getDependentOn(inFinlandNorway).iterator().next(),
         inBalticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);
@@ -1039,7 +1053,8 @@ public class MoveDelegateTest extends DelegateTest {
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
-    final IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
+    final IBattle inBalticSeaZone =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
     assertNotNull(balticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);
@@ -1093,7 +1108,8 @@ public class MoveDelegateTest extends DelegateTest {
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, m_data)));
     final Integer defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
-    final IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
+    final IBattle inBalticSeaZone =
+        DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false, null);
     assertNotNull(balticSeaZone);
     // Add some defending units in case there aren't any
     final List<Unit> defendList = transport.create(1, germans);

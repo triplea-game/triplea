@@ -156,7 +156,8 @@ public class GameDataTestUtil {
       throw new AssertionFailedError("No units");
     }
     final MoveDelegate moveDelegate = moveDelegate(route.getStart().getData());
-    final Collection<Unit> transports = route.getEnd().getUnits().getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
+    final Collection<Unit> transports =
+        route.getEnd().getUnits().getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
     final String error = moveDelegate.move(units, route, transports);
     if (error != null) {
       throw new AssertionFailedError("Illegal move:" + error);

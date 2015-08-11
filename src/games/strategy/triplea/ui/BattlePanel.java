@@ -48,9 +48,7 @@ import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 
 /**
- *
  * UI for fighting battles.
- *
  */
 public class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
@@ -139,7 +137,8 @@ public class BattlePanel extends ActionPanel {
         SwingUtilities.invokeLater(REFRESH);
       }
 
-      private void addBattleActions(final JPanel panel, final Territory territory, final boolean bomb, final BattleType battleType) {
+      private void addBattleActions(final JPanel panel, final Territory territory, final boolean bomb,
+          final BattleType battleType) {
         final JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BorderLayout());
         innerPanel.add(new JButton(new FightBattleAction(territory, bomb, battleType)), BorderLayout.CENTER);
@@ -149,7 +148,8 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void notifyRetreat(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer) {
+  public void notifyRetreat(final String messageShort, final String messageLong, final String step,
+      final PlayerID retreatingPlayer) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -182,7 +182,6 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-
   private void cleanUpBattleWindow() {
     if (m_battleDisplay != null) {
       m_currentBattleDisplayed = null;
@@ -209,8 +208,8 @@ public class BattlePanel extends ActionPanel {
       // something is wrong, we shouldnt have to wait this long
       if (count > 200) {
         Console.getConsole().dumpStacks();
-        new IllegalStateException("battle not displayed, looking for:" + battleID + " showing:" + m_currentBattleDisplayed)
-            .printStackTrace();
+        new IllegalStateException(
+            "battle not displayed, looking for:" + battleID + " showing:" + m_currentBattleDisplayed).printStackTrace();
         return false;
       }
       displayed = m_currentBattleDisplayed;
@@ -245,12 +244,11 @@ public class BattlePanel extends ActionPanel {
     }
   }
 
-  public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-      final Map<Unit, Collection<Unit>> unit_dependents,
-      final PlayerID attacker, final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
-      final Collection<Unit> amphibiousLandAttackers) {
+  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+      final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
+      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
+      final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender,
+      final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
         @Override
@@ -260,9 +258,9 @@ public class BattlePanel extends ActionPanel {
             m_currentBattleDisplayed = null;
           }
           if (!getMap().getUIContext().getShowMapOnly()) {
-            m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, killedUnits,
-                attackingWaitingToDie, defendingWaitingToDie,
-                battleID, BattlePanel.this.getMap(), isAmphibious, battleType, amphibiousLandAttackers);
+            m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
+                killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap(),
+                isAmphibious, battleType, amphibiousLandAttackers);
             m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
             m_battleFrame.getContentPane().removeAll();
             m_battleFrame.getContentPane().add(m_battleDisplay);
@@ -314,8 +312,8 @@ public class BattlePanel extends ActionPanel {
   /**
    * Ask user which territory to bombard with a given unit.
    */
-  public Territory getBombardment(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
-      final boolean noneAvailable) {
+  public Territory getBombardment(final Unit unit, final Territory unitTerritory,
+      final Collection<Territory> territories, final boolean noneAvailable) {
     final BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>() {
       @Override
       public BombardComponent run() {
@@ -324,8 +322,8 @@ public class BattlePanel extends ActionPanel {
     });
     int option = JOptionPane.NO_OPTION;
     while (option != JOptionPane.OK_OPTION) {
-      option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection", JOptionPane.OK_OPTION,
-          getMap().getUIContext().getCountDownLatchHandler());
+      option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection",
+          JOptionPane.OK_OPTION, getMap().getUIContext().getCountDownLatchHandler());
     }
     return comp.getSelection();
   }
@@ -344,20 +342,18 @@ public class BattlePanel extends ActionPanel {
 
   public boolean getAttackUnits(final Territory terr) {
     getMap().centerOn(terr);
-    return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack", JOptionPane.YES_NO_OPTION,
-        getMap().getUIContext().getCountDownLatchHandler()) == 0;
+    return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack",
+        JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
   }
 
   public boolean getShoreBombard(final Territory terr) {
     getMap().centerOn(terr);
-    return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard",
-        JOptionPane.YES_NO_OPTION, getMap().getUIContext()
-            .getCountDownLatchHandler()) == 0;
+    return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?",
+        "Bombard", JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
   }
 
-  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
-      final Collection<Unit> damaged,
-      final Map<Unit, Collection<Unit>> dependents) {
+  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
+      final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -368,7 +364,8 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents) {
+  public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
+      final Map<Unit, Collection<Unit>> dependents) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -379,8 +376,8 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits, final Collection<Unit> addedUnits,
-      final Map<Unit, Collection<Unit>> dependents) {
+  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
+      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -399,31 +396,33 @@ public class BattlePanel extends ActionPanel {
     m_battleDisplay.waitForConfirmation(message);
   }
 
-  public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
-      final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit) {
+  public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
+      final int count, final String message, final DiceRoll dice, final PlayerID hit,
+      final CasualtyList defaultCasualties, final GUID battleID, final boolean allowMultipleHitsPerUnit) {
     // if the battle display is null, then this is an aa fire during move
     if (battleID == null) {
-      return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties, allowMultipleHitsPerUnit);
+      return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
+          allowMultipleHitsPerUnit);
     } else {
       // something is wong
       if (!ensureBattleIsDisplayed(battleID)) {
         System.out.println("Battle Not Displayed?? " + message);
         return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
       }
-      return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties, allowMultipleHitsPerUnit);
+      return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
+          allowMultipleHitsPerUnit);
     }
   }
 
-  private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
+  private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
     final Task<CasualtyDetails> task = new Task<CasualtyDetails>() {
       @Override
       public CasualtyDetails run() {
         final boolean isEditMode = (dice == null);
-        final UnitChooser chooser =
-            new UnitChooser(selectFrom, defaultCasualties, dependents, getData(), allowMultipleHitsPerUnit, getMap().getUIContext());
+        final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(),
+            allowMultipleHitsPerUnit, getMap().getUIContext());
         chooser.setTitle(message);
         if (isEditMode) {
           chooser.setMax(selectFrom.size());
@@ -441,18 +440,20 @@ public class BattlePanel extends ActionPanel {
         dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
         panel.add(dicePanel, BorderLayout.SOUTH);
         final String[] options = {"OK"};
-        EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, options, null, getMap()
-                .getUIContext().getCountDownLatchHandler());
+        EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties",
+            JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null,
+            getMap().getUIContext().getCountDownLatchHandler());
         final List<Unit> killed = chooser.getSelected(false);
-        final CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
+        final CasualtyDetails response =
+            new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
         return response;
       }
     };
     return Util.runInSwingEventThread(task);
   }
 
-  public Territory getRetreat(final GUID battleID, final String message, final Collection<Territory> possible, final boolean submerge) {
+  public Territory getRetreat(final GUID battleID, final String message, final Collection<Territory> possible,
+      final boolean submerge) {
     // something is really wrong
     if (!ensureBattleIsDisplayed(battleID)) {
       return null;
@@ -483,7 +484,8 @@ public class BattlePanel extends ActionPanel {
   }
 
   /*
-   * public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
+   * public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID
+   * retreatingPlayer)
    * {
    * SwingUtilities.invokeLater(new Runnable()
    * {
@@ -494,7 +496,8 @@ public class BattlePanel extends ActionPanel {
    * }
    * });
    * }
-   * public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled, final Map<Unit,
+   * public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled, final
+   * Map<Unit,
    * Collection<Unit>> dependents)
    * {
    * SwingUtilities.invokeLater(new Runnable()
@@ -506,7 +509,8 @@ public class BattlePanel extends ActionPanel {
    * }
    * });
    * }
-   * public Collection<Unit> getScramble(final IPlayerBridge bridge, final GUID battleID, final String message, final Collection<Territory>
+   * public Collection<Unit> getScramble(final IPlayerBridge bridge, final GUID battleID, final String message, final
+   * Collection<Territory>
    * possible, final PlayerID player)
    * {
    * // something is really wrong
@@ -515,7 +519,6 @@ public class BattlePanel extends ActionPanel {
    * return m_battleDisplay.getScramble(bridge, message, possible, player);
    * }
    */
-
   public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
@@ -529,7 +532,6 @@ public class BattlePanel extends ActionPanel {
 
   Territory m_oldCenteredTerritory = null;
   Timer m_CenterBattleActionTimer = null;
-
 
   class CenterBattleAction extends AbstractAction {
     private static final long serialVersionUID = -5071133874755970334L;
@@ -554,7 +556,6 @@ public class BattlePanel extends ActionPanel {
       m_oldCenteredTerritory = m_territory;
     }
 
-
     class MyTimerTask extends TimerTask {
       Territory m_territory;
       Timer m_stopTimer;
@@ -573,20 +574,20 @@ public class BattlePanel extends ActionPanel {
         if ((m_count % 3) == 0) {
           getMap().setTerritoryOverlayForBorder(m_territory, Color.white);
           getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
+          // needed here?
           // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
         } else {
           getMap().clearTerritoryOverlay(m_territory);
           getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation needed here?
+          // TODO: getUIContext().getMapData().getBoundingRect(m_territory)); what kind of additional transformation
+          // needed here?
           // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
         }
         m_count++;
       }
     }
   }
-
-
   class FightBattleAction extends AbstractAction {
     private static final long serialVersionUID = 5510976406003707776L;
     Territory m_territory;
@@ -615,12 +616,12 @@ public class BattlePanel extends ActionPanel {
     return "BattlePanel";
   }
 
-
   private class BombardComponent extends JPanel {
     private static final long serialVersionUID = -2388895995673156507L;
     private final JList m_list;
 
-    BombardComponent(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable) {
+    BombardComponent(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
+        final boolean noneAvailable) {
       this.setLayout(new BorderLayout());
       final String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
       final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");

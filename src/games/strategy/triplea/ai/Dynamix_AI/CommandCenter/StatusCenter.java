@@ -10,7 +10,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ai.Dynamix_AI.Others.TerritoryStatus;
 import games.strategy.util.Match;
 
-
 public class StatusCenter {
   private static HashMap<PlayerID, StatusCenter> s_SCInstances = new HashMap<PlayerID, StatusCenter>();
 
@@ -56,7 +55,8 @@ public class StatusCenter {
     return TerritoryStatuses.get(terName);
   }
 
-  public List<Territory> GetTerritoriesThatHaveStatusesMatching(final GameData data, final Match<TerritoryStatus> match) {
+  public List<Territory> GetTerritoriesThatHaveStatusesMatching(final GameData data,
+      final Match<TerritoryStatus> match) {
     final List<Territory> result = new ArrayList<Territory>();
     for (final String key : TerritoryStatuses.keySet()) {
       final TerritoryStatus status = TerritoryStatuses.get(key);

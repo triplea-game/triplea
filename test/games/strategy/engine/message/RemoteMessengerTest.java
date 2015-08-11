@@ -11,13 +11,11 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
 
-
 public class RemoteMessengerTest extends TestCase {
   private int SERVER_PORT = -1;
   private IMessenger m_messenger;
   private RemoteMessenger m_remoteMessenger;
   private UnifiedMessengerHub m_hub;
-
 
   @Override
   protected void setUp() throws Exception {
@@ -26,7 +24,6 @@ public class RemoteMessengerTest extends TestCase {
     m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
     SERVER_PORT = TestUtil.getUniquePort();
   }
-
 
   @Override
   protected void tearDown() throws Exception {
@@ -257,7 +254,8 @@ public class RemoteMessengerTest extends TestCase {
         sleep(1);
       }
       sleep(20);
-      // TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out completely
+      // TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out
+      // completely
       // Perhaps this situation should be changed to a ConnectionLostException or something else?
       client.shutDown();
       // when the client shutdowns, this should wake up.

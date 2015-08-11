@@ -12,22 +12,15 @@ import javax.swing.tree.DefaultTreeModel;
 
 /**
  * A history of the game.
- *
  * Stored as a tree, the data is organized as
  * Root
  * - Round
  * - Step
  * - Event
  * - Child
- *
- *
- *
- *
  * Round - the current round in the game, eg 1, 2, 3
  * Step - the current step, eg Britian Combat Move
  * Event - an event that happened in the game, eg Russia buys 8 inf.
- *
- *
  */
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangePerformer;
@@ -106,7 +99,8 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
     if (firstChange == lastChange) {
       return null;
     }
-    final List<Change> changes = m_changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
+    final List<Change> changes =
+        m_changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
     final Change compositeChange = new CompositeChange(changes);
     if (lastChange >= firstChange) {
       return compositeChange;
@@ -138,7 +132,8 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
     getGameData().acquireWriteLock();
     try {
       final int lastChange = getLastChange(removeAfterNode);
-      // final List<Change> changesToRemove = m_changes.subList(Math.min(m_changes.size(), lastChange), Math.max(m_changes.size(),
+      // final List<Change> changesToRemove = m_changes.subList(Math.min(m_changes.size(), lastChange),
+      // Math.max(m_changes.size(),
       // lastChange));
       // m_changes.removeAll(changesToRemove);
       while (m_changes.size() > lastChange) {
@@ -200,7 +195,6 @@ public class History extends DefaultTreeModel implements java.io.Serializable {
 /**
  * DefaultTreeModel is not serializable across jdk versions
  * Instead we use an instance of this class to store our data
- *
  */
 class SerializedHistory implements Serializable {
   private static final long serialVersionUID = -5808427923253751651L;

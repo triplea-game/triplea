@@ -60,9 +60,8 @@ public class UnitCategory implements Comparable {
     // m_originatingTerr = null;
   }
 
-  public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int damaged, final int bombingDamage,
-      final boolean disabled, final int transportCost,
-      final Territory t) {
+  public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int damaged,
+      final int bombingDamage, final boolean disabled, final int transportCost, final Territory t) {
     m_type = unit.getType();
     m_movement = movement;
     m_transportCost = transportCost;
@@ -123,17 +122,15 @@ public class UnitCategory implements Comparable {
   }
 
   public boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
-    final boolean equalsIgnoreDamaged =
-        other.m_type.equals(this.m_type) && other.m_movement == this.m_movement && other.m_owner.equals(this.m_owner)
-            && Util.equals(this.m_dependents, other.m_dependents);
+    final boolean equalsIgnoreDamaged = other.m_type.equals(this.m_type) && other.m_movement == this.m_movement
+        && other.m_owner.equals(this.m_owner) && Util.equals(this.m_dependents, other.m_dependents);
     return equalsIgnoreDamaged;
   }
 
   public boolean equalsIgnoreMovement(final UnitCategory other) {
-    final boolean equalsIgnoreMovement =
-        other.m_type.equals(this.m_type) && other.m_owner.equals(this.m_owner) && other.m_damaged == this.m_damaged
-            && other.m_bombingDamage == this.m_bombingDamage && other.m_disabled == this.m_disabled
-            && Util.equals(this.m_dependents, other.m_dependents);
+    final boolean equalsIgnoreMovement = other.m_type.equals(this.m_type) && other.m_owner.equals(this.m_owner)
+        && other.m_damaged == this.m_damaged && other.m_bombingDamage == this.m_bombingDamage
+        && other.m_disabled == this.m_disabled && Util.equals(this.m_dependents, other.m_dependents);
     return equalsIgnoreMovement;
   }
 
@@ -152,9 +149,9 @@ public class UnitCategory implements Comparable {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("Entry type:").append(m_type.getName()).append(" owner:").append(m_owner.getName()).append(" damaged:").append(m_damaged)
-        .append(" bombingUnitDamage:").append(m_bombingDamage)
-        .append(" disabled:").append(m_disabled).append(" dependents:").append(m_dependents).append(" movement:").append(m_movement);
+    sb.append("Entry type:").append(m_type.getName()).append(" owner:").append(m_owner.getName()).append(" damaged:")
+        .append(m_damaged).append(" bombingUnitDamage:").append(m_bombingDamage).append(" disabled:").append(m_disabled)
+        .append(" dependents:").append(m_dependents).append(" movement:").append(m_movement);
     return sb.toString();
   }
 

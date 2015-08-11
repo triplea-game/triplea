@@ -59,7 +59,8 @@ public class ModeratorControllerTest extends TestCase {
      * }
      */
     final INode booted = new Node("foo", bannedAddress, 0);
-    m_controller.banIp(booted, null); // this test is failing because any kind of ban requires a mac address for the logging information,
+    m_controller.banIp(booted, null); // this test is failing because any kind of ban requires a mac address for the
+                                      // logging information,
                                       // yet this node has no mac address. need to fix this somehow.
     assertTrue(new BannedIpController().isIpBanned(bannedAddress.getHostAddress()).getFirst());
   }

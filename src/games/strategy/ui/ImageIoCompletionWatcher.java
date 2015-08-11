@@ -1,6 +1,5 @@
 package games.strategy.ui;
 
-
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 import java.util.concurrent.CountDownLatch;
@@ -23,7 +22,8 @@ public class ImageIoCompletionWatcher implements ImageObserver {
   }
 
   @Override
-  public boolean imageUpdate(final Image image, final int flags, final int x, final int y, final int width, final int height) {
+  public boolean imageUpdate(final Image image, final int flags, final int x, final int y, final int width,
+      final int height) {
     // wait for complete or error/abort
     if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0)) {
       m_countDownLatch.countDown();

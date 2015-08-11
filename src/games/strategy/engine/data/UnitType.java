@@ -18,9 +18,7 @@ import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.util.LocalizeHTML;
 
 /**
- *
- *
- *          A prototype for units.
+ * A prototype for units.
  */
 public class UnitType extends NamedAttachable implements Serializable {
   private static final long serialVersionUID = 4885339076798905247L;
@@ -85,8 +83,8 @@ public class UnitType extends NamedAttachable implements Serializable {
   public String getTooltip(final PlayerID playerId, final boolean useHTML) {
     final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
     if (customTip == null || customTip.trim().length() <= 0) {
-      return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId),
-          useHTML, false);
+      return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(
+          (playerId == null ? PlayerID.NULL_PLAYERID : playerId), useHTML, false);
       /*
        * for(IAttachment at:this.getAttachments().values()) {
        * try {
@@ -106,8 +104,8 @@ public class UnitType extends NamedAttachable implements Serializable {
   /**
    * Will return a key of NULL for any units which we do not have art for.
    */
-  public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data, final IUIContext uiContext,
-      final boolean forceIncludeNeutralPlayer) {
+  public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data,
+      final IUIContext uiContext, final boolean forceIncludeNeutralPlayer) {
     final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<PlayerID, List<UnitType>>();
     data.acquireReadLock();
     try {
@@ -134,7 +132,8 @@ public class UnitType extends NamedAttachable implements Serializable {
     return rVal;
   }
 
-  public static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data, final IUIContext uiContext) {
+  public static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
+      final IUIContext uiContext) {
     final ArrayList<UnitType> rVal = new ArrayList<UnitType>();
     data.acquireReadLock();
     try {
@@ -152,7 +151,8 @@ public class UnitType extends NamedAttachable implements Serializable {
         }
       }
       // this next part is purely to allow people to "add" neutral (null player) units to territories.
-      // This is because the null player does not have a production frontier, and we also do not know what units we have art for, so only
+      // This is because the null player does not have a production frontier, and we also do not know what units we have
+      // art for, so only
       // use the units on a map.
       for (final Territory t : data.getMap()) {
         for (final Unit u : t.getUnits()) {

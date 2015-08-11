@@ -5,16 +5,10 @@ import java.util.logging.Logger;
 
 /**
  * Utility class for timing.
- *
  * Use,
- *
  * Stopwatch someTask = new StopWatch(someLogger, someLevel, taskDescriptiopn);
- *
  * ...do stuff
- *
  * someTask.done();
- *
- *
  */
 public class Stopwatch {
   private final long m_startTime = System.currentTimeMillis();

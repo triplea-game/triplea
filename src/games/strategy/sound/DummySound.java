@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import games.strategy.engine.data.PlayerID;
 
-
 public class DummySound implements ISound {
   @Override
   public void initialize() {}
@@ -20,8 +19,8 @@ public class DummySound implements ISound {
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers) {}
 
   @Override
-  public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo,
-      final Collection<PlayerID> butNotThesePlayers,
+  public void playSoundToPlayers(final String clipName, final String subFolder,
+      final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers) {}
 
   @Override

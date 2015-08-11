@@ -15,9 +15,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 /**
- *
  * Panel to show who is playing which players
- *
  */
 public class PlayersPanel extends JPanel {
   private static final long serialVersionUID = -4283654829822141065L;
@@ -38,7 +36,7 @@ public class PlayersPanel extends JPanel {
 
   public static void showPlayers(final IGame game, final Component parent) {
     final PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), game.getData());
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players", JOptionPane.PLAIN_MESSAGE,
-        new CountDownLatchHandler(true));
+    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players",
+        JOptionPane.PLAIN_MESSAGE, new CountDownLatchHandler(true));
   }
 }

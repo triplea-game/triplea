@@ -28,13 +28,10 @@ import games.strategy.ui.Util;
 
 /**
  * Utility for breaking an image into seperate smaller images.
- *
  * User must make a new directory called "newImages" and then run the utility
  * first.
- *
  * To create sea zones only, he must choose "Y" at the prompt. To create
  * territories, he must choose "N" at the prompt.
- *
  * sea zone images directory must be renamed to "seazone
  */
 public class ReliefImageBreaker {
@@ -47,25 +44,23 @@ public class ReliefImageBreaker {
 
   /**
    * main(java.lang.String[] args)
-   *
    * Main program begins here. Creates a new instance of ReliefImageBreaker
    * and calls createMaps() method to start the computations.
    *
    * @param java
    *        .lang.String[]
    *        args the command line parameters
-   *
    * @exception java.lang.Exception
    *            throws
    */
   public static void main(final String[] args) throws Exception {
     handleCommandLineArgs(args);
-    JOptionPane.showMessageDialog(null, new JLabel("<html>"
-        + "This is the ReliefImageBreaker, it is no longer used. "
-        + "<br>It will take any image and finalized map folder, and will create cut out images of the relief art "
-        + "<br>for each territory and sea zone."
-        + "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the TileImageBreaker for that)."
-        + "</html>"));
+    JOptionPane.showMessageDialog(null,
+        new JLabel("<html>" + "This is the ReliefImageBreaker, it is no longer used. "
+            + "<br>It will take any image and finalized map folder, and will create cut out images of the relief art "
+            + "<br>for each territory and sea zone."
+            + "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the TileImageBreaker for that)."
+            + "</html>"));
     final FileSave locationSelection = new FileSave("Where to save Relief Images?", null, s_mapFolderLocation);
     location = locationSelection.getPathString();
     if (s_mapFolderLocation == null && locationSelection.getFile() != null) {
@@ -82,13 +77,11 @@ public class ReliefImageBreaker {
 
   /**
    * createMaps()
-   *
    * One of the main methods that is used to create the actual maps. Calls on
    * various methods to get user input and create the maps.
    *
    * @exception java.io.IOException
    *            throws
-   *
    */
   public void createMaps() throws IOException {
     final Image map = loadImage(); // ask user to input image location
@@ -128,7 +121,6 @@ public class ReliefImageBreaker {
 
   /**
    * java.lang.boolean doSeaZone()
-   *
    * Asks user wether to do sea zones only or not
    *
    * @return java.lang.boolean TRUE to do seazones only.
@@ -154,10 +146,8 @@ public class ReliefImageBreaker {
 
   /**
    * java.lang.String getMapDirectory()
-   *
    * Asks the user to input a valid map name that will be used to form the map
    * directory in the core of TripleA in the class TerritoryData.
-   *
    * we need the exact map name as indicated in the XML game file ie."revised"
    * "classic" "pact_of_steel" of course, without the quotes.
    *
@@ -174,7 +164,6 @@ public class ReliefImageBreaker {
 
   /**
    * java.awt.Image loadImage()
-   *
    * Asks the user to select an image and then it loads it up into an Image
    * object and returns it to the calling class.
    *
@@ -201,7 +190,6 @@ public class ReliefImageBreaker {
 
   /**
    * processImage(java.lang.String, java.awt.Image)
-   *
    * This method does the actual processing of the relief images
    *
    * @param java
@@ -210,7 +198,6 @@ public class ReliefImageBreaker {
    * @param java
    *        .awt.Image
    *        map the image map
-   *
    * @exception java.io.IOException
    *            throws
    */
@@ -228,9 +215,10 @@ public class ReliefImageBreaker {
     }
     final GraphicsConfiguration m_localGraphicSystem =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-    final BufferedImage relief =
-        m_localGraphicSystem.createCompatibleImage(width, height, m_seaZoneOnly ? Transparency.BITMASK : Transparency.TRANSLUCENT);
-    relief.getGraphics().drawImage(map, 0, 0, width, height, bounds.x, bounds.y, bounds.x + width, bounds.y + height, observer);
+    final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(width, height,
+        m_seaZoneOnly ? Transparency.BITMASK : Transparency.TRANSLUCENT);
+    relief.getGraphics().drawImage(map, 0, 0, width, height, bounds.x, bounds.y, bounds.x + width, bounds.y + height,
+        observer);
     blankOutline(alphaChannelImage, relief);
     String outFileName = location + File.separator + territory;
     if (!m_seaZoneOnly) {
@@ -245,7 +233,6 @@ public class ReliefImageBreaker {
 
   /**
    * blankOutLine(java.awt.Image, java.awt.Image.BufferedImage)
-   *
    * Sets the alpha channel to the same as that of the base image
    *
    * @param java

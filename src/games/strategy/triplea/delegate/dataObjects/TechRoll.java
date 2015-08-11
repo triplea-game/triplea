@@ -23,7 +23,8 @@ public class TechRoll {
     this(advance, rolls, newTokens, null);
   }
 
-  public TechRoll(final TechnologyFrontier advance, final int rolls, final int newTokens, final IntegerMap<PlayerID> whoPaysHowMuch) {
+  public TechRoll(final TechnologyFrontier advance, final int rolls, final int newTokens,
+      final IntegerMap<PlayerID> whoPaysHowMuch) {
     m_rolls = rolls;
     m_tech = advance;
     m_newTokens = newTokens;

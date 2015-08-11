@@ -18,8 +18,6 @@ import games.strategy.grid.ui.GridMapPanel;
 
 /**
  * Main class responsible for Checkers game.
- *
- *
  */
 public class Checkers extends GridGame implements IGameLoader {
   private static final long serialVersionUID = 1697055013624548205L;

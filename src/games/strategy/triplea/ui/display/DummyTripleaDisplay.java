@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
-
 public class DummyTripleaDisplay implements ITripleaDisplay {
   private final MainGameFrame m_ui;
 
@@ -51,16 +50,15 @@ public class DummyTripleaDisplay implements ITripleaDisplay {
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers) {}
 
   @Override
-  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
-      final String message, final String title) {}
+  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
+      final Collection<PlayerID> butNotThesePlayers, final String message, final String title) {}
 
   @Override
-  public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-      final Map<Unit, Collection<Unit>> dependentUnits,
-      final PlayerID attacker, final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
-      final Collection<Unit> amphibiousLandAttackers) {}
+  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+      final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
+      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
+      final Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker, final PlayerID defender,
+      final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {}
 
   @Override
   public void listBattleSteps(final GUID battleID, final List<String> steps) {}
@@ -70,8 +68,7 @@ public class DummyTripleaDisplay implements ITripleaDisplay {
 
   @Override
   public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
-      final Collection<Unit> killed, final Collection<Unit> damaged,
-      final Map<Unit, Collection<Unit>> dependents) {}
+      final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
   public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> dead,
@@ -79,14 +76,14 @@ public class DummyTripleaDisplay implements ITripleaDisplay {
 
   @Override
   public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits,
-      final Map<Unit, Collection<Unit>> dependents) {}
+      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {}
 
   @Override
   public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {}
 
   @Override
-  public void notifyRetreat(final String shortMessage, final String message, final String step, final PlayerID retreatingPlayer) {}
+  public void notifyRetreat(final String shortMessage, final String message, final String step,
+      final PlayerID retreatingPlayer) {}
 
   @Override
   public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating) {}

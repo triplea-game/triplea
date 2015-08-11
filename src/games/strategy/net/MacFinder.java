@@ -12,13 +12,16 @@ import java.util.List;
 
 import games.strategy.util.MD5Crypt;
 
-
 public class MacFinder {
   // For quick testing
   public static void main(final String[] args) {
     System.out.println(GetHashedMacAddress());
-    System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false)); // should be valid
-    System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true)); // should be valid
+    System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false)); // should
+                                                                                                                  // be
+                                                                                                                  // valid
+    System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true)); // should
+                                                                                                                // be
+                                                                                                                // valid
     System.out.println(isMacValid("00.00.00.00.00.E0") ? "valid" : "not valid"); // should not be valid
     System.out.println(isMacValid("00.00.00.00.00.D0") ? "valid" : "not valid"); // rest should be valid
     System.out.println(isMacValid("00.1b.63.9f.b4.d3") ? "valid" : "not valid");
@@ -27,7 +30,6 @@ public class MacFinder {
 
   /**
    * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
-   *
    */
   public static String GetHashedMacAddress() {
     final String mac = GetMacAddress();
@@ -39,7 +41,8 @@ public class MacFinder {
   }
 
   private static String GetMacAddress() {
-    // We must try different methods of obtaining the mac address because not all the methods work on each system, and if we can't obtain
+    // We must try different methods of obtaining the mac address because not all the methods work on each system, and
+    // if we can't obtain
     // the mac, we can't login to the lobby
     // First, try to get the mac address of the local host network interface
     try {
@@ -54,7 +57,8 @@ public class MacFinder {
           return mac;
         }
       }
-    } catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but
+    } catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only
+                                 // Throwable->Exception's but
                                  // all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
     {
       System.out.println(
@@ -73,10 +77,12 @@ public class MacFinder {
           return mac;
         }
       }
-    } catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but
+    } catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only
+                                 // Throwable->Exception's but
                                  // all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
     {
-      // System.out.println("Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java 6)! Ignore this
+      // System.out.println("Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java
+      // 6)! Ignore this
       // message if you join the lobby successfully.");
     }
     // Next, try to get the mac address by calling the 'getmac' app that exists in Windows, Mac, and possibly others.
@@ -110,7 +116,8 @@ public class MacFinder {
       ex.printStackTrace();
     }
     try {
-      final String results = executeCommandAndGetResults("ipconfig /all"); // ipconfig -all does not work on my computer, while ipconfig
+      final String results = executeCommandAndGetResults("ipconfig /all"); // ipconfig -all does not work on my
+                                                                           // computer, while ipconfig
                                                                            // /all does not work on others computers
       final String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
       if (isMacValid(mac)) {
@@ -119,7 +126,8 @@ public class MacFinder {
     } catch (final Throwable ex) {
       ex.printStackTrace();
     }
-    // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux and possibly others. May have 1 or 2 spaces
+    // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux and possibly others. May
+    // have 1 or 2 spaces
     // between Ethernet and HWaddr, and may be wireless instead of ethernet.
     /*
      * ...
@@ -128,7 +136,8 @@ public class MacFinder {
      */
     try {
       final String results = executeCommandAndGetResults("ifconfig -a");
-      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to
+      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to
+                                                                                               // try adding a zero to
                                                                                                // the beginning
       if (isMacValid(mac)) {
         return mac;
@@ -136,7 +145,8 @@ public class MacFinder {
     } catch (final Throwable ex) {
       ex.printStackTrace();
     }
-    // Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux and possibly others. May have 1 or 2
+    // Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux and possibly others.
+    // May have 1 or 2
     // spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
     /*
      * ...
@@ -145,7 +155,8 @@ public class MacFinder {
      */
     try {
       final String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to
+      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to
+                                                                                               // try adding a zero to
                                                                                                // the beginning
       if (isMacValid(mac)) {
         return mac;
@@ -278,7 +289,8 @@ public class MacFinder {
           String mac = rawMac.replace(separator, ".");
           if (isMacValid(mac)) {
             return mac;
-          } else if (allowAppendedZeroCheck && rawMac.substring(2, 3).equals(separator)) // If mac is invalid, see if it works after adding
+          } else if (allowAppendedZeroCheck && rawMac.substring(2, 3).equals(separator)) // If mac is invalid, see if it
+                                                                                         // works after adding
                                                                                          // a zero to the front
           {
             macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 1);
@@ -289,7 +301,8 @@ public class MacFinder {
             }
           }
         }
-        // We only invalidate the one separator char and what's before it, so that '-ether 89-94-19...' would not fail, then cause the -
+        // We only invalidate the one separator char and what's before it, so that '-ether 89-94-19...' would not fail,
+        // then cause the -
         // after 89 to get ignored (Not sure if this situation really occurs)
         leftToSearch = leftToSearch.substring(Math.min(macStartIndex + 1, leftToSearch.length()));
       }

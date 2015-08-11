@@ -56,9 +56,8 @@ public class DownloadMapDialog extends JDialog {
     m_findMapsButton = new JButton("Help...");
     m_urlComboBox = new JComboBox(getStoredDownloadSites());
     m_urlComboBox.setEditable(true);
-    m_urlComboBox
-        .setPrototypeDisplayValue(
-            "                                                                                                                                                                            ");
+    m_urlComboBox.setPrototypeDisplayValue(
+        "                                                                                                                                                                            ");
     m_descriptionLabel = new JLabel("<html>TripleA can download maps and games from any correctly configured website."
         + "<br>Just type (or copy and paste) the website's map downloader xml link to the below box, then hit 'List Games'."
         + "<br>You can download from multiple websites. For further instructions on how to use this feature, click 'Help...'</html>");
@@ -112,8 +111,8 @@ public class DownloadMapDialog extends JDialog {
           return;
         }
         if (getPrefNode().getBoolean(FIRST_TIME_DOWNLOADING_PREF, true)) {
-          DesktopUtilityBrowserLauncher
-              .openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
+          DesktopUtilityBrowserLauncher.openURL(
+              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
           getPrefNode().putBoolean(FIRST_TIME_DOWNLOADING_PREF, false);
           try {
             getPrefNode().flush();
@@ -137,8 +136,8 @@ public class DownloadMapDialog extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher
-              .openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
+          DesktopUtilityBrowserLauncher.openURL(
+              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
         } catch (final Exception ex) {
           Util.notifyError(m_cancelButton, ex.getMessage());
           return;
@@ -162,7 +161,8 @@ public class DownloadMapDialog extends JDialog {
     }
     // return new Vector();
     final Vector<String> mapVector = new Vector<String>();
-    mapVector.add("http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml"); // full map listing of all known maps
+    mapVector.add("http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml"); // full map listing of all
+                                                                                            // known maps
     return mapVector;
   }
 

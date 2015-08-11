@@ -11,7 +11,6 @@ import games.strategy.engine.data.UnitType;
 
 /**
  * Abstract class for a Grid AI agent.
- *
  */
 public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGamePlayer {
   public GridAbstractAI(final String name, final String type) {
@@ -42,8 +41,8 @@ public abstract class GridAbstractAI extends AbstractBaseAI implements IGridGame
   }
 
   @Override
-  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player,
-      final GameData data, final String message) {
+  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory,
+      final PlayerID player, final GameData data, final String message) {
     return null;
   }
 }

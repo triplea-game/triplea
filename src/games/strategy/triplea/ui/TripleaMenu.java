@@ -100,10 +100,7 @@ import games.strategy.util.IllegalCharacterRemover;
 import games.strategy.util.LocalizeHTML;
 
 /**
- *
  * Main menu for the triplea frame.
- *
- *
  */
 public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
   private static final long serialVersionUID = 987243661147503593L;
@@ -135,8 +132,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       @Override
       public void actionPerformed(final ActionEvent e) {
         // html formatted string
-        final String hints = "<b> Selecting Units</b><br>"
-            + "Left click on a unit stack to select 1 unit.<br>"
+        final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
             + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
             + "CTRL-Left click on a unit stack to select all units of that type in the stack.<br>"
             + "Shift-Left click on a unit to select all units in the territory.<br>"
@@ -150,16 +146,19 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             + "<br><b> Moving Units to a new Territories</b><br>"
             + "After selecting units Left click on a territory to move units there (do not Left click and Drag, instead select units, then move the mouse, then select the territory).<br>"
             + "CTRL-Left click on a territory to select the territory as a way point (this will force the units to move through this territory on their way to the destination).<br>"
-            + "<br><b> Moving the Map Screen</b><br>" + "Right click and Drag the mouse to move your screen over the map.<br>"
+            + "<br><b> Moving the Map Screen</b><br>"
+            + "Right click and Drag the mouse to move your screen over the map.<br>"
             + "Left click on the map (anywhere), then use the Arrow Keys (or WASD) to move your map around.<br>"
             + "Left click in the Minimap at the top right of the screen, and Drag the mouse.<br>"
             + "Move the mouse to the edge of the map window, and the screen will scroll in that direction.<br>"
-            + "Scrolling the mouse wheel will move the map up and down.<br>"
-            + "<br><b> Zooming Out</b><br>" + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
+            + "Scrolling the mouse wheel will move the map up and down.<br>" + "<br><b> Zooming Out</b><br>"
+            + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
             + "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
-            + "<br><b> Turn off Art</b><br>" + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
+            + "<br><b> Turn off Art</b><br>"
+            + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
             + "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have skins).<br>"
-            + "<br><b> Other Things</b><br>" + "Press 'N' to cycle through units with movement left (move phases only).<br>"
+            + "<br><b> Other Things</b><br>"
+            + "Press 'N' to cycle through units with movement left (move phases only).<br>"
             + "Press 'F' to highlight all units you own that have movement left (move phases only).<br>"
             + "Press 'I' or 'V' to popup info on whatever territory and unit your mouse is currently over.<br>";
         final JEditorPane editorPane = new JEditorPane();
@@ -177,7 +176,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    return "<img src=\"" + unitImageFactory.getBaseImageURL(unitType.getName(), player).toString() + "\" border=\"0\"/>";
+    return "<img src=\"" + unitImageFactory.getBaseImageURL(unitType.getName(), player).toString()
+        + "\" border=\"0\"/>";
   }
 
   public String getUnitStatsTable() {
@@ -191,8 +191,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     final GameData data = getData();
     try {
       data.acquireReadLock();
-      final Map<PlayerID, Map<UnitType, ResourceCollection>> costs = BattleCalculator.getResourceCostsForTUV(data, true);
-      final Map<PlayerID, List<UnitType>> playerUnitTypes = UnitType.getAllPlayerUnitsWithImages(data, getUIContext(), true);
+      final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
+          BattleCalculator.getResourceCostsForTUV(data, true);
+      final Map<PlayerID, List<UnitType>> playerUnitTypes =
+          UnitType.getAllPlayerUnitsWithImages(data, getUIContext(), true);
       for (final Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
         final PlayerID player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
@@ -203,10 +205,9 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         for (final UnitType ut : entry.getValue()) {
           i++;
           hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
-              + "<td>" + getUnitImageURL(ut, player) + "</td>"
-              + "<td>" + ut.getName() + "</td>"
-              + "<td>" + costs.get(player).get(ut).toStringForHTML() + "</td>"
-              + "<td>" + ut.getTooltip(player, true) + "</td></tr>");
+              + "<td>" + getUnitImageURL(ut, player) + "</td>" + "<td>" + ut.getName() + "</td>" + "<td>"
+              + costs.get(player).get(ut).toStringForHTML() + "</td>" + "<td>" + ut.getTooltip(player, true)
+              + "</td></tr>");
         }
         i++;
         hints.append("<tr" + (((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"") + ">"
@@ -233,14 +234,17 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         final JScrollPane scroll = new JScrollPane(editorPane);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-        final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to
+        final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the
+                                                               // message dialog to
                                                                // account for
         final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
-        scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth
-            : (scroll.getPreferredSize().height > availHeight ? Math.min(availWidth, scroll.getPreferredSize().width + 22)
-                : scroll.getPreferredSize().width)),
+        scroll.setPreferredSize(new Dimension(
+            (scroll.getPreferredSize().width > availWidth ? availWidth
+                : (scroll.getPreferredSize().height > availHeight
+                    ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
             (scroll.getPreferredSize().height > availHeight ? availHeight
-                : (scroll.getPreferredSize().width > availWidth ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
+                : (scroll.getPreferredSize().width > availWidth
+                    ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
                     : scroll.getPreferredSize().height))));
         final JDialog dialog = new JDialog(m_frame);
         dialog.setModal(false);
@@ -412,8 +416,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             model.setValue(100);
           }
         });
-        final int result = JOptionPane.showOptionDialog(m_frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
+        final int result = JOptionPane.showOptionDialog(m_frame, panel, "Choose Map Scale",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
         if (result != 0) {
           return;
         }
@@ -520,12 +524,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         final JScrollPane scroll = new JScrollPane(ui);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-        final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to
+        final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the
+                                                               // message dialog to
                                                                // account for
         final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
         // availHeight = (int) ((float) availHeight * 2 / 3);
-        scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
-            (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
+        scroll.setPreferredSize(
+            new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
+                (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
         // scroll.setMaximumSize(new Dimension(availWidth, availHeight));
         JOptionPane.showMessageDialog(m_frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
       }
@@ -594,7 +600,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     mediumButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (mediumButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM) {
+        if (mediumButton.isSelected()
+            && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM) {
           getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.MEDIUM);
           m_frame.getMapPanel().resetMap();
         }
@@ -622,13 +629,16 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       @Override
       public void actionPerformed(final ActionEvent arg0) {
         final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
-        final NumberProperty fontsize = new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
-        final ColorProperty territoryNameColor =
-            new ColorProperty("Territory Name and PU Color", null, MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
-        final ColorProperty unitCountColor = new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
+        final NumberProperty fontsize =
+            new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
+        final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
+            MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
+        final ColorProperty unitCountColor =
+            new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
         final ColorProperty factoryDamageColor =
             new ColorProperty("Factory Damage Color", null, MapImage.getPropertyUnitFactoryDamageColor());
-        final ColorProperty hitDamageColor = new ColorProperty("Hit Damage Color", null, MapImage.getPropertyUnitHitDamageColor());
+        final ColorProperty hitDamageColor =
+            new ColorProperty("Hit Damage Color", null, MapImage.getPropertyUnitHitDamageColor());
         properties.add(fontsize);
         properties.add(territoryNameColor);
         properties.add(unitCountColor);
@@ -638,14 +648,16 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         final JPanel ui = new JPanel();
         ui.setLayout(new BorderLayout());
         ui.add(pui, BorderLayout.CENTER);
-        ui.add(new JLabel("<html>Change the font and color of 'text' (not pictures) on the map. "
-            + "<br /><em>(Some people encounter problems with the color picker, and this "
-            + "<br />is a bug outside of triplea, located in the 'look and feel' that "
-            + "<br />you are using. If you have an error come up, try switching to the "
-            + "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"), BorderLayout.NORTH);
+        ui.add(
+            new JLabel("<html>Change the font and color of 'text' (not pictures) on the map. "
+                + "<br /><em>(Some people encounter problems with the color picker, and this "
+                + "<br />is a bug outside of triplea, located in the 'look and feel' that "
+                + "<br />you are using. If you have an error come up, try switching to the "
+                + "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"),
+            BorderLayout.NORTH);
         final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
-        final int result = JOptionPane.showOptionDialog(m_frame, ui, "Edit Map Font and Color", JOptionPane.YES_NO_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, options, 2);
+        final int result = JOptionPane.showOptionDialog(m_frame, ui, "Edit Map Font and Color",
+            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
         if (result == 2) {
           return;
         } else if (result == 1) {
@@ -704,9 +716,11 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     showEndOfTurnReport.setMnemonic(KeyEvent.VK_R);
     final JCheckBoxMenuItem showTriggeredNotifications = new JCheckBoxMenuItem("Show Triggered Notifications");
     showTriggeredNotifications.setMnemonic(KeyEvent.VK_T);
-    final JCheckBoxMenuItem showTriggerChanceSuccessful = new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Successful");
+    final JCheckBoxMenuItem showTriggerChanceSuccessful =
+        new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Successful");
     showTriggerChanceSuccessful.setMnemonic(KeyEvent.VK_S);
-    final JCheckBoxMenuItem showTriggerChanceFailure = new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Failure");
+    final JCheckBoxMenuItem showTriggerChanceFailure =
+        new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Failure");
     showTriggerChanceFailure.setMnemonic(KeyEvent.VK_F);
     notificationMenu.addMenuListener(new MenuListener() {
       @Override
@@ -828,9 +842,11 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final IRandomStats randomStats = (IRandomStats) getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
+        final IRandomStats randomStats =
+            (IRandomStats) getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
         final RandomStatsDetails stats = randomStats.getRandomStats(getData().getDiceSides());
-        JOptionPane.showMessageDialog(m_frame, new JScrollPane(stats.getAllStats()), "Random Stats", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(m_frame, new JScrollPane(stats.getAllStats()), "Random Stats",
+            JOptionPane.INFORMATION_MESSAGE);
       }
     };
     parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_D);
@@ -848,22 +864,22 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         diceSidesText.setText(String.valueOf(getGame().getData().getDiceSides()));
         final JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("Number of Dice to Roll: "),
-            new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-        panel.add(new JLabel("Sides on the Dice: "),
-            new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-        panel.add(numberOfText,
-            new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-        panel.add(diceSidesText,
-            new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Roll Dice", JOptionPane.OK_OPTION,
-            JOptionPane.INFORMATION_MESSAGE, null,
-            new String[] {"OK"}, "OK");
+        panel.add(new JLabel("Number of Dice to Roll: "), new GridBagConstraints(0, 0, 1, 1, 0, 0,
+            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
+        panel.add(new JLabel("Sides on the Dice: "), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
+        panel.add(numberOfText, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
+        panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
+        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Roll Dice",
+            JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
         try {
           final int numberOfDice = Integer.parseInt(numberOfText.getText());
           if (numberOfDice > 0) {
             final int diceSides = Integer.parseInt(diceSidesText.getText());
-            final int[] dice = getGame().getRandomSource().getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
+            final int[] dice =
+                getGame().getRandomSource().getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
             final JPanel panelDice = new JPanel();
             final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
             panelDice.setLayout(layout);
@@ -896,7 +912,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     };
     final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
     showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
-    showBattleMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    showBattleMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
   /**
@@ -929,7 +946,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_S);
   }
 
-
   private void createAndSaveStats(final boolean showPhaseStats) {
     final ExtendedStats statPanel = new ExtendedStats(getData(), getUIContext());
     final JFileChooser chooser = new JFileChooser();
@@ -943,8 +959,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     } finally {
       getData().releaseReadLock();
     }
-    String defaultFileName = "stats_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + currentRound
-        + (showPhaseStats ? "_full" : "_short");
+    String defaultFileName = "stats_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_"
+        + currentRound + (showPhaseStats ? "_full" : "_short");
     defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
     defaultFileName = defaultFileName + ".csv";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
@@ -957,7 +973,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       getData().acquireReadLock();
       clone = GameDataUtils.cloneGameData(getData());
       final IStat[] stats = statPanel.getStats();
-      // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech tokens or # techs, etc.
+      // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech
+      // tokens or # techs, etc.
       final IStat[] statsExtended = statPanel.getStatsExtended(getData());
       final String[] alliances = statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
       final PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
@@ -999,7 +1016,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       while (playerOrderIterator.hasNext()) {
         final PlayerID currentPlayerID = playerOrderIterator.next();
         text.append(currentPlayerID.getName() + ",");
-        final Iterator<String> allianceName = getData().getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
+        final Iterator<String> allianceName =
+            getData().getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerID).iterator();
         while (allianceName.hasNext()) {
           text.append(allianceName.next() + ",");
         }
@@ -1030,14 +1048,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         text.append("Production Rules: ,");
         text.append("\n");
         text.append("Name,Result,Quantity,Cost,Resource,\n");
-        final Iterator<ProductionRule> purchaseOptionsIterator = getData().getProductionRuleList().getProductionRules().iterator();
+        final Iterator<ProductionRule> purchaseOptionsIterator =
+            getData().getProductionRuleList().getProductionRules().iterator();
         while (purchaseOptionsIterator.hasNext()) {
           final ProductionRule pr = purchaseOptionsIterator.next();
           String costString = pr.toStringCosts().replaceAll("; ", ",");
           costString = costString.replaceAll(" ", ",");
           text.append(pr.getName() + "," + pr.getResults().keySet().iterator().next().getName() + ","
-              + pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + ","
-              + costString + ",");
+              + pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + "," + costString + ",");
           text.append("\n");
         }
         text.append("\n");
@@ -1051,8 +1069,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             continue;
           }
           String toModify = ua.allUnitStatsForExporter();
-          toModify = toModify.replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "")
-              .replaceAll("\n", ";").replaceAll(",", ";");
+          toModify = toModify.replaceFirst("UnitType called ", "").replaceFirst(" with:", "")
+              .replaceAll("games.strategy.engine.data.", "").replaceAll("\n", ";").replaceAll(",", ";");
           toModify = toModify.replaceAll("  ", ",");
           toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");
           text.append(toModify);
@@ -1202,9 +1220,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         try {
           final FileWriter writer = new FileWriter(chooser.getSelectedFile());
           try {
-            writer.write(
-                getUnitStatsTable().toString().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n").replaceAll("</tr>", "</tr>\r\n")
-                    .replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
+            writer.write(getUnitStatsTable().toString().replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
+                .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHTML.PATTERN_HTML_IMG_TAG, ""));
           } finally {
             writer.close();
           }

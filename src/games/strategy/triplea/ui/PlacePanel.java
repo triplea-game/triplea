@@ -28,7 +28,6 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
-
 public class PlacePanel extends AbstractMovePanel {
   private static final long serialVersionUID = -4411301492537704785L;
   private final JLabel actionLabel = new JLabel();
@@ -89,8 +88,8 @@ public class PlacePanel extends AbstractMovePanel {
       if (units.isEmpty()) {
         return;
       }
-      final UnitChooser chooser =
-          new UnitChooser(units, Collections.<Unit, Collection<Unit>>emptyMap(), getData(), false, getMap().getUIContext());
+      final UnitChooser chooser = new UnitChooser(units, Collections.<Unit, Collection<Unit>>emptyMap(), getData(),
+          false, getMap().getUIContext());
       final String messageText = "Place units in " + territory.getName();
       if (maxUnits[0] > 0) {
         chooser.setMaxAndShowMaxButton(maxUnits[0]);
@@ -105,8 +104,8 @@ public class PlacePanel extends AbstractMovePanel {
               : (scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
           (scroll.getPreferredSize().height > availHeight ? availHeight
               : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
-      final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, messageText, JOptionPane.OK_CANCEL_OPTION,
-          JOptionPane.PLAIN_MESSAGE, null, null, null);
+      final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, messageText,
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if (option == JOptionPane.OK_OPTION) {
         final Collection<Unit> choosen = chooser.getSelected();
         m_placeData = new PlaceData(choosen, territory);
@@ -137,8 +136,8 @@ public class PlacePanel extends AbstractMovePanel {
       // get the units that can be placed on this territory.
       Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
       if (territory.isWater()) {
-        if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers() || isLHTR_Carrier_Production_Rules()
-            || GameStepPropertiesHelper.isBid(getData()))) {
+        if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers()
+            || isLHTR_Carrier_Production_Rules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
           final CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier =
@@ -154,7 +153,8 @@ public class PlacePanel extends AbstractMovePanel {
       final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
       final PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
       if (production.isError()) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getErrorMessage(), "No units", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getErrorMessage(), "No units",
+            JOptionPane.INFORMATION_MESSAGE);
         return Collections.emptyList();
       }
       maxUnits[0] = production.getMaxUnits();

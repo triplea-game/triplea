@@ -16,7 +16,6 @@ public class FileOpen {
    *        .lang.String title the title of the JFileChooser
    * @exception java.lang.Exception
    *            ex
-   *
    *            Creates a file selection dialog starting at the current
    *            working directory. Filters out all non-txt files and
    *            handles possible file load errors.
@@ -37,7 +36,8 @@ public class FileOpen {
     this(title, currentDirectory, null, extensions);
   }
 
-  public FileOpen(final String title, final File currentDirectory, final File selectedFile, final String... extensions) {
+  public FileOpen(final String title, final File currentDirectory, final File selectedFile,
+      final String... extensions) {
     final JFileChooser chooser = new JFileChooser();
     chooser.setDialogTitle(title);
     if (selectedFile != null) {

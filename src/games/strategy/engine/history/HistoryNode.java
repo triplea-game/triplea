@@ -12,7 +12,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * -> -> Step<br>
  * -> -> Event<br>
  * -> -> Round
- *
  */
 public abstract class HistoryNode extends DefaultMutableTreeNode implements Serializable {
   private static final long serialVersionUID = 628623470654123887L;

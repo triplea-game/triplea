@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class NamedAttachable extends DefaultNamed implements Attachable {
   private static final long serialVersionUID = 8597712929519099255L;
   private final Map<String, IAttachment> m_attachments = new HashMap<String, IAttachment>();

@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
   private final IntegerMap<Resource> m_resources = new IntegerMap<Resource>();
@@ -60,8 +59,8 @@ public class ResourceCollection extends GameDataComponent {
     }
     final int current = getQuantity(resource);
     if ((current - quantity) < 0) {
-      throw new IllegalArgumentException(
-          "Cant remove more than player has of resource: " + resource.getName() + ". current:" + current + " toRemove: " + quantity);
+      throw new IllegalArgumentException("Cant remove more than player has of resource: " + resource.getName()
+          + ". current:" + current + " toRemove: " + quantity);
     }
     change(resource, -quantity);
   }
@@ -130,7 +129,6 @@ public class ResourceCollection extends GameDataComponent {
     for (final Resource resource : cost.keySet()) {
       removeResource(resource, cost.getInt(resource));
     }
-
   }
 
   public void subtract(final IntegerMap<Resource> cost, final int quantity) {
@@ -161,7 +159,8 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * Will multiply all values by a given double. Can be used to divide all numbers, if given a fractional double (ie: to divide by 2, use
+   * Will multiply all values by a given double. Can be used to divide all numbers, if given a fractional double (ie: to
+   * divide by 2, use
    * 0.5 as the double)
    *
    * @param multiplyBy
@@ -208,7 +207,8 @@ public class ResourceCollection extends GameDataComponent {
     try {
       pus = data.getResourceList().getResource(Constants.PUS);
     } catch (final NullPointerException e) {
-      // we are getting null pointers here occasionally on deserializing gamesaves, because data.getResourceList() is still null at this
+      // we are getting null pointers here occasionally on deserializing gamesaves, because data.getResourceList() is
+      // still null at this
       // point
       for (final Resource r : resources.keySet()) {
         if (r.getName().equals(Constants.PUS)) {

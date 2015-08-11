@@ -210,14 +210,17 @@ public class HistoryLog extends JFrame {
         }
         if (node instanceof Renderable) {
           final Object details = ((Renderable) node).getRenderingData();
-
-          // TODO: why is this here when the one above seems to take care of it just fine? I am commenting out because it is causing MAJOR
-          // issues with PBEM posts (fatal error, because if the person does some moves, then for example turns on edit mode and does
-          // something then turns it off, then later undo's a move, and the move list is now empty, then we are have a fatal crash at end of
+          // TODO: why is this here when the one above seems to take care of it just fine? I am commenting out because
+          // it is causing MAJOR
+          // issues with PBEM posts (fatal error, because if the person does some moves, then for example turns on edit
+          // mode and does
+          // something then turns it off, then later undo's a move, and the move list is now empty, then we are have a
+          // fatal crash at end of
           // the turn when we try to make the history post)
           // flush move list (but support conquering territory on combat move)
           /*
-           * if (moving && (title.equals(MoveDelegate.CLEANING_UP_AFTER_MOVEMENT_PHASES)) && !(details instanceof MoveDescription)) // &&
+           * if (moving && (title.equals(MoveDelegate.CLEANING_UP_AFTER_MOVEMENT_PHASES)) && !(details instanceof
+           * MoveDescription)) // &&
            * !title.matches("\\w+ takes? .*? from \\w+") && !title.indexOf(EditDelegate.EDITMODE_ON) != -1 &&
            * title.indexOf(EditDelegate.EDITMODE_OFF) != -1))
            * {
@@ -287,7 +290,8 @@ public class HistoryLog extends JFrame {
                   logWriter.println(indent + moreIndent + title);
                 } else if (title.startsWith("Battle casualty summary:")) {
                   // logWriter.println(indent+"CAS1: "+title);
-                  logWriter.println(indent + conquerStr + ". Battle score " + title.substring(title.indexOf("for attacker is")));
+                  logWriter.println(
+                      indent + conquerStr + ". Battle score " + title.substring(title.indexOf("for attacker is")));
                   conquerStr = "";
                   // separate units by player and show casualty summary
                   final IntegerMap<PlayerID> unitCount = new IntegerMap<PlayerID>();
@@ -297,15 +301,16 @@ public class HistoryLog extends JFrame {
                     unitCount.add(unit.getOwner(), 1);
                   }
                   for (final PlayerID player : unitCount.keySet()) {
-                    logWriter.println(
-                        indent + "Casualties for " + player.getName() + ": " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player));
+                    logWriter.println(indent + "Casualties for " + player.getName() + ": "
+                        + MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player));
                   }
                 } else if (title.matches(".*? placed in .*")) {
                   logWriter.println(indent + title);
                 } else if (title.matches(".* owned by the \\w+ retreated to .*")) {
                   logWriter.println(indent + title);
                 } else if (title.matches("\\w+ win")) {
-                  conquerStr = title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining";
+                  conquerStr =
+                      title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining";
                 } else {
                   logWriter.println(indent + title);
                 }
@@ -443,7 +448,8 @@ public class HistoryLog extends JFrame {
     printTerritorySummary(data, allowedPlayers, territories);
   }
 
-  private void printTerritorySummary(final GameData data, final Collection<PlayerID> players, final Collection<Territory> territories) {
+  private void printTerritorySummary(final GameData data, final Collection<PlayerID> players,
+      final Collection<Territory> territories) {
     if (players == null || players.isEmpty() || territories == null || territories.isEmpty()) {
       return;
     }
@@ -528,8 +534,7 @@ public class HistoryLog extends JFrame {
       if (!place.isWater()) {
         isConvoyOrLand = true;
       } else if (place.isWater() && ta != null && OriginalOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID
-          && OriginalOwnerTracker.getOriginalOwner(place) == player
-          && place.getOwner().equals(player)) {
+          && OriginalOwnerTracker.getOriginalOwner(place) == player && place.getOwner().equals(player)) {
         isConvoyOrLand = true;
       }
       if (place.getOwner().equals(player) && isConvoyOrLand) {

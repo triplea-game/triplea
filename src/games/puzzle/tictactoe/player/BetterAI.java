@@ -17,15 +17,12 @@ import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * AI player for Tic Tac Toe.
- *
  * Capable of playing using either the minimax algorithm or alpha-beta algorithm.
- *
  */
 public class BetterAI extends GridAbstractAI {
   private int m_xDimension;
   private int m_yDimension;
   private PlayerID m_opponent;
-
 
   /** Algorithms available for use in BetterAI */
   public enum Algorithm {
@@ -73,7 +70,6 @@ public class BetterAI extends GridAbstractAI {
   private State getInitialState() {
     return new State(getGameData().getMap().getTerritories());
   }
-
 
   class State extends GameState<Play> {
     private final HashMap<Integer, PlayerID> squareOwner;
@@ -259,8 +255,6 @@ public class BetterAI extends GridAbstractAI {
       return string;
     }
   }
-
-
   class Play {
     private final int m_x;
     private final int m_y;

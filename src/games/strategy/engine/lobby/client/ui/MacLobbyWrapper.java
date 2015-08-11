@@ -6,7 +6,6 @@ import com.apple.eawt.ApplicationEvent;
 
 /**
  * TODO This class should be merged with games.strategy.common.ui.MacWrapper.
- *
  */
 public class MacLobbyWrapper {
   // keep this in its own class, otherwise we get a no class def error when

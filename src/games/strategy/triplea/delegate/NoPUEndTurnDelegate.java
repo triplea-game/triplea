@@ -7,9 +7,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 
 /**
- *
- *
- *          At the end of the turn collect NO income.
+ * At the end of the turn collect NO income.
  */
 @AutoSave(afterStepEnd = true)
 public class NoPUEndTurnDelegate extends EndTurnDelegate {
@@ -24,7 +22,8 @@ public class NoPUEndTurnDelegate extends EndTurnDelegate {
   }
 
   /**
-   * Default behavior for this delegate is that we do not collect PU/resource income from territories, but we do collect and do any national
+   * Default behavior for this delegate is that we do not collect PU/resource income from territories, but we do collect
+   * and do any national
    * objectives and triggers.
    */
   @Override

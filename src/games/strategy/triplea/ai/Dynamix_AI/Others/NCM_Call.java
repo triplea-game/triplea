@@ -27,7 +27,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.Match;
 
-
 @SuppressWarnings("unchecked")
 public class NCM_Call {
   private Territory m_target = null;
@@ -95,7 +94,8 @@ public class NCM_Call {
       }
       for (final Unit unit : units) {
         if (Matches.UnitIsAAforAnything.match(unit)) {
-          // If this is an AA and we've already added an AA as a recruit or (the from ter has a factory and this is the only AA), skip AA
+          // If this is an AA and we've already added an AA as a recruit or (the from ter has a factory and this is the
+          // only AA), skip AA
           if (addedAA || (ter.getUnits().getMatches(Matches.UnitCanProduceUnitsAndCanBeDamaged).size() > 0
               && ter.getUnits().getMatches(Matches.UnitIsAAforAnything).size() <= 1)) {
             continue;
@@ -143,7 +143,8 @@ public class NCM_Call {
     // DUtils.Log(Level.FINER, " NCM Call requirements set. Min Survival Chance: {0}", m_minSurvivalChance);
   }
 
-  private float getMeetingOfMinSurvivalChanceScore(final AggregateResults simulatedAttack, final float minSurvivalChance) {
+  private float getMeetingOfMinSurvivalChanceScore(final AggregateResults simulatedAttack,
+      final float minSurvivalChance) {
     if (m_callType.equals(NCM_CallType.Land_ForLandGrab)) {
       if (m_recruitedUnits.size() > 0) {
         return 1.0F; // Has reached, but not exceeded
@@ -151,7 +152,8 @@ public class NCM_Call {
         return 0.0F;
       }
     }
-    return DUtils.Divide_SL((float) simulatedAttack.getDefenderWinPercent(), minSurvivalChance); // We're this close to meeting our min
+    return DUtils.Divide_SL((float) simulatedAttack.getDefenderWinPercent(), minSurvivalChance); // We're this close to
+                                                                                                 // meeting our min
                                                                                                  // survival chance
   }
 
@@ -163,8 +165,12 @@ public class NCM_Call {
         return 0.0F;
       }
     }
-    return DUtils.Divide_SL(maxBattleVolleys, (float) simulatedAttack.getAverageBattleRoundsFought()); // We're this close to getting the
-                                                                                                       // average battle volley count below
+    return DUtils.Divide_SL(maxBattleVolleys, (float) simulatedAttack.getAverageBattleRoundsFought()); // We're this
+                                                                                                       // close to
+                                                                                                       // getting the
+                                                                                                       // average battle
+                                                                                                       // volley count
+                                                                                                       // below
                                                                                                        // max amount
   }
 
@@ -201,8 +207,8 @@ public class NCM_Call {
       if (m_recruitedUnits.contains(ug)) {
         continue;
       }
-      final List<Unit> attackers =
-          DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+      final List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer,
+          Matches.TerritoryIsLandOrWater);
       final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
       defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
       if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses) {
@@ -210,12 +216,14 @@ public class NCM_Call {
         defenders.addAll(m_target.getUnits().getUnits());
       }
       final AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, true);
-      final float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
+      final float howCloseToMeetingMinSurvivalChance =
+          getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
       if (howCloseToMeetingMinSurvivalChance < 1.0F) {
         m_recruitedUnits.add(ug);
         continue;
       }
-      final float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
+      final float howCloseToMeetingBattleVolleyMax =
+          getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
       if (howCloseToMeetingBattleVolleyMax < 1.0F) {
         m_recruitedUnits.add(ug);
         continue;
@@ -228,8 +236,8 @@ public class NCM_Call {
       if (m_recruitedUnits.contains(ug)) {
         continue;
       }
-      final List<Unit> attackers =
-          DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+      final List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer,
+          Matches.TerritoryIsLandOrWater);
       final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
       defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
       if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses) {
@@ -238,12 +246,14 @@ public class NCM_Call {
       }
       final AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data,
           DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
-      final float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
+      final float howCloseToMeetingMinSurvivalChance =
+          getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
       if (howCloseToMeetingMinSurvivalChance < 1.0F) {
         m_recruitedUnits.add(ug);
         continue;
       }
-      final float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
+      final float howCloseToMeetingBattleVolleyMax =
+          getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
       if (howCloseToMeetingBattleVolleyMax < 1.0F) {
         m_recruitedUnits.add(ug);
         continue;
@@ -287,48 +297,50 @@ public class NCM_Call {
     if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target)) {
       final Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
       ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
-      final List<Unit> recruits =
-          DUtils.CombineCollections(GetRecruitedUnitsAsUnitList(), DUtils.GetUnitsGoingToBePlacedAtX(m_data, player, m_target));
-      final List<Float> capTakeoverChances =
-          DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, recruits,
-              DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+      final List<Unit> recruits = DUtils.CombineCollections(GetRecruitedUnitsAsUnitList(),
+          DUtils.GetUnitsGoingToBePlacedAtX(m_data, player, m_target));
+      final List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player,
+          ourClosestCap, m_target, recruits, DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
       ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
       if (capTakeoverChances.get(1) > .1F) // If takeover chance is 10% or more after move
       {
-        // And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at
+        // And takeover chance before and after move is at least 1% different or there average attackers left before and
+        // after move is at
         // least 1 different
-        if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1) {
+        if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F
+            || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1) {
           DUtils.Log(Level.FINEST, "      Performing call would endanger capital, so canceling.");
           return false;
         }
       }
     }
-    final List<Unit> attackers =
-        DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+    final List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer,
+        Matches.TerritoryIsLandOrWater);
     final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
     defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
     if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses) {
       defenders.removeAll(m_target.getUnits().getUnits());
       defenders.addAll(m_target.getUnits().getUnits());
     }
-    final AggregateResults simulatedAttack = DUtils
-        .GetBattleResults(attackers, defenders, m_target, m_data,
-            DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
-    DUtils.Log(Level.FINEST, "        Enemy attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}",
-        attackers.size(), defenders.size(),
-        simulatedAttack.getAttackerWinPercent());
+    final AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data,
+        DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
+    DUtils.Log(Level.FINEST,
+        "        Enemy attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}",
+        attackers.size(), defenders.size(), simulatedAttack.getAttackerWinPercent());
     if (m_callType.equals(NCM_CallType.Land_ForDefensiveFront)) {
-      final float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
-      DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance,
-          .98F);
+      final float howCloseToMeetingMinSurvivalChance =
+          getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
+      DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}",
+          howCloseToMeetingMinSurvivalChance, .98F);
       if (howCloseToMeetingMinSurvivalChance < .98F) {
         return false;
       }
       return true; // We've met all requirements
     } else if (m_callType.equals(NCM_CallType.Land_ForCapitalDefense)) {
-      final float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
-      DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance,
-          .98F);
+      final float howCloseToMeetingMinSurvivalChance =
+          getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
+      DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}",
+          howCloseToMeetingMinSurvivalChance, .98F);
       if (howCloseToMeetingMinSurvivalChance < .98F) {
         DUtils.Log(Level.FINEST,
             "        Since this is a call for capital defense, we'll perform this call even if the requirements aren't met...");// return
@@ -345,8 +357,8 @@ public class NCM_Call {
       }
       final int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
       final int production = TerritoryAttachment.getProduction(m_target);
-      final List<Unit> landAttackers =
-          DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+      final List<Unit> landAttackers = DUtils.GetNNEnemyLUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer,
+          Matches.TerritoryIsLandOrWater);
       if (unitCost - 1 <= production || landAttackers.isEmpty()) {
         return true;
       }
@@ -355,7 +367,8 @@ public class NCM_Call {
   }
 
   public boolean IsCallWithAdditionalRecruitsWorthwhile() {
-    DUtils.Log(Level.FINEST, "      Determining if ncm call with additional recruits is worthwhile. Target: {0} Recruits Size: {1}",
+    DUtils.Log(Level.FINEST,
+        "      Determining if ncm call with additional recruits is worthwhile. Target: {0} Recruits Size: {1}",
         m_target, m_recruitedUnits.size());
     if (m_recruitedUnits.isEmpty()) {
       return false;
@@ -378,15 +391,18 @@ public class NCM_Call {
       final Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
       ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
       final List<Float> capTakeoverChances =
-          DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(),
-              DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+          DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target,
+              GetRecruitedUnitsAsUnitList(), DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
       ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
       if (capTakeoverChances.get(1) > .1F) // If takeover chance is 10% or more after move
       {
-        // And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at
+        // And takeover chance before and after move is at least 1% different or there average attackers left before and
+        // after move is at
         // least 1 different
-        if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1) {
-          DUtils.Log(Level.FINEST, "      Performing call with additional recruits would endanger capital, so canceling.");
+        if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F
+            || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1) {
+          DUtils.Log(Level.FINEST,
+              "      Performing call with additional recruits would endanger capital, so canceling.");
           return false;
         }
       }
@@ -405,8 +421,8 @@ public class NCM_Call {
   }
 
   public void Reset() {
-    DUtils.Log(Level.FINER, "        Resetting call. Target: {0} Call Type: {1} Priority: {2} Recruit Size: {3}", m_target, m_callType,
-        m_priority, m_recruitedUnits.size());
+    DUtils.Log(Level.FINER, "        Resetting call. Target: {0} Call Type: {1} Priority: {2} Recruit Size: {3}",
+        m_target, m_callType, m_priority, m_recruitedUnits.size());
     m_completed = false;
     m_disqualified = false;
     m_recruitedUnits = new ArrayList<UnitGroup>();
@@ -420,7 +436,8 @@ public class NCM_Call {
 
   public void PerformCall(final IMoveDelegate mover) {
     if (m_recruitedUnits.isEmpty()) {
-      DUtils.Log(Level.FINER, "      Call is called to perform, but there are no recruits! Target: {0} Call Type: {1} Priority: {2}",
+      DUtils.Log(Level.FINER,
+          "      Call is called to perform, but there are no recruits! Target: {0} Call Type: {1} Priority: {2}",
           m_target, m_callType, m_priority);
       m_completed = true;
       return; // We don't want to pause for an 'empty' call

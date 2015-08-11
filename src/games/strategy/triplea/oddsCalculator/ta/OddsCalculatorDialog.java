@@ -24,14 +24,13 @@ import games.strategy.triplea.ui.TripleAFrame;
 public class OddsCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
   private static final int MAX_HEIGHT = 640;
-
   private static Point lastPosition;
   private static Dimension lastShape;
-
   private final OddsCalculatorPanel panel;
 
   public static void show(final TripleAFrame taFrame, final Territory t) {
-    final OddsCalculatorDialog dialog = new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUIContext(), taFrame, t);
+    final OddsCalculatorDialog dialog =
+        new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUIContext(), taFrame, t);
     dialog.pack();
     dialog.addWindowListener(new WindowAdapter() {
       @Override

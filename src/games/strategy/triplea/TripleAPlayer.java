@@ -62,14 +62,13 @@ import games.strategy.util.Tuple;
 
 /**
  * As a rule, nothing that changes GameData should be in here.
- * It should be using a Change done in a delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
- *
+ * It should be using a Change done in a delegate, and done through an IDelegate, which we get through
+ * getPlayerBridge().getRemote()
  */
 public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements IGamePlayer, ITripleaPlayer {
   private boolean m_soundPlayedAlreadyCombatMove = false;
   private boolean m_soundPlayedAlreadyNonCombatMove = false;
   private boolean m_soundPlayedAlreadyPurchase = false;
-
   private boolean m_soundPlayedAlreadyTechnology = false;
   private boolean m_soundPlayedAlreadyBattle = false;
   private boolean m_soundPlayedAlreadyEndTurn = false;
@@ -100,15 +99,17 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       System.out.println("Game frame is null, but entered player step: " + name + " for player: " + this.toString());
       return; // headless games shouldn't get here, but lets try returning anyway
     }
-    // TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate class seems like a bad way of
+    // TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate class seems
+    // like a bad way of
     // doing this whole method. however i can't think of anything better right now.
-
     // This is how we find out our game step: getGameData().getSequence().getStep()
-    // The game step contains information, like the exact delegate and the delegate's class, that we can further use if needed.
-    // This is how we get our communication bridge for affecting the gamedata: (ISomeDelegate) getPlayerBridge().getRemote()
-    // We should never touch the game data directly. All changes to game data are done through the remote, which then changes the game using
+    // The game step contains information, like the exact delegate and the delegate's class, that we can further use if
+    // needed.
+    // This is how we get our communication bridge for affecting the gamedata: (ISomeDelegate)
+    // getPlayerBridge().getRemote()
+    // We should never touch the game data directly. All changes to game data are done through the remote, which then
+    // changes the game using
     // the DelegateBridge -> change factory
-
     m_ui.requiredTurnSeries(getPlayerID());
     boolean badStep = false;
     enableEditModeMenu();
@@ -207,7 +208,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -215,7 +217,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
      * if (!iPoliticsDelegate.stuffToDoInThisDelegate())
      * return;
      */
-    final PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
+    final PoliticalActionAttachment actionChoice =
+        m_ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
     if (actionChoice != null) {
       iPoliticsDelegate.attemptAction(actionChoice);
       politics(false);
@@ -232,7 +235,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -248,12 +252,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   @Override
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics) {
+  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+      final boolean politics) {
     final GameData data = getGameData();
     if (!getPlayerID().amNotDeadYet(data) || getPlayerBridge().isGameOver()) {
       return true;
     }
-    return m_ui.acceptAction(playerSendingProposal, "To " + getPlayerID().getName() + ": " + acceptanceQuestion, politics);
+    return m_ui.acceptAction(playerSendingProposal, "To " + getPlayerID().getName() + ": " + acceptanceQuestion,
+        politics);
   }
 
   private void tech() {
@@ -266,7 +272,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -282,9 +289,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     }
     final TechRoll techRoll = m_ui.getTechRolls(id);
     if (techRoll != null) {
-
-      final TechResults techResults = techDelegate.rollTech(techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens(),
-          techRoll.getWhoPaysHowMuch());
+      final TechResults techResults = techDelegate.rollTech(techRoll.getRolls(), techRoll.getTech(),
+          techRoll.getNewTokens(), techRoll.getWhoPaysHowMuch());
       if (techResults.isError()) {
         m_ui.notifyError(techResults.getErrorString());
         tech();
@@ -304,7 +310,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -321,7 +328,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_MOVE_COMBAT, id.getName());
       m_soundPlayedAlreadyCombatMove = true;
     }
-
     final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
@@ -355,7 +361,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -376,7 +383,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -404,27 +412,30 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_PURCHASE, id.getName());
       m_soundPlayedAlreadyPurchase = true;
     }
-
     // Check if any factories need to be repaired
     String error = null;
-    if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null && !id.getRepairFrontier().getRules().isEmpty()) {
+    if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null
+        && !id.getRepairFrontier().getRules().isEmpty()) {
       final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
+        final Match<Unit> myDamaged =
+            new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
         final Collection<Unit> damagedUnits = new ArrayList<Unit>();
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
         }
         if (damagedUnits.size() > 0) {
-          final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
+          final HashMap<Unit, IntegerMap<RepairRule>> repair =
+              m_ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
           if (repair != null) {
             final IPurchaseDelegate purchaseDel;
             try {
               purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
             } catch (final ClassCastException e) {
-              final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
-                  + getPlayerBridge().getRemoteDelegate().getClass();
-              System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+              final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName()
+                  + ", Remote class name: " + getPlayerBridge().getRemoteDelegate().getClass();
+              System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so
+                                                // print to err too
               e.printStackTrace();
               throw new IllegalStateException(errorContext, e);
             }
@@ -448,7 +459,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -470,7 +482,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -503,7 +516,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
         return;
       }
       if (details != null) {
-        final String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid(), details.getBattleType());
+        final String error =
+            battleDel.fightBattle(details.getWhere(), details.isBombingRaid(), details.getBattleType());
         if (error != null) {
           m_ui.notifyError(error);
         }
@@ -522,7 +536,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -539,7 +554,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       final PlaceData placeData = m_ui.waitForPlace(id, bid, getPlayerBridge());
       if (placeData == null) {
         // this only happens in lhtr rules
-        if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData()) || canAirLand(false, id) || getPlayerBridge().isGameOver()) {
+        if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData()) || canAirLand(false, id)
+            || getPlayerBridge().isGameOver()) {
           return;
         } else {
           continue;
@@ -564,7 +580,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext); // for some reason the client is not seeing or getting these errors, so print to
+                                        // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -578,21 +595,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     m_ui.waitForEndTurn(getPlayerID(), getPlayerBridge());
   }
 
-
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
-    return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID,
-        allowMultipleHitsPerUnit);
+    return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
+        battleID, allowMultipleHitsPerUnit);
   }
 
-
   @Override
-  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides) {
+  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
+      final int diceSides) {
     return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
   }
 
@@ -600,8 +616,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
    * games.strategy.engine.data.Territory, java.util.Collection, boolean)
    */
   @Override
-  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
-      final boolean noneAvailable) {
+  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory,
+      final Collection<Territory> territories, final boolean noneAvailable) {
     return m_ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
   }
 
@@ -637,15 +653,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
   }
 
-
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
     return m_ui.getStrategicBombingRaid(territory);
   }
 
-
   @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
+  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+      final Collection<Unit> bombers) {
     return m_ui.getStrategicBombingRaidTarget(territory, potentialTargets, bombers);
   }
 
@@ -655,14 +670,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   *
    * games.strategy.engine.data.Territory)
    */
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+      final Territory from) {
     return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
   }
-
 
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
@@ -670,11 +684,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     return m_ui.selectTerritoryForAirToLand(candidates, currentTerritory, unitMessage);
   }
 
-
   @Override
   public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
-    final String question = "Your units will be fired on in: " + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false)
-        + ".  Do you still want to move?";
+    final String question = "Your units will be fired on in: "
+        + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false) + ".  Do you still want to move?";
     return m_ui.getOK(question);
   }
 
@@ -691,7 +704,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   *
    * java.lang.String, java.lang.String)
    */
   @Override
@@ -701,10 +713,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   *
    * java.lang.String)
-   *
-   * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final
+   * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final
+   * String message, final
    * PlayerID player)
    * {
    * return m_ui.getBattlePanel().getScramble(getPlayerBridge(), battleID, message, possibleTerritories, player);
@@ -717,7 +728,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message) {
+  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+      final String message) {
     return m_ui.selectUnitsQuery(current, possible, message);
   }
 
@@ -766,11 +778,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
+    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal =
+        new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
     for (final Entry<Resource, Integer> entry : attackTokens.entrySet()) {
       final Resource r = entry.getKey();
       final int max = entry.getValue();
-      final HashMap<Territory, IntegerMap<Unit>> selection = m_ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
+      final HashMap<Territory, IntegerMap<Unit>> selection =
+          m_ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
         final Territory t = selectionEntry.getKey();
         HashMap<Unit, IntegerMap<Resource>> currentTerr = rVal.get(t);
@@ -789,13 +803,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
         rVal.put(t, currentTerr);
       }
     }
-
     return rVal;
   }
 
   @Override
-  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices,
-      final int unitsPerPick) {
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
+      final List<Unit> unitChoices, final int unitsPerPick) {
     if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1) {
       return new Tuple<Territory, Set<Unit>>(null, new HashSet<Unit>());
     }

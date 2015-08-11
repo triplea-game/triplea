@@ -10,7 +10,6 @@ import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 
-
 public class DummyGridGameDisplay implements IGridGameDisplay {
   private final MainGameFrame m_ui;
 

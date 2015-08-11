@@ -132,18 +132,19 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     m_players.setFocusable(false);
     m_players.setCellRenderer(new ListCellRenderer() {
       @Override
-      public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected,
-          final boolean cellHasFocus) {
+      public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+          final boolean isSelected, final boolean cellHasFocus) {
         if (m_setCellRenderer == null) {
           return new JLabel();
         }
         final INode node = (INode) value;
         final DefaultListCellRenderer renderer;
         if (m_setCellRenderer instanceof PlayerChatRenderer) {
-          renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, node, index, isSelected, cellHasFocus);
-        } else {
-          renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, getDisplayString(node), index,
+          renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, node, index,
               isSelected, cellHasFocus);
+        } else {
+          renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list,
+              getDisplayString(node), index, isSelected, cellHasFocus);
         }
         if (m_chat.isIgnored(node)) {
           renderer.setIcon(s_ignoreIcon);
@@ -208,7 +209,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   private void setWidgetActivation() {}
 
   /**
-   *
    * The renderer will be passed in a string
    */
   public void setPlayerRenderer(final ListCellRenderer renderer) {
@@ -270,7 +270,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound) {}
+  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
+      final String sound) {}
 
   @Override
   public void addMessage(final String message, final String from, final boolean thirdperson) {}

@@ -1,6 +1,5 @@
 package games.strategy.net;
 
-
 public interface IMessengerErrorListener {
   /**
    * The messenger is no longer able to send or receive messages.

@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.Dynamix_AI;
 
-
 public class DConstants {
   /**
    * Used when you want a really high number that can still be increased.

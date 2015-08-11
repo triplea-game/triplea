@@ -10,14 +10,11 @@ import java.util.Set;
 
 /**
  * Tracks alliances between players.
- *
  * An alliance is a named entity, players are added to an alliance.
- *
- * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for alliance based
+ * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for
+ * alliance based
  * victory conditions.
- *
  * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
- *
  */
 public class AllianceTracker extends GameDataComponent {
   private static final long serialVersionUID = 2815023984535209353L;
@@ -51,10 +48,8 @@ public class AllianceTracker extends GameDataComponent {
    * Removes player from alliance allianceName. Throws an exception if
    * player is not in that alliance. Throws an exception if the player
    * is not in the specified alliance.
-   *
    * @param player
    * The player to remove from the alliance.
-   *
    * @param allianceName
    * The alliance to remove from.
    */
@@ -87,25 +82,18 @@ public class AllianceTracker extends GameDataComponent {
    * {
    * return Matches.RelationshipIsAllied.match((getRelationshipType(p1, p2)));
    * }
-   *
    * if (p1 == null || p2 == null)
    * throw new IllegalArgumentException("Arguments cannot be null p1:" + p1 + " p2:" + p2);
-   *
    * if (p1.equals(p2))
    * return true;
-   *
    * if (!m_alliances.containsKey(p1) || !m_alliances.containsKey(p2))
    * return false;
-   *
    * Collection<String> a1 = m_alliances.get(p1);
    * Collection<String> a2 = m_alliances.get(p2);
-   *
    * return games.strategy.util.Util.someIntersect(a1, a2);
-   *
    * }
    */
   /**
-   *
    * @return a set of all the games alliances, this will return an empty set if you aren't using alliances
    */
   public Set<String> getAlliances() {
@@ -124,7 +112,6 @@ public class AllianceTracker extends GameDataComponent {
    * @param allianceName
    *        Alliance name
    * @return all the players in the given alliance
-   *
    */
   public HashSet<PlayerID> getPlayersInAlliance(final String allianceName) {
     final Iterator<PlayerID> keys = m_alliances.keySet().iterator();

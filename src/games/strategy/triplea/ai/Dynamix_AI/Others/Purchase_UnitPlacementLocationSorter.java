@@ -20,19 +20,19 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.Match;
 
-
 @SuppressWarnings("deprecation")
 public class Purchase_UnitPlacementLocationSorter {
   @SuppressWarnings("unchecked")
-  public static List<Territory> CalculateAndSortUnitPlacementLocations(final Dynamix_AI ai, final boolean purchaseForBid,
-      final GameData data, final PlayerID player) {
+  public static List<Territory> CalculateAndSortUnitPlacementLocations(final Dynamix_AI ai,
+      final boolean purchaseForBid, final GameData data, final PlayerID player) {
     List<Territory> result = new ArrayList<Territory>();
     final List<Territory> possibles =
         Match.getMatches(data.getMap().getTerritories(), DMatches.territoryCanHaveUnitsPlacedOnIt(data, player));
     final HashMap<Territory, Integer> scores = new HashMap<Territory, Integer>();
     final List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
     final List<Territory> ownedCaps = DUtils.GetAllCapsOwnedBy(data, player);
-    Collections.shuffle(possibles); // Shuffle list so if there are equal-scored ters, they don't always show up in the same order
+    Collections.shuffle(possibles); // Shuffle list so if there are equal-scored ters, they don't always show up in the
+                                    // same order
     for (final Territory ter : possibles) {
       if (DMatches.territoryIsIsolated(data).match(ter)) {
         continue; // We never place units on an isolated territory
@@ -40,9 +40,10 @@ public class Purchase_UnitPlacementLocationSorter {
       if (!DMatches.territoryCanHaveUnitsPlacedOnIt(data, player).match(ter)) {
         continue;
       }
-      final List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
-      final AggregateResults results =
-          DUtils.GetBattleResults(possibleAttackers, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), ter, data, 500, true);
+      final List<Unit> possibleAttackers =
+          DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+      final AggregateResults results = DUtils.GetBattleResults(possibleAttackers,
+          DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), ter, data, 500, true);
       int score = 0;
       // If ter is our cap and our cap has some danger
       if (ourCaps.contains(ter) && results.getAttackerWinPercent() > .1F) {
@@ -52,8 +53,8 @@ public class Purchase_UnitPlacementLocationSorter {
         score += 100;
       }
       score += DUtils.GetValueOfLandTer(ter, data, player);
-      final Territory target =
-          NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, ter.getUnits().getUnits(), new ArrayList<NCM_Task>());
+      final Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter,
+          ter.getUnits().getUnits(), new ArrayList<NCM_Task>());
       if (target != null) {
         final Route terToTargetRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, target);
         if (terToTargetRoute != null) {
@@ -79,7 +80,8 @@ public class Purchase_UnitPlacementLocationSorter {
       if (DMatches.territoryIsOnSmallIsland(data).match(ter)) {
         score -= 10000; // Atm, never place on islands unless we have to
       }
-      // We multiply the scores by a random number between 100%-110%, so slightly lower ranked ters get units placed on them sometimes
+      // We multiply the scores by a random number between 100%-110%, so slightly lower ranked ters get units placed on
+      // them sometimes
       final int randNum = 100 + new Random().nextInt(10);
       final double randomMultiplyAmount = (randNum / 100.0F);
       score = (int) (score * randomMultiplyAmount);

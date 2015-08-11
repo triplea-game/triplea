@@ -12,14 +12,11 @@ import games.strategy.net.MessageHeader;
 
 /**
  * The threads needed for a group of sockets using NIO.
- *
  * One thread reds socket data, one thread writes socket data
  * and one thread deserializes (decodes) packets read by the read
  * thread.
- *
  * serializing (encoding) objects to be written across the network is done
  * by threads calling this object.
- *
  */
 public class NIOSocket implements IErrorReporter {
   private static final Logger s_logger = Logger.getLogger(NIOSocket.class.getName());
@@ -47,9 +44,7 @@ public class NIOSocket implements IErrorReporter {
 
   /**
    * Stop our threads.
-   *
    * This does not close the sockets we are connected to.
-   *
    */
   public void shutDown() {
     m_writer.shutDown();
@@ -69,7 +64,6 @@ public class NIOSocket implements IErrorReporter {
 
   /**
    * Add this channel.
-   *
    * The channel will either be unquarantined, or an error will be reported
    */
   public void add(final SocketChannel channel, final QuarantineConversation conversation) {

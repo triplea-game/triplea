@@ -8,7 +8,6 @@ import javax.swing.filechooser.FileFilter;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 
-
 public class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
   private static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
@@ -18,15 +17,14 @@ public class SaveGameFileChooser extends JFileChooser {
   public static final File DEFAULT_DIRECTORY = new File(GameRunner2.getUserRootFolder(), "savedGames");
   private static SaveGameFileChooser s_instance;
 
-
   public enum AUTOSAVE_TYPE {
     AUTOSAVE, AUTOSAVE2, AUTOSAVE_ODD, AUTOSAVE_EVEN
   }
 
   public static String getAutoSaveFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix =
-          System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_FILE_NAME;
       }
@@ -36,8 +34,8 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSave2FileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix =
-          System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_2_FILE_NAME;
       }
@@ -47,8 +45,8 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveOddFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix =
-          System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_ODD_ROUND_FILE_NAME;
       }
@@ -58,8 +56,8 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveEvenFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix =
-          System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY, System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
+      final String saveSuffix = System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY,
+          System.getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_EVEN_ROUND_FILE_NAME;
       }

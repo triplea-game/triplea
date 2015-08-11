@@ -12,8 +12,6 @@ import games.strategy.engine.framework.ui.background.WaitWindow;
 
 /**
  * Abstract class for launching a game.
- *
- *
  */
 abstract public class AbstractLauncher implements ILauncher {
   protected final GameData m_gameData;
@@ -36,7 +34,6 @@ abstract public class AbstractLauncher implements ILauncher {
     m_gameData = gameSelectorModel.getGameData();
   }
 
-
   @Override
   public void launch(final Component parent) {
     if (!m_headless && !SwingUtilities.isEventDispatchThread()) {
@@ -45,7 +42,8 @@ abstract public class AbstractLauncher implements ILauncher {
     final Runnable r = new Runnable() {
       @Override
       public void run() {
-        NewGameChooser.clearNewGameChooserModel(); // we don't want to keep around all the memory for this, since we have the gamedata that
+        NewGameChooser.clearNewGameChooserModel(); // we don't want to keep around all the memory for this, since we
+                                                   // have the gamedata that
                                                    // we want
         launchInNewThread(parent);
       }
@@ -63,5 +61,4 @@ abstract public class AbstractLauncher implements ILauncher {
   }
 
   abstract protected void launchInNewThread(Component parent);
-
 }

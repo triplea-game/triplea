@@ -13,7 +13,6 @@ import games.strategy.util.Tuple;
 
 /**
  * Utilitiy class to create/read/delete banned ips (there is no update).
- *
  */
 public class BannedIpController {
   private static final Logger s_logger = Logger.getLogger(BannedIpController.class.getName());
@@ -28,7 +27,6 @@ public class BannedIpController {
   /**
    * Ban the given ip. If banTill is not null, the ban will expire when banTill is reached.
    * <p>
-   *
    * If this ip is already banned, this call will update the ban_end.
    */
   public void addBannedIp(final String ip, final Date banTill) {

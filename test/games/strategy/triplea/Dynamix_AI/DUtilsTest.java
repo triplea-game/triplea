@@ -15,7 +15,6 @@ import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-
 public class DUtilsTest extends TestCase {
   private GameData m_data;
   private final IOddsCalculator m_calc = new Dynamix_AI("Superior", "Dynamix (AI)").getCalc();
@@ -47,7 +46,8 @@ public class DUtilsTest extends TestCase {
     assertEquals(1.0D, results.getAttackerWinPercent());
     assertEquals(1.0D, results.getAverageAttackingUnitsLeft());
     assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
-    // actually zero (0.0) rounds are fought, however the getAverageBattleRoundsFought() method will return 1.0 if there are zero or empty
+    // actually zero (0.0) rounds are fought, however the getAverageBattleRoundsFought() method will return 1.0 if there
+    // are zero or empty
     // rounds
     assertEquals(1.0D, results.getAverageBattleRoundsFought());
   }
@@ -70,7 +70,8 @@ public class DUtilsTest extends TestCase {
     final UnitType battleship = m_data.getUnitTypeList().getUnitType("battleship");
     final UnitType fighter = m_data.getUnitTypeList().getUnitType("fighter");
     // So for example, the list of units is: 1 sub, 1 destroyer, 3 carriers, 6 fighters, 1 battleship.
-    // It should return this list: 1 sub, 1 destroyer, 2 fighters, 1 carrier, 2 fighters, 1 carrier, 2 fighters, 1 carrier, 1 battleship
+    // It should return this list: 1 sub, 1 destroyer, 2 fighters, 1 carrier, 2 fighters, 1 carrier, 2 fighters, 1
+    // carrier, 1 battleship
     final List<Unit> attacking = new ArrayList<Unit>();
     List<Unit> defending = new ArrayList<Unit>();
     for (int i = 0; i < 50; i++) {

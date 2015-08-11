@@ -38,8 +38,6 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
 /**
  * Simple selector panel for the headless game ui.
- *
- *
  */
 public class HeadlessGameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = 8104336314898207108L;
@@ -134,31 +132,31 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
 
   private void layoutComponents() {
     setLayout(new GridBagLayout());
-    add(m_nameLabel,
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 3, 5), 0, 0));
-    add(m_nameText,
-        new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 0, 3, 0), 0, 0));
-    add(m_versionLabel,
-        new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 3, 5), 0, 0));
-    add(m_versionText,
-        new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 3, 0), 0, 0));
-    add(m_roundLabel,
-        new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 3, 5), 0, 0));
-    add(m_roundText,
-        new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 3, 0), 0, 0));
-    add(m_fileNameLabel,
-        new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(20, 10, 3, 5), 0, 0));
-    add(m_fileNameText,
-        new GridBagConstraints(0, 4, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 3, 5), 0, 0));
-    add(m_loadNewGame,
-        new GridBagConstraints(0, 5, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(25, 10, 10, 10), 0, 0));
-    add(m_loadSavedGame,
-        new GridBagConstraints(0, 6, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 10, 10), 0, 0));
-    add(m_gameOptions,
-        new GridBagConstraints(0, 7, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(25, 10, 10, 10), 0, 0));
+    add(m_nameLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 10, 3, 5), 0, 0));
+    add(m_nameText, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 0, 3, 0), 0, 0));
+    add(m_versionLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 10, 3, 5), 0, 0));
+    add(m_versionText, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, 3, 0), 0, 0));
+    add(m_roundLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 10, 3, 5), 0, 0));
+    add(m_roundText, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, 3, 0), 0, 0));
+    add(m_fileNameLabel, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(20, 10, 3, 5), 0, 0));
+    add(m_fileNameText, new GridBagConstraints(0, 4, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 10, 3, 5), 0, 0));
+    add(m_loadNewGame, new GridBagConstraints(0, 5, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(25, 10, 10, 10), 0, 0));
+    add(m_loadSavedGame, new GridBagConstraints(0, 6, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 10, 10, 10), 0, 0));
+    add(m_gameOptions, new GridBagConstraints(0, 7, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(25, 10, 10, 10), 0, 0));
     // spacer
-    add(new JPanel(),
-        new GridBagConstraints(0, 8, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    add(new JPanel(), new GridBagConstraints(0, 8, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0), 0, 0));
   }
 
   private void setupListeners() {
@@ -195,19 +193,16 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
    * }
    * }
    */
-
   private void selectGameOptions() {
     // backup current game properties before showing dialog
     final Map<String, Object> currentPropertiesMap = new HashMap<String, Object>();
     for (final IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties()) {
       currentPropertiesMap.put(property.getName(), property.getValue());
     }
-
     final PropertiesUI panel = new PropertiesUI(m_model.getGameData().getProperties(), true);
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(null);
     scroll.getViewport().setBorder(null);
-
     final JOptionPane pane = new JOptionPane(scroll, JOptionPane.PLAIN_MESSAGE);
     final String ok = "OK";
     final String cancel = "Cancel";
@@ -216,7 +211,6 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     pane.setOptions(new Object[] {ok, /* makeDefault, */reset, cancel});
     final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Game Options");
     window.setVisible(true);
-
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
@@ -228,7 +222,8 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     } else if (buttonPressed.equals(reset)) {
       if (!m_originalPropertiesMap.isEmpty()) {
         // restore properties, if cancel was pressed, or window was closed
-        final Iterator<IEditableProperty> itr = m_model.getGameData().getProperties().getEditableProperties().iterator();
+        final Iterator<IEditableProperty> itr =
+            m_model.getGameData().getProperties().getEditableProperties().iterator();
         while (itr.hasNext()) {
           final IEditableProperty property = itr.next();
           property.setValue(m_originalPropertiesMap.get(property.getName()));
@@ -262,7 +257,8 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     m_loadSavedGame.setEnabled(canSelectGameData);
     m_loadNewGame.setEnabled(canSelectGameData);
     // Disable game options if there are none.
-    if (canSelectGameData && m_model.getGameData() != null && m_model.getGameData().getProperties().getEditableProperties().size() > 0) {
+    if (canSelectGameData && m_model.getGameData() != null
+        && m_model.getGameData().getProperties().getEditableProperties().size() > 0) {
       m_gameOptions.setEnabled(true);
     } else {
       m_gameOptions.setEnabled(false);
@@ -271,8 +267,10 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
     if (GameRunner2.areWeOldExtraJar()) {
       m_loadNewGame.setEnabled(false);
       // m_loadSavedGame.setEnabled(false);
-      m_loadNewGame.setToolTipText("This is disabled on older engine jars, please start new games with the latest version of TripleA.");
-      // m_loadSavedGame.setToolTipText("This is disabled on older engine jars, please open savegames from the latest version of TripleA.");
+      m_loadNewGame.setToolTipText(
+          "This is disabled on older engine jars, please start new games with the latest version of TripleA.");
+      // m_loadSavedGame.setToolTipText("This is disabled on older engine jars, please open savegames from the latest
+      // version of TripleA.");
     }
   }
 
@@ -328,8 +326,8 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setVisibleRowCount(20);
       final JScrollPane listScroll = new JScrollPane(list);
-      final int option =
-          JOptionPane.showConfirmDialog(null, listScroll, "Choose Game", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+      final int option = JOptionPane.showConfirmDialog(null, listScroll, "Choose Game", JOptionPane.OK_CANCEL_OPTION,
+          JOptionPane.PLAIN_MESSAGE);
       if (option == JOptionPane.OK_OPTION) {
         final String gameSelected = (String) list.getSelectedValue();
         m_model.load(m_availableGames.getGameData(gameSelected), m_availableGames.getGameFilePath(gameSelected));

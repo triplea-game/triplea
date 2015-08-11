@@ -15,8 +15,6 @@ import javax.swing.JFileChooser;
  * </p>
  * <p>
  * </p>
- *
- *
  */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;

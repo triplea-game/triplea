@@ -22,14 +22,12 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 
 /**
  * An abstraction of MoveDelegate in order to allow other delegates to extend this.
- *
- *
  */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
   protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();// A collection of UndoableMoves
   // protected final TransportTracker m_transportTracker = new TransportTracker();
-  protected MovePerformer m_tempMovePerformer;// if we are in the process of doing a move. this instance will allow us to resume the move
-
+  protected MovePerformer m_tempMovePerformer;// if we are in the process of doing a move. this instance will allow us
+                                              // to resume the move
 
   public static enum MoveType {
     DEFAULT, SPECIAL
@@ -74,7 +72,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     final AbstractMoveExtendedDelegateState s = (AbstractMoveExtendedDelegateState) state;
     super.loadState(s.superState);
     // load other variables from state here:
-    // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo move
+    // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo
+    // move
     if (s.m_movesToUndo != null) {
       m_movesToUndo = s.m_movesToUndo;
     }
@@ -87,7 +86,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    * return m_transportTracker;
    * }
    */
-
   @Override
   public List<UndoableMove> getMovesMade() {
     return new ArrayList<UndoableMove>(m_movesToUndo);
@@ -138,22 +136,25 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded) {
+  public String move(final Collection<Unit> units, final Route route,
+      final Collection<Unit> transportsThatCanBeLoaded) {
     return move(units, route, transportsThatCanBeLoaded, new HashMap<Unit, Collection<Unit>>());
   }
 
   @Override
-  public abstract String move(final Collection<Unit> units, final Route route, final Collection<Unit> m_transportsThatCanBeLoaded,
-      final Map<Unit, Collection<Unit>> newDependents);
+  public abstract String move(final Collection<Unit> units, final Route route,
+      final Collection<Unit> m_transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
 
-  public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units, final Route route,
-      final PlayerID player, final Collection<Unit> transportsToLoad,
-      final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat, final List<UndoableMove> undoableMoves,
-      final GameData data) {
+  public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units,
+      final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
+      final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat,
+      final List<UndoableMove> undoableMoves, final GameData data) {
     if (moveType == MoveType.SPECIAL) {
-      return SpecialMoveDelegate.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
+      return SpecialMoveDelegate.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat,
+          undoableMoves, data);
     }
-    return MoveValidator.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
+    return MoveValidator.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves,
+        data);
   }
 
   @Override
@@ -193,7 +194,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    *        target territory
    * @return the route that a unit used to move into the given territory.
    */
-  public static Route getRouteUsedToMoveInto(final List<UndoableMove> undoableMoves, final Unit unit, final Territory end) {
+  public static Route getRouteUsedToMoveInto(final List<UndoableMove> undoableMoves, final Unit unit,
+      final Territory end) {
     final ListIterator<UndoableMove> iter = undoableMoves.listIterator(undoableMoves.size());
     while (iter.hasPrevious()) {
       final UndoableMove move = iter.previous();
@@ -221,7 +223,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    * return games.strategy.triplea.Properties.getWW2V3(getData());
    * }
    */
-
   @Override
   public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary) {
     // nothing for now
@@ -240,7 +241,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   public abstract int PUsAlreadyLost(final Territory t);
 
   public abstract void PUsLost(final Territory t, final int amt);
-
 
   @Override
   public Class<IMoveDelegate> getRemoteType() {

@@ -20,9 +20,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
 /**
- *
- *
- *         Provides some static methods for validating game edits.
+ * Provides some static methods for validating game edits.
  */
 public class EditValidator {
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
@@ -54,7 +52,8 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player) {
+  public static String validateChangeTerritoryOwner(final GameData data, final Territory territory,
+      final PlayerID player) {
     String result = null;
     if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
@@ -90,24 +89,28 @@ public class EditValidator {
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
-          final Map<Unit, Unit> mapLoading = MoveDelegate.mapTransports(null, landUnitsToAdd, seaTransports, true, player);
+          final Map<Unit, Unit> mapLoading =
+              MoveDelegate.mapTransports(null, landUnitsToAdd, seaTransports, true, player);
           if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
             return "Can't add land units to water without enough transports";
           }
         }
         if (Match.someMatch(units, Matches.UnitIsAir)) {
-          if (Match.someMatch(units, new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
+          if (Match.someMatch(units,
+              new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
             return "Can not add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Match<Unit> friendlyCarriers = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
-          final Match<Unit> friendlyAirUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyCarriers =
+              new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyAirUnits =
+              new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
                   + AirMovementValidator.carrierCapacity(units, territory);
-          final int carrierCost =
-              AirMovementValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits)) + AirMovementValidator.carrierCost(units);
+          final int carrierCost = AirMovementValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits))
+              + AirMovementValidator.carrierCost(units);
           if (carrierCapacityTotal < carrierCost) {
             return "Can't add more air units to water without sufficient space";
           }
@@ -129,7 +132,8 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
+  public static String validateRemoveUnits(final GameData data, final Territory territory,
+      final Collection<Unit> units) {
     String result = null;
     if (units.isEmpty()) {
       return "No units selected";
@@ -161,7 +165,8 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
+  public static String validateAddTech(final GameData data, final Collection<TechAdvance> techs,
+      final PlayerID player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -186,7 +191,8 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
+  public static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs,
+      final PlayerID player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -214,7 +220,8 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory) {
+  public static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
+      final Territory territory) {
     String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
@@ -243,7 +250,8 @@ public class EditValidator {
     return result;
   }
 
-  public static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory) {
+  public static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
+      final Territory territory) {
     String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";

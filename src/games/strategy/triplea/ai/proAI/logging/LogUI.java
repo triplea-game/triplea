@@ -8,7 +8,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 
 /**
  * Class to manage log window display.
- *
  */
 public class LogUI {
   private static TripleAFrame s_frame = null;
@@ -56,5 +55,4 @@ public class LogUI {
       s_settingsWindow.notifyNewRound(round, name);
     }
   }
-
 }

@@ -32,7 +32,6 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 
-
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.BlendComposite.BlendingMode;
 import games.strategy.triplea.util.Stopwatch;
@@ -256,8 +255,8 @@ public final class TileImageFactory {
   /**
    * @param imageLocation
    */
-  private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent, final boolean cache,
-      final boolean scale) {
+  private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
+      final boolean cache, final boolean scale) {
     if (s_showMapBlends && s_showReliefImages && transparent) {
       return loadBlendedImage(imageLocation, fileName, transparent, cache, scale);
     } else {
@@ -265,8 +264,8 @@ public final class TileImageFactory {
     }
   }
 
-  private Image loadBlendedImage(final URL imageLocation, final String fileName, final boolean transparent, final boolean cache,
-      final boolean scale) {
+  private Image loadBlendedImage(final URL imageLocation, final String fileName, final boolean transparent,
+      final boolean cache, final boolean scale) {
     BufferedImage reliefFile = null;
     BufferedImage baseFile = null;
     // The relief tile
@@ -284,7 +283,8 @@ public final class TileImageFactory {
      */
     // Get buffered images
     try {
-      final Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading images:" + urlrelief + " and " + urlBase);
+      final Stopwatch loadingImages =
+          new Stopwatch(s_logger, Level.FINE, "Loading images:" + urlrelief + " and " + urlBase);
       if (urlrelief != null) {
         reliefFile = loadCompatibleImage(urlrelief);
       }
@@ -345,8 +345,8 @@ public final class TileImageFactory {
     }
   }
 
-  private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent, final boolean cache,
-      final boolean scale) {
+  private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent,
+      final boolean cache, final boolean scale) {
     Image image;
     try {
       final Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading image:" + imageLocation);
@@ -447,10 +447,8 @@ public final class TileImageFactory {
 // end class TerritoryImageFactory
 /**
  * We keep a soft reference to the image to allow it to be garbage collected.
- *
  * Also, the image may not have finished watching when we are created, but the
  * getImage method ensures that the image will be loaded before returning.
- *
  */
 class ImageRef {
   public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<Image>();
@@ -498,7 +496,6 @@ class ImageRef {
 
 /**
  * This class handles the various types of blends for base/relief tiles
- *
  */
 class BlendComposite implements java.awt.Composite {
   public enum BlendingMode {
@@ -554,10 +551,10 @@ class BlendComposite implements java.awt.Composite {
   }
 
   @Override
-  public CompositeContext createContext(final ColorModel srcColorModel, final ColorModel dstColorModel, final RenderingHints hints) {
+  public CompositeContext createContext(final ColorModel srcColorModel, final ColorModel dstColorModel,
+      final RenderingHints hints) {
     return new BlendingContext(this);
   }
-
 
   private static final class BlendingContext implements CompositeContext {
     private final Blender blender;
@@ -573,7 +570,8 @@ class BlendComposite implements java.awt.Composite {
 
     @Override
     public void compose(final Raster src, final Raster dstIn, final WritableRaster dstOut) {
-      if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT || dstIn.getSampleModel().getDataType() != DataBuffer.TYPE_INT
+      if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT
+          || dstIn.getSampleModel().getDataType() != DataBuffer.TYPE_INT
           || dstOut.getSampleModel().getDataType() != DataBuffer.TYPE_INT) {
         throw new IllegalStateException("Source and destination must store pixels as INT.");
       }
@@ -611,8 +609,6 @@ class BlendComposite implements java.awt.Composite {
       }
     }
   }
-
-
   static abstract class Blender {
     public abstract int[] blend(int[] src, int[] dst);
 
@@ -637,7 +633,8 @@ class BlendComposite implements java.awt.Composite {
             public int[] blend(final int[] src, final int[] dst) {
               return new int[] {dst[0] < 128 ? dst[0] * src[0] >> 7 : 255 - ((255 - dst[0]) * (255 - src[0]) >> 7),
                   dst[1] < 128 ? dst[1] * src[1] >> 7 : 255 - ((255 - dst[1]) * (255 - src[1]) >> 7),
-                  dst[2] < 128 ? dst[2] * src[2] >> 7 : 255 - ((255 - dst[2]) * (255 - src[2]) >> 7), Math.min(255, src[3] + dst[3])};
+                  dst[2] < 128 ? dst[2] * src[2] >> 7 : 255 - ((255 - dst[2]) * (255 - src[2]) >> 7),
+                  Math.min(255, src[3] + dst[3])};
             }
           };
         /*
@@ -659,14 +656,16 @@ class BlendComposite implements java.awt.Composite {
             public int[] blend(final int[] src, final int[] dst) {
               return new int[] {dst[0] < 128 ? dst[0] + src[0] >> 7 - 255 : dst[0] + (src[0] - 128) >> 7,
                   dst[1] < 128 ? dst[1] + src[1] >> 7 - 255 : dst[1] + (src[1] - 128) >> 7,
-                  dst[2] < 128 ? dst[2] + src[2] >> 7 - 255 : dst[2] + (src[2] - 128) >> 7, Math.min(255, src[3] + dst[3])};
+                  dst[2] < 128 ? dst[2] + src[2] >> 7 - 255 : dst[2] + (src[2] - 128) >> 7,
+                  Math.min(255, src[3] + dst[3])};
             }
           };
         case MULTIPLY:
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {(src[0] * dst[0]) >> 8, (src[1] * dst[1]) >> 8, (src[2] * dst[2]) >> 8, Math.min(255, src[3] + dst[3])};
+              return new int[] {(src[0] * dst[0]) >> 8, (src[1] * dst[1]) >> 8, (src[2] * dst[2]) >> 8,
+                  Math.min(255, src[3] + dst[3])};
             }
           };
         case DIFFERENCE:

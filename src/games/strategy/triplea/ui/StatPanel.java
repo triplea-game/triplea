@@ -43,7 +43,6 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-
 public class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
   final private StatTableModel m_dataModel;
@@ -70,7 +69,6 @@ public class StatPanel extends AbstractStatPanel {
     final boolean hasTech = !TechAdvance.getTechAdvances(m_data, null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
-
     m_statsTable = new JTable(m_dataModel) {
       private static final long serialVersionUID = -5516554955307630864L;
 
@@ -82,17 +80,14 @@ public class StatPanel extends AbstractStatPanel {
         super.print(g);
       }
     };
-
     m_statsTable.getTableHeader().setReorderingAllowed(false);
     m_statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
     JScrollPane scroll = new JScrollPane(m_statsTable);
     add(scroll);
-
     // if no technologies, do not show the tech table
     if (!hasTech) {
       return;
     }
-
     m_techTable = new JTable(m_techModel);
     m_techTable.getTableHeader().setReorderingAllowed(false);
     m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
@@ -107,7 +102,6 @@ public class StatPanel extends AbstractStatPanel {
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
-
     scroll = new JScrollPane(m_techTable);
     add(scroll);
   }
@@ -161,29 +155,22 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-
   /*
    * helper that populates the icons for the column headers
    * assuming that the column names are matched with icons
-   *
    * @param table
    * the table to set icons in the headers
-   *
    * protected final void setupIconHeaders(final JTable table)
    * {
    * final TableModel model = table.getModel();
    * final JTableHeader header = table.getTableHeader();
    * final TableCellRenderer headerRenderer = header.getDefaultRenderer();
-   *
    * final TableColumnModel cmodel = table.getColumnModel();
    * TableColumn column = cmodel.getColumn(0);
    * column.setHeaderRenderer(headerRenderer);
-   *
    * final ImageIconRenderer imageRenderer = new ImageIconRenderer();// headerRenderer, true
    * header.setDefaultRenderer(imageRenderer);
-   *
    * final int ccnt = model.getColumnCount();
-   *
    * for (int c = 1; c < ccnt; c++)
    * {
    * final String name = model.getColumnName(c);
@@ -193,11 +180,9 @@ public class StatPanel extends AbstractStatPanel {
    * column.setHeaderValue(icon);
    * }
    * }
-   *
    * class ImageIconRenderer extends DefaultTableCellRenderer
    * {
    * private static final long serialVersionUID = -8596751565205016905L;
-   *
    * @Override
    * protected void setValue(final Object value)
    * {
@@ -205,19 +190,15 @@ public class StatPanel extends AbstractStatPanel {
    * }
    * }
    */
-
   class JComponentTableCellRenderer implements TableCellRenderer {
     @Override
-    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus,
-        final int row, final int column) {
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+        final boolean hasFocus, final int row, final int column) {
       return (JComponent) value;
     }
   }
-
-
   /*
    * Custom table model.
-   *
    * This model is thread safe.
    */
   class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
@@ -344,8 +325,6 @@ public class StatPanel extends AbstractStatPanel {
       repaint();
     }
   }
-
-
   class TechTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = -4612476336419396081L;
     /* Flag to indicate whether data needs to be recalculated */
@@ -513,8 +492,6 @@ public class StatPanel extends AbstractStatPanel {
       isDirty = true;
     }
   }
-
-
   class ProductionStat extends AbstractStat {
     @Override
     public String getName() {
@@ -525,7 +502,9 @@ public class StatPanel extends AbstractStatPanel {
     public double getValue(final PlayerID player, final GameData data) {
       int rVal = 0;
       for (final Territory place : data.getMap().getTerritories()) {
-        /* Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested */
+        /*
+         * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
+         */
         if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place)) {
           rVal += TerritoryAttachment.getProduction(place);
         }
@@ -534,15 +513,11 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
-
-
   class PUStat extends ResourceStat {
     public PUStat() {
       super(getResourcePUs(m_data));
     }
   }
-
-
   class UnitsStat extends AbstractStat {
     @Override
     public String getName() {
@@ -559,8 +534,6 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
-
-
   class TUVStat extends AbstractStat {
     @Override
     public String getName() {
@@ -579,8 +552,6 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
-
-
   class VictoryCityStat extends AbstractStat {
     @Override
     public String getName() {
@@ -605,8 +576,6 @@ public class StatPanel extends AbstractStatPanel {
       return rVal;
     }
   }
-
-
   class VPStat extends AbstractStat {
     @Override
     public String getName() {
@@ -622,5 +591,4 @@ public class StatPanel extends AbstractStatPanel {
       return 0;
     }
   }
-
 }

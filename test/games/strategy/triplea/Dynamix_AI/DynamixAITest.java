@@ -9,7 +9,6 @@ import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-
 public class DynamixAITest extends TestCase {
   private GameData m_data;
   @SuppressWarnings("unused")

@@ -13,7 +13,6 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Responsible for checking for a winner in a game of King's Table.
- *
  */
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
   // private boolean gameOver = false;
@@ -30,7 +29,6 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
       // gameOver = true;
       /*
        * try {
-       *
        * wait();
        * //waitToLeaveGame.await();
        * } catch (InterruptedException e) {}

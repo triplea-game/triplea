@@ -125,7 +125,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
       m_gameNotesPane = new SoftJEditorPane(notes);
-
       parentMenu.add(new AbstractAction("Game Notes...") {
         private static final long serialVersionUID = -1817640666359299617L;
 
@@ -231,8 +230,10 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
    */
   protected void addAllowObserversToJoin(final JMenu parentMenu) {
     /*
-     * // People can use setpassword instead of this. It is annoying joining a game only to get socket errors that confuse people and stuff.
-     * // Either setup a new column or some kind of indicator to show that a lobby game isn't accepting new connections, or keep this off.
+     * // People can use setpassword instead of this. It is annoying joining a game only to get socket errors that
+     * confuse people and stuff.
+     * // Either setup a new column or some kind of indicator to show that a lobby game isn't accepting new connections,
+     * or keep this off.
      * if (!getGame().getMessenger().isServer())
      * return;
      * final IServerMessenger messeneger = (IServerMessenger) getGame().getMessenger();
@@ -241,7 +242,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
      * allowObservers.addActionListener(new AbstractAction()
      * {
      * private static final long serialVersionUID = 6876563887595464809L;
-     *
      * public void actionPerformed(final ActionEvent e)
      * {
      * messeneger.setAcceptNewConnections(allowObservers.isSelected());
@@ -360,8 +360,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher
-              .openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
+          DesktopUtilityBrowserLauncher.openURL(
+              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
         } catch (final Exception e1) {
           // TODO Auto-generated catch block
           e1.printStackTrace();
@@ -395,7 +395,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
+          DesktopUtilityBrowserLauncher
+              .openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
         } catch (final Exception e1) {
           // TODO Auto-generated catch block
           e1.printStackTrace();
@@ -475,8 +476,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
    */
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + games.strategy.engine.EngineVersion.VERSION.toString() + "<br><b>Game:</b> "
-        + getData().getGameName() + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
+        + games.strategy.engine.EngineVersion.VERSION.toString() + "<br><b>Game:</b> " + getData().getGameName()
+        + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
         + "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
@@ -536,7 +537,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
       fileDialog.setFilenameFilter(new FilenameFilter() {
         @Override
-        public boolean accept(final File dir, final String name) { // the extension should be .tsvg, but find svg extensions as well
+        public boolean accept(final File dir, final String name) { // the extension should be .tsvg, but find svg
+                                                                   // extensions as well
           return name.endsWith(".tsvg") || name.endsWith(".svg");
         }
       });
@@ -547,7 +549,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
        * getData().getSequence().getRound();
        * defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
        * defaultFileName = defaultFileName + ".tsvg";
-       *
        * fileDialog.setFile(defaultFileName);
        */
       String fileName = fileDialog.getFile();
@@ -566,7 +567,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
          * if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
          * {
          * int choice = JOptionPane.showConfirmDialog(m_frame,
-         * "Special characters are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
+         * "Special characters are not allowed in the file name.  Please rename it.", "Cancel?",
+         * JOptionPane.DEFAULT_OPTION,
          * JOptionPane.WARNING_MESSAGE);
          * return;
          * }
@@ -591,9 +593,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         final String filePath = f.getPath().substring(0, slashIndex);
         if (!fileChooser.getCurrentDirectory().toString().equals(filePath)) {
           @SuppressWarnings("unused")
-          final int choice =
-              JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
-                  JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+          final int choice = JOptionPane.showConfirmDialog(frame,
+              "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
+              JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
           return null;
         }
       }
@@ -603,9 +605,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       // A small warning so users will not over-write a file,
       // added by NeKromancer
       if (f.exists()) {
-        final int choice = JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
-            "Over-write?", JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE);
+        final int choice =
+            JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
+                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (choice != JOptionPane.OK_OPTION) {
           return null;
         }
@@ -631,7 +633,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       }
     });
     menuFileSave.setMnemonic(KeyEvent.VK_S);
-    menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    menuFileSave.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     parent.add(menuFileSave);
   }
 
@@ -652,8 +655,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           data.acquireReadLock();
           final GameStep step = data.getSequence().getStep();
-          final PlayerID currentPlayer =
-              (step == null ? PlayerID.NULL_PLAYERID : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
+          final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
+              : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
           final int round = data.getSequence().getRound();
           final HistoryLog historyLog = new HistoryLog();
           historyLog.printFullTurn(data, false, GameStepPropertiesHelper.getTurnSummaryPlayers(data));
@@ -665,7 +668,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       }
     });
     menuPBEM.setMnemonic(KeyEvent.VK_P);
-    menuPBEM.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    menuPBEM.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     parent.add(menuPBEM);
   }
 
@@ -685,11 +689,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
                  // so set the command-L key combo for the Leave Game action
-      leaveGameMenuExit
-          .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+      leaveGameMenuExit.setAccelerator(
+          KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
-      leaveGameMenuExit
-          .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+      leaveGameMenuExit.setAccelerator(
+          KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
     parentMenu.add(leaveGameMenuExit);
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
@@ -751,7 +755,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
            * "org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
            * "org.jvnet.substance.skin.SubstanceTwilightLookAndFeel"
            */
-
           // Substance (insubstantial) 7.x
           "org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
           "org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
@@ -780,15 +783,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
           "org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
           "org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
           "org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"
-      })));
+          "org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"})));
     }
     return substanceLooks;
   }
 
   /**
    * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
-   *
    */
   public static Triple<JList, Map<String, String>, String> getLookAndFeelList() {
     final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
@@ -800,7 +801,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         final LookAndFeel lf = (LookAndFeel) c.newInstance();
         lookAndFeels.put(lf.getName(), s);
       }
-
     } catch (final Exception t) {
       t.printStackTrace();
       // we know all machines have these 3, so use them
@@ -859,13 +859,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         text.setText(id);
         final JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("Game UUID:"),
-            new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text,
-            new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID", JOptionPane.OK_OPTION,
-            JOptionPane.INFORMATION_MESSAGE, null,
-            new String[] {"OK"}, "OK");
+        panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0), 0, 0));
+        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID",
+            JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
       }
     }).setMnemonic(KeyEvent.VK_U);
   }
@@ -894,13 +893,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
         final JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("AI Pause Duration (ms):"),
-            new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text,
-            new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Set AI Pause Duration",
-            JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
-            new String[] {"OK"}, "OK");
+        panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
+            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0), 0, 0));
+        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel,
+            "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"},
+            "OK");
         try {
           AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
         } catch (final Exception ex) {
@@ -947,7 +946,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         } finally {
           getData().releaseReadLock();
         }
-        String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
+        String defaultFileName =
+            "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
         defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
         defaultFileName = defaultFileName + ".xml";
         chooser.setSelectedFile(new File(rootDir, defaultFileName));
@@ -985,5 +985,4 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   public GameData getData() {
     return m_frame.getGame().getData();
   }
-
 }

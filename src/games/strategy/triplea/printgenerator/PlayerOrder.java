@@ -14,7 +14,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 
-
 public class PlayerOrder {
   private Iterator<GameStep> m_gameStepIterator;
   private GameData m_data;
@@ -39,7 +38,8 @@ public class PlayerOrder {
             || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate")) {
           continue;
         }
-      } else if (currentStep.getName() != null && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
+      } else if (currentStep.getName() != null
+          && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
       final PlayerID currentPlayerID = currentStep.getPlayerID();

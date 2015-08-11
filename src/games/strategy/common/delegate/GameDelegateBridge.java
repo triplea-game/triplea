@@ -13,9 +13,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ISound;
 
 /**
- *
  * TripleA implementation of DelegateBridge
- *
  */
 public class GameDelegateBridge implements IDelegateBridge {
   private final IDelegateBridge m_bridge;
@@ -41,7 +39,6 @@ public class GameDelegateBridge implements IDelegateBridge {
 
   /**
    * Return our custom historyWriter instead of the default one
-   *
    */
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
@@ -66,7 +63,8 @@ public class GameDelegateBridge implements IDelegateBridge {
    * Delegates should not use random data that comes from any other source.
    */
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation) {
     return m_bridge.getRandom(max, count, player, diceType, annotation);
   }
 
@@ -83,24 +81,20 @@ public class GameDelegateBridge implements IDelegateBridge {
     return m_bridge.getStepName();
   }
 
-
   @Override
   public IRemotePlayer getRemotePlayer() {
     return m_bridge.getRemotePlayer();
   }
-
 
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     return m_bridge.getRemotePlayer(id);
   }
 
-
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     return m_bridge.getDisplayChannelBroadcaster();
   }
-
 
   @Override
   public ISound getSoundChannelBroadcaster() {

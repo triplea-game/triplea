@@ -15,7 +15,6 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
   private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
@@ -36,7 +35,8 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
    * @return TerritoryEffectAttachment belonging to the RelationshipType pr
    */
   public static TerritoryEffectAttachment get(final TerritoryEffect te) {
-    final TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+    final TerritoryEffectAttachment rVal =
+        (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
     if (rVal == null) {
       throw new IllegalStateException("No territoryEffect attachment for:" + te.getName());
     }
@@ -46,7 +46,8 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public static TerritoryEffectAttachment get(final TerritoryEffect te, final String nameOfAttachment) {
     final TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
     if (rVal == null) {
-      throw new IllegalStateException("No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
+      throw new IllegalStateException(
+          "No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
     }
     return rVal;
   }

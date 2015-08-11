@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.proAI.simulate;
 
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGameModifiedChannel;
@@ -24,5 +23,4 @@ public class ProDummyGameModifiedChannel implements IGameModifiedChannel {
 
   @Override
   public void startHistoryEvent(final String event, final Object renderingData) {}
-
 }

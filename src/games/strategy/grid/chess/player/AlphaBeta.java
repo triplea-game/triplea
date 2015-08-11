@@ -22,14 +22,11 @@ import games.strategy.util.Tuple;
 
 /**
  * A simple alpha-beta pruning AI.
- *
- *
  */
 public class AlphaBeta extends HeuristicAI {
   // private static final double PRUNE_PERCENT = 0.5d; // remove this % of the worst nodes
   // private static final int SKIP_PRUNING_START_DEPTH = 1; // skip this number of turns before we start pruning
   // private static final int SEARCH_DEPTH = 3; // how many turns to search out
-
   public AlphaBeta(final String name, final String type) {
     super(name, type);
   }
@@ -45,7 +42,8 @@ public class AlphaBeta extends HeuristicAI {
     enemies.remove(me);
     final PlayerID enemy = enemies.iterator().next();
     final int searchDepth = getAISearchDepthProperty(data);
-    final List<Triple<Territory, Territory, Long>> movesWithPoints = getPointsForBoardSituationStartBranches(me, enemy, data, searchDepth);
+    final List<Triple<Territory, Territory, Long>> movesWithPoints =
+        getPointsForBoardSituationStartBranches(me, enemy, data, searchDepth);
     if (movesWithPoints.isEmpty()) {
       System.err.println("No available moves for " + me.getName());
       return;
@@ -57,8 +55,8 @@ public class AlphaBeta extends HeuristicAI {
     return;
   }
 
-  static List<Triple<Territory, Territory, Long>> getPointsForBoardSituationStartBranches(final PlayerID theAI, final PlayerID enemy,
-      final GameData data, final int branchesLeftToDo) {
+  static List<Triple<Territory, Territory, Long>> getPointsForBoardSituationStartBranches(final PlayerID theAI,
+      final PlayerID enemy, final GameData data, final int branchesLeftToDo) {
     final List<Thread> threads = new ArrayList<Thread>();
     final List<Triple<Territory, Territory, AtomicReference<Tuple<Long, Integer>>>> movesWithPointsReferences =
         new ArrayList<Triple<Territory, Territory, AtomicReference<Tuple<Long, Integer>>>>();
@@ -69,13 +67,13 @@ public class AlphaBeta extends HeuristicAI {
       final PlayerID theAITemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(theAI, temp.getForth());
       final PlayerID currentEnemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(enemy, temp.getForth());
       final AtomicReference<Tuple<Long, Integer>> reference = new AtomicReference<Tuple<Long, Integer>>();
-      movesWithPointsReferences
-          .add(new Triple<Territory, Territory, AtomicReference<Tuple<Long, Integer>>>(move1.getFirst(), move1.getSecond(), reference));
+      movesWithPointsReferences.add(new Triple<Territory, Territory, AtomicReference<Tuple<Long, Integer>>>(
+          move1.getFirst(), move1.getSecond(), reference));
       final Thread startBranches = new Thread(new Runnable() {
         @Override
         public void run() {
-          final Tuple<Long, Integer> pointsForThisMove =
-              getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp, theAITemp, temp.getForth(), branchesLeftToDo - 1);
+          final Tuple<Long, Integer> pointsForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp,
+              theAITemp, temp.getForth(), branchesLeftToDo - 1);
           reference.set(pointsForThisMove);
         }
       });
@@ -91,7 +89,8 @@ public class AlphaBeta extends HeuristicAI {
         e.printStackTrace();
       }
     }
-    final List<Triple<Territory, Territory, Long>> movesWithPoints = new ArrayList<Triple<Territory, Territory, Long>>();
+    final List<Triple<Territory, Territory, Long>> movesWithPoints =
+        new ArrayList<Triple<Territory, Territory, Long>>();
     for (final Triple<Territory, Territory, AtomicReference<Tuple<Long, Integer>>> ref : movesWithPointsReferences) {
       movesWithPoints.add(new Triple<Territory, Territory, Long>(ref.getFirst(), ref.getSecond(),
           (ref.getThird().get().getFirst() / ref.getThird().get().getSecond())));
@@ -102,7 +101,8 @@ public class AlphaBeta extends HeuristicAI {
   static Tuple<Long, Integer> getPointsForBoardSituationBranch(final PlayerID theAI, final PlayerID currentPlayer,
       final PlayerID currentEnemy, final GameData data, final int branchesLeftToDo) {
     if (branchesLeftToDo > 0) {
-      final List<Triple<Territory, Territory, Collection<Territory>>> available = getAllAvailableMoves(currentPlayer, data, true);
+      final List<Triple<Territory, Territory, Collection<Territory>>> available =
+          getAllAvailableMoves(currentPlayer, data, true);
       if (available.isEmpty()) {
         return getPointsForBoardSituationBranch(theAI, currentPlayer, currentEnemy, data, -1);
       }
@@ -111,10 +111,12 @@ public class AlphaBeta extends HeuristicAI {
         final Quadruple<Territory, Territory, PlayerID, GameData> temp =
             PlayDelegate.copyGameDataAndAttemptMove(move1.getFirst(), move1.getSecond(), currentPlayer, data);
         final PlayerID theAITemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(theAI, temp.getForth());
-        final PlayerID currentPlayerTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentPlayer, temp.getForth());
-        final PlayerID currentEnemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentEnemy, temp.getForth());
-        final Tuple<Long, Integer> totalForThisMove =
-            getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp, currentPlayerTemp, temp.getForth(), branchesLeftToDo - 1);
+        final PlayerID currentPlayerTemp =
+            (PlayerID) GameDataUtils.translateIntoOtherGameData(currentPlayer, temp.getForth());
+        final PlayerID currentEnemyTemp =
+            (PlayerID) GameDataUtils.translateIntoOtherGameData(currentEnemy, temp.getForth());
+        final Tuple<Long, Integer> totalForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp,
+            currentPlayerTemp, temp.getForth(), branchesLeftToDo - 1);
         totalPointsForThisBoardSituation =
             new Tuple<Long, Integer>(totalPointsForThisBoardSituation.getFirst() + totalForThisMove.getFirst(),
                 totalPointsForThisBoardSituation.getSecond() + totalForThisMove.getSecond());
@@ -129,43 +131,54 @@ public class AlphaBeta extends HeuristicAI {
   }
 
   /*
-   *
-   * static List<Triple<Territory, Territory, Long>> getPointsForBoardSituationStartBranches(final PlayerID theAI, final PlayerID enemy,
+   * static List<Triple<Territory, Territory, Long>> getPointsForBoardSituationStartBranches(final PlayerID theAI, final
+   * PlayerID enemy,
    * final GameData data, final int branchesLeftToDo)
    * {
-   * final List<Triple<Territory, Territory, Long>> movesWithPoints = new ArrayList<Triple<Territory, Territory, Long>>();
-   * final List<Triple<Territory, Territory, Collection<Territory>>> available = getAllAvailableMoves(theAI, data, true);
+   * final List<Triple<Territory, Territory, Long>> movesWithPoints = new ArrayList<Triple<Territory, Territory,
+   * Long>>();
+   * final List<Triple<Territory, Territory, Collection<Territory>>> available = getAllAvailableMoves(theAI, data,
+   * true);
    * for (final Triple<Territory, Territory, Collection<Territory>> move1 : available)
    * {
-   * final Quadruple<Territory, Territory, PlayerID, GameData> temp = PlayDelegate.copyGameDataAndAttemptMove(move1.getFirst(),
+   * final Quadruple<Territory, Territory, PlayerID, GameData> temp =
+   * PlayDelegate.copyGameDataAndAttemptMove(move1.getFirst(),
    * move1.getSecond(), theAI, data);
    * final PlayerID theAITemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(theAI, temp.getForth());
    * final PlayerID currentEnemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(enemy, temp.getForth());
-   * final Tuple<Long, Integer> pointsForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp, theAITemp,
+   * final Tuple<Long, Integer> pointsForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp,
+   * theAITemp,
    * temp.getForth(), branchesLeftToDo - 1);
-   * movesWithPoints.add(new Triple<Territory, Territory, Long>(move1.getFirst(), move1.getSecond(), (pointsForThisMove.getFirst() /
+   * movesWithPoints.add(new Triple<Territory, Territory, Long>(move1.getFirst(), move1.getSecond(),
+   * (pointsForThisMove.getFirst() /
    * pointsForThisMove.getSecond())));
    * }
    * return movesWithPoints;
    * }
-   *
-   * static Tuple<Long, Integer> getPointsForBoardSituationBranch(final PlayerID theAI, final PlayerID currentPlayer, final PlayerID
+   * static Tuple<Long, Integer> getPointsForBoardSituationBranch(final PlayerID theAI, final PlayerID currentPlayer,
+   * final PlayerID
    * currentEnemy, final GameData data, final int branchesLeftToDo)
    * {
    * if (branchesLeftToDo > 0)
    * {
-   * final List<Triple<Territory, Territory, Collection<Territory>>> available = getAllAvailableMoves(currentPlayer, data, true);
+   * final List<Triple<Territory, Territory, Collection<Territory>>> available = getAllAvailableMoves(currentPlayer,
+   * data, true);
    * Tuple<Long, Integer> totalPointsForThisBoardSituation = new Tuple<Long, Integer>((long) 0, available.size());
    * for (final Triple<Territory, Territory, Collection<Territory>> move1 : available)
    * {
-   * final Quadruple<Territory, Territory, PlayerID, GameData> temp = PlayDelegate.copyGameDataAndAttemptMove(move1.getFirst(),
+   * final Quadruple<Territory, Territory, PlayerID, GameData> temp =
+   * PlayDelegate.copyGameDataAndAttemptMove(move1.getFirst(),
    * move1.getSecond(), currentPlayer, data);
    * final PlayerID theAITemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(theAI, temp.getForth());
-   * final PlayerID currentPlayerTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentPlayer, temp.getForth());
-   * final PlayerID currentEnemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentEnemy, temp.getForth());
-   * final Tuple<Long, Integer> totalForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp, currentPlayerTemp,
+   * final PlayerID currentPlayerTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentPlayer,
+   * temp.getForth());
+   * final PlayerID currentEnemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentEnemy,
+   * temp.getForth());
+   * final Tuple<Long, Integer> totalForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp,
+   * currentPlayerTemp,
    * temp.getForth(), branchesLeftToDo - 1);
-   * totalPointsForThisBoardSituation = new Tuple<Long, Integer>(totalPointsForThisBoardSituation.getFirst() + totalForThisMove.getFirst(),
+   * totalPointsForThisBoardSituation = new Tuple<Long, Integer>(totalPointsForThisBoardSituation.getFirst() +
+   * totalForThisMove.getFirst(),
    * totalPointsForThisBoardSituation.getSecond() + totalForThisMove.getSecond());
    * }
    * return totalPointsForThisBoardSituation;
@@ -176,7 +189,6 @@ public class AlphaBeta extends HeuristicAI {
    * return new Tuple<Long, Integer>(getPointsForBoardSituationTotal(theAI, data), 0);
    * }
    */
-
   static long getPointsForBoardSituationTotal(final PlayerID theAI, final GameData data) {
     long points = 0;
     // can check them?
@@ -238,8 +250,8 @@ public class AlphaBeta extends HeuristicAI {
   static void printMovesSet(final List<Triple<Territory, Territory, Long>> movesWithPoints) {
     System.out.println("\n\rMoves Available:");
     for (final Triple<Territory, Territory, Long> move1 : movesWithPoints) {
-      System.out.println(move1.getFirst().getX() + "," + move1.getFirst().getY() + " -> " + move1.getSecond().getX() + ","
-          + move1.getSecond().getY() + "  == " + move1.getThird());
+      System.out.println(move1.getFirst().getX() + "," + move1.getFirst().getY() + " -> " + move1.getSecond().getX()
+          + "," + move1.getSecond().getY() + "  == " + move1.getThird());
     }
   }
 

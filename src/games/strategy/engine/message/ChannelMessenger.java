@@ -7,7 +7,6 @@ import games.strategy.net.INode;
 
 /**
  * Implementation of IChannelMessenger built on top of an IMessenger
- *
  */
 public class ChannelMessenger implements IChannelMessenger {
   private final UnifiedMessenger m_unifiedMessenger;
@@ -20,15 +19,14 @@ public class ChannelMessenger implements IChannelMessenger {
     return m_unifiedMessenger;
   }
 
-
   @Override
   public IChannelSubscribor getChannelBroadcastor(final RemoteName channelName) {
-    final InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger, channelName.getName(), true, channelName.getClazz());
-    final IChannelSubscribor rVal = (IChannelSubscribor) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        new Class[] {channelName.getClazz()}, ih);
+    final InvocationHandler ih =
+        new UnifiedInvocationHandler(m_unifiedMessenger, channelName.getName(), true, channelName.getClazz());
+    final IChannelSubscribor rVal = (IChannelSubscribor) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {channelName.getClazz()}, ih);
     return rVal;
   }
-
 
   @Override
   public void registerChannelSubscriber(final Object implementor, final RemoteName channelName) {
@@ -38,12 +36,10 @@ public class ChannelMessenger implements IChannelMessenger {
     m_unifiedMessenger.addImplementor(channelName, implementor, true);
   }
 
-
   @Override
   public void unregisterChannelSubscriber(final Object implementor, final RemoteName channelName) {
     m_unifiedMessenger.removeImplementor(channelName.getName(), implementor);
   }
-
 
   @Override
   public INode getLocalNode() {

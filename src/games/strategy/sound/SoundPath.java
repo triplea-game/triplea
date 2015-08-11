@@ -7,16 +7,12 @@ import games.strategy.engine.data.properties.IEditableProperty;
 
 /**
  * Contains the sound file names and the directory of all sound files.
- *
- *
  */
 public class SoundPath {
   // the sounds directory is based on the resource loader, because it could change based on the map or skin
-
   public static enum SoundType {
     GENERAL, TRIPLEA
   }
-
   // MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference will not be saved)
 
   // standard sounds (files can be found in corresponding data/... folder to this package)
@@ -29,9 +25,7 @@ public class SoundPath {
   public static final String CLIP_GAME_WON = "game_won";
   public static final String CLIP_REQUIRED_ACTION = "required_action"; // TODO
   public static final String CLIP_REQUIRED_YOUR_TURN_SERIES = "required_your_turn_series";
-
   // TripleA sounds:
-
   // custom AA Guns:
   public static final String CLIP_BATTLE_X_PREFIX = "battle_";
   public static final String CLIP_BATTLE_X_HIT = "_hit";
@@ -93,7 +87,6 @@ public class SoundPath {
     rVal.add(CLIP_GAME_WON);
     rVal.add(CLIP_REQUIRED_ACTION);
     rVal.add(CLIP_REQUIRED_YOUR_TURN_SERIES);
-
     rVal.add(CLIP_BATTLE_AA_HIT);
     rVal.add(CLIP_BATTLE_AA_MISS);
     rVal.add(CLIP_BATTLE_AIR);

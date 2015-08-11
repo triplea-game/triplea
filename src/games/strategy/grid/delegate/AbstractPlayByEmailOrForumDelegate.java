@@ -7,7 +7,8 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
-public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegate implements IAbstractForumPosterDelegate {
+public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegate
+    implements IAbstractForumPosterDelegate {
   private boolean m_needToInitialize = true;
   private boolean m_hasPostedTurnSummary = false;
 
@@ -18,7 +19,6 @@ public abstract class AbstractPlayByEmailOrForumDelegate extends AbstractDelegat
       return;
     }
     m_hasPostedTurnSummary = false;
-
     m_needToInitialize = false;// at the very end
   }
 

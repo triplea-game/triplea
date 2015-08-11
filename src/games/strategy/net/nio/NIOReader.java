@@ -19,13 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * A thread that reads socket data using NIO from a collection of sockets.<br>
- *
  * Data is read in packets, and placed in the output queye.<br>
- *
  * Packets are placed in the output queue in order they are read from the socket.
- *
  */
 public class NIOReader {
   private static final Logger s_logger = Logger.getLogger(NIOReader.class.getName());
@@ -136,8 +132,8 @@ public class NIOReader {
                   if (sa != null) {
                     remote = sa.toString();
                   }
-                  s_logger.log(Level.FINE, " done reading from:" + remote + " size:" + packet.size() + " readCalls;" + packet.getReadCalls()
-                      + " total:" + m_totalBytes);
+                  s_logger.log(Level.FINE, " done reading from:" + remote + " size:" + packet.size() + " readCalls;"
+                      + packet.getReadCalls() + " total:" + m_totalBytes);
                 }
                 enque(packet);
               }

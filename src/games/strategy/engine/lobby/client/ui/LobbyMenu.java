@@ -97,8 +97,8 @@ public class LobbyMenu extends JMenuBar {
         final Runnable runner = new Runnable() {
           @Override
           public void run() {
-            final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
-                .getRemote(ModeratorController.getModeratorControllerName());
+            final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
             final StringBuilder builder = new StringBuilder();
             builder.append("Online Players:\r\n\r\n");
             for (final INode player : m_frame.GetChatMessagePanel().getChat().GetOnlinePlayers()) {
@@ -168,15 +168,16 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
         if (DBUserController.validateUserName(name) != null) {
-          if (JOptionPane.showConfirmDialog(m_frame, "The username you entered is invalid. Do you want to ban it anyhow?",
-              "Invalid Username", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
+          if (JOptionPane.showConfirmDialog(m_frame,
+              "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
+              JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
             return;
           }
         }
         final long ticks = requestTimespanSupplication();
         final long expire = System.currentTimeMillis() + ticks;
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
-            .getRemote(ModeratorController.getModeratorControllerName());
+        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
           controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), new Date(expire));
         } catch (final UnknownHostException ex) {
@@ -200,10 +201,11 @@ public class LobbyMenu extends JMenuBar {
         }
         final long ticks = requestTimespanSupplication();
         final long expire = System.currentTimeMillis() + ticks;
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
-            .getRemote(ModeratorController.getModeratorControllerName());
+        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
-          controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName(ip), 0), new Date(expire));
+          controller.banIp(new Node("None (Admin menu originated ban)", InetAddress.getByName(ip), 0),
+              new Date(expire));
         } catch (final UnknownHostException ex) {
         }
       }
@@ -243,10 +245,11 @@ public class LobbyMenu extends JMenuBar {
         }
         final long ticks = requestTimespanSupplication();
         final long expire = System.currentTimeMillis() + ticks;
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
-            .getRemote(ModeratorController.getModeratorControllerName());
+        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
-          controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac, new Date(expire));
+          controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+              new Date(expire));
         } catch (final UnknownHostException ex) {
         }
       }
@@ -260,18 +263,20 @@ public class LobbyMenu extends JMenuBar {
     item.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final String name = JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
+        final String name =
+            JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
         if (name == null || name.length() < 1) {
           return;
         }
         if (DBUserController.validateUserName(name) != null) {
-          if (JOptionPane.showConfirmDialog(m_frame, "The username you entered is invalid. Do you want to ban it anyhow?",
-              "Invalid Username", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
+          if (JOptionPane.showConfirmDialog(m_frame,
+              "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
+              JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
             return;
           }
         }
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
-            .getRemote(ModeratorController.getModeratorControllerName());
+        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
           controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), new Date(0));
         } catch (final UnknownHostException ex) {
@@ -287,15 +292,14 @@ public class LobbyMenu extends JMenuBar {
     item.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final String ip = JOptionPane
-            .showInputDialog(null,
-                "Enter the IP Address that you want to unban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
-                "");
+        final String ip = JOptionPane.showInputDialog(null,
+            "Enter the IP Address that you want to unban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0",
+            "");
         if (ip == null || ip.length() < 1) {
           return;
         }
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
-            .getRemote(ModeratorController.getModeratorControllerName());
+        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
           controller.banIp(new Node("None (Admin menu originated unban)", InetAddress.getByName(ip), 0), new Date(0));
         } catch (final UnknownHostException ex) {
@@ -335,10 +339,11 @@ public class LobbyMenu extends JMenuBar {
             return;
           }
         }
-        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
-            .getRemote(ModeratorController.getModeratorControllerName());
+        final IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
-          controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac, new Date(0));
+          controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+              new Date(0));
         } catch (final UnknownHostException ex) {
         }
       }
@@ -357,8 +362,7 @@ public class LobbyMenu extends JMenuBar {
     timeUnits.add("Year");
     timeUnits.add("Forever");
     final int result = JOptionPane.showOptionDialog(m_frame, "Select the unit of measurement: ", "Select Timespan Unit",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-        timeUnits.toArray(), timeUnits.toArray()[3]);
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[3]);
     if (result < 0) {
       return -1;
     }
@@ -366,7 +370,8 @@ public class LobbyMenu extends JMenuBar {
     if (selectedTimeUnit.equals("Forever")) {
       return Long.MAX_VALUE;
     }
-    final String stringr = JOptionPane.showInputDialog(m_frame, "Now please enter the length of time: (In " + selectedTimeUnit + "s) ", 1);
+    final String stringr =
+        JOptionPane.showInputDialog(m_frame, "Now please enter the length of time: (In " + selectedTimeUnit + "s) ", 1);
     if (stringr == null) {
       return -1;
     }
@@ -433,8 +438,8 @@ public class LobbyMenu extends JMenuBar {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher
-              .openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
+          DesktopUtilityBrowserLauncher.openURL(
+              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
@@ -454,7 +459,8 @@ public class LobbyMenu extends JMenuBar {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
+          DesktopUtilityBrowserLauncher
+              .openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
         } catch (final Exception e1) {
           e1.printStackTrace();
         }
@@ -536,7 +542,8 @@ public class LobbyMenu extends JMenuBar {
   }
 
   private void updateAccountDetails() {
-    final IUserManager manager = (IUserManager) m_frame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.USER_MANAGER);
+    final IUserManager manager =
+        (IUserManager) m_frame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.USER_MANAGER);
     final DBUser user = manager.getUserInfo(m_frame.getLobbyClient().getMessenger().getLocalNode().getName());
     if (user == null) {
       JOptionPane.showMessageDialog(this, "No user info found", "Error", JOptionPane.ERROR_MESSAGE);

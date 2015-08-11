@@ -9,7 +9,6 @@ import games.strategy.engine.vault.NotUnlockedException;
 import games.strategy.engine.vault.Vault;
 import games.strategy.engine.vault.VaultID;
 
-
 public class RemoteRandom implements IRemoteRandom {
   private static List<VerifiedRandomNumbers> s_verifiedRandomNumbers = new ArrayList<VerifiedRandomNumbers>();
 
@@ -38,12 +37,13 @@ public class RemoteRandom implements IRemoteRandom {
     m_game = game;
   }
 
-
   @Override
-  public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultID) throws IllegalStateException {
+  public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultID)
+      throws IllegalStateException {
     if (m_waitingForUnlock) {
       throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation. "
-          + "Asked for: " + count + "x" + max + " for " + annotation);// TODO: maybe we should wait instead of crashing the game?
+          + "Asked for: " + count + "x" + max + " for " + annotation);// TODO: maybe we should wait instead of crashing
+                                                                      // the game?
     }
     m_waitingForUnlock = true;
     // clean up here, we know these keys arent needed anymore so release them
@@ -58,11 +58,11 @@ public class RemoteRandom implements IRemoteRandom {
     m_localNumbers = m_plainRandom.getRandom(max, count, annotation);
     m_game.getVault().waitForID(remoteVaultID, 15000);
     if (!m_game.getVault().knowsAbout(remoteVaultID)) {
-      throw new IllegalStateException("Vault id not known, have:" + m_game.getVault().knownIds() + " looking for:" + remoteVaultID);
+      throw new IllegalStateException(
+          "Vault id not known, have:" + m_game.getVault().knownIds() + " looking for:" + remoteVaultID);
     }
     return m_localNumbers;
   }
-
 
   @Override
   public void verifyNumbers() throws IllegalStateException {

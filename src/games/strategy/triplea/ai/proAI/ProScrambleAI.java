@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -28,17 +27,16 @@ import games.strategy.util.Tuple;
 
 /**
  * Pro scramble AI.
- *
  */
 public class ProScrambleAI {
   public static double WIN_PERCENTAGE = 95;
   public static double MIN_WIN_PERCENTAGE = 80;
-
   private final ProAI ai;
   private final ProBattleUtils battleUtils;
   private final ProAttackOptionsUtils attackOptionsUtils;
 
-  public ProScrambleAI(final ProAI ai, final ProBattleUtils battleUtils, final ProAttackOptionsUtils attackOptionsUtils) {
+  public ProScrambleAI(final ProAI ai, final ProBattleUtils battleUtils,
+      final ProAttackOptionsUtils attackOptionsUtils) {
     this.ai = ai;
     this.battleUtils = battleUtils;
     this.attackOptionsUtils = attackOptionsUtils;
@@ -56,18 +54,17 @@ public class ProScrambleAI {
       WIN_PERCENTAGE = 90;
       MIN_WIN_PERCENTAGE = 65;
     }
-
     // Check if defense already wins
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final Set<Unit> bombardingUnits = new HashSet<Unit>(battle.getBombardingUnits());
     final ProBattleResultData minResult =
         battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
-    LogUtils.log(Level.FINER, scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%=" + minResult.getWinPercentage());
+    LogUtils.log(Level.FINER,
+        scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%=" + minResult.getWinPercentage());
     if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {
       return null;
     }
-
     // Check if max defense is worse
     final Set<Unit> allScramblers = new HashSet<Unit>();
     final Map<Territory, List<Unit>> possibleMaxScramblerMap = new HashMap<Territory, List<Unit>>();
@@ -78,10 +75,10 @@ public class ProScrambleAI {
         Collections.sort(canScrambleAir, new Comparator<Unit>() {
           @Override
           public int compare(final Unit o1, final Unit o2) {
-            final double strength1 =
-                battleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o1), new ArrayList<Unit>(), false);
-            final double strength2 =
-                battleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o2), new ArrayList<Unit>(), false);
+            final double strength1 = battleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o1),
+                new ArrayList<Unit>(), false);
+            final double strength2 = battleUtils.estimateStrength(player, scrambleTo, Collections.singletonList(o2),
+                new ArrayList<Unit>(), false);
             return Double.compare(strength2, strength1);
           }
         });
@@ -93,19 +90,21 @@ public class ProScrambleAI {
     defenders.addAll(allScramblers);
     final ProBattleResultData maxResult =
         battleUtils.calculateBattleResults(player, scrambleTo, attackers, defenders, bombardingUnits, false);
-    LogUtils.log(Level.FINER, scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%=" + maxResult.getWinPercentage());
+    LogUtils.log(Level.FINER,
+        scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%=" + maxResult.getWinPercentage());
     if (maxResult.getTUVSwing() >= minResult.getTUVSwing()) {
       return null;
     }
-
     // Loop through all units and determine attack options
     final Map<Unit, Set<Territory>> unitDefendOptions = new HashMap<Unit, Set<Territory>>();
     for (final Territory t : possibleMaxScramblerMap.keySet()) {
-      final Set<Territory> possibleTerritories = data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
+      final Set<Territory> possibleTerritories =
+          data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
       possibleTerritories.add(t);
       final Set<Territory> battleTerritories = new HashSet<Territory>();
       for (final Territory possibleTerritory : possibleTerritories) {
-        final IBattle possibleBattle = delegate.getBattleTracker().getPendingBattle(possibleTerritory, false, BattleType.NORMAL);
+        final IBattle possibleBattle =
+            delegate.getBattleTracker().getPendingBattle(possibleTerritory, false, BattleType.NORMAL);
         if (possibleBattle != null) {
           battleTerritories.add(possibleTerritory);
         }
@@ -114,10 +113,9 @@ public class ProScrambleAI {
         unitDefendOptions.put(u, battleTerritories);
       }
     }
-
     // Sort units by number of defend options and cost
-    final Map<Unit, Set<Territory>> sortedUnitDefendOptions = attackOptionsUtils.sortUnitMoveOptions(player, unitDefendOptions);
-
+    final Map<Unit, Set<Territory>> sortedUnitDefendOptions =
+        attackOptionsUtils.sortUnitMoveOptions(player, unitDefendOptions);
     // Add one scramble unit at a time and check if final result is better than min result
     final List<Unit> unitsToScramble = new ArrayList<Unit>();
     ProBattleResultData result = minResult;
@@ -125,9 +123,10 @@ public class ProScrambleAI {
       unitsToScramble.add(u);
       final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();
       currentDefenders.addAll(unitsToScramble);
-      result = battleUtils.calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
-      LogUtils.log(Level.FINER,
-          scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage() + ", addedUnit=" + u);
+      result =
+          battleUtils.calculateBattleResults(player, scrambleTo, attackers, currentDefenders, bombardingUnits, false);
+      LogUtils.log(Level.FINER, scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%="
+          + result.getWinPercentage() + ", addedUnit=" + u);
       if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - MIN_WIN_PERCENTAGE)) {
         break;
       }
@@ -135,7 +134,6 @@ public class ProScrambleAI {
     if (result.getTUVSwing() >= minResult.getTUVSwing()) {
       return null;
     }
-
     // Return units to scramble
     final HashMap<Territory, Collection<Unit>> scrambleMap = new HashMap<Territory, Collection<Unit>>();
     for (final Territory t : possibleScramblers.keySet()) {

@@ -10,15 +10,14 @@ import java.util.Map.Entry;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 
-
 public class MoveDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = 2199608152808948043L;
   private final Route m_route;
   private final Collection<Unit> m_transportsThatCanBeLoaded;
   private final Map<Unit, Collection<Unit>> m_dependentUnits;
 
-  public MoveDescription(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded,
-      final Map<Unit, Collection<Unit>> dependentUnits) {
+  public MoveDescription(final Collection<Unit> units, final Route route,
+      final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> dependentUnits) {
     super(units);
     m_route = route;
     m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
@@ -32,7 +31,8 @@ public class MoveDescription extends AbstractMoveDescription {
     }
   }
 
-  public MoveDescription(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded) {
+  public MoveDescription(final Collection<Unit> units, final Route route,
+      final Collection<Unit> transportsThatCanBeLoaded) {
     super(units);
     m_route = route;
     m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;

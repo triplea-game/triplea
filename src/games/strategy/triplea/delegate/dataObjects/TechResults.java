@@ -33,7 +33,6 @@ public class TechResults implements java.io.Serializable {
   }
 
   /**
-   *
    * @param rolls
    *        rolls
    * @param remainder
@@ -45,7 +44,8 @@ public class TechResults implements java.io.Serializable {
    * @param id
    *        player id
    */
-  public TechResults(final int[] rolls, final int remainder, final int hits, final List<String> advances, final PlayerID id) {
+  public TechResults(final int[] rolls, final int remainder, final int hits, final List<String> advances,
+      final PlayerID id) {
     m_rolls = rolls;
     m_remainder = remainder;
     m_hits = hits;
@@ -70,7 +70,6 @@ public class TechResults implements java.io.Serializable {
   }
 
   /**
-   *
    * @return a List of Strings
    */
   public List<String> getAdvances() {

@@ -56,7 +56,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
           m_endPoints.put(hasEndPoint.endPointName, nodes);
         }
         if (nodes.contains(from)) {
-          throw new IllegalStateException("Already contained, new" + from + " existing, " + nodes + " name " + hasEndPoint.endPointName);
+          throw new IllegalStateException(
+              "Already contained, new" + from + " existing, " + nodes + " name " + hasEndPoint.endPointName);
         }
         nodes.add(from);
       }
@@ -112,8 +113,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       m_invocations.remove(methodID);
       final HubInvoke hubInvoke = invocationInProgress.getMethodCall();
       if (s_logger.isLoggable(Level.FINER)) {
-        s_logger.log(Level.FINER, "Method returned:" + hubInvoke.call.getMethodName() + " for remote name:" + hubInvoke.call.getRemoteName()
-            + " with id:" + hubInvoke.methodCallID);
+        s_logger.log(Level.FINER, "Method returned:" + hubInvoke.call.getMethodName() + " for remote name:"
+            + hubInvoke.call.getRemoteName() + " with id:" + hubInvoke.methodCallID);
       }
       if (invocationInProgress.shouldSendResults()) {
         sendResultsToCaller(methodID, invocationInProgress);
@@ -133,7 +134,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       if (remote.size() != 1) {
         throw new IllegalStateException("Too many nodes:" + remote + " for remote name " + hubInvoke.call);
       }
-      final InvocationInProgress invocationInProgress = new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
+      final InvocationInProgress invocationInProgress =
+          new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
       m_invocations.put(hubInvoke.methodCallID, invocationInProgress);
       if (s_logger.isLoggable(Level.FINER)) {
         s_logger.log(Level.FINER, "Waiting for method:" + hubInvoke.call.getMethodName() + " for remote name:"
@@ -141,7 +143,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       }
     }
     // invoke remotely
-    final SpokeInvoke invoke = new SpokeInvoke(hubInvoke.methodCallID, hubInvoke.needReturnValues, hubInvoke.call, from);
+    final SpokeInvoke invoke =
+        new SpokeInvoke(hubInvoke.methodCallID, hubInvoke.needReturnValues, hubInvoke.call, from);
     for (final INode node : remote) {
       send(invoke, node);
     }

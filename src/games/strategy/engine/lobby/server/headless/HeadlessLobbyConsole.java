@@ -22,10 +22,7 @@ import games.strategy.net.INode;
 
 /**
  * Headless admin console for the lobby.
- *
  * Reads commands from stdin, and writes responses to stdout.
- *
- *
  */
 public class HeadlessLobbyConsole {
   private final LobbyServer server;
@@ -180,7 +177,8 @@ public class HeadlessLobbyConsole {
         f.format("\n");
         f.flush();
       }
-      // f.close(); // do not close, because this closes the underlying stream, which is system.out, which you should never close
+      // f.close(); // do not close, because this closes the underlying stream, which is system.out, which you should
+      // never close
     } catch (final SQLException e) {
       e.printStackTrace(out);
     }
@@ -188,15 +186,16 @@ public class HeadlessLobbyConsole {
 
   private void showStatus() {
     final int port = server.getMessenger().getServerNode().getPort();
-    out.print(
-        String.format("port:%s\n" + "up since:%s\n" + "total logins:%s\n" + "current connections:%s\n" + "max concurrent connections:%s\n",
-            port, startDate, totalLogins.get(),
-            currentConnections.get(), maxConcurrentLogins));
+    out.print(String.format(
+        "port:%s\n" + "up since:%s\n" + "total logins:%s\n" + "current connections:%s\n"
+            + "max concurrent connections:%s\n",
+        port, startDate, totalLogins.get(), currentConnections.get(), maxConcurrentLogins));
   }
 
   private void showHelp() {
     out.println("available commands:\n" + "  backup - backup the database \n" + "  help - show this message\n"
         + "  memory - show memory usage\n" + "  status - show status information\n"
-        + "  sql {sql} - execute a sql command and print the results\n" + "  threads - get thread dumps\n" + "  quit - quit\n");
+        + "  sql {sql} - execute a sql command and print the results\n" + "  threads - get thread dumps\n"
+        + "  quit - quit\n");
   }
 }

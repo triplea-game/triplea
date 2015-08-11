@@ -10,7 +10,6 @@ import javax.swing.JOptionPane;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.net.IClientMessenger;
 
-
 public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
   private final Component m_parent;
@@ -27,10 +26,10 @@ public class ChangeToAutosaveClientAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final int rVal = JOptionPane.showConfirmDialog(m_parent, new JLabel("Change Game To: " + m_typeOfAutosave.toString().toLowerCase()),
-        "Change Game To: "
-            + m_typeOfAutosave.toString().toLowerCase(),
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    final int rVal = JOptionPane.showConfirmDialog(m_parent,
+        new JLabel("Change Game To: " + m_typeOfAutosave.toString().toLowerCase()),
+        "Change Game To: " + m_typeOfAutosave.toString().toLowerCase(), JOptionPane.OK_CANCEL_OPTION,
+        JOptionPane.QUESTION_MESSAGE);
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }

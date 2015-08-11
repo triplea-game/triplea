@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -70,5 +69,4 @@ public class ProAmphibData {
   public Map<Territory, Set<Territory>> getSeaTransportMap() {
     return seaTransportMap;
   }
-
 }

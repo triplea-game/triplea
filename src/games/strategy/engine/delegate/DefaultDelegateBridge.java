@@ -20,9 +20,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.sound.ISound;
 
 /**
- *
  * Default implementation of DelegateBridge
- *
  */
 public class DefaultDelegateBridge implements IDelegateBridge {
   private final GameData m_data;
@@ -34,8 +32,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
 
   /** Creates new DefaultDelegateBridge */
   public DefaultDelegateBridge(final GameData data, final IGame game, final IDelegateHistoryWriter historyWriter,
-      final RandomStats randomStats,
-      final DelegateExecutionManager delegateExecutionManager) {
+      final RandomStats randomStats, final DelegateExecutionManager delegateExecutionManager) {
     m_data = data;
     m_game = game;
     m_historyWriter = historyWriter;
@@ -73,8 +70,8 @@ public class DefaultDelegateBridge implements IDelegateBridge {
    * Delegates should not use random data that comes from any other source.
    */
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
-      throws IllegalArgumentException, IllegalStateException {
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation) throws IllegalArgumentException, IllegalStateException {
     final int[] rVal = m_randomSource.getRandom(max, count, annotation);
     m_randomStats.addRandom(rVal, player, diceType);
     return rVal;
@@ -112,12 +109,10 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     return m_delegateExecutionManager.createOutboundImplementation(o, interfaces);
   }
 
-
   @Override
   public IRemotePlayer getRemotePlayer() {
     return getRemotePlayer(getPlayerID());
   }
-
 
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
@@ -129,13 +124,12 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     }
   }
 
-
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
-    final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getDisplayChannel(m_data));
+    final Object implementor =
+        m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getDisplayChannel(m_data));
     return (IDisplay) getOutbound(implementor);
   }
-
 
   @Override
   public ISound getSoundChannelBroadcaster() {

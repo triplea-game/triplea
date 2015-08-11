@@ -40,7 +40,6 @@ import games.strategy.net.nio.ServerQuarantineConversation;
 
 /**
  * A Messenger that can have many clients connected to it.
- *
  */
 public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private static Logger s_logger = Logger.getLogger(ServerMessenger.class.getName());
@@ -50,7 +49,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private boolean m_shutdown = false;
   private final NIOSocket m_nioSocket;
   private final CopyOnWriteArrayList<IMessageListener> m_listeners = new CopyOnWriteArrayList<IMessageListener>();
-  private final CopyOnWriteArrayList<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<IMessengerErrorListener>();
+  private final CopyOnWriteArrayList<IMessengerErrorListener> m_errorListeners =
+      new CopyOnWriteArrayList<IMessengerErrorListener>();
   private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionListeners =
       new CopyOnWriteArrayList<IConnectionChangeListener>();
   private boolean m_acceptNewConnection = false;
@@ -60,7 +60,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final ConcurrentHashMap<SocketChannel, INode> m_channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
 
   // A hack, till I think of something better
-  public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory) throws IOException {
+  public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory)
+      throws IOException {
     m_socketChannel = ServerSocketChannel.open();
     m_socketChannel.configureBlocking(false);
     m_socketChannel.socket().setReuseAddress(true);
@@ -91,12 +92,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     this(name, portNumber, new DefaultObjectStreamFactory());
   }
 
-
   @Override
   public void addMessageListener(final IMessageListener listener) {
     m_listeners.add(listener);
   }
-
 
   @Override
   public void removeMessageListener(final IMessageListener listener) {
@@ -193,7 +192,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a message was sent,
+  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
+  // message was sent,
   // which can be very slow
   private final List<String> m_liveMutedUsernames = new ArrayList<String>();
 
@@ -316,15 +316,21 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  public static final String YOU_HAVE_BEEN_MUTED_LOBBY = "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; // Special
-                                                                                                                                             // character
-                                                                                                                                             // to
-                                                                                                                                             // stop
-                                                                                                                                             // spoofing
-                                                                                                                                             // by
-                                                                                                                                             // server
-  public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; // Special character to
-                                                                                                                    // stop spoofing by host
+  public static final String YOU_HAVE_BEEN_MUTED_LOBBY =
+      "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; // Special
+                                                                                          // character
+                                                                                          // to
+                                                                                          // stop
+                                                                                          // spoofing
+                                                                                          // by
+                                                                                          // server
+  public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; // Special
+                                                                                                                    // character
+                                                                                                                    // to
+                                                                                                                    // stop
+                                                                                                                    // spoofing
+                                                                                                                    // by
+                                                                                                                    // host
 
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
@@ -381,10 +387,12 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     if (isLobby()) {
       rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
     } else {
-      rn = new RemoteName(ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
+      rn = new RemoteName(
+          ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
           IChatChannel.class);
     }
-    final RemoteMethodCall call = new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
+    final RemoteMethodCall call =
+        new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
     final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
     send(spokeInvoke, to);
   }
@@ -593,7 +601,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return m_node;
   }
 
-
   private class ConnectionHandler implements Runnable {
     @Override
     public void run() {
@@ -664,7 +671,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return new TimerTask() {
       @Override
       public void run() { // lobby has a database we need to check, normal hosted games do not
-        if ((isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame())) // If the mute has expired
+        if ((isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame())) // If the
+                                                                                                              // mute
+                                                                                                              // has
+                                                                                                              // expired
         {
           synchronized (m_cachedListLock) {
             m_liveMutedUsernames.remove(username); // Remove the username from the list of live username's muted
@@ -692,7 +702,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     return new TimerTask() {
       @Override
       public void run() { // lobby has a database we need to check, normal hosted games do not
-        if ((isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame())) // If the mute has expired
+        if ((isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame())) // If the mute has
+                                                                                               // expired
         {
           synchronized (m_cachedListLock) {
             m_liveMutedMacAddresses.remove(mac); // Remove the mac from the list of live mac's muted

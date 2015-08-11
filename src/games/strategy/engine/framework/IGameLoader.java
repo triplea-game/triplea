@@ -9,15 +9,12 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 
 /**
- *
  * A game loader is responsible for telling the framework
  * what types of players are available, for creating players, and
  * starting the game.
- *
  * The name is somewhat misleading since it doesnt actually load the
  * game data, merely performs the game specific steps for starting the game
  * and meta data needed by the engine.
- *
  */
 public interface IGameLoader extends java.io.Serializable {
   public static final String CLIENT_PLAYER_TYPE = "Client";
@@ -55,7 +52,6 @@ public interface IGameLoader extends java.io.Serializable {
    * Get the type of the GamePlayer.
    * <p>
    * The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be contacted remotately
-   *
    */
   public Class<? extends IRemote> getRemotePlayerType();
 
@@ -65,7 +61,6 @@ public interface IGameLoader extends java.io.Serializable {
    * A game may use a subclass of Unit to allow associating data with a particular unit. The
    * game does this by specifying a IUnitFactory that should be used to create units.
    * <p>
-   *
    * Games that do not want to subclasses of units should simply return a DefaultUnitFactory.
    * <p>
    */

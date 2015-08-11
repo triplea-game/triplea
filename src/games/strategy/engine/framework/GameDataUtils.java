@@ -15,7 +15,6 @@ public class GameDataUtils {
 
   /**
    * Create a deep copy of GameData.
-   *
    * <Strong>You should have the game datas read or write lock before calling this method</STRONG>
    */
   public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {

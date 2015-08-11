@@ -7,12 +7,9 @@ import com.apple.eawt.ApplicationEvent;
 /**
  * Utility class to wrap Mac OS X-specific shutdown handler.
  * <p>
- *
  * Based on TripleA code.
  * <p>
- *
  * Needs AppleJavaExtensions.jar to compile on non-Mac platform.
- *
  */
 public class MacWrapper {
   private static MainGameFrame s_shutdownFrame;

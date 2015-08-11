@@ -13,11 +13,9 @@ import games.strategy.triplea.ai.proAI.ProAI;
 
 /**
  * Class to manage log settings.
- *
  */
 public class LogSettings implements Serializable {
   private static final long serialVersionUID = 2696071717784800413L;
-
   public boolean LimitLogHistory = true;
   public int LimitLogHistoryTo = 5;
   public boolean EnableAILogging = true;

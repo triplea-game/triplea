@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -24,7 +23,6 @@ import games.strategy.util.Match;
 
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
- *
  */
 public class ProUtils {
   private final ProAI ai;
@@ -35,7 +33,8 @@ public class ProUtils {
 
   public Map<Unit, Territory> createUnitTerritoryMap(final PlayerID player) {
     final List<Territory> allTerritories = ai.getGameData().getMap().getTerritories();
-    final List<Territory> myUnitTerritories = Match.getMatches(allTerritories, Matches.territoryHasUnitsOwnedBy(player));
+    final List<Territory> myUnitTerritories =
+        Match.getMatches(allTerritories, Matches.territoryHasUnitsOwnedBy(player));
     final Map<Unit, Territory> unitTerritoryMap = new HashMap<Unit, Territory>();
     for (final Territory t : myUnitTerritories) {
       final List<Unit> myUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
@@ -93,18 +92,21 @@ public class ProUtils {
     return rVal;
   }
 
-  public List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) { // generate a list of all enemy capitals
+  public List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) { // generate a list of all
+                                                                                            // enemy capitals
     final List<Territory> enemyCapitals = new ArrayList<Territory>();
     final List<PlayerID> ePlayers = getEnemyPlayers(player);
     for (final PlayerID otherPlayer : ePlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
     }
     enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
-    enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
+    enemyCapitals
+        .retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
     return enemyCapitals;
   }
 
-  public List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerID player) { // generate a list of all allied capitals
+  public List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerID player) { // generate a list of all
+                                                                                             // allied capitals
                                                                                              // including player capital
     final List<Territory> capitals = new ArrayList<Territory>();
     final List<PlayerID> players = getAlliedPlayers(player);
@@ -123,8 +125,8 @@ public class ProUtils {
         Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
-      final int distance =
-          data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+      final int distance = data.getMap().getDistance(t, enemyLandTerritory,
+          ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
       if (distance < minDistance) {
         minDistance = distance;
       }
@@ -136,17 +138,19 @@ public class ProUtils {
     }
   }
 
-  public int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerID player, final Territory t,
-      final Map<Territory, Double> territoryValueMap) {
+  public int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerID player,
+      final Territory t, final Map<Territory, Double> territoryValueMap) {
     final Set<Territory> landTerritories =
         data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
-    final List<Territory> enemyLandTerritories = Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));
+    final List<Territory> enemyLandTerritories =
+        Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
       if (territoryValueMap.get(enemyLandTerritory) <= 0) {
         continue;
       }
-      int distance = data.getMap().getDistance(t, enemyLandTerritory, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
+      int distance = data.getMap().getDistance(t, enemyLandTerritory,
+          ProMatches.territoryCanPotentiallyMoveLandUnits(player, data, true));
       if (enemyLandTerritory.getOwner().isNull()) {
         distance++;
       }
@@ -161,13 +165,15 @@ public class ProUtils {
     }
   }
 
-  public int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerID player, final Territory t) {
+  public int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerID player,
+      final Territory t) {
     final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);
     final List<Territory> enemyOrAdjacentLandTerritories =
         Match.getMatches(neighborTerritories, ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories) {
-      final int distance = data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.TerritoryIsWater);
+      final int distance =
+          data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.TerritoryIsWater);
       if (distance > 0 && distance < minDistance) {
         minDistance = distance;
       }
@@ -196,7 +202,6 @@ public class ProUtils {
 
   public boolean isNeutralPlayer(final PlayerID player) {
     final GameData data = ai.getGameData();
-
     for (final GameStep gameStep : data.getSequence()) {
       if (player.equals(gameStep.getPlayerID())) {
         return false;
@@ -217,5 +222,4 @@ public class ProUtils {
       e.printStackTrace();
     }
   }
-
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -28,7 +27,6 @@ public class ProAttackTerritoryData {
   private boolean canHold;
   private boolean canAttack;
   private double strengthEstimate;
-
   // Amphib variables
   private List<Unit> maxAmphibUnits;
   private Map<Unit, List<Unit>> amphibAttackMap;
@@ -38,11 +36,9 @@ public class ProAttackTerritoryData {
   private Set<Unit> maxBombardUnits;
   private Map<Unit, Set<Territory>> bombardOptionsMap;
   private final Map<Unit, Territory> bombardTerritoryMap;
-
   // Determine territory to attack variables
   private boolean currentlyWins;
   private ProBattleResultData battleResult;
-
   // Non-combat move variables
   private List<Unit> cantMoveUnits;
   private List<Unit> maxEnemyUnits;
@@ -51,7 +47,6 @@ public class ProAttackTerritoryData {
   private final List<Unit> tempUnits;
   private final Map<Unit, List<Unit>> tempAmphibAttackMap;
   private double loadValue;
-
   // Scramble variables
   private List<Unit> maxScrambleUnits;
 
@@ -269,7 +264,8 @@ public class ProAttackTerritoryData {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE && battleResult.isHasLandUnitRemaining()) {
+    } else
+      if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }
   }
@@ -282,9 +278,8 @@ public class ProAttackTerritoryData {
     if (battleResult == null) {
       return "territory=" + territory.getName();
     } else {
-      return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing=" + battleResult.getTUVSwing()
-          + ", hasRemainingLandUnit="
-          + battleResult.isHasLandUnitRemaining();
+      return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing="
+          + battleResult.getTUVSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
     }
   }
 
@@ -421,5 +416,4 @@ public class ProAttackTerritoryData {
   public List<Unit> getMaxScrambleUnits() {
     return maxScrambleUnits;
   }
-
 }

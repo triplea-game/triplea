@@ -23,13 +23,12 @@ import games.strategy.util.Match;
 
 /**
  * Some notes on the matches in this class:
- *
- * First, to keep the matches organized, I would like all the matches to be put into their section, which should be created if not yet
+ * First, to keep the matches organized, I would like all the matches to be put into their section, which should be
+ * created if not yet
  * existing.
  * All unit matches in one section, all territory matches in another, etc.
- *
- * Also, make sure there are markers to show the start and end of each section, as well as ten lines of blank space between each section.
- *
+ * Also, make sure there are markers to show the start and end of each section, as well as ten lines of blank space
+ * between each section.
  */
 @SuppressWarnings({"unchecked", "deprecation"})
 public class DMatches {
@@ -186,7 +185,8 @@ public class DMatches {
 
   // /////////////////////////////////////////////End Unit Matches///////////////////////////////////////////////
   // /////////////////////////////////////////////Territory Matches///////////////////////////////////////////////
-  public static Match<Territory> terIsFriendlyEmptyAndWithoutEnemyNeighbors(final GameData data, final PlayerID player) {
+  public static Match<Territory> terIsFriendlyEmptyAndWithoutEnemyNeighbors(final GameData data,
+      final PlayerID player) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory ter) {
@@ -209,7 +209,8 @@ public class DMatches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory ter) {
-        if (DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), runCount) >= minVulnerability) {
+        if (DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()),
+            runCount) >= minVulnerability) {
           return true;
         } else {
           return false;
@@ -223,7 +224,8 @@ public class DMatches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory ter) {
-        if (DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), runCount) >= minSurvivalChance) {
+        if (DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()),
+            runCount) >= minSurvivalChance) {
           return true;
         } else {
           return false;
@@ -270,7 +272,8 @@ public class DMatches {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory t) {
-        // Note that first block was added so that water is not considered 'enemy' territory (technically 'neutral', but is really
+        // Note that first block was added so that water is not considered 'enemy' territory (technically 'neutral', but
+        // is really
         // ownerless)
         if (!(t.isWater() && t.getOwner().isNull()) && data.getRelationshipTracker().isAtWar(player, t.getOwner())) {
           return true;
@@ -319,7 +322,8 @@ public class DMatches {
           return true;
         }
         final String movementRestrictionType = ra.getMovementRestrictionType();
-        final Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
+        final Collection<Territory> listedTerritories =
+            ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
         return (movementRestrictionType.equals("allowed") == listedTerritories.contains(ter));
       }
     };
@@ -355,7 +359,8 @@ public class DMatches {
     };
   }
 
-  public static Match<Territory> territoryMatchesDMatch(final GameData data, final PlayerID player, final Match<TerritoryStatus> DMatch) {
+  public static Match<Territory> territoryMatchesDMatch(final GameData data, final PlayerID player,
+      final Match<TerritoryStatus> DMatch) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory ter) {
@@ -462,8 +467,9 @@ public class DMatches {
         if (data.getMap().getNeighbors(ter, Matches.TerritoryIsLand).isEmpty()) {
           return false; // If we have no land neighbors, we're obviously a small island
         }
-        final List<Territory> nearbyTersOnContinent = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, 2,
-            Matches.TerritoryIsLand, Matches.TerritoryIsLand);
+        final List<Territory> nearbyTersOnContinent =
+            DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, 2,
+                Matches.TerritoryIsLand, Matches.TerritoryIsLand);
         nearbyTersOnContinent.remove(ter);
         nearbyTersOnContinent.removeAll(data.getMap().getNeighbors(ter));
         if (nearbyTersOnContinent.isEmpty()) {
@@ -474,13 +480,14 @@ public class DMatches {
     };
   }
 
-  public static Match<Territory> territoryHasRouteMatchingXToTerritoryMatchingY(final GameData data, final Match<Territory> routeMatch,
-      final Match<Territory> targetMatch) {
+  public static Match<Territory> territoryHasRouteMatchingXToTerritoryMatchingY(final GameData data,
+      final Match<Territory> routeMatch, final Match<Territory> targetMatch) {
     return new Match<Territory>() {
       @Override
       public boolean match(final Territory ter) {
         final List<Territory> tersMatchingYWithRouteMatchingX =
-            DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, Integer.MAX_VALUE, targetMatch, routeMatch);
+            DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter, Integer.MAX_VALUE,
+                targetMatch, routeMatch);
         if (tersMatchingYWithRouteMatchingX.isEmpty()) {
           return false;
         }
@@ -520,12 +527,14 @@ public class DMatches {
           return false;
         }
         final boolean hasAttackers =
-            DUtils.GetNNNEnemyLUnitsThatCanReach(data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, 1).size() >= 1;
-        // If there are land attackers and we haven't reinforced this ter, we dont want to move here (since it wasn't retreated from, this
+            DUtils.GetNNNEnemyLUnitsThatCanReach(data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLand, 1)
+                .size() >= 1;
+        // If there are land attackers and we haven't reinforced this ter, we dont want to move here (since it wasn't
+        // retreated from, this
         // must be a ter that has been made vulnerable by an ncm move this turn)
         if (hasAttackers
-            && !DUtils.CompMatchOr(DMatches.TS_WasReinforced_Frontline, DMatches.TS_WasReinforced_Stabalize).match(
-                StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(ter))) {
+            && !DUtils.CompMatchOr(DMatches.TS_WasReinforced_Frontline, DMatches.TS_WasReinforced_Stabalize)
+                .match(StatusCenter.get(data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(ter))) {
           return false;
         }
         return true;
@@ -534,7 +543,8 @@ public class DMatches {
   }
 
   // /////////////////////////////////////////////End Territory Matches///////////////////////////////////////////////
-  // /////////////////////////////////////////////Territory Status Matches///////////////////////////////////////////////
+  // /////////////////////////////////////////////Territory Status
+  // Matches///////////////////////////////////////////////
   public static final Match<TerritoryStatus> TS_WasAttacked = new Match<TerritoryStatus>() {
     @Override
     public boolean match(final TerritoryStatus ts) {
@@ -595,5 +605,6 @@ public class DMatches {
       return ts.WasRetreatedFrom;
     }
   };
-  // /////////////////////////////////////////////End Territory Status Matches///////////////////////////////////////////////
+  // /////////////////////////////////////////////End Territory Status
+  // Matches///////////////////////////////////////////////
 }

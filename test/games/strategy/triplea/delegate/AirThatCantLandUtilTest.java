@@ -44,7 +44,8 @@ public class AirThatCantLandUtilTest extends TestCase {
         }
       }
     }
-    throw new IllegalStateException("Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
+    throw new IllegalStateException(
+        "Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
   }
 
   public void testSimple() {
@@ -116,7 +117,8 @@ public class AirThatCantLandUtilTest extends TestCase {
     final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
-    final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+    final InitializationDelegate initDel =
+        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -161,7 +163,8 @@ public class AirThatCantLandUtilTest extends TestCase {
     final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
-    final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+    final InitializationDelegate initDel =
+        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -211,7 +214,8 @@ public class AirThatCantLandUtilTest extends TestCase {
     final PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
-    final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+    final InitializationDelegate initDel =
+        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -271,7 +275,8 @@ public class AirThatCantLandUtilTest extends TestCase {
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(sz_9, fighterType.create(2, americans)));
     // we need to initialize the original owner
-    final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+    final InitializationDelegate initDel =
+        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -308,7 +313,7 @@ public class AirThatCantLandUtilTest extends TestCase {
         return null;
       }
     };
-    return (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class},
-        handler);
+    return (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+        new Class[] {ITripleaPlayer.class}, handler);
   }
 }

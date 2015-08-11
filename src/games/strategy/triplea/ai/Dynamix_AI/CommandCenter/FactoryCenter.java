@@ -9,7 +9,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ai.Dynamix_AI.Group.PurchaseGroup;
 
-
 public class FactoryCenter {
   private static HashMap<PlayerID, FactoryCenter> s_FCInstances = new HashMap<PlayerID, FactoryCenter>();
 

@@ -25,12 +25,9 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file
- *
- *
  */
 public class PropertiesDiceRoller implements IRemoteDiceServer {
   private static final long serialVersionUID = 6481409417543119539L;
-
 
   /**
    * Loads the property dice rollers from the properties file
@@ -70,11 +67,9 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         return n1 - n2;
       }
     });
-
     for (final Properties prop : propFiles) {
       rollers.add(new PropertiesDiceRoller(prop));
     }
-
     return rollers;
   }
 
@@ -86,7 +81,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   public PropertiesDiceRoller(final Properties props) {
     m_props = props;
   }
-
 
   @Override
   public String getDisplayName() {
@@ -113,8 +107,8 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, String gameID, final String gameUUID)
-      throws IOException {
+  public String postRequest(final int max, final int numDice, final String subjectMessage, String gameID,
+      final String gameUUID) throws IOException {
     if (gameID.trim().length() == 0) {
       gameID = "TripleA";
     }
@@ -125,8 +119,8 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     }
     final PostMethod post = new PostMethod(m_props.getProperty("path"));
     final NameValuePair[] data = {new NameValuePair("numdice", "" + numDice), new NameValuePair("numsides", "" + max),
-        new NameValuePair("modroll", "No"), new NameValuePair("numroll", "" + 1),
-        new NameValuePair("subject", message), new NameValuePair("roller", getToAddress()), new NameValuePair("gm", getCcAddress()),
+        new NameValuePair("modroll", "No"), new NameValuePair("numroll", "" + 1), new NameValuePair("subject", message),
+        new NameValuePair("roller", getToAddress()), new NameValuePair("gm", getCcAddress()),
         new NameValuePair("send", "true"),};
     post.setRequestHeader("User-Agent", "triplea/" + EngineVersion.VERSION);
     // this is to allow a dice server to allow the user to request the emails for the game
@@ -158,7 +152,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   /**
-   *
    * @throws IOException
    *         if there was an error parsing the string
    */
@@ -167,7 +160,8 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     final String errorStartString = m_props.getProperty("error.start");
     final String errorEndString = m_props.getProperty("error.end");
     // if the error strings are defined
-    if (errorStartString != null && errorStartString.length() > 0 && errorEndString != null && errorEndString.length() > 0) {
+    if (errorStartString != null && errorStartString.length() > 0 && errorEndString != null
+        && errorEndString.length() > 0) {
       final int startIndex = string.indexOf(errorStartString);
       if (startIndex >= 0) {
         final int endIndex = string.indexOf(errorEndString, (startIndex + errorStartString.length()));

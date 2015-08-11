@@ -15,24 +15,19 @@ import games.strategy.net.IMessenger;
 
 /**
  * A Chat window.
- *
  * Mutiple chat panels can be connected to the same Chat.
  * <p>
- *
  * We can change the chat we are connected to using the setChat(...) method.
- *
  */
 public class ChatPanel extends JPanel implements IChatPanel {
   private static final long serialVersionUID = -6177517517279779486L;
-
   static int s_divider_size = 5;
-
   private ChatPlayerPanel m_chatPlayerPanel;
   private ChatMessagePanel m_chatMessagePanel;
 
   /** Creates a new instance of ChatFrame */
-  public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger,
-      final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
+  public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger,
+      final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
     init();
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
     setChat(chat);
@@ -95,9 +90,15 @@ public class ChatPanel extends JPanel implements IChatPanel {
   @Override
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
     m_chatPlayerPanel.setPlayerRenderer(renderer);
-    m_chatMessagePanel.setPreferredSize(new Dimension(30, m_chatMessagePanel.getPreferredSize().height)); // gets remaining width from
-                                                                                                          // parent component, so setting
-                                                                                                          // the width is not really
+    m_chatMessagePanel.setPreferredSize(new Dimension(30, m_chatMessagePanel.getPreferredSize().height)); // gets
+                                                                                                          // remaining
+                                                                                                          // width from
+                                                                                                          // parent
+                                                                                                          // component,
+                                                                                                          // so setting
+                                                                                                          // the width
+                                                                                                          // is not
+                                                                                                          // really
                                                                                                           // necessary
   }
 
@@ -114,7 +115,6 @@ public class ChatPanel extends JPanel implements IChatPanel {
    * m_chatMessagePanel.addMessage(message, "Server", true);
    * }
    */
-
   public ChatPlayerPanel getChatPlayerPanel() {
     return m_chatPlayerPanel;
   }

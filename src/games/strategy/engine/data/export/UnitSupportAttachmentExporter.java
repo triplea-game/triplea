@@ -17,9 +17,8 @@ public class UnitSupportAttachmentExporter extends DefaultAttachmentExporter {
     if (fieldName.equals("m_players")) {
       return mPlayersHandler(field, attachment);
     }
-    if (fieldName.equals("m_offence") || fieldName.equals("m_defence") || fieldName.equals("m_roll") || fieldName.equals("m_strength")
-        || fieldName.equals("m_allied")
-        || fieldName.equals("m_enemy")) {
+    if (fieldName.equals("m_offence") || fieldName.equals("m_defence") || fieldName.equals("m_roll")
+        || fieldName.equals("m_strength") || fieldName.equals("m_allied") || fieldName.equals("m_enemy")) {
       return "";
     }
     return super.printOption(field, attachment);

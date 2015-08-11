@@ -37,11 +37,8 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
 
-
-
 /**
  * Pro AI simulate turn utilities.
- *
  */
 public class ProSimulateTurnUtils {
   private final ProAI ai;
@@ -49,7 +46,8 @@ public class ProSimulateTurnUtils {
   private final ProBattleUtils battleUtils;
   private final ProMoveUtils moveUtils;
 
-  public ProSimulateTurnUtils(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils, final ProMoveUtils moveUtils) {
+  public ProSimulateTurnUtils(final ProAI ai, final ProUtils utils, final ProBattleUtils battleUtils,
+      final ProMoveUtils moveUtils) {
     this.ai = ai;
     this.utils = utils;
     this.battleUtils = battleUtils;
@@ -58,12 +56,12 @@ public class ProSimulateTurnUtils {
 
   public void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge) {
     LogUtils.log(Level.FINE, "Starting battle simulation phase");
-
     final BattleDelegate battleDelegate = DelegateFinder.battleDelegate(data);
     final Map<BattleType, Collection<Territory>> battleTerritories = battleDelegate.getBattles().getBattles();
     for (final Entry<BattleType, Collection<Territory>> entry : battleTerritories.entrySet()) {
       for (final Territory t : entry.getValue()) {
-        final IBattle battle = battleDelegate.getBattleTracker().getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
+        final IBattle battle =
+            battleDelegate.getBattleTracker().getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
         final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
         attackers.retainAll(t.getUnits().getUnits());
         final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
@@ -73,10 +71,10 @@ public class ProSimulateTurnUtils {
         LogUtils.log(Level.FINER, "attackers=" + attackers);
         LogUtils.log(Level.FINER, "defenders=" + defenders);
         LogUtils.log(Level.FINER, "bombardingUnits=" + bombardingUnits);
-        final ProBattleResultData result = battleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits, true);
+        final ProBattleResultData result =
+            battleUtils.callBattleCalculator(player, t, attackers, defenders, bombardingUnits, true);
         final List<Unit> remainingUnits = result.getAverageUnitsRemaining();
         LogUtils.log(Level.FINER, "remainingUnits=" + remainingUnits);
-
         // Make updates to data
         final List<Unit> attackersToRemove = new ArrayList<Unit>(attackers);
         attackersToRemove.removeAll(remainingUnits);
@@ -103,10 +101,9 @@ public class ProSimulateTurnUtils {
   }
 
   public Map<Territory, ProAttackTerritoryData> transferMoveMap(final Map<Territory, ProAttackTerritoryData> moveMap,
-      final Map<Unit, Territory> unitTerritoryMap, final GameData fromData,
-      final GameData toData, final PlayerID player) {
+      final Map<Unit, Territory> unitTerritoryMap, final GameData fromData, final GameData toData,
+      final PlayerID player) {
     LogUtils.log(Level.FINE, "Transferring move map");
-
     final Map<Territory, ProAttackTerritoryData> result = new HashMap<Territory, ProAttackTerritoryData>();
     final List<Unit> usedUnits = new ArrayList<Unit>();
     for (final Territory fromTerritory : moveMap.keySet()) {
@@ -123,7 +120,8 @@ public class ProSimulateTurnUtils {
         Unit toTransport = null;
         final List<Unit> toUnits = new ArrayList<Unit>();
         if (isTransportingMap.get(transport)) {
-          toTransport = transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits, toData, player);
+          toTransport = transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits,
+              toData, player);
           toUnits.addAll(TransportTracker.transporting(toTransport));
         } else {
           toTransport = transferUnit(transport, unitTerritoryMap, usedUnits, toData, player);
@@ -136,12 +134,13 @@ public class ProSimulateTurnUtils {
         patd.putAmphibAttackMap(toTransport, toUnits);
         amphibUnits.addAll(amphibAttackMap.get(transport));
         if (transportTerritoryMap.get(transport) != null) {
-          patd.getTransportTerritoryMap().put(toTransport, toData.getMap().getTerritory(transportTerritoryMap.get(transport).getName()));
+          patd.getTransportTerritoryMap().put(toTransport,
+              toData.getMap().getTerritory(transportTerritoryMap.get(transport).getName()));
         }
-        LogUtils.log(Level.FINEST, "---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport)
-            + " unloadTerritory=" + transportTerritoryMap.get(transport)
-            + " to transport=" + toTransport + " with units=" + toUnits + " unloadTerritory="
-            + patd.getTransportTerritoryMap().get(toTransport));
+        LogUtils.log(Level.FINEST,
+            "---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport)
+                + " unloadTerritory=" + transportTerritoryMap.get(transport) + " to transport=" + toTransport
+                + " with units=" + toUnits + " unloadTerritory=" + patd.getTransportTerritoryMap().get(toTransport));
       }
       for (final Unit u : moveMap.get(fromTerritory).getUnits()) {
         if (!amphibUnits.contains(u)) {
@@ -153,12 +152,10 @@ public class ProSimulateTurnUtils {
       for (final Unit u : bombardMap.keySet()) {
         final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
         patd.getBombardTerritoryMap().put(toUnit, toData.getMap().getTerritory(bombardMap.get(u).getName()));
-        LogUtils.log(Level.FINEST, "---Transferring bombard=" + u + ", bombardFromTerritory=" + bombardMap.get(u) + " to bomard=" + toUnit
-            + ", bombardFromTerritory="
-            + patd.getBombardTerritoryMap().get(toUnit));
+        LogUtils.log(Level.FINEST, "---Transferring bombard=" + u + ", bombardFromTerritory=" + bombardMap.get(u)
+            + " to bomard=" + toUnit + ", bombardFromTerritory=" + patd.getBombardTerritoryMap().get(toUnit));
       }
     }
-
     return result;
   }
 
@@ -172,7 +169,8 @@ public class ProSimulateTurnUtils {
         && relationshipTracker.isAllied(terrOrigOwner, player)) {
       // Give capital and any allied territories back to original owner
       final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
-      final List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+      final List<Territory> friendlyTerritories =
+          Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       friendlyTerritories.add(t);
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner() == terrOrigOwner) {
@@ -191,8 +189,8 @@ public class ProSimulateTurnUtils {
     return false;
   }
 
-  private Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits, final GameData toData,
-      final PlayerID player) {
+  private Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits,
+      final GameData toData, final PlayerID player) {
     final Territory unitTerritory = unitTerritoryMap.get(u);
     final List<Unit> toUnits = toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
         .getMatches(ProMatches.unitIsOwnedAndMatchesTypeAndNotTransporting(player, u.getType()));
@@ -232,5 +230,4 @@ public class ProSimulateTurnUtils {
     }
     return null;
   }
-
 }

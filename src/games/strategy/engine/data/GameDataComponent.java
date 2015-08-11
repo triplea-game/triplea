@@ -9,7 +9,6 @@ import java.io.ObjectOutputStream;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.util.PropertyUtil;
 
-
 public class GameDataComponent implements java.io.Serializable {
   static final long serialVersionUID = -2066504666509851740L;
   @InternalDoNotExport

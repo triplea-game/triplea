@@ -39,8 +39,8 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    * Note, the name paramater passed in here may not match the name of the
    * ClientMessenger after it has been constructed.
    */
-  public ClientMessenger(final String host, final int port, final String name, final String mac, final IConnectionLogin login)
-      throws IOException, UnknownHostException, CouldNotLogInException {
+  public ClientMessenger(final String host, final int port, final String name, final String mac,
+      final IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException {
     this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
   }
 
@@ -57,9 +57,8 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    * Note, the name paramater passed in here may not match the name of the
    * ClientMessenger after it has been constructed.
    */
-  public ClientMessenger(final String host, final int port, final String name, final String mac, final IObjectStreamFactory streamFact)
-      throws IOException, UnknownHostException,
-      CouldNotLogInException {
+  public ClientMessenger(final String host, final int port, final String name, final String mac,
+      final IObjectStreamFactory streamFact) throws IOException, UnknownHostException, CouldNotLogInException {
     this(host, port, name, mac, streamFact, null);
   }
 
@@ -67,9 +66,9 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
    * Note, the name paramater passed in here may not match the name of the
    * ClientMessenger after it has been constructed.
    */
-  public ClientMessenger(final String host, final int port, final String name, final String mac, final IObjectStreamFactory streamFact,
-      final IConnectionLogin login) throws IOException,
-          UnknownHostException, CouldNotLogInException {
+  public ClientMessenger(final String host, final int port, final String name, final String mac,
+      final IObjectStreamFactory streamFact, final IConnectionLogin login)
+          throws IOException, UnknownHostException, CouldNotLogInException {
     m_socketChannel = SocketChannel.open();
     m_socketChannel.configureBlocking(false);
     final InetSocketAddress remote = new InetSocketAddress(host, port);
@@ -94,7 +93,8 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     final Socket socket = m_socketChannel.socket();
     socket.setKeepAlive(true);
     m_socket = new NIOSocket(streamFact, this, name);
-    final ClientQuarantineConversation conversation = new ClientQuarantineConversation(login, m_socketChannel, m_socket, name, mac);
+    final ClientQuarantineConversation conversation =
+        new ClientQuarantineConversation(login, m_socketChannel, m_socket, name, mac);
     m_socket.add(m_socketChannel, conversation);
     // allow the credentials to be shown in this thread
     conversation.showCredentials();
@@ -123,7 +123,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     }
   }
 
-
   @Override
   public synchronized void send(final Serializable msg, final INode to) {
     // use our nodes address, this is our network visible address
@@ -131,19 +130,16 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     m_socket.send(m_socketChannel, header);
   }
 
-
   @Override
   public synchronized void broadcast(final Serializable msg) {
     final MessageHeader header = new MessageHeader(m_node, msg);
     m_socket.send(m_socketChannel, header);
   }
 
-
   @Override
   public void addMessageListener(final IMessageListener listener) {
     m_listeners.add(listener);
   }
-
 
   @Override
   public void removeMessageListener(final IMessageListener listener) {
@@ -159,7 +155,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   public void removeErrorListener(final IMessengerErrorListener listener) {
     m_errorListeners.remove(listener);
   }
-
 
   @Override
   public boolean isConnected() {
@@ -260,7 +255,8 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
       argTypes[i] = args.get(i).getClass();
     }
     final RemoteName rn = ServerModel.SERVER_REMOTE_NAME;
-    final RemoteMethodCall call = new RemoteMethodCall(rn.getName(), methodName, args.toArray(), argTypes, rn.getClazz());
+    final RemoteMethodCall call =
+        new RemoteMethodCall(rn.getName(), methodName, args.toArray(), argTypes, rn.getClazz());
     final HubInvoke hubInvoke = new HubInvoke(null, false, call);
     send(hubInvoke, getServerNode());
   }

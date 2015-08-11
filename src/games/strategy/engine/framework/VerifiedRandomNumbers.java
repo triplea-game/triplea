@@ -2,7 +2,6 @@ package games.strategy.engine.framework;
 
 import games.strategy.triplea.formatter.MyFormatter;
 
-
 public class VerifiedRandomNumbers {
   private final int[] m_values;
   private final String m_annotation;

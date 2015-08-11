@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 
-
 public class GetGameSaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1118264715230932068L;
   private final Component m_parent;

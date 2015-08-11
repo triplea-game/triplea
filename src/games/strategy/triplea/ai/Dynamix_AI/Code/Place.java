@@ -36,11 +36,10 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.util.Match;
 
-
 @SuppressWarnings("unchecked")
 public class Place {
-  public static void place(final Dynamix_AI ai, final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
-      final PlayerID player) {
+  public static void place(final Dynamix_AI ai, final boolean bid, final IAbstractPlaceDelegate placeDelegate,
+      final GameData data, final PlayerID player) {
     if (DSettings.LoadSettings().AIC_disableAllUnitPurchasesAndPlacements) {
       final String message = ai.getName() + " is skipping it's placement phase and destroying its "
           + player.getResources().getQuantity(GlobalCenter.GetPUResource()) + " PU's, as instructed.";
@@ -75,8 +74,9 @@ public class Place {
         final List<Unit> matchingAA = GetPlayerUnitsMatchingUnitsInList(Collections.singletonList(aa), player);
         if (matchingAA.isEmpty()) // This should not be happening, but it does for some reason
         {
-          DUtils.Log(Level.FINER, "  AA unit placement on pre-assigned territory " + aaBuildTer.getName()
-              + " failed because the player's units matching Matches.UnitIsAA is null... Player's Units: {0}",
+          DUtils.Log(Level.FINER,
+              "  AA unit placement on pre-assigned territory " + aaBuildTer.getName()
+                  + " failed because the player's units matching Matches.UnitIsAA is null... Player's Units: {0}",
               player.getUnits().getUnits());
           continue;
         }
@@ -90,29 +90,36 @@ public class Place {
         break;
       }
       final List<Unit> units = GetPlayerUnitsMatchingUnitsInList(pg.GetSampleUnits(), player);
-      if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) // AI
-                                                                                                                                  // cheat
-                                                                                                                                  // for
-                                                                                                                                  // more
-                                                                                                                                  // interesting
-                                                                                                                                  // gameplay.
-                                                                                                                                  // Can be
-                                                                                                                                  // turned
-                                                                                                                                  // on with
-                                                                                                                                  // AI
-                                                                                                                                  // settings
-                                                                                                                                  // window.
+      if (DSettings.LoadSettings().EnableUnitPlacementMultiplier
+          && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) // AI
+                                                                           // cheat
+                                                                           // for
+                                                                           // more
+                                                                           // interesting
+                                                                           // gameplay.
+                                                                           // Can be
+                                                                           // turned
+                                                                           // on with
+                                                                           // AI
+                                                                           // settings
+                                                                           // window.
       {
         final float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
         final List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_CreateMoreIfNeeded(units, multiplyAmount);
-        final String message = ai.getName() + " use a UPM cheat, and place " + hackedUnits.size() + " units on " + factoryTer.getName();
+        final String message =
+            ai.getName() + " use a UPM cheat, and place " + hackedUnits.size() + " units on " + factoryTer.getName();
         final List<Unit> fHackedUnits = hackedUnits;
         DUtils.Log(Level.FINE, message);
         final Runnable runner = new Runnable() {
           @Override
           public void run() {
-            CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message, fHackedUnits); // Let the user see the hacked
-                                                                                                            // units in the sidebar
+            CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message, fHackedUnits); // Let the
+                                                                                                            // user see
+                                                                                                            // the
+                                                                                                            // hacked
+                                                                                                            // units in
+                                                                                                            // the
+                                                                                                            // sidebar
           }
         };
         try {
@@ -139,9 +146,11 @@ public class Place {
       final List<Unit> units = GetPlayerUnitsMatchingUnitsInList(factory.GetSampleUnits(), player);
       doPlace(ai, bestFactoryPlaceTer, units, data, placeDelegate);
     }
-    if (player.getUnits().someMatch(Matches.UnitCanProduceUnitsAndIsConstruction)) // If we have leftover factories to place
+    if (player.getUnits().someMatch(Matches.UnitCanProduceUnitsAndIsConstruction)) // If we have leftover factories to
+                                                                                   // place
     {
-      DUtils.Log(Level.FINE, "  There are factories leftover from the purchase phase, so looping and placing extra factories.");
+      DUtils.Log(Level.FINE,
+          "  There are factories leftover from the purchase phase, so looping and placing extra factories.");
       final List<Unit> leftoverUnits = DUtils.ToList(player.getUnits().getUnits());
       while (Match.someMatch(leftoverUnits, Matches.UnitCanProduceUnitsAndIsConstruction)) {
         final Territory bestFactoryPlaceTer = CalculateBestFactoryBuildTerritory(data, player);
@@ -167,7 +176,8 @@ public class Place {
     }
     if (player.getUnits().size() > 0) {
       DUtils.Log(Level.FINE, "  There are units leftover from the purchase phase, so looping and placing extra units.");
-      // If the game is reloaded, this country can place anywhere, or there was some sort of issue between purchase and place phase, we need
+      // If the game is reloaded, this country can place anywhere, or there was some sort of issue between purchase and
+      // place phase, we need
       // to place all the leftover units
       final List<Territory> sortedPossiblePlaceLocations =
           Purchase_UnitPlacementLocationSorter.CalculateAndSortUnitPlacementLocations(ai, bid, data, player);
@@ -190,40 +200,43 @@ public class Place {
         } else {
           unitsToPlace = leftoverUnits.subList(0, maxUnitsWeCanPlaceHere);
         }
-        if (DSettings.LoadSettings().EnableUnitPlacementMultiplier && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) // AI
-                                                                                                                                    // cheat
-                                                                                                                                    // for
-                                                                                                                                    // more
-                                                                                                                                    // interesting
-                                                                                                                                    // gameplay.
-                                                                                                                                    // Can
-                                                                                                                                    // be
-                                                                                                                                    // turned
-                                                                                                                                    // on
-                                                                                                                                    // with
-                                                                                                                                    // AI
-                                                                                                                                    // settings
-                                                                                                                                    // window.
+        if (DSettings.LoadSettings().EnableUnitPlacementMultiplier
+            && DSettings.LoadSettings().UnitPlacementMultiplyPercent != 100) // AI
+                                                                             // cheat
+                                                                             // for
+                                                                             // more
+                                                                             // interesting
+                                                                             // gameplay.
+                                                                             // Can
+                                                                             // be
+                                                                             // turned
+                                                                             // on
+                                                                             // with
+                                                                             // AI
+                                                                             // settings
+                                                                             // window.
         {
           final float multiplyAmount = DUtils.ToFloat(DSettings.LoadSettings().UnitPlacementMultiplyPercent);
-          final List<Unit> hackedUnits = DUtils.GetXPercentOfTheUnitsInList_CreateMoreIfNeeded(unitsToPlace, multiplyAmount);
+          final List<Unit> hackedUnits =
+              DUtils.GetXPercentOfTheUnitsInList_CreateMoreIfNeeded(unitsToPlace, multiplyAmount);
           final List<Unit> fHackedUnits = hackedUnits;
           final Territory fPlaceLoc = placeLoc;
           final Dynamix_AI fAI = ai;
           final Runnable runner = new Runnable() {
             @Override
             public void run() {
-              CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(
-                  fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fPlaceLoc.getName(), fHackedUnits); // Let
-                                                                                                                                            // the
-                                                                                                                                            // user
-                                                                                                                                            // see
-                                                                                                                                            // the
-                                                                                                                                            // hacked
-                                                                                                                                            // units
-                                                                                                                                            // in
-                                                                                                                                            // the
-                                                                                                                                            // sidebar
+              CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(fAI.getName()
+                  + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fPlaceLoc.getName(),
+                  fHackedUnits); // Let
+                                 // the
+                                 // user
+                                 // see
+                                 // the
+                                 // hacked
+                                 // units
+                                 // in
+                                 // the
+                                 // sidebar
             }
           };
           try {
@@ -241,20 +254,21 @@ public class Place {
         }
       }
     }
-    if (DSettings.LoadSettings().EnableResourceCollectionIncreaser && DSettings.LoadSettings().ResourceCollectionIncreaseAmount != 0) // AI
-                                                                                                                                      // cheat
-                                                                                                                                      // for
-                                                                                                                                      // more
-                                                                                                                                      // interesting
-                                                                                                                                      // gameplay.
-                                                                                                                                      // Can
-                                                                                                                                      // be
-                                                                                                                                      // turned
-                                                                                                                                      // on
-                                                                                                                                      // with
-                                                                                                                                      // AI
-                                                                                                                                      // settings
-                                                                                                                                      // window.
+    if (DSettings.LoadSettings().EnableResourceCollectionIncreaser
+        && DSettings.LoadSettings().ResourceCollectionIncreaseAmount != 0) // AI
+                                                                           // cheat
+                                                                           // for
+                                                                           // more
+                                                                           // interesting
+                                                                           // gameplay.
+                                                                           // Can
+                                                                           // be
+                                                                           // turned
+                                                                           // on
+                                                                           // with
+                                                                           // AI
+                                                                           // settings
+                                                                           // window.
     {
       final int PUChange = DSettings.LoadSettings().ResourceCollectionIncreaseAmount;
       if (PUChange > 0) {
@@ -287,8 +301,8 @@ public class Place {
     // Temporary hack to get ships placed down. Later, I will code this correctly
     if (units.size() > 0 && UnitAttachment.get(units.iterator().next().getUnitType()).getIsSea()
         && data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).size() > 0) {
-      final Set<Territory> openPorts = ter.getData().getMap()
-          .getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater,
+      final Set<Territory> openPorts =
+          ter.getData().getMap().getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater,
               Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(ter.getData(), ter.getOwner())).invert()));
       if (openPorts.size() > 0) {
         ter = openPorts.iterator().next();
@@ -334,9 +348,17 @@ public class Place {
         continue;
       }
       int score = 0;
-      score -= DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), 250) * 1000; // TODO: 250 run
-                                                                                                                       // count should be in
-                                                                                                                       // the user menu for
+      score -= DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), 250) * 1000; // TODO:
+                                                                                                                       // 250
+                                                                                                                       // run
+                                                                                                                       // count
+                                                                                                                       // should
+                                                                                                                       // be
+                                                                                                                       // in
+                                                                                                                       // the
+                                                                                                                       // user
+                                                                                                                       // menu
+                                                                                                                       // for
                                                                                                                        // this...
       score += TerritoryAttachment.getProduction(ter) * 10;
       if (!ourCapitals.isEmpty()) {

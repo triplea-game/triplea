@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
-
 public class ChangeTest extends TestCase {
   private GameData m_data;
 
@@ -38,7 +37,8 @@ public class ChangeTest extends TestCase {
     output.flush();
     // System.out.println("bytes:" + sink.toByteArray().length);
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
-    final ObjectInputStream input = new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_data), source);
+    final ObjectInputStream input =
+        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_data), source);
     final Change newChange = (Change) input.readObject();
     input.close();
     output.close();
@@ -95,7 +95,8 @@ public class ChangeTest extends TestCase {
     final PlayerID chretian = m_data.getPlayerList().getPlayerID("chretian");
     assertEquals(chretian.getUnits().getUnitCount(), 10);
     // add some units
-    final Change change = ChangeFactory.addUnits(chretian, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
+    final Change change =
+        ChangeFactory.addUnits(chretian, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
     final ChangePerformer changePerformer = new ChangePerformer(m_data);
     changePerformer.perform(change);
     assertEquals(chretian.getUnits().getUnitCount(), 20);

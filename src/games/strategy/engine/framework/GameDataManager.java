@@ -32,7 +32,6 @@ import games.strategy.util.Version;
  * <p>
  * Description: Responsible for loading saved games, new games from xml, and saving games
  * </p>
- *
  */
 public class GameDataManager {
   private final static String DELEGATE_START = "<DelegateStart>";
@@ -73,40 +72,37 @@ public class GameDataManager {
       if (!readVersion.equals(EngineVersion.VERSION, true)) {
         // a hack for now, but a headless server should not try to open any savegame that is not its version
         if (headless) {
-          final String message =
-              "Incompatible game save, we are: " + EngineVersion.VERSION + "  Trying to load game created with: " + readVersion;
+          final String message = "Incompatible game save, we are: " + EngineVersion.VERSION
+              + "  Trying to load game created with: " + readVersion;
           HeadlessGameServer.sendChat(message);
           System.out.println(message);
           return null;
         }
-        final String error = "<html>Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION
-            + " . Trying to load game created with: " + readVersion
+        final String error = "<html>Incompatible engine versions, and no old engine found. We are: "
+            + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion
             + "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
         if (savegamePath == null) {
           throw new IOException(error);
         }
-
-        // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was
+        // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the
+        // same engine as was
         // used for this savegame, and if so try to run it
         try {
           final String newClassPath = TripleAProcessRunner.findOldJar(readVersion, true);
           // ask user if we really want to do this?
-          final String messageString = "<html>This TripleA engine is version "
-              + EngineVersion.VERSION.toString()
-              + " and you are trying to open a savegame made with version "
-              + readVersion.toString()
+          final String messageString = "<html>This TripleA engine is version " + EngineVersion.VERSION.toString()
+              + " and you are trying to open a savegame made with version " + readVersion.toString()
               + "<br>However, this TripleA can not open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
               + "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
               + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
               + "<br><b>You may choose to either Close or Keep the current instance of TripleA!</b> (If hosting, you must close it). Please report any bugs or issues."
               + "<br><br>Do you wish to continue?</html>";
-
           final String yesClose = "Yes & Close Current";
           final String yesOpen = "Yes & Do Not Close";
           final String cancel = "Cancel";
           final Object[] options = new Object[] {yesClose, yesOpen, cancel};
-          final JOptionPane pane =
-              new JOptionPane(messageString, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, yesClose);
+          final JOptionPane pane = new JOptionPane(messageString, JOptionPane.PLAIN_MESSAGE,
+              JOptionPane.YES_NO_CANCEL_OPTION, null, options, yesClose);
           final JDialog window = pane.createDialog(null, "Run old jar to open old Save Game?");
           window.setVisible(true);
           final Object buttonPressed = pane.getValue();
@@ -124,28 +120,28 @@ public class GameDataManager {
           }
         } catch (final IOException e) {
           if (GameRunner2.areWeOldExtraJar()) {
-            throw new IOException("<html>Please run the default TripleA and try to open this game again. " +
-                "<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: "
-                +
-                EngineVersion.VERSION.toStringFull("_", true) + "</html>");
+            throw new IOException("<html>Please run the default TripleA and try to open this game again. "
+                + "<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: "
+                + EngineVersion.VERSION.toStringFull("_", true) + "</html>");
           } else {
             throw new IOException(error);
           }
         }
         return null;
       } else if (!headless && readVersion.isGreaterThan(EngineVersion.VERSION, false)) {
-        // we can still load it because first 3 numbers of the version are the same, however this save was made by a newer engine, so prompt
+        // we can still load it because first 3 numbers of the version are the same, however this save was made by a
+        // newer engine, so prompt
         // the user to upgrade
-        final String messageString = "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
-            + "<br>However, because the first 3 version numbers are the same as your current version, we can still open the savegame."
-            + "<br><br>This TripleA engine is version "
-            + EngineVersion.VERSION.toStringFull("_")
-            + " and you are trying to open a savegame made with version "
-            + readVersion.toStringFull("_")
-            + "<br><br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/"
-            + "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this savegame."
-            + "<br><br>Do you wish to continue and open this save with your current 'old' version?</html>";
-        final int answer = JOptionPane.showConfirmDialog(null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
+        final String messageString =
+            "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
+                + "<br>However, because the first 3 version numbers are the same as your current version, we can still open the savegame."
+                + "<br><br>This TripleA engine is version " + EngineVersion.VERSION.toStringFull("_")
+                + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
+                + "<br><br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/"
+                + "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this savegame."
+                + "<br><br>Do you wish to continue and open this save with your current 'old' version?</html>";
+        final int answer =
+            JOptionPane.showConfirmDialog(null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
         if (answer != JOptionPane.YES_OPTION) {
           return null;
         }
@@ -162,8 +158,8 @@ public class GameDataManager {
 
   /**
    * Use this to keep compatibility between savegames when it is easy to do so.
-   * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for triplea.
-   *
+   * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for
+   * triplea.
    * FYI: Engine version numbers work like this with regards to savegames:
    * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
    * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
@@ -197,7 +193,8 @@ public class GameDataManager {
      */
   }
 
-  private void loadDelegates(final ObjectInputStream input, final GameData data) throws ClassNotFoundException, IOException {
+  private void loadDelegates(final ObjectInputStream input, final GameData data)
+      throws ClassNotFoundException, IOException {
     for (Object endMarker = input.readObject(); !endMarker.equals(DELEGATE_LIST_END); endMarker = input.readObject()) {
       final String name = (String) input.readObject();
       final String displayName = (String) input.readObject();
@@ -239,7 +236,8 @@ public class GameDataManager {
     saveGame(sink, data, true);
   }
 
-  public void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo) throws IOException {
+  public void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo)
+      throws IOException {
     // write internally first in case of error
     final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
     final ObjectOutputStream outStream = new ObjectOutputStream(bytes);
@@ -279,7 +277,8 @@ public class GameDataManager {
   }
 
   /**
-   * Test if a game save works. Also a good way to dump a gamesave in memory to a hprof file, without all the background stuff.
+   * Test if a game save works. Also a good way to dump a gamesave in memory to a hprof file, without all the background
+   * stuff.
    */
   public static void main(final String[] args) {
     if (args == null || args.length == 0 || args[0] == null || args[0].length() == 0) {
@@ -304,8 +303,8 @@ public class GameDataManager {
     if (data == null) {
       System.out.println("GameData null, exiting.");
     } else {
-      System.out.println("GameData loaded successfully for game: " + data.getGameName()
-          + " (round " + data.getSequence().getRound() + "). Press any key to exit.");
+      System.out.println("GameData loaded successfully for game: " + data.getGameName() + " (round "
+          + data.getSequence().getRound() + "). Press any key to exit.");
       try {
         System.in.read();
       } catch (final IOException e) {

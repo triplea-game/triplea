@@ -19,7 +19,8 @@ public class SetPasswordAction extends AbstractAction {
   private final Component m_parent;
   private final InGameLobbyWatcherWrapper m_lobbyWatcher;
 
-  public SetPasswordAction(final Component parent, final InGameLobbyWatcherWrapper watcher, final ClientLoginValidator validator) {
+  public SetPasswordAction(final Component parent, final InGameLobbyWatcherWrapper watcher,
+      final ClientLoginValidator validator) {
     super("Set Game Password...");
     // TODO Auto-generated constructor stub
     m_validator = validator;

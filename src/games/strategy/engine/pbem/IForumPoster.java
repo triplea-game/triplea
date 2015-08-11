@@ -12,8 +12,6 @@ public interface IForumPoster extends IBean {
   /**
    * Called when the turn summary should be posted
    *
-   *
-   *
    * @param summary
    *        the forum summary
    * @param subject
@@ -85,13 +83,11 @@ public interface IForumPoster extends IBean {
 
   /**
    * Can you view the forum post with this poster
-   *
    */
   public boolean getCanViewPosted();
 
   /**
    * Get the user name to login with
-   *
    */
   @Override
   public String getDisplayName();
@@ -157,5 +153,4 @@ public interface IForumPoster extends IBean {
    * @return the progress bar message
    */
   String getTestMessage();
-
 }

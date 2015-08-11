@@ -37,7 +37,8 @@ public class BanPlayerAction extends AbstractAction {
       JOptionPane.showMessageDialog(m_parent, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    final int rVal = JOptionPane.showConfirmDialog(m_parent, combo, "Select player to ban", JOptionPane.OK_CANCEL_OPTION);
+    final int rVal =
+        JOptionPane.showConfirmDialog(m_parent, combo, "Select player to ban", JOptionPane.OK_CANCEL_OPTION);
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }

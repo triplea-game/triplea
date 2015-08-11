@@ -25,7 +25,6 @@ import games.strategy.util.Util;
 
 /**
  * Contains all the data to describe a move and to undo it.
- *
  */
 public class UndoableMove extends AbstractUndoableMove {
   private static final long serialVersionUID = 8490182214651531358L;
@@ -110,7 +109,8 @@ public class UndoableMove extends AbstractUndoableMove {
         continue;
       }
       for (final Unit unit : m_units) {
-        final Route routeUnitUsedToMove = DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
+        final Route routeUnitUsedToMove =
+            DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
         if (!battle.getBattleType().isBombingRun()) {
           // route units used to move will be null in the case
           // where an enemy sub is submerged in the territory, and another unit
@@ -126,18 +126,19 @@ public class UndoableMove extends AbstractUndoableMove {
           Unit target = null;
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
-            final Collection<Unit> enemyTargetsTotal = end.getUnits().getMatches(new CompositeMatchAnd<Unit>(
-                Matches.enemyUnit(bridge.getPlayerID(), data),
-                Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
-                Matches.unitIsBeingTransported().invert()));
+            final Collection<Unit> enemyTargetsTotal = end.getUnits()
+                .getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), data),
+                    Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
+                    Matches.unitIsBeingTransported().invert()));
             final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
                     Match.getMatches(Collections.singleton(unit), Matches.UnitIsStrategicBomber), data)));
-            if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+            if (enemyTargets.size() > 1
+                && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                 && !games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)) {
               while (target == null) {
-                target = ((ITripleaPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).whatShouldBomberBomb(end, enemyTargets,
-                    Collections.singletonList(unit));
+                target = ((ITripleaPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).whatShouldBomberBomb(end,
+                    enemyTargets, Collections.singletonList(unit));
               }
             } else if (!enemyTargets.isEmpty()) {
               target = enemyTargets.iterator().next();
@@ -176,9 +177,10 @@ public class UndoableMove extends AbstractUndoableMove {
           // we should be able to take this out later
           // we need to add logic for this move to take over the same territories
           // when the other move is undone
-          !Util.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty() ||
+      !Util.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty() ||
           // or we are unloading transports that have moved in another turn
-          !Util.intersection(other.m_units, this.m_unloaded).isEmpty() || !Util.intersection(other.m_unloaded, this.m_unloaded).isEmpty()) {
+          !Util.intersection(other.m_units, this.m_unloaded).isEmpty()
+          || !Util.intersection(other.m_unloaded, this.m_unloaded).isEmpty()) {
         m_iDependOn.add(other);
         other.m_dependOnMe.add(this);
       }

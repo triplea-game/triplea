@@ -14,11 +14,8 @@ import games.strategy.util.IntegerMap;
  * Base class for all attachment exporter classes, if you create a new attachment extend this class,
  * and configure the AttachmentExporterFactory to include your new exporter. Or if your new Attachment
  * is very standard you can use this one directly. Configure the same in AttachmentExporterFactory
- *
- *
  */
 public class DefaultAttachmentExporter implements IAttachmentExporter {
-
   @Override
   public String getAttachmentOptions(final IAttachment attachment) {
     final StringBuffer xmlfile = new StringBuffer();
@@ -58,7 +55,8 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
           // Boolean Option with the set-setter java: boolean m_isFemale & setFemale(String) xml: female
           attachment.getClass().getMethod("set" + Character.toUpperCase(fieldName.charAt(4)) + fieldName.substring(5),
               java.lang.String.class);
-          return printBooleanOption(field, "" + Character.toLowerCase(fieldName.charAt(4)) + fieldName.substring(5), attachment);
+          return printBooleanOption(field, "" + Character.toLowerCase(fieldName.charAt(4)) + fieldName.substring(5),
+              attachment);
         } catch (final NoSuchMethodException nsme) { /* not this one */
         }
       } else {
@@ -72,8 +70,8 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
             if (field.getType().equals(java.lang.Boolean.class) || field.getType().equals(boolean.class)) {
               return printBooleanOption(field, fieldName.substring(2), attachment);
             }
-            if (field.getType().equals(java.lang.Integer.class) || field.getType().equals(int.class) || field.getType().equals(long.class)
-                || field.getType().equals(java.lang.Long.class)) {
+            if (field.getType().equals(java.lang.Integer.class) || field.getType().equals(int.class)
+                || field.getType().equals(long.class) || field.getType().equals(java.lang.Long.class)) {
               return printIntegerOption(field, fieldName.substring(2), attachment);
             }
             if (field.getType().equals(java.lang.String[].class)) {
@@ -85,18 +83,20 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
             if (field.getType().equals(UnitType.class)) {
               return printUnitTypeOption(field, fieldName.substring(2), attachment);
             }
-            throw new AttachmentExportException("unknown handler for field: " + field + " of class: " + field.getType());
+            throw new AttachmentExportException(
+                "unknown handler for field: " + field + " of class: " + field.getType());
           } catch (final NullPointerException npe) {
             System.err.println("npe: field: " + fieldName);
             npe.printStackTrace();
           } catch (final NoSuchMethodException e) {
-            System.err.println("no method: set" + (Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3)) + " found on: "
-                + attachment.getClass().getCanonicalName());
+            System.err.println("no method: set" + (Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3))
+                + " found on: " + attachment.getClass().getCanonicalName());
           }
         }
       }
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException("e: " + e + " for printOption on field: " + field + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException(
+          "e: " + e + " for printOption on field: " + field + " on Attachment: " + attachment.getName());
     }
     return "";
   }
@@ -110,11 +110,11 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
       }
       return printDefaultOption(option, value.getName());
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     }
   }
 
@@ -127,11 +127,11 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
         return "";
       }
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     }
     return printDefaultOption(option, value.getName());
   }
@@ -151,16 +151,16 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
       }
       return printDefaultOption(option, value);
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printStringArrayOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printStringArrayOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     }
   }
 
-  protected String printIntegerOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue)
-      throws AttachmentExportException {
+  protected String printIntegerOption(final Field field, final String option, final IAttachment attachment,
+      final boolean printDefaultValue) throws AttachmentExportException {
     int value;
     try {
       value = field.getInt(attachment);
@@ -173,14 +173,14 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
         return "";
       }
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printIntegerOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printIntegerOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printIntegerOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printIntegerOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     } catch (final InstantiationException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printIntegerOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printIntegerOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     }
   }
 
@@ -194,8 +194,8 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
     return printStringOption(field, option, attachment, false);
   }
 
-  protected String printStringOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue)
-      throws AttachmentExportException {
+  protected String printStringOption(final Field field, final String option, final IAttachment attachment,
+      final boolean printDefaultValue) throws AttachmentExportException {
     String value;
     try {
       value = (String) field.get(attachment);
@@ -211,14 +211,14 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
         return printDefaultOption(option, "" + value);
       }
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printStringOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printStringOption on field: " + field + " option: " + option
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printStringOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printStringOption on field: " + field + " option: " + option
+          + " on Attachment: " + attachment.getName());
     } catch (final InstantiationException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printStringOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printStringOption on field: " + field + " option: " + option
+          + " on Attachment: " + attachment.getName());
     }
   }
 
@@ -227,8 +227,8 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
     return printBooleanOption(field, option, attachment, false);
   }
 
-  protected String printBooleanOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue)
-      throws AttachmentExportException {
+  protected String printBooleanOption(final Field field, final String option, final IAttachment attachment,
+      final boolean printDefaultValue) throws AttachmentExportException {
     boolean value = false;
     try {
       value = field.getBoolean(attachment);
@@ -241,14 +241,14 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
         return printDefaultOption(option, "" + value);
       }
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printBooleanOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printBooleanOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printBooleanOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printBooleanOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     } catch (final InstantiationException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for printBooleanOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for printBooleanOption on field: " + field + " option: "
+          + option + " on Attachment: " + attachment.getName());
     }
   }
 
@@ -287,7 +287,8 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
   }
 
   @SuppressWarnings("unchecked")
-  protected String printUnitIntegerMap(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  protected String printUnitIntegerMap(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     try {
       final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
       final IntegerMap<UnitType> map = (IntegerMap<UnitType>) field.get(attachment);
@@ -307,14 +308,14 @@ public class DefaultAttachmentExporter implements IAttachmentExporter {
       }
       return returnValue;
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mUnitPresenceHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mUnitPresenceHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mUnitPresenceHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mUnitPresenceHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final java.lang.ArrayIndexOutOfBoundsException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mUnitPresenceHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mUnitPresenceHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     }
   }
 }

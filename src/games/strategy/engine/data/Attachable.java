@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import java.util.Map;
 
-
 public interface Attachable {
   public void addAttachment(String key, IAttachment value);
 

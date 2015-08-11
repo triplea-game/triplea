@@ -19,9 +19,6 @@ import games.strategy.sound.ISound;
  * Represents a running game.
  * <p>
  * Allows access to the games communication interfaces, and to listen to the current game step.
- *
- *
- *
  */
 public interface IGame {
   public static final RemoteName GAME_MODIFICATION_CHANNEL =
@@ -68,20 +65,16 @@ public interface IGame {
    * Is the game over. Game over does not relate to the state of the game (eg check-mate in chess)
    * but to the game being shut down and all players have left.
    * <p>
-   *
-   *
    */
   public boolean isGameOver();
 
   /**
-   *
    * @return a listing of who is playing who.
    */
   public PlayerManager getPlayerManager();
 
   /**
    * Save the game to the given directory.
-   *
    * The file should exist and be writeable.
    */
   public void saveGame(File f);

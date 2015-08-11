@@ -47,13 +47,10 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
- *
- *
- *          Used to keep track of where battles have occurred
+ * Used to keep track of where battles have occurred
  */
 public class BattleTracker implements java.io.Serializable {
   private static final long serialVersionUID = 8806010984321554662L;
-
   // List of pending battles
   private final Set<IBattle> m_pendingBattles = new HashSet<IBattle>();
   // List of battle dependencies
@@ -74,9 +71,11 @@ public class BattleTracker implements java.io.Serializable {
       new HashMap<Territory, Map<Territory, Collection<Unit>>>();
   // things like kamikaze suicide attacks disallow bombarding from that sea zone for that turn
   private final Set<Territory> m_noBombardAllowed = new HashSet<Territory>();
-  private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand = new HashMap<Territory, Collection<Unit>>();
+  private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand =
+      new HashMap<Territory, Collection<Unit>>();
   private BattleRecords m_battleRecords = null;
-  // to keep track of all relationships that have changed this turn (so we can validate things like transports loading in newly created
+  // to keep track of all relationships that have changed this turn (so we can validate things like transports loading
+  // in newly created
   // hostile zones)
   private final Collection<Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>> m_relationshipChangesThisTurn =
       new ArrayList<Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>>();
@@ -142,12 +141,13 @@ public class BattleTracker implements java.io.Serializable {
 
   public void addRelationshipChangesThisTurn(final PlayerID p1, final PlayerID p2, final RelationshipType oldRelation,
       final RelationshipType newRelation) {
-
     m_relationshipChangesThisTurn.add(new Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>(
-        new Tuple<PlayerID, PlayerID>(p1, p2), new Tuple<RelationshipType, RelationshipType>(oldRelation, newRelation)));
+        new Tuple<PlayerID, PlayerID>(p1, p2),
+        new Tuple<RelationshipType, RelationshipType>(oldRelation, newRelation)));
   }
 
-  public boolean didAllThesePlayersJustGoToWarThisTurn(final PlayerID p1, final Collection<Unit> enemyUnits, final GameData data) {
+  public boolean didAllThesePlayersJustGoToWarThisTurn(final PlayerID p1, final Collection<Unit> enemyUnits,
+      final GameData data) {
     final Set<PlayerID> enemies = new HashSet<PlayerID>();
     for (final Unit u : Match.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1))) {
       enemies.add(u.getOwner());
@@ -161,7 +161,8 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   public boolean didThesePlayersJustGoToWarThisTurn(final PlayerID p1, final PlayerID p2) {
-    // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war, and newRelation is war
+    // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war, and newRelation is
+    // war
     for (final Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>> t : m_relationshipChangesThisTurn) {
       final Tuple<PlayerID, PlayerID> players = t.getFirst();
       if (players.getFirst().equals(p1)) {
@@ -207,7 +208,8 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
-  public void undoBattle(final Route route, final Collection<Unit> units, final PlayerID player, final IDelegateBridge bridge) {
+  public void undoBattle(final Route route, final Collection<Unit> units, final PlayerID player,
+      final IDelegateBridge bridge) {
     for (final IBattle battle : new ArrayList<IBattle>(m_pendingBattles)) {
       if (battle.getTerritory().equals(route.getEnd())) {
         battle.removeAttack(route, units);
@@ -218,7 +220,8 @@ public class BattleTracker implements java.io.Serializable {
     }
     final RelationshipTracker relationshipTracker = bridge.getData().getRelationshipTracker();
     // if we have no longer conquered it, clear the blitz state
-    // EW: Does this have to look at all Territories? or just middle-territories or steps? // answer: veq: yes, we look at all, because we
+    // EW: Does this have to look at all Territories? or just middle-territories or steps? // answer: veq: yes, we look
+    // at all, because we
     // could have conquered the end territory if there are no units there
     for (final Territory current : route.getAllTerritories()) {
       if (!relationshipTracker.isAllied(current.getOwner(), player) && m_conquered.contains(current)) {
@@ -254,10 +257,12 @@ public class BattleTracker implements java.io.Serializable {
 
   public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
-      final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, HashSet<Unit>> targets, final boolean airBattleCompleted) {
+      final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, HashSet<Unit>> targets,
+      final boolean airBattleCompleted) {
     final GameData data = bridge.getData();
     if (bombing) {
-      // create only either an air battle OR a bombing battle. (the air battle will create a bombing battle when done, if needed)
+      // create only either an air battle OR a bombing battle. (the air battle will create a bombing battle when done,
+      // if needed)
       if (!airBattleCompleted && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing)) {
         addAirBattle(route, units, id, data, true);
@@ -270,21 +275,23 @@ public class BattleTracker implements java.io.Serializable {
       // create both an air battle and a normal battle
       if (!airBattleCompleted && games.strategy.triplea.Properties.getBattlesMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing)) {
-        addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts(id, data)), id, data, false);
+        addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts(id, data)), id, data,
+            false);
       }
-
       final Change change = addMustFightBattleChange(route, units, id, data);
       bridge.addChange(change);
       if (changeTracker != null) {
         changeTracker.addChange(change);
       }
-      if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea)) {
+      if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand)
+          || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea)) {
         addEmptyBattle(route, units, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
       }
     }
   }
 
-  private void markWasInCombat(final Collection<Unit> units, final IDelegateBridge bridge, final UndoableMove changeTracker) {
+  private void markWasInCombat(final Collection<Unit> units, final IDelegateBridge bridge,
+      final UndoableMove changeTracker) {
     if (units == null) {
       return;
     }
@@ -300,14 +307,14 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   /*
-   * private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data)
+   * private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final
+   * GameData data)
    * {
    * addBombingBattle(route, units, attacker, data, null);
    * }
    */
-
-  private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data,
-      final HashMap<Unit, HashSet<Unit>> targets) {
+  private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker,
+      final GameData data, final HashMap<Unit, HashSet<Unit>> targets) {
     IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
     if (battle == null) {
       battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, this);
@@ -330,12 +337,13 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
-  private void addAirBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data,
-      final boolean bombingRun) {
+  private void addAirBattle(final Route route, final Collection<Unit> units, final PlayerID attacker,
+      final GameData data, final boolean bombingRun) {
     if (units.isEmpty()) {
       return;
     }
-    IBattle battle = getPendingBattle(route.getEnd(), bombingRun, (bombingRun ? BattleType.AIR_RAID : BattleType.AIR_BATTLE));
+    IBattle battle =
+        getPendingBattle(route.getEnd(), bombingRun, (bombingRun ? BattleType.AIR_RAID : BattleType.AIR_BATTLE));
     if (battle == null) {
       battle = new AirBattle(route.getEnd(), bombingRun, data, attacker, this);
       m_pendingBattles.add(battle);
@@ -371,12 +379,12 @@ public class BattleTracker implements java.io.Serializable {
   /**
    * No enemies.
    */
-  private void addEmptyBattle(final Route route, final Collection<Unit> units, final PlayerID id, final IDelegateBridge bridge,
-      final UndoableMove changeTracker,
+  private void addEmptyBattle(final Route route, final Collection<Unit> units, final PlayerID id,
+      final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     final GameData data = bridge.getData();
-    final Collection<Unit> canConquer =
-        Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
+    final Collection<Unit> canConquer = Match.getMatches(units,
+        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
     if (Match.noneMatch(canConquer, Matches.UnitIsNotAir)) {
       return;
     }
@@ -391,7 +399,8 @@ public class BattleTracker implements java.io.Serializable {
     conquerable.add(new CompositeMatchOr<Territory>(
         Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
         // Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data),
-        new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(id, data), Matches.TerritoryIsPassableAndNotRestricted(id, data))));
+        new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(id, data),
+            Matches.TerritoryIsPassableAndNotRestricted(id, data))));
     final Collection<Territory> conquered = new ArrayList<Territory>();
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
@@ -407,7 +416,8 @@ public class BattleTracker implements java.io.Serializable {
     m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
     for (final Territory current : conquered) {
       IBattle nonFight = getPendingBattle(current, false, BattleType.NORMAL);
-      // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this stuff (currently doesn't work because then the
+      // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this stuff (currently doesn't
+      // work because then the
       // territory is never conquered because the units have left the territory by the time we fight)
       /*
        * if (scramblingEnabled)
@@ -429,8 +439,8 @@ public class BattleTracker implements java.io.Serializable {
        * {
        */
       if (nonFight == null) {
-        nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED,
-            WhoWon.ATTACKER, units);
+        nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data,
+            BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
         m_pendingBattles.add(nonFight);
         getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType(), data);
       }
@@ -449,7 +459,8 @@ public class BattleTracker implements java.io.Serializable {
         precede = getPendingBattle(route.getEnd(), true, null);
       }
       // if we have a preceding battle, then we must use a non-fighting-battle
-      // if we have scrambling on, and this is an amphibious attack, we may wish to scramble to kill the transports, so must use
+      // if we have scrambling on, and this is an amphibious attack, we may wish to scramble to kill the transports, so
+      // must use
       // non-fighting-battle also
       if (precede != null || (scramblingEnabled && route.isUnload() && route.hasExactlyOneStep())) {
         IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
@@ -491,8 +502,8 @@ public class BattleTracker implements java.io.Serializable {
     // TODO: else what?
   }
 
-  public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker,
-      final Collection<Unit> arrivingUnits) {
+  public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge,
+      final UndoableMove changeTracker, final Collection<Unit> arrivingUnits) {
     final TerritoryAttachment ta = TerritoryAttachment.get(territory); // This could be NULL if unowned water
     if (ta == null) {
       return; // TODO: allow capture/destroy of infrastructure on unowned water
@@ -503,15 +514,16 @@ public class BattleTracker implements java.io.Serializable {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final boolean isTerritoryOwnerAnEnemy = relationshipTracker.canTakeOverOwnedTerritory(id, territory.getOwner()); // .isAtWar(id,
                                                                                                                      // territory.getOwner());
-    // If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just transports. If they
+    // If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just
+    // transports. If they
     // don't, exit here.
     if (territory.isWater() && arrivedUnits != null) {
       int totalMatches = 0;
       // Total Attacking Sea units = all units - land units - air units - submerged subs
       // Also subtract transports & subs (if they can't control sea zones)
-      totalMatches =
-          arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.UnitIsLand) - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
-              - Match.countMatches(arrivedUnits, Matches.unitIsSubmerged(data));
+      totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.UnitIsLand)
+          - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
+          - Match.countMatches(arrivedUnits, Matches.unitIsSubmerged(data));
       // If transports are restricted from controlling sea zones, subtract them
       final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>();
       transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
@@ -531,7 +543,8 @@ public class BattleTracker implements java.io.Serializable {
     // If it was a Convoy Route- check ownership of the associated neighboring territory and set message
     if (ta != null && ta.getConvoyRoute()) {
       // we could be part of a convoy route for another territory
-      final Collection<Territory> attachedConvoyTo = TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
+      final Collection<Territory> attachedConvoyTo =
+          TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
       for (final Territory convoy : attachedConvoyTo) {
         final TerritoryAttachment cta = TerritoryAttachment.get(convoy);
         if (!cta.getConvoyRoute()) {
@@ -540,19 +553,22 @@ public class BattleTracker implements java.io.Serializable {
         final PlayerID convoyOwner = convoy.getOwner();
         if (relationshipTracker.isAllied(id, convoyOwner)) {
           if (Match.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() <= 0) {
-            bridge.getHistoryWriter().addChildToEvent(convoyOwner.getName() + " gains " + cta.getProduction()
-                + " production in " + convoy.getName() + " for the liberation the convoy route in " + territory.getName());
+            bridge.getHistoryWriter()
+                .addChildToEvent(convoyOwner.getName() + " gains " + cta.getProduction() + " production in "
+                    + convoy.getName() + " for the liberation the convoy route in " + territory.getName());
           }
         } else if (relationshipTracker.isAtWar(id, convoyOwner)) {
           if (Match.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() == 1) {
-            bridge.getHistoryWriter().addChildToEvent(convoyOwner.getName() + " loses " + cta.getProduction()
-                + " production in " + convoy.getName() + " due to the capture of the convoy route in " + territory.getName());
+            bridge.getHistoryWriter()
+                .addChildToEvent(convoyOwner.getName() + " loses " + cta.getProduction() + " production in "
+                    + convoy.getName() + " due to the capture of the convoy route in " + territory.getName());
           }
         }
       }
     }
     // if neutral, we may charge money to enter
-    if (territory.getOwner().isNull() && !territory.isWater() && games.strategy.triplea.Properties.getNeutralCharge(data) >= 0) {
+    if (territory.getOwner().isNull() && !territory.isWater()
+        && games.strategy.triplea.Properties.getNeutralCharge(data) >= 0) {
       final Resource PUs = data.getResourceList().getResource(Constants.PUS);
       final int PUChargeIdeal = -games.strategy.triplea.Properties.getNeutralCharge(data);
       final int PUChargeReal = Math.min(0, Math.max(PUChargeIdeal, -id.getResources().getQuantity(PUs)));
@@ -562,21 +578,20 @@ public class BattleTracker implements java.io.Serializable {
         changeTracker.addChange(neutralFee);
       }
       if (PUChargeIdeal == PUChargeReal) {
-        bridge.getHistoryWriter().addChildToEvent(
-            id.getName() + " loses " + -PUChargeReal + " " + MyFormatter.pluralize("PU", -PUChargeReal) + " for violating "
-                + territory.getName() + "s neutrality.");
+        bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -PUChargeReal + " "
+            + MyFormatter.pluralize("PU", -PUChargeReal) + " for violating " + territory.getName() + "s neutrality.");
       } else {
-        System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay " + PUChargeIdeal
-            + ", but did not have enough PUs to pay! This is a bug.");
-        bridge.getHistoryWriter().addChildToEvent(
-            id.getName() + " loses " + -PUChargeReal + " " + MyFormatter.pluralize("PU", -PUChargeReal) + " for violating "
-                + territory.getName()
-                + "s neutrality.  Correct amount to charge is: " + PUChargeIdeal
-                + ".  Player should not have been able to make this attack!");
+        System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay "
+            + PUChargeIdeal + ", but did not have enough PUs to pay! This is a bug.");
+        bridge.getHistoryWriter()
+            .addChildToEvent(id.getName() + " loses " + -PUChargeReal + " " + MyFormatter.pluralize("PU", -PUChargeReal)
+                + " for violating " + territory.getName() + "s neutrality.  Correct amount to charge is: "
+                + PUChargeIdeal + ".  Player should not have been able to make this attack!");
       }
     }
     // if its a capital we take the money
-    // NOTE: this is not checking to see if it is an enemy. instead it is relying on the fact that the capital should be owned by the person
+    // NOTE: this is not checking to see if it is an enemy. instead it is relying on the fact that the capital should be
+    // owned by the person
     // it is attached to
     if (ta != null && isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
       // if the capital is owned by the capitols player
@@ -584,18 +599,23 @@ public class BattleTracker implements java.io.Serializable {
       final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
       final PlayerAttachment pa = PlayerAttachment.get(id);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
-      final List<Territory> capitalsList = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data));
-      if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) // we are losing one right now, so it is
+      final List<Territory> capitalsList =
+          new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data));
+      if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) // we are losing one
+                                                                                                   // right now, so it
+                                                                                                   // is
                                                                                                    // < not <=
       {
         // do nothing, we keep our money since we still control enough capitals
-        bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
+        bridge.getHistoryWriter()
+            .addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
         final Resource PUs = data.getResourceList().getResource(Constants.PUS);
         final int capturedPUCount = whoseCapital.getResources().getQuantity(PUs);
         if (pa != null) {
           if (isPacificTheater(data)) {
-            final Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (capturedPUCount + pa.getCaptureVps()), "captureVps");
+            final Change changeVP =
+                ChangeFactory.attachmentPropertyChange(pa, (capturedPUCount + pa.getCaptureVps()), "captureVps");
             bridge.addChange(changeVP);
             if (changeTracker != null) {
               changeTracker.addChange(changeVP);
@@ -605,16 +625,14 @@ public class BattleTracker implements java.io.Serializable {
         final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPUCount);
         bridge.addChange(remove);
         if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
-          bridge.getHistoryWriter().addChildToEvent(
-              id.getName() + " destroys " + capturedPUCount + MyFormatter.pluralize("PU", capturedPUCount) + " while taking "
-                  + whoseCapital.getName() + " capital");
+          bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys " + capturedPUCount
+              + MyFormatter.pluralize("PU", capturedPUCount) + " while taking " + whoseCapital.getName() + " capital");
           if (changeTracker != null) {
             changeTracker.addChange(remove);
           }
         } else {
-          bridge.getHistoryWriter().addChildToEvent(
-              id.getName() + " captures " + capturedPUCount + MyFormatter.pluralize("PU", capturedPUCount) + " while taking "
-                  + whoseCapital.getName() + " capital");
+          bridge.getHistoryWriter().addChildToEvent(id.getName() + " captures " + capturedPUCount
+              + MyFormatter.pluralize("PU", capturedPUCount) + " while taking " + whoseCapital.getName() + " capital");
           if (changeTracker != null) {
             changeTracker.addChange(remove);
           }
@@ -640,7 +658,8 @@ public class BattleTracker implements java.io.Serializable {
     // revert to original owner if it is, unless they dont own there captital
     final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
     PlayerID newOwner = id;
-    // if the original owner is the current owner, and the current owner is our enemy / canTakeOver, then we do not worry about this.
+    // if the original owner is the current owner, and the current owner is our enemy / canTakeOver, then we do not
+    // worry about this.
     if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id)
         && !terrOrigOwner.equals(territory.getOwner())) {
       final List<Territory> capitalsListOwned =
@@ -649,17 +668,21 @@ public class BattleTracker implements java.io.Serializable {
         newOwner = terrOrigOwner;
       } else {
         newOwner = id;
-        final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(terrOrigOwner, data));
+        final List<Territory> capitalsListOriginal =
+            new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(terrOrigOwner, data));
         for (final Territory current : capitalsListOriginal) {
           if (territory.equals(current) || current.getOwner().equals(PlayerID.NULL_PLAYERID)) {
-            newOwner = terrOrigOwner; // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
+            newOwner = terrOrigOwner; // if a neutral controls our capital, our territories get liberated (ie: china in
+                                      // ww2v3)
           }
         }
       }
     }
-    // if we have specially set this territory to have whenCapturedByGoesTo, then we set that here (except we don't set it if we are
+    // if we have specially set this territory to have whenCapturedByGoesTo, then we set that here (except we don't set
+    // it if we are
     // liberating allied owned territory)
-    if (ta != null && isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory)) {
+    if (ta != null && isTerritoryOwnerAnEnemy && newOwner.equals(id)
+        && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory)) {
       for (final String value : ta.getWhenCapturedByGoesTo()) {
         final String[] s = value.split(":");
         final PlayerID capturingPlayer = data.getPlayerList().getPlayerID(s[0]);
@@ -683,9 +706,16 @@ public class BattleTracker implements java.io.Serializable {
       }
       // play a sound
       if (territory.isWater()) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName()); // should probably see if
-                                                                                                                 // there is something
-                                                                                                                 // actually happening for
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName()); // should
+                                                                                                                 // probably
+                                                                                                                 // see
+                                                                                                                 // if
+                                                                                                                 // there
+                                                                                                                 // is
+                                                                                                                 // something
+                                                                                                                 // actually
+                                                                                                                 // happening
+                                                                                                                 // for
                                                                                                                  // water
       } else if (ta != null && ta.getCapital() != null) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
@@ -706,7 +736,8 @@ public class BattleTracker implements java.io.Serializable {
             BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
         bombingBattle.cancelBattle(bridge);
         removeBattle(bombingBattle);
-        throw new IllegalStateException("Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
+        throw new IllegalStateException(
+            "Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
       }
     }
     captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker, arrivedUnits);
@@ -718,7 +749,8 @@ public class BattleTracker implements java.io.Serializable {
       // if it is give it back to the original owner
       final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner); // origOwnerTracker.getOriginallyOwned(data,
                                                                                                                   // terrOrigOwner);
-      final List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+      final List<Territory> friendlyTerritories =
+          Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner() == terrOrigOwner) {
@@ -741,7 +773,8 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // say they were in combat
-    // if the territory being taken over is water, then do not say any land units were in combat (they may want to unload from the transport
+    // if the territory being taken over is water, then do not say any land units were in combat (they may want to
+    // unload from the transport
     // and attack)
     if (Matches.TerritoryIsWater.match(territory) && arrivedUnits != null) {
       arrivedUnits.removeAll(Match.getMatches(arrivedUnits, Matches.UnitIsLand));
@@ -750,8 +783,7 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   public static void captureOrDestroyUnits(final Territory territory, final PlayerID id, final PlayerID newOwner,
-      final IDelegateBridge bridge, final UndoableMove changeTracker,
-      final Collection<Unit> arrivingUnits) {
+      final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits) {
     final GameData data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
@@ -773,7 +805,8 @@ public class BattleTracker implements java.io.Serializable {
           territory.getUnits().getMatches(Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
-        bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some units instead of capturing them", destroyed);
+        bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some units instead of capturing them",
+            destroyed);
         bridge.addChange(destroyUnits);
         if (changeTracker != null) {
           changeTracker.addChange(destroyUnits);
@@ -782,8 +815,8 @@ public class BattleTracker implements java.io.Serializable {
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
     if (true) {
-      final CompositeMatch<Unit> enemyToBeDestroyed =
-          new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
+      final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data),
+          Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
       final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -795,15 +828,18 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // take over non combatants
-    final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
-    final CompositeMatch<Unit> willBeCaptured =
-        new CompositeMatchOr<Unit>(enemyNonCom, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
+    final CompositeMatch<Unit> enemyNonCom =
+        new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
+    final CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<Unit>(enemyNonCom,
+        Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture
     if (games.strategy.triplea.Properties.getUnitsCanBeChangedOnCapture(data)) {
-      final Collection<Unit> toReplace = Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
+      final Collection<Unit> toReplace =
+          Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
       for (final Unit u : toReplace) {
-        final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
+        final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> map =
+            UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
         final PlayerID currentOwner = u.getOwner();
         for (final String value : map.keySet()) {
           final String[] s = value.split(":");
@@ -833,7 +869,8 @@ public class BattleTracker implements java.io.Serializable {
             changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
             changes.add(ChangeFactory.addUnits(territory, toAdd));
             changes.add(ChangeFactory.markNoMovementChange(toAdd));
-            bridge.getHistoryWriter().addChildToEvent(id.getName() + " converts " + u.toStringNoOwner() + " into different units", toAdd);
+            bridge.getHistoryWriter()
+                .addChildToEvent(id.getName() + " converts " + u.toStringNoOwner() + " into different units", toAdd);
             bridge.addChange(changes);
             if (changeTracker != null) {
               changeTracker.addChange(changes);
@@ -846,7 +883,8 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     if (!nonCom.isEmpty()) {
-      // FYI: a dummy delegate will not do anything with this change, meaning that the battle calculator will think this unit lived even
+      // FYI: a dummy delegate will not do anything with this change, meaning that the battle calculator will think this
+      // unit lived even
       // though it died or was captured, etc!
       final Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
       bridge.addChange(capture);
@@ -861,7 +899,8 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
-  private Change addMustFightBattleChange(final Route route, final Collection<Unit> units, final PlayerID id, final GameData data) {
+  private Change addMustFightBattleChange(final Route route, final Collection<Unit> units, final PlayerID id,
+      final GameData data) {
     // it is possible to add a battle with a route that is just
     // the start territory, ie the units did not move into the country
     // they were there to start with
@@ -1106,31 +1145,28 @@ public class BattleTracker implements java.io.Serializable {
 
   @Override
   public String toString() {
-    return "BattleTracker:" + "\n" + "Conquered:" + m_conquered + "\n" + "Blitzed:" + m_blitzed + "\n" + "Fought:" + m_foughBattles + "\n"
-        + "Pending:" + m_pendingBattles;
+    return "BattleTracker:" + "\n" + "Conquered:" + m_conquered + "\n" + "Blitzed:" + m_blitzed + "\n" + "Fought:"
+        + m_foughBattles + "\n" + "Pending:" + m_pendingBattles;
   }
   /*
    * //TODO: never used, should it be removed?
-   * private void addNeutralBattle(Route route, Collection<Unit> units, final PlayerID id, final GameData data, IDelegateBridge bridge,
+   * private void addNeutralBattle(Route route, Collection<Unit> units, final PlayerID id, final GameData data,
+   * IDelegateBridge bridge,
    * UndoableMove changeTracker)
    * {
    * //TODO check for pre existing battles at the sight
    * //here and in empty battle
-   *
    * Collection<Territory> neutral = route.getMatches(Matches.TerritoryIsNeutral);
    * neutral = Match.getMatches(neutral, Matches.TerritoryIsEmpty);
    * //deal with the end seperately
    * neutral.remove(route.getEnd());
-   *
    * m_conquered.addAll(neutral);
-   *
    * Iterator iter = neutral.iterator();
    * while (iter.hasNext())
    * {
    * Territory current = (Territory) iter.next();
    * takeOver(current, id, bridge, data, changeTracker, units);
    * }
-   *
    * //deal with end territory, may be the case that
    * //a naval battle must precede there
    * //Also check if there are only factory/AA units left in the neutral territory.
@@ -1151,7 +1187,6 @@ public class BattleTracker implements java.io.Serializable {
    * nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
    * m_pendingBattles.add(nonFight);
    * }
-   *
    * Change change = nonFight.addAttackChange(route, units);
    * bridge.addChange(change);
    * if(changeTracker != null)

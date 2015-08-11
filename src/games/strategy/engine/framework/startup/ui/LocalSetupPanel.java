@@ -66,25 +66,26 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE)) {
       final JLabel enableLabel = new JLabel("Use");
       enableLabel.setForeground(Color.black);
-      this.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 5, 5, 0), 0, 0));
+      this.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     }
     final JLabel nameLabel = new JLabel("Name");
     nameLabel.setForeground(Color.black);
-    this.add(nameLabel,
-        new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    this.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JLabel typeLabel = new JLabel("Type");
     typeLabel.setForeground(Color.black);
-    this.add(typeLabel,
-        new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    this.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     final JLabel allianceLabel = new JLabel("Alliance");
     allianceLabel.setForeground(Color.black);
-    this.add(allianceLabel,
-        new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+    this.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
     for (final String playerName : playerNames) {
       final LocalPlayerComboBoxSelector selector =
           new LocalPlayerComboBoxSelector(playerName, reloadSelections, disableable, playersEnablementListing,
-              data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerName)), playerTypes, this);
+              data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerName)),
+              playerTypes, this);
       m_playerTypes.add(selector);
       selector.layout(++gridy, this);
     }
@@ -162,10 +163,15 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }
-    final PlayerListing pl = new PlayerListing(null, playersEnabled, playerTypes, m_gameSelectorModel.getGameData().getGameVersion(),
-        m_gameSelectorModel.getGameName(),
-        m_gameSelectorModel.getGameRound(), null, null); // we don't need the playerToNode list, the disable-able players, or the alliances
-                                                         // list, for a local game
+    final PlayerListing pl =
+        new PlayerListing(null, playersEnabled, playerTypes, m_gameSelectorModel.getGameData().getGameVersion(),
+            m_gameSelectorModel.getGameName(), m_gameSelectorModel.getGameRound(), null, null); // we don't need the
+                                                                                                // playerToNode list,
+                                                                                                // the disable-able
+                                                                                                // players, or the
+                                                                                                // alliances
+                                                                                                // list, for a local
+                                                                                                // game
     final LocalLauncher launcher = new LocalLauncher(m_gameSelectorModel, randomSource, pl);
     return launcher;
   }
@@ -184,8 +190,8 @@ class LocalPlayerComboBoxSelector {
   private final String[] m_types;
   private final SetupPanel m_parent;
 
-  LocalPlayerComboBoxSelector(final String playerName, final Map<String, String> reloadSelections, final Collection<String> disableable,
-      final HashMap<String, Boolean> playersEnablementListing,
+  LocalPlayerComboBoxSelector(final String playerName, final Map<String, String> reloadSelections,
+      final Collection<String> disableable, final HashMap<String, Boolean> playersEnablementListing,
       final Collection<String> playerAlliances, final String[] types, final SetupPanel parent) {
     m_playerName = playerName;
     m_name = new JLabel(m_playerName + ":");
@@ -204,7 +210,8 @@ class LocalPlayerComboBoxSelector {
     if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
       m_playerTypes.setSelectedItem(previousSelection);
     } else if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
-      m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]); // the 4th in the list should be Pro AI (Hard AI)
+      m_playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]); // the 4th in the list should be
+                                                                                        // Pro AI (Hard AI)
     }
     // we do not set the default for the combobox because the default is the top item, which in this case is human
     if (playerAlliances.contains(playerName)) {
@@ -219,15 +226,15 @@ class LocalPlayerComboBoxSelector {
   public void layout(final int row, final Container container) {
     int gridx = 0;
     if (!m_disableable.isEmpty()) {
-      container.add(m_enabledCheckBox,
-          new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+      container.add(m_enabledCheckBox, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
     }
-    container.add(m_name,
-        new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    container.add(m_playerTypes,
-        new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    container.add(m_alliances,
-        new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+    container.add(m_name, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    container.add(m_playerTypes, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    container.add(m_alliances, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
   }
 
   public String getPlayerName() {
@@ -257,7 +264,8 @@ class LocalPlayerComboBoxSelector {
         m_playerTypes.setSelectedItem(m_types[0]); // the 1st in the list should be human
       } else {
         m_enabled = false;
-        m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list should be Weak AI
+        m_playerTypes.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list
+                                                                                              // should be Weak AI
       }
       setWidgetActivation();
     }

@@ -8,7 +8,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 
 /**
  * Territory attachment for King's Table.
- *
  */
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2114955190688754947L;

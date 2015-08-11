@@ -26,7 +26,6 @@ import games.strategy.ui.Util;
 public class CreateUpdateAccountPanel extends JPanel {
   private static final long serialVersionUID = 2285956517232671122L;
 
-
   public static enum ReturnValue {
     CANCEL, OK
   }
@@ -76,22 +75,22 @@ public class CreateUpdateAccountPanel extends JPanel {
     final JPanel main = new JPanel();
     add(main, BorderLayout.CENTER);
     main.setLayout(new GridBagLayout());
-    main.add(new JLabel("Username:"),
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 20, 0, 0), 0, 0));
-    main.add(m_userName,
-        new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(10, 5, 0, 40), 0, 0));
-    main.add(new JLabel("Password:"),
-        new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_password,
-        new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 0, 40), 0, 0));
-    main.add(new JLabel("Re-type Password:"),
-        new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_password2,
-        new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 0, 40), 0, 0));
-    main.add(new JLabel("Email:"),
-        new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 15, 0), 0, 0));
-    main.add(m_email,
-        new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 15, 40), 0, 0));
+    main.add(new JLabel("Username:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(10, 20, 0, 0), 0, 0));
+    main.add(m_userName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(10, 5, 0, 40), 0, 0));
+    main.add(new JLabel("Password:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
+    main.add(m_password, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(5, 5, 0, 40), 0, 0));
+    main.add(new JLabel("Re-type Password:"), new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
+    main.add(m_password2, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(5, 5, 0, 40), 0, 0));
+    main.add(new JLabel("Email:"), new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 20, 15, 0), 0, 0));
+    main.add(m_email, new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(5, 5, 15, 40), 0, 0));
     final JPanel buttons = new JPanel();
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
     buttons.add(m_okButton);
@@ -126,7 +125,8 @@ public class CreateUpdateAccountPanel extends JPanel {
   @SuppressWarnings("deprecation")
   private void okPressed() {
     if (!m_password.getText().equals(m_password2.getText())) {
-      JOptionPane.showMessageDialog(this, "The passwords do not match", "Passwords Do Not Match", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, "The passwords do not match", "Passwords Do Not Match",
+          JOptionPane.ERROR_MESSAGE);
       m_password.setText("");
       m_password2.setText("");
       return;

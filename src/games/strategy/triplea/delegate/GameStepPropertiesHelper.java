@@ -11,8 +11,6 @@ import games.strategy.engine.data.PlayerID;
  * A helper class for determining Game Step Properties.
  * These are things such as whether a move phase is combat move or noncombat move,
  * or whether we are going to post to a forum during this end turn phase.
- *
- *
  */
 public class GameStepPropertiesHelper {
   /**
@@ -22,7 +20,8 @@ public class GameStepPropertiesHelper {
     final boolean skipPosting;
     data.acquireReadLock();
     try {
-      skipPosting = Boolean.parseBoolean(data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_skipPosting, "false"));
+      skipPosting = Boolean.parseBoolean(
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_skipPosting, "false"));
     } finally {
       data.releaseReadLock();
     }
@@ -30,7 +29,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we will summarize for all
+   * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we
+   * will summarize for all
    * those phases.
    *
    * @return colon separated list of player names. could be empty. can be null if not set.
@@ -39,17 +39,17 @@ public class GameStepPropertiesHelper {
     final Set<PlayerID> allowedIDs;
     data.acquireReadLock();
     try {
-      final String allowedPlayers = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);// parse
-                                                                                                                                   // allowed
-                                                                                                                                   // players
+      final String allowedPlayers =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);// parse
+                                                                                                         // allowed
+                                                                                                         // players
       if (allowedPlayers != null) {
         allowedIDs = new HashSet<PlayerID>();
         for (final String p : allowedPlayers.split(":")) {
           final PlayerID id = data.getPlayerList().getPlayerID(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PROPERTY_turnSummaryPlayers + " player: " + p
-                + " DOES NOT EXIST");
+                + GameStep.PROPERTY_turnSummaryPlayers + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }
@@ -135,7 +135,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat move for WW2v1.
+   * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat
+   * move for WW2v1.
    */
   public static boolean isFireRockets(final GameData data) {
     final boolean isFireRockets;
@@ -168,7 +169,8 @@ public class GameStepPropertiesHelper {
     final boolean isRepairUnits;
     data.acquireReadLock();
     try {
-      final boolean repairAtStartAndOnlyOwn = games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(data);
+      final boolean repairAtStartAndOnlyOwn =
+          games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(data);
       final boolean repairAtEndAndAll = games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(data);
       // if both are off, we do no repairing, no matter what
       if (!repairAtStartAndOnlyOwn && !repairAtEndAndAll) {
@@ -213,13 +215,15 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Kills all air that can not land. Normally would occur both at the end of noncombat movement and also at end of placement phase.
+   * Kills all air that can not land. Normally would occur both at the end of noncombat movement and also at end of
+   * placement phase.
    */
   public static boolean isRemoveAirThatCanNotLand(final GameData data) {
     final boolean isRemoveAir;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_removeAirThatCanNotLand);
+      final String prop =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_removeAirThatCanNotLand);
       if (prop != null) {
         isRemoveAir = Boolean.parseBoolean(prop);
       } else if (data.getSequence().getStep().getDelegate() != null
@@ -243,16 +247,18 @@ public class GameStepPropertiesHelper {
    * Effects so far:
    * Lets air live if the other players could put a carrier under it.
    *
-   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if not the set could be
+   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
+   *         not the set could be
    *         empty. never null.
    */
   public static Set<PlayerID> getCombinedTurns(final GameData data, final PlayerID player) {
     final Set<PlayerID> allowedIDs = new HashSet<PlayerID>();
     data.acquireReadLock();
     try {
-      final String allowedPlayers = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_combinedTurns);// parse
-                                                                                                                              // allowed
-                                                                                                                              // players
+      final String allowedPlayers =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_combinedTurns);// parse
+                                                                                                    // allowed
+                                                                                                    // players
       if (player != null) {
         allowedIDs.add(player);
       }
@@ -261,8 +267,7 @@ public class GameStepPropertiesHelper {
           final PlayerID id = data.getPlayerList().getPlayerID(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PROPERTY_combinedTurns + " player: " + p
-                + " DOES NOT EXIST");
+                + GameStep.PROPERTY_combinedTurns + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }
@@ -281,7 +286,8 @@ public class GameStepPropertiesHelper {
     final boolean isReset;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
+      final String prop =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
       if (prop != null) {
         isReset = Boolean.parseBoolean(prop);
       } else {
@@ -294,13 +300,15 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of noncombat move phase.
+   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of
+   * noncombat move phase.
    */
   public static boolean isResetUnitStateAtEnd(final GameData data) {
     final boolean isReset;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtEnd);
+      final String prop =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtEnd);
       if (prop != null) {
         isReset = Boolean.parseBoolean(prop);
       } else if (isNonCombatDelegate(data)) {
@@ -335,16 +343,18 @@ public class GameStepPropertiesHelper {
   }
 
   /**
-   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if not the set could be
+   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
+   *         not the set could be
    *         empty. never null.
    */
   public static Set<PlayerID> getRepairPlayers(final GameData data, final PlayerID player) {
     final Set<PlayerID> allowedIDs = new HashSet<PlayerID>();
     data.acquireReadLock();
     try {
-      final String allowedPlayers = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairPlayers);// parse
-                                                                                                                              // allowed
-                                                                                                                              // players
+      final String allowedPlayers =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairPlayers);// parse
+                                                                                                    // allowed
+                                                                                                    // players
       if (player != null) {
         allowedIDs.add(player);
       }
@@ -353,8 +363,7 @@ public class GameStepPropertiesHelper {
           final PlayerID id = data.getPlayerList().getPlayerID(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PROPERTY_repairPlayers + " player: " + p
-                + " DOES NOT EXIST");
+                + GameStep.PROPERTY_repairPlayers + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }

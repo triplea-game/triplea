@@ -82,7 +82,6 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   /**
-   *
    * @param p1
    *        player1
    * @param p2
@@ -116,21 +115,16 @@ public class RelationshipInterpreter extends GameDataComponent {
   /*
    * <strong>example</strong> method on how to extract a boolean from isAlliance();
    * use this method instead of isAlliance in the spots to be used
-   *
    * @param p1
    * first referring player
-   *
    * @param p2
    * second referring player
-   *
    * @return whether player p1 helps defend at sea player p2
-   *
    * public boolean helpsDefendAtSea(final PlayerID p1, final PlayerID p2)
    * {
    * return Matches.RelationshipTypeHelpsDefendAtSea.match((getRelationshipType(p1, p2)));
    * }
    */
-
   public boolean canMoveLandUnitsOverOwnedLand(final PlayerID p1, final PlayerID p2) {
     return Matches.RelationshipTypeCanMoveLandUnitsOverOwnedLand.match(getRelationshipType(p1, p2));
   }
@@ -176,7 +170,8 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   /**
-   * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players
+   * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2
+   * players
    *
    * @return RelationshipType between these to players
    */

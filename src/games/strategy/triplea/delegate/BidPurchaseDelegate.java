@@ -27,7 +27,6 @@ import games.strategy.util.IntegerMap;
  * <p>
  * Company:
  * </p>
- *
  */
 public class BidPurchaseDelegate extends PurchaseDelegate {
   private int m_bid;
@@ -49,8 +48,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (!doesPlayerHaveBid(getData(), m_player)) {
       return false;
     }
-    if ((m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty()) &&
-        (m_player.getRepairFrontier() == null || m_player.getRepairFrontier().getRules().isEmpty())) {
+    if ((m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty())
+        && (m_player.getRepairFrontier() == null || m_player.getRepairFrontier().getRules().isEmpty())) {
       return false;
     }
     if (!canWePurchaseOrRepair()) {
@@ -62,7 +61,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   @Override
   protected boolean canWePurchaseOrRepair() {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
-    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to have more than just PUs
+    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to
+                                                                                              // have more than just PUs
     if (m_player.getProductionFrontier() != null && m_player.getProductionFrontier().getRules() != null) {
       for (final ProductionRule rule : m_player.getProductionFrontier().getRules()) {
         if (bidCollection.has(rule.getCosts())) {
@@ -86,7 +86,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   @Override
   protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
-    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to have more than just PUs
+    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to
+                                                                                              // have more than just PUs
     return bidCollection.has(costs);
   }
 
@@ -101,7 +102,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   }
 
   @Override
-  protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> resources, final CompositeChange change) {
+  protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> resources,
+      final CompositeChange change) {
     m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.PUS));
     return (m_bid - m_spent) + " PU unused";
   }
@@ -116,9 +118,10 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (unspent == 0) {
       return;
     }
-    m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " retains " + unspent + " PUS not spent in bid phase");
-    final Change unspentChange =
-        ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), super.getData().getResourceList().getResource(Constants.PUS), unspent);
+    m_bridge.getHistoryWriter()
+        .startEvent(m_bridge.getPlayerID().getName() + " retains " + unspent + " PUS not spent in bid phase");
+    final Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(),
+        super.getData().getResourceList().getResource(Constants.PUS), unspent);
     m_bridge.addChange(unspentChange);
     m_hasBid = false;
   }

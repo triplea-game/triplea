@@ -15,7 +15,6 @@ import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-
 public class DOddsCalculatorTest extends TestCase {
   private GameData m_data;
   private final IOddsCalculator m_calc = new Dynamix_AI("Superior", "Dynamix (AI)").getCalc();

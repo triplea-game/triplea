@@ -45,7 +45,8 @@ public class GameSelectorModel extends Observable {
   private String m_fileName = "";
   private boolean m_canSelect = true;
   private boolean m_isHostHeadlessBot = false;
-  private ClientModel m_clientModelForHostBots = null; // just for host bots, so we can get the actions for loading/saving games on the bots
+  private ClientModel m_clientModelForHostBots = null; // just for host bots, so we can get the actions for
+                                                       // loading/saving games on the bots
                                                        // from this model
 
   public GameSelectorModel() {
@@ -64,9 +65,11 @@ public class GameSelectorModel extends Observable {
   }
 
   public void load(final NewGameChooserEntry entry) {
-    // we don't want to load anything if we are an older jar, because otherwise the user may get confused on which version of triplea they
+    // we don't want to load anything if we are an older jar, because otherwise the user may get confused on which
+    // version of triplea they
     // are using right now,
-    // and then start a game with an older jar when they should be using the newest jar (we want user to be using the normal default
+    // and then start a game with an older jar when they should be using the newest jar (we want user to be using the
+    // normal default
     // [newest] triplea.jar for new games)
     if (GameRunner2.areWeOldExtraJar()) {
       return;
@@ -184,7 +187,8 @@ public class GameSelectorModel extends Observable {
       if (message == null && e.getStackTrace() != null) {
         message = e.getClass().getName() + "  at  " + e.getStackTrace()[0].toString();
       }
-      message = "Exception while parsing: " + file.getName() + " : " + (gameName.get() != null ? gameName.get() + " : " : "") + message;
+      message = "Exception while parsing: " + file.getName() + " : "
+          + (gameName.get() != null ? gameName.get() + " : " : "") + message;
       System.out.println(message);
       if (ui != null) {
         error(message + "\r\nPlease see console for full error log!", ui);
@@ -197,7 +201,8 @@ public class GameSelectorModel extends Observable {
   }
 
   private void error(final String message, final Component ui) {
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game", JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
+        JOptionPane.ERROR_MESSAGE);
   }
 
   public synchronized GameData getGameData() {
@@ -301,7 +306,8 @@ public class GameSelectorModel extends Observable {
   }
 
   public void loadDefaultGame(final Component ui) {
-    // clear out dynamix's properties (this ended up being the best place to put it, as we have definitely left a game at this point)
+    // clear out dynamix's properties (this ended up being the best place to put it, as we have definitely left a game
+    // at this point)
     Dynamix_AI.gameOverClearCachedGameDataAll();
     ProAI.gameOverClearCache();
     loadDefaultGame(ui, false);
@@ -311,7 +317,8 @@ public class GameSelectorModel extends Observable {
    * @param ui
    * @param forceFactoryDefault
    *        - False is default behavior and causes the new game chooser model to be cleared (and refreshed if needed).
-   *        True causes the default game preference to be reset, but the model does not get cleared/refreshed (because we only call with
+   *        True causes the default game preference to be reset, but the model does not get cleared/refreshed (because
+   *        we only call with
    *        'true' if loading the user preferred map failed).
    */
   private void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
@@ -325,13 +332,15 @@ public class GameSelectorModel extends Observable {
     // just in case flush doesn't work, we still force it again here
     final String userPreferredDefaultGameURI =
         (forceFactoryDefault ? DEFAULT_GAME_URI : prefs.get(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI));
-    // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous version of triplea
+    // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
+    // version of triplea
     // was using running a game within its root folder, we shouldn't open it)
     final String user = GameRunner2.getUserRootFolder().toURI().toString();
     final String root = GameRunner2.getRootFolder().toURI().toString();
     if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0
         && (userPreferredDefaultGameURI.contains(root) || userPreferredDefaultGameURI.contains(user))) {
-      // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole game model list
+      // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
+      // game model list
       boolean refreshedAlready = false;
       try {
         final URI defaultURI = new URI(userPreferredDefaultGameURI);
@@ -356,7 +365,8 @@ public class GameSelectorModel extends Observable {
           return;
         }
       }
-      // since we are not forceFactoryDefault, and since we are loading purely from the URI without loading the new game chooser model, we
+      // since we are not forceFactoryDefault, and since we are loading purely from the URI without loading the new game
+      // chooser model, we
       // might as well refresh it in a separate thread
       if (!refreshedAlready) {
         new Thread(new Runnable() {
@@ -383,8 +393,8 @@ public class GameSelectorModel extends Observable {
     NewGameChooserEntry selectedGame = null;
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     // just in case flush doesn't work, we still force it again here
-    final String userPreferredDefaultGameName = (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF,
-        DEFAULT_GAME_NAME));
+    final String userPreferredDefaultGameName =
+        (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME));
     final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
     selectedGame = model.findByName(userPreferredDefaultGameName);
     if (selectedGame == null) {

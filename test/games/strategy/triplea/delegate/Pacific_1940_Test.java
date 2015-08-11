@@ -37,7 +37,6 @@ public class Pacific_1940_Test extends TestCase {
     // TODO
   }
 
-
   /*
    * Add Utilities here
    */
@@ -50,7 +49,6 @@ public class Pacific_1940_Test extends TestCase {
     }
     return rVal;
   }
-
 
   /*
    * Add assertions here

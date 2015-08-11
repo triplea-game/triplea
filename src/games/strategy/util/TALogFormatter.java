@@ -6,17 +6,14 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-
 public class TALogFormatter extends Formatter {
   private boolean m_showDates = false;
-
 
   public TALogFormatter() {}
 
   public void setShowDates(final boolean aVal) {
     m_showDates = aVal;
   }
-
 
   @Override
   public String format(final LogRecord record) {
@@ -26,7 +23,8 @@ public class TALogFormatter extends Formatter {
     } else if (record.getLoggerName().indexOf('.') == -1) {
       shortName = record.getLoggerName();
     } else {
-      shortName = record.getLoggerName().substring(record.getLoggerName().lastIndexOf('.') + 1, record.getLoggerName().length());
+      shortName = record.getLoggerName().substring(record.getLoggerName().lastIndexOf('.') + 1,
+          record.getLoggerName().length());
     }
     final StringBuilder builder = new StringBuilder();
     if (m_showDates) {

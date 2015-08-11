@@ -20,7 +20,6 @@ import games.strategy.grid.ui.GridMapPanel;
 
 /**
  * Main class responsible for a Tic Tac Toe game.
- *
  */
 public class TicTacToe extends GridGame implements IGameLoader {
   private static final long serialVersionUID = 6817825634310618978L;
@@ -34,9 +33,9 @@ public class TicTacToe extends GridGame implements IGameLoader {
    */
   @Override
   public String[] getServerPlayerTypes() {
-    return new String[] {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
+    return new String[] {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE,
+        RANDOM_COMPUTER_PLAYER_TYPE};
   }
-
 
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {

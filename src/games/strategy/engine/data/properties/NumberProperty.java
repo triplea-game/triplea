@@ -38,8 +38,9 @@ public class NumberProperty extends AEditableProperty {
     if (value instanceof String) {
       // warn developer which have run with the option cache when Number properties were stored as strings
       // todo (kg) remove at a later point
-      throw new RuntimeException("Number properties are no longer stored as Strings. You should delete your option cache, located at "
-          + new File(GameRunner2.getUserRootFolder(), "optionCache").toString());
+      throw new RuntimeException(
+          "Number properties are no longer stored as Strings. You should delete your option cache, located at "
+              + new File(GameRunner2.getUserRootFolder(), "optionCache").toString());
     } else {
       m_value = (Integer) value;
     }

@@ -20,7 +20,6 @@ import games.strategy.grid.ui.GridMapPanel;
 
 /**
  * Main class responsible for a Kings Table game.
- *
  */
 public class KingsTable extends GridGame implements IGameLoader {
   private static final long serialVersionUID = -4160546942612903442L;
@@ -31,7 +30,6 @@ public class KingsTable extends GridGame implements IGameLoader {
   // Minimax technically "works" for King's Table,
   // but the branching factor is so high that Minimax will run out of memory before it returns
   // private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
-
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
     final Set<IGamePlayer> players = new HashSet<IGamePlayer>();

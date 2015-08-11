@@ -9,7 +9,6 @@ import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.IGridEndTurnData;
 import games.strategy.grid.ui.IGridPlayData;
 
-
 public interface IGridGameDisplay extends IDisplay {
   /**
    * Graphically notify the user of the current game status.
@@ -42,5 +41,4 @@ public interface IGridGameDisplay extends IDisplay {
   public void initializeGridMapData(GameMap map);
 
   public GridGameFrame getGridGameFrame();
-
 }

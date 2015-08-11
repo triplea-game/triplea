@@ -19,8 +19,6 @@ import games.strategy.sound.SoundPath.SoundType;
 
 /**
  * Sound option window framework.
- *
- *
  */
 public final class SoundOptions {
   final ClipPlayer m_clipPlayer;
@@ -59,8 +57,8 @@ public final class SoundOptions {
     final String selectAll = "All";
     final String selectNone = "None";
     final ArrayList<IEditableProperty> properties = m_clipPlayer.getSoundOptions(soundType);
-    final Object pressedButton =
-        PropertiesSelector.getButton(parent, "Sound Options", properties, new Object[] {ok, selectAll, selectNone, cancel});
+    final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
+        new Object[] {ok, selectAll, selectNone, cancel});
     if (pressedButton == null || pressedButton.equals(cancel)) {
     } else if (pressedButton.equals(ok)) {
       for (final IEditableProperty property : properties) {

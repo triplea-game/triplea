@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.proAI.simulate;
 
 import java.util.Properties;
 
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
@@ -69,7 +68,8 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation) {
     return m_randomSource.getRandom(max, count, annotation);
   }
 
@@ -117,5 +117,4 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   public void setBattle(final MustFightBattle battle) {
     m_battle = battle;
   }
-
 }
