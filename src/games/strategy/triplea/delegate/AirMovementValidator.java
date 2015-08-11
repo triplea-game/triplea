@@ -224,10 +224,10 @@ public class AirMovementValidator {
         unitsInLandingSpot.removeAll(ftrs); // also remove any fighters that are being moved with carriers that we have already moved
       }
       final Collection<Unit> ownedCarriersInLandingSpot = Match.getMatches(unitsInLandingSpot, ownedCarrierMatch);
+
+        // get air we own here, but exclude any air that can fly to allied land
       final Collection<Unit> airInLandingSpot =
-          Match.getMatches(Match.getMatches(unitsInLandingSpot, ownedAirMatch), UnitCanFindLand(data, landingSpot).invert()); // get air we
-                                                                                                                              // fly to
-                                                                                                                              // allied land
+          Match.getMatches(Match.getMatches(unitsInLandingSpot, ownedAirMatch), UnitCanFindLand(data, landingSpot).invert());
       airInLandingSpot.addAll(Match.getMatches(unitsInLandingSpot, alliedNotOwnedAirMatch)); // add allied air (it can't fly away)
       // airNotToConsider.addAll(airInLandingSpot); // make sure we don't count this again
       int landingSpotCapacity = landingSpotsWithCarrierCapacity.getInt(landingSpot); // get the current capacity
