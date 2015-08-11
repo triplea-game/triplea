@@ -19,23 +19,11 @@ public class SoftJEditorPane {
   }
 
   protected JEditorPane createComponent() {
-    final JEditorPane pane = new JEditorPane()
-    /*
-     * {
-     * private static final long serialVersionUID = -7445877574463005826L;
-     *
-     * @Override
-     * protected void finalize()
-     * {
-     * System.out.println("JEditorPane finalized: " + this);
-     * }
-     * }
-     */;
+    final JEditorPane pane = new JEditorPane();
     pane.setEditable(false);
     pane.setContentType("text/html");
     pane.setText(m_text);
     pane.setCaretPosition(0);
-    // System.out.println("JEditorPane created: " + pane);
     return pane;
   }
 
@@ -67,57 +55,4 @@ public class SoftJEditorPane {
     }
   }
 
-  /*
-   * public static void main(final String[] args)
-   * {
-   * final ReferenceQueue queue = new ReferenceQueue();
-   * final ArrayList blocks = new ArrayList();
-   * int size = 1310720;
-   * final int basesize = size;
-   * for (int id = 0; true; id++)
-   * {
-   * blocks.add(new SoftReference(new MemoryBlock(id, size), queue));
-   *
-   * while (true)
-   * {
-   * final java.lang.ref.Reference ref = queue.poll();
-   * if (ref == null)
-   * break;
-   * blocks.remove(ref);
-   * System.out.println("removing something: " + ref);
-   * }
-   * System.out.println("blocks: " + blocks);
-   * size += basesize;
-   * }
-   * }
-   */
 }
-
-/*
- * class MemoryBlock
- * {
- * int id;
- * int size;
- * byte[] block;
- *
- * public MemoryBlock(final int id, final int size)
- * {
- * this.id = id;
- * this.size = size;
- * block = new byte[size];
- * System.out.println("MemoryBlock created: " + this);
- * }
- *
- * @Override
- * public String toString()
- * {
- * return "{id=" + id + ",size=" + size + "}";
- * }
- *
- * @Override
- * protected void finalize()
- * {
- * System.out.println("MemoryBlock finalized: " + this);
- * }
- * }
- */

@@ -171,31 +171,6 @@ public class MapRouteDrawer {
           graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX),
               (int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
         }
-        /*
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y +
-         * textyOffset - yOffset));
-         * if (scrollWrapX) //&& !scrollWrapY
-         * {
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float)
-         * (points[numTerritories - 1].y + textyOffset - yOffset));
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float)
-         * (points[numTerritories - 1].y + textyOffset - yOffset));
-         * }
-         * if (scrollWrapY)// &&!scrollWrapX
-         * {
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y +
-         * textyOffset - yOffset + translateY));
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y +
-         * textyOffset - yOffset - translateY));
-         * }
-         * if (scrollWrapX && scrollWrapY)
-         * {
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float)
-         * (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float)
-         * (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
-         * }
-         */
 
         final Image cursorImage = routeDescription.getCursorImage();
         if (cursorImage != null) {

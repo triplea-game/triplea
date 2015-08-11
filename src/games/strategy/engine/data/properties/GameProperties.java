@@ -130,17 +130,6 @@ public class GameProperties extends GameDataComponent {
     return properties;
   }
 
-  /*
-   * public Map<String, Object> getEditablePropertiesMap()
-   * {
-   * final LinkedHashMap<String, Object> currentPropertiesMap = new LinkedHashMap<String, Object>();
-   * for (final IEditableProperty property : getEditableProperties())
-   * {
-   * currentPropertiesMap.put(property.getName(), property.getValue());
-   * }
-   * return currentPropertiesMap;
-   * }
-   */
 
   public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties) throws IOException {
     // write internally first in case of error

@@ -804,6 +804,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // called from one of those methods, the exception will be propogated out of execute(),
     // and the execute method can be called again
     // it is allowed for an iexecutable to add other iexecutables to the stack
+    //
     // if you read the code in linear order, ignore wrapping stuff in annonymous iexecutables, then the code
     // can be read as it will execute
     // store the steps in a list
@@ -1178,14 +1179,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return isWW2V2() || isDefendingSubsSneakAttack();
   }
 
-
   private boolean canAttackerRetreatPlanes() {
     return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && m_isAmphibious
         && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
   }
 
-  /**
-   */
   private boolean canAttackerRetreatPartialAmphib() {
     if (m_isAmphibious && isPartialAmphibiousRetreat()) {
       final List<Unit> landUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsLand); // Only include land units when checking for
@@ -1281,17 +1279,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     }
     return Match.allMatch(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
   }
-
-  /*
-   * private boolean onlyDefenselessAttackingTransportsLeft()
-   * {
-   * if (!isTransportCasualtiesRestricted())
-   * {
-   * return false;
-   * }
-   * return Match.allMatch(m_attackingUnits, Matches.UnitIsTransportButNotCombatTransport);
-   * }
-   */
 
   private boolean canAttackerRetreatSubs() {
     if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer)) {
@@ -2012,54 +1999,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         "Subs defend, ");
   }
 
-  /*
-   * private void attackAny(IDelegateBridge bridge)
-   * {
-   * if (m_defendingUnits.size() == 0)
-   * return;
-   *
-   * Collection<Unit> units = new ArrayList<Unit>(m_attackingUnits.size()
-   * + m_attackingWaitingToDie.size());
-   * units.addAll(m_attackingUnits);
-   * units.addAll(m_attackingWaitingToDie);
-   *
-   * if (isAirAttackSubRestricted() && !canAirAttackSubs(m_defendingUnits, units))
-   * {
-   * units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
-   * }
-   *
-   * if (units.isEmpty())
-   * return;
-   *
-   * fire(m_defender.getName() + SELECT_CASUALTIES, units,
-   * m_defendingUnits, false, ReturnFire.ALL, bridge, "Attackers fire,");
-   * }
-   */
-  /*
-   * private void defendAny(IDelegateBridge bridge)
-   * {
-   *
-   * if (m_attackingUnits.size() == 0)
-   * return;
-   *
-   * Collection<Unit> units = new ArrayList<Unit>(m_defendingUnits.size()
-   * + m_defendingWaitingToDie.size());
-   * units.addAll(m_defendingUnits);
-   * units.addAll(m_defendingWaitingToDie);
-   * // if restricted, remove aircraft from attackers
-   *
-   * if (isAirAttackSubRestricted() && !canAirAttackSubs(m_attackingUnits, units))
-   * {
-   * units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
-   * }
-   *
-   * if (units.isEmpty())
-   * return;
-   *
-   * fire(m_attacker.getName() + SELECT_CASUALTIES, units,
-   * m_attackingUnits, true, ReturnFire.ALL, bridge, "Defenders fire, ");
-   * }
-   */
   void removeCasualties(final Collection<Unit> killed, final ReturnFire returnFire, final boolean defender, final IDelegateBridge bridge,
       final boolean isAA) {
     if (killed.isEmpty()) {
@@ -2179,8 +2118,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         SUICIDE_DEFEND);
   }
 
-  /**
-   */
   private boolean isWW2V2() {
     return games.strategy.triplea.Properties.getWW2V2(m_data);
   }
@@ -2201,63 +2138,39 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return ta.getParatroopers();
   }
 
-  /**
-   */
   private boolean isAlliedAirIndependent() {
     return games.strategy.triplea.Properties.getAlliedAirIndependent(m_data);
   }
 
-  /**
-   */
   private boolean isDefendingSubsSneakAttack() {
     return games.strategy.triplea.Properties.getDefendingSubsSneakAttack(m_data);
   }
 
-  /**
-   */
   private boolean isAttackerRetreatPlanes() {
     return games.strategy.triplea.Properties.getAttackerRetreatPlanes(m_data);
   }
 
-  /**
-   */
   private boolean isNavalBombardCasualtiesReturnFire() {
     return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFireRestricted(m_data);
   }
 
-  /**
-   */
   private boolean isSuicideAndMunitionCasualtiesRestricted() {
     return games.strategy.triplea.Properties.getSuicideAndMunitionCasualtiesRestricted(m_data);
   }
 
-  /**
-   */
   private boolean isDefendingSuicideAndMunitionUnitsDoNotFire() {
     return games.strategy.triplea.Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(m_data);
   }
 
-  /*
-   * private boolean isSurvivingAirMoveToLand()
-   * {
-   * return games.strategy.triplea.Properties.getSurvivingAirMoveToLand(m_data);
-   * }
-   */
 
-  /**
-   */
   private boolean isAirAttackSubRestricted() {
     return games.strategy.triplea.Properties.getAirAttackSubRestricted(m_data);
   }
 
-  /**
-   */
   private boolean isSubRetreatBeforeBattle() {
     return games.strategy.triplea.Properties.getSubRetreatBeforeBattle(m_data);
   }
 
-  /**
-   */
   private boolean isTransportCasualtiesRestricted() {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
   }
@@ -2497,13 +2410,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
             final Unit unit = dependentsIter.next();
             change.add(TransportTracker.unloadAirTransportChange((TripleAUnit) unit, m_battleSite, m_attacker, false));
           }
-          /*
-           * while (dependentsIter.hasNext())
-           * {
-           * final Unit unit = dependentsIter.next();
-           * change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
-           * }
-           */
 
           bridge.addChange(change);
           // remove bombers from m_dependentUnits
@@ -2710,26 +2616,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     }
   }
 
-  /*
-   * If the attacker retreats, and this is a sea zone, then any attacking fighters with
-   * 0 movement get a 1 movement bonus to allow them to retreat.
-   *
-   * This handles the case where fighters will die if they have 0 movement when they arrive
-   * in the attacking zone, but they arrived with a carrier which retreated
-   * private void ensureAttackingAirCanRetreat(final IDelegateBridge bridge)
-   * {
-   * final CompositeMatch<Unit> canLandOnCarrier = new CompositeMatchAnd<Unit>();
-   * canLandOnCarrier.add(Matches.UnitIsAir);
-   * // this only applies to air units that can land on a carrier
-   * canLandOnCarrier.add(Matches.UnitCanLandOnCarrier);
-   * final Collection<Unit> air = Match.getMatches(m_attackingUnits, canLandOnCarrier);
-   * // TODO interesting quirk- kamikaze aircraft may move their full movement, then one more on retreat due to this
-   * for (final Unit unit : air)
-   * {
-   * bridge.addChange(MoveDelegate.ensureCanMoveOneSpaceChange(unit));
-   * }
-   * }
-   */
 
   /**
    * The defender has won, but there may be defending fighters that cant stay
@@ -2778,140 +2664,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // Moved this choosing to after all battles, as we legally should be able to land in a territory if we win there.
     m_battleTracker.addToDefendingAirThatCanNotLand(m_defendingAir, m_battleSite);
 
-    /*
-     * Moved to BattleDelegate.java
-     * // Get all land territories where there are no pending battles
-     * final Set<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite);
-     * final CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand,
-     * Matches.isTerritoryAllied(m_defender, m_data),
-     * Matches.territoryHasNoEnemyUnits(m_defender, m_data));
-     * // Get those that are neighbors
-     * final Collection<Territory> canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
-     * // Get all sea territories where there are allies and no pending battles
-     * final CompositeMatch<Territory> neighboringSeaZonesWithAlliedUnits = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
-     * Matches.territoryHasEnemyUnits(m_attacker, m_data),
-     * Matches.territoryHasNoEnemyUnits(m_defender, m_data));
-     * // Get those that are neighbors
-     * final Collection<Territory> areSeaNeighbors = Match.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
-     * // Set up match criteria for allied carriers
-     * final CompositeMatch<Unit> alliedCarrier = new CompositeMatchAnd<Unit>();
-     * alliedCarrier.add(Matches.UnitIsCarrier);
-     * alliedCarrier.add(Matches.alliedUnit(m_defender, m_data));
-     * // Set up match criteria for allied planes
-     * final CompositeMatch<Unit> alliedPlane = new CompositeMatchAnd<Unit>();
-     * alliedPlane.add(Matches.UnitIsAir);
-     * alliedPlane.add(Matches.alliedUnit(m_defender, m_data));
-     * // See if neighboring carriers have any capacity available
-     * for (final Territory currentTerritory : areSeaNeighbors)
-     * {
-     * // get the capacity of the carriers and cost of fighters
-     * final Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
-     * final Collection<Unit> alliedPlanes = currentTerritory.getUnits().getMatches(alliedPlane);
-     * final int alliedCarrierCapacity = AirMovementValidator.carrierCapacity(alliedCarriers, currentTerritory);
-     * final int alliedPlaneCost = AirMovementValidator.carrierCost(alliedPlanes);
-     * // if there is free capacity, add the territory to landing possibilities
-     * if (alliedCarrierCapacity - alliedPlaneCost >= 1)
-     * {
-     * canLandHere.add(currentTerritory);
-     * }
-     * }
-     * if (isWW2V2() || isSurvivingAirMoveToLand())
-     * {
-     * Territory territory = null;
-     * while (canLandHere.size() > 1 && m_defendingAir.size() > 0)
-     * {
-     * territory = getRemote(m_defender, bridge).selectTerritoryForAirToLand(canLandHere, m_battleSite,
-     * MyFormatter.unitsToText(m_defendingAir));
-     * // added for test script
-     * if (territory == null)
-     * {
-     * territory = canLandHere.iterator().next();
-     * }
-     * if (territory.isWater())
-     * {
-     * landPlanesOnCarriers(bridge, alliedDefendingAir, m_defendingAir, canLandHere, alliedCarrier, alliedPlane, territory);
-     * }
-     * else
-     * {
-     * moveAirAndLand(bridge, m_defendingAir, territory);
-     * return;
-     * }
-     * // remove the territory from those available
-     * canLandHere.remove(territory);
-     * }
-     * // Land in the last remaining territory
-     * if (canLandHere.size() > 0 && m_defendingAir.size() > 0)
-     * {
-     * territory = canLandHere.iterator().next();
-     * if (territory.isWater())
-     * {
-     * landPlanesOnCarriers(bridge, alliedDefendingAir, m_defendingAir, canLandHere, alliedCarrier, alliedPlane, territory);
-     * }
-     * else
-     * {
-     * moveAirAndLand(bridge, m_defendingAir, territory);
-     * return;
-     * }
-     * }
-     * }
-     * else if (canLandHere.size() > 0)
-     * {
-     * // now defending air has what cant stay, is there a place we can go?
-     * // check for an island in this sea zone
-     * for (final Territory currentTerritory : canLandHere)
-     * {
-     * // only one neighbor, its an island.
-     * if (m_data.getMap().getNeighbors(currentTerritory).size() == 1)
-     * {
-     * moveAirAndLand(bridge, m_defendingAir, currentTerritory);
-     * return;
-     * }
-     * }
-     * }
-     * if (m_defendingAir.size() > 0)
-     * {
-     * // no where to go, they must die
-     * bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(m_defendingAir) + " could not land and were killed",
-     * m_defendingAir);
-     * final Change change = ChangeFactory.removeUnits(m_battleSite, m_defendingAir);
-     * bridge.addChange(change);
-     * }
-     */
   }
 
-  /*
-   * Moved to BattleDelegate.java
-   * // Refactored this method
-   * private void landPlanesOnCarriers(final IDelegateBridge bridge, final CompositeMatch<Unit> alliedDefendingAir, final Collection<Unit>
-   * defendingAir, final Collection<Territory> canLandHere,
-   * final CompositeMatch<Unit> alliedCarrier, final CompositeMatch<Unit> alliedPlane, final Territory territory)
-   * {
-   * // Get the capacity of the carriers in the selected zone
-   * final Collection<Unit> alliedCarriersSelected = territory.getUnits().getMatches(alliedCarrier);
-   * final Collection<Unit> alliedPlanesSelected = territory.getUnits().getMatches(alliedPlane);
-   * final int alliedCarrierCapacitySelected = AirMovementValidator.carrierCapacity(alliedCarriersSelected, territory);
-   * final int alliedPlaneCostSelected = AirMovementValidator.carrierCost(alliedPlanesSelected);
-   * // Find the available capacity of the carriers in that territory
-   * final int territoryCapacity = alliedCarrierCapacitySelected - alliedPlaneCostSelected;
-   * if (territoryCapacity > 0)
-   * {
-   * // move that number of planes from the battlezone
-   * final Collection<Unit> movingAir = Match.getNMatches(defendingAir, territoryCapacity, alliedDefendingAir);
-   * moveAirAndLand(bridge, movingAir, territory);
-   * }
-   * }
-   *
-   * // Refactored this method
-   * private void moveAirAndLand(final IDelegateBridge bridge, final Collection<Unit> defendingAir, final Territory territory)
-   * {
-   * bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(defendingAir) + " forced to land in " + territory.getName(),
-   * defendingAir);
-   * final Change change = ChangeFactory.moveUnits(m_battleSite, territory, defendingAir);
-   * bridge.addChange(change);
-   * // remove those that landed in case it was a carrier
-   * m_defendingAir.removeAll(defendingAir);
-   * }
-   */
 
   public static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits, final Territory battleSite,
       final PlayerID attacker, final GameData data) {

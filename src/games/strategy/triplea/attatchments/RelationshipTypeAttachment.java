@@ -366,47 +366,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);
   }
 
-  /*
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
-   * Just for future reference, doesn't do anything right now.
-   *
-   * @param helpsDefendAtSea
-   * should be "true", "false" or "default"
-   *
-   * @throws GameParseException
-   *
-   * @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-   * public void setHelpsDefendAtSea(final String helpsDefendAtSea) throws GameParseException
-   * {
-   * if (helpsDefendAtSea.toLowerCase().equals(PROPERTY_TRUE))
-   * m_helpsDefendAtSea = PROPERTY_TRUE;
-   * else if (helpsDefendAtSea.toLowerCase().equals(PROPERTY_FALSE))
-   * m_helpsDefendAtSea = PROPERTY_FALSE;
-   * else if (helpsDefendAtSea.toLowerCase().equals(PROPERTY_DEFAULT))
-   * m_helpsDefendAtSea = PROPERTY_DEFAULT;
-   * else
-   * throw new GameParseException("helpsDefendAtSea must be " + PROPERTY_TRUE + "," + PROPERTY_FALSE + " or " + PROPERTY_DEFAULT + " for "
-   * + thisErrorMsg());
-   * }
-   **
-   *
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
-   * Just for future reference, doesn't do anything right now.
-   *
-   * @return whether in this relationshipType you help each other defend at Sea
-   *
-   * public boolean getHelpsDefendAtSea()
-   * { // War: false, Allied: true, Neutral: false
-   * if (m_helpsDefendAtSea.equals(PROPERTY_DEFAULT))
-   * return isAllied();
-   * return m_helpsDefendAtSea.equals(PROPERTY_TRUE);
-   * }
-   *
-   * public void resetHelpsDefendAtSea()
-   * {
-   * m_helpsDefendAtSea = PROPERTY_DEFAULT;
-   * }
-   */
 
   @Override
   public void validate(final GameData data) throws GameParseException {

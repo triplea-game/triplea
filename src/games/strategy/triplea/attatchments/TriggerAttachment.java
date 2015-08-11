@@ -1586,49 +1586,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     aBridge.getHistoryWriter().startEvent(transcriptText, units);
     final Change place = ChangeFactory.addUnits(terr, units);
     change.add(place);
-    /*
-     * No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different
-     * from the default, the map maker set it, so we shouldn't screw with it.
-     * if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && !Match.someMatch(terr.getUnits().getUnits(),
-     * Matches.UnitIsFactoryOrCanProduceUnits) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
-     * {
-     * // if no factories are there, make sure the territory has no damage (that unitProduction = production)
-     * TerritoryAttachment ta = TerritoryAttachment.get(terr);
-     * int prod = 0;
-     * if(ta != null)
-     * prod = ta.getProduction();
-     *
-     * Change unitProd = ChangeFactory.changeUnitProduction(terr, prod);
-     * change.add(unitProd);
-     * }
-     */
     aBridge.addChange(change);
-    // handle adding to enemy territories
-    /*
-     * creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
-     * if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(terr))
-     * getBattleTracker(data).addBattle(new RouteScripted(terr), units, false, player, aBridge, null);
-     */
   }
-
-  /*
-   * creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
-   * public static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)
-   * {
-   * GameData data = aBridge.getData();
-   * for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1)))
-   * {
-   * if (Matches.territoryHasEnemyUnits(player1, data).match(terr))
-   * DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new RouteScripted(terr),
-   * terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, aBridge, null);
-   * }
-   * }
-   *
-   * private static BattleTracker getBattleTracker(GameData data)
-   * {
-   * return DelegateFinder.battleDelegate(data).getBattleTracker();
-   * }
-   */
 
   // And now for the actual triggers, as called throughout the engine.
   // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for

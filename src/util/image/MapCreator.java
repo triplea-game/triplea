@@ -67,15 +67,6 @@ public class MapCreator extends JFrame {
   }
 
   public static void main(final String[] args) {
-    /*
-     * try
-     * {
-     * UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-     * } catch (final Exception e)
-     * {
-     * e.printStackTrace();
-     * }
-     */
     handleCommandLineArgs(args);
     final MapCreator creator = new MapCreator();
     creator.setSize(800, 600);
@@ -273,23 +264,6 @@ public class MapCreator extends JFrame {
         unitZoomText.setText("" + s_unit_zoom);
       }
     });
-    /*
-     * unitZoomText.addActionListener(new AbstractAction("Set the unit scaling (unit image zoom)")
-     * {
-     * private static final long serialVersionUID = -1453970155236023493L;
-     *
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * try
-     * {
-     * s_unit_zoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
-     * } catch (final Exception ex)
-     * {
-     * }
-     * unitZoomText.setText("" + s_unit_zoom);
-     * }
-     * });
-     */
     m_panel1.add(unitZoomText);
     m_panel1.add(Box.createVerticalStrut(30));
     m_panel1.add(new JLabel("Set the width of the unit images: "));
@@ -309,23 +283,6 @@ public class MapCreator extends JFrame {
         unitWidthText.setText("" + s_unit_width);
       }
     });
-    /*
-     * unitWidthText.addActionListener(new AbstractAction("Set the width of the unit images")
-     * {
-     * private static final long serialVersionUID = 7853232919699181788L;
-     *
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * try
-     * {
-     * s_unit_width = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
-     * } catch (final Exception ex)
-     * {
-     * }
-     * unitWidthText.setText("" + s_unit_width);
-     * }
-     * });
-     */
     m_panel1.add(unitWidthText);
     m_panel1.add(Box.createVerticalStrut(30));
     m_panel1.add(new JLabel("Set the height of the unit images: "));
@@ -345,23 +302,6 @@ public class MapCreator extends JFrame {
         unitHeightText.setText("" + s_unit_height);
       }
     });
-    /*
-     * unitHeightText.addActionListener(new AbstractAction("Set the height of the unit images")
-     * {
-     * private static final long serialVersionUID = 3141138787371791705L;
-     *
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * try
-     * {
-     * s_unit_height = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
-     * } catch (final Exception ex)
-     * {
-     * }
-     * unitHeightText.setText("" + s_unit_height);
-     * }
-     * });
-     */
     m_panel1.add(unitHeightText);
     m_panel1.add(Box.createVerticalStrut(30));
     m_panel1.add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>" +
@@ -382,23 +322,6 @@ public class MapCreator extends JFrame {
         memoryText.setText("" + (s_memory / (1024 * 1024)));
       }
     });
-    /*
-     * memoryText.addActionListener(new AbstractAction("Set the amount of memory to use when running these utilities (in megabytes [mb])")
-     * {
-     * private static final long serialVersionUID = 4620736097666227543L;
-     *
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * try
-     * {
-     * s_memory = (long) 1024 * 1024 * Math.min(4096, Math.max(256, Integer.parseInt(memoryText.getText())));
-     * } catch (final Exception ex)
-     * {
-     * }
-     * memoryText.setText("" + (s_memory / (1024 * 1024)));
-     * }
-     * });
-     */
     m_panel1.add(memoryText);
     final JCheckBox runTypeBox = new JCheckBox("Run All Utilities as Separate Processes");
     runTypeBox.setSelected(s_runUtilitiesAsSeperateProcesses);

@@ -22,7 +22,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
-
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   /**
@@ -80,18 +79,6 @@ public class UnitImageFactory {
     return m_scaleFactor;
   }
 
-  /*
-   * Return the width of scaled units.
-   *
-   * @param img
-   * Image to test for width * scalefactor. If null, will use default UNIT_ICON_WIDTH.
-   *
-   * public int getUnitImageWidth(final Image img)
-   * {
-   * final int width = (img == null ? UNIT_ICON_WIDTH : img.getWidth(null));
-   * return (int) (m_scaleFactor * (width < 0 ? UNIT_ICON_WIDTH : width));
-   * }
-   */
 
   /**
    * Return the width of scaled units.
@@ -100,18 +87,6 @@ public class UnitImageFactory {
     return (int) (m_scaleFactor * UNIT_ICON_WIDTH);
   }
 
-  /*
-   * Return the height of scaled units
-   *
-   * @param img
-   * Image to test for height * scalefactor. If null, will use default UNIT_ICON_HEIGHT.
-   *
-   * public int getUnitImageHeight(final Image img)
-   * {
-   * final int height = (img == null ? UNIT_ICON_HEIGHT : img.getHeight(null));
-   * return (int) (m_scaleFactor * (height < 0 ? UNIT_ICON_HEIGHT : height));
-   * }
-   */
 
   /**
    * Return the height of scaled units

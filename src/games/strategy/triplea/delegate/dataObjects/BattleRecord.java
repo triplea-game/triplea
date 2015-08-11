@@ -63,25 +63,6 @@ public class BattleRecord extends GameDataComponent {
     m_battleResults = record.m_battleResults;
   }
 
-  /*
-   * // Create full Record
-   * protected BattleRecord(final Territory battleSite, final PlayerID attacker, final PlayerID defender, final int attackerLostTUV, final
-   * int defenderLostTUV,
-   * final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage, final BattleType
-   * battleType, final GameData data)
-   * {
-   * super(data);
-   * m_battleSite = battleSite;
-   * m_attacker = attacker;
-   * m_defender = defender;
-   * m_attackerLostTUV = attackerLostTUV;
-   * m_defenderLostTUV = defenderLostTUV;
-   * m_battleResultDescription = battleResultDescription;
-   * m_battleResults = battleResults;
-   * m_bombingDamage = bombingDamage;
-   * m_battleType = battleType;
-   * }
-   */
 
   protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType, final GameData data) {
     super(data);

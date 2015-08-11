@@ -128,54 +128,6 @@ public class AlphaBeta extends HeuristicAI {
     return new Tuple<Long, Integer>(getPointsForBoardSituationTotal(theAI, data), 1);
   }
 
-  /*
-   *
-   * static List<Triple<Territory, Territory, Long>> getPointsForBoardSituationStartBranches(final PlayerID theAI, final PlayerID enemy,
-   * final GameData data, final int branchesLeftToDo)
-   * {
-   * final List<Triple<Territory, Territory, Long>> movesWithPoints = new ArrayList<Triple<Territory, Territory, Long>>();
-   * final List<Triple<Territory, Territory, Collection<Territory>>> available = getAllAvailableMoves(theAI, data, true);
-   * for (final Triple<Territory, Territory, Collection<Territory>> move1 : available)
-   * {
-   * final Quadruple<Territory, Territory, PlayerID, GameData> temp = PlayDelegate.copyGameDataAndAttemptMove(move1.getFirst(),
-   * move1.getSecond(), theAI, data);
-   * final PlayerID theAITemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(theAI, temp.getForth());
-   * final PlayerID currentEnemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(enemy, temp.getForth());
-   * final Tuple<Long, Integer> pointsForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp, theAITemp,
-   * temp.getForth(), branchesLeftToDo - 1);
-   * movesWithPoints.add(new Triple<Territory, Territory, Long>(move1.getFirst(), move1.getSecond(), (pointsForThisMove.getFirst() /
-   * pointsForThisMove.getSecond())));
-   * }
-   * return movesWithPoints;
-   * }
-   *
-   * static Tuple<Long, Integer> getPointsForBoardSituationBranch(final PlayerID theAI, final PlayerID currentPlayer, final PlayerID
-   * currentEnemy, final GameData data, final int branchesLeftToDo)
-   * {
-   * if (branchesLeftToDo > 0)
-   * {
-   * final List<Triple<Territory, Territory, Collection<Territory>>> available = getAllAvailableMoves(currentPlayer, data, true);
-   * Tuple<Long, Integer> totalPointsForThisBoardSituation = new Tuple<Long, Integer>((long) 0, available.size());
-   * for (final Triple<Territory, Territory, Collection<Territory>> move1 : available)
-   * {
-   * final Quadruple<Territory, Territory, PlayerID, GameData> temp = PlayDelegate.copyGameDataAndAttemptMove(move1.getFirst(),
-   * move1.getSecond(), currentPlayer, data);
-   * final PlayerID theAITemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(theAI, temp.getForth());
-   * final PlayerID currentPlayerTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentPlayer, temp.getForth());
-   * final PlayerID currentEnemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(currentEnemy, temp.getForth());
-   * final Tuple<Long, Integer> totalForThisMove = getPointsForBoardSituationBranch(theAITemp, currentEnemyTemp, currentPlayerTemp,
-   * temp.getForth(), branchesLeftToDo - 1);
-   * totalPointsForThisBoardSituation = new Tuple<Long, Integer>(totalPointsForThisBoardSituation.getFirst() + totalForThisMove.getFirst(),
-   * totalPointsForThisBoardSituation.getSecond() + totalForThisMove.getSecond());
-   * }
-   * return totalPointsForThisBoardSituation;
-   * }
-   * // can we checkmate?
-   * if (EndTurnDelegate.doWeWin(theAI, data, 1))
-   * return new Tuple<Long, Integer>((400 + getPointsForBoardPieces(theAI, data)), 0);
-   * return new Tuple<Long, Integer>(getPointsForBoardSituationTotal(theAI, data), 0);
-   * }
-   */
 
   static long getPointsForBoardSituationTotal(final PlayerID theAI, final GameData data) {
     long points = 0;

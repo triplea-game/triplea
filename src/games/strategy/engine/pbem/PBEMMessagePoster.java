@@ -72,13 +72,6 @@ public class PBEMMessagePoster implements Serializable {
     return (isPBEM && (forumPoster != null || emailSender != null || webPoster != null));
   }
 
-  /*
-   * public void setForumPoster(final IForumPoster msgr)
-   * {
-   * m_forumPoster = msgr;
-   * }
-   */
-
   public IForumPoster getForumPoster() {
     return m_forumPoster;
   }

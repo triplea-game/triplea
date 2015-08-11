@@ -44,22 +44,6 @@ public class PropertyUtil {
     }
   }
 
-  /*
-   * You don't want to clear the variable unless you are setting some variable where the setting method is actually adding things to a list
-   * rather than overwriting.
-   * public static void clear(final String propertyName, final Object subject)
-   * {
-   * try
-   * {
-   * final Method c = getClearer(propertyName, subject);
-   * c.setAccessible(true);
-   * c.invoke(subject);
-   * } catch (final Exception e)
-   * {
-   * throw new IllegalStateException("Could not clear property:" + propertyName + " subject:" + subject, e);
-   * }
-   * }
-   */
 
   public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name,
       final boolean justFromSuper) {
@@ -101,33 +85,6 @@ public class PropertyUtil {
     }
     return rVal;
   }
-
-  /*
-   * DO NOT DELETE PLEASE
-   * public static Object get(final String propertyName, final Object subject)
-   * {
-   * try
-   * {
-   * final Method getter = subject.getClass().getMethod("get" + capitalizeFirstLetter(propertyName), new Class[0]);
-   * return getter.invoke(subject, new Object[0]);
-   * } catch (final Exception e)
-   * {
-   * throw new IllegalStateException("Could not get property:" + propertyName + " subject:" + subject, e);
-   * }
-   * }
-   *
-   * public static Object getRaw(final String property, final Object subject)
-   * {
-   * try
-   * {
-   * final Method getter = subject.getClass().getMethod("getRawPropertyObject", String.class);
-   * return getter.invoke(subject, property);
-   * } catch (final Exception e)
-   * {
-   * throw new IllegalStateException("Could not get property:" + property + " subject:" + subject, e);
-   * }
-   * }
-   */
 
   private static String capitalizeFirstLetter(final String aString) {
     char first = aString.charAt(0);
@@ -174,30 +131,4 @@ public class PropertyUtil {
     throw new IllegalStateException("No method called:" + resetterName + " on:" + subject);
   }
 
-  /*
-   * private static Method getClearer(final String propertyName, final Object subject)
-   * {
-   * final String clearerName = "clear" + capitalizeFirstLetter(propertyName);
-   * // for (final Method c : subject.getClass().getDeclaredMethods())
-   * for (final Method c : subject.getClass().getMethods())
-   * {
-   * if (c.getName().equals(clearerName))
-   * {
-   * try
-   * {
-   * return subject.getClass().getMethod(clearerName);
-   * } catch (final NoSuchMethodException nsmf)
-   * {
-   * // Go ahead and try the first one
-   * return c;
-   * } catch (final NullPointerException n)
-   * {
-   * // Go ahead and try the first one
-   * return c;
-   * }
-   * }
-   * }
-   * throw new IllegalStateException("No method called:" + clearerName + " on:" + subject);
-   * }
-   */
 }

@@ -63,14 +63,6 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
           }
         }
       }
-      /*
-       * else if (details instanceof Territory)
-       * {
-       * final Territory t = (Territory) details;
-       * if (!m_mapPanel.isShowing(t))
-       * m_mapPanel.centerOn(t);
-       * }
-       */
     }
     add(Box.createGlue());
     validate();

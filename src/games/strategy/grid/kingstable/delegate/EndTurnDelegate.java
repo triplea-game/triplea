@@ -25,17 +25,7 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
     super.start();
     final PlayerID winner = checkForWinner();
     if (winner != null) {
-      // CountDownLatch waitToLeaveGame = new CountDownLatch(1);
       signalGameOver(winner.getName() + " wins!");// , waitToLeaveGame);
-      // gameOver = true;
-      /*
-       * try {
-       *
-       * wait();
-       * //waitToLeaveGame.await();
-       * } catch (InterruptedException e) {}
-       */
-      // while(true){}
     }
   }
 
@@ -59,12 +49,6 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
     // load other variables from state here:
   }
 
-  /*
-   * public boolean isGameOver()
-   * {
-   * return gameOver;
-   * }
-   */
   /**
    * Notify all players that the game is over.
    *

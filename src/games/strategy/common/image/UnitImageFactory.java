@@ -71,27 +71,6 @@ public class UnitImageFactory {
     return image;
   }
 
-  /*
-   * private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), ResourceLoader.RESOURCE_FOLDER + "/units/");
-   * private BufferedImage getBaseImage(final String baseImageName, final PlayerID id)
-   * {
-   * final String fileName = id.getName() + "/" + baseImageName + ".png";
-   * BufferedImage image = null;
-   * try
-   * {
-   * image = ImageIO.read(new File(BASE_FOLDER, fileName));
-   * Util.ensureImageLoaded(image);
-   * } catch (final InterruptedException ex)
-   * {
-   * ex.printStackTrace();
-   * } catch (final IOException e)
-   * {
-   * e.printStackTrace();
-   * }
-   * return image;
-   * }
-   */
-
   private String getBaseImageName(final UnitType type, final PlayerID id, final GameData data) {
     final StringBuilder name = new StringBuilder(32);
     name.append(type.getName());

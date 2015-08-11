@@ -67,17 +67,6 @@ public class TechPanel extends ActionPanel {
           add(new JButton(GetTechRollsAction));
           add(new JButton(DontBother));
         }
-        /*
-         * TripleAFrame will now center on capital whenever there is a new step player who is different from the last step player
-         * getData().acquireReadLock();
-         * try
-         * {
-         * getMap().centerOn(TerritoryAttachment.getCapital(id, getData()));
-         * } finally
-         * {
-         * getData().releaseReadLock();
-         * }
-         */
       }
     });
   }

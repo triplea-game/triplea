@@ -4,27 +4,6 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import junit.framework.TestCase;
 
 public class PropertyUtilTest extends TestCase {
-  /*
-   * public void testGet()
-   * {
-   * final JLabel label = new JLabel("TestCase");
-   * assertEquals("TestCase", PropertyUtil.get("text", label));
-   * }
-   *
-   * public void testSet()
-   * {
-   * final JLabel label = new JLabel("TestCase");
-   * PropertyUtil.set("text", "changed", label);
-   * assertEquals("changed", PropertyUtil.get("text", label));
-   * }
-   *
-   * public void testSetInt()
-   * {
-   * final JLabel label = new JLabel();
-   * PropertyUtil.set("IconTextGap", 10, label);
-   * PropertyUtil.get("IconTextGap", label);
-   * }
-   */
 
   public void testGetFieldObject() {
     final RulesAttachment at = new RulesAttachment("test", null, null);

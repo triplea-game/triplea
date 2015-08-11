@@ -14,7 +14,6 @@ public class Tile extends DefaultAttachment {
   private static final long serialVersionUID = 129074481008059616L;
   private int m_value = 0;
 
-  // private Rectangle m_location;
   /**
    * Construct a new tile with no value.
    */
@@ -60,17 +59,6 @@ public class Tile extends DefaultAttachment {
     m_value = 0;
   }
 
-  /*
-   * public void setLocation(Rectangle location)
-   * {
-   * m_location = location;
-   * }
-   *
-   * public Rectangle getLocation()
-   * {
-   * return m_location;
-   * }
-   */
   @Override
   public int hashCode() {
     return m_value;
@@ -78,6 +66,5 @@ public class Tile extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) throws GameParseException {
-    // TODO Auto-generated method stub
   }
 }

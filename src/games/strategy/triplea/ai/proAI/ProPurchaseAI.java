@@ -703,18 +703,6 @@ public class ProPurchaseAI {
           ourSemiRankedBidTerrs.remove(noRouteTerr);
         }
       }
-      /*
-       * Currently the place delegate does not accept bids by the AI to territories that it does not own. If that gets fixed we can add the
-       * following code in order to bid to allied territories that contain our units (like Libya in ww2v3) (veqryn)
-       * for(Territory alliedTerr : ourFriendlyTerr)
-       * {
-       * if(!Matches.isTerritoryOwnedBy(player).match(alliedTerr) && alliedTerr.getUnits().getMatches(Matches.unitIsOwnedBy(player)).size()
-       * > 0)
-       * {
-       * ourSemiRankedBidTerrs.add(alliedTerr);
-       * }
-       * }
-       */
       final List<Territory> isWaterTerr = SUtils.onlyWaterTerr(data, ourSemiRankedBidTerrs);
       ourSemiRankedBidTerrs.removeAll(isWaterTerr);
       ourSemiRankedBidTerrs.removeAll(impassableTerrs);

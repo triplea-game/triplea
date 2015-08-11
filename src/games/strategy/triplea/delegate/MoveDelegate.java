@@ -298,13 +298,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       if (taUnit.getWasInCombat()) {
         change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_COMBAT));
       }
-      /*
-       * we now do this at the start of the combat delegate, and have a phase step property option for it too:
-       * if (taUnit.getBonusMovement() != 0)
-       * {
-       * change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
-       * }
-       */
       if (taUnit.getSubmerged()) {
         change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
       }
@@ -540,18 +533,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
         }
       }
     }
-    // confirm HariKari moves, and remove them from unresolved units
-    /*
-     * Collection<Unit> hariKariUnits = result.getUnresolvedUnits(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT);
-     * if (hariKariUnits.size() > 0 && getRemotePlayer().confirmMoveHariKari())
-     * {
-     * for (Unit unit : hariKariUnits)
-     * {
-     * result.removeUnresolvedUnit(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
-     * isHariKari = true;
-     * }
-     * }
-     */
     if (result.hasUnresolvedUnits()) {
       return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
     }
@@ -875,106 +856,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     m_PUsLost.add(t, amt);
   }
 
-  /*
-   * Returns a list of the maximum number of each type of unit that can be loaded on the transports
-   * If it can't succeed returns an empty Map.
-   *
-   *
-   * private static List<Unit> mapAirTransportsToLoad(Collection<Unit> units, Collection<Unit> transports)
-   * {
-   * Comparator<Unit> c = new Comparator<Unit>()
-   * {
-   * public int compare(Unit o1, Unit o2)
-   * {
-   * int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
-   * int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
-   * return cost2 - cost1; //descending transportCost
-   * }
-   * };
-   * Collections.sort((List<Unit>) units, c);
-   *
-   * Iterator<Unit> trnIter = transports.iterator();
-   * //Spin through each transport and find the possible loads
-   * List<Unit> totalLoad = new ArrayList<Unit>();
-   * while(trnIter.hasNext())
-   * {
-   * //(re)set the initial and current capacity of the air transport
-   * Unit transport = trnIter.next();
-   * UnitAttachment trnA = (UnitAttachment) transport.getType().getAttachment(Constants.UNIT_ATTACHMENT_NAME);
-   * int initCapacity = trnA.getTransportCapacity();
-   * int currCapacity = initCapacity;
-   *
-   * //set up a list for a single potential load
-   * List<Unit> aLoad = new ArrayList<Unit>();
-   * Iterator<Unit> unitIter = units.iterator();
-   * IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
-   * while (unitIter.hasNext())
-   * {
-   * //For each potential unit, get transport cost
-   * Unit unit = unitIter.next();
-   * UnitAttachment ua = (UnitAttachment) unit.getType().getAttachment(Constants.UNIT_ATTACHMENT_NAME);
-   * int cost = ua.getTransportCost();
-   * //Check the cost against the air transport's current capacity (including previously loaded units)
-   * currCapacity -= addedLoad.getInt(transport);
-   * if(currCapacity >= cost )
-   * {
-   * addedLoad.add(transport, cost);
-   * aLoad.add(unit);
-   * }
-   * else
-   * {
-   * //If there's no available capacity, consider the load full and add to total
-   * totalLoad.addAll(aLoad);
-   * addedLoad.clear();
-   * aLoad.clear();
-   * //see if any units like the current unit were previously loaded
-   * Iterator<Unit> ttlIter = totalLoad.listIterator();
-   * List<Integer> indices = new ArrayList<Integer>();
-   * while (ttlIter.hasNext())
-   * {
-   * Unit ttlUnit = ttlIter.next();
-   * if(unit != ttlUnit && unit.getType().equals(ttlUnit.getType()))
-   * {
-   * indices.add(totalLoad.indexOf(ttlUnit));
-   * }
-   * }
-   * //If there are any, add up their transportCosts and see if there is room for another.
-   * currCapacity = initCapacity;
-   * if(indices.isEmpty())
-   * {
-   * if(currCapacity >= cost )
-   * {
-   * addedLoad.add(transport, cost);
-   * aLoad.add(unit);
-   * }
-   * }
-   * else
-   * {
-   * //reload aLoad with any units of the same type & check capacity vs aLoad cost
-   * //this eliminates too many duplicate units in the list
-   * Iterator<Integer> indCosts = indices.listIterator();
-   * while(indCosts.hasNext())
-   * {
-   * Integer index = indCosts.next();
-   * Unit indexedUnit = totalLoad.get(index);
-   * UnitAttachment indexedUnitAtt = (UnitAttachment) indexedUnit.getType().getAttachment(Constants.UNIT_ATTACHMENT_NAME);
-   * currCapacity -= indexedUnitAtt.getTransportCost();
-   * }
-   * if(currCapacity >= cost )
-   * {
-   * addedLoad.add(transport, cost);
-   * aLoad.add(unit);
-   * }
-   * }
-   * }
-   * }
-   * //If there's no available capacity, consider the load full and add to total
-   * totalLoad.addAll(aLoad);
-   * }
-   *
-   * return totalLoad;
-   * }
-   */
 }
 
 

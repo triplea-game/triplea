@@ -455,27 +455,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_warBondDiceNumber = 0;
   }
 
-  /*
-   * @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-   * public void setRocketDiceSides(final String value) throws GameParseException
-   * {
-   * final int v = getInt(value);
-   * if ((v != -1) && (v < 0 || v > 200))
-   * throw new GameParseException("rocketDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
-   * m_rocketDiceSides = v;
-   * }
-   *
-   * @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-   * public void setRocketDiceSides(final Integer value)
-   * {
-   * m_rocketDiceSides = value;
-   * }
-   *
-   * public int getRocketDiceSides()
-   * {
-   * return m_rocketDiceSides;
-   * }
-   */
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -1042,23 +1021,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return Math.max(0, rVal);
   }
 
-  /*
-   * public static int getRocketDiceSides(final PlayerID player, final GameData data)
-   * {
-   * int rVal = 0;
-   * for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
-   * {
-   * final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-   * if (taa != null)
-   * {
-   * final int sides = taa.getRocketDiceSides();
-   * if (sides > 0)
-   * rVal += sides;
-   * }
-   * }
-   * return Math.max(0, rVal);
-   * }
-   */
 
   private static int getRocketDiceNumber(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;

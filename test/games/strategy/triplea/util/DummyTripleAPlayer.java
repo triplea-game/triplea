@@ -71,13 +71,6 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
     return null;
   }
 
-  /*
-   * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final
-   * PlayerID player)
-   * {
-   * return null;
-   * }
-   */
 
   @Override
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,

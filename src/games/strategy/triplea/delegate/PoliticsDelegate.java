@@ -52,16 +52,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   @Override
   public void start() {
     super.start();
-    /*
-     * if (m_needToInitialize)
-     * {
-     * m_testedConditions = null;
-     * final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
-     * new HashSet<ICondition>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
-     * m_testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, getData());
-     * m_needToInitialize = false;
-     * }
-     */
   }
 
   @Override

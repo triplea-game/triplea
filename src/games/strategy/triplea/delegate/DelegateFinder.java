@@ -29,25 +29,4 @@ public class DelegateFinder {
     return (TechnologyDelegate) findDelegate(data, "tech");
   }
 
-  /*
-   * public static final AbstractEndTurnDelegate endTurnDelegate(final GameData data)
-   * {
-   * return (AbstractEndTurnDelegate) findDelegate(data, "endTurn");
-   * }
-   *
-   * public static final AbstractPlaceDelegate placeDelegate(final GameData data)
-   * {
-   * return (AbstractPlaceDelegate) findDelegate(data, "place");
-   * }
-   *
-   * public static final AbstractPlaceDelegate placeNoAirCheckDelegate(final GameData data)
-   * {
-   * return (AbstractPlaceDelegate) findDelegate(data, "placeNoAirCheck");
-   * }
-   *
-   * public static final BidPlaceDelegate bidPlaceDelegate(final GameData data)
-   * {
-   * return (BidPlaceDelegate) findDelegate(data, "placeBid");
-   * }
-   */
 }

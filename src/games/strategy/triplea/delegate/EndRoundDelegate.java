@@ -190,13 +190,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
   }
 
-  /*
-   * private BattleTracker getBattleTracker()
-   * {
-   * return DelegateFinder.battleDelegate(getData()).getBattleTracker();
-   * }
-   */
-
   @Override
   public Serializable saveState() {
     final EndRoundExtendedDelegateState state = new EndRoundExtendedDelegateState();

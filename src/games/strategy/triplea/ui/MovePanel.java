@@ -1012,16 +1012,6 @@ public class MovePanel extends AbstractMovePanel {
           // Clear the stored dependents for AirTransports
           if (!s_dependentUnits.isEmpty()) {
             s_dependentUnits.clear();
-            /*
-             * for (Unit airTransport : unitsWithoutDependents)
-             * {
-             * if (s_dependentUnits.containsKey(airTransport))
-             * {
-             * unitsToRemove.addAll(s_dependentUnits.get(airTransport));
-             * s_dependentUnits.remove(airTransport);
-             * }
-             * }
-             */
           }
         } else if (!unitsWithoutDependents.isEmpty()) {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)

@@ -87,14 +87,6 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
 
       @Override
       public void paint(final Graphics g) {
-        /*
-         * this doesn't seem to be working...
-         * if (scrollBarPreviousValue != null)
-         * {
-         * scroll.getVerticalScrollBar().setValue(scrollBarPreviousValue);
-         * scrollBarPreviousValue = null;
-         * }
-         */
         if (previousVisibleIndex != null) {
           items.scrollRectToVisible(
               new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex), 1, scrollIncrementFinal));
