@@ -132,16 +132,13 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     return m_remote;
   }
 
-  /*
-   */
+
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     return m_remote;
   }
 
-  /*
-   *
-   */
+
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     return m_dummyDisplay;
@@ -176,9 +173,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   @Override
   public void stopGameSequence() {}
 
-  /*
-   *
-   */
+
   @Override
   public GameData getData() {
     return m_data;

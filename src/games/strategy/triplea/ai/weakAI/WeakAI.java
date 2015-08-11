@@ -1110,8 +1110,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
     pause();
   }
 
-  /*
-   */
+
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
     return true;

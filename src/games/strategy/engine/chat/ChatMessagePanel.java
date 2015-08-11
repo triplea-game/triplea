@@ -167,9 +167,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     content.add(sendPanel, BorderLayout.SOUTH);
   }
 
-  /*
-   *
-   */
+
   @Override
   public boolean requestFocusInWindow() {
     return m_nextMessage.requestFocusInWindow();

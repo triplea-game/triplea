@@ -58,9 +58,7 @@ public class TestGameLoader implements IGameLoader {
     return IChannelSubscribor.class;
   }
 
-  /*
-   *
-   */
+
   @Override
   public Class<? extends IRemote> getRemotePlayerType() {
     return IRemote.class;

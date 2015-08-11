@@ -590,8 +590,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
         allowMultipleHitsPerUnit);
   }
 
-  /*
-   */
+
   @Override
   public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides) {
     return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
@@ -638,15 +637,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
   }
 
-  /*
-   */
+
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
     return m_ui.getStrategicBombingRaid(territory);
   }
 
-  /*
-   */
+
   @Override
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
     return m_ui.getStrategicBombingRaidTarget(territory, potentialTargets, bombers);
@@ -666,17 +663,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
   }
 
-  /*
-   */
+
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
       final String unitMessage) {
     return m_ui.selectTerritoryForAirToLand(candidates, currentTerritory, unitMessage);
   }
 
-  /*
-   *
-   */
+
   @Override
   public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
     final String question = "Your units will be fired on in: " + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false)

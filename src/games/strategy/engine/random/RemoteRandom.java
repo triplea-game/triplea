@@ -63,8 +63,7 @@ public class RemoteRandom implements IRemoteRandom {
     return m_localNumbers;
   }
 
-  /*
-   */
+
   @Override
   public void verifyNumbers() throws IllegalStateException {
     final Vault vault = m_game.getVault();

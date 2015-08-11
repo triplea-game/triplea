@@ -262,8 +262,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return myCasualties;
   }
 
-  /*
-   */
+
   @Override
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
     if (potentialTargets == null || potentialTargets.isEmpty()) {
@@ -290,8 +289,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return rVal;
   }
 
-  /*
-   */
+
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
       final String unitMessage) {
@@ -438,9 +436,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     pause();
   }
 
-  /*
-   *
-   */
+
   @Override
   public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
       final int diceSides) {

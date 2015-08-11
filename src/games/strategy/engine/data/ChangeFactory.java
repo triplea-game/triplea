@@ -1439,10 +1439,7 @@ class AddBattleRecordsChange extends Change {
 }
 
 
-/**
- *
- *
- */
+
 class RemoveBattleRecordsChange extends Change {
   private static final long serialVersionUID = 3286634991233029854L;
   private final BattleRecords m_recordsToRemove;

@@ -148,9 +148,7 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   @Override
   public void cancelBattle(final IDelegateBridge bridge) {}
 
-  /*
-   *
-   */
+
   @Override
   public boolean isBombingRun() {
     return m_isBombingRun;
@@ -204,21 +202,15 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     m_headless = aBool;
   }
 
-  /*
-   *
-   */
+
   @Override
   abstract public void fight(IDelegateBridge bridge);
 
-  /*
-   *
-   */
+
   @Override
   abstract public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets);
 
-  /*
-   *
-   */
+
   @Override
   abstract public void removeAttack(Route route, Collection<Unit> units);
 

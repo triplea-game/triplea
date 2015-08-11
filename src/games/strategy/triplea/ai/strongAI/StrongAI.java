@@ -9639,8 +9639,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     pause();
   }
 
-  /*
-   */
+
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
     // only if not needed in a battle
@@ -9681,9 +9680,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     return true;
   }
 
-  /*
-   *
-   */
+
   @Override
   public boolean selectAttackTransports(final Territory territory) {
     return true;
@@ -9701,8 +9698,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     return rVal;
   }
 
-  /*
-   */
+
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
       final String unitMessage) {
@@ -9882,9 +9878,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     return null;
   }
 
-  /*
-   *
-   */
+
   @Override
   public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
       final int diceSides) {

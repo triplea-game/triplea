@@ -80,8 +80,7 @@ public class CountUpAndDownLatch implements Serializable {
     }
   }
 
-  /**
-   */
+
   public int getCount() {
     return sync.getCount();
   }
@@ -93,14 +92,12 @@ public class CountUpAndDownLatch implements Serializable {
     return originalCount;
   }
 
-  /**
-   */
+
   public void await() throws InterruptedException {
     sync.acquireSharedInterruptibly(1);
   }
 
-  /**
-   */
+
   public boolean await(final long timeout, final TimeUnit unit) throws InterruptedException {
     return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
   }

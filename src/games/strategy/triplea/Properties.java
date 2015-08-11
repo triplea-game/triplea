@@ -416,16 +416,12 @@ public class Properties implements Constants {
     return data.getProperties().get(LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS, false);
   }
 
-  /*
-   *
-   */
+
   public static int getHeavyBomberDiceRolls(final GameData data) {
     return data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS, 2);
   }
 
-  /*
-   *
-   */
+
   public static boolean getBattleshipsRepairAtEndOfRound(final GameData data) {
     return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN, false);
   }
@@ -434,51 +430,37 @@ public class Properties implements Constants {
     return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getTwoHitPointUnitsRequireRepairFacilities(final GameData data) {
     return data.getProperties().get(TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getChoose_AA_Casualties(final GameData data) {
     return data.getProperties().get(CHOOSE_AA, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getSubmersible_Subs(final GameData data) {
     return data.getProperties().get(SUBMERSIBLE_SUBS, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getUse_Destroyers_And_Artillery(final GameData data) {
     return data.getProperties().get(USE_DESTROYERS_AND_ARTILLERY, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getUse_Shipyards(final GameData data) {
     return data.getProperties().get(USE_SHIPYARDS, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getLow_Luck(final GameData data) {
     return data.getProperties().get(LOW_LUCK, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getLL_AA_ONLY(final GameData data) {
     return data.getProperties().get(LL_AA_ONLY, false);
   }
@@ -491,9 +473,7 @@ public class Properties implements Constants {
     return data.getProperties().get(LL_DAMAGE_ONLY, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getKamikaze_Airplanes(final GameData data) {
     return data.getProperties().get(KAMIKAZE, false);
   }

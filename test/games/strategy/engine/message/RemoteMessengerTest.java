@@ -27,8 +27,7 @@ public class RemoteMessengerTest extends TestCase {
     SERVER_PORT = TestUtil.getUniquePort();
   }
 
-  /*
-   */
+
   @Override
   protected void tearDown() throws Exception {
     m_messenger = null;

@@ -52,9 +52,7 @@ public class TripleaDisplay implements ITripleaDisplay {
         defender, isAmphibious, battleType, amphibiousLandAttackers);
   }
 
-  /*
-   *
-   */
+
   @Override
   public void listBattleSteps(final GUID battleID, final List<String> steps) {
     m_ui.getBattlePanel().listBattle(battleID, steps);
@@ -104,9 +102,7 @@ public class TripleaDisplay implements ITripleaDisplay {
    * }
    */
 
-  /*
-   *
-   */
+
   @Override
   public void battleEnd(final GUID battleID, final String message) {
     m_ui.getBattlePanel().battleEndMessage(battleID, message);

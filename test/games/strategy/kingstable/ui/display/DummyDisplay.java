@@ -19,24 +19,20 @@ public class DummyDisplay implements IGridGameDisplay {
   @Override
   public void refreshTerritories(final Collection<Territory> territories) {}
 
-  /**
-   */
+
   @Override
   public void setGameOver()// CountDownLatch waiting) {
   {}
 
-  /**
-   */
+
   @Override
   public void setStatus(final String status) {}
 
-  /**
-   */
+
   @Override
   public void initialize(final IDisplayBridge bridge) {}
 
-  /**
-   */
+
   @Override
   public void shutDown() {}
 

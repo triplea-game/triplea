@@ -131,23 +131,20 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     m_socket.send(m_socketChannel, header);
   }
 
-  /*
-   */
+
   @Override
   public synchronized void broadcast(final Serializable msg) {
     final MessageHeader header = new MessageHeader(m_node, msg);
     m_socket.send(m_socketChannel, header);
   }
 
-  /*
-   */
+
   @Override
   public void addMessageListener(final IMessageListener listener) {
     m_listeners.add(listener);
   }
 
-  /*
-   */
+
   @Override
   public void removeMessageListener(final IMessageListener listener) {
     m_listeners.remove(listener);
@@ -163,8 +160,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     m_errorListeners.remove(listener);
   }
 
-  /*
-   */
+
   @Override
   public boolean isConnected() {
     return m_socketChannel.isConnected();

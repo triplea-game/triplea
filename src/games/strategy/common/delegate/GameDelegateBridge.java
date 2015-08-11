@@ -89,24 +89,19 @@ public class GameDelegateBridge implements IDelegateBridge {
     return m_bridge.getRemotePlayer();
   }
 
-  /*
-   */
+
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     return m_bridge.getRemotePlayer(id);
   }
 
-  /*
-   *
-   */
+
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     return m_bridge.getDisplayChannelBroadcaster();
   }
 
-  /*
-   *
-   */
+
   @Override
   public ISound getSoundChannelBroadcaster() {
     return m_bridge.getSoundChannelBroadcaster();

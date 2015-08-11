@@ -1395,8 +1395,7 @@ public class MovePanel extends AbstractMovePanel {
     m_forced = null;
   }
 
-  /**
-   */
+
   @Override
   protected final void cancelMoveAction() {
     setFirstSelectedTerritory(null);
@@ -1410,8 +1409,7 @@ public class MovePanel extends AbstractMovePanel {
     getMap().setMouseShadowUnits(null);
   }
 
-  /**
-   */
+
   @Override
   protected final void undoMoveSpecific() {
     getMap().setRoute(null);
@@ -1430,8 +1428,7 @@ public class MovePanel extends AbstractMovePanel {
     super.display(id, m_displayText);
   }
 
-  /**
-   */
+
   @Override
   protected final void setUpSpecific() {
     setFirstSelectedTerritory(null);

@@ -17,8 +17,7 @@ public class TALogFormatter extends Formatter {
     m_showDates = aVal;
   }
 
-  /*
-   */
+
   @Override
   public String format(final LogRecord record) {
     String shortName;

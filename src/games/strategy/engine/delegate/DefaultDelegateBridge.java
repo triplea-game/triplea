@@ -118,8 +118,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     return getRemotePlayer(getPlayerID());
   }
 
-  /*
-   */
+
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     try {
@@ -130,18 +129,14 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     }
   }
 
-  /*
-   *
-   */
+
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getDisplayChannel(m_data));
     return (IDisplay) getOutbound(implementor);
   }
 
-  /*
-   *
-   */
+
   @Override
   public ISound getSoundChannelBroadcaster() {
     final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getSoundChannel(m_data));

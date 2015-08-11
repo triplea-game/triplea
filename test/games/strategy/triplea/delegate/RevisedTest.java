@@ -1422,8 +1422,8 @@ public class RevisedTest extends TestCase {
 
 
 
-  /***********************************************************/
-  /***********************************************************/
+
+
   private ITripleaPlayer getDummyPlayer() {
     return new DummyTripleAPlayer();
   }

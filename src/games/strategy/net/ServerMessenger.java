@@ -97,8 +97,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     m_listeners.add(listener);
   }
 
-  /*
-   */
+
   @Override
   public void removeMessageListener(final IMessageListener listener) {
     m_listeners.remove(listener);

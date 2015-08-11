@@ -2178,8 +2178,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         SUICIDE_DEFEND);
   }
 
-  /**
-   */
+
   private boolean isWW2V2() {
     return games.strategy.triplea.Properties.getWW2V2(m_data);
   }
@@ -2200,38 +2199,32 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     return ta.getParatroopers();
   }
 
-  /**
-   */
+
   private boolean isAlliedAirIndependent() {
     return games.strategy.triplea.Properties.getAlliedAirIndependent(m_data);
   }
 
-  /**
-   */
+
   private boolean isDefendingSubsSneakAttack() {
     return games.strategy.triplea.Properties.getDefendingSubsSneakAttack(m_data);
   }
 
-  /**
-   */
+
   private boolean isAttackerRetreatPlanes() {
     return games.strategy.triplea.Properties.getAttackerRetreatPlanes(m_data);
   }
 
-  /**
-   */
+
   private boolean isNavalBombardCasualtiesReturnFire() {
     return games.strategy.triplea.Properties.getNavalBombardCasualtiesReturnFireRestricted(m_data);
   }
 
-  /**
-   */
+
   private boolean isSuicideAndMunitionCasualtiesRestricted() {
     return games.strategy.triplea.Properties.getSuicideAndMunitionCasualtiesRestricted(m_data);
   }
 
-  /**
-   */
+
   private boolean isDefendingSuicideAndMunitionUnitsDoNotFire() {
     return games.strategy.triplea.Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(m_data);
   }
@@ -2243,20 +2236,17 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
    * }
    */
 
-  /**
-   */
+
   private boolean isAirAttackSubRestricted() {
     return games.strategy.triplea.Properties.getAirAttackSubRestricted(m_data);
   }
 
-  /**
-   */
+
   private boolean isSubRetreatBeforeBattle() {
     return games.strategy.triplea.Properties.getSubRetreatBeforeBattle(m_data);
   }
 
-  /**
-   */
+
   private boolean isTransportCasualtiesRestricted() {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(m_data);
   }

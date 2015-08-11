@@ -29,8 +29,7 @@ public class ChannelMessenger implements IChannelMessenger {
     return rVal;
   }
 
-  /*
-   */
+
   @Override
   public void registerChannelSubscriber(final Object implementor, final RemoteName channelName) {
     if (!IChannelSubscribor.class.isAssignableFrom(channelName.getClazz())) {
@@ -39,16 +38,13 @@ public class ChannelMessenger implements IChannelMessenger {
     m_unifiedMessenger.addImplementor(channelName, implementor, true);
   }
 
-  /*
-   */
+
   @Override
   public void unregisterChannelSubscriber(final Object implementor, final RemoteName channelName) {
     m_unifiedMessenger.removeImplementor(channelName.getName(), implementor);
   }
 
-  /*
-   *
-   */
+
   @Override
   public INode getLocalNode() {
     return m_unifiedMessenger.getLocalNode();
