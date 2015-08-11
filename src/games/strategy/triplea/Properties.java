@@ -478,44 +478,32 @@ public class Properties implements Constants {
     return data.getProperties().get(KAMIKAZE, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getLHTR_Heavy_Bombers(final GameData data) {
     return data.getProperties().get(LHTR_HEAVY_BOMBERS, false);
   }
 
-  /*
-   *
-   */
+
   public static int getSuper_Sub_Defense_Bonus(final GameData data) {
     return data.getProperties().get(SUPER_SUB_DEFENSE_BONUS, 0);
   }
 
-  /*
-   *
-   */
+
   public static boolean getScramble_Rules_In_Effect(final GameData data) {
     return data.getProperties().get(SCRAMBLE_RULES_IN_EFFECT, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getScrambled_Units_Return_To_Base(final GameData data) {
     return data.getProperties().get(SCRAMBLED_UNITS_RETURN_TO_BASE, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getScramble_To_Sea_Only(final GameData data) {
     return data.getProperties().get(SCRAMBLE_TO_SEA_ONLY, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getScramble_From_Island_Only(final GameData data) {
     return data.getProperties().get(SCRAMBLE_FROM_ISLAND_ONLY, false);
   }
