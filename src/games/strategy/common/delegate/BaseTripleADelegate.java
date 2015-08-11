@@ -19,7 +19,6 @@ import games.strategy.util.Match;
 /**
  * Base class designed to make writing custom TripleA delegates simpler.
  * Code common to all TripleA delegates is implemented here.
- *
  */
 public abstract class BaseTripleADelegate extends AbstractDelegate implements IDelegate {
   private boolean m_startBaseStepsFinished = false;
@@ -35,7 +34,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
   /**
    * Called before the delegate will run.
    * All classes should call super.start if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
+   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in
+   * the edit delegate.
    */
   @Override
   public void start() {
@@ -49,7 +49,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
   /**
    * Called before the delegate will stop running.
    * All classes should call super.end if they override this.
-   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
+   * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in
+   * the edit delegate.
    */
   @Override
   public void end() {
@@ -59,7 +60,8 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
       m_endBaseStepsFinished = true;
       triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
     }
-    // these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start step,
+    // these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start
+    // step,
     // but nothing goes into the end step, and therefore there is no way to save then have the end step repeat itself
     m_startBaseStepsFinished = false;
     m_endBaseStepsFinished = false;
@@ -91,14 +93,11 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
     final GameData data = getData();
     if (games.strategy.triplea.Properties.getTriggers(data)) {
       final String stepName = data.getSequence().getStep().getName();
-
       // we use AND in order to make sure there are uses and when is set correctly.
       final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-          TriggerAttachment.availableUses,
-          TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
-
-      TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()), baseDelegateWhenTriggerMatch,
-          m_bridge, beforeOrAfter, stepName);
+          TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
+      TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()),
+          baseDelegateWhenTriggerMatch, m_bridge, beforeOrAfter, stepName);
     }
     PoliticsDelegate.chainAlliancesTogether(m_bridge);
   }
@@ -142,14 +141,13 @@ class BaseDelegateState implements Serializable {
   public boolean m_endBaseStepsFinished = false;
 }
 /*
- * All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
- *
+ * All overriding classes should use the following format for saveState and loadState, in order to save and load the
+ * superstate
  * class ExtendedDelegateState implements Serializable
  * {
  * Serializable superState;
  * // add other variables here:
  * }
- *
  * @Override
  * public Serializable saveState()
  * {
@@ -158,7 +156,6 @@ class BaseDelegateState implements Serializable {
  * // add other variables to state here:
  * return state;
  * }
- *
  * @Override
  * public void loadState(Serializable state)
  * {

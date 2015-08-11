@@ -10,7 +10,6 @@ import games.strategy.triplea.ai.Dynamix_AI.DMatches;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.delegate.Matches;
 
-
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class CachedCalculationCenter {
   public static HashMap<Territory, List<Territory>> CachedMapTersFromPoints = new HashMap<Territory, List<Territory>>();
@@ -30,19 +29,22 @@ public class CachedCalculationCenter {
   }
 
   /**
-   * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting List<Territory> for quick retrieval later
+   * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting List<Territory> for
+   * quick retrieval later
    * on.
    */
   public static List<Territory> GetMapTersFromPoint(final Territory target) {
     final Territory key = target;
     if (!CachedMapTersFromPoints.containsKey(key)) {
-      CachedMapTersFromPoints.put(key, DUtils.GetTerritoriesWithinXDistanceOfY(target.getData(), target, Integer.MAX_VALUE));
+      CachedMapTersFromPoints.put(key,
+          DUtils.GetTerritoriesWithinXDistanceOfY(target.getData(), target, Integer.MAX_VALUE));
     }
     return CachedMapTersFromPoints.get(key);
   }
 
   /**
-   * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
+   * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting Route for quick
+   * retrieval later on.
    */
   public static Route GetRoute(final GameData data, final Territory ter1, final Territory ter2) {
     final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
@@ -53,7 +55,8 @@ public class CachedCalculationCenter {
   }
 
   /**
-   * The same as data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable), except that this method caches the resulting Route
+   * The same as data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable), except that this method caches
+   * the resulting Route
    * for quick retrieval later on.
    */
   public static Route GetAirPassableRoute(final GameData data, final Territory ter1, final Territory ter2) {
@@ -65,7 +68,8 @@ public class CachedCalculationCenter {
   }
 
   /**
-   * The same as data.getMap().getLandRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
+   * The same as data.getMap().getLandRoute(ter1, ter2), except that this method caches the resulting Route for quick
+   * retrieval later on.
    */
   public static Route GetLandRoute(final GameData data, final Territory ter1, final Territory ter2) {
     final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
@@ -77,7 +81,8 @@ public class CachedCalculationCenter {
 
   /**
    * The same as data.getMap().getRoute(ter1, ter2, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand,
-   * Matches.TerritoryIsNotImpassable)), except that this method caches the resulting Route for quick retrieval later on.
+   * Matches.TerritoryIsNotImpassable)), except that this method caches the resulting Route for quick retrieval later
+   * on.
    */
   public static Route GetPassableLandRoute(final GameData data, final Territory ter1, final Territory ter2) {
     final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
@@ -88,7 +93,8 @@ public class CachedCalculationCenter {
   }
 
   /**
-   * The same as data.getMap().getWaterRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
+   * The same as data.getMap().getWaterRoute(ter1, ter2), except that this method caches the resulting Route for quick
+   * retrieval later on.
    */
   public static Route GetSeaRoute(final GameData data, final Territory ter1, final Territory ter2) {
     final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));

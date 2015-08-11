@@ -5,10 +5,8 @@ import java.io.Serializable;
 /**
  * An interface specifying that this component is a bean that can provide an editor
  * Beans must have a default constructor
- *
  */
 public interface IBean extends Serializable {
-
   /**
    * Get the displayName of the bean
    *
@@ -39,5 +37,4 @@ public interface IBean extends Serializable {
    * @return the help text
    */
   String getHelpText();
-
 }

@@ -3,8 +3,8 @@ package games.strategy.common.player;
 import games.strategy.triplea.ui.AbstractUIContext;
 
 /**
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
- *
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
+ * using a change).
  */
 public abstract class AbstractBaseAI extends AbstractBasePlayer {
   /**
@@ -17,7 +17,6 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer {
 
   /**
    * Pause the game to allow the human player to see what is going on.
-   *
    */
   protected void pause() {
     try {

@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 
 /**
  * Utility for getting/setting java bean style properties on an object.
- *
  */
 public class PropertyUtil {
   @SuppressWarnings("unused")
@@ -19,15 +18,18 @@ public class PropertyUtil {
       m.setAccessible(true);
       m.invoke(subject, value);
     } catch (final Exception e) {
-      throw new IllegalStateException("Could not set property:" + propertyName + " subject:" + subject + " new value:" + value, e);
+      throw new IllegalStateException(
+          "Could not set property:" + propertyName + " subject:" + subject + " new value:" + value, e);
     }
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
-  public static void set(final String propertyName, final Object value, final Object subject, final boolean resetFirst) {
+  public static void set(final String propertyName, final Object value, final Object subject,
+      final boolean resetFirst) {
     if (resetFirst) {
       reset(propertyName, subject);
     }
@@ -45,7 +47,8 @@ public class PropertyUtil {
   }
 
   /*
-   * You don't want to clear the variable unless you are setting some variable where the setting method is actually adding things to a list
+   * You don't want to clear the variable unless you are setting some variable where the setting method is actually
+   * adding things to a list
    * rather than overwriting.
    * public static void clear(final String propertyName, final Object subject)
    * {
@@ -60,11 +63,9 @@ public class PropertyUtil {
    * }
    * }
    */
-
   public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name,
       final boolean justFromSuper) {
     Field rVal = null;
-
     if (!justFromSuper) {
       try {
         rVal = c.getDeclaredField(name);
@@ -91,13 +92,15 @@ public class PropertyUtil {
     try {
       field = getFieldIncludingFromSuperClasses(subject.getClass(), "m_" + propertyName, false);
     } catch (final Exception e) {
-      throw new IllegalStateException("No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
+      throw new IllegalStateException(
+          "No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
     }
     try {
       field.setAccessible(true);
       rVal = field.get(subject);
     } catch (final Exception e) {
-      throw new IllegalStateException("No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
+      throw new IllegalStateException(
+          "No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
     }
     return rVal;
   }
@@ -115,7 +118,6 @@ public class PropertyUtil {
    * throw new IllegalStateException("Could not get property:" + propertyName + " subject:" + subject, e);
    * }
    * }
-   *
    * public static Object getRaw(final String property, final Object subject)
    * {
    * try
@@ -128,7 +130,6 @@ public class PropertyUtil {
    * }
    * }
    */
-
   private static String capitalizeFirstLetter(final String aString) {
     char first = aString.charAt(0);
     first = Character.toUpperCase(first);
@@ -173,7 +174,6 @@ public class PropertyUtil {
     }
     throw new IllegalStateException("No method called:" + resetterName + " on:" + subject);
   }
-
   /*
    * private static Method getClearer(final String propertyName, final Object subject)
    * {

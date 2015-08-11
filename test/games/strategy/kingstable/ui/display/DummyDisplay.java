@@ -12,37 +12,21 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Dummy display for a King's Table game, for use in testing.
- *
  */
 public class DummyDisplay implements IGridGameDisplay {
-  /**
-   * @see games.strategy.engine.display.IKingsTableDisplay#performPlay(Territory,Territory,Collection<Territory>)
-   */
   @Override
   public void refreshTerritories(final Collection<Territory> territories) {}
 
-  /**
-   * @see games.strategy.grid.ui.display.IGridGameDisplay#setGameOver()
-   */
   @Override
   public void setGameOver()// CountDownLatch waiting) {
   {}
 
-  /**
-   * @see games.strategy.grid.ui.display.IGridGameDisplay#setStatus(String)
-   */
   @Override
   public void setStatus(final String status) {}
 
-  /**
-   * @see games.strategy.grid.ui.display.IGridGameDisplay#initialize(IDisplayBridge)
-   */
   @Override
   public void initialize(final IDisplayBridge bridge) {}
 
-  /**
-   * @see games.strategy.grid.ui.display.IGridGameDisplay#shutDown()
-   */
   @Override
   public void shutDown() {}
 

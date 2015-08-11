@@ -11,7 +11,6 @@ import games.strategy.grid.kingstable.attachments.PlayerAttachment;
 
 /**
  * Responsible for initializing a game of King's Table.
- *
  */
 public class InitializationDelegate extends AbstractDelegate {
   /**

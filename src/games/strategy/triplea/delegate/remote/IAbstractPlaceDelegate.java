@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 
-
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
   /**
    * @param units
@@ -14,7 +13,6 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
    * @param at
    *        territory to place
    * @return an error code if the placement was not successful
-   *
    */
   public String placeUnits(Collection<Unit> units, Territory at);
 
@@ -32,7 +30,6 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate {
   public PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
 
   /**
-   *
    * @return the number of placements made so far.
    *         this is not the number of units placed, but the number
    *         of times we have made successful placements

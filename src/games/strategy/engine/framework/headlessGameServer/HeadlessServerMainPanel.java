@@ -34,8 +34,6 @@ import games.strategy.triplea.ui.ErrorHandler;
 
 /**
  * Main panel for headless server.
- *
- *
  */
 public class HeadlessServerMainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = 1932202117432783020L;
@@ -99,10 +97,10 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
     m_mainPanel.setLayout(new GridBagLayout());
     m_mainPanel.setBorder(BorderFactory.createEmptyBorder());
     m_gameSetupPanelHolder.setLayout(new BorderLayout());
-    m_mainPanel.add(m_gameSelectorPanel,
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(00, 0, 0, 0), 0, 0));
-    m_mainPanel.add(m_gameSetupPanelScroll,
-        new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
+    m_mainPanel.add(m_gameSelectorPanel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.VERTICAL, new Insets(00, 0, 0, 0), 0, 0));
+    m_mainPanel.add(m_gameSetupPanelScroll, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
+        GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
     addChat();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(m_initialSize);
@@ -113,7 +111,8 @@ public class HeadlessServerMainPanel extends JPanel implements Observer {
     remove(m_chatSplit);
     m_chatPanelHolder.removeAll();
     final ChatPanel chat;
-    if (m_gameTypePanelModel != null && m_gameTypePanelModel.getPanel() != null && m_gameTypePanelModel.getPanel().getChatPanel() != null
+    if (m_gameTypePanelModel != null && m_gameTypePanelModel.getPanel() != null
+        && m_gameTypePanelModel.getPanel().getChatPanel() != null
         && m_gameTypePanelModel.getPanel().getChatPanel() instanceof ChatPanel) {
       chat = (ChatPanel) m_gameTypePanelModel.getPanel().getChatPanel();
       m_chatPanelHolder = new JPanel();

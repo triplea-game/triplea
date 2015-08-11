@@ -19,7 +19,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.util.IntegerMap;
 
-
 public class EditProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 5826523459539469173L;
 
@@ -45,7 +44,8 @@ public class EditProductionPanel extends ProductionPanel {
   }
 
   @Override
-  protected void initRules(final PlayerID player, final GameData data, final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(final PlayerID player, final GameData data,
+      final IntegerMap<ProductionRule> initialPurchase) {
     m_data.acquireReadLock();
     try {
       m_id = player;
@@ -64,7 +64,8 @@ public class EditProductionPanel extends ProductionPanel {
         }
       }
       // this next part is purely to allow people to "add" neutral (null player) units to territories.
-      // This is because the null player does not have a production frontier, and we also do not know what units we have art for, so only
+      // This is because the null player does not have a production frontier, and we also do not know what units we have
+      // art for, so only
       // use the units on a map.
       for (final Territory t : data.getMap()) {
         for (final Unit u : t.getUnits()) {

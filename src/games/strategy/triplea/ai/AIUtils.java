@@ -16,15 +16,12 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 /**
- *
  * Handy utility methods for the writers of an AI.
- *
  */
 public class AIUtils {
   /**
    * How many PU's does it cost the given player to produce the given unit type.
    * <p>
-   *
    * If the player cannot produce the given unit, return Integer.MAX_VALUE
    * <p>
    */
@@ -45,7 +42,6 @@ public class AIUtils {
   }
 
   /**
-   *
    * @return a comparator that sorts cheaper units before expensive ones
    */
   public static Comparator<Unit> getCostComparator() {

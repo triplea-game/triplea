@@ -72,8 +72,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   public void createLobbyWatcher() {
     if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setInGameLobbyWatcher(
-          InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this, m_lobbyWatcher.getInGameLobbyWatcher()));
+      m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this,
+          m_lobbyWatcher.getInGameLobbyWatcher()));
       m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
     }
   }
@@ -126,18 +126,18 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   private void layoutComponents() {
     setLayout(new BorderLayout());
     m_info.setLayout(new GridBagLayout());
-    m_info.add(new JLabel("Name:"),
-        new GridBagConstraints(0, 0, 1, 1, 0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
-    m_info.add(new JLabel("Address:"),
-        new GridBagConstraints(0, 1, 1, 1, 0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
-    m_info.add(new JLabel("Port:"),
-        new GridBagConstraints(0, 2, 1, 1, 0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
-    m_info.add(m_nameField,
-        new GridBagConstraints(1, 0, 1, 1, 0.5, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
-    m_info.add(m_addressField,
-        new GridBagConstraints(1, 1, 1, 1, 0.5, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
-    m_info.add(m_portField,
-        new GridBagConstraints(1, 2, 1, 1, 0.5, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
+    m_info.add(new JLabel("Name:"), new GridBagConstraints(0, 0, 1, 1, 0, 0.0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
+    m_info.add(new JLabel("Address:"), new GridBagConstraints(0, 1, 1, 1, 0, 0.0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
+    m_info.add(new JLabel("Port:"), new GridBagConstraints(0, 2, 1, 1, 0, 0.0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
+    m_info.add(m_nameField, new GridBagConstraints(1, 0, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
+        GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
+    m_info.add(m_addressField, new GridBagConstraints(1, 1, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
+        GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
+    m_info.add(m_portField, new GridBagConstraints(1, 2, 1, 1, 0.5, 1.0, GridBagConstraints.WEST,
+        GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
     add(m_info, BorderLayout.NORTH);
   }
 
@@ -148,8 +148,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Insets spacing = new Insets(3, 16, 0, 0);
     final Insets lastSpacing = new Insets(3, 16, 0, 16);
     int gridx = 0;
-    final boolean disableable =
-        !m_model.getPlayersAllowedToBeDisabled().isEmpty() || m_model.getPlayersEnabledListing().containsValue(Boolean.FALSE);
+    final boolean disableable = !m_model.getPlayersAllowedToBeDisabled().isEmpty()
+        || m_model.getPlayersEnabledListing().containsValue(Boolean.FALSE);
     final GridBagConstraints enabledPlayerConstraints = new GridBagConstraints();
     if (disableable) {
       enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
@@ -227,8 +227,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     }
     removeAll();
     add(m_info, BorderLayout.NORTH);
-    final JScrollPane scroll =
-        new JScrollPane(players, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    final JScrollPane scroll = new JScrollPane(players, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroll.setBorder(null);
     scroll.setViewportBorder(null);
     add(scroll, BorderLayout.CENTER);
@@ -334,15 +334,15 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(m_gameSelectorModel.getGameData());
     final Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
-      final PlayerRow newPlayerRow = new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name),
-          m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
+      final PlayerRow newPlayerRow =
+          new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name),
+              m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
       m_playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);
     }
     layoutPlayers();
     internalPlayersTakenChanged();
   }
-
 
   class PlayerRow {
     private final JLabel m_nameLabel;
@@ -353,8 +353,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private JLabel m_alliance;
     private final String[] m_types;
 
-    PlayerRow(final String playerName, final Map<String, String> reloadSelections, final Collection<String> playerAlliances,
-        final String[] types) {
+    PlayerRow(final String playerName, final Map<String, String> reloadSelections,
+        final Collection<String> playerAlliances, final String[] types) {
       m_nameLabel = new JLabel(playerName);
       m_playerLabel = new JLabel(m_model.getMessenger().getLocalNode().getName());
       m_localCheckBox = new JCheckBox();
@@ -373,7 +373,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         m_type.setSelectedItem(previousSelection);
         m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
       } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
-        m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]); // the 4th in the list should be Pro AI (Hard AI)
+        m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]); // the 4th in the list should be Pro
+                                                                                   // AI (Hard AI)
         m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
       }
       if (playerAlliances.contains(playerName)) {
@@ -444,7 +445,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         setWidgetActivation();
       }
     };
-
     private final ActionListener m_disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -453,7 +453,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
           m_type.setSelectedItem(m_types[0]); // the 1st in the list should be human
         } else {
           m_model.disablePlayer(m_nameLabel.getText());
-          m_type.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list should be Weak AI
+          m_type.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]); // the 2nd in the list should
+                                                                                         // be Weak AI
         }
         setWidgetActivation();
       }
@@ -485,7 +486,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
     rVal.add(new BanPlayerAction(this, m_model.getMessenger()));
     rVal.add(new MutePlayerAction(this, m_model.getMessenger()));
-    rVal.add(new SetPasswordAction(this, m_lobbyWatcher, (ClientLoginValidator) m_model.getMessenger().getLoginValidator()));
+    rVal.add(
+        new SetPasswordAction(this, m_lobbyWatcher, (ClientLoginValidator) m_model.getMessenger().getLoginValidator()));
     if (m_lobbyWatcher != null && m_lobbyWatcher.isActive()) {
       rVal.add(new EditGameCommentAction(m_lobbyWatcher, ServerSetupPanel.this));
       rVal.add(new RemoveGameFromLobbyAction(m_lobbyWatcher));

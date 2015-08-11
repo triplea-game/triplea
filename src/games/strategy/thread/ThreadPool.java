@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A simple thread pool.
- *
  */
 public class ThreadPool {
   private final String m_name;
@@ -25,7 +24,8 @@ public class ThreadPool {
   private volatile boolean m_isRunning = true;
 
   /**
-   * Creates a new instance of ThreadPool max is the maximum number of threads the pool can have. The pool may have fewer threads at any
+   * Creates a new instance of ThreadPool max is the maximum number of threads the pool can have. The pool may have
+   * fewer threads at any
    * given time.
    */
   public ThreadPool(final int max, final String name) {
@@ -113,7 +113,6 @@ public class ThreadPool {
       m_pendingTasks.offer(dummy);
     }
   }
-
 
   private class ThreadTracker implements Runnable {
     @Override

@@ -53,9 +53,7 @@ public class NullForumPoster implements IForumPoster {
   public void viewPosted() {}
 
   @Override
-  public void clearSensitiveInfo() {
-
-  }
+  public void clearSensitiveInfo() {}
 
   @Override
   public String getTestMessage() {

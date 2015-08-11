@@ -15,11 +15,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.util.Match;
 
-
 @SuppressWarnings({"rawtypes", "unchecked", "deprecation"})
 public class DSorting {
-  // Think of the compare method like this: the integer returned tells java the position of the first object in relation to the second...
-  // If -1 is return, java puts the first object before the second, 0 means they're equal(not sure which would come first), 1 tells java to
+  // Think of the compare method like this: the integer returned tells java the position of the first object in relation
+  // to the second...
+  // If -1 is return, java puts the first object before the second, 0 means they're equal(not sure which would come
+  // first), 1 tells java to
   // put the second object before the first
   // /////////////////////////////////////////////List Sorting///////////////////////////////////////////////
   public static List SortListByX(final Collection list, final Comparator comparator) {
@@ -69,8 +70,8 @@ public class DSorting {
 
   // /////////////////////////////////////////////End List Sorting///////////////////////////////////////////////
   // /////////////////////////////////////////////Territory Sorting///////////////////////////////////////////////
-  public static List<Territory> SortTerritoriesByDistance_A(final List<Territory> ters, final GameData data, final Territory target,
-      final Match<Territory> routeMatch) {
+  public static List<Territory> SortTerritoriesByDistance_A(final List<Territory> ters, final GameData data,
+      final Territory target, final Match<Territory> routeMatch) {
     return SortListByX(ters, new Comparator<Territory>() {
       @Override
       public int compare(final Territory t1, final Territory t2) {
@@ -93,12 +94,13 @@ public class DSorting {
     });
   }
 
-  public static List<Territory> SortTerritoriesByDistance_D(final List<Territory> ters, final GameData data, final Territory target,
-      final Match<Territory> routeMatch) {
+  public static List<Territory> SortTerritoriesByDistance_D(final List<Territory> ters, final GameData data,
+      final Territory target, final Match<Territory> routeMatch) {
     return DUtils.InvertList(SortTerritoriesByDistance_A(ters, data, target, routeMatch));
   }
 
-  public static List<Territory> SortTerritoriesByLandDistance_A(final List<Territory> ters, final GameData data, final Territory target) {
+  public static List<Territory> SortTerritoriesByLandDistance_A(final List<Territory> ters, final GameData data,
+      final Territory target) {
     return SortListByX(ters, new Comparator<Territory>() {
       @Override
       public int compare(final Territory t1, final Territory t2) {
@@ -121,11 +123,13 @@ public class DSorting {
     });
   }
 
-  public static List<Territory> SortTerritoriesByLandDistance_D(final List<Territory> ters, final GameData data, final Territory target) {
+  public static List<Territory> SortTerritoriesByLandDistance_D(final List<Territory> ters, final GameData data,
+      final Territory target) {
     return DUtils.InvertList(SortTerritoriesByLandDistance_A(ters, data, target));
   }
 
-  public static List<Territory> SortTerritoriesBySeaDistance_A(final List<Territory> ters, final GameData data, final Territory target) {
+  public static List<Territory> SortTerritoriesBySeaDistance_A(final List<Territory> ters, final GameData data,
+      final Territory target) {
     return SortListByX(ters, new Comparator<Territory>() {
       @Override
       public int compare(final Territory t1, final Territory t2) {
@@ -148,11 +152,13 @@ public class DSorting {
     });
   }
 
-  public static List<Territory> SortTerritoriesBySeaDistance_D(final List<Territory> ters, final GameData data, final Territory target) {
+  public static List<Territory> SortTerritoriesBySeaDistance_D(final List<Territory> ters, final GameData data,
+      final Territory target) {
     return DUtils.InvertList(SortTerritoriesBySeaDistance_A(ters, data, target));
   }
 
-  public static List<Territory> SortTerritoriesByNoCondDistance_A(final List<Territory> ters, final GameData data, final Territory target) {
+  public static List<Territory> SortTerritoriesByNoCondDistance_A(final List<Territory> ters, final GameData data,
+      final Territory target) {
     return SortListByX(ters, new Comparator<Territory>() {
       @Override
       public int compare(final Territory t1, final Territory t2) {
@@ -175,12 +181,13 @@ public class DSorting {
     });
   }
 
-  public static List<Territory> SortTerritoriesByNoCondDistance_D(final List<Territory> ters, final GameData data, final Territory target) {
+  public static List<Territory> SortTerritoriesByNoCondDistance_D(final List<Territory> ters, final GameData data,
+      final Territory target) {
     return DUtils.InvertList(SortTerritoriesByNoCondDistance_A(ters, data, target));
   }
 
-  public static List<Territory> SortTerritoriesByLandThenNoCondDistance_A(final List<Territory> ters, final GameData data,
-      final Territory target) {
+  public static List<Territory> SortTerritoriesByLandThenNoCondDistance_A(final List<Territory> ters,
+      final GameData data, final Territory target) {
     return SortListByX(ters, new Comparator<Territory>() {
       @Override
       public int compare(final Territory t1, final Territory t2) {
@@ -210,8 +217,8 @@ public class DSorting {
     });
   }
 
-  public static List<Territory> SortTerritoriesByLandThenNoCondDistance_D(final List<Territory> ters, final GameData data,
-      final Territory target) {
+  public static List<Territory> SortTerritoriesByLandThenNoCondDistance_D(final List<Territory> ters,
+      final GameData data, final Territory target) {
     return DUtils.InvertList(SortTerritoriesByLandThenNoCondDistance_A(ters, data, target));
   }
 

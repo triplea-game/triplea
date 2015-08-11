@@ -10,10 +10,9 @@ import games.strategy.triplea.ai.Dynamix_AI.DSettings;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.delegate.Matches;
 
-
 public class Battle_RetreatTerCalculator {
-  public static Territory CalculateBestRetreatTer(final GameData data, final PlayerID player, final List<Territory> possibles,
-      final Territory battleTer) {
+  public static Territory CalculateBestRetreatTer(final GameData data, final PlayerID player,
+      final List<Territory> possibles, final Territory battleTer) {
     final List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
     Territory highestScoringTer = null;
     float highestScore = Integer.MIN_VALUE;
@@ -32,7 +31,8 @@ public class Battle_RetreatTerCalculator {
       final float importantTerChanceRequired =
           DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
       // If this ter is important, and retreating here will make the ter safe, boost score a lot
-      if (isImportant && oldSurvivalChance < importantTerChanceRequired && newSurvivalChance >= importantTerChanceRequired) {
+      if (isImportant && oldSurvivalChance < importantTerChanceRequired
+          && newSurvivalChance >= importantTerChanceRequired) {
         score += 100000;
       }
       score += newSurvivalChance * 10000;

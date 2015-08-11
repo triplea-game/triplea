@@ -5,7 +5,6 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
-
 public class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
 

@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 
-
 @SuppressWarnings("unchecked")
 public class MatchTest extends TestCase {
   Collection<Integer> m_ints = new ArrayList<Integer>();

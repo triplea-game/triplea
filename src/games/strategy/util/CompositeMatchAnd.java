@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- *
  * True if all matches return true.
- *
- *
  */
 public class CompositeMatchAnd<T> extends CompositeMatch<T> {
   public CompositeMatchAnd(final Match... matches) {

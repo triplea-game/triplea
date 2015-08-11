@@ -11,9 +11,7 @@ import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * AI agent for most any Grid Games.
- *
  * Plays by attempting to move a random piece to a random square on the board.
- *
  */
 public class RandomAI extends GridAbstractAI {
   public RandomAI(final String name, final String type) {

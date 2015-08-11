@@ -33,19 +33,17 @@ import games.strategy.util.Match;
 
 /**
  * SpecialMoveDelegate is a move delegate made for special movements like the new paratrooper/airborne movement.
- *
- * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by naming yet another
+ * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by
+ * naming yet another
  * thing Paratroopers, so this is now getting a new name.
- * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an airbase) to another
+ * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an
+ * airbase) to another
  * territory, instead of carrying them.
- *
- *
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDelegate {
   private boolean m_needToInitialize = true;
 
   // private boolean m_allowAirborne = true;
-
   public SpecialMoveDelegate() {}
 
   /**
@@ -64,11 +62,14 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
       // m_allowAirborne = false;
       return;
     }
-    final boolean onlyWhereUnderAttackAlready = games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
-    // final boolean onlyEnemyTerritories = games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+    final boolean onlyWhereUnderAttackAlready =
+        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+    // final boolean onlyEnemyTerritories =
+    // games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (m_needToInitialize && onlyWhereUnderAttackAlready) {
-      BattleDelegate.doInitialize(battleTracker, m_bridge); // we do this to clear any 'finishedBattles' and also to create battles for
+      BattleDelegate.doInitialize(battleTracker, m_bridge); // we do this to clear any 'finishedBattles' and also to
+                                                            // create battles for
                                                             // units that didn't move
       m_needToInitialize = false;
     }
@@ -115,12 +116,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
       return "No Airborne Movement Allowed Yet";
     }
     final GameData data = getData();
-    // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
+    // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current
+    // player.
     final PlayerID player = getUnitsOwner(units);
     // here we have our own new validation method....
-    final MoveValidationResult result = SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents,
-        GameStepPropertiesHelper.isNonCombatMove(data, false),
-        m_movesToUndo, data);
+    final MoveValidationResult result =
+        SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents,
+            GameStepPropertiesHelper.isNonCombatMove(data, false), m_movesToUndo, data);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
@@ -161,10 +163,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     final Collection<Unit> basesAtStart = route.getStart().getUnits().getMatches(getAirborneBaseMatch(player, data));
     final Change fillLaunchCapacity = getNewAssignmentOfNumberLaunchedChange(units.size(), basesAtStart, player, data);
     currentMove.addChange(fillLaunchCapacity);
-
     // start event
-    final String transcriptText =
-        MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
+    final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName()
+        + " to " + route.getEnd().getName();
     m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
     // actually do our special changes
     m_bridge.addChange(airborneChange);
@@ -176,10 +177,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     return null;
   }
 
-  public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route, final PlayerID player,
-      final Collection<Unit> transportsToLoad,
-      final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat, final List<UndoableMove> undoableMoves,
-      final GameData data) {
+  public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
+      final PlayerID player, final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents,
+      final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data) {
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
@@ -204,8 +204,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
   }
 
   @SuppressWarnings("unchecked")
-  private static MoveValidationResult validateAirborneMovements(final GameData data, final Collection<Unit> units, final Route route,
-      final PlayerID player, final MoveValidationResult result) {
+  private static MoveValidationResult validateAirborneMovements(final GameData data, final Collection<Unit> units,
+      final Route route, final PlayerID player, final MoveValidationResult result) {
     if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
       return result.setErrorReturnResult("Do Not Have Airborne Tech");
     }
@@ -239,7 +239,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     final Collection<Unit> airborne = new ArrayList<Unit>();
     for (final Unit u : units) {
       // final Match<Unit> airborneTypesMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player),
-      // Matches.unitIsOfTypes(airborneTypes), Matches.UnitIsDisabled().invert(), Matches.unitHasNotMoved, Matches.UnitIsAirborne.invert());
+      // Matches.unitIsOfTypes(airborneTypes), Matches.UnitIsDisabled().invert(), Matches.unitHasNotMoved,
+      // Matches.UnitIsAirborne.invert());
       // should match "getAirborneTypesMatch", but I've written it out by line in order to get fine grained warnings
       if (!Matches.unitIsOwnedBy(player).match(u)) {
         result.addDisallowedUnit("Must Own All Airborne Forces", u);
@@ -259,9 +260,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
-    final boolean onlyWhereUnderAttackAlready = games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
-    final boolean onlyEnemyTerritories = games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
-    // final Match<Territory> allowedPathForAirDrop = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player,
+    final boolean onlyWhereUnderAttackAlready =
+        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+    final boolean onlyEnemyTerritories =
+        games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+    // final Match<Territory> allowedPathForAirDrop = new
+    // CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player,
     // data), Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
     if (!Match.allMatch(route.getSteps(), Matches.TerritoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
@@ -306,7 +310,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
   }
 
   public static Match<Unit> getAirborneTypesMatch(final PlayerID player, final GameData data) {
-    return getAirborneMatch(player, TechAbilityAttachment.getAirborneTypes(player, data), Collections.singleton(player));
+    return getAirborneMatch(player, TechAbilityAttachment.getAirborneTypes(player, data),
+        Collections.singleton(player));
   }
 
   public static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
@@ -314,14 +319,15 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
         data.getRelationshipTracker().getAllies(player, true));
   }
 
-  public static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
-    return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners), Matches.unitIsOfTypes(types),
-        Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
+  public static Match<Unit> getAirborneMatch(final PlayerID player, final Set<UnitType> types,
+      final Collection<PlayerID> unitOwners) {
+    return new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
+        Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
         Matches.UnitIsAirborne.invert());
   }
 
-  private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases, final PlayerID player,
-      final GameData data) {
+  private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases,
+      final PlayerID player, final GameData data) {
     final CompositeChange launchedChange = new CompositeChange();
     if (newNumberLaunched <= 0) {
       return launchedChange;
@@ -367,8 +373,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
     }
     final GameMap map = data.getMap();
     final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
-    final Collection<Territory> territoriesWeCanLaunchFrom =
-        Match.getMatches(map.getTerritories(), Matches.territoryHasUnitsThatMatch(getAirborneMatch(player, airborneBases, alliesForBases)));
+    final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(),
+        Matches.territoryHasUnitsThatMatch(getAirborneMatch(player, airborneBases, alliesForBases)));
     // territoriesWeCanLaunchFrom.retainAll(Match.getMatches(territoriesWeCanLaunchFrom,
     // Matches.territoryHasUnitsThatMatch(airborneTypesMatch)));
     if (territoriesWeCanLaunchFrom.isEmpty()) {

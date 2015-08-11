@@ -6,10 +6,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IChannelSubscribor;
 
 /**
- * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move delegate) to also be played
+ * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move
+ * delegate) to also be played
  * on clients.
- *
- *
  */
 public interface ISound extends IChannelSubscribor {
   /**
@@ -22,25 +21,29 @@ public interface ISound extends IChannelSubscribor {
   public void shutDown();
 
   /**
-   * You will want to call this from things that the server only runs (like delegates), and not call this from user interface elements
+   * You will want to call this from things that the server only runs (like delegates), and not call this from user
+   * interface elements
    * (because all users have these).
    *
    * @param clipName
    *        The name of the sound clip to play, found in SoundPath.java
    * @param subFolder
-   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds from german
+   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds
+   *        from german
    *        infantry, etc). Can be null.
    */
   public void playSoundForAll(final String clipName, final String subFolder);
 
   /**
-   * You will want to call this from things that the server only runs (like delegates), and not call this from user interface elements
+   * You will want to call this from things that the server only runs (like delegates), and not call this from user
+   * interface elements
    * (because all users have these).
    *
    * @param clipName
    *        The name of the sound clip to play, found in SoundPath.java
    * @param subFolder
-   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds from german
+   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds
+   *        from german
    *        infantry, etc). Can be null.
    * @param doNotIncludeHost
    * @param doNotIncludeClients
@@ -50,34 +53,39 @@ public interface ISound extends IChannelSubscribor {
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
 
   /**
-   * You will want to call this from things that the server only runs (like delegates), and not call this from user interface elements
+   * You will want to call this from things that the server only runs (like delegates), and not call this from user
+   * interface elements
    * (because all users have these).
    *
    * @param clipName
    *        The name of the sound clip to play, found in SoundPath.java
    * @param subFolder
-   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds from german
+   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds
+   *        from german
    *        infantry, etc). (Can be null.)
    * @param playersToSendTo
    *        The machines controlling these PlayerID's who we want to hear this sound.
    * @param butNotThesePlayers
-   *        The machines controlling these PlayerID's who we do not want to hear this sound. If the machine controls players in both
+   *        The machines controlling these PlayerID's who we do not want to hear this sound. If the machine controls
+   *        players in both
    *        playersToSendTo and butNotThesePlayers, they will not hear a sound. (Can be null.)
    * @param includeObservers
    *        Whether to include non-playing machines
    */
-  public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo,
-      final Collection<PlayerID> butNotThesePlayers,
+  public void playSoundToPlayers(final String clipName, final String subFolder,
+      final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers);
 
   /**
-   * You will want to call this from things that the server only runs (like delegates), and not call this from user interface elements
+   * You will want to call this from things that the server only runs (like delegates), and not call this from user
+   * interface elements
    * (because all users have these).
    *
    * @param clipName
    *        The name of the sound clip to play, found in SoundPath.java
    * @param subFolder
-   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds from german
+   *        The name of the player nation who's sound we want to play (ie: russians infantry might make different sounds
+   *        from german
    *        infantry, etc). (Can be null.)
    * @param playerToSendTo
    *        The machine which controls this PlayerID who we want to hear this sound

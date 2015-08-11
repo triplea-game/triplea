@@ -19,7 +19,6 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Responsible for initializing an N-Puzzle game.
- *
  */
 public class InitializationDelegate extends AbstractDelegate {
   /**
@@ -36,8 +35,8 @@ public class InitializationDelegate extends AbstractDelegate {
       m_bridge.getHistoryWriter().startEvent("Changing Map Dimensions");
       final Territory t1 = map.getTerritories().iterator().next();
       final String name = t1.getName().substring(0, t1.getName().indexOf("_"));
-      m_bridge.addChange(ChangeFactory.addGridGameMapChange(map, "square", name, width, height, new HashSet<String>(), "implicit",
-          "implicit", "explicit"));
+      m_bridge.addChange(ChangeFactory.addGridGameMapChange(map, "square", name, width, height, new HashSet<String>(),
+          "implicit", "implicit", "explicit"));
     }
     final Territory[][] board = new Territory[width][height];
     final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();

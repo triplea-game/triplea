@@ -16,9 +16,7 @@ import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * AI agent for N-Puzzle.
- *
  * Plays by attempting to play on a random square on the board.
- *
  */
 public class RandomAI extends GridAbstractAI {
   public RandomAI(final String name, final String type) {

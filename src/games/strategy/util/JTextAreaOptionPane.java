@@ -18,8 +18,6 @@ import javax.swing.WindowConstants;
 
 /**
  * A text area that can show updates scrolling by.
- *
- *
  */
 public class JTextAreaOptionPane {
   private final JTextArea m_editor = new JTextArea();
@@ -31,9 +29,9 @@ public class JTextAreaOptionPane {
   private int m_counter;
   private final CountDownLatch m_countDownLatch;
 
-  public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText, final String title,
-      final Image icon, final int editorSizeX,
-      final int editorSizeY, final boolean logToSystemOut, final int latchCount, final CountDownLatch countDownLatch) {
+  public JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
+      final String title, final Image icon, final int editorSizeX, final int editorSizeY, final boolean logToSystemOut,
+      final int latchCount, final CountDownLatch countDownLatch) {
     m_logToSystemOut = logToSystemOut;
     m_countDownLatch = countDownLatch;
     m_counter = latchCount;
@@ -107,11 +105,11 @@ public class JTextAreaOptionPane {
   public void appendNewLine(final String text) {
     append(text + "\r\n");
   }
-
   /*
    * public static void main(final String[] args)
    * {
-   * final JTextAreaOptionPane pane = new JTextAreaOptionPane(null, "initial text\r\n", "label goes here", "testing text area option pane",
+   * final JTextAreaOptionPane pane = new JTextAreaOptionPane(null, "initial text\r\n", "label goes here",
+   * "testing text area option pane",
    * null, 400, 300, true, 1);
    * pane.show();
    * for (int i = 0; i <= 20; i++)

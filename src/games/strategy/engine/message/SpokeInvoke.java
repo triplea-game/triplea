@@ -15,7 +15,8 @@ public class SpokeInvoke extends Invoke {
     super();
   }
 
-  public SpokeInvoke(final GUID methodCallID, final boolean needReturnValues, final RemoteMethodCall call, final INode invoker) {
+  public SpokeInvoke(final GUID methodCallID, final boolean needReturnValues, final RemoteMethodCall call,
+      final INode invoker) {
     super(methodCallID, needReturnValues, call);
     m_invoker = invoker;
   }

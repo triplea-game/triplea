@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
 
-
 public class SerializationTest extends TestCase {
   private GameData m_dataSource;
   private GameData m_dataSink;
@@ -33,8 +32,8 @@ public class SerializationTest extends TestCase {
     output.writeObject(anObject);
     output.flush();
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
-    final ObjectInputStream input = new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_dataSource),
-        source);
+    final ObjectInputStream input =
+        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_dataSource), source);
     final Object obj = input.readObject();
     input.close();
     output.close();

@@ -2,7 +2,6 @@ package games.strategy.engine.framework;
 
 import games.strategy.sound.ISound;
 
-
 abstract public class AbstractGameLoader implements IGameLoader {
   private static final long serialVersionUID = 5698425046660960332L;
   protected transient ISound m_soundChannel;

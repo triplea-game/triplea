@@ -48,8 +48,6 @@ import games.strategy.util.Triple;
 
 /**
  * Class for holding various engine related options and preferences.
- *
- *
  */
 public class EnginePreferences extends JDialog {
   private static final long serialVersionUID = 5071190543005064757L;
@@ -173,8 +171,8 @@ public class EnginePreferences extends JDialog {
             return;
           }
           GameRunner2.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-          EventThreadJOptionPane.showMessageDialog(m_parentFrame, "The look and feel will update when you restart TripleA",
-              new CountDownLatchHandler(true));
+          EventThreadJOptionPane.showMessageDialog(m_parentFrame,
+              "The look and feel will update when you restart TripleA", new CountDownLatchHandler(true));
         }
       }
     });
@@ -186,12 +184,13 @@ public class EnginePreferences extends JDialog {
         // TODO: replace with 2 radio buttons
         final boolean current = GameRunner2.getDelayedParsing();
         final Object[] options = {"Parse Selected", "Parse All", "Cancel"};
-        final int answer =
-            JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" +
-                "<br><br>'" + options[1]
-                + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid)." +
-                "<br><br>Your current setting is: '" + (current ? options[0].toString() : options[1].toString()) + "'</html>"),
-                "Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+        final int answer = JOptionPane.showOptionDialog(m_parentFrame,
+            new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" + "<br><br>'" + options[1]
+                + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid)."
+                + "<br><br>Your current setting is: '" + (current ? options[0].toString() : options[1].toString())
+                + "'</html>"),
+            "Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+            options[2]);
         if (answer == JOptionPane.CANCEL_OPTION) {
           return;
         }
@@ -213,13 +212,13 @@ public class EnginePreferences extends JDialog {
         final boolean currentIsPerfectButSlow = GameRunner2.getCasualtySelectionSlow();
         final Object[] options = {"Default", "Perfect but Slow", "Cancel"};
         final int answer = JOptionPane.showOptionDialog(m_parentFrame,
-            new JLabel("<html>Use 'Default' OR 'Perfect but Slow' default casualty selection method?" +
-                "<br><br>'" + options[0] + "' sorts by power, and takes most support into account." +
-                "<br>'" + options[1] + "' will attempt to take all support attachments into account, but is very slow." +
-                "<br><br>Your current setting is: '" + (currentIsPerfectButSlow ? options[1].toString() : options[0].toString())
-                + "'</html>"),
-            "Select Default Casualty Selection Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
-            options[2]);
+            new JLabel("<html>Use 'Default' OR 'Perfect but Slow' default casualty selection method?" + "<br><br>'"
+                + options[0] + "' sorts by power, and takes most support into account." + "<br>'" + options[1]
+                + "' will attempt to take all support attachments into account, but is very slow."
+                + "<br><br>Your current setting is: '"
+                + (currentIsPerfectButSlow ? options[1].toString() : options[0].toString()) + "'</html>"),
+            "Select Default Casualty Selection Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+            null, options, options[2]);
         if (answer == JOptionPane.CANCEL_OPTION) {
           return;
         }
@@ -238,14 +237,17 @@ public class EnginePreferences extends JDialog {
       @Override
       public void actionPerformed(final ActionEvent e) {
         final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-        final ProxyChoice proxyChoice = ProxyChoice.valueOf(pref.get(GameRunner2.PROXY_CHOICE, ProxyChoice.NONE.toString()));
+        final ProxyChoice proxyChoice =
+            ProxyChoice.valueOf(pref.get(GameRunner2.PROXY_CHOICE, ProxyChoice.NONE.toString()));
         final String proxyHost = pref.get(GameRunner2.PROXY_HOST, "");
         final JTextField hostText = new JTextField(proxyHost);
         final String proxyPort = pref.get(GameRunner2.PROXY_PORT, "");
         final JTextField portText = new JTextField(proxyPort);
         final JRadioButton noneButton = new JRadioButton("None", proxyChoice == ProxyChoice.NONE);
-        final JRadioButton systemButton = new JRadioButton("Use System Settings", proxyChoice == ProxyChoice.USE_SYSTEM_SETTINGS);
-        final JRadioButton userButton = new JRadioButton("Use These User Settings:", proxyChoice == ProxyChoice.USE_USER_PREFERENCES);
+        final JRadioButton systemButton =
+            new JRadioButton("Use System Settings", proxyChoice == ProxyChoice.USE_SYSTEM_SETTINGS);
+        final JRadioButton userButton =
+            new JRadioButton("Use These User Settings:", proxyChoice == ProxyChoice.USE_USER_PREFERENCES);
         final ButtonGroup bgroup = new ButtonGroup();
         bgroup.add(noneButton);
         bgroup.add(systemButton);
@@ -262,8 +264,8 @@ public class EnginePreferences extends JDialog {
         radioPanel.add(new JLabel("Proxy Port: "));
         radioPanel.add(portText);
         final Object[] options = {"Accept", "Cancel"};
-        final int answer = JOptionPane.showOptionDialog(m_parentFrame, radioPanel, "Network Settings", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+        final int answer = JOptionPane.showOptionDialog(m_parentFrame, radioPanel, "Network Settings",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
         if (answer != JOptionPane.YES_OPTION) {
           return;
         }
@@ -283,19 +285,21 @@ public class EnginePreferences extends JDialog {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final NumberProperty clientWait = new NumberProperty("Max seconds to wait for all clients to sync data on game start",
-            "Max seconds to wait for all clients to sync data on game start", 9999, GameRunner2.MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME,
-            GameRunner2.getServerStartGameSyncWaitTime());
-        final NumberProperty observerWait = new NumberProperty("Max seconds to wait for an observer joining a running game",
-            "Max seconds to wait for an observer joining a running game",
-            9000, GameRunner2.MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner2.getServerObserverJoinWaitTime());
+        final NumberProperty clientWait =
+            new NumberProperty("Max seconds to wait for all clients to sync data on game start",
+                "Max seconds to wait for all clients to sync data on game start", 9999,
+                GameRunner2.MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner2.getServerStartGameSyncWaitTime());
+        final NumberProperty observerWait =
+            new NumberProperty("Max seconds to wait for an observer joining a running game",
+                "Max seconds to wait for an observer joining a running game", 9000,
+                GameRunner2.MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, GameRunner2.getServerObserverJoinWaitTime());
         final List<IEditableProperty> list = new ArrayList<IEditableProperty>();
         list.add(clientWait);
         list.add(observerWait);
         final PropertiesUI ui = new PropertiesUI(list, true);
         final Object[] options = {"Accept", "Reset to Defaults", "Cancel"};
-        final int answer = JOptionPane.showOptionDialog(m_parentFrame, ui, "Host Wait Settings", JOptionPane.YES_NO_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+        final int answer = JOptionPane.showOptionDialog(m_parentFrame, ui, "Host Wait Settings",
+            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
         if (answer == JOptionPane.YES_OPTION) {
           GameRunner2.setServerStartGameSyncWaitTime(clientWait.getValue());
           GameRunner2.setServerObserverJoinWaitTime(observerWait.getValue());
@@ -326,8 +330,9 @@ public class EnginePreferences extends JDialog {
         final JCheckBox onlyOnlineCheckBox =
             new JCheckBox("Only use these user memory settings for online games (join/host). [Default = On]");
         onlyOnlineCheckBox.setSelected(onlineOnlyOriginalSetting);
-        onlyOnlineCheckBox.setToolTipText("<html>If checked, only joining and hosting from online lobby will be affected by these settings."
-            + "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time you start TripleA.</html>");
+        onlyOnlineCheckBox.setToolTipText(
+            "<html>If checked, only joining and hosting from online lobby will be affected by these settings."
+                + "<br />If unchecked, TripleA will automatically restart itself with the new memory setting every time you start TripleA.</html>");
         final JButton test = new JButton("Test User Settings");
         test.addActionListener(new AbstractAction("Test User Settings") {
           private static final long serialVersionUID = -4398183978989504112L;
@@ -336,7 +341,8 @@ public class EnginePreferences extends JDialog {
           public void actionPerformed(final ActionEvent e) {
             tested.set(true);
             System.out.println("Testing TripleA launch with max memory of: " + newMaxMemory.getValue() + "m");
-            TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864); // it is in MB
+            TripleAProcessRunner.startNewTripleA((((long) newMaxMemory.getValue()) * 1024 * 1024) + 67108864); // it is
+                                                                                                               // in MB
           }
         });
         final JPanel radioPanel = new JPanel();
@@ -344,7 +350,8 @@ public class EnginePreferences extends JDialog {
         radioPanel.add(new JLabel("<html>Configure TripleA's Maxmimum Memory Usage Settings: "
             + "<br />(TripleA will only use 80-90% of this, the rest is used by Java VM)</html>"));
         radioPanel.add(new JLabel(" "));
-        radioPanel.add(new JLabel("<html><b>WARNING: You could permanently stop TripleA from working if you mess with this! </b></html>"));
+        radioPanel.add(new JLabel(
+            "<html><b>WARNING: You could permanently stop TripleA from working if you mess with this! </b></html>"));
         radioPanel.add(new JLabel("<html><em><p>By default TripleA uses a bit less than 1gb of RAM memory, "
             + "<br />and this is because on some computers Java can fail when greater than 1gb (1024mb). "
             + "<br />The symptoms of this failing are: TripleA not starting, not being able to 'Join' or 'Host' "
@@ -373,9 +380,8 @@ public class EnginePreferences extends JDialog {
         radioPanel.add(test);
         radioPanel.add(new JLabel(" "));
         final Object[] options = {"Accept", "Cancel"};
-        final int answer = JOptionPane.showOptionDialog(m_parentFrame, radioPanel, "Max Memory Settings", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null,
-            options, options[1]);
+        final int answer = JOptionPane.showOptionDialog(m_parentFrame, radioPanel, "Max Memory Settings",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
         if (answer != JOptionPane.YES_OPTION) {
           return;
         }
@@ -401,7 +407,6 @@ public class EnginePreferences extends JDialog {
      * m_runAutoHost.addActionListener(new AbstractAction("Run an Automated Game Host Bot")
      * {
      * private static final long serialVersionUID = -3582932190184978286L;
-     *
      * public void actionPerformed(final ActionEvent e)
      * {
      * final List<String> commands = new ArrayList<String>();
@@ -409,7 +414,8 @@ public class EnginePreferences extends JDialog {
      * final String javaClass = "games.strategy.engine.framework.HeadlessGameServer";
      * commands.add(javaClass);
      * commands.addAll(Arrays.asList(new String[] {
-     * "triplea.game.host.console=true", "triplea.game.host.ui=true", "triplea.game=", "triplea.server=true", "triplea.port=3300",
+     * "triplea.game.host.console=true", "triplea.game.host.ui=true", "triplea.game=", "triplea.server=true",
+     * "triplea.port=3300",
      * "triplea.name=BotTest1",
      * "triplea.lobby.game.hostedBy=BotTest1", "triplea.lobby.host=173.255.229.134", "triplea.lobby.port=3303",
      * "triplea.lobby.game.comments=\"automated_hosting_service\""

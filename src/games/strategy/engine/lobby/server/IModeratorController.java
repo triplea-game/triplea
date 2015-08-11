@@ -9,9 +9,7 @@ public interface IModeratorController extends IRemote {
   /**
    * Boot the given INode from the network.
    * <p>
-   *
    * This method can only be called by admin users.
-   *
    */
   public void boot(INode node);
 
@@ -63,7 +61,8 @@ public interface IModeratorController extends IRemote {
   /**
    * Remote mute player in a headless host bot.
    */
-  public String mutePlayerHeadlessHostBot(INode node, String playerNameToBeBooted, int minutes, String hashedPassword, String salt);
+  public String mutePlayerHeadlessHostBot(INode node, String playerNameToBeBooted, int minutes, String hashedPassword,
+      String salt);
 
   /**
    * Remote boot player in a headless host bot.
@@ -73,7 +72,8 @@ public interface IModeratorController extends IRemote {
   /**
    * Remote ban player in a headless host bot.
    */
-  public String banPlayerHeadlessHostBot(INode node, String playerNameToBeBanned, int hours, String hashedPassword, String salt);
+  public String banPlayerHeadlessHostBot(INode node, String playerNameToBeBanned, int hours, String hashedPassword,
+      String salt);
 
   /**
    * Remote stop game of a headless host bot.
@@ -93,7 +93,6 @@ public interface IModeratorController extends IRemote {
   /**
    * Reset the password of the given user. Returns null if the password was updated without error.
    * <p>
-   *
    * You cannot change the password of an anonymous node, and you cannot change the password for an admin user.
    * <p>
    */

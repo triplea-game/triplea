@@ -5,18 +5,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-
 public class GameObjectStreamData implements Externalizable {
   private static final long serialVersionUID = 740501183336843321L;
-
 
   enum GameType {
     PLAYERID, UNITTYPE, TERRITORY, PRODUCTIONRULE, PRODUCTIONFRONTIER
   }
 
   public static boolean canSerialize(final Named obj) {
-    return obj instanceof PlayerID || obj instanceof UnitType || obj instanceof Territory || obj instanceof ProductionRule
-        || obj instanceof IAttachment || obj instanceof ProductionFrontier;
+    return obj instanceof PlayerID || obj instanceof UnitType || obj instanceof Territory
+        || obj instanceof ProductionRule || obj instanceof IAttachment || obj instanceof ProductionFrontier;
   }
 
   private String m_name;

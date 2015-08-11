@@ -17,7 +17,6 @@ import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.util.IntegerMap;
 
-
 public class PurchaseGroup {
   private Collection<Unit> m_units = new ArrayList<Unit>();
   private IPurchaseDelegate m_purchaser = null;
@@ -35,7 +34,8 @@ public class PurchaseGroup {
     GenerateProductionRulesAndSampleUnits();
   }
 
-  public PurchaseGroup(final Collection<Unit> units, final IPurchaseDelegate purchaser, final GameData data, final PlayerID player) {
+  public PurchaseGroup(final Collection<Unit> units, final IPurchaseDelegate purchaser, final GameData data,
+      final PlayerID player) {
     m_units = units;
     m_purchaser = purchaser;
     m_data = data;
@@ -52,10 +52,10 @@ public class PurchaseGroup {
     int totalUnitRulesCosts = 0;
     for (final Unit unit : m_units) {
       for (final ProductionRule rule : rules) {
-        if (rule != null && rule.getResults() != null && rule.getResults().keySet() != null && rule.getResults().keySet().toArray() != null
-            && rule.getResults().keySet().toArray().length > 0
-            && rule.getResults().keySet().toArray()[0] != null && rule.getResults().keySet().toArray()[0] instanceof UnitType
-            && unit != null && unit.getUnitType() != null
+        if (rule != null && rule.getResults() != null && rule.getResults().keySet() != null
+            && rule.getResults().keySet().toArray() != null && rule.getResults().keySet().toArray().length > 0
+            && rule.getResults().keySet().toArray()[0] != null
+            && rule.getResults().keySet().toArray()[0] instanceof UnitType && unit != null && unit.getUnitType() != null
             && ((UnitType) rule.getResults().keySet().toArray()[0]) == unit.getUnitType()) {
           final int cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
           totalUnitRulesCosts += cost;
@@ -70,10 +70,10 @@ public class PurchaseGroup {
     timesEachUnitShouldBeBought = Math.max(timesEachUnitShouldBeBought, 1); // Buy at least one
     for (final Unit unit : m_units) {
       for (final ProductionRule rule : rules) {
-        if (rule != null && rule.getResults() != null && rule.getResults().keySet() != null && rule.getResults().keySet().toArray() != null
-            && rule.getResults().keySet().toArray().length > 0
-            && rule.getResults().keySet().toArray()[0] != null && rule.getResults().keySet().toArray()[0] instanceof UnitType
-            && unit != null && unit.getUnitType() != null
+        if (rule != null && rule.getResults() != null && rule.getResults().keySet() != null
+            && rule.getResults().keySet().toArray() != null && rule.getResults().keySet().toArray().length > 0
+            && rule.getResults().keySet().toArray()[0] != null
+            && rule.getResults().keySet().toArray()[0] instanceof UnitType && unit != null && unit.getUnitType() != null
             && ((UnitType) rule.getResults().keySet().toArray()[0]) == unit.getUnitType()) {
           final int cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
           m_generatedRules.add(rule, timesEachUnitShouldBeBought);

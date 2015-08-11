@@ -82,11 +82,10 @@ public class MapRouteDrawer {
         }
         if (i + 2 < points.length) {
           drawCurvedLineWithNextPoint(graphics, points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
-              points[i + 1].y - yOffset, points[i + 2].x - xOffset,
-              points[i + 2].y - yOffset, shapes);
+              points[i + 1].y - yOffset, points[i + 2].x - xOffset, points[i + 2].y - yOffset, shapes);
         } else if (i + 1 < points.length) {
-          drawLineSegment(graphics, points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset, points[i + 1].y - yOffset,
-              shapes);
+          drawLineSegment(graphics, points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset,
+              points[i + 1].y - yOffset, shapes);
         }
       }
       final boolean scrollWrapX = mapData.scrollWrapX();
@@ -138,8 +137,9 @@ public class MapRouteDrawer {
           cursorYOffset = 0;
         }
         final String textRouteMovement = String.valueOf(numTerritories - 1);
-        final String unitMovementLeft = (movementLeftForCurrentUnits == null || movementLeftForCurrentUnits.trim().length() <= 0 ? ""
-            : "    /" + movementLeftForCurrentUnits);
+        final String unitMovementLeft =
+            (movementLeftForCurrentUnits == null || movementLeftForCurrentUnits.trim().length() <= 0 ? ""
+                : "    /" + movementLeftForCurrentUnits);
         final BufferedImage movementImage = new BufferedImage(72, 24, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D textG2D = movementImage.createGraphics();
         textG2D.setColor(Color.YELLOW);
@@ -148,7 +148,6 @@ public class MapRouteDrawer {
         textG2D.setColor(new Color(33, 0, 127));
         textG2D.setFont(new Font("Dialog", Font.BOLD, 16));
         textG2D.drawString(unitMovementLeft, 0, 20);
-
         graphics.drawImage(movementImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset),
             (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
         if (scrollWrapX) // && !scrollWrapY
@@ -172,50 +171,52 @@ public class MapRouteDrawer {
               (int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
         }
         /*
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y +
+         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float)
+         * (points[numTerritories - 1].y +
          * textyOffset - yOffset));
          * if (scrollWrapX) //&& !scrollWrapY
          * {
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float)
+         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX),
+         * (float)
          * (points[numTerritories - 1].y + textyOffset - yOffset));
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float)
+         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX),
+         * (float)
          * (points[numTerritories - 1].y + textyOffset - yOffset));
          * }
          * if (scrollWrapY)// &&!scrollWrapX
          * {
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y +
+         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float)
+         * (points[numTerritories - 1].y +
          * textyOffset - yOffset + translateY));
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y +
+         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float)
+         * (points[numTerritories - 1].y +
          * textyOffset - yOffset - translateY));
          * }
          * if (scrollWrapX && scrollWrapY)
          * {
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float)
+         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX),
+         * (float)
          * (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
-         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float)
+         * graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX),
+         * (float)
          * (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
          * }
          */
-
         final Image cursorImage = routeDescription.getCursorImage();
         if (cursorImage != null) {
           graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset),
               (int) (points[numTerritories - 1].y + cursorYOffset - yOffset), null);
           if (scrollWrapX /* && !scrollWrapY */) {
             graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset + translateX),
-                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset),
-                null);
+                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset), null);
             graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset - translateX),
-                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset),
-                null);
+                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset), null);
           }
           if (/* !scrollWrapX && */scrollWrapY) {
             graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset),
-                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset + translateY),
-                null);
+                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset + translateY), null);
             graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset),
-                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset - translateY),
-                null);
+                (int) (points[numTerritories - 1].y + cursorYOffset - yOffset - translateY), null);
           }
           if (scrollWrapX && scrollWrapY) {
             graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + cursorXOffset - xOffset + translateX),
@@ -230,7 +231,8 @@ public class MapRouteDrawer {
     }
   }
 
-  private static void drawWithTranslate(final Graphics2D graphics, final Shape shape, final double translateX, final double translateY) {
+  private static void drawWithTranslate(final Graphics2D graphics, final Shape shape, final double translateX,
+      final double translateY) {
     if (shape instanceof Ellipse2D.Double) {
       Ellipse2D.Double elipse = (Ellipse2D.Double) shape;
       elipse = new Ellipse2D.Double(elipse.x + translateX, elipse.y + translateY, elipse.width, elipse.height);
@@ -249,8 +251,8 @@ public class MapRouteDrawer {
     }
     if (shape instanceof QuadCurve2D) {
       QuadCurve2D.Double curve = (QuadCurve2D.Double) shape;
-      curve = new QuadCurve2D.Double(curve.x1 + translateX, curve.y1 + translateY, curve.ctrlx + translateX, curve.ctrly + translateY,
-          curve.x2 + translateX, curve.y2 + translateY);
+      curve = new QuadCurve2D.Double(curve.x1 + translateX, curve.y1 + translateY, curve.ctrlx + translateX,
+          curve.ctrly + translateY, curve.x2 + translateX, curve.y2 + translateY);
       graphics.draw(curve);
     }
   }
@@ -259,9 +261,8 @@ public class MapRouteDrawer {
    * (x,y) - the first point to draw from (xx, yy) - the point to draw too
    * (xxx, yyy) - the next point that the line segment will be drawn to
    */
-  private static void drawCurvedLineWithNextPoint(final Graphics2D graphics, final double x, final double y, final double xx,
-      final double yy, final double xxx, final double yyy,
-      final List<Shape> shapes) {
+  private static void drawCurvedLineWithNextPoint(final Graphics2D graphics, final double x, final double y,
+      final double xx, final double yy, final double xxx, final double yyy, final List<Shape> shapes) {
     final int maxControlLength = 150;
     double controlDiffx = xx - xxx;
     double controlDiffy = yy - yyy;

@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.Dynamix_AI.Others;
 
-
 public class TerritoryStatus {
   public TerritoryStatus() {}
 

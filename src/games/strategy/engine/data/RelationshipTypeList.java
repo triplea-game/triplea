@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- *
- *
- *          A collection of Relationship types
+ * A collection of Relationship types
  */
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
@@ -46,10 +44,13 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
     try {
       createDefaultRelationship(Constants.RELATIONSHIP_TYPE_SELF, RelationshipTypeAttachment.ARCHETYPE_ALLIED, data);
       createDefaultRelationship(Constants.RELATIONSHIP_TYPE_NULL, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
-      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
-      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED, RelationshipTypeAttachment.ARCHETYPE_ALLIED, data);
+      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR, RelationshipTypeAttachment.ARCHETYPE_WAR,
+          data);
+      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED, RelationshipTypeAttachment.ARCHETYPE_ALLIED,
+          data);
     } catch (final GameParseException e) {
-      // this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType is supplied, but we
+      // this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType
+      // is supplied, but we
       // never do that
       throw new IllegalStateException(e);
     }
@@ -67,8 +68,8 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    * @throws GameParseException
    *         if the wrong relationshipArcheType is used
    */
-  private void createDefaultRelationship(final String relationshipTypeConstant, final String relationshipArcheType, final GameData data)
-      throws GameParseException {
+  private void createDefaultRelationship(final String relationshipTypeConstant, final String relationshipArcheType,
+      final GameData data) throws GameParseException {
     // create a new relationshipType with the name from the constant
     final RelationshipType relationshipType = new RelationshipType(relationshipTypeConstant, data);
     // create a new attachment to attach to this type
@@ -105,7 +106,6 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 
   /**
    * returns a relationshipTypeIterator
-   *
    */
   @Override
   public Iterator<RelationshipType> iterator() {
@@ -113,7 +113,6 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   *
    * @return site of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null Relation)
    */
   public int size() {

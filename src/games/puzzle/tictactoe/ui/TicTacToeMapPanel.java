@@ -29,7 +29,6 @@ import games.strategy.util.Tuple;
 
 /**
  * Custom component for displaying a Tic Tac Toe gameboard and pieces.
- *
  */
 public class TicTacToeMapPanel extends GridMapPanel implements MouseListener {
   private static final long serialVersionUID = 96734493518077373L;
@@ -55,7 +54,8 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener {
     // g2d.fillRect(0, 0, getWidth(), getHeight());
     g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
     g2d.setColor(Color.white);
-    g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(), m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
+    g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(),
+        m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
         m_model.getMaxHeight() - (m_mapData.getBevelHeight() * 2));
     for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet()) {
       final Polygon p = entry.getValue();
@@ -106,8 +106,10 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener {
    * @param bridge
    *        the bridge for player
    * @param waiting
-   *        a <code>CountDownLatch</code> used to wait for user input - must be non-null and have and have <code>getCount()==1</code>
-   * @return PlayData representing a play, or <code>null</code> if the play started and stopped on the same <code>Territory</code>
+   *        a <code>CountDownLatch</code> used to wait for user input - must be non-null and have and have
+   *        <code>getCount()==1</code>
+   * @return PlayData representing a play, or <code>null</code> if the play started and stopped on the same
+   *         <code>Territory</code>
    * @throws InterruptedException
    *         if the play was interrupted
    */
@@ -148,7 +150,8 @@ public class TicTacToeMapPanel extends GridMapPanel implements MouseListener {
   }
 
   @Override
-  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player) {
+  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn,
+      final PlayerID player) {
     return null;
   }
 }

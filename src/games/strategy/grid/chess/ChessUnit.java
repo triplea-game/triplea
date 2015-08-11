@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 
-
 public class ChessUnit extends Unit implements Serializable {
   private static final long serialVersionUID = -1633476469497003117L;
   public static final String HAS_MOVED = "hasMoved";

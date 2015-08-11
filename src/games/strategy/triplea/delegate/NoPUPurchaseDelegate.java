@@ -15,9 +15,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.IntegerMap;
 
 /**
- *
- *
- *          At the end of the turn collect units, not income!
+ * At the end of the turn collect units, not income!
  */
 public class NoPUPurchaseDelegate extends PurchaseDelegate {
   private boolean isPacific;
@@ -86,8 +84,8 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
     int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf
     for (final Territory current : getData().getMap().getTerritories()) {
       final String terrName = current.getName();
-      if ((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan") || terrName.equals("Szechwan"))
-          && getData().getRelationshipTracker().isAllied(current.getOwner(), player)) {
+      if ((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan")
+          || terrName.equals("Szechwan")) && getData().getRelationshipTracker().isAllied(current.getOwner(), player)) {
         ++burmaRoadCount;
       }
     }

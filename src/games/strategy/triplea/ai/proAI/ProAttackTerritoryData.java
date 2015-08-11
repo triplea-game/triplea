@@ -7,19 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -40,7 +27,6 @@ public class ProAttackTerritoryData {
   private boolean canHold;
   private boolean canAttack;
   private double strengthEstimate;
-
   // Amphib variables
   private List<Unit> maxAmphibUnits;
   private Map<Unit, List<Unit>> amphibAttackMap;
@@ -50,11 +36,9 @@ public class ProAttackTerritoryData {
   private Set<Unit> maxBombardUnits;
   private Map<Unit, Set<Territory>> bombardOptionsMap;
   private final Map<Unit, Territory> bombardTerritoryMap;
-
   // Determine territory to attack variables
   private boolean currentlyWins;
   private ProBattleResultData battleResult;
-
   // Non-combat move variables
   private List<Unit> cantMoveUnits;
   private List<Unit> maxEnemyUnits;
@@ -63,7 +47,6 @@ public class ProAttackTerritoryData {
   private final List<Unit> tempUnits;
   private final Map<Unit, List<Unit>> tempAmphibAttackMap;
   private double loadValue;
-
   // Scramble variables
   private List<Unit> maxScrambleUnits;
 
@@ -281,7 +264,8 @@ public class ProAttackTerritoryData {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE && battleResult.isHasLandUnitRemaining()) {
+    } else
+      if (battleResult.getWinPercentage() >= ProCombatMoveAI.WIN_PERCENTAGE && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }
   }
@@ -294,9 +278,8 @@ public class ProAttackTerritoryData {
     if (battleResult == null) {
       return "territory=" + territory.getName();
     } else {
-      return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing=" + battleResult.getTUVSwing()
-          + ", hasRemainingLandUnit="
-          + battleResult.isHasLandUnitRemaining();
+      return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing="
+          + battleResult.getTUVSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
     }
   }
 
@@ -433,5 +416,4 @@ public class ProAttackTerritoryData {
   public List<Unit> getMaxScrambleUnits() {
     return maxScrambleUnits;
   }
-
 }

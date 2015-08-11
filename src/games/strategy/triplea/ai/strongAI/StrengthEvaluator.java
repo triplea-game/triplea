@@ -46,9 +46,8 @@ public class StrengthEvaluator {
   // gives our sea Strength within one and two territories of ourTerr
   // defensive strength
   // allied determines whether allied or enemy evaluation
-  public void evalStrength(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea, final boolean contiguous,
-      final boolean tFirst, final boolean includeAllies,
-      final boolean allied) {
+  public void evalStrength(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea,
+      final boolean contiguous, final boolean tFirst, final boolean includeAllies, final boolean allied) {
     Collection<Unit> seaUnits = new ArrayList<Unit>();
     Collection<Unit> airUnits = new ArrayList<Unit>();
     Collection<Unit> landUnits = new ArrayList<Unit>();
@@ -151,7 +150,8 @@ public class StrengthEvaluator {
       thisStrength = 0.0F;
       rDist = 0;
     }
-    if (Matches.TerritoryIsLand.match(ourTerr) && thisStrength > 0.0F) {// ignore air strength if there are no land units
+    if (Matches.TerritoryIsLand.match(ourTerr) && thisStrength > 0.0F) {// ignore air strength if there are no land
+                                                                        // units
       if (allied) {
         m_alliedNeighborStrength += thisStrength + thisAirStrength;
         m_alliedStrengthInRange += inRangeStrength + inRangeAirStrength;
@@ -185,10 +185,7 @@ public class StrengthEvaluator {
    * int sDist = 3;
    * if (!sea)
    * sDist = 2;
-   *
    * Collection <Territory> nearNeighbors = data.getMap().getNeighbors(ourTerr, sDist);
-   *
-   *
    * for (Territory t: nearNeighbors)
    * {
    * if (Matches.TerritoryIsLand.match(t) && (Matches.territoryHasEnemyUnits(player, data).invert().match(t) ||
@@ -229,7 +226,6 @@ public class StrengthEvaluator {
    * thisStrength = SUtils.strength(landUnits, true, false, tFirst) + SUtils.allairstrength(airUnits, true);
    * }
    * }
-   *
    * if (rDist == 0 || rDist == 1)
    * m_enemyNeighborStrength += thisStrength;
    * if (rDist >= 0 && rDist <=2)
@@ -239,9 +235,8 @@ public class StrengthEvaluator {
    * }
    * }
    */
-  public static StrengthEvaluator evalStrengthAt(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea,
-      final boolean contiguous, final boolean tFirst,
-      final boolean includeAllies) {
+  public static StrengthEvaluator evalStrengthAt(final GameData data, final PlayerID player, final Territory ourTerr,
+      final boolean sea, final boolean contiguous, final boolean tFirst, final boolean includeAllies) {
     final StrengthEvaluator strEval = new StrengthEvaluator();
     strEval.evalStrength(data, player, ourTerr, sea, contiguous, tFirst, includeAllies, true);
     strEval.evalStrength(data, player, ourTerr, sea, contiguous, tFirst, false, false);

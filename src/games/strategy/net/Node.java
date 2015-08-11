@@ -10,7 +10,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-
 // written very often over the network, so make externalizable to make faster and reduce traffic
 public class Node implements INode, Externalizable {
   static final long serialVersionUID = -2908980662926959943L;

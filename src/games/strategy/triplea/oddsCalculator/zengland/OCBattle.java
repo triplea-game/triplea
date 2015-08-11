@@ -103,9 +103,9 @@ public class OCBattle {
     return games.strategy.triplea.Properties.getWW2V2(data);
   }
 
-  public OCBattle(final Vector<UnitGroup> attackers, final Vector<UnitGroup> defenders, final int rounds, final boolean preserveLand,
-      final boolean aaPresent, final boolean landBattle,
-      final boolean rollAntiAirSep, final boolean isAmphib, final Vector<String> ool) {
+  public OCBattle(final Vector<UnitGroup> attackers, final Vector<UnitGroup> defenders, final int rounds,
+      final boolean preserveLand, final boolean aaPresent, final boolean landBattle, final boolean rollAntiAirSep,
+      final boolean isAmphib, final Vector<String> ool) {
     super();
     setAttackers(attackers);
     setDefenders(defenders);
@@ -193,8 +193,9 @@ public class OCBattle {
         terrAAPresent = true;
       } else {
         final games.strategy.triplea.oddsCalculator.zengland.OCUnit currUnit =
-            new games.strategy.triplea.oddsCalculator.zengland.OCUnit(unitCost, attackValue, defendValue, moveValue, name,
-                noRetal, unitType, supportShot, canHitAir, maxHits, maxRolls, maxHp, blocksNoRetHit, boostsInfAtt, boostAmphib);
+            new games.strategy.triplea.oddsCalculator.zengland.OCUnit(unitCost, attackValue, defendValue, moveValue,
+                name, noRetal, unitType, supportShot, canHitAir, maxHits, maxRolls, maxHp, blocksNoRetHit, boostsInfAtt,
+                boostAmphib);
         final UnitGroup currUnitGroup = new UnitGroup(currUnit, numUnits);
         final PlayerID playerID = m_data.getSequence().getStep().getPlayerID();
         System.out.println(item);

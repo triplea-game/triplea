@@ -7,7 +7,6 @@ import games.strategy.engine.data.GameParseException;
 
 /**
  * Class with an invalid field that doesn't match the setter annotated with @GameProperty
- *
  */
 public class InvalidFieldNameExample extends DefaultAttachment {
   private static final long serialVersionUID = 2902170223595163219L;
@@ -17,7 +16,6 @@ public class InvalidFieldNameExample extends DefaultAttachment {
   }
 
   private String attribute; // should have been prefixed with "m_". Should cause test to fail.
-
 
   public String getAttribute() {
     return attribute;

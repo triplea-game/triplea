@@ -33,10 +33,10 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
-
 @SuppressWarnings({"unchecked", "deprecation"})
 public class DoCombatMove {
-  public static void doCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover, final PlayerID player) {
+  public static void doCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover,
+      final PlayerID player) {
     if (DSettings.LoadSettings().AIC_disableAllUnitMovements) {
       final String message = ai.getName() + " is skipping it's cm phase, as instructed.";
       DUtils.Log(Level.FINE, message);
@@ -73,7 +73,8 @@ public class DoCombatMove {
     }
     // Then we run the NCM doPreCombatMove method which attempts to move units to the cap to keep it safe
     DoNonCombatMove.doPreCombatMove(ai, data, mover, player);
-    // We loop this part, because sometimes there are attacks that at first are too risky to perform, but after some nearby tasks are
+    // We loop this part, because sometimes there are attacks that at first are too risky to perform, but after some
+    // nearby tasks are
     // performed, the results are more favorable or predictable.
     DUtils.Log(Level.FINE, "  Beginning task consideration loop section");
     for (int i = 0; i < 5; i++) {
@@ -90,16 +91,17 @@ public class DoCombatMove {
       if (ReconsiderSignalCenter.get(data, player).ObjectsToReconsider.isEmpty()) {
         break;
       } else {
-        final List<Territory> tersToReconsider = DUtils.ToList(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider);
+        final List<Territory> tersToReconsider =
+            DUtils.ToList(ReconsiderSignalCenter.get(data, player).ObjectsToReconsider);
         for (final CM_Task task : tasks) {
           if (tersToReconsider.contains(task.GetTarget())) {
             if (task.IsCompleted()) {
               /*
                * if(!tersAttackedBeforeLoop.contains(task.GetTarget())) //If this ter was attacked this loop
                * continue;
-               *
                * for(UnitGroup ug : task.GetRecruitedUnits())
-               * UnitGroup.UndoMove_NotifyAllUGs(mover, ug.GetMoveIndex()); //Undo moves, and calculate again, cause we might not need this
+               * UnitGroup.UndoMove_NotifyAllUGs(mover, ug.GetMoveIndex()); //Undo moves, and calculate again, cause we
+               * might not need this
                * many after all
                * task.Reset();
                */
@@ -130,7 +132,8 @@ public class DoCombatMove {
         }
       }
     }
-    ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation(); // Suspend the threat invalidation center, as we want wave 4 to
+    ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation(); // Suspend the threat invalidation center,
+                                                                            // as we want wave 4 to
                                                                             // do as much as we'd ever want
     DUtils.Log(Level.FINE, "  Calculating and adding additional task recruits. (Wave 4)");
     for (final CM_Task task : tasks) {
@@ -146,7 +149,8 @@ public class DoCombatMove {
     DUtils.Log(Level.FINE, "  Beginning of temporary ship movement block.");
     if (true) // Temporary ship movement block
     {
-      UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover); // Make sure move buffering is off, so moves are done right away
+      UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover); // Make sure move buffering is off, so moves are
+                                                                     // done right away
       for (final Territory ter : data.getMap().getTerritories()) {
         if (!ter.isWater()) {
           continue;
@@ -176,15 +180,15 @@ public class DoCombatMove {
             if (ter2.isWater()) {
               continue;
             }
-            if (ter2.getUnits().getMatches(
-                DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player), Matches.UnitHasEnoughMovement(1), Matches.UnitCanBeTransported))
-                .isEmpty()) {
+            if (ter2.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player),
+                Matches.UnitHasEnoughMovement(1), Matches.UnitCanBeTransported)).isEmpty()) {
               continue;
             }
-            final List<Territory> areaTroubleTers = DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter2,
-                (int) (3 * GlobalCenter.MapTerCountScale),
-                DUtils.CompMatchAnd(Matches.TerritoryIsLand, Matches.territoryHasEnemyLandUnits(player, data)),
-                DMatches.TerritoryIsLandAndPassable);
+            final List<Territory> areaTroubleTers =
+                DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter2,
+                    (int) (3 * GlobalCenter.MapTerCountScale),
+                    DUtils.CompMatchAnd(Matches.TerritoryIsLand, Matches.territoryHasEnemyLandUnits(player, data)),
+                    DMatches.TerritoryIsLandAndPassable);
             if (areaTroubleTers.size() > 0) {
               continue; // Only load units from areas in peace
             }
@@ -218,19 +222,20 @@ public class DoCombatMove {
           final UnitGroup ships = DUtils.CreateUnitGroupForUnits(ourUnitGroup, ter, data);
           final String error = ships.MoveAsFarTo_CM(loadingPort, mover);
           if (error != null) {
-            DUtils.Log(Level.FINER, "    There was an error moving ships[{0}] to loading port({1}->{2}): {3}", ships, ter, loadingPort,
-                error);
+            DUtils.Log(Level.FINER, "    There was an error moving ships[{0}] to loading port({1}->{2}): {3}", ships,
+                ter, loadingPort, error);
             continue;
           }
-          final List<Unit> toLoadOntoShips = loadingTer.getUnits().getMatches(
-              DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player), Matches.UnitHasEnoughMovement(1), Matches.UnitCanBeTransported));
+          final List<Unit> toLoadOntoShips =
+              loadingTer.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player),
+                  Matches.UnitHasEnoughMovement(1), Matches.UnitCanBeTransported));
           // Move land units onto ships
           for (final Unit unit : toLoadOntoShips) {
             final UnitGroup ug = DUtils.CreateUnitGroupForUnit(unit, loadingTer, data);
             final String error2 = ug.MoveAsFarTo_NCM(loadingPort, mover);
             if (error2 != null) {
-              DUtils.Log(Level.FINER, "    There was an error moving units[{0}] onto ship({1}->{2}): {3}", ug, loadingTer, loadingPort,
-                  error2);
+              DUtils.Log(Level.FINER, "    There was an error moving units[{0}] onto ship({1}->{2}): {3}", ug,
+                  loadingTer, loadingPort, error2);
               continue;
             }
             ourUnitGroup.add(unit);
@@ -282,7 +287,8 @@ public class DoCombatMove {
           }
           int score = 0;
           final List<Territory> areaTroubleTers =
-              DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter2, (int) (3 * GlobalCenter.MapTerCountScale),
+              DUtils.GetTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, ter2,
+                  (int) (3 * GlobalCenter.MapTerCountScale),
                   DUtils.CompMatchAnd(Matches.TerritoryIsLand, Matches.territoryHasEnemyLandUnits(player, data)),
                   DMatches.TerritoryIsLandAndPassable);
           if (areaTroubleTers.isEmpty()) {
@@ -295,9 +301,12 @@ public class DoCombatMove {
           if (continentTroubleTers.isEmpty()) {
             score -= 10000000; // We really want to land on a continent where we can actually help
           }
-          score -= CachedCalculationCenter.GetSeaRoute(data, ter, openPort).getLength() * 100000; // And having the unload ter closeby is
+          score -= CachedCalculationCenter.GetSeaRoute(data, ter, openPort).getLength() * 100000; // And having the
+                                                                                                  // unload ter closeby
+                                                                                                  // is
                                                                                                   // good too
-          score -= ter2.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)).size() * 100; // We prefer to not be greeted by a huge
+          score -= ter2.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)).size() * 100; // We prefer to not be
+                                                                                                 // greeted by a huge
                                                                                                  // army
           score += TerritoryAttachment.getProduction(ter2); // And we like ters we get money from... :)
           if (score > highestUnloadingTerScore) {
@@ -318,8 +327,8 @@ public class DoCombatMove {
         final UnitGroup ships = DUtils.CreateUnitGroupForUnits(ourUnitGroup, ter, data);
         final String error = ships.MoveAsFarTo_CM(unloadingPort, mover);
         if (error != null) {
-          DUtils.Log(Level.FINER, "    There was an error moving ships[{0}] to unloading port({1}->{2}): {3}", ships, ter, unloadingPort,
-              error);
+          DUtils.Log(Level.FINER, "    There was an error moving ships[{0}] to unloading port({1}->{2}): {3}", ships,
+              ter, unloadingPort, error);
           continue;
         }
         // Move all land units onto unloading ter
@@ -327,8 +336,8 @@ public class DoCombatMove {
           final UnitGroup ug = DUtils.CreateUnitGroupForUnit(unit, unloadingPort, data);
           final String error2 = ug.MoveAsFarTo_CM(unloadingTer, mover);
           if (error2 != null) {
-            DUtils.Log(Level.FINER, "    There was an error moving units[{0}] to unloading ter({1}->{2}): {3}", ug, unloadingPort,
-                unloadingTer, error2);
+            DUtils.Log(Level.FINER, "    There was an error moving units[{0}] to unloading ter({1}->{2}): {3}", ug,
+                unloadingPort, unloadingTer, error2);
             continue;
           }
         }
@@ -441,16 +450,22 @@ public class DoCombatMove {
     DUtils.Log(Level.FINE, "  Beginning task creation loop. tersWeCanAttack: {0}", tersWeCanAttack);
     for (final Territory ter : tersWeCanAttack) {
       // Hey, just a note to any developers reading this code:
-      // If you think it'll help, you can add in special 'combat move' tasks, that in reality just lock down units from attacking elsewhere.
-      // For example, you might want a cm task to 'lock-down' units to the cap and other important areas so the territory stays defendable.
+      // If you think it'll help, you can add in special 'combat move' tasks, that in reality just lock down units from
+      // attacking elsewhere.
+      // For example, you might want a cm task to 'lock-down' units to the cap and other important areas so the
+      // territory stays defendable.
       // If you do make these sort of changes, though, please do it carefully, sloppy changes could complicate the code.
-      // Attack_Trade tasks can exist along with other tasks on the same attack ter (if normal attack isn't worthwhile, check if trade
+      // Attack_Trade tasks can exist along with other tasks on the same attack ter (if normal attack isn't worthwhile,
+      // check if trade
       // attack is worthwhile)
       if (isAttack_Trade.match(ter)) {
-        List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
-        possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-        final AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data,
-            DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
+        List<Unit> possibleAttackers =
+            DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+        possibleAttackers =
+            Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
+        final AggregateResults results =
+            DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data,
+                DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
         if (results.getAttackerWinPercent() > .5F) {
           final float priority = DUtils.GetCMTaskPriority_Trade(data, player, ter);
           final CM_Task task = new CM_Task(data, ter, CM_TaskType.Land_Attack_Trade, priority);
@@ -464,10 +479,13 @@ public class DoCombatMove {
         result.add(task);
         DUtils.Log(Level.FINER, "    Land grab task added. Ter: {0} Priority: {1}", ter.getName(), priority);
       } else if (isAttack_Stabilize.match(ter)) {
-        List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
-        possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-        final AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data,
-            DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
+        List<Unit> possibleAttackers =
+            DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+        possibleAttackers =
+            Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
+        final AggregateResults results =
+            DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data,
+                DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
         if (results.getAttackerWinPercent() < .25F) {
           continue;
         }
@@ -476,10 +494,13 @@ public class DoCombatMove {
         result.add(task);
         DUtils.Log(Level.FINER, "    Attack_Stabilize task added. Ter: {0} Priority: {1}", ter.getName(), priority);
       } else if (isAttack_Offensive.match(ter)) {
-        List<Unit> possibleAttackers = DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
-        possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-        final AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data,
-            DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
+        List<Unit> possibleAttackers =
+            DUtils.GetUnitsOwnedByPlayerThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+        possibleAttackers =
+            Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
+        final AggregateResults results =
+            DUtils.GetBattleResults(possibleAttackers, DUtils.ToList(ter.getUnits().getUnits()), ter, data,
+                DSettings.LoadSettings().CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, true);
         if (results.getAttackerWinPercent() < .20F) {
           continue;
         }

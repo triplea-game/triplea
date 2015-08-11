@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 /**
  * Sent by the battle delegate to the game player to indicate
  * which battles are left to be fought.
- *
  */
 public class BattleListing implements Serializable {
   private static final long serialVersionUID = 2700129486225793827L;

@@ -19,7 +19,6 @@ import javax.swing.JTextArea;
 import net.sbbi.upnp.impls.InternetGatewayDevice;
 import net.sbbi.upnp.messages.UPNPResponseException;
 
-
 public class UniversalPlugAndPlayHelper {
   private int m_port = 3300;
   private InetAddress m_local = null;
@@ -59,7 +58,8 @@ public class UniversalPlugAndPlayHelper {
     }
     System.out.println(textResult);
     textArea.append(textResult);
-    JOptionPane.showMessageDialog(parent, new JScrollPane(textArea), "Setting Port Forwarding with UPnP", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(parent, new JScrollPane(textArea), "Setting Port Forwarding with UPnP",
+        JOptionPane.INFORMATION_MESSAGE);
     return worked;
   }
 
@@ -175,7 +175,8 @@ public class UniversalPlugAndPlayHelper {
     System.out.println("To " + m_local.getHostAddress() + ":" + internalPort);
     boolean mapped = false;
     try {
-      mapped = m_device.addPortMapping("TripleA Game Hosting", "TCP", null, externalPort, m_local.getHostAddress(), internalPort, 0);
+      mapped = m_device.addPortMapping("TripleA Game Hosting", "TCP", null, externalPort, m_local.getHostAddress(),
+          internalPort, 0);
     } catch (final IOException e) {
       System.out.println("Port Mapping Failed! Please try to Forward Ports manually! \r\n " + e.getMessage());
       return "Port Mapping Failed! Please try to Forward Ports manually! \r\n " + e.getMessage();
@@ -197,14 +198,15 @@ public class UniversalPlugAndPlayHelper {
     try {
       devices = InternetGatewayDevice.getDevices(2000);
     } catch (final IOException e) {
-      System.out
-          .println("Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on! \r\n "
+      System.out.println(
+          "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on! \r\n "
               + e.getMessage());
       return "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on! \r\n "
           + e.getMessage();
     }
     if (devices == null || 1 > devices.length) {
-      System.out.println("Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on!");
+      System.out.println(
+          "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on!");
       return "Router/Device UPnP turned off. Or no Routers/Devices found.  Please make sure your router's UPNP is turned on!";
     }
     m_device = devices[0];
@@ -220,7 +222,6 @@ public class UniversalPlugAndPlayHelper {
       while (ifaces.hasMoreElements() && m_local == null) {
         final NetworkInterface iface = ifaces.nextElement();
         final Enumeration<InetAddress> addresses = iface.getInetAddresses();
-
         while (addresses.hasMoreElements() && m_local == null) {
           final InetAddress addr = addresses.nextElement();
           if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {

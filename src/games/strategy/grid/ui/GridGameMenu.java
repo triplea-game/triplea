@@ -29,15 +29,12 @@ import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.PlayerChooser;
 
 /**
- *
- *
  * @param <CustomGridGameFrame>
  */
 public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> extends BasicGameMenuBar<GridGameFrame> {
   private static final long serialVersionUID = -8512774312859744827L;
   protected CurrentEditAction m_currentEditAction = CurrentEditAction.None;
   protected JMenu m_editOptionsMenu;
-
 
   protected enum CurrentEditAction {
     None, AddUnits, RemoveUnits, ChangeTerritoryOwnership
@@ -77,7 +74,6 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
     final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
     editMode.setModel(m_frame.getEditModeButtonModel());
     parentMenu.add(editMode).setMnemonic(KeyEvent.VK_E);
-
     // and edit mode actions:
     m_frame.getMapPanel().addMapSelectionListener(getMapSelectionListener());
     m_editOptionsMenu = new JMenu();
@@ -152,19 +148,20 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
           return;
         }
         if (m_currentEditAction == CurrentEditAction.AddUnits) {
-          final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), territory.getOwner(), null, false);
+          final PlayerChooser playerChooser =
+              new PlayerChooser(getData().getPlayerList(), territory.getOwner(), null, false);
           final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
           dialog.setVisible(true);
-
           final PlayerID player = playerChooser.getSelected();
           if (player != null) {
-            final UnitType ut =
-                m_frame.selectUnit(null, getData().getUnitTypeList().getAllUnitTypes(), territory, player, getData(), "Select Unit to Add");
+            final UnitType ut = m_frame.selectUnit(null, getData().getUnitTypeList().getAllUnitTypes(), territory,
+                player, getData(), "Select Unit to Add");
             final Collection<Unit> units = new ArrayList<Unit>();
             units.addAll(ut.create(1, player));
             final String result = m_frame.getEditDelegate().addUnits(territory, units);
             if (result != null) {
-              JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+                  JOptionPane.ERROR_MESSAGE);
             }
           }
           m_currentEditAction = CurrentEditAction.None;
@@ -179,21 +176,21 @@ public abstract class GridGameMenu<CustomGridGameFrame extends GridGameFrame> ex
         } else if (m_currentEditAction == CurrentEditAction.ChangeTerritoryOwnership) {
           final TerritoryAttachment ta = TerritoryAttachment.get(territory, true);
           if (ta == null) {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), "No TerritoryAttachment for " + territory + ".", "Could not perform edit",
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(getTopLevelAncestor(), "No TerritoryAttachment for " + territory + ".",
+                "Could not perform edit", JOptionPane.ERROR_MESSAGE);
             return;
           }
           final PlayerID defaultPlayer = ta.getOriginalOwner();
           final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), defaultPlayer, null, true);
-          final JDialog dialog =
-              playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory for " + territory.getName());
+          final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(),
+              "Select new owner for territory for " + territory.getName());
           dialog.setVisible(true);
-
           final PlayerID player = playerChooser.getSelected();
           if (player != null) {
             final String result = m_frame.getEditDelegate().changeTerritoryOwner(territory, player);
             if (result != null) {
-              JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+                  JOptionPane.ERROR_MESSAGE);
             }
           }
           m_currentEditAction = CurrentEditAction.None;

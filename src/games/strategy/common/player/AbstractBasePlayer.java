@@ -6,8 +6,8 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 
 /**
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
- *
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
+ * using a change).
  */
 public abstract class AbstractBasePlayer implements IGamePlayer {
   private final String m_name; // what nation are we playing? ex: "Americans"
@@ -43,7 +43,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   /**
    * Get the IPlayerBridge for this game player.
-   * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate, never through a
+   * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate,
+   * never through a
    * player.)
    */
   protected final IPlayerBridge getPlayerBridge() {
@@ -68,7 +69,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Override
   public String toString() {
     return (m_playerID == null || m_playerID.getName() == null || !m_playerID.getName().equals(m_name))
-        ? (m_type + ":" + m_name + ":" + (m_playerID == null ? "NullID" : m_playerID.getName())) : (m_type + ":" + m_name);
+        ? (m_type + ":" + m_name + ":" + (m_playerID == null ? "NullID" : m_playerID.getName()))
+        : (m_type + ":" + m_name);
   }
 
   /**
@@ -77,7 +79,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Override
   public void start(final String stepName) {
     if (stepName != null) {
-      // PlayerBridge is on a different thread than this one, and so it will be updated asynchronously. Need to wait for it.
+      // PlayerBridge is on a different thread than this one, and so it will be updated asynchronously. Need to wait for
+      // it.
       String bridgeStep = getPlayerBridge().getStepName();
       int i = 0;
       boolean shownErrorMessage = false;
@@ -86,9 +89,9 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
           Thread.sleep(100);
           i++;
           if (i > 30 && !shownErrorMessage) {
-            System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep + ". Player Bridge GameOver="
-                + getPlayerBridge().isGameOver()
-                + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName()
+            System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
+                + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: "
+                + getPlayerID().getName() + ", Game: " + getGameData().getGameName()
                 + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
             shownErrorMessage = true;
           }
@@ -96,7 +99,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
           if (i > 310) {
             System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
                 + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very soon. Player Bridge GameOver="
-                + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+                + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName() + ", Game: "
+                + getGameData().getGameName());
             // getPlayerBridge().printErrorStatus();
             break; // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
           }
@@ -115,6 +119,5 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   public boolean isGameStopped() {
     return m_stoppedGame;
   }
-
   // public abstract Class<?> getRemotePlayerType();
 }

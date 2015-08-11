@@ -16,7 +16,6 @@ import java.util.Set;
  * <p>
  * Static utility methods allow you to find what elements in a collection satisfy a match, <br>
  * count the number of matches, see if any elements match etc.
- *
  */
 public abstract class Match<T> {
   /**

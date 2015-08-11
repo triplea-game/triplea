@@ -18,22 +18,22 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 
-
 public class SelectCasualties {
   private static boolean useDefaultSelectionThisTime = false;
 
   public static void NotifyCasualtySelectionError(final String error) {
     if (error.equals("Wrong number of casualties selected")) {
-      DUtils.Log(Level.FINER, "  Wrong number of casualties selected for current battle, so attempting to use default casualties");
+      DUtils.Log(Level.FINER,
+          "  Wrong number of casualties selected for current battle, so attempting to use default casualties");
       useDefaultSelectionThisTime = true;
     }
   }
 
   @SuppressWarnings("unchecked")
-  public static CasualtyDetails selectCasualties(final Dynamix_AI ai, final GameData data, final Collection<Unit> selectFrom,
-      final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID,
-      final boolean allowMultipleHitsPerUnit) {
+  public static CasualtyDetails selectCasualties(final Dynamix_AI ai, final GameData data,
+      final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
+      final String message, final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties,
+      final GUID battleID, final boolean allowMultipleHitsPerUnit) {
     ai.pause();
     final HashSet<Unit> damaged = new HashSet<Unit>();
     final HashSet<Unit> destroyed = new HashSet<Unit>();
@@ -57,8 +57,13 @@ public class SelectCasualties {
         Unit untouchedTwoHitUnit = null;
         for (final Unit unit : selectFrom) {
           final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-          if (allowMultipleHitsPerUnit && ua.getHitPoints() > 1 + unit.getHits() && !damaged.contains(unit)) // If this is an undamaged,
-                                                                                                             // un-selected as casualty, two
+          if (allowMultipleHitsPerUnit && ua.getHitPoints() > 1 + unit.getHits() && !damaged.contains(unit)) // If this
+                                                                                                             // is an
+                                                                                                             // undamaged,
+                                                                                                             // un-selected
+                                                                                                             // as
+                                                                                                             // casualty,
+                                                                                                             // two
                                                                                                              // hit unit
           {
             untouchedTwoHitUnit = unit;
@@ -72,8 +77,10 @@ public class SelectCasualties {
         }
         Unit highestScoringUnit = null;
         float highestScore = Integer.MIN_VALUE;
-        for (final Unit unit : selectFrom) // Problem with calcing for the best unit to select as a casualties is that the battle calculator
-                                           // needs to call this very method to calculate the battle, resulting in a never ending loop!
+        for (final Unit unit : selectFrom) // Problem with calcing for the best unit to select as a casualties is that
+                                           // the battle calculator
+                                           // needs to call this very method to calculate the battle, resulting in a
+                                           // never ending loop!
         {
           final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
           // TripleAUnit ta = TripleAUnit.get(unit);

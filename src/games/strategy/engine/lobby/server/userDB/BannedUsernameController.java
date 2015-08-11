@@ -13,7 +13,6 @@ import games.strategy.util.Tuple;
 
 /**
  * Utilitiy class to create/read/delete banned usernames (there is no update).
- *
  */
 public class BannedUsernameController {
   private static final Logger s_logger = Logger.getLogger(BannedUsernameController.class.getName());
@@ -28,7 +27,6 @@ public class BannedUsernameController {
   /**
    * Ban the given username. If banTill is not null, the ban will expire when banTill is reached.
    * <p>
-   *
    * If this username is already banned, this call will update the ban_end.
    */
   public void addBannedUsername(final String username, final Date banTill) {
@@ -42,7 +40,8 @@ public class BannedUsernameController {
     s_logger.fine("Banning username:" + username);
     final Connection con = Database.getConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)");
+      final PreparedStatement ps =
+          con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)");
       ps.setString(1, username);
       ps.setTimestamp(2, banTillTs);
       ps.execute();

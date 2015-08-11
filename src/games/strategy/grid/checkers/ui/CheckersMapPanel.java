@@ -29,7 +29,6 @@ import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.util.Tuple;
 
-
 public class CheckersMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 1086068265270157799L;
   protected List<Territory> m_middleClickedTerritories = null;
@@ -50,7 +49,8 @@ public class CheckersMapPanel extends GridMapPanel {
   }
 
   @Override
-  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player) {
+  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn,
+      final PlayerID player) {
     if (clickedOn == null) {
       return null;
     }
@@ -86,14 +86,14 @@ public class CheckersMapPanel extends GridMapPanel {
       }
       g2d.setColor(backgroundColor);
       g2d.fillPolygon(p);
-
       g2d.setColor(Color.black);
       final Image image = m_images.get(at);
       if (image != null) {
         final Rectangle square = p.getBounds();
         if (at.equals(m_clickedAt)) {
-          g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5), square.y - (m_mapData.getSquareHeight() / 5),
-              square.width + (2 * m_mapData.getSquareWidth() / 5), square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
+          g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5),
+              square.y - (m_mapData.getSquareHeight() / 5), square.width + (2 * m_mapData.getSquareWidth() / 5),
+              square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
         } else {
           g2d.drawImage(image, square.x, square.y, square.width, square.height, null, null);
         }
@@ -121,7 +121,8 @@ public class CheckersMapPanel extends GridMapPanel {
 
   @Override
   public void mousePressed(final MouseEvent e) {
-    final Territory at = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+    final Territory at =
+        m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
     if (at != null) {
       if (m_clickedAt == null) {
         m_clickedAt = at;
@@ -145,7 +146,8 @@ public class CheckersMapPanel extends GridMapPanel {
 
   @Override
   public void mouseReleased(final MouseEvent e) {
-    final Territory at = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+    final Territory at =
+        m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
     if (at != null) {
       notifyTerritorySelected(at, new MouseDetails(e, e.getX(), e.getY()));
       if (!at.equals(m_clickedAt) && !at.equals(m_releasedAt)) {
@@ -154,9 +156,8 @@ public class CheckersMapPanel extends GridMapPanel {
       }
     }
     // we right click to create middle steps, so only countDown if it is a normal click
-    if (!BaseEditDelegate.getEditMode(m_gameData)
-        && (!(e.isControlDown() || e.isAltDown() || e.isShiftDown()) && e.getButton() == MouseEvent.BUTTON1
-            && (m_clickedAt != null && m_releasedAt != null))) {
+    if (!BaseEditDelegate.getEditMode(m_gameData) && (!(e.isControlDown() || e.isAltDown() || e.isShiftDown())
+        && e.getButton() == MouseEvent.BUTTON1 && (m_clickedAt != null && m_releasedAt != null))) {
       setMouseShadowUnits(null);
       m_validMovesList = null;
       if (m_waiting != null) {

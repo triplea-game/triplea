@@ -17,7 +17,8 @@ public class Quadruple<F, S, T, Q> extends Triple<F, S, T> {
   public String toString() {
     return "[" + (super.getFirst() == null ? "null" : super.getFirst().toString()) + ", "
         + (super.getSecond() == null ? "null" : super.getSecond().toString()) + ", "
-        + (super.getThird() == null ? "null" : super.getThird().toString()) + ", " + (m_quad == null ? "null" : m_quad.toString()) + "]";
+        + (super.getThird() == null ? "null" : super.getThird().toString()) + ", "
+        + (m_quad == null ? "null" : m_quad.toString()) + "]";
   }
 
   @Override

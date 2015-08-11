@@ -44,7 +44,6 @@ public class DiceImageFactory {
   }
 
   private void generateDice(final int PIP_SIZE, final Color color, final Map<Integer, Image> images) {
-
     final ImageFactory iFactory = new ImageFactory();
     iFactory.setResourceLoader(m_resourceLoader);
     for (int i = 1; i <= m_diceSides; i++) {
@@ -73,7 +72,8 @@ public class DiceImageFactory {
         // dots in top left and bottom right
         if (i == 3 || i == 5 || i == 4) {
           graphics.fillOval(DIE_WIDTH / 4 - (PIP_SIZE / 2), DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(3 * DIE_WIDTH / 4 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
+          graphics.fillOval(3 * DIE_WIDTH / 4 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE,
+              PIP_SIZE);
         }
         // dots in bottom left and top right
         if (i == 5 || i == 4) {
@@ -89,7 +89,8 @@ public class DiceImageFactory {
           graphics.fillOval(DIE_WIDTH / 3 - (PIP_SIZE / 2), DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
           graphics.fillOval(2 * DIE_WIDTH / 3 - (PIP_SIZE / 2), DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
           graphics.fillOval(DIE_WIDTH / 3 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
-          graphics.fillOval(2 * DIE_WIDTH / 3 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE, PIP_SIZE);
+          graphics.fillOval(2 * DIE_WIDTH / 3 - (PIP_SIZE / 2), 3 * DIE_HEIGHT / 4 - (PIP_SIZE / 2), PIP_SIZE,
+              PIP_SIZE);
         }
         if (i > 6) {
           graphics.setFont(new Font("Arial", Font.BOLD, 16));

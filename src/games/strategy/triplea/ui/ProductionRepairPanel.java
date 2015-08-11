@@ -42,7 +42,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-
 public class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;
   private final JFrame m_owner = null;
@@ -57,17 +56,17 @@ public class ProductionRepairPanel extends JPanel {
   private GameData m_data;
   private static HashMap<Unit, Integer> m_repairCount = new HashMap<Unit, Integer>();
 
-  public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id, final Collection<PlayerID> allowedPlayersToRepair,
-      final JFrame parent, final GameData data,
-      final boolean bid, final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext) {
+  public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
+      final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
+      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext) {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
   }
 
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
-  public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id, final Collection<PlayerID> allowedPlayersToRepair,
-      final JFrame parent, final GameData data, final boolean bid,
+  public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
+      final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
     if (!(parent == m_owner)) {
       m_dialog = null;
@@ -137,8 +136,9 @@ public class ProductionRepairPanel extends JPanel {
     try {
       this.m_id = player;
       this.m_allowedPlayersToRepair = allowedPlayersToRepair;
-      final CompositeMatchAnd<Unit> myDamagedUnits = new CompositeMatchAnd<Unit>(
-          Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair), Matches.UnitHasTakenSomeBombingUnitDamage);
+      final CompositeMatchAnd<Unit> myDamagedUnits =
+          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedByOfAnyOfThesePlayers(m_allowedPlayersToRepair),
+              Matches.UnitHasTakenSomeBombingUnitDamage);
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {
@@ -172,17 +172,18 @@ public class ProductionRepairPanel extends JPanel {
     this.removeAll();
     this.setLayout(new GridBagLayout());
     final JLabel legendLabel = new JLabel("Repair Units");
-    add(legendLabel,
-        new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+    add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+        new Insets(8, 8, 8, 0), 0, 0));
     for (int x = 0; x < m_rules.size(); x++) {
       final boolean even = (x / 2) * 2 == x;
-      add(m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          nullInsets, 0, 0));
+      add(m_rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST,
+          GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     }
-    add(m_left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
+    add(m_left, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(8, 8, 0, 12), 0, 0));
     m_done = new JButton(m_done_action);
-    add(m_done,
-        new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 8, 0), 0, 0));
+    add(m_done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(0, 0, 8, 0), 0, 0));
   }
 
   protected void setLeft(final ResourceCollection left) {
@@ -239,7 +240,8 @@ public class ProductionRepairPanel extends JPanel {
 
   private ResourceCollection getResources() {
     if (m_bid) {
-      // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given? (actually, bids should
+      // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given?
+      // (actually, bids should
       // not cover repairing at all...)
       final String propertyName = m_id.getName() + " bid";
       final int bid = m_data.getProperties().get(propertyName, 0);
@@ -256,7 +258,6 @@ public class ProductionRepairPanel extends JPanel {
     }
   }
 
-
   public class Rule extends JPanel {
     private static final long serialVersionUID = -6781214135310064908L;
     private final ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
@@ -266,7 +267,8 @@ public class ProductionRepairPanel extends JPanel {
     private final int m_maxRepairAmount;
     private final int m_repairResults;
 
-    Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit, final Territory territoryUnitIsIn) {
+    Rule(final RepairRule rule, final PlayerID id, final IUIContext uiContext, final Unit repairUnit,
+        final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
       m_unit = repairUnit;
       m_rule = rule;
@@ -286,8 +288,8 @@ public class ProductionRepairPanel extends JPanel {
       m_maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);
       final JLabel remaining = new JLabel("Damage left to repair: " + m_maxRepairAmount);
       final int space = 8;
-      this.add(new JLabel(type.getName()),
-          new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
+      this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
+          GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
       this.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(5, space, space, space), 0, 0));
       this.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,

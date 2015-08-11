@@ -52,10 +52,8 @@ import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.ui.ErrorHandler;
 
 /**
- *
- *
- *         Represents a running game.
- *         Lookups to get a GamePlayer from PlayerId and the current Delegate.
+ * Represents a running game.
+ * Lookups to get a GamePlayer from PlayerId and the current Delegate.
  */
 public class ServerGame extends AbstractGame {
   public static final RemoteName SERVER_REMOTE =
@@ -68,7 +66,8 @@ public class ServerGame extends AbstractGame {
   private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
   private boolean m_needToInitialize = true;
   /**
-   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
+   * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
+   * returning.
    * <p>
    */
   private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
@@ -91,7 +90,6 @@ public class ServerGame extends AbstractGame {
   };
 
   /**
-   *
    * @param data
    *        game data
    * @param localPlayers
@@ -101,8 +99,8 @@ public class ServerGame extends AbstractGame {
    * @param messengers
    *        IServerMessenger
    */
-  public ServerGame(final GameData data, final Set<IGamePlayer> localPlayers, final Map<String, INode> remotePlayerMapping,
-      final Messengers messengers) {
+  public ServerGame(final GameData data, final Set<IGamePlayer> localPlayers,
+      final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     super(data, localPlayers, remotePlayerMapping, messengers);
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
@@ -164,8 +162,8 @@ public class ServerGame extends AbstractGame {
     m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
   }
 
-  public void addObserver(final IObserverWaitingToJoin blockingObserver, final IObserverWaitingToJoin nonBlockingObserver,
-      final INode newNode) {
+  public void addObserver(final IObserverWaitingToJoin blockingObserver,
+      final IObserverWaitingToJoin nonBlockingObserver, final INode newNode) {
     try {
       if (!m_delegateExecutionManager.blockDelegateExecution(2000)) {
         nonBlockingObserver.cannotJoinGame("Could not block delegate execution");
@@ -227,13 +225,15 @@ public class ServerGame extends AbstractGame {
     if (remoteType == null) {
       return;
     }
-    final Object wrappedDelegate = m_delegateExecutionManager.createInboundImplementation(delegate, new Class[] {delegate.getRemoteType()});
+    final Object wrappedDelegate =
+        m_delegateExecutionManager.createInboundImplementation(delegate, new Class[] {delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
     m_remoteMessenger.registerRemote(wrappedDelegate, descriptor);
   }
 
   public static RemoteName getRemoteName(final IDelegate delegate) {
-    return new RemoteName("games.strategy.engine.framework.ServerGame.DELEGATE_REMOTE." + delegate.getName(), delegate.getRemoteType());
+    return new RemoteName("games.strategy.engine.framework.ServerGame.DELEGATE_REMOTE." + delegate.getName(),
+        delegate.getRemoteType());
   }
 
   public static RemoteName getRemoteName(final PlayerID id, final GameData data) {
@@ -242,7 +242,8 @@ public class ServerGame extends AbstractGame {
   }
 
   public static RemoteName getRemoteRandomName(final PlayerID id) {
-    return new RemoteName("games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName(), IRemoteRandom.class);
+    return new RemoteName("games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName(),
+        IRemoteRandom.class);
   }
 
   private GameStep getCurrentStep() {
@@ -250,7 +251,8 @@ public class ServerGame extends AbstractGame {
     // m_data.getSequence().getStep(m_currentStepIndex);
   }
 
-  private final static String GAME_HAS_BEEN_SAVED_PROPERTY = "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
+  private final static String GAME_HAS_BEEN_SAVED_PROPERTY =
+      "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
 
   /**
    * And here we go.
@@ -301,9 +303,11 @@ public class ServerGame extends AbstractGame {
     m_isGameOver = true;
     ErrorHandler.setGameOver(true);
     m_delegateExecutionStoppedLatch.countDown();
-    for (final IGamePlayer player : m_gamePlayers.values()) { // tell the players (especially the AI's) that the game is stopping, so stop
+    for (final IGamePlayer player : m_gamePlayers.values()) { // tell the players (especially the AI's) that the game is
+                                                              // stopping, so stop
                                                               // doing stuff.
-      player.stopGame();// not sure whether to put this before or after we delegate execution block, but definitely before the game loader
+      player.stopGame();// not sure whether to put this before or after we delegate execution block, but definitely
+                        // before the game loader
                         // shutdown
     }
     // block delegate execution to prevent outbound messages to the players while we shut down.
@@ -476,7 +480,6 @@ public class ServerGame extends AbstractGame {
   }
 
   /**
-   *
    * @return true if the step should autosave
    */
   private boolean endStep() {
@@ -502,12 +505,12 @@ public class ServerGame extends AbstractGame {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }
-      final DefaultDelegateBridge bridge =
-          new DefaultDelegateBridge(m_data, this, new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
+      final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
+          new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
       CachedInstanceCenter.CachedDelegateBridge = bridge;
       if (m_delegateRandomSource == null) {
-        m_delegateRandomSource =
-            (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource, new Class[] {IRandomSource.class});
+        m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
+            new Class[] {IRandomSource.class});
       }
       bridge.setRandomSource(m_delegateRandomSource);
       m_delegateExecutionManager.enterDelegateExecution();
@@ -529,17 +532,18 @@ public class ServerGame extends AbstractGame {
         }
       }
     }
-    final DefaultDelegateBridge bridge =
-        new DefaultDelegateBridge(m_data, this, new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
+    final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
+        new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
     CachedInstanceCenter.CachedDelegateBridge = bridge;
     CachedInstanceCenter.CachedGameData = m_data;
     if (m_delegateRandomSource == null) {
-      m_delegateRandomSource =
-          (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource, new Class[] {IRandomSource.class});
+      m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
+          new Class[] {IRandomSource.class});
     }
     bridge.setRandomSource(m_delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)
-    // we can not do this the very first run through, because there are no history nodes yet. We should do after first node is created.
+    // we can not do this the very first run through, because there are no history nodes yet. We should do after first
+    // node is created.
     if (m_needToInitialize) {
       addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
     }
@@ -569,7 +573,8 @@ public class ServerGame extends AbstractGame {
       /*
        * if (HeadlessGameServer.headless())
        * {
-       * System.out.println("Local Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName() + ", player name: "
+       * System.out.println("Local Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName()
+       * + ", player name: "
        * + player.getName() + ", player type: "
        * + player.getType() + ". All local players: " + m_gamePlayers + ". All players: " + m_playerManager);
        * }
@@ -578,11 +583,13 @@ public class ServerGame extends AbstractGame {
     } else {
       // a remote player
       final INode destination = m_playerManager.getNode(playerID.getName());
-      final IGameStepAdvancer advancer = (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
+      final IGameStepAdvancer advancer =
+          (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
       /*
        * if (HeadlessGameServer.headless())
        * {
-       * System.out.println("Remote Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName() + ", Player Node: "
+       * System.out.println("Remote Player step: " + getCurrentStep().getName() + " for PlayerID: " + playerID.getName()
+       * + ", Player Node: "
        * + destination + ". All local players: "
        * + m_gamePlayers + ". All players: " + m_playerManager);
        * }
@@ -605,7 +612,8 @@ public class ServerGame extends AbstractGame {
   private void addPlayerTypesToGameData(final Collection<IGamePlayer> localPlayers, final PlayerManager allPlayers,
       final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
-    // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for the first delegate to
+    // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
+    // the first delegate to
     // start before making changes.
     if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun)) // &&
                                                                                             // data.getPlayerList().getPlayers().iterator().next().getWhoAmI().equals("null:no_one")
@@ -624,9 +632,12 @@ public class ServerGame extends AbstractGame {
     for (final IGamePlayer player : localPlayers) {
       allPlayersString.remove(player.getName());
       final boolean isHuman = player instanceof TripleAPlayer;
-      aBridge.getHistoryWriter().addChildToEvent(player.getName()
-          + ((player.getName().endsWith("s") || player.getName().endsWith("ese") || player.getName().endsWith("ish")) ? " are" : " is")
-          + " now being played by: " + player.getType());
+      aBridge.getHistoryWriter()
+          .addChildToEvent(
+              player.getName()
+                  + ((player.getName().endsWith("s") || player.getName().endsWith("ese")
+                      || player.getName().endsWith("ish")) ? " are" : " is")
+                  + " now being played by: " + player.getType());
       final PlayerID p = data.getPlayerList().getPlayerID(player.getName());
       final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getType());
       if (!p.getWhoAmI().equals(newWhoAmI)) {
@@ -637,8 +648,8 @@ public class ServerGame extends AbstractGame {
     while (playerIter.hasNext()) {
       final String player = playerIter.next();
       playerIter.remove();
-      aBridge.getHistoryWriter()
-          .addChildToEvent(player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is")
+      aBridge.getHistoryWriter().addChildToEvent(
+          player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is")
               + " now being played by: Human:Client");
       final PlayerID p = data.getPlayerList().getPlayerID(player);
       final String newWhoAmI = "Human:Client";

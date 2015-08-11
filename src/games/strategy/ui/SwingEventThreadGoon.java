@@ -10,8 +10,6 @@ import javax.swing.SwingUtilities;
 
 /**
  * Utility to check that code that should be running in the swing event thread runs in the swing event thread.
- *
- *
  */
 public class SwingEventThreadGoon {
   private static boolean s_isInitialized;
@@ -44,7 +42,6 @@ public class SwingEventThreadGoon {
   /**
    * Once a component is added to a displayed heirarchy, all changes to the component
    * should be done in the swing event thread.
-   *
    * Check the component (and its parent recursivly) till you get to the top
    * window (or null). If the window is displayable, then the component is displayable.
    */

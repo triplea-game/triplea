@@ -47,11 +47,12 @@ public class ChangeAttachmentChange extends Change {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
-  ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property, final boolean getRaw,
-      final boolean resetFirst) {
+  ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property,
+      final boolean getRaw, final boolean resetFirst) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
@@ -78,11 +79,12 @@ public class ChangeAttachmentChange extends Change {
   }
 
   /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
+   * You don't want to clear the variable first unless you are setting some variable where the setting method is
+   * actually adding things to a
    * list rather than overwriting.
    */
-  public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue, final Object oldValue,
-      final String property, final boolean resetFirst) {
+  public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue,
+      final Object oldValue, final String property, final boolean resetFirst) {
     m_attachmentName = attachmentName;
     m_attachedTo = attachTo;
     m_newValue = newValue;
@@ -104,7 +106,7 @@ public class ChangeAttachmentChange extends Change {
 
   @Override
   public String toString() {
-    return "ChangAttachmentChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue + " old value:"
-        + m_oldValue;
+    return "ChangAttachmentChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:"
+        + m_newValue + " old value:" + m_oldValue;
   }
 }

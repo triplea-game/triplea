@@ -32,19 +32,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
 /*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version. This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
  * CommentPanel.java Swing ui for comment logging.
- *
  * Created on September 24, 2007
  */
 import games.strategy.engine.data.GameData;
@@ -57,7 +45,6 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 
 /**
  * A Comment logging window.
- *
  */
 public class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;
@@ -149,8 +136,9 @@ public class CommentPanel extends JPanel {
           final Document doc = m_text.getDocument();
           final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
           final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
-          final String title = child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
-              : (node != null ? node.getTitle() : "");
+          final String title =
+              child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
+                  : (node != null ? node.getTitle() : "");
           final Pattern p = Pattern.compile("^COMMENT: (.*)");
           final Matcher m = p.matcher(title);
           if (m.matches()) {

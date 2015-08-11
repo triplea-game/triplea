@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.dataObjects.AbstractMoveDescription;
 
 /**
  * Contains all the data to describe an abstract move (move or placement) and to undo it.
- *
  */
 abstract public class AbstractUndoableMove implements Serializable {
   private static final long serialVersionUID = -3164832285286161069L;
@@ -21,7 +20,6 @@ abstract public class AbstractUndoableMove implements Serializable {
    * Stores the serialized state of the move and battle delegates (just
    * as if they were saved), and a CompositeChange that represents all the changes that
    * were made during the move.
-   *
    * Some moves (such as those following an aa fire) can't be undone.
    */
   protected final CompositeChange m_change;
@@ -35,8 +33,8 @@ abstract public class AbstractUndoableMove implements Serializable {
 
   final public void undo(final GameData data, final IDelegateBridge delegateBridge) {
     // undo any changes to the game data
-    delegateBridge.getHistoryWriter().startEvent(delegateBridge.getPlayerID().getName() + " undo move " + (getIndex() + 1) + ".",
-        getDescriptionObject());
+    delegateBridge.getHistoryWriter().startEvent(
+        delegateBridge.getPlayerID().getName() + " undo move " + (getIndex() + 1) + ".", getDescriptionObject());
     delegateBridge.addChange(m_change.invert());
     undoSpecific(delegateBridge);
   }

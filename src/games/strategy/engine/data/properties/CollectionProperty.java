@@ -10,8 +10,6 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 
 /**
- *
- *
  * @param <T>
  */
 public class CollectionProperty<T> extends AEditableProperty {
@@ -19,7 +17,6 @@ public class CollectionProperty<T> extends AEditableProperty {
   private List<T> m_values;
 
   /**
-   *
    * @param name
    *        name of the property
    * @param defaultValue

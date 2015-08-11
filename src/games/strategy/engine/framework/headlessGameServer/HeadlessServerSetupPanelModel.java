@@ -9,8 +9,6 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 
 /**
  * Setup panel model for headless server.
- *
- *
  */
 public class HeadlessServerSetupPanelModel extends SetupPanelModel {
   protected final Component m_ui;

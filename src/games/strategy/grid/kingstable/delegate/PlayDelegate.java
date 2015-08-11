@@ -24,7 +24,6 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Responsible for performing a move in a game of King's Table.
- *
  */
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate {
@@ -99,9 +98,11 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    * After a move completes, look to see if any captures occur.
    *
    * @param end
-   *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
+   *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>
+   *        .
    */
-  public static Collection<Territory> checkForCaptures(final Territory end, final PlayerID player, final GameData data) {
+  public static Collection<Territory> checkForCaptures(final Territory end, final PlayerID player,
+      final GameData data) {
     final Matches matches = new Matches(data);
     // At most, four pieces will be captured
     final Collection<Territory> captured = new HashSet<Territory>(4);
@@ -112,7 +113,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       final int endY = end.getY();
       final GameMap map = data.getMap();
       // Look above end for a potential capture
-      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
+      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within
+      // the braces
       {
         final Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY - 1);
         if (matches.eligibleForCapture(possibleCapture, player)) {
@@ -124,7 +126,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
             final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
             if (matches.eligibleParticipantsInKingCapture(player, above, left, right)) {
               captured.add(possibleCapture);
-            } else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, above)) {
+            } else
+              if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, above)) {
               captured.add(possibleCapture);
             }
           }
@@ -135,7 +138,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         }
       }
       // Look below end for a potential capture
-      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
+      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within
+      // the braces
       {
         final Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY + 1);
         if (matches.eligibleForCapture(possibleCapture, player)) {
@@ -147,7 +151,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
             final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
             if (matches.eligibleParticipantsInKingCapture(player, below, left, right)) {
               captured.add(possibleCapture);
-            } else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, below)) {
+            } else
+              if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, below)) {
               captured.add(possibleCapture);
             }
           }
@@ -158,7 +163,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         }
       }
       // Look left end for a potential capture
-      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
+      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within
+      // the braces
       {
         final Territory possibleCapture = map.getTerritoryFromCoordinates(endX - 1, endY);
         if (matches.eligibleForCapture(possibleCapture, player)) {
@@ -181,7 +187,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         }
       }
       // Look right end for a potential capture
-      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
+      // This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within
+      // the braces
       {
         final Territory possibleCapture = map.getTerritoryFromCoordinates(endX + 1, endY);
         if (matches.eligibleForCapture(possibleCapture, player)) {
@@ -193,7 +200,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
             final Territory below = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
             if (matches.eligibleParticipantsInKingCapture(player, right, above, below)) {
               captured.add(possibleCapture);
-            } else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, right)) {
+            } else
+              if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(player, right)) {
               captured.add(possibleCapture);
             }
           }
@@ -208,14 +216,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
   }
 
   /**
-   * Check to see if moving a piece from the start <code>Territory</code> to the end <code>Territory</code> is a valid play.
+   * Check to see if moving a piece from the start <code>Territory</code> to the end <code>Territory</code> is a valid
+   * play.
    *
    * @param start
    *        <code>Territory</code> where the move should start
    * @param end
    *        <code>Territory</code> where the move should end
    */
-  public static String isValidPlay(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidPlay(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     final int unitCount = start.getUnits().getUnitCount(player);
     // The current player must have exactly one unit in the starting territory
     if (unitCount < 1) {
@@ -283,7 +293,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    * @param end
    *        <code>Territory</code> where the move should end
    */
-  private void performPlay(final Territory start, final Territory end, final Collection<Territory> captured, final PlayerID player) {
+  private void performPlay(final Territory start, final Territory end, final Collection<Territory> captured,
+      final PlayerID player) {
     final Collection<Unit> units = start.getUnits().getUnits();
     final String transcriptText = player.getName() + " moved from " + start.getName() + " to " + end.getName();
     m_bridge.getHistoryWriter().startEvent(transcriptText, units);
@@ -336,7 +347,6 @@ class KingsTablePlayExtendedDelegateState implements Serializable {
 
 /**
  * Utility class providing matching methods for use in King's Table.
- *
  */
 class Matches {
   private final boolean kingCanParticipateInCaptures;

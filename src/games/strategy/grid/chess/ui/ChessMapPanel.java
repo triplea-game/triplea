@@ -17,7 +17,6 @@ import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.ui.ImageScrollModel;
 
-
 public class ChessMapPanel extends GridMapPanel {
   private static final long serialVersionUID = -8631830615396608727L;
 
@@ -28,12 +27,14 @@ public class ChessMapPanel extends GridMapPanel {
 
   @Override
   protected String isValidPlay(final IGridPlayData play) {
-    return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData, 2);
+    return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData,
+        2);
   }
 
   @Override
   protected Collection<Territory> getCapturesForPlay(final IGridPlayData play) {
-    return PlayDelegate.checkForCaptures(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData);
+    return PlayDelegate.checkForCaptures(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(),
+        m_gameData);
   }
 
   /**
@@ -57,14 +58,14 @@ public class ChessMapPanel extends GridMapPanel {
       }
       g2d.setColor(backgroundColor);
       g2d.fillPolygon(p);
-
       g2d.setColor(Color.black);
       final Image image = m_images.get(at);
       if (image != null) {
         final Rectangle square = p.getBounds();
         if (at.equals(m_clickedAt)) {
-          g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5), square.y - (m_mapData.getSquareHeight() / 5),
-              square.width + (2 * m_mapData.getSquareWidth() / 5), square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
+          g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5),
+              square.y - (m_mapData.getSquareHeight() / 5), square.width + (2 * m_mapData.getSquareWidth() / 5),
+              square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
         } else {
           g2d.drawImage(image, square.x, square.y, square.width, square.height, null, null);
         }

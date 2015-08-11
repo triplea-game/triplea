@@ -42,7 +42,6 @@ import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 
-
 public class TripleA extends AbstractGameLoader implements IGameLoader {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = -8374315848374732436L;
@@ -131,7 +130,8 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         game.addDisplay(m_display);
         game.addSoundChannel(m_soundChannel);
         initializeGame();
-        connectPlayers(players, null);// technically not needed because we won't have any "local human players" in a headless game.
+        connectPlayers(players, null);// technically not needed because we won't have any "local human players" in a
+                                      // headless game.
         if (headlessFrameUI != null) {
           headlessFrameUI.setLocationRelativeTo(null);
           headlessFrameUI.setSize(700, 400);
@@ -193,17 +193,10 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
    */
   @Override
   public String[] getServerPlayerTypes() {
-    return new String[] {HUMAN_PLAYER_TYPE,
-        WEAK_COMPUTER_PLAYER_TYPE,
-        STRONG_COMPUTER_PLAYER_TYPE,
-        PRO_COMPUTER_PLAYER_TYPE,
-        DYNAMIX_COMPUTER_PLAYER_TYPE,
-        DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
+    return new String[] {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE,
+        PRO_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE, DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
   }
 
-  /*
-   * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-   */
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {
     return ITripleaDisplay.class;

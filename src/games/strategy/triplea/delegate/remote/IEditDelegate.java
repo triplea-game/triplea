@@ -14,7 +14,6 @@ import games.strategy.util.Triple;
 
 /**
  * Remote interface for EditDelegate
- *
  */
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
   public boolean getEditMode();
@@ -41,5 +40,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
 
   public String addComment(String message);
 
-  public String changePoliticalRelationships(Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges);
+  public String changePoliticalRelationships(
+      Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges);
 }

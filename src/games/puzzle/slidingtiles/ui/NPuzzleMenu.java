@@ -14,7 +14,6 @@ import games.strategy.grid.ui.GridGameMenu;
 
 /**
  * Represents the menu bar for an n-puzzle game.
- *
  */
 public class NPuzzleMenu extends GridGameMenu<GridGameFrame> {
   private static final long serialVersionUID = -5247149106915478051L;
@@ -35,7 +34,8 @@ public class NPuzzleMenu extends GridGameMenu<GridGameFrame> {
       public void actionPerformed(final ActionEvent e) {
         // html formatted string
         final String hints = "<p><b>Winning</b><br>"
-            + "Rearrange the tiles into numerical order, with the blank square in the upper left corner.</p>" + "<p><b>Moving:</b><br>"
+            + "Rearrange the tiles into numerical order, with the blank square in the upper left corner.</p>"
+            + "<p><b>Moving:</b><br>"
             + "Any square which is horizontally or vertically adjacent to the blank square may be moved into the blank square</p>";
         final JEditorPane editorPane = new JEditorPane();
         editorPane.setEditable(false);

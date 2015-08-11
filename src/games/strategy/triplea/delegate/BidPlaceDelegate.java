@@ -32,7 +32,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units,
+      final PlayerID player) {
     // we can place if no enemy units and its water
     if (to.isWater()) {
       if (Match.someMatch(units, Matches.UnitIsLand)) {
@@ -65,7 +66,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace) {
+  protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
+      final Collection<Unit> unitsToPlace) {
     final List<Territory> producers = new ArrayList<Territory>();
     producers.add(to);
     return producers;
@@ -81,9 +83,10 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player,
-      final boolean countSwitchedProductionToNeighbors,
-      final Collection<Territory> notUsableAsOtherProducers, final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
+  protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to,
+      final PlayerID player, final boolean countSwitchedProductionToNeighbors,
+      final Collection<Territory> notUsableAsOtherProducers,
+      final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     if (units == null) {
       return -1;
     }
@@ -106,14 +109,16 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
 
   // Return collection of bid units which can placed in a land territory
   @Override
-  protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units,
+      final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<Unit>();
-    final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction); // we add
-                                                                                                                             // factories
-                                                                                                                             // and
-                                                                                                                             // constructions
-                                                                                                                             // later
+    final CompositeMatch<Unit> groundUnits =
+        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction); // we add
+                                                                                        // factories
+                                                                                        // and
+                                                                                        // constructions
+                                                                                        // later
     final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));
@@ -123,7 +128,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
-          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be able to place the
+          // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
+          // able to place the
           // max placement by constructionType of each unitType
           if (skipUnit.contains(currentUnit)) {
             continue;
@@ -151,9 +157,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         continue;
       }
       typesAlreadyChecked.add(ut);
-      placeableUnits2.addAll(Match.getNMatches(placeableUnits,
-          UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("placementLimit", ut, to, player, getData()),
-          Matches.unitIsOfType(ut)));
+      placeableUnits2
+          .addAll(Match.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+              "placementLimit", ut, to, player, getData()), Matches.unitIsOfType(ut)));
     }
     return placeableUnits2;
   }

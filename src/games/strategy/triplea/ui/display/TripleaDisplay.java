@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 
-
 public class TripleaDisplay implements ITripleaDisplay {
   private IDisplayBridge m_displayBridge;
   private final TripleAFrame m_ui;
@@ -29,9 +28,6 @@ public class TripleaDisplay implements ITripleaDisplay {
     m_ui = ui;
   }
 
-  /*
-   * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
-   */
   @Override
   public void initialize(final IDisplayBridge bridge) {
     m_displayBridge = bridge;
@@ -39,46 +35,34 @@ public class TripleaDisplay implements ITripleaDisplay {
   }
 
   /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, java.util.List,
    * games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection)
    */
   @Override
-  public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-      final Map<Unit, Collection<Unit>> unit_dependents,
-      final PlayerID attacker, final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
-      final Collection<Unit> amphibiousLandAttackers) {
-    m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie,
-        defendingWaitingToDie, unit_dependents, attacker,
-        defender, isAmphibious, battleType, amphibiousLandAttackers);
+  public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
+      final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
+      final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
+      final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender,
+      final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
+    m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits,
+        attackingWaitingToDie, defendingWaitingToDie, unit_dependents, attacker, defender, isAmphibious, battleType,
+        amphibiousLandAttackers);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#listBattleSteps(games.strategy.net.GUID, java.lang.String, java.util.List)
-   */
   @Override
   public void listBattleSteps(final GUID battleID, final List<String> steps) {
     m_ui.getBattlePanel().listBattle(battleID, steps);
   }
 
   /*
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll,
    * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
    */
   @Override
   public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
-      final Collection<Unit> killed, final Collection<Unit> damaged,
-      final Map<Unit, Collection<Unit>> dependents) {
+      final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().casualtyNotification(step, dice, player, killed, damaged, dependents);
   }
 
   /*
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll,
    * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
    */
   @Override
@@ -89,22 +73,19 @@ public class TripleaDisplay implements ITripleaDisplay {
 
   @Override
   public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits,
-      final Map<Unit, Collection<Unit>> dependents) {
+      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits, dependents);
   }
-
   /*
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll,
    * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
-   *
-   * public void scrambleNotification(final GUID battleID, final String step, final PlayerID player, final Collection<Unit> scrambled, final
+   * public void scrambleNotification(final GUID battleID, final String step, final PlayerID player, final
+   * Collection<Unit> scrambled, final
    * Map<Unit, Collection<Unit>> dependents)
    * {
    * m_ui.getBattlePanel().scrambleNotification(step, player, scrambled, dependents);
    * }
-   *
-   * public void notifyScramble(final String shortMessage, final String message, final String step, final PlayerID scramblingPlayer)
+   * public void notifyScramble(final String shortMessage, final String message, final String step, final PlayerID
+   * scramblingPlayer)
    * {
    * // we just told the game to scramble, so we already know
    * if (m_ui.playing(scramblingPlayer))
@@ -113,11 +94,6 @@ public class TripleaDisplay implements ITripleaDisplay {
    * }
    */
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
-   */
   @Override
   public void battleEnd(final GUID battleID, final String message) {
     m_ui.getBattlePanel().battleEndMessage(battleID, message);
@@ -125,8 +101,6 @@ public class TripleaDisplay implements ITripleaDisplay {
 
   /*
    * )
-   *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#bombingResults(games.strategy.net.GUID, int[], int)
    */
   @Override
   public void bombingResults(final GUID battleID, final List<Die> dice, final int cost) {
@@ -134,7 +108,8 @@ public class TripleaDisplay implements ITripleaDisplay {
   }
 
   @Override
-  public void notifyRetreat(final String shortMessage, final String message, final String step, final PlayerID retreatingPlayer) {
+  public void notifyRetreat(final String shortMessage, final String message, final String step,
+      final PlayerID retreatingPlayer) {
     // we just told the game to retreat, so we already know
     if (m_ui.getLocalPlayers().playing(retreatingPlayer)) {
       return;
@@ -203,8 +178,8 @@ public class TripleaDisplay implements ITripleaDisplay {
   }
 
   @Override
-  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
-      final String message, final String title) {
+  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
+      final Collection<PlayerID> butNotThesePlayers, final String message, final String title) {
     if (playersToSendTo == null || playersToSendTo.isEmpty()) {
       return;
     }

@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- *
  * True if one match returns true.
- *
- *
  */
 public class CompositeMatchOr<T> extends CompositeMatch<T> {
   /** Creates new CompositeMatchOr */

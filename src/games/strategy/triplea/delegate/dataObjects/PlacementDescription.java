@@ -5,7 +5,6 @@ import java.util.Collection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
-
 public class PlacementDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = -3141153168992624631L;
   private final Territory m_territory;

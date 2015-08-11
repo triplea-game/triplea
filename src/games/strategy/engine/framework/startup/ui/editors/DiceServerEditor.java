@@ -16,21 +16,17 @@ import games.strategy.engine.random.PBEMDiceRoller;
 
 /**
  * An class for editing a Dice Server bean
- *
  */
 public class DiceServerEditor extends EditorPanel {
-
   private static final long serialVersionUID = -451810815037661114L;
   private final JButton m_testDiceyButton = new JButton("Test Server");
   private final JTextField m_toAddress = new JTextField();
   private final JTextField m_ccAddress = new JTextField();
   private final JTextField m_gameId = new JTextField();
-
   private final JLabel m_toLabel = new JLabel("To:");
   private final JLabel m_ccLabel = new JLabel("Cc:");
   private final JLabel m_gameIdLabel = new JLabel("Game ID:");
   private final IRemoteDiceServer m_bean;
-
 
   /**
    * Creating a new instance
@@ -40,24 +36,20 @@ public class DiceServerEditor extends EditorPanel {
    */
   public DiceServerEditor(final IRemoteDiceServer diceServer) {
     m_bean = diceServer;
-
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-
     if (m_bean.sendsEmail()) {
-
       add(m_toLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(m_toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(m_toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
+          GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
       m_toAddress.setText(m_bean.getToAddress());
       row++;
-
       add(m_ccLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(m_ccAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(m_ccAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
+          GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
       m_ccAddress.setText(m_bean.getCcAddress());
       row++;
     }
@@ -71,16 +63,13 @@ public class DiceServerEditor extends EditorPanel {
     }
     add(m_testDiceyButton, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-
     setupListeners();
   }
-
 
   /**
    * Configures the listeners for the gui components
    */
   private void setupListeners() {
-
     m_testDiceyButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -88,7 +77,6 @@ public class DiceServerEditor extends EditorPanel {
         random.test();
       }
     });
-
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
     m_toAddress.getDocument().addDocumentListener(docListener);
     m_ccAddress.getDocument().addDocumentListener(docListener);
@@ -98,12 +86,10 @@ public class DiceServerEditor extends EditorPanel {
   public boolean isBeanValid() {
     boolean toValid = true;
     boolean ccValid = true;
-
     if (getDiceServer().sendsEmail()) {
       toValid = validateTextField(m_toAddress, m_toLabel, new EmailValidator(false));
       ccValid = validateTextField(m_ccAddress, m_ccLabel, new EmailValidator(true));
     }
-
     final boolean allValid = toValid && ccValid;
     m_testDiceyButton.setEnabled(allValid);
     return allValid;
@@ -129,5 +115,4 @@ public class DiceServerEditor extends EditorPanel {
     }
     return m_bean;
   }
-
 }

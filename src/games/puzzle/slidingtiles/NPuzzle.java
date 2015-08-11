@@ -24,7 +24,6 @@ import games.strategy.grid.ui.GridMapPanel;
 
 /**
  * Main class responsible for an n-puzzle game.
- *
  */
 public class NPuzzle extends GridGame implements IGameLoader {
   private static final long serialVersionUID = 6359686118939451301L;

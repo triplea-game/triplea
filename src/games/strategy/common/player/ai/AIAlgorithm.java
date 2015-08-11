@@ -6,10 +6,7 @@ import java.util.Stack;
 
 /**
  * Utility class implementing AI game algorithms.
- *
  * Currently, minimax and alpha-beta algorithms are implemented.
- *
- * @see "Chapter 6 of Artificial Intelligence, 2nd ed. by Stuart Russell & Peter Norvig"
  */
 public class AIAlgorithm {
   public static <Play> Stack<Play> depthFirstSearch(final GameState<Play> state, final int maxDepth) {
@@ -29,8 +26,8 @@ public class AIAlgorithm {
     }
   }
 
-  private static <Play> Stack<Play> dfs(final GameState<Play> state, final Set<GameState<Play>> visitedStates, Stack<Play> plays,
-      final int depth, final int maxDepth) {
+  private static <Play> Stack<Play> dfs(final GameState<Play> state, final Set<GameState<Play>> visitedStates,
+      Stack<Play> plays, final int depth, final int maxDepth) {
     final int playsSoFar = plays.size();
     if (depth < maxDepth) {
       int childCounter = -1;
@@ -39,10 +36,12 @@ public class AIAlgorithm {
         childCounter++;
         // Have we seen this child state before?
         if (!visitedStates.contains(child)) {
-          // System.out.println("Considering child " + child + " #"+childCounter + " at depth " + depth + " created by move " +
+          // System.out.println("Considering child " + child + " #"+childCounter + " at depth " + depth + " created by
+          // move " +
           // child.getMove());
           // Mark that we've now seen this child state
-          // System.out.println("We have now seen " + child + " at depth " + depth + " created by move " + child.getMove());
+          // System.out.println("We have now seen " + child + " at depth " + depth + " created by move " +
+          // child.getMove());
           visitedStates.add(child);
           // Is the child state a win state?
           if (child.gameIsOver()) {
@@ -58,7 +57,8 @@ public class AIAlgorithm {
             }
           }
         }
-        // else System.out.println("HAVE already seen " + child + " #"+childCounter + " now at depth " + depth+ " created by move " +
+        // else System.out.println("HAVE already seen " + child + " #"+childCounter + " now at depth " + depth+ "
+        // created by move " +
         // child.getMove());
       }
     }
@@ -182,7 +182,6 @@ public class AIAlgorithm {
     }
     return new Pair<Float, Play>(value, bestMove);
   }
-
 
   static class Pair<First, Second> {
     private final First m_first;

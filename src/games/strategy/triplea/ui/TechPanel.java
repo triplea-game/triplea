@@ -37,7 +37,6 @@ import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
-
 public class TechPanel extends ActionPanel {
   private static final long serialVersionUID = -6477919141575138007L;
   private final JLabel m_actionLabel = new JLabel();
@@ -68,7 +67,8 @@ public class TechPanel extends ActionPanel {
           add(new JButton(DontBother));
         }
         /*
-         * TripleAFrame will now center on capital whenever there is a new step player who is different from the last step player
+         * TripleAFrame will now center on capital whenever there is a new step player who is different from the last
+         * step player
          * getData().acquireReadLock();
          * try
          * {
@@ -110,7 +110,8 @@ public class TechPanel extends ActionPanel {
   private List<TechnologyFrontier> getAvailableCategories() {
     final Collection<TechnologyFrontier> currentAdvances =
         TechTracker.getFullyResearchedPlayerTechCategories(getData(), getCurrentPlayer());
-    final Collection<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(getData(), getCurrentPlayer());
+    final Collection<TechnologyFrontier> allAdvances =
+        TechAdvance.getPlayerTechCategories(getData(), getCurrentPlayer());
     return Util.difference(allAdvances, currentAdvances);
   }
 
@@ -132,8 +133,8 @@ public class TechPanel extends ActionPanel {
         panel.add(list, BorderLayout.CENTER);
         panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
         list.setSelectedIndex(0);
-        final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select advance",
-            JOptionPane.PLAIN_MESSAGE);
+        final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel,
+            "Select advance", JOptionPane.PLAIN_MESSAGE);
         if (choice != JOptionPane.OK_OPTION) {
           return;
         }
@@ -142,8 +143,8 @@ public class TechPanel extends ActionPanel {
       final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
       final String message = "Roll Tech";
       final TechRollPanel techRollPanel = new TechRollPanel(PUs, getCurrentPlayer());
-      final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message, JOptionPane.OK_CANCEL_OPTION,
-          JOptionPane.PLAIN_MESSAGE, null);
+      final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message,
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
       if (choice != JOptionPane.OK_OPTION) {
         return;
       }
@@ -205,7 +206,8 @@ public class TechPanel extends ActionPanel {
       panel.add(list, BorderLayout.CENTER);
       panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
       list.setSelectedIndex(0);
-      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
+          JOptionPane.PLAIN_MESSAGE);
       category = (TechnologyFrontier) list.getSelectedValue();
       final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
       final String message = "Purchase Tech Tokens";
@@ -218,8 +220,8 @@ public class TechPanel extends ActionPanel {
         helpPay = null;
       }
       final TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, m_currTokens, currentPlayer, helpPay);
-      final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message, JOptionPane.OK_CANCEL_OPTION,
-          JOptionPane.PLAIN_MESSAGE, null);
+      final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message,
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
       if (choice != JOptionPane.OK_OPTION) {
         return;
       }
@@ -262,7 +264,8 @@ public class TechPanel extends ActionPanel {
         panel.add(list, BorderLayout.CENTER);
         panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
         list.setSelectedIndex(0);
-        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
+            JOptionPane.PLAIN_MESSAGE);
         category = (TechnologyFrontier) list.getSelectedValue();
         m_techRoll = new TechRoll(category, m_currTokens);
       } else {
@@ -316,14 +319,14 @@ class TechRollPanel extends JPanel {
     final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(m_player));
     setLabel(PUs);
     final int space = 0;
-    add(title,
-        new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));
+    add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(5, 5, space, space), 0, 0));
     add(m_textField, new GridBagConstraints(0, 1, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(8, 10, space, space), 0, 0));
-    add(costLabel,
-        new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 5, space, 2), 0, 0));
-    add(m_left,
-        new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
+    add(costLabel, new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(8, 5, space, 2), 0, 0));
+    add(m_left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 5, space, space), 0, 0));
   }
 
   private void setLabel(final int PUs) {
@@ -377,33 +380,33 @@ class TechTokenPanel extends JPanel {
     setLabel(0);
     setTokens(currTokens);
     final int space = 0;
-    add(title,
-        new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));
+    add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(5, 5, space, space), 0, 0));
     add(m_textField, new GridBagConstraints(0, 1, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(8, 10, space, space), 0, 0));
-    add(costLabel,
-        new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 5, space, 2), 0, 0));
-    add(m_left,
-        new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
+    add(costLabel, new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(8, 5, space, 2), 0, 0));
+    add(m_left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 5, space, space), 0, 0));
     add(m_right, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(10, 130, space, space), 0, 0));
-    add(m_totalCost,
-        new GridBagConstraints(0, 3, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
+    add(m_totalCost, new GridBagConstraints(0, 3, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 5, space, space), 0, 0));
     if (helpPay != null && !helpPay.isEmpty()) {
       if (m_whoPaysTextFields == null) {
         m_whoPaysTextFields = new HashMap<PlayerID, ScrollableTextField>();
       }
       helpPay.remove(player);
       int row = 4;
-      add(new JLabel("Nations Paying How Much:"),
-          new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(30, 6, 6, 6), 0, 0));
+      add(new JLabel("Nations Paying How Much:"), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST,
+          GridBagConstraints.NONE, new Insets(30, 6, 6, 6), 0, 0));
       row++;
-      add(new JLabel(player.getName()),
-          new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
-      add(m_playerPUField,
-          new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
-      add(new JLabel("PUs"),
-          new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+      add(new JLabel(player.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
+          GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+      add(m_playerPUField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
+          GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+      add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
+          GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
       row++;
       for (final PlayerID p : helpPay) {
         final int helperPUs = p.getResources().getQuantity(Constants.PUS);
@@ -412,12 +415,12 @@ class TechTokenPanel extends JPanel {
           whoPaysTextField.addChangeListener(setWidgetAction());
           m_whoPaysTextFields.put(p, whoPaysTextField);
           // TODO: force players to pay if it goes above the cost m_player can afford.
-          add(new JLabel(p.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-              new Insets(6, 6, 6, 6), 0, 0));
-          add(whoPaysTextField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-              new Insets(6, 6, 6, 6), 0, 0));
-          add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-              new Insets(6, 6, 6, 6), 0, 0));
+          add(new JLabel(p.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
+              GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+          add(whoPaysTextField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
+              GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+          add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
+              GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
           row++;
         }
       }

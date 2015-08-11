@@ -33,7 +33,6 @@ public class RandomAI extends GridAbstractAI {
     final GameData data = getGameData();
     // if (playDel.haveTwoPassedInARow())
     // return;
-
     pause();
     String error;
     final Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> totalMoves;
@@ -89,10 +88,12 @@ public class RandomAI extends GridAbstractAI {
     }
   }
 
-  static Comparator<Tuple<Territory, Collection<Territory>>> getBestCaptureComparator(final PlayerID player, final GameData data) {
+  static Comparator<Tuple<Territory, Collection<Territory>>> getBestCaptureComparator(final PlayerID player,
+      final GameData data) {
     return new Comparator<Tuple<Territory, Collection<Territory>>>() {
       @Override
-      public int compare(final Tuple<Territory, Collection<Territory>> t1, final Tuple<Territory, Collection<Territory>> t2) {
+      public int compare(final Tuple<Territory, Collection<Territory>> t1,
+          final Tuple<Territory, Collection<Territory>> t2) {
         if ((t1 == null && t2 == null) || t1 == t2) {
           return 0;
         }

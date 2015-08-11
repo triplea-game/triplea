@@ -18,7 +18,6 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Responsible for performing a move in a game of n-puzzle.
- *
  */
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate {
   private GameMap map;
@@ -143,7 +142,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     final Tile toAttachment = (Tile) to.getAttachment("tile");
     final int fromValue = fromAttachment.getValue();
     final int toValue = toAttachment.getValue();
-    final Change fromChange = ChangeFactory.attachmentPropertyChange(fromAttachment, Integer.toString(toValue), "value");
+    final Change fromChange =
+        ChangeFactory.attachmentPropertyChange(fromAttachment, Integer.toString(toValue), "value");
     final Change toChange = ChangeFactory.attachmentPropertyChange(toAttachment, Integer.toString(fromValue), "value");
     final CompositeChange change = new CompositeChange();
     change.add(fromChange);

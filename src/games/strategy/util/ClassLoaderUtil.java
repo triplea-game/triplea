@@ -1,40 +1,5 @@
 package games.strategy.util;
 
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License"). You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
- * or glassfish/bootstrap/legal/LICENSE.txt. See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
- * Sun designates this particular file as subject to the "Classpath" exception
- * as provided by Sun in the GPL Version 2 section of the License file that
- * accompanied this code. If applicable, add the following below the License
- * Header, with the fields enclosed by brackets [] replaced by your own
- * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
- *
- * Contributor(s):
- *
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license." If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above. However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
- */
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -52,12 +17,9 @@ import sun.misc.URLClassPath;
 
 /**
  * Provides utility functions related to URLClassLoaders or subclasses of it.
- *
  * W A R N I N G
- *
  * This class uses undocumented, unpublished, private data structures inside
  * java.net.URLClassLoader and sun.misc.URLClassPath. Use with extreme caution.
- *
  */
 public class ClassLoaderUtil {
   /** records whether initialization has been completed */
@@ -127,7 +89,8 @@ public class ClassLoaderUtil {
       field.setAccessible(true);
       return field;
     } catch (final NoSuchFieldException nsfe) {
-      final NoSuchFieldException e = new NoSuchFieldException(getMessage("classloaderutil.errorGettingField", fieldName));
+      final NoSuchFieldException e =
+          new NoSuchFieldException(getMessage("classloaderutil.errorGettingField", fieldName));
       e.initCause(nsfe);
       throw e;
     }
@@ -244,7 +207,6 @@ public class ClassLoaderUtil {
        * the released class loader will trigger an exception if the
        * class or resource would have been resolved by the class
        * loader (and no other) if it had not been released.
-       *
        * The list of URLs might provide some hints to the person as to where
        * in the code the class loader was set up, which might in turn suggest
        * where in the code the class loader needs to stop being used.
@@ -254,7 +216,6 @@ public class ClassLoaderUtil {
        */
       /*
        * For each loader, close the jar file associated with that loader.
-       *
        * The URLClassPath's use of loaders is sync-ed on the entire URLClassPath
        * object.
        */
@@ -282,7 +243,8 @@ public class ClassLoaderUtil {
                    * could not be closed and add it to the list
                    * of IOExceptions to be returned to the caller.
                    */
-                  final String jarFileName = (jarFile == null) ? getMessage("classloaderutil.jarFileNameNotAvailable") : jarFile.getName();
+                  final String jarFileName =
+                      (jarFile == null) ? getMessage("classloaderutil.jarFileNameNotAvailable") : jarFile.getName();
                   final String msg = getMessage("classloaderutil.errorClosingJar", jarFileName);
                   final IOException newIOE = new IOException(msg);
                   newIOE.initCause(ioe);

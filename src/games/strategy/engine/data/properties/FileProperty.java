@@ -19,8 +19,8 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 /**
  * User editable property representing a file.
  * <p>
- * Presents a clickable label with the currently selected file name, through which a file dialog panel is accessible to change the file.
- *
+ * Presents a clickable label with the currently selected file name, through which a file dialog panel is accessible to
+ * change the file.
  */
 public class FileProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games

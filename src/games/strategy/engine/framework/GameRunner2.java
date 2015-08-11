@@ -59,7 +59,6 @@ public class GameRunner2 {
   public static final String HTTP_PROXYPORT = "http.proxyPort";
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
-
   // argument options below:
   public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
   public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
@@ -89,29 +88,36 @@ public class GameRunner2 {
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
   // non-commandline-argument-properties (for preferences)
   // first time we've run this version of triplea?
-  private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY = "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
+  private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY =
+      "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
   private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
   public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly"; // only for Online?
   public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx"; // what should our xmx be approximately?
   public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
   public static final String SYSTEM_INI = "system.ini";
-
   private static WaitWindow s_waitWindow;
   private static CountDownLatch s_countDownLatch;
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
-  public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME = Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
-  public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10; // need time for network
-                                                                                                                 // transmission of a large
-                                                                                                                 // game data
-  public static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME = Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
+  public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
+      Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
+  public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10; // need
+                                                                                                                 // time
+                                                                                                                 // for
+                                                                                                                 // network
+                                                                                                                 // transmission
+                                                                                                                 // of a
+                                                                                                                 // large
+                                                                                                                 // game
+                                                                                                                 // data
+  public static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
+      Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
   public static final int ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME = 10;
   public static final int MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME =
       MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110;
   public static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME =
-      Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900), DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME
-          + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
-
+      Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
+          DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
   public static enum ProxyChoice {
     NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
@@ -119,35 +125,27 @@ public class GameRunner2 {
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
-        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY,
-        TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
-        TRIPLEA_ENGINE_VERSION_BIN,
-        PROXY_HOST, PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET};
+        TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT,
+        LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, PROXY_HOST, PROXY_PORT,
+        TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, TRIPLEA_MEMORY_SET};
   }
 
   private static void usage() {
-    System.out.println("Arguments\n"
-        + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-        + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
-        + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n"
-        + "   " + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n"
-        + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
-        + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
-        + "   " + LOBBY_PORT + "=<LOBBY_PORT>\n"
-        + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-        + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
-        + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
-        + "   " + PROXY_HOST + "=<Proxy_Host>\n"
-        + "   " + PROXY_PORT + "=<Proxy_Port>\n"
-        + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n"
-        + "\n" + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
-        + "taken as the name of the file to load.\n" + "\n"
-        + "Example\n" + "   to start a game using the given file:\n" + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n"
-        + "   or\n" + "\n" + "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n"
-        + "   to connect to a remote host:\n" + "\n"
+    System.out.println("Arguments\n" + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n" + "   "
+        + TRIPLEA_SERVER_PROPERTY + "=true\n" + "   " + TRIPLEA_CLIENT_PROPERTY + "=true\n" + "   "
+        + TRIPLEA_HOST_PROPERTY + "=<HOST_IP>\n" + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n" + "   "
+        + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n" + "   " + LOBBY_PORT + "=<LOBBY_PORT>\n" + "   " + LOBBY_HOST
+        + "=<LOBBY_HOST>\n" + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n" + "   " + LOBBY_GAME_HOSTED_BY
+        + "=<LOBBY_GAME_HOSTED_BY>\n" + "   " + PROXY_HOST + "=<Proxy_Host>\n" + "   " + PROXY_PORT + "=<Proxy_Port>\n"
+        + "   " + TRIPLEA_MEMORY_SET + "=true/false <did you set the xmx manually?>\n" + "\n"
+        + "if there is only one argument, and it does not start with triplea.game, the argument will be \n"
+        + "taken as the name of the file to load.\n" + "\n" + "Example\n" + "   to start a game using the given file:\n"
+        + "\n" + "   triplea /home/sgb/games/test.xml\n" + "\n" + "   or\n" + "\n"
+        + "   triplea triplea.game=/home/sgb/games/test.xml\n" + "\n" + "   to connect to a remote host:\n" + "\n"
         + "   triplea triplea.client=true triplea.host=127.0.0.0 triplea.port=3300 triplea.name=Paul\n" + "\n"
         + "   to start a server with the given game\n" + "\n"
-        + "   triplea triplea.game=/home/sgb/games/test.xml triplea.server=true triplea.port=3300 triplea.name=Allan" + "\n"
+        + "   triplea triplea.game=/home/sgb/games/test.xml triplea.server=true triplea.port=3300 triplea.name=Allan"
+        + "\n"
         + "   to start a server, you can optionally password protect the game using triplea.server.password=foo");
   }
 
@@ -203,7 +201,6 @@ public class GameRunner2 {
    */
   private static void handleCommandLineArgs(final String[] args) {
     final String[] properties = getProperties();
-
     // if only 1 arg, it might be the game path, find it (like if we are double clicking a savegame)
     // optionally, it may not start with the property name
     if (args.length == 1) {
@@ -219,7 +216,6 @@ public class GameRunner2 {
         args[0] = TRIPLEA_GAME_PROPERTY + "=" + args[0];
       }
     }
-
     boolean usagePrinted = false;
     for (final String arg1 : args) {
       boolean found = false;
@@ -284,7 +280,8 @@ public class GameRunner2 {
             // FYI if you are getting a null pointer exception in Substance, like this:
             // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities.getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
             // Then it is because you included the swingx substance library without including swingx.
-            // You can solve by including both swingx libraries or removing both, or by setting the look and feel twice in a row.
+            // You can solve by including both swingx libraries or removing both, or by setting the look and feel twice
+            // in a row.
           } catch (final Throwable t) {
             if (!GameRunner.isMac()) {
               try {
@@ -342,7 +339,8 @@ public class GameRunner2 {
   private static void checkForMemoryXMX() {
     final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, "false");
     final boolean memSet = Boolean.parseBoolean(memSetString);
-    // if we have already set the memory, then return. (example: we used process runner to create a new triplea with a specific memory)
+    // if we have already set the memory, then return. (example: we used process runner to create a new triplea with a
+    // specific memory)
     if (memSet) {
       return;
     }
@@ -363,7 +361,8 @@ public class GameRunner2 {
     final long currentMaxMemory = Runtime.getRuntime().maxMemory();
     System.out.println("Current max memory: " + currentMaxMemory + ";  and new xmx should be: " + xmx);
     final long diff = Math.abs(currentMaxMemory - xmx);
-    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%, so if our difference is less than 22% we should just ignore the
+    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%, so if our difference is less than 22% we
+    // should just ignore the
     // difference
     if (diff <= xmx * 0.22) {
       return;
@@ -390,7 +389,8 @@ public class GameRunner2 {
     final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
     final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
     final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
-    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value. Just something to be aware of.
+    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value. Just something to be
+    // aware of.
     long max = Runtime.getRuntime().maxMemory();
     if (!useDefaultMaxMemory && maxMemoryString.length() > 0) {
       try {
@@ -432,7 +432,8 @@ public class GameRunner2 {
     writeSystemIni(prop, false);
   }
 
-  public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly, final Properties prop) {
+  public static void setUseMaxMemorySettingOnlyForOnlineJoinOrHost(final boolean useForOnlineOnly,
+      final Properties prop) {
     prop.put(TRIPLEA_MEMORY_ONLINE_ONLY, "" + useForOnlineOnly);
   }
 
@@ -685,9 +686,8 @@ public class GameRunner2 {
   }
 
   public static int getServerStartGameSyncWaitTime() {
-    return Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME,
-        Preferences.userNodeForPackage(GameRunner2.class).getInt(TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME,
-            DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME));
+    return Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, Preferences.userNodeForPackage(GameRunner2.class)
+        .getInt(TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME));
   }
 
   public static void resetServerStartGameSyncWaitTime() {
@@ -759,7 +759,8 @@ public class GameRunner2 {
           } catch (final InterruptedException e) {
           }
         }
-        // the main screen may take just a little itty bit longer after releasing the latch, so sleep for just a little bit.
+        // the main screen may take just a little itty bit longer after releasing the latch, so sleep for just a little
+        // bit.
         try {
           Thread.sleep(500);
         } catch (final InterruptedException e) {
@@ -797,10 +798,10 @@ public class GameRunner2 {
         pref.sync();
       } catch (final BackingStoreException e) {
       }
-
       // System.out.println("Checking for latest version");
       final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
-      // System.out.println("Check complete: " + (latestEngineOut == null ? "null" : latestEngineOut.getLatestVersionOut().toString()));
+      // System.out.println("Check complete: " + (latestEngineOut == null ? "null" :
+      // latestEngineOut.getLatestVersionOut().toString()));
       if (latestEngineOut == null) {
         return false;
       }
@@ -808,9 +809,8 @@ public class GameRunner2 {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
-            EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(false), "Please Update TripleA",
-                JOptionPane.INFORMATION_MESSAGE, false,
-                new CountDownLatchHandler(true));
+            EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(false),
+                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));
           }
         });
         return true;
@@ -820,9 +820,8 @@ public class GameRunner2 {
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(), "What is New?",
-                  JOptionPane.INFORMATION_MESSAGE, false,
-                  new CountDownLatchHandler(true));
+              EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(),
+                  "What is New?", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true));
             }
           });
           pref.putBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, false);
@@ -861,7 +860,6 @@ public class GameRunner2 {
         pref.sync();
       } catch (final BackingStoreException e) {
       }
-
       // System.out.println("Checking for latest maps");
       final Vector<String> sites = DownloadMapDialog.getStoredDownloadSites();
       if (sites == null || sites.isEmpty()) {
@@ -872,7 +870,8 @@ public class GameRunner2 {
         return false;
       }
       final DownloadRunnable download = new DownloadRunnable(selectedUrl, true);
-      BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", download, new CountDownLatchHandler(true));
+      BackgroundTaskRunner.runInBackground(null, "Checking for out-of-date Maps.", download,
+          new CountDownLatchHandler(true));
       if (download.getError() != null) {
         return false;
       }
@@ -889,12 +888,13 @@ public class GameRunner2 {
         for (final String map : outOfDateMaps) {
           text.append("<li> " + map + "</li>");
         }
-        text.append("</ul><br><br>You can update them by clicking on the 'Download Maps' button on the start screen of TripleA.</html>");
+        text.append(
+            "</ul><br><br>You can update them by clicking on the 'Download Maps' button on the start screen of TripleA.</html>");
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
-            EventThreadJOptionPane.showMessageDialog(null, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE, false,
-                new CountDownLatchHandler(true));
+            EventThreadJOptionPane.showMessageDialog(null, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE,
+                false, new CountDownLatchHandler(true));
           }
         });
         return true;
@@ -907,7 +907,6 @@ public class GameRunner2 {
 
   /**
    * Our jar is named with engine number and we are in "old" folder.
-   *
    */
   public static boolean areWeOldExtraJar() {
     final URL url = GameRunner2.class.getResource("GameRunner2.class");
@@ -919,8 +918,8 @@ public class GameRunner2 {
     }
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
     if (fileName.contains(tripleaJarNameWithEngineVersion)) {
-      final String subString =
-          fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
+      final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
+          fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
       final File f = new File(subString);
       if (!f.exists()) {
         throw new IllegalStateException("File not found:" + f);
@@ -991,7 +990,6 @@ public class GameRunner2 {
     } catch (final UnsupportedEncodingException e) {
       throw new RuntimeException("Non " + CharEncoding.UTF_8 + " encoding in path is not supported", e);
     }
-
     final String insideJar = ".jar!";
     final int jarIndex = pathOfThisClass.indexOf(insideJar);
     File f;
@@ -1023,15 +1021,14 @@ public class GameRunner2 {
       }
       if (!f.exists()) {
         final File fallback = new File(System.getProperties().getProperty("user.dir"));
-        System.err.println(String.format("Could not find root folder %s fallback to %s (env variable user.dir)", f.getAbsolutePath(),
-            fallback.getAbsolutePath()));
+        System.err.println(String.format("Could not find root folder %s fallback to %s (env variable user.dir)",
+            f.getAbsolutePath(), fallback.getAbsolutePath()));
         f = fallback;
       }
     }
     if (!f.exists()) {
       throw new IllegalStateException(String.format("Root folder %s does not exist", f.getAbsolutePath()));
     }
-
     return f;
   }
 }

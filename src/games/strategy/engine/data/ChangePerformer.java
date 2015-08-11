@@ -3,13 +3,11 @@ package games.strategy.engine.data;
 import javax.swing.SwingUtilities;
 
 /**
- *
- *
- *         Allows changes to be performed outside of the data package.
- *         Should not be created by non engine code.
- *         Made this since I didn't want to unprotect the Change.perform method,
- *         but didn't want to put everything that needed to
- *         perform a change in the data package.
+ * Allows changes to be performed outside of the data package.
+ * Should not be created by non engine code.
+ * Made this since I didn't want to unprotect the Change.perform method,
+ * but didn't want to put everything that needed to
+ * perform a change in the data package.
  */
 public class ChangePerformer {
   private final GameData m_data;

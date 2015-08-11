@@ -27,8 +27,6 @@ import games.strategy.util.CountDownLatchHandler;
 
 /**
  * Abstraction by veqryn.
- *
- *
  */
 public abstract class AbstractUIContext implements IUIContext {
   // static
@@ -50,7 +48,8 @@ public abstract class AbstractUIContext implements IUIContext {
   protected final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
   protected final List<Active> m_activeToDeactivate = new ArrayList<Active>();
   protected final CountDownLatchHandler m_latchesToCloseOnShutdown = new CountDownLatchHandler(false); // List<CountDownLatch>
-                                                                                                       // m_latchesToCloseOnShutdown = new
+                                                                                                       // m_latchesToCloseOnShutdown
+                                                                                                       // = new
                                                                                                        // ArrayList<CountDownLatch>();
   protected LocalPlayers m_localPlayers;
   protected double m_scale = 1;
@@ -249,7 +248,8 @@ public abstract class AbstractUIContext implements IUIContext {
         // A real life example: player disconnects while you have the battle calc open.
         // Non-EDT thread does shutdown on IGame and UIContext, causing btl calc to shutdown, which calls the
         // window closed event on the EDT, and waits for the lock on UIContext to removeShutdownWindow, meanwhile
-        // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a deadlock.
+        // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a
+        // deadlock.
         window.dispose();
         // there is a bug in java (1.50._06 for linux at least)
         // where frames are not garbage collected.
@@ -307,7 +307,6 @@ public abstract class AbstractUIContext implements IUIContext {
    * }
    * }
    */
-
   @Override
   public boolean isShutDown() {
     return m_isShutDown;
@@ -342,7 +341,6 @@ public abstract class AbstractUIContext implements IUIContext {
 
   /**
    * returns the map skins for the game data.
-   *
    * returns is a map of display-name -> map directory
    */
   public static Map<String, String> getSkins(final GameData data) {
@@ -364,7 +362,8 @@ public abstract class AbstractUIContext implements IUIContext {
         // jar files
         if (f.getName().endsWith(".zip") && f.getName().startsWith(mapName + "-")) {
           final String nameWithExtension = f.getName().substring(f.getName().indexOf('-') + 1);
-          rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4), f.getName().substring(0, f.getName().length() - 4));
+          rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4),
+              f.getName().substring(0, f.getName().length() - 4));
         }
       }
       // directories

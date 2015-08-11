@@ -23,15 +23,10 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
- *
- *
- *          A large image that can be scrolled according to a ImageScrollModel.
- *          Generally used in conjunction with a ImageScrollerSmallView.
- *
- *
- *          We do not take care of drawing ourselves. All we do is keep track of
- *          our location and size. Subclasses must take care of rendering
- *
+ * A large image that can be scrolled according to a ImageScrollModel.
+ * Generally used in conjunction with a ImageScrollerSmallView.
+ * We do not take care of drawing ourselves. All we do is keep track of
+ * our location and size. Subclasses must take care of rendering
  */
 public class ImageScrollerLargeView extends JComponent {
   private static final long serialVersionUID = -7212817233833868483L;
@@ -185,7 +180,6 @@ public class ImageScrollerLargeView extends JComponent {
      * requestFocusInWindow();
      * }
      */
-
     @Override
     public void mouseReleased(final MouseEvent e) {
       requestFocusInWindow();
@@ -369,7 +363,6 @@ public class ImageScrollerLargeView extends JComponent {
   public int getYOffset() {
     return m_model.getY();
   }
-
 
   private class Scroller implements Runnable {
     @Override

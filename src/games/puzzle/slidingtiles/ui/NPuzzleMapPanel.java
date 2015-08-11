@@ -34,7 +34,6 @@ import games.strategy.util.Tuple;
 
 /**
  * Custom component for displaying a n-puzzle gameboard.
- *
  */
 public class NPuzzleMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 981372652838512191L;
@@ -87,9 +86,11 @@ public class NPuzzleMapPanel extends GridMapPanel {
     // g2d.fillRect(0, 0, getWidth(), getHeight());
     g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
     g2d.setColor(Color.white);
-    g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(), m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
+    g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(),
+        m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
         m_model.getMaxHeight() - (m_mapData.getBevelHeight() * 2));
-    for (final Map.Entry<Territory, Polygon> entry : nPuzzleMapData.getTerritoryPolygons(m_gameData.getMap()).entrySet()) {
+    for (final Map.Entry<Territory, Polygon> entry : nPuzzleMapData.getTerritoryPolygons(m_gameData.getMap())
+        .entrySet()) {
       final Polygon p = entry.getValue();
       final Territory at = entry.getKey();
       final Tile tile = (Tile) at.getAttachment("tile");
@@ -100,12 +101,11 @@ public class NPuzzleMapPanel extends GridMapPanel {
           final Rectangle tileData = nPuzzleMapData.getLocation(value);
           if (m_backgroundImage == null) {
             g2d.setColor(Color.black);
-            g2d.drawString(Integer.toString(value), square.x + (square.width * 5 / 12), square.y + (square.height * 7 / 12));
+            g2d.drawString(Integer.toString(value), square.x + (square.width * 5 / 12),
+                square.y + (square.height * 7 / 12));
           } else if (tileData != null) {
-            g2d.drawImage(m_backgroundImage, square.x, square.y, square.x + square.width, square.y + square.height, tileData.x, tileData.y,
-                tileData.x + tileData.width, tileData.y
-                    + tileData.height,
-                this);
+            g2d.drawImage(m_backgroundImage, square.x, square.y, square.x + square.width, square.y + square.height,
+                tileData.x, tileData.y, tileData.x + tileData.width, tileData.y + tileData.height, this);
           } else {
             g2d.setColor(Color.white);
             g2d.fillRect(square.x, square.y, square.width, square.height);
@@ -130,8 +130,10 @@ public class NPuzzleMapPanel extends GridMapPanel {
    * @param bridge
    *        the bridge for player
    * @param waiting
-   *        a <code>CountDownLatch</code> used to wait for user input - must be non-null and have and have <code>getCount()==1</code>
-   * @return PlayData representing a play, or <code>null</code> if the play started and stopped on the same <code>Territory</code>
+   *        a <code>CountDownLatch</code> used to wait for user input - must be non-null and have and have
+   *        <code>getCount()==1</code>
+   * @return PlayData representing a play, or <code>null</code> if the play started and stopped on the same
+   *         <code>Territory</code>
    * @throws InterruptedException
    *         if the play was interrupted
    */
@@ -177,7 +179,8 @@ public class NPuzzleMapPanel extends GridMapPanel {
   }
 
   @Override
-  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player) {
+  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn,
+      final PlayerID player) {
     return null;
   }
 }

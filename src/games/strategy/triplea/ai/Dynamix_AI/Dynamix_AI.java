@@ -60,28 +60,35 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
- *
- *         2010-2011
+ * 2010-2011
  */
 public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
   private final static Logger s_logger = Logger.getLogger(Dynamix_AI.class.getName());
-
-  private static final IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("Dynamix_AI"); // if non-static, then only need 1
-                                                                                                        // for the entire AI instance and
-                                                                                                        // must be shutdown when AI is
+  private static final IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("Dynamix_AI"); // if
+                                                                                                        // non-static,
+                                                                                                        // then only
+                                                                                                        // need 1
+                                                                                                        // for the
+                                                                                                        // entire AI
+                                                                                                        // instance and
+                                                                                                        // must be
+                                                                                                        // shutdown when
+                                                                                                        // AI is
                                                                                                         // gc'ed.
 
   /**
    * Some notes on using the Dynamix logger:
-   *
-   * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down in the call stack to
+   * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down
+   * in the call stack to
    * mean more log message indentation.
-   * For example, these base logs have no indentation before them, but the base logs in the DoCombatMove class will have two spaces inserted
+   * For example, these base logs have no indentation before them, but the base logs in the DoCombatMove class will have
+   * two spaces inserted
    * at the start, and the level below that, four spaces.
-   * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the indentation.
-   *
+   * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the
+   * indentation.
    * Just keep these things in mind while adding new logging code.
-   * (P.S. For multiple reasons, it is strongly suggested that you use DUtils.Log instead of writing directly to the logger returned by this
+   * (P.S. For multiple reasons, it is strongly suggested that you use DUtils.Log instead of writing directly to the
+   * logger returned by this
    * method.)
    */
   public static Logger GetStaticLogger() {
@@ -92,7 +99,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     super(name, type);
   }
 
-  // These static dynamix AI instances are going to be used by the settings window to let the player change AI goals, aggresiveness, etc.
+  // These static dynamix AI instances are going to be used by the settings window to let the player change AI goals,
+  // aggresiveness, etc.
   private static final List<Dynamix_AI> s_dAIInstances = new ArrayList<Dynamix_AI>();
 
   public static void ClearAIInstancesMemory() {
@@ -131,7 +139,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
    */
   public static void clearStaticInstances() {
     s_dAIInstances.clear();
-    s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game is exited.
+    s_battleCalculator.setGameData(null); // is static, set to null so that we don't keep the data around after a game
+                                          // is exited.
     GlobalCenter.clearStaticInstances();
     FactoryCenter.ClearStaticInstances();
     KnowledgeCenter.ClearStaticInstances();
@@ -150,7 +159,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     DUtils.Log(Level.FINE, "Initializing Dynamix_AI...");
     clearStaticInstances();
     GlobalCenter.Initialize(CachedInstanceCenter.CachedGameData);
-    CachedInstanceCenter.CachedBattleTracker = DelegateFinder.battleDelegate(CachedInstanceCenter.CachedGameData).getBattleTracker();
+    CachedInstanceCenter.CachedBattleTracker =
+        DelegateFinder.battleDelegate(CachedInstanceCenter.CachedGameData).getBattleTracker();
   }
 
   public static void ShowSettingsWindow() {
@@ -186,7 +196,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
   public static long GetTimeTillNextScheduledActionDisplay() {
     // If we're not in a phase that has pausing enabled
-    if (!DUtils.ToList(DUtils.ToArray(PhaseType.Purchase, PhaseType.Combat_Move, PhaseType.Non_Combat_Move, PhaseType.Place))
+    if (!DUtils
+        .ToList(DUtils.ToArray(PhaseType.Purchase, PhaseType.Combat_Move, PhaseType.Non_Combat_Move, PhaseType.Place))
         .contains(GlobalCenter.CurrentPhaseType)) {
       return -1;
     }
@@ -222,7 +233,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
       ThreatInvalidationCenter.NotifyStartOfRound();
       ReconsiderSignalCenter.NotifyStartOfRound();
       StrategyCenter.NotifyStartOfRound();
-      GlobalCenter.CurrentPlayer = PlayerID.NULL_PLAYERID; // Reset current player to re-enable trigger in NotifyPlayer method
+      GlobalCenter.CurrentPlayer = PlayerID.NULL_PLAYERID; // Reset current player to re-enable trigger in NotifyPlayer
+                                                           // method
     }
   }
 
@@ -233,9 +245,11 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
     if (GlobalCenter.CurrentPlayer != player) {
       GlobalCenter.CurrentPlayer = player;
       DUtils.Log(Level.FINE, "-----Start of player's turn notification sent out. Player: {0}-----", player.getName());
-      s_battleCalculator.setGameData(getGameData());; // Refresh DOddsCalculator game data each time the player changes, to keep it up to
-                                                      // date
-      GlobalCenter.CurrentPhaseType = PhaseType.Unknown; // Reset current phase type to re-enable trigger in NotifyPhaseType method
+      s_battleCalculator.setGameData(getGameData());
+      ; // Refresh DOddsCalculator game data each time the player changes, to keep it up to
+        // date
+      GlobalCenter.CurrentPhaseType = PhaseType.Unknown; // Reset current phase type to re-enable trigger in
+                                                         // NotifyPhaseType method
     }
   }
 
@@ -250,7 +264,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   }
 
   @Override
-  protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
+  protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+      final PlayerID player) {
     NotifyGameRound(data);
     NotifyPlayer(player);
     NotifyPhaseType(PhaseType.Place);
@@ -263,8 +278,10 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   int m_moveLastType = -1;
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {
-    UnitGroup.movesCount = 0; // Dynamix is able to undo it's moves, via UnitGroup, but we need to reset move count each phase for it to
+  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+      final PlayerID player) {
+    UnitGroup.movesCount = 0; // Dynamix is able to undo it's moves, via UnitGroup, but we need to reset move count each
+                              // phase for it to
                               // work
     if (!nonCombat) {
       NotifyGameRound(data);
@@ -306,8 +323,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   }
 
   @Override
-  protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaser, final GameData data,
-      final PlayerID player) {
+  protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaser,
+      final GameData data, final PlayerID player) {
     NotifyGameRound(data);
     NotifyPlayer(player);
     NotifyPhaseType(PhaseType.Purchase);
@@ -352,13 +369,13 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   Territory m_battleTer = null;
 
   /*
-   * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final
+   * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final
+   * String message, final
    * PlayerID player)
    * {
    * return null;
    * }
    */
-
   @Override
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
@@ -368,12 +385,13 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   @Override
   public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
-    DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}", getBattleTerritory(),
-        possibleTerritories);
+    DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}",
+        getBattleTerritory(), possibleTerritories);
     final GameData data = getPlayerBridge().getGameData();
     final PlayerID player = GlobalCenter.CurrentPlayer;
     final Territory battleTer = getBattleTerritory();
-    // BattleTer will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge) our subs when being
+    // BattleTer will be null if we're defending and TripleA calls this method to ask if we want to retreat(submerge)
+    // our subs when being
     // attacked
     // PossibleTerritories will be empty if subs move in our sub ter, and our sub is 'attacking'
     if (battleTer == null || possibleTerritories.isEmpty()) {
@@ -385,54 +403,58 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
         DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
     float chanceNeededToContinue = .6F;
     if (TacticalCenter.get(data, getPlayerID()).BattleRetreatChanceAssignments.containsKey(battleTer)) {
-      DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'. Retreat Chance: {1}", battleTer,
+      DUtils.Log(Level.FINER,
+          "Found specific battle retreat chance assignment for territory '{0}'. Retreat Chance: {1}", battleTer,
           TacticalCenter.get(data, player).BattleRetreatChanceAssignments.get(battleTer));
       chanceNeededToContinue = TacticalCenter.get(data, getPlayerID()).BattleRetreatChanceAssignments.get(battleTer);
       if (simulatedAttack.getAttackerWinPercent() < chanceNeededToContinue) {
         // Calculate best retreat ter and retreat to it
-        final Territory retreatTer =
-            Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTer);
+        final Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player,
+            new ArrayList<Territory>(possibleTerritories), battleTer);
         return retreatTer;
       }
     } else
     // Must be attack_trade type
     {
-      final List<Unit> responseAttackers = DUtils.DetermineResponseAttackers(data, GlobalCenter.CurrentPlayer, battleTer, simulatedAttack);
-      final List<Unit> responseDefenders = Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); // Air
-                                                                                                                                        // can't
-                                                                                                                                        // defend
-                                                                                                                                        // ter
-                                                                                                                                        // because
-                                                                                                                                        // they
-                                                                                                                                        // need
-                                                                                                                                        // to
-                                                                                                                                        // land
-      final AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTer, data,
-          DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat,
-          true);
-      final int tradeScore = DUtils.GetTaskTradeScore(data, battleTer, attackers, defenders, simulatedAttack, responseAttackers,
-          responseDefenders, responseResults);
+      final List<Unit> responseAttackers =
+          DUtils.DetermineResponseAttackers(data, GlobalCenter.CurrentPlayer, battleTer, simulatedAttack);
+      final List<Unit> responseDefenders =
+          Match.getMatches(simulatedAttack.GetAverageAttackingUnitsRemaining(), Matches.UnitIsNotAir); // Air
+                                                                                                       // can't
+                                                                                                       // defend
+                                                                                                       // ter
+                                                                                                       // because
+                                                                                                       // they
+                                                                                                       // need
+                                                                                                       // to
+                                                                                                       // land
+      final AggregateResults responseResults = DUtils.GetBattleResults(responseAttackers, responseDefenders, battleTer,
+          data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
+      final int tradeScore = DUtils.GetTaskTradeScore(data, battleTer, attackers, defenders, simulatedAttack,
+          responseAttackers, responseDefenders, responseResults);
       DUtils.Log(Level.FINER, "Attack_Trade battle assumed. Score: {0} Required: {1}", tradeScore,
           DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired);
       if (tradeScore < DSettings.LoadSettings().TR_attackTrade_totalTradeScoreRequired) {
         // Calculate best retreat ter and retreat to it
-        final Territory retreatTer =
-            Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTer);
+        final Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player,
+            new ArrayList<Territory>(possibleTerritories), battleTer);
         return retreatTer;
       }
       final int leftoverLandUnitsWanted = 2; // TODO: Figure out the number determined in CM_Task
       int timesWeReachLeftoverLUnitsGoal = 0;
       for (final BattleResults result : simulatedAttack.getResults()) {
-        if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= leftoverLandUnitsWanted) {
+        if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand)
+            .size() >= leftoverLandUnitsWanted) {
           timesWeReachLeftoverLUnitsGoal++;
         }
       }
-      final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.getResults().size();
-      if (certaintyOfReachingLUnitsCount < DUtils
-          .ToFloat(DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired)) {
+      final float certaintyOfReachingLUnitsCount =
+          (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.getResults().size();
+      if (certaintyOfReachingLUnitsCount < DUtils.ToFloat(
+          DSettings.LoadSettings().TR_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired)) {
         // Calculate best retreat ter and retreat to it
-        final Territory retreatTer =
-            Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player, new ArrayList<Territory>(possibleTerritories), battleTer);
+        final Territory retreatTer = Battle_RetreatTerCalculator.CalculateBestRetreatTer(data, player,
+            new ArrayList<Territory>(possibleTerritories), battleTer);
         return retreatTer;
       }
     }
@@ -441,7 +463,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 
   @Override
   public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
-    // Hmmm... Atm, true and false are both bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter
+    // Hmmm... Atm, true and false are both bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI
+    // may attack a ter
     // thinking it has air support, which never comes.
     return true;
   }
@@ -453,7 +476,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   }
 
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+      final Territory from) {
     final List<Unit> result = new ArrayList<Unit>();
     for (final Unit fighter : fightersThatCanBeMoved) {
       result.add(fighter);
@@ -473,7 +497,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   }
 
   @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
+  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+      final Collection<Unit> bombers) {
     if (potentialTargets == null || potentialTargets.isEmpty()) {
       return null;
     }
@@ -495,27 +520,29 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
   }
 
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     DUtils.Log(Level.FINE, "Select casualties method called. Message: {0}", message);
-    return SelectCasualties.selectCasualties(this, getGameData(), selectFrom, dependents, count, message, dice, hit, defaultCasualties,
-        battleID, allowMultipleHitsPerUnit);
+    return SelectCasualties.selectCasualties(this, getGameData(), selectFrom, dependents, count, message, dice, hit,
+        defaultCasualties, battleID, allowMultipleHitsPerUnit);
   }
 
   @Override
   public void reportError(final String error) {
     DUtils.Log(Level.FINE, "Error message reported: {0}", error);
-    if (error.equals("Wrong number of casualties selected") || error.equals("Cannot remove enough units of those types")) {
+    if (error.equals("Wrong number of casualties selected")
+        || error.equals("Cannot remove enough units of those types")) {
       SelectCasualties.NotifyCasualtySelectionError(error);
     }
   }
 
   @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message) {
+  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+      final String message) {
     return null;
   }
 }

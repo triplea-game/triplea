@@ -38,8 +38,6 @@ import games.strategy.triplea.util.PlayerOrderComparator;
 /**
  * This panel is fired by ActionButtons and controls the selection of a valid
  * political action to attempt.
- *
- *
  */
 public class PoliticsPanel extends ActionPanel {
   private static final long serialVersionUID = -4661479948450261578L;
@@ -92,15 +90,21 @@ public class PoliticsPanel extends ActionPanel {
    * chosen
    *
    * @param firstRun
-   *
    * @return the choice of political action
    */
-  public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate) {
+  public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
+      final IPoliticsDelegate iPoliticsDelegate) {
     m_firstRun = firstRun;
-    // NEVER EVER ACCESS A DELEGATE OR BRIDGE FROM A UI!!!! (or the game won't work in multiplayer) (in other words, do not use the
+    // NEVER EVER ACCESS A DELEGATE OR BRIDGE FROM A UI!!!! (or the game won't work in multiplayer) (in other words, do
+    // not use the
     // DelegateFinder in any way, or access local delegates, or pass the bridge)
-    m_validPoliticalActions = new ArrayList<PoliticalActionAttachment>(iPoliticsDelegate.getValidActions()); // reset each time, we need to
-                                                                                                             // retest the conditions...
+    m_validPoliticalActions = new ArrayList<PoliticalActionAttachment>(iPoliticsDelegate.getValidActions()); // reset
+                                                                                                             // each
+                                                                                                             // time, we
+                                                                                                             // need to
+                                                                                                             // retest
+                                                                                                             // the
+                                                                                                             // conditions...
     Collections.sort(m_validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
     if (m_firstRun && m_validPoliticalActions.isEmpty()) {
       return null; // No Valid political actions, do nothing
@@ -146,34 +150,39 @@ public class PoliticsPanel extends ActionPanel {
       final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUIContext(), false);
       final JScrollPane overviewScroll = new JScrollPane(overview);
       overviewScroll.setBorder(BorderFactory.createEmptyBorder());
-      // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong (again)...
+      // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong
+      // (again)...
       // add 20 to either when the opposite needs scroll bars, because that is how big scroll bars are..
-      overviewScroll.setPreferredSize(
-          new Dimension((overviewScroll.getPreferredSize().width > availWidth ? availWidth : (overviewScroll.getPreferredSize().width +
-              (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
-              (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
-                  : (overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0)
-                      + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
-      // politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 10.0, GridBagConstraints.CENTER,
+      overviewScroll.setPreferredSize(new Dimension(
+          (overviewScroll.getPreferredSize().width > availWidth ? availWidth
+              : (overviewScroll.getPreferredSize().width
+                  + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
+          (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
+              : (overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0)
+                  + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
+      // politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 10.0,
+      // GridBagConstraints.CENTER,
       // GridBagConstraints.BOTH, insets, 0, 0));
-      // politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1, 1.0,
+      // politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1,
+      // 1.0,
       // GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
       final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEmptyBorder());
-      choiceScroll.setPreferredSize(
-          new Dimension((choiceScroll.getPreferredSize().width > availWidth ? availWidth : (choiceScroll.getPreferredSize().width +
-              (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
-              (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice : (choiceScroll.getPreferredSize().height) +
-                  (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
-      // politicalChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 1.0, 11.0, GridBagConstraints.CENTER,
+      choiceScroll.setPreferredSize(new Dimension(
+          (choiceScroll.getPreferredSize().width > availWidth ? availWidth
+              : (choiceScroll.getPreferredSize().width
+                  + (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
+          (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice
+              : (choiceScroll.getPreferredSize().height)
+                  + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
+      // politicalChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 1.0, 11.0,
+      // GridBagConstraints.CENTER,
       // GridBagConstraints.BOTH, insets, 0, 0));
-
       final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
       splitPane.setOneTouchExpandable(true);
       splitPane.setDividerSize(8);
-      politicalChoicePanel.add(splitPane,
-          new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
-
+      politicalChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0,
+          GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
       final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
         private static final long serialVersionUID = -5979922310580413800L;
 
@@ -188,8 +197,8 @@ public class PoliticsPanel extends ActionPanel {
           noActionButton.requestFocusInWindow();
         }
       });
-      politicalChoicePanel.add(noActionButton,
-          new GridBagConstraints(0, row, 20, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE, insets, 0, 0));
+      politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
+          GridBagConstraints.NONE, insets, 0, 0));
       politicalChoiceDialog.add(politicalChoicePanel);
       politicalChoiceDialog.pack();
       politicalChoiceDialog.setLocationRelativeTo(m_parent);
@@ -204,8 +213,8 @@ public class PoliticsPanel extends ActionPanel {
     int row = 0;
     final Insets insets = new Insets(1, 1, 1, 1);
     for (final PoliticalActionAttachment paa : m_validPoliticalActions) {
-      politicalActionButtonPanel.add(getOtherPlayerFlags(paa),
-          new GridBagConstraints(0, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+      politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
+          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = new JButton(getActionButtonText(paa));
       button.addActionListener(new ActionListener() {
         @Override
@@ -218,10 +227,10 @@ public class PoliticsPanel extends ActionPanel {
           release();
         }
       });
-      politicalActionButtonPanel.add(button,
-          new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-      politicalActionButtonPanel.add(getActionDescriptionLabel(paa),
-          new GridBagConstraints(2, row, 1, 1, 5.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
+      politicalActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
+          GridBagConstraints.HORIZONTAL, insets, 0, 0));
+      politicalActionButtonPanel.add(getActionDescriptionLabel(paa), new GridBagConstraints(2, row, 1, 1, 5.0, 1.0,
+          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       row++;
     }
     return politicalActionButtonPanel;
@@ -229,7 +238,6 @@ public class PoliticsPanel extends ActionPanel {
 
   /**
    * This will stop the politicsPhase
-   *
    */
   private final Action DontBotherAction = new AbstractAction("Done") {
     private static final long serialVersionUID = 5975405674090929150L;
@@ -244,8 +252,7 @@ public class PoliticsPanel extends ActionPanel {
 
     private boolean youSureDoNothing() {
       final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),
-          "Are you sure you dont want to do anything?", "End Politics",
-          JOptionPane.YES_NO_OPTION);
+          "Are you sure you dont want to do anything?", "End Politics", JOptionPane.YES_NO_OPTION);
       return rVal == JOptionPane.YES_OPTION;
     }
   };
@@ -272,8 +279,8 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   private JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {
-    final String chanceString =
-        paa.getChanceToHit() >= paa.getChanceDiceSides() ? "" : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
+    final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? ""
+        : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
   }
 }
@@ -325,10 +332,12 @@ class PoliticalActionComparator implements Comparator<PoliticalActionAttachment>
       if (!paa1NewType.getRelationshipTypeAttachment().isWar() && paa2NewType.getRelationshipTypeAttachment().isWar()) {
         return 1;
       }
-      if (paa1NewType.getRelationshipTypeAttachment().isNeutral() && paa2NewType.getRelationshipTypeAttachment().isAllied()) {
+      if (paa1NewType.getRelationshipTypeAttachment().isNeutral()
+          && paa2NewType.getRelationshipTypeAttachment().isAllied()) {
         return -1;
       }
-      if (paa1NewType.getRelationshipTypeAttachment().isAllied() && paa2NewType.getRelationshipTypeAttachment().isNeutral()) {
+      if (paa1NewType.getRelationshipTypeAttachment().isAllied()
+          && paa2NewType.getRelationshipTypeAttachment().isNeutral()) {
         return 1;
       }
     }

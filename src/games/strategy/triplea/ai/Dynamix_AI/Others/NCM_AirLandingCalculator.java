@@ -16,18 +16,17 @@ import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.ThreatInvalidationCenter;
 import games.strategy.triplea.delegate.Matches;
 
-
 public class NCM_AirLandingCalculator {
   @SuppressWarnings("unchecked")
-  public static Territory CalculateLandingLocationForAirUnits(final GameData data, final PlayerID player, final Territory territory,
-      final List<Unit> airUnits, final List<NCM_Task> tasks) {
+  public static Territory CalculateLandingLocationForAirUnits(final GameData data, final PlayerID player,
+      final Territory territory, final List<Unit> airUnits, final List<NCM_Task> tasks) {
     float highestScore = Integer.MIN_VALUE;
     Territory highestScoringTer = null;
     final List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
     final List<Territory> ourCapitalsTargets = new ArrayList<Territory>();
     for (final Territory ourCap : ourCaps) {
-      ourCapitalsTargets
-          .add(NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ourCap, ourCap.getUnits().getUnits(), tasks));
+      ourCapitalsTargets.add(NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ourCap,
+          ourCap.getUnits().getUnits(), tasks));
     }
     for (final Territory ter : data.getMap().getTerritories()) {
       if (ter.isWater()) {
@@ -48,8 +47,9 @@ public class NCM_AirLandingCalculator {
       if (airUnitsAbleToMakeIt == 0) {
         continue;
       }
-      final float oldSurvivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter),
-          DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+      final float oldSurvivalChance =
+          DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter),
+              DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
       final List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, ter);
       afterDefenders.removeAll(airUnits);
       afterDefenders.addAll(airUnits);
@@ -64,16 +64,22 @@ public class NCM_AirLandingCalculator {
       final float importantTerChanceRequired =
           DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
       // If this ter is important, and landing planes here will make the ter safe, boost score a lot
-      if (isImportant && oldSurvivalChance < importantTerChanceRequired && newSurvivalChance >= importantTerChanceRequired) {
+      if (isImportant && oldSurvivalChance < importantTerChanceRequired
+          && newSurvivalChance >= importantTerChanceRequired) {
         score += 100000;
       }
       final Territory closestCapTarget = DUtils.GetClosestTerInList(data, ourCapitalsTargets, territory);
-      score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestCapTarget) * 100; // We like close-to-cap-target, safe
+      score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestCapTarget) * 100; // We like
+                                                                                                  // close-to-cap-target,
+                                                                                                  // safe
                                                                                                   // landing ters
-      final Territory closestTerWithOurUnits = DUtils.GetClosestTerMatchingX(data, territory,
-          Matches.territoryHasUnitsThatMatch(DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player), DMatches.UnitCanAttack)));
-      score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestTerWithOurUnits) * 100; // We like close-to-our-land-forces,
-                                                                                                        // safe landing ters
+      final Territory closestTerWithOurUnits =
+          DUtils.GetClosestTerMatchingX(data, territory, Matches.territoryHasUnitsThatMatch(
+              DUtils.CompMatchAnd(Matches.unitIsLandAndOwnedBy(player), DMatches.UnitCanAttack)));
+      score -= DUtils.GetDistance_ForLandThenNoCondComparison(data, ter, closestTerWithOurUnits) * 100; // We like
+                                                                                                        // close-to-our-land-forces,
+                                                                                                        // safe landing
+                                                                                                        // ters
       if (DMatches.territoryIsOwnedBy(player).match(ter)) {
         score += 50; // Give a small boost to ters we own, as it's more likely we control its defense
       }
@@ -92,15 +98,18 @@ public class NCM_AirLandingCalculator {
       if (arePlanesFromCapsOrNeighbors) {
         final Territory ourClosestCap = DUtils.GetOurClosestCap(data, player, ter);
         ThreatInvalidationCenter.get(data, player).SuspendThreatInvalidation();
-        final List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(data, player, ourClosestCap, ter, airUnits,
-            DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
+        final List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(data, player,
+            ourClosestCap, ter, airUnits, DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
         ThreatInvalidationCenter.get(data, player).ResumeThreatInvalidation();
         if (capTakeoverChances.get(1) > .1F) // If takeover chance is 10% or more after move
         {
-          // And takeover chance before and after move is at least 1% different or there average attackers left before and after move is at
+          // And takeover chance before and after move is at least 1% different or there average attackers left before
+          // and after move is at
           // least 1 different
-          if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1) {
-            DUtils.Log(Level.FINEST, "      Landing air units at {0} would endanger capital, so finding another landing ter.", ter);
+          if (capTakeoverChances.get(1) - capTakeoverChances.get(0) > .01F
+              || capTakeoverChances.get(3) - capTakeoverChances.get(2) > 1) {
+            DUtils.Log(Level.FINEST,
+                "      Landing air units at {0} would endanger capital, so finding another landing ter.", ter);
             continue;
           }
         }

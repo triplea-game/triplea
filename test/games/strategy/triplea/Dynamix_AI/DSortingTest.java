@@ -10,7 +10,6 @@ import games.strategy.triplea.ai.Dynamix_AI.DSorting;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-
 public class DSortingTest extends TestCase {
   @SuppressWarnings("unused")
   private GameData m_data;

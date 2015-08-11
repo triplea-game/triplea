@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Territory;
 
-
 public interface MapSelectionListener {
   public void territorySelected(Territory territory, MouseDetails md);
 

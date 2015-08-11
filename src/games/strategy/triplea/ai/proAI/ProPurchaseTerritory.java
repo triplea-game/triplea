@@ -3,19 +3,6 @@ package games.strategy.triplea.ai.proAI;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -28,7 +15,8 @@ public class ProPurchaseTerritory {
   private int unitProduction;
   private List<ProPlaceTerritory> canPlaceTerritories;
 
-  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player, final int unitProduction) {
+  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
+      final int unitProduction) {
     this.territory = territory;
     this.unitProduction = unitProduction;
     canPlaceTerritories = new ArrayList<ProPlaceTerritory>();
@@ -79,5 +67,4 @@ public class ProPurchaseTerritory {
   public void setCanPlaceTerritories(final List<ProPlaceTerritory> canPlaceTerritories) {
     this.canPlaceTerritories = canPlaceTerritories;
   }
-
 }

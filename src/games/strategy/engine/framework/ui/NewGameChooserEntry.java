@@ -22,7 +22,8 @@ public class NewGameChooserEntry {
   private boolean m_gameDataFullyLoaded = false;
   private final String m_gameNameAndMapNameProperty;
 
-  public NewGameChooserEntry(final URI uri) throws IOException, GameParseException, SAXException, EngineVersionException {
+  public NewGameChooserEntry(final URI uri)
+      throws IOException, GameParseException, SAXException, EngineVersionException {
     m_url = uri;
     InputStream input = null;
     final AtomicReference<String> gameName = new AtomicReference<String>();
@@ -56,7 +57,8 @@ public class NewGameChooserEntry {
         System.out.println(e.getMessage());
         error = e.getMessage();
       } catch (final SAXParseException e) {
-        System.err.println("Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+        System.err.println(
+            "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
         e.printStackTrace();
         error = e.getMessage();
       } catch (final Exception e) {
@@ -99,7 +101,8 @@ public class NewGameChooserEntry {
       } catch (final EngineVersionException e) {
         System.out.println(e.getMessage());
       } catch (final SAXParseException e) {
-        System.err.println("Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+        System.err.println(
+            "Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
         e.printStackTrace();
       } catch (final Exception e) {
         System.err.println("Could not parse:" + m_url);
@@ -127,7 +130,8 @@ public class NewGameChooserEntry {
     return m_data.getGameName();
   }
 
-  // the user may have selected a map skin instead of this map folder, so don't use this for anything except our equals/hashcode below
+  // the user may have selected a map skin instead of this map folder, so don't use this for anything except our
+  // equals/hashcode below
   private String getMapNameProperty() {
     final String mapName = (String) m_data.getProperties().get(Constants.MAP_NAME);
     if (mapName == null || mapName.trim().length() == 0) {

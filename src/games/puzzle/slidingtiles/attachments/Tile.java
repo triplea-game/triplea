@@ -8,7 +8,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 
 /**
  * Represents a sliding tile in a sliding tile game.
- *
  */
 public class Tile extends DefaultAttachment {
   private static final long serialVersionUID = 129074481008059616L;
@@ -65,7 +64,6 @@ public class Tile extends DefaultAttachment {
    * {
    * m_location = location;
    * }
-   *
    * public Rectangle getLocation()
    * {
    * return m_location;

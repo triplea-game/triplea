@@ -18,7 +18,6 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Responsible for performing a move in a game of Tic Tac Toe.
- *
  */
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate {
   /**

@@ -27,16 +27,14 @@ import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 /**
- *
  * Central place to find all the information for a running game.
  * Using this object you can find the territories, connections, production rules,
  * unit types...
  * <p>
- *
- * Threading. The game data, and all parts of the game data (such as Territories, Players, Units...) are protected by a read/write lock. If
+ * Threading. The game data, and all parts of the game data (such as Territories, Players, Units...) are protected by a
+ * read/write lock. If
  * you are reading the game data, you should read while you have the read lock as below.
  * <p>
- *
  * <code>
  * data.acquireReadLock();
  * try
@@ -48,16 +46,14 @@ import games.strategy.util.Version;
  *   data.releaseReadLock();
  * }
  * </code>
- *
- * The exception is delegates within a start(), end() or any method called from an IGamePlayer through the delegates remote interface. The
+ * The exception is delegates within a start(), end() or any method called from an IGamePlayer through the delegates
+ * remote interface. The
  * delegate will have a read lock for the duration of those methods.
  * <p>
- *
- * Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made through a DelegateBridge or through a
+ * Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made through a
+ * DelegateBridge or through a
  * History object.
  * <p>
- *
- *
  */
 public class GameData implements java.io.Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
@@ -69,7 +65,8 @@ public class GameData implements java.io.Serializable {
   private Version m_gameVersion;
   private int m_diceSides;
   private transient ListenerList<TerritoryListener> m_territoryListeners = new ListenerList<TerritoryListener>();
-  private transient ListenerList<GameDataChangeListener> m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
+  private transient ListenerList<GameDataChangeListener> m_dataChangeListeners =
+      new ListenerList<GameDataChangeListener>();
   private transient ListenerList<GameMapListener> m_gameMapListeners = new ListenerList<GameMapListener>();
   private final AllianceTracker m_alliances = new AllianceTracker(this);
   // Tracks current relationships between players, this is empty if relationships aren't used
@@ -84,7 +81,8 @@ public class GameData implements java.io.Serializable {
   private final ResourceList m_resourceList = new ResourceList(this);
   private final GameSequence m_sequence = new GameSequence(this);
   private final UnitTypeList m_unitTypeList = new UnitTypeList(this);
-  // Tracks all relationshipTypes that are in the current game, default there will be the SelfRelation and the NullRelation any other
+  // Tracks all relationshipTypes that are in the current game, default there will be the SelfRelation and the
+  // NullRelation any other
   // relations are mapdesigner created.
   private final RelationshipTypeList m_relationshipTypeList = new RelationshipTypeList(this);
   private final GameProperties m_properties = new GameProperties(this);
@@ -138,7 +136,6 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   *
    * @return a collection of all units in the game
    */
   public UnitsList getUnits() {
@@ -375,7 +372,6 @@ public class GameData implements java.io.Serializable {
    * No changes to the game data should be made unless this lock is held.
    * calls to acquire lock will block if the lock is held, and will be held
    * until the release method is called
-   *
    */
   public void acquireReadLock() {
     // this can happen in very odd cirumcstances while deserializing
@@ -397,7 +393,6 @@ public class GameData implements java.io.Serializable {
    * No changes to the game data should be made unless this lock is held.
    * calls to acquire lock will block if the lock is held, and will be held
    * until the release method is called
-   *
    */
   public void acquireWriteLock() {
     // this can happen in very odd cirumcstances while deserializing
@@ -438,7 +433,8 @@ public class GameData implements java.io.Serializable {
     if (m_resourceLoader != null) {
       return m_resourceLoader;
     }
-    // TODO: see if this is wrong.... the user may have selected a map skin instead of this map folder, so we should never use this....
+    // TODO: see if this is wrong.... the user may have selected a map skin instead of this map folder, so we should
+    // never use this....
     String mapName = (String) this.getProperties().get(Constants.MAP_NAME);
     if (mapName == null || mapName.trim().length() == 0) {
       mapName = m_gameName;
@@ -450,7 +446,8 @@ public class GameData implements java.io.Serializable {
     return m_resourceLoader;
   }
 
-  public void addToAttachmentOrderAndValues(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
+  public void addToAttachmentOrderAndValues(
+      final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
     m_attachmentOrderAndValues.add(attachmentAndValues);
   }
 
@@ -459,8 +456,8 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   *
-   * @return all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the Nullplayer / Neutral)
+   * @return all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the
+   *         Nullplayer / Neutral)
    *         and the SelfRelation (Relation with yourself) all other relations are mapdesigner defined.
    */
   public RelationshipTypeList getRelationshipTypeList() {
@@ -469,7 +466,6 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   *
    * @return a tracker which tracks all current relationships that exist between all players.
    */
   public RelationshipTracker getRelationshipTracker() {
@@ -486,7 +482,8 @@ public class GameData implements java.io.Serializable {
   }
 
   /**
-   * Call this before starting the game, and before the game data has been sent to the clients, in order to make any final modifications to
+   * Call this before starting the game, and before the game data has been sent to the clients, in order to make any
+   * final modifications to
    * the game data.
    * For example, this method will remove player delegates for players who have been disabled.
    */

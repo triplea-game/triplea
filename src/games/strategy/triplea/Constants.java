@@ -1,9 +1,7 @@
 package games.strategy.triplea;
 
 /**
- *
  * Constants used throughout the game.
- *
  */
 public interface Constants {
   // Player names
@@ -78,7 +76,8 @@ public interface Constants {
   public static final String ALLIED_AIR_INDEPENDENT = "Allied Air Independent";
   public static final String DEFENDING_SUBS_SNEAK_ATTACK = "Defending Subs Sneak Attack";
   public static final String ATTACKER_RETREAT_PLANES = "Attacker Retreat Planes";
-  public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED = "Naval Bombard Casualties Return Fire Restricted";
+  public static final String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED =
+      "Naval Bombard Casualties Return Fire Restricted";
   public static final String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   public static final String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   public static final String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
@@ -142,21 +141,19 @@ public interface Constants {
   public static final String MAP_NAME = "mapName";
   public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
   public static final String FOCUS_ON_OWN_CASUALTIES_USER_PREF = "FocusOnOwnCasualties";
-
   // new scramble property names
   public static final String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
   public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
   public static final String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
   public static final String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
   public static final String SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT = "Scramble To Any Amphibious Assault";
-
   // squid
   public static final String OLD_ART_RULE_NAME = "ArtyOld";
   public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
-  public static final String SUPPORT_RULE_NAME_OLD_TEMP_FIRST = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
+  public static final String SUPPORT_RULE_NAME_OLD_TEMP_FIRST =
+      SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
   public static final String TRIGGERS = "Use Triggers";
   public static final String PU_MULTIPLIER = "Multiply PUs";
-
   // Veqryn (Mark Christopher Duncan)
   public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
   public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
@@ -166,13 +163,15 @@ public interface Constants {
   public static final String MORE_CONSTRUCTIONS_WITH_FACTORY = "More Constructions with Factory";
   public static final String UNIT_PLACEMENT_RESTRICTIONS = "Unit Placement Restrictions";
   public static final String TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN = "Battleships repair at beginning of round";
-  public static final String TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES = "Two HitPoint Units Require Repair Facilities";
+  public static final String TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES =
+      "Two HitPoint Units Require Repair Facilities";
   public static final String LL_TECH_ONLY = "Low Luck for Technology";
   public static final String TRIGGERED_VICTORY = "Triggered Victory";
   public static final String GIVE_UNITS_BY_TERRITORY = "Give Units By Territory";
   public static final String UNITS_CAN_BE_DESTROYED_INSTEAD_OF_CAPTURED = "Units Can Be Destroyed Instead Of Captured";
   public static final String SUICIDE_AND_MUNITION_CASUALTIES_RESTRICTED = "Suicide and Munition Casualties Restricted";
-  public static final String DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE = "Defending Suicide and Munition Units Do Not Fire";
+  public static final String DEFENDING_SUICIDE_AND_MUNITION_UNITS_DO_NOT_FIRE =
+      "Defending Suicide and Munition Units Do Not Fire";
   public static final String NAVAL_UNITS_MAY_NOT_NONCOMBAT_MOVE_INTO_CONTROLLED_SEA_ZONES =
       "Naval Units May Not NonCombat Move Into Controlled Sea Zones";
   public static final String UNITS_MAY_GIVE_BONUS_MOVEMENT = "Units May Give Bonus Movement";
@@ -195,16 +194,20 @@ public interface Constants {
   public static final String KAMIKAZE_SUICIDE_ATTACKS_DONE_BY_CURRENT_TERRITORY_OWNER =
       "Kamikaze Suicide Attacks Done By Current Territory Owner";
   public static final String FORCE_AA_ATTACKS_FOR_LAST_STEP_OF_FLY_OVER = "Force AA Attacks For Last Step Of Fly Over";
-  public static final String PARATROOPERS_CAN_ATTACK_DEEP_INTO_ENEMY_TERRITORY = "Paratroopers Can Attack Deep Into Enemy Territory";
+  public static final String PARATROOPERS_CAN_ATTACK_DEEP_INTO_ENEMY_TERRITORY =
+      "Paratroopers Can Attack Deep Into Enemy Territory";
   public static final String USE_BOMBING_MAX_DICE_SIDES_AND_BONUS = "Use Bombing Max Dice Sides And Bonus";
   public static final String CONVOY_BLOCKADES_ROLL_DICE_FOR_COST = "Convoy Blockades Roll Dice For Cost";
   public static final String AIRBORNE_ATTACKS_ONLY_IN_EXISTING_BATTLES = "Airborne Attacks Only In Existing Battles";
   public static final String AIRBORNE_ATTACKS_ONLY_IN_ENEMY_TERRITORIES = "Airborne Attacks Only In Enemy Territories";
   public static final String SUBS_CAN_END_NONCOMBAT_MOVE_WITH_ENEMIES = "Subs Can End NonCombat Move With Enemies";
   public static final String REMOVE_ALL_TECH_TOKENS_AT_END_OF_TURN = "Remove All Tech Tokens At End Of Turn";
-  public static final String KAMIKAZE_SUICIDE_ATTACKS_ONLY_WHERE_BATTLES_ARE = "Kamikaze Suicide Attacks Only Where Battles Are";
-  public static final String SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS = "Submarines Prevent Unescorted Amphibious Assaults";
-  public static final String SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT = "Submarines Defending May Submerge Or Retreat";
+  public static final String KAMIKAZE_SUICIDE_ATTACKS_ONLY_WHERE_BATTLES_ARE =
+      "Kamikaze Suicide Attacks Only Where Battles Are";
+  public static final String SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS =
+      "Submarines Prevent Unescorted Amphibious Assaults";
+  public static final String SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT =
+      "Submarines Defending May Submerge Or Retreat";
   public static final String AIR_BATTLE_ROUNDS = "Air Battle Rounds";
   public static final String SEA_BATTLE_ROUNDS = "Sea Battle Rounds";
   public static final String LAND_BATTLE_ROUNDS = "Land Battle Rounds";
@@ -216,9 +219,9 @@ public interface Constants {
   public static final String RETREATING_UNITS_REMAIN_IN_PLACE = "Retreating Units Remain In Place";
   public static final String CONTESTED_TERRITORIES_PRODUCE_NO_INCOME = "Contested Territories Produce No Income";
   public static final String SEA_BATTLES_MAY_BE_IGNORED = "Sea Battles May Be Ignored";
-  public static final String ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY = "Abandoned Territories May Be Taken Over Immediately";
+  public static final String ABANDONED_TERRITORIES_MAY_BE_TAKEN_OVER_IMMEDIATELY =
+      "Abandoned Territories May Be Taken Over Immediately";
   public static final String DISABLED_PLAYERS_ASSETS_DELETED = "Disabled Players Assets Deleted";
-
   // relationships stuff (Edwin, with help from Veqryn and Frig)
   public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
   public static final String RELATIONSHIP_TYPE_NULL = "null_relation";
@@ -235,15 +238,12 @@ public interface Constants {
   public static final String RELATIONSHIP_PROPERTY_TRUE = "true";
   public static final String RELATIONSHIP_PROPERTY_FALSE = "false";
   public static final String USE_POLITICS = "Use Politics";
-
   public static final String PROPERTY_TRUE = "true";
   public static final String PROPERTY_FALSE = "false";
   public static final String PROPERTY_DEFAULT = "default";
-
   /*
    * public static final char VALUE_TRUE = 't';
    * public static final char VALUE_FALSE = 'f';
    * public static final char VALUE_DEFAULT = 'd';
    */
-
 }

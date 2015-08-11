@@ -4,12 +4,9 @@ import games.strategy.engine.data.IAttachment;
 
 /**
  * This class returns the right AttachmentExporter based on the
- *
- *
  */
 public class AttachmentExporterFactory {
   /**
-   *
    * @param attachment
    *        the attachment to base the exporter on
    * @return an Exporter to export the attachment

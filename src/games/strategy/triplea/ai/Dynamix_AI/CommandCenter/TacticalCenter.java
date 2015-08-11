@@ -13,7 +13,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.ai.Dynamix_AI.Group.UnitGroup;
 
-
 public class TacticalCenter {
   private static HashMap<PlayerID, TacticalCenter> s_TCInstances = new HashMap<PlayerID, TacticalCenter>();
 
@@ -53,7 +52,8 @@ public class TacticalCenter {
       return;
     }
     FrozenUnits.addAll(UnitsToFreezeSoon);
-    DUtils.Log(Level.FINER, "          Freezing buffered units for the rest of this phase. Units: {0} New Total Size: {1}",
+    DUtils.Log(Level.FINER,
+        "          Freezing buffered units for the rest of this phase. Units: {0} New Total Size: {1}",
         DUtils.UnitList_ToString(UnitsToFreezeSoon), FrozenUnits.size());
     UnitsToFreezeSoon.clear();
   }
@@ -75,7 +75,8 @@ public class TacticalCenter {
   }
 
   public void ClearFrozenUnits() {
-    DUtils.Log(Level.FINER, "          Clearing frozen units. Frozen Units: {0}", DUtils.UnitList_ToString(FrozenUnits));
+    DUtils.Log(Level.FINER, "          Clearing frozen units. Frozen Units: {0}",
+        DUtils.UnitList_ToString(FrozenUnits));
     FrozenUnits.clear();
   }
 
@@ -91,7 +92,8 @@ public class TacticalCenter {
 
   public Territory GetUnitLocationAtStartOfTurn(final Unit unit) {
     if (!UnitLocationsAtStartOfTurn.containsKey(unit)) {
-      UnitLocationsAtStartOfTurn.put(unit, DUtils.GetUnitLocation(m_data, unit)); // If it's not set, we must not have moved it yet
+      UnitLocationsAtStartOfTurn.put(unit, DUtils.GetUnitLocation(m_data, unit)); // If it's not set, we must not have
+                                                                                  // moved it yet
     }
     return UnitLocationsAtStartOfTurn.get(unit);
   }

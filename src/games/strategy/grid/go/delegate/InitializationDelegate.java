@@ -10,7 +10,6 @@ import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
 
-
 public class InitializationDelegate extends AbstractDelegate {
   /**
    * Called before the delegate will run.
@@ -26,8 +25,8 @@ public class InitializationDelegate extends AbstractDelegate {
       m_bridge.getHistoryWriter().startEvent("Changing Map Dimensions");
       final Territory t1 = map.getTerritories().iterator().next();
       final String name = t1.getName().substring(0, t1.getName().indexOf("_"));
-      m_bridge.addChange(ChangeFactory.addGridGameMapChange(map, "square", name, newWidth, newHeight, new HashSet<String>(), "implicit",
-          "implicit", "explicit"));
+      m_bridge.addChange(ChangeFactory.addGridGameMapChange(map, "square", name, newWidth, newHeight,
+          new HashSet<String>(), "implicit", "implicit", "explicit"));
     }
   }
 

@@ -5,14 +5,11 @@ import java.util.Comparator;
 import java.util.StringTokenizer;
 
 /**
- *
  * Represents a version string.
  * versions are of the form major.minor.point.micro
- *
  * note that when doing comparisons, if the micro for two
  * versions is the same, then the two versions are considered
  * equal
- *
  */
 public class Version implements Serializable, Comparable {
   // maintain compatability with old versions
@@ -174,6 +171,7 @@ public class Version implements Serializable, Comparable {
 
   @Override
   public String toString() {
-    return m_major + "." + m_minor + ((m_point != 0 || m_micro != 0) ? "." + m_point : "") + (m_micro != 0 ? "." + m_micro : "");
+    return m_major + "." + m_minor + ((m_point != 0 || m_micro != 0) ? "." + m_point : "")
+        + (m_micro != 0 ? "." + m_micro : "");
   }
 }

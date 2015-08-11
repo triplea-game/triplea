@@ -10,11 +10,9 @@ import games.strategy.engine.data.Unit;
 
 /**
  * Remote interface for MoveDelegate
- *
  */
 public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPosterDelegate {
   /**
-   *
    * @param units
    *        - the units to move
    * @param route
@@ -26,7 +24,6 @@ public interface IMoveDelegate extends IAbstractMoveDelegate, IAbstractForumPost
   public String move(Collection<Unit> units, Route route, Collection<Unit> m_transportsThatCanBeLoaded);
 
   /**
-   *
    * @param units
    *        - the units to move
    * @param route
