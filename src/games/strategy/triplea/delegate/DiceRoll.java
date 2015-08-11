@@ -175,43 +175,6 @@ public class DiceRoll implements Externalizable {
               validAttackingUnitsForThisRoll, data, false);
       final int totalPower = triple.getFirst();
       hits += getLowLuckHits(bridge, sortedDice, totalPower, chosenDiceSizeForAll, defendingAA.get(0).getOwner(), annotation);
-      /*
-       * Turns out all this junk below is not actually needed, because in this method we are only determining the number of hits, and any
-       * die rolls we need to do.
-       * final boolean allSameAttackPower = triple.getThird();
-       * // if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1 fighter to die for
-       * sure. this is what groupsize is for.
-       * // if the attack is greater than 1 though, and all use the same attack power, then the group size can be smaller (ie: attack is 2,
-       * and we have 3 fighters and 2 bombers, we would want 1 fighter to die for sure).
-       * final int groupSize;
-       * if (allSameAttackPower)
-       * {
-       * groupSize = chosenDiceSizeForAll / highestAttackPower;
-       * }
-       * else
-       * {
-       * groupSize = chosenDiceSizeForAll;
-       * }
-       * if (Properties.getChoose_AA_Casualties(data))
-       * {
-       * hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSizeForAll, annotation, totalAAattacksTotal);
-       * }
-       * else
-       * {
-       * final Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(validAttackingUnitsForThisRoll, location,
-       * chosenDiceSizeForAll, groupSize);
-       * // this will not roll any dice, since the first group is
-       * // a multiple of 3 or 6
-       * final int firstGroupSize = airSplit.getFirst().size();
-       * hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSizeForAll, annotation, Math.min(firstGroupSize, totalAAattacksTotal));
-       * totalAAattacksTotal = Math.max(0, totalAAattacksTotal - firstGroupSize);
-       * // this will roll dice, unless it is empty
-       * final int secondGroupSize = airSplit.getSecond().size();
-       * hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSizeForAll, annotation, Math.min(secondGroupSize,
-       * totalAAattacksTotal));
-       * totalAAattacksTotal = Math.max(0, totalAAattacksTotal - secondGroupSize);
-       * }
-       */
     } else {
       final String annotation = "Roll " + typeAA + " in " + location.getName();
       final int[] dice =
@@ -1109,16 +1072,6 @@ public class DiceRoll implements Externalizable {
             hitCount++;
           }
           diceIndex++;
-          /*
-           * } catch (final ArrayIndexOutOfBoundsException ex)
-           * {
-           * ex.printStackTrace();
-           * // lets debug it
-           * System.out.println("Units: " + unitsList + "  Territory: " + location + "  Random: " + Arrays.toString(random) + "  Current: "
-           * + current + "  rollCount: " + rollCount);
-           * throw ex; // need to still throw it
-           * }
-           */
         }
       }
     }

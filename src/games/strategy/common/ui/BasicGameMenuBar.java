@@ -53,6 +53,7 @@ import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.Console;
 import games.strategy.debug.DebugUtils;
 import games.strategy.engine.data.GameData;
@@ -115,9 +116,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     return m_gameNotesPane;
   }
 
-  /**
-   * @param parentMenu
-   */
   protected void addGameNotesMenu(final JMenu parentMenu) {
     // allow the game developer to write notes that appear in the game
     // displays whatever is in the notes field in html
@@ -179,10 +177,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
                 }
               });
               dialog.setVisible(true);
-              // dialog.dispose();
             }
           });
-          // JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
         }
       }).setMnemonic(KeyEvent.VK_N);
     }
@@ -205,9 +201,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     return watcher;
   }
 
-  /**
-   * @param menuBar
-   */
   protected void createNetworkMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
     // revisit
     // if we are not a client or server game
@@ -229,32 +222,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   /**
    * @param parentMenu
    */
-  protected void addAllowObserversToJoin(final JMenu parentMenu) {
-    /*
-     * // People can use setpassword instead of this. It is annoying joining a game only to get socket errors that confuse people and stuff.
-     * // Either setup a new column or some kind of indicator to show that a lobby game isn't accepting new connections, or keep this off.
-     * if (!getGame().getMessenger().isServer())
-     * return;
-     * final IServerMessenger messeneger = (IServerMessenger) getGame().getMessenger();
-     * final JCheckBoxMenuItem allowObservers = new JCheckBoxMenuItem("Allow New Observers");
-     * allowObservers.setSelected(messeneger.isAcceptNewConnections());
-     * allowObservers.addActionListener(new AbstractAction()
-     * {
-     * private static final long serialVersionUID = 6876563887595464809L;
-     *
-     * public void actionPerformed(final ActionEvent e)
-     * {
-     * messeneger.setAcceptNewConnections(allowObservers.isSelected());
-     * }
-     * });
-     * parentMenu.add(allowObservers);
-     * return;
-     */
+  protected final void addAllowObserversToJoin(final JMenu parentMenu) {
   }
 
-  /**
-   * @param parentMenu
-   */
   protected void addBootPlayer(final JMenu parentMenu) {
     if (!getGame().getMessenger().isServer()) {
       return;
@@ -265,9 +235,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     return;
   }
 
-  /**
-   * @param parentMenu
-   */
   protected void addBanPlayer(final JMenu parentMenu) {
     if (!getGame().getMessenger().isServer()) {
       return;
@@ -278,9 +245,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     return;
   }
 
-  /**
-   * @param parentMenu
-   */
   protected void addMutePlayer(final JMenu parentMenu) {
     if (!getGame().getMessenger().isServer()) {
       return;
@@ -291,9 +255,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     return;
   }
 
-  /**
-   * @param menuGame
-   */
   protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcherWrapper watcher) {
     if (!getGame().getMessenger().isServer()) {
       return;
@@ -302,9 +263,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     parentMenu.add(new SetPasswordAction(this, watcher, (ClientLoginValidator) messenger.getLoginValidator()));
   }
 
-  /**
-   * @param menuGame
-   */
   protected void addShowPlayers(final JMenu menuGame) {
     if (!getGame().getData().getProperties().getEditableProperties().isEmpty()) {
       final AbstractAction optionsAction = new AbstractAction("Show Who is Who...") {
@@ -319,9 +277,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     }
   }
 
-  /**
-   * @param menuBar
-   */
   protected void createHelpMenu(final JMenuBar menuBar) {
     final JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic(KeyEvent.VK_H);
@@ -339,7 +294,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     addWebMenu(web);
   }
 
-  private void addWebMenu(final JMenu parentMenu) {
+  private static void addWebMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to Host...");
     hostingLink.setMnemonic(KeyEvent.VK_H);
     final JMenuItem mapLink = new JMenuItem("Install Maps...");
@@ -363,8 +318,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
           DesktopUtilityBrowserLauncher
               .openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -375,8 +329,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
           DesktopUtilityBrowserLauncher.openURL(
               "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -386,8 +339,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/p/triplea/_list/tickets");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -397,8 +349,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -408,8 +359,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -419,8 +369,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -430,8 +379,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -441,8 +389,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
         } catch (final Exception e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+          ClientLogger.logQuietly(e1);
         }
       }
     });
@@ -541,15 +488,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         }
       });
       fileDialog.setVisible(true);
-      /*
-       * DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
-       * String defaultFileName = "game_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" +
-       * getData().getSequence().getRound();
-       * defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
-       * defaultFileName = defaultFileName + ".tsvg";
-       *
-       * fileDialog.setFile(defaultFileName);
-       */
+
       String fileName = fileDialog.getFile();
       final String dirName = fileDialog.getDirectory();
       if (fileName == null) {
@@ -558,22 +497,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         if (!fileName.endsWith(".tsvg")) {
           fileName += ".tsvg";
         }
-        final File f = new File(dirName, fileName);
-        // TODO check this on a MAC
-        // disallow sub directories to be entered (in the form directory/name
-        /*
-         * String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
-         * if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
-         * {
-         * int choice = JOptionPane.showConfirmDialog(m_frame,
-         * "Special characters are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
-         * JOptionPane.WARNING_MESSAGE);
-         * return;
-         * }
-         */
         // If the user selects a filename that already exists,
         // the AWT Dialog on Mac OS X will ask the user for confirmation
-        // so, we don't need to explicitly ask user if they want to overwrite the old file
+        final File f = new File(dirName, fileName);
         return f;
       }
     }
@@ -590,18 +516,15 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
         final String filePath = f.getPath().substring(0, slashIndex);
         if (!fileChooser.getCurrentDirectory().toString().equals(filePath)) {
-          @SuppressWarnings("unused")
-          final int choice =
-              JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
-                  JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+          JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.",
+              "Cancel?", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
           return null;
         }
       }
       if (!f.getName().toLowerCase().endsWith(".tsvg")) {
         f = new File(f.getParent(), f.getName() + ".tsvg");
       }
-      // A small warning so users will not over-write a file,
-      // added by NeKromancer
+      // A small warning so users will not over-write a file
       if (f.exists()) {
         final int choice = JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
             "Over-write?", JOptionPane.YES_NO_OPTION,
@@ -609,14 +532,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         if (choice != JOptionPane.OK_OPTION) {
           return null;
         }
-      } // end if exists
+      }
       return f;
     }
   }
 
-  /**
-   * @param parent
-   */
+
+
   protected void addSaveMenu(final JMenu parent) {
     final JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...") {
       private static final long serialVersionUID = -8835148465905355231L;
@@ -669,9 +591,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     parent.add(menuPBEM);
   }
 
-  /**
-   * @param parentMenu
-   */
   protected void addExitMenu(final JMenu parentMenu) {
     final boolean isMac = GameRunner.isMac();
     final JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game") {
@@ -730,29 +649,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     }
     if (isJavaGreatThan5()) {
       substanceLooks.addAll(new ArrayList<String>(Arrays.asList(new String[] {
-          // UIManager.getSystemLookAndFeelClassName(),
-          // MetalLookAndFeel.class.getName(),
-          // UIManager.getCrossPlatformLookAndFeelClassName(),
-          /*
-           * Substance 5.x
-           * "org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceCremeLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceDustLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceMagmaLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceModerateLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceRavenLookAndFeel",
-           * "org.jvnet.substance.skin.SubstanceTwilightLookAndFeel"
-           */
-
-          // Substance (insubstantial) 7.x
           "org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
           "org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
           "org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",

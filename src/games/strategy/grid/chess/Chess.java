@@ -46,24 +46,10 @@ public class Chess extends GridGame implements IGameLoader {
         final GridGamePlayer player = new GridGamePlayer(name, type);
         iplayers.add(player);
       }
-      /*
-       * else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
-       * {
-       * final RandomAI ai = new RandomAI(name, type);
-       * iplayers.add(ai);
-       * }
-       */
       else if (type.equals(HEURISTIC_COMPUTER_PLAYER_TYPE)) {
         final HeuristicAI ai = new HeuristicAI(name, type);
         iplayers.add(ai);
       }
-      /*
-       * else if (type.equals(ALPHA_BETA_COMPUTER_PLAYER_TYPE))
-       * {
-       * final AlphaBeta ai = new AlphaBeta(name, type);
-       * iplayers.add(ai);
-       * }
-       */
       else {
         throw new IllegalStateException("Player type not recognized:" + type);
       }

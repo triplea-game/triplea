@@ -936,13 +936,6 @@ public class MoveValidator {
     return cost;
   }
 
-  /*
-   * public static boolean validLoad(final Collection<Unit> units, final Collection<Unit> transports)
-   * {
-   * return true;
-   * }
-   */
-
   public static Collection<Unit> getUnitsThatCantGoOnWater(final Collection<Unit> units) {
     final Collection<Unit> retUnits = new ArrayList<Unit>();
     for (final Unit unit : units) {
@@ -1517,18 +1510,8 @@ public class MoveValidator {
       final Map<Unit, Collection<Unit>> newDependents) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
     final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
-    /*
-     * Map<Unit, Collection<Unit>> selectedDependents = new HashMap<Unit, Collection<Unit>>();
-     * // first, check if there are any that haven't been updated yet
-     * for (final Unit airTransport : airTransports)
-     * {
-     * if (selectedDependents.containsKey(airTransport))
-     * {
-     * final Collection<Unit> transporting = selectedDependents.get(airTransport);
-     * mustMoveWith.put(airTransport, transporting);
-     * }
-     * }
-     */
+
+
     // Then check those that have already had their transportedBy set
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
@@ -1753,42 +1736,6 @@ public class MoveValidator {
     return games.strategy.triplea.Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
   }
 
-  /*
-   * private static boolean areNeutralsPassableByAir(final GameData data)
-   * {
-   * return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
-   * }
-   *
-   * private static boolean isWW2V3(final GameData data)
-   * {
-   * return games.strategy.triplea.Properties.getWW2V3(data);
-   * }
-   *
-   * private static boolean isMultipleAAPerTerritory(final GameData data)
-   * {
-   * return games.strategy.triplea.Properties.getMultipleAAPerTerritory(data);
-   * }
-   *
-   * private static int getNeutralCharge(final GameData data, final Route route)
-   * {
-   * return getNeutralCharge(data, MoveDelegate.getEmptyNeutral(route).size());
-   * }
-   *
-   * private static boolean isKamikazeAircraft(final GameData data)
-   * {
-   * return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
-   * }
-   *
-   * private static boolean isSubControlSeaZoneRestricted(final GameData data)
-   * {
-   * return games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data);
-   * }
-   *
-   * private static boolean isTransportControlSeaZone(final GameData data)
-   * {
-   * return games.strategy.triplea.Properties.getTransportControlSeaZone(data);
-   * }
-   */
 
   private static boolean isMovementByTerritoryRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
@@ -1806,12 +1753,6 @@ public class MoveValidator {
     return games.strategy.triplea.Properties.getSubmersible_Subs(data);
   }
 
-  /*
-   * private static boolean isAlliedAirIndependent(final GameData data)
-   * {
-   * return games.strategy.triplea.Properties.getAlliedAirIndependent(data);
-   * }
-   */
 
   private static boolean isIgnoreTransportInMovement(final GameData data) {
     return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);

@@ -49,15 +49,6 @@ import games.strategy.util.Util;
  *
  */
 public class HeadlessGameServer {
-  /*
-   * {
-   * // we are not using this, in case the user wants to have a host bot with the host bot ui. so instead let them set it with: java
-   * -Djava.awt.headless=true
-   * // must be static, must be very first thing in the class:
-   * System.setProperty("java.awt.headless", "true");
-   * // System.out.println("Headless AWT Test: " + java.awt.GraphicsEnvironment.isHeadless());
-   * }
-   */
   public static final String TRIPLEA_GAME_HOST_UI_PROPERTY = "triplea.game.host.ui";
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
@@ -673,24 +664,6 @@ public class HeadlessGameServer {
       }
     } catch (final Exception e) {
     }
-    /*
-     * // this is causing a deadlock when in a shutdown hook, due to swing/awt
-     * try
-     * {
-     * if (m_mainPanel != null)
-     * {
-     * m_mainPanel.setVisible(false);
-     * final Frame frame = JOptionPane.getFrameForComponent(m_mainPanel);
-     * m_mainPanel.removeAll();
-     * frame.setVisible(false);
-     * frame.removeAll();
-     * frame.dispose();
-     * m_mainPanel = null;
-     * }
-     * } catch (final Exception e)
-     * {
-     * }
-     */
     s_instance = null;
     m_setupPanelModel = null;
     m_mainPanel = null;

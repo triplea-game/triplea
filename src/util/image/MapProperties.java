@@ -110,17 +110,6 @@ public class MapProperties {
     return hexString;
   }
 
-  /*
-   * public double getUNITS_SCALE()
-   * {
-   * return UNITS_SCALE;
-   * }
-   *
-   * public void setUNITS_SCALE(final double value)
-   * {
-   * UNITS_SCALE = value;
-   * }
-   */
   public String getUNITS_SCALE() {
     return UNITS_SCALE;
   }
@@ -392,18 +381,6 @@ public class MapProperties {
     return MapData.PROPERTY_MAP_USENATION_CONVOYFLAGS + "=" + MAP_USENATION_CONVOYFLAGS + "\r\n";
   }
 
-  /*
-   * public List<String> getDONT_DRAW_TERRITORY_NAMES()
-   * {
-   * return DONT_DRAW_TERRITORY_NAMES;
-   * }
-   *
-   * public void setDONT_DRAW_TERRITORY_NAMES(final List<String> value)
-   * {
-   * DONT_DRAW_TERRITORY_NAMES = value;
-   * }
-   */
-
   public String getDONT_DRAW_TERRITORY_NAMES() {
     return DONT_DRAW_TERRITORY_NAMES;
   }
@@ -439,18 +416,6 @@ public class MapProperties {
   public String outMAP_MAPBLENDMODE() {
     return MapData.PROPERTY_MAP_MAPBLENDMODE + "=" + MAP_MAPBLENDMODE + "\r\n";
   }
-
-  /*
-   * public double getMAP_MAPBLENDALPHA()
-   * {
-   * return MAP_MAPBLENDALPHA;
-   * }
-   *
-   * public void setMAP_MAPBLENDALPHA(final double value)
-   * {
-   * MAP_MAPBLENDALPHA = value;
-   * }
-   */
 
   public String getMAP_MAPBLENDALPHA() {
     return MAP_MAPBLENDALPHA;

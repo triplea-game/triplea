@@ -245,22 +245,13 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   private AggregateResults calculate(final int count) {
     m_isRunning = true;
     final long start = System.currentTimeMillis();
-    // just say we are attacking from all territories surrounding this one, for now
-    /*
-     * final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<Territory, Collection<Unit>>();
-     * attackingFromMap.put(m_location, m_attackingUnits);
-     * for (final Territory t : m_data.getMap().getNeighbors(m_location))
-     * {
-     * attackingFromMap.put(t, m_attackingUnits);
-     * }
-     */
+
     final AggregateResults rVal = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if the AI and a human
     // are both using the calc)
     // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a per-thread, per-calc
     // caching
-    // BattleCalculator.EnableCasualtySortingCaching();
     final List<Unit> attackerOrderOfLosses = OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
     final List<Unit> defenderOrderOfLosses = OddsCalculator.getUnitListByOOL(m_defenderOrderOfLosses, m_defendingUnits, m_data);
     for (int i = 0; i < count && !m_cancelled; i++) {
@@ -515,12 +506,6 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   @Override
   public void gameDataChanged(final Change aChange) {}
 
-  /*
-   * public void setRenderingData(final Object renderingData)
-   * {
-   * }
-   */
-
   @Override
   public void shutDown() {}
 
@@ -688,15 +673,6 @@ class DummyPlayer extends AbstractAI {
       return null;
     }
   }
-
-  /*
-   * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final
-   * PlayerID player)
-   * {
-   * // no scramble
-   * return null;
-   * }
-   */
 
   @Override
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,

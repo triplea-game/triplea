@@ -41,17 +41,6 @@ public class SelectCasualties {
       useDefaultSelectionThisTime = false;
       damaged.addAll(defaultCasualties.getDamaged());
       destroyed.addAll(defaultCasualties.getKilled());
-      /*
-       * for (Unit unit : defaultCasualties)
-       * {
-       * boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
-       * //If it appears in casualty list once, it's damaged, if twice, it's damaged and additionally destroyed
-       * if (unit.getHits() == 0 && twoHit && !damaged.contains(unit))
-       * damaged.add(unit);
-       * else
-       * destroyed.add(unit);
-       * }
-       */
     } else {
       while (damaged.size() + destroyed.size() < count) {
         Unit untouchedTwoHitUnit = null;

@@ -22,7 +22,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.util.Tuple;
 
-
 public abstract class TechAdvance extends NamedAttachable implements Serializable {
   private static final long serialVersionUID = -1076712297024403156L;
 
@@ -295,38 +294,12 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 
   /**
    * Returns all possible tech categories for this player.
-   *
-   * @param data
-   * @param player
    */
   public static List<TechnologyFrontier> getPlayerTechCategories(final GameData data, final PlayerID player) {
-    /*
-     * final TechnologyFrontier technologyFrontier;
-     * data.acquireReadLock();
-     * try
-     * {
-     * technologyFrontier = data.getTechnologyFrontier();
-     * } finally
-     * {
-     * data.releaseReadLock();
-     * }
-     */
     if (player != null) {
       return player.getTechnologyFrontierList().getFrontiers();
     }
     throw new IllegalStateException("Player can not be null");
-    /*
-     * System.out.println("Creating default tech categories");
-     * final List<TechnologyFrontier> tf = new ArrayList<TechnologyFrontier>();
-     * final TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
-     * final TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
-     * final Tuple<List<TechAdvance>, List<TechAdvance>> ww2v3advances = getWW2v3CategoriesWithTheirAdvances(data);
-     * an.addAdvance(ww2v3advances.getFirst());
-     * lp.addAdvance(ww2v3advances.getSecond());
-     * tf.add(an);
-     * tf.add(lp);
-     * return tf;
-     */
   }
 
   @Override

@@ -299,13 +299,6 @@ public class BattleTracker implements java.io.Serializable {
     }
   }
 
-  /*
-   * private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data)
-   * {
-   * addBombingBattle(route, units, attacker, data, null);
-   * }
-   */
-
   private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data,
       final HashMap<Unit, HashSet<Unit>> targets) {
     IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
@@ -408,26 +401,6 @@ public class BattleTracker implements java.io.Serializable {
     for (final Territory current : conquered) {
       IBattle nonFight = getPendingBattle(current, false, BattleType.NORMAL);
       // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this stuff (currently doesn't work because then the
-      // territory is never conquered because the units have left the territory by the time we fight)
-      /*
-       * if (scramblingEnabled)
-       * {
-       * if (nonFight == null)
-       * {
-       * nonFight = new NonFightingBattle(current, id, this, data);
-       * m_pendingBattles.add(nonFight);
-       * getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType(), data);
-       * }
-       * final Change change = nonFight.addAttackChange(Route.subRoute(route, current), units, null);
-       * bridge.addChange(change);
-       * if (changeTracker != null)
-       * {
-       * changeTracker.addChange(change);
-       * }
-       * }
-       * else
-       * {
-       */
       if (nonFight == null) {
         nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED,
             WhoWon.ATTACKER, units);
@@ -1109,58 +1082,4 @@ public class BattleTracker implements java.io.Serializable {
     return "BattleTracker:" + "\n" + "Conquered:" + m_conquered + "\n" + "Blitzed:" + m_blitzed + "\n" + "Fought:" + m_foughBattles + "\n"
         + "Pending:" + m_pendingBattles;
   }
-  /*
-   * //TODO: never used, should it be removed?
-   * private void addNeutralBattle(Route route, Collection<Unit> units, final PlayerID id, final GameData data, IDelegateBridge bridge,
-   * UndoableMove changeTracker)
-   * {
-   * //TODO check for pre existing battles at the sight
-   * //here and in empty battle
-   *
-   * Collection<Territory> neutral = route.getMatches(Matches.TerritoryIsNeutral);
-   * neutral = Match.getMatches(neutral, Matches.TerritoryIsEmpty);
-   * //deal with the end seperately
-   * neutral.remove(route.getEnd());
-   *
-   * m_conquered.addAll(neutral);
-   *
-   * Iterator iter = neutral.iterator();
-   * while (iter.hasNext())
-   * {
-   * Territory current = (Territory) iter.next();
-   * takeOver(current, id, bridge, data, changeTracker, units);
-   * }
-   *
-   * //deal with end territory, may be the case that
-   * //a naval battle must precede there
-   * //Also check if there are only factory/AA units left in the neutral territory.
-   * Collection<Unit> endUnits = route.getEnd().getUnits().getUnits();
-   * if (Matches.TerritoryIsNeutral.match(route.getEnd()) && (Matches.TerritoryIsEmpty.match(route.getEnd()) ||
-   * Match.allMatch(endUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure)))
-   * {
-   * Battle precede = getDependentAmphibiousAssault(route);
-   * if (precede == null)
-   * {
-   * m_conquered.add(route.getEnd());
-   * takeOver(route.getEnd(), id, bridge, data, changeTracker, units);
-   * } else
-   * {
-   * Battle nonFight = getPendingBattle(route.getEnd(), false);
-   * if (nonFight == null)
-   * {
-   * nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
-   * m_pendingBattles.add(nonFight);
-   * }
-   *
-   * Change change = nonFight.addAttackChange(route, units);
-   * bridge.addChange(change);
-   * if(changeTracker != null)
-   * {
-   * changeTracker.addChange(change);
-   * }
-   * addDependency(nonFight, precede);
-   * }
-   * }
-   * }
-   */
 }

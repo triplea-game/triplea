@@ -197,12 +197,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (!m_usedThisRound && m_uses > 0 && m_when.isEmpty()) {
       aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
     }
-    /*
-     * if (m_uses > 0)
-     * {
-     * aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses - 1).toString(), "uses"));
-     * }
-     */
   }
 
   protected boolean testChance(final IDelegateBridge aBridge) {

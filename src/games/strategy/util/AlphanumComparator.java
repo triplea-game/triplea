@@ -73,14 +73,6 @@ public class AlphanumComparator implements Comparator<String> {
 
   @Override
   public int compare(final String s1, final String s2) {
-    /*
-     * if (!(o1 instanceof String) || !(o2 instanceof String))
-     * {
-     * return 0;
-     * }
-     * final String s1 = (String) o1;
-     * final String s2 = (String) o2;
-     */
     int thisMarker = 0;
     int thatMarker = 0;
     final int s1Length = s1.length();

@@ -276,23 +276,7 @@ public class InstallMapDialog extends JDialog {
     return true;
   }
 
-  /*
-   * private boolean isDefaultMap(final DownloadFileDescription selected)
-   * {
-   * return NewGameChooserModel.getDefaultMapNames().contains(selected.getMapName());
-   * }
-   */
-
   private void install(final DownloadFileDescription selected, final int count, final int total) {
-    /*
-     * we no longer stop people from downloading, because we can handle having multiple copies of a map in the different directories triplea
-     * uses for maps
-     * if (isDefaultMap(selected))
-     * {
-     * Util.notifyError(this, "The map " + selected.getMapName() + " cannot be downloaded as it comes installed with TripleA");
-     * return;
-     * }
-     */
     // get the destination file
     final File destination = new File(GameRunner2.getUserMapsFolder(), selected.getMapName() + ".zip");
     if (destination.exists()) {

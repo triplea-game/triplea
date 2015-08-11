@@ -45,16 +45,8 @@ public class DelegateTest extends TestCase {
     }
     pawn = m_data.getUnitTypeList().getUnitType("pawn");
     king = m_data.getUnitTypeList().getUnitType("king");
-    // System.out.println("setup");
   }
 
-  /*
-   *
-   * public void testSample()
-   * {
-   * System.out.println("samelp");
-   * }
-   */
   public void assertValid(final String string) {
     assertNull(string);
   }

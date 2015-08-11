@@ -203,15 +203,6 @@ public class PurchasePanel extends ActionPanel {
     }
   };
 
-  /*
-   * private boolean isIncreasedFactoryProduction(PlayerID player)
-   * {
-   * TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-   * if (ta == null)
-   * return false;
-   * return ta.hasIncreasedFactoryProduction();
-   * }
-   */
   private boolean isUnlimitedProduction(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     if (ra == null) {

@@ -76,64 +76,6 @@ public class UnitsDrawer implements IDrawable {
     }
     final PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
     final Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged > 0 || m_bombingUnitDamage > 0, m_disabled);
-    /*
-     * VEQRYN: I can not figure out why we have the below code. It appears to duplicate the call above.
-     * // figure the unitDamage here, for disabled or not
-     * if (Matches.UnitTypeCanBeDamaged.match(type) && (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
-     * {
-     * // checks to see if this is being carried with a mouse over, or is in a territory.
-     * if (m_territoryName.length() != 0)
-     * {
-     * // kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least
-     * that was my understanding
-     * final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(),
-     * Matches.unitIsOfType(type));
-     * for (final Unit current : units)
-     * {
-     * if (Matches.UnitIsDisabled().match(current))
-     * {
-     * img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, true);
-     * }
-     * }
-     * }
-     * else
-     * {
-     * // needed, don't delete please. if it is a mouse over, we need to carry the unit on our mouse
-     * img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
-     * }
-     * }
-     * if (!m_damaged && Matches.UnitTypeCanBeDamaged.match(type) && isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
-     * {
-     * // checks to see if this is being carried with a mouse over, or is in a territory.
-     * if (m_territoryName.length() != 0)
-     * {
-     * if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
-     * {
-     * // kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least
-     * that was my understanding
-     * final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(),
-     * Matches.unitIsOfType(type));
-     * for (final Unit current : units)
-     * {
-     * if (Matches.UnitHasSomeUnitDamage().match(current))
-     * {
-     * img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, true, m_disabled);
-     * }
-     * }
-     * }
-     * }
-     * else
-     * {
-     * // needed, don't delete please. if it is a mouse over, we need to carry the unit on our mouse
-     * img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
-     * }
-     * }
-     * else
-     * {
-     * // needed, don't delete please. if it is a mouse over, we need to carry the unit on our mouse
-     * img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
-     * }
-     */
     graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
     // more then 1 unit of this category
     if (m_count != 1) {

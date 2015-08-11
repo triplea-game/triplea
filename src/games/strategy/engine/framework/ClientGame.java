@@ -189,14 +189,6 @@ public class ClientGame extends AbstractGame {
       if (gp == null) {
         throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
       }
-      /*
-       * if (HeadlessGameServer.headless())
-       * {
-       * System.out.println("Client local player step: " + stepName + " for PlayerID: " + player.getName() + ", player name: " +
-       * gp.getName() + ", player type: "
-       * + gp.getType() + ". All local players: " + m_gamePlayers + ". All players: " + m_playerManager);
-       * }
-       */
       gp.start(stepName);
     }
   };

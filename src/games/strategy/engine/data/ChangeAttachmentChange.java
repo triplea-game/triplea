@@ -29,21 +29,6 @@ public class ChangeAttachmentChange extends Change {
     m_oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
     m_newValue = newValue;
     m_property = property;
-    /*
-     * if (property.equals("rawProperty"))
-     * {
-     * final String[] s = ((String) newValue).split(":");
-     * m_oldValue = PropertyUtil.getRaw(s[0], attachment);
-     * m_newValue = s[1];
-     * m_property = s[0];
-     * }
-     * else
-     * {
-     * m_oldValue = PropertyUtil.get(property, attachment);
-     * m_newValue = newValue;
-     * m_property = property;
-     * }
-     */
   }
 
   /**
@@ -61,20 +46,6 @@ public class ChangeAttachmentChange extends Change {
     m_oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
     m_newValue = newValue;
     m_property = property;
-    /*
-     * if (getRaw)
-     * {
-     * m_oldValue = PropertyUtil.getRaw(property, attachment);
-     * m_newValue = newValue;
-     * m_property = property;
-     * }
-     * else
-     * {
-     * m_oldValue = PropertyUtil.get(property, attachment);
-     * m_newValue = newValue;
-     * m_property = property;
-     * }
-     */
   }
 
   /**

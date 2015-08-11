@@ -222,45 +222,4 @@ public class ForumPosterComponent extends JPanel {
     }
     m_historyLog.requestFocus();
   }
-
-  /*
-   * private int getRound()
-   * {
-   * int round = 0;
-   * final Object pathFromRoot[] = m_data.getHistory().getLastNode().getPath();
-   * final Object arr$[] = pathFromRoot;
-   * final int len$ = arr$.length;
-   * int i$ = 0;
-   * do
-   * {
-   * if (i$ >= len$)
-   * break;
-   * final Object pathNode = arr$[i$];
-   * final HistoryNode curNode = (HistoryNode) pathNode;
-   * if (curNode instanceof Round)
-   * {
-   * round = ((Round) curNode).getRoundNo();
-   * break;
-   * }
-   * i$++;
-   * } while (true);
-   * return round;
-   * }
-   */
-
-  // abstract protected boolean allowIncludeTerritorySummary();
-
-  // abstract protected boolean allowIncludeProductionSummary();
-
-  // abstract protected boolean allowDiceBattleDetails();
-
-  // abstract protected boolean allowDiceStatistics();
-
-  // abstract protected boolean postTurnSummary(final PBEMMessagePoster poster);
-
-  // abstract protected boolean getHasPostedTurnSummary();
-
-  // abstract protected void setHasPostedTurnSummary(boolean posted);
-
-  // abstract protected boolean skipPosting();
 }

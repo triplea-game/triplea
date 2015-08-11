@@ -57,20 +57,6 @@ public class HistoryWriter implements java.io.Serializable {
       throw new IllegalStateException("Not in a round");
     }
     final Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
-    /*
-     * Can delete after a few releases confirm that the new way works
-     * final HistoryNode old = m_current;
-     * m_history.getGameData().acquireWriteLock();
-     * try
-     * {
-     * m_current.add(currentStep);
-     * m_current = currentStep;
-     * } finally
-     * {
-     * m_history.getGameData().releaseWriteLock();
-     * }
-     * m_history.nodeStructureChanged(old);
-     */
     addToAndSetCurrent(currentStep);
   }
 
@@ -87,19 +73,6 @@ public class HistoryWriter implements java.io.Serializable {
       closeCurrent();
     }
     final Round currentRound = new Round(round, m_history.getChanges().size());
-    /*
-     * Can delete after a few releases confirm that the new way works
-     * m_history.getGameData().acquireWriteLock();
-     * try
-     * {
-     * ((HistoryNode) m_history.getRoot()).add(currentRound);
-     * m_current = currentRound;
-     * } finally
-     * {
-     * m_history.getGameData().releaseWriteLock();
-     * }
-     * m_history.reload();
-     */
     m_current = (HistoryNode) m_history.getRoot();
     addToAndSetCurrent(currentRound);
   }
@@ -154,20 +127,6 @@ public class HistoryWriter implements java.io.Serializable {
           "Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
     }
     final Event event = new Event(eventName, m_history.getChanges().size());
-    /*
-     * Can delete after a few releases confirm that the new way works
-     * final HistoryNode oldCurrent = m_current;
-     * m_history.getGameData().acquireWriteLock();
-     * try
-     * {
-     * m_current.add(event);
-     * m_current = event;
-     * } finally
-     * {
-     * m_history.getGameData().releaseWriteLock();
-     * }
-     * m_history.reload(oldCurrent);
-     */
     addToAndSetCurrent(event);
   }
 
@@ -189,24 +148,6 @@ public class HistoryWriter implements java.io.Serializable {
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
     s_logger.log(Level.FINE, "Adding child:" + node);
-    /*
-     * Can delete after a few releases confirm that the new way works
-     * m_history.getGameData().acquireWriteLock();
-     * try
-     * {
-     * if (!isCurrentEvent())
-     * {
-     * new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" +
-     * m_current).printStackTrace(System.out);
-     * startEvent("???");
-     * }
-     * m_current.add(node);
-     * } finally
-     * {
-     * m_history.getGameData().releaseWriteLock();
-     * }
-     * m_history.nodesWereInserted(m_current, new int[] { m_current.getChildCount() - 1 });
-     */
     if (!isCurrentEvent()) {
       new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current)
           .printStackTrace(System.out);

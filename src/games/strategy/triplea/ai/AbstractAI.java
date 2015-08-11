@@ -193,9 +193,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return candidates.iterator().next();
   }
 
-  /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties
-   */
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
       final String message, final DiceRoll dice,
@@ -215,24 +212,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
     final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom); // the list we receive should already be sorted
-    /*
-     * final List<Unit> selectFromSorted = new ArrayList<Unit>(); // defaultCasualties has already been sorted, and we accept this sort as a
-     * base and then want to modify it further by interleaving carriers with planes
-     * selectFromSorted.addAll(defaultCasualties.getKilled()); // since redoing the sorting can take a long time, we will instead borrow the
-     * sorted list from the defaultCasualties
-     * for (final Unit u : selectFrom)
-     * {
-     * if (!selectFromSorted.contains(u))
-     * {
-     * selectFromSorted.add(u);
-     * }
-     * }
-     * if (selectFromSorted.size() != selectFrom.size() || !selectFromSorted.containsAll(selectFrom) ||
-     * !selectFrom.containsAll(selectFromSorted))
-     * {
-     * throw new IllegalStateException("AI casualty sort failed");
-     * }
-     */
+
     final List<Unit> interleavedTargetList =
         new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers)); // TODO:
                                                                                                                                       // if

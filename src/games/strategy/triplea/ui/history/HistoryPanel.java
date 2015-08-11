@@ -263,21 +263,7 @@ public class HistoryPanel extends JPanel {
     }
     // move the game to the state of the selected node
     final HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
-    /*
-     * // the following is here in order to have the map screen locked when your mouse is in the history panel, except when you are clicking
-     * on a node.
-     * // we also do not want to change the user's selection.
-     * if (m_uiContext.getLockMap())
-     * {
-     * m_uiContext.setLockMap(false);
-     * gotoNode(node);
-     * m_uiContext.setLockMap(true);
-     * }
-     * else
-     * {
-     */
     gotoNode(node);
-    // }
   }
 
   private void gotoNode(final HistoryNode node) {

@@ -214,11 +214,4 @@ public class LobbyLoginValidator implements ILoginValidator {
       return ise.getMessage();
     }
   }
-  /*
-   * public static void main(final String[] args)
-   * {
-   * final Timestamp t = new Timestamp(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 2);
-   * System.out.println(getBanDurationBreakdown(t));
-   * }
-   */
 }

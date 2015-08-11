@@ -35,16 +35,6 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
     super.start(stepName); // must call super.start
 
     enableEditModeMenu();
-    /*
-     * {
-     * CountDownLatch waitToLeaveGame = new CountDownLatch(1);
-     * try {
-     *
-     * //wait();
-     * waitToLeaveGame.await();
-     * } catch (InterruptedException e) {}
-     * }
-     */
     boolean badStep = false;
     if (stepName.endsWith("Play")) {
       play();
@@ -61,13 +51,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
     }
   }
 
-  /*
-   * private boolean gameOver()
-   * {
-   * IEndTurnDelegate endDel = (IEndTurnDelegate) m_bridge.getRemote();
-   * return endDel.isGameOver();
-   * }
-   */
+
   protected void play() {
     // change to active player
     m_ui.changeActivePlayer(getPlayerID());

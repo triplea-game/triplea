@@ -736,20 +736,6 @@ public class GridGameFrame extends MainGameFrame {
    * @return PlayData representing a play, or <code>null</code> if the play was interrupted
    */
   public IGridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge) {
-    /*
-     * if (m_gameOver)
-     * {
-     * m_waiting = new CountDownLatch(1);
-     * try
-     * {
-     * m_waiting.await();
-     * } catch (final InterruptedException e)
-     * {
-     * // ignore
-     * }
-     * return null;
-     * }
-     */
     IGridPlayData play = null;
     try {
       while (play == null) {

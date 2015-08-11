@@ -105,18 +105,7 @@ public class Matches {
       return ua.getHitPoints() - unit.getHits() <= 1;
     }
   };
-  /*
-   * public static final Match<Unit> UnitHasMoreThanOneHitPointLeft = new Match<Unit>()
-   * {
-   *
-   * @Override
-   * public boolean match(final Unit unit)
-   * {
-   * final UnitAttachment ua = UnitAttachment.get(unit.getType());
-   * return ua.getHitPoints() - unit.getHits() > 1;
-   * }
-   * };
-   */
+
   public static final Match<Unit> UnitIsSea = new Match<Unit>() {
     @Override
     public boolean match(final Unit unit) {
@@ -2146,22 +2135,6 @@ public class Matches {
     };
   }
 
-  /*
-   * public static Match<Territory> isTerritoryEnemyAndWater(final PlayerID player, final GameData data)
-   * {
-   * return new Match<Territory>()
-   * {
-   * public boolean match(Territory t)
-   * {
-   * if(t.getOwner().equals(player))
-   * return false;
-   * if(t.getOwner().equals(PlayerID.NULL_PLAYERID))
-   * return false;
-   * return data.getRelationshipTracker().isAtWar(player, t.getOwner());
-   * }
-   * };
-   * }
-   */
   public static Match<Unit> enemyUnit(final PlayerID player, final GameData data) {
     return new Match<Unit>() {
       @Override
@@ -3034,18 +3007,7 @@ public class Matches {
       return relationship.getRelationshipType().getRelationshipTypeAttachment().isWar();
     }
   };
-  /*
-   * EXAMPLE
-   * public static final Match<RelationshipType> RelationshipTypeHelpsDefendAtSea = new Match<RelationshipType>()
-   * {
-   *
-   * @Override
-   * public boolean match(final RelationshipType relationship)
-   * {
-   * return relationship.getRelationshipTypeAttachment().getHelpsDefendAtSea();
-   * }
-   * };
-   */
+
   public static final Match<RelationshipType> RelationshipTypeCanMoveLandUnitsOverOwnedLand = new Match<RelationshipType>() {
     @Override
     public boolean match(final RelationshipType relationship) {
@@ -3352,37 +3314,6 @@ public class Matches {
     };
   }
 
-  /*
-   * public static final Match<Territory> TerritoryContainsUnitsOfAtLeastTwoPlayersAtWar(final GameData data)
-   * {
-   * return new Match<Territory>()
-   * {
-   *
-   * @Override
-   * public boolean match(Territory t)
-   * {
-   * Collection<PlayerID> players = data.getPlayerList().getPlayers();
-   * Iterator<PlayerID> p1Iter = players.iterator();
-   * while (p1Iter.hasNext())
-   * {
-   * PlayerID p1 = p1Iter.next();
-   * p1Iter.remove();
-   * for (PlayerID p2 : players)
-   * {
-   * if (!data.getRelationshipTracker().isAtWar(p1, p2))
-   * continue;
-   * if (!t.getUnits().someMatch(unitIsOwnedBy(p1)))
-   * continue;
-   * if (!t.getUnits().someMatch(unitIsOwnedBy(p2)))
-   * continue;
-   * return true;
-   * }
-   * }
-   * return false;
-   * }
-   * };
-   * }
-   */
   public static final Match<PlayerID> isAlliedAndAlliancesCanChainTogether(final PlayerID player, final GameData data) {
     return new Match<PlayerID>() {
       @Override
