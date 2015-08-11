@@ -83,7 +83,6 @@ public class PolygonGrabber extends JFrame {
    *
    * @param java
    *        .lang.String[] args the command line arguments
-   * @see PolygonGrabber(java.lang.String) picker
    */
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
@@ -446,7 +445,6 @@ public class PolygonGrabber extends JFrame {
   /**
    * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
    *
-   * @see findPolygon(java.lang.int , java.lang.int)
    * @param java
    *        .awt.Point point a point clicked by mouse
    * @param java

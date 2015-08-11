@@ -13,7 +13,6 @@ import com.apple.eawt.ApplicationEvent;
  *
  * Needs AppleJavaExtensions.jar to compile on non-Mac platform.
  *
- * @see http://developer.apple.com/samplecode/AppleJavaExtensions/index.html
  */
 public class MacWrapper {
   private static MainGameFrame s_shutdownFrame;

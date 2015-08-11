@@ -56,7 +56,6 @@ public interface IGameLoader extends java.io.Serializable {
    * <p>
    * The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be contacted remotately
    *
-   * @see games.strategy.engine.message.IRemoteMessenger
    */
   public Class<? extends IRemote> getRemotePlayerType();
 

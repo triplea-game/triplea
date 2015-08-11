@@ -36,7 +36,6 @@ public interface IDelegateBridge {
   /**
    * Get a remote reference to the given player.
    *
-   * @see games.strategy.engine.message.IRemoteMessenger
    */
   public IRemotePlayer getRemotePlayer(PlayerID id);
 

@@ -123,9 +123,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     }
   }
 
-  /*
-   * @see IMessenger#send(Serializable, INode)
-   */
+
   @Override
   public synchronized void send(final Serializable msg, final INode to) {
     // use our nodes address, this is our network visible address
@@ -134,7 +132,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   }
 
   /*
-   * @see IMessenger#broadcast(Serializable)
    */
   @Override
   public synchronized void broadcast(final Serializable msg) {
@@ -143,7 +140,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   }
 
   /*
-   * @see IMessenger#addMessageListener(Class, IMessageListener)
    */
   @Override
   public void addMessageListener(final IMessageListener listener) {
@@ -151,7 +147,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   }
 
   /*
-   * @see IMessenger#removeMessageListener(Class, IMessageListener)
    */
   @Override
   public void removeMessageListener(final IMessageListener listener) {
@@ -169,7 +164,6 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
   }
 
   /*
-   * @see IMessenger#isConnected()
    */
   @Override
   public boolean isConnected() {

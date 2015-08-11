@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Written across the network often, so this class is
  * externalizable to increase effeciency
  *
- * @see java.rmi.dgc.VMID
  */
 public class GUID implements Externalizable {
   private static final long serialVersionUID = 8426441559602874190L;

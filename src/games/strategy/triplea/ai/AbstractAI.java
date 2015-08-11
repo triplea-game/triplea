@@ -193,9 +193,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return candidates.iterator().next();
   }
 
-  /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties
-   */
+
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
       final String message, final DiceRoll dice,
@@ -265,7 +263,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
    */
   @Override
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
@@ -280,7 +277,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection,
    * games.strategy.engine.data.Territory)
    */
   @Override
@@ -295,7 +291,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
    */
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
@@ -444,9 +439,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
    */
   @Override
   public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,

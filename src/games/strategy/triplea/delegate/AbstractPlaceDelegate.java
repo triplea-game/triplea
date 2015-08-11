@@ -1766,9 +1766,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return rVal;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IAbstractPlaceDelegate.class;

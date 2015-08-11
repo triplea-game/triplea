@@ -1184,8 +1184,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
         && Match.someMatch(m_attackingUnits, Matches.UnitIsAir);
   }
 
-  /**
-   */
+
   private boolean canAttackerRetreatPartialAmphib() {
     if (m_isAmphibious && isPartialAmphibiousRetreat()) {
       final List<Unit> landUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsLand); // Only include land units when checking for

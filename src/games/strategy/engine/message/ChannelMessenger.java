@@ -20,9 +20,7 @@ public class ChannelMessenger implements IChannelMessenger {
     return m_unifiedMessenger;
   }
 
-  /*
-   * @see games.strategy.net.IChannelMessenger#getChannelBroadcastor(java.lang.String)
-   */
+
   @Override
   public IChannelSubscribor getChannelBroadcastor(final RemoteName channelName) {
     final InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger, channelName.getName(), true, channelName.getClazz());
@@ -32,7 +30,6 @@ public class ChannelMessenger implements IChannelMessenger {
   }
 
   /*
-   * @see games.strategy.net.IChannelMessenger#registerChannelSubscriber(java.lang.Object, java.lang.String)
    */
   @Override
   public void registerChannelSubscriber(final Object implementor, final RemoteName channelName) {
@@ -43,7 +40,6 @@ public class ChannelMessenger implements IChannelMessenger {
   }
 
   /*
-   * @see games.strategy.net.IChannelMessenger#unregisterChannelSubscriber(java.lang.Object, java.lang.String)
    */
   @Override
   public void unregisterChannelSubscriber(final Object implementor, final RemoteName channelName) {
@@ -51,9 +47,7 @@ public class ChannelMessenger implements IChannelMessenger {
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.net.IChannelMessenger#getLocalNode()
    */
   @Override
   public INode getLocalNode() {

@@ -9,7 +9,6 @@ import java.util.Stack;
  *
  * Currently, minimax and alpha-beta algorithms are implemented.
  *
- * @see "Chapter 6 of Artificial Intelligence, 2nd ed. by Stuart Russell & Peter Norvig"
  */
 public class AIAlgorithm {
   public static <Play> Stack<Play> depthFirstSearch(final GameState<Play> state, final int maxDepth) {

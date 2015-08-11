@@ -293,9 +293,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     }
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<IUserActionDelegate> getRemoteType() {
     return IUserActionDelegate.class;

@@ -36,11 +36,7 @@ abstract public class AbstractLauncher implements ILauncher {
     m_gameData = gameSelectorModel.getGameData();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.engine.framework.startup.launcher.ILauncher#launch(java.awt.Component)
-   */
+
   @Override
   public void launch(final Component parent) {
     if (!m_headless && !SwingUtilities.isEventDispatchThread()) {

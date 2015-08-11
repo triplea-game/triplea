@@ -1383,9 +1383,7 @@ public class MovePanel extends AbstractMovePanel {
     return chooser.getSelected(true);
   }
 
-  /**
-   * @see AbstraceMovePanel#cleanUpSpecific()
-   */
+
   @Override
   protected final void cleanUpSpecific() {
     getMap().removeMapSelectionListener(m_MAP_SELECTION_LISTENER);
@@ -1398,7 +1396,6 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /**
-   * @see AbstraceMovePanel#cancelMoveSpecific()
    */
   @Override
   protected final void cancelMoveAction() {
@@ -1414,7 +1411,6 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /**
-   * @see AbstraceMovePanel#undoMoveSpecific()
    */
   @Override
   protected final void undoMoveSpecific() {
@@ -1435,7 +1431,6 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /**
-   * @see AbstraceMovePanel#setUpSpecific()
    */
   @Override
   protected final void setUpSpecific() {

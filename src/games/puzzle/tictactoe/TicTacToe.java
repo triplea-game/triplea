@@ -37,9 +37,7 @@ public class TicTacToe extends GridGame implements IGameLoader {
     return new String[] {HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE};
   }
 
-  /**
-   * @see IGameLoader.createPlayers(playerNames)
-   */
+
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
     final Set<IGamePlayer> players = new HashSet<IGamePlayer>();

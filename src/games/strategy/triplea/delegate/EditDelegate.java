@@ -327,9 +327,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     return null;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IEditDelegate.class;

@@ -776,11 +776,7 @@ class DummyPlayer extends AbstractAI {
     throw new UnsupportedOperationException();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
-   */
+
   @Override
   public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
       final int diceSides) {

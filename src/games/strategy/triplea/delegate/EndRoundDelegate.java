@@ -367,9 +367,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return sum;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return null;

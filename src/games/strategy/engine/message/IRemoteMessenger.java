@@ -58,7 +58,6 @@ package games.strategy.engine.message;
  * <p>
  * Remotes are multithreaded. Method calls may arrive out of order that methods were called.
  *
- * @see IRemote, java.lang.reflect.Proxy
  *
  */
 public interface IRemoteMessenger {

@@ -1396,10 +1396,7 @@ class GenericTechChange extends Change {
 }
 
 
-/**
- *
- *
- */
+
 class AddBattleRecordsChange extends Change {
   private static final long serialVersionUID = -6927678548172402611L;
   private final BattleRecords m_recordsToAdd;

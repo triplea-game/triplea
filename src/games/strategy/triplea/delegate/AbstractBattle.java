@@ -136,11 +136,7 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     return new ArrayList<Unit>(m_defendingUnits);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.delegate.IBattle#isEmpty()
-   */
+
   @Override
   abstract public boolean isEmpty();
 
@@ -153,9 +149,7 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   public void cancelBattle(final IDelegateBridge bridge) {}
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.delegate.IBattle#isBombingRun()
    */
   @Override
   public boolean isBombingRun() {
@@ -211,33 +205,25 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.delegate.IBattle#fight(games.strategy.engine.delegate.IDelegateBridge)
    */
   @Override
   abstract public void fight(IDelegateBridge bridge);
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.delegate.IBattle#addAttackChange(games.strategy.engine.data.Route, java.util.Collection, java.util.HashMap)
    */
   @Override
   abstract public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets);
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.delegate.IBattle#removeAttack(games.strategy.engine.data.Route, java.util.Collection)
    */
   @Override
   abstract public void removeAttack(Route route, Collection<Unit> units);
 
   /*
-   * (non-Javadoc)
    *
-   * @see
    * games.strategy.triplea.delegate.IBattle#unitsLostInPrecedingBattle(games.strategy.triplea.delegate.IBattle,java.util.Collection<Unit>,
    * games.strategy.engine.delegate.IDelegateBridge)
    */

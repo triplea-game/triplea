@@ -20,7 +20,6 @@ import games.strategy.util.Match;
 /**
  * Pro AI matches.
  *
- * @since 2014
  */
 public class ProMatches {
 

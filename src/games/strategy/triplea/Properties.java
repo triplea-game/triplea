@@ -392,9 +392,7 @@ public class Properties implements Constants {
     return data.getProperties().get(ALWAYS_ON_AA_PROPERTY, false);
   }
 
-  /*
-   *
-   */
+
   public static boolean getLHTRCarrierProductionRules(final GameData data) {
     return data.getProperties().get(LHTR_CARRIER_PRODUCTION_RULES, false);
   }

@@ -386,9 +386,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
    * }
    */
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IPurchaseDelegate.class;

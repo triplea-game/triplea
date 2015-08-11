@@ -61,7 +61,6 @@ public class CenterPicker extends JFrame {
    *
    * @param java
    *        .lang.String[] args the command line arguments
-   * @see Picker(java.lang.String) picker
    */
   public static void main(final String[] args) {
     handleCommandLineArgs(args);

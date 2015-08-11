@@ -242,8 +242,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return m_battleTracker.getPendingBattleSites();
   }
 
-  /**
-   */
+
   private boolean isShoreBombardPerGroundUnitRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getShoreBombardPerGroundUnitRestricted(data);
   }
@@ -1605,9 +1604,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
    */
   @Override
   public Class<? extends IRemote> getRemoteType() {

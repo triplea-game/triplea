@@ -1,33 +1,12 @@
 package games.strategy.util;
 
-/*
- * The Alphanum Algorithm is an improved sorting algorithm for strings
- * containing numbers. Instead of sorting numbers in ASCII order like
- * a standard sort, this algorithm sorts numbers in numeric order.
- *
- * The Alphanum Algorithm is discussed at http://www.DaveKoelle.com
- *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- */
-
 import java.util.Comparator;
 
 /**
  * This is an updated version with enhancements made by Daniel Migowski,
  * Andre Bogus, and David Koelle
+ *
+ * The Alphanum Algorithm is discussed at http://www.DaveKoelle.com
  *
  * To convert to use Templates (Java 1.5+):
  * - Change "implements Comparator" to "implements Comparator<String>"

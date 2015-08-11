@@ -18,9 +18,7 @@ public class RemoteMessengerTest extends TestCase {
   private RemoteMessenger m_remoteMessenger;
   private UnifiedMessengerHub m_hub;
 
-  /*
-   * @see TestCase#setUp()
-   */
+
   @Override
   protected void setUp() throws Exception {
     // simple set up for non networked testing
@@ -30,7 +28,6 @@ public class RemoteMessengerTest extends TestCase {
   }
 
   /*
-   * @see TestCase#tearDown()
    */
   @Override
   protected void tearDown() throws Exception {

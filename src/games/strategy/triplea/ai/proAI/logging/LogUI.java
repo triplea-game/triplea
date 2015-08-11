@@ -9,7 +9,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 /**
  * Class to manage log window display.
  *
- * @since 2014
  */
 public class LogUI {
   private static TripleAFrame s_frame = null;

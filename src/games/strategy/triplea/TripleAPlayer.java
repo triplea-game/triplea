@@ -578,9 +578,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     m_ui.waitForEndTurn(getPlayerID(), getPlayerBridge());
   }
 
-  /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties
-   */
+
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
       final String message, final DiceRoll dice,
@@ -593,7 +591,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
    */
   @Override
   public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides) {
@@ -601,7 +598,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit,
    * games.strategy.engine.data.Territory, java.util.Collection, boolean)
    */
   @Override
@@ -643,7 +639,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
    */
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
@@ -651,7 +646,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
    */
   @Override
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
@@ -664,9 +658,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection,
    * games.strategy.engine.data.Territory)
    */
   @Override
@@ -675,7 +667,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
    */
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
@@ -684,9 +675,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
    */
   @Override
   public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
@@ -708,9 +697,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection,
    * java.lang.String, java.lang.String)
    */
   @Override
@@ -720,9 +707,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.player.ITripleaPlayer#scrambleQuery(games.strategy.net.GUID, java.util.Collection, java.lang.String,
    * java.lang.String)
    *
    * public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final
