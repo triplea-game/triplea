@@ -14,7 +14,8 @@ class ServerLoginHelper {
    * 1) client writes user name
    * 1) server writes challenge string (or null if no challenge, at which point the communication ends)
    * 2) client writes credentials in response to challenge string
-   * 3) server reads credentials, sends null and then client name if login suceeds, otherwise an error message and the connection is closed
+   * 3) server reads credentials, sends null and then client name if login suceeds, otherwise an error message and the
+   * connection is closed
    */
   private final static Logger s_logger = Logger.getLogger(ServerLoginHelper.class.getName());
   private final SocketAddress m_remoteAddress;
@@ -23,8 +24,8 @@ class ServerLoginHelper {
   private String m_clientName;
   private final ServerMessenger m_serverMessenger;
 
-  public ServerLoginHelper(final SocketAddress remoteAddress, final ILoginValidator loginValidator, final SocketStreams streams,
-      final ServerMessenger messenger) {
+  public ServerLoginHelper(final SocketAddress remoteAddress, final ILoginValidator loginValidator,
+      final SocketStreams streams, final ServerMessenger messenger) {
     m_remoteAddress = remoteAddress;
     m_loginValidator = loginValidator;
     m_streams = streams;
@@ -67,7 +68,8 @@ class ServerLoginHelper {
         }
       }
       final String mac = MacFinder.GetHashedMacAddress();
-      final String error = m_loginValidator.verifyConnection(challenge, credentials, m_clientName, mac, m_remoteAddress);
+      final String error =
+          m_loginValidator.verifyConnection(challenge, credentials, m_clientName, mac, m_remoteAddress);
       if (error == null) {
         out.writeObject(null);
         m_clientName = m_serverMessenger.getUniqueName(m_clientName);

@@ -14,20 +14,15 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 
 /**
  * arguments
- *
  * to host a game
  * triplea.server=true
  * triplea.port=3300
  * triplea.name=myName
- *
  * to connect to a game
  * triplea.client=true
  * triplea.port=300
  * triplea.host=127.0.0.1
  * triplea.name=myName
- *
- *
- *
  */
 public class MainFrame extends JFrame {
   private static final long serialVersionUID = -4816544699469097329L;
@@ -64,7 +59,6 @@ public class MainFrame extends JFrame {
 
   /**
    * todo, replace with something better
-   *
    * Get the chat for the game, or null if there is no chat
    */
   public Chat getChat() {
@@ -80,7 +74,6 @@ public class MainFrame extends JFrame {
 
   /**
    * After the game has been left, call this.
-   *
    */
   public void clientLeftGame() {
     if (!SwingUtilities.isEventDispatchThread()) {
@@ -99,7 +92,8 @@ public class MainFrame extends JFrame {
       return;
     }
     try {
-      Thread.sleep(100); // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+      Thread.sleep(100); // having an oddball issue with the zip stream being closed while parsing to load default game.
+                         // might be caused by
                          // closing of stream while unloading map resources.
     } catch (final InterruptedException e) {
     }
@@ -123,9 +117,7 @@ public class MainFrame extends JFrame {
 
   /**
    * For displaying on startup.
-   *
    * Only call once!
-   *
    */
   public void start() {
     SwingUtilities.invokeLater(new Runnable() {

@@ -22,7 +22,6 @@ import games.strategy.engine.data.GameDataComponent;
  * Properties of the current game. <br>
  * Maps string -> Object <br>
  * Set through changeFactory.setProperty.
- *
  */
 public class GameProperties extends GameDataComponent {
   private static final long serialVersionUID = -1448163357090677564L;
@@ -64,7 +63,6 @@ public class GameProperties extends GameDataComponent {
   }
 
   /**
-   *
    * @param key
    *        referring key
    * @return property with key or null if property is not contained in the list
@@ -141,8 +139,8 @@ public class GameProperties extends GameDataComponent {
    * return currentPropertiesMap;
    * }
    */
-
-  public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties) throws IOException {
+  public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties)
+      throws IOException {
     // write internally first in case of error
     final ByteArrayOutputStream bos = new ByteArrayOutputStream(5000);
     ObjectOutputStream outStream = null;
@@ -215,7 +213,8 @@ public class GameProperties extends GameDataComponent {
     return editableProperties;
   }
 
-  public static void applyByteMapToChangeProperties(final byte[] byteArray, final GameProperties gamePropertiesToBeChanged) {
+  public static void applyByteMapToChangeProperties(final byte[] byteArray,
+      final GameProperties gamePropertiesToBeChanged) {
     List<IEditableProperty> editableProperties = null;
     try {
       editableProperties = streamToIEditablePropertiesList(byteArray);

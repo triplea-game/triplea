@@ -165,19 +165,13 @@ public class DummyMessenger implements IServerMessenger {
   }
 
   @Override
-  public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires) {
-
-  }
+  public void NotifyIPMiniBanningOfPlayer(final String ip, final Date expires) {}
 
   @Override
-  public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires) {
-
-  }
+  public void NotifyMacMiniBanningOfPlayer(final String mac, final Date expires) {}
 
   @Override
-  public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires) {
-
-  }
+  public void NotifyUsernameMiniBanningOfPlayer(final String username, final Date expires) {}
 
   @Override
   public String GetPlayerMac(final String name) {
@@ -185,19 +179,13 @@ public class DummyMessenger implements IServerMessenger {
   }
 
   @Override
-  public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires) {
-
-  }
+  public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires) {}
 
   @Override
-  public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires) {
-
-  }
+  public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires) {}
 
   @Override
-  public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires) {
-
-  }
+  public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires) {}
 
   @Override
   public boolean IsUsernameMiniBanned(final String username) {

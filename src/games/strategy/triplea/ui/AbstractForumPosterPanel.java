@@ -17,7 +17,6 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 
-
 public abstract class AbstractForumPosterPanel extends ActionPanel {
   private static final long serialVersionUID = -5084680807785728744L;
   protected JLabel m_actionLabel;
@@ -110,7 +109,6 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
     if (skipPosting() || GameStepPropertiesHelper.isSkipPosting(getData())) {
       return;
     }
-
     final boolean hasPosted = getHasPostedTurnSummary();
     SwingUtilities.invokeLater(new Runnable() {
       @Override

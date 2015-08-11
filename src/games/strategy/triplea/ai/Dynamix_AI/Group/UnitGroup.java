@@ -23,7 +23,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
-
 @SuppressWarnings({"unchecked", "deprecation"})
 public class UnitGroup {
   private Collection<Unit> m_units = new ArrayList<Unit>();
@@ -102,82 +101,100 @@ public class UnitGroup {
     if (air) {
       m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, m_data));
     } else if (sea) {
-      m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data));// ,
-                                                                                                                                          // Matches.territoryHasNoEnemyUnits(player,
-                                                                                                                                          // m_data));
+      m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
+          DMatches.territoryIsWaterAndPassableTo(player, m_data));// ,
+                                                                  // Matches.territoryHasNoEnemyUnits(player,
+                                                                  // m_data));
     } else {
-      m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand);// , Matches.territoryHasNoEnemyUnits(player, m_data));
+      m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand);// ,
+                                                                                 // Matches.territoryHasNoEnemyUnits(player,
+                                                                                 // m_data));
     }
     if (air) {
       m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
-      m_ncmCRouteMatches.put(
-          DUtils.CompMatchAnd(Matches.TerritoryIsNotImpassable,
-              DUtils.CompMatchOr(DMatches.territoryIsOwnedByXOrAlly(m_data, player),
-                  Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyAAforAnything(player, m_data))
-                      .invert())),
+      m_ncmCRouteMatches
+          .put(
+              DUtils.CompMatchAnd(Matches.TerritoryIsNotImpassable,
+                  DUtils.CompMatchOr(DMatches.territoryIsOwnedByXOrAlly(m_data, player),
+                      Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyAAforAnything(player, m_data)).invert())),
           1); // Is passible and without enemy AA's
       m_ncmCRouteMatches.put(Matches.TerritoryIsNotImpassable, 2); // Is any passable ter
     } else if (sea) {
       m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
       m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
-          DMatches.territoryIsWaterAndPassableTo(player, m_data), Matches.territoryHasUnitsOwnedBy(player)), 10); // We love sea with our
-                                                                                                                  // units, cause we can
-                                                                                                                  // control the movement
+          DMatches.territoryIsWaterAndPassableTo(player, m_data), Matches.territoryHasUnitsOwnedBy(player)), 10); // We
+                                                                                                                  // love
+                                                                                                                  // sea
+                                                                                                                  // with
+                                                                                                                  // our
+                                                                                                                  // units,
+                                                                                                                  // cause
+                                                                                                                  // we
+                                                                                                                  // can
+                                                                                                                  // control
+                                                                                                                  // the
+                                                                                                                  // movement
+      m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
+          DMatches.territoryIsWaterAndPassableTo(player, m_data),
+          Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(m_data, player).invert())), 15); // Allied is ok, but
+                                                                                                    // they could move
       m_ncmCRouteMatches.put(
-          new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data),
-              Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(
-                  m_data,
-                  player).invert())),
-          15); // Allied is ok, but they could move
-      m_ncmCRouteMatches.put(
-          new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data),
-              Matches.territoryHasNoEnemyUnits(player, m_data)),
+          new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
+              DMatches.territoryIsWaterAndPassableTo(player, m_data), Matches.territoryHasNoEnemyUnits(player, m_data)),
           20); // Enemy free is fine
-      m_ncmCRouteMatches
-          .put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data)), 100); // Ters
-                                                                                                                                         // with
-                                                                                                                                         // enemies,
-                                                                                                                                         // but
-                                                                                                                                         // without
-                                                                                                                                         // having
-                                                                                                                                         // to
-                                                                                                                                         // go
-                                                                                                                                         // through
-                                                                                                                                         // enemy
-                                                                                                                                         // canals,
-                                                                                                                                         // is
-                                                                                                                                         // second
-                                                                                                                                         // worst
-      m_ncmCRouteMatches.put(Matches.TerritoryIsWater, 1000000); // Finally, we add the any-sea match, which we unfortunately can't get
-                                                                 // through... (Well, unless we conquer enemies and canals)
+      m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater,
+          DMatches.territoryIsWaterAndPassableTo(player, m_data)), 100); // Ters
+                                                                         // with
+                                                                         // enemies,
+                                                                         // but
+                                                                         // without
+                                                                         // having
+                                                                         // to
+                                                                         // go
+                                                                         // through
+                                                                         // enemy
+                                                                         // canals,
+                                                                         // is
+                                                                         // second
+                                                                         // worst
+      m_ncmCRouteMatches.put(Matches.TerritoryIsWater, 1000000); // Finally, we add the any-sea match, which we
+                                                                 // unfortunately can't get
+                                                                 // through... (Well, unless we conquer enemies and
+                                                                 // canals)
     } else {
       m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
-      m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedBy(player)), 10); // We like
-                                                                                                                                  // ters we
-                                                                                                                                  // own
-      m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByXOrAlly(m_data, player)),
-          11); // Next best is allied ters
       m_ncmCRouteMatches
-          .put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player, m_data)), 15); // If
-                                                                                                                                            // we
-                                                                                                                                            // must,
-                                                                                                                                            // we
-                                                                                                                                            // take
-                                                                                                                                            // the
-                                                                                                                                            // route
-                                                                                                                                            // with
-                                                                                                                                            // enemy
-                                                                                                                                            // ters
-                                                                                                                                            // we
-                                                                                                                                            // can
-                                                                                                                                            // actually
-                                                                                                                                            // takeover
-                                                                                                                                            // and
-                                                                                                                                            // then
-                                                                                                                                            // walk
-                                                                                                                                            // though
-      m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand), 1000); // Finally, we add the any-land match, which
-                                                                                               // we unfortunately can't get through...
+          .put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedBy(player)), 10); // We
+                                                                                                                    // like
+                                                                                                                    // ters
+                                                                                                                    // we
+                                                                                                                    // own
+      m_ncmCRouteMatches.put(
+          new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByXOrAlly(m_data, player)),
+          11); // Next best is allied ters
+      m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand,
+          Matches.TerritoryIsPassableAndNotRestricted(player, m_data)), 15); // If
+                                                                             // we
+                                                                             // must,
+                                                                             // we
+                                                                             // take
+                                                                             // the
+                                                                             // route
+                                                                             // with
+                                                                             // enemy
+                                                                             // ters
+                                                                             // we
+                                                                             // can
+                                                                             // actually
+                                                                             // takeover
+                                                                             // and
+                                                                             // then
+                                                                             // walk
+                                                                             // though
+      m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand), 1000); // Finally, we add the
+                                                                                               // any-land match, which
+                                                                                               // we unfortunately can't
+                                                                                               // get through...
     }
   }
 
@@ -206,7 +223,8 @@ public class UnitGroup {
    */
   public Route GetCMRoute(final Territory target) {
     Route route = m_data.getMap().getRoute_IgnoreEnd(m_fromTer, target, m_cmRouteMatch);
-    if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName())) {
+    if (route == null || route.getTerritories().size() < 2
+        || route.getStart().getName().equals(route.getEnd().getName())) {
       return null;
     }
     final int slowest = DUtils.GetSlowestMovementUnitInList(new ArrayList<Unit>(m_units));
@@ -249,7 +267,8 @@ public class UnitGroup {
    * @param target
    *        - The target to find a route to
    * @param extraChecks
-   *        - If enabled, extra checks will be used during calculation, like route trimming so the units don't end up in an abandoned
+   *        - If enabled, extra checks will be used during calculation, like route trimming so the units don't end up in
+   *        an abandoned
    *        territory.
    * @return null if move failed. If successful, returns the calculated ncm route.
    */
@@ -270,17 +289,19 @@ public class UnitGroup {
     } else {
       route = DUtils.TrimRoute_AtLastFriendlyTer(route, slowest, GetFirstUnit().getOwner(), m_data);
     }
-    if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName())) {
+    if (route == null || route.getTerritories().size() < 2
+        || route.getStart().getName().equals(route.getEnd().getName())) {
       return null;
     }
     if (extraChecks) {
-      if (DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert().match(route.getEnd())) {
+      if (DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert()
+          .match(route.getEnd())) {
         route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data,
-            DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data)
-                .invert());
+            DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert());
       }
     }
-    if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName())) {
+    if (route == null || route.getTerritories().size() < 2
+        || route.getStart().getName().equals(route.getEnd().getName())) {
       return null;
     }
     return route;
@@ -343,7 +364,8 @@ public class UnitGroup {
    * @param mover
    *        - The move delegate that performs the move
    * @param extraChecks
-   *        - If enabled, extra checks will be used in this move, like route trimming so the units don't end up in an abandoned territory.
+   *        - If enabled, extra checks will be used in this move, like route trimming so the units don't end up in an
+   *        abandoned territory.
    * @return an error message if move failed. If successful, returns null.
    */
   public String MoveAsFarTo_NCM(final Territory target, final IMoveDelegate mover, final boolean extraChecks) {
@@ -394,7 +416,8 @@ public class UnitGroup {
    * @param mover
    *        - The move delegate that performs the move
    * @param extraChecks
-   *        - If enabled, extra checks will be used in this move, like route trimming so the units don't end up in an abandoned territory.
+   *        - If enabled, extra checks will be used in this move, like route trimming so the units don't end up in an
+   *        abandoned territory.
    * @return an error message if move failed. If successful, returns null.
    */
   public String MoveAsFarAlongRoute_NCM(final IMoveDelegate mover, final Route fullRoute, final boolean extraChecks) {
@@ -423,10 +446,10 @@ public class UnitGroup {
       return "After trimming, the route given is either null or too short(no actual route)";
     }
     if (extraChecks) {
-      if (DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert().match(route.getEnd())) {
+      if (DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert()
+          .match(route.getEnd())) {
         route = DUtils.TrimRoute_BeforeFirstTerMatching(route, slowest, GlobalCenter.CurrentPlayer, m_data,
-            DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data)
-                .invert());
+            DMatches.territoryIsConsideredSafeToNCMInto(GlobalCenter.CurrentPlayer, m_data).invert());
       }
     }
     if (route == null || route.getTerritories().size() < 2) {
@@ -461,15 +484,16 @@ public class UnitGroup {
   private static String MoveUnitsInternal(final IMoveDelegate mover, final Route route, final Collection<Unit> units) {
     final List<Unit> unitsToMove = new ArrayList<Unit>(units);
     final List<Unit> frozenOnes = new ArrayList<Unit>(unitsToMove);
-    frozenOnes.retainAll(TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).GetFrozenUnits());
+    frozenOnes.retainAll(
+        TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).GetFrozenUnits());
     unitsToMove.removeAll(frozenOnes);
     if (unitsToMove.isEmpty()) {
       return "Move prepared, though there are no un-frozen units to move!";
     }
     // Hack, for transport code
-    final Collection<Unit> tUnits = route.getEnd().getUnits()
-        .getMatches(DUtils.CompMatchAnd(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.unitHasEnoughTransportSpaceLeft(1),
-            Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer)));
+    final Collection<Unit> tUnits =
+        route.getEnd().getUnits().getMatches(DUtils.CompMatchAnd(Matches.UnitIsSea, Matches.UnitIsTransport,
+            Matches.unitHasEnoughTransportSpaceLeft(1), Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer)));
     String moveError = mover.move(unitsToMove, route, tUnits);
     if (moveError != null) {
       moveError = mover.move(unitsToMove, route);
@@ -478,9 +502,11 @@ public class UnitGroup {
       return moveError;
     }
     if (route.getEnd().getUnits().containsAll(unitsToMove)) {
-      DUtils.Log(Level.FINER, "          Performed move on route: {0} Units: {1}", route, DUtils.UnitList_ToString(unitsToMove));
+      DUtils.Log(Level.FINER, "          Performed move on route: {0} Units: {1}", route,
+          DUtils.UnitList_ToString(unitsToMove));
     } else {
-      return DUtils.Format("Move failed(units are not at destination), though no errors occurred. Route: {0} Units: {1}", route,
+      return DUtils.Format(
+          "Move failed(units are not at destination), though no errors occurred. Route: {0} Units: {1}", route,
           DUtils.UnitList_ToString(units));
     }
     return null;
@@ -512,7 +538,8 @@ public class UnitGroup {
       return; // Apparently, the caller is trying to undo the move of a UG that hasn't been moved
     }
     final List<UnitGroup> ugsMovedByThisMove = new ArrayList<UnitGroup>();
-    for (final UnitGroup ug : TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups) {
+    for (final UnitGroup ug : TacticalCenter.get(CachedInstanceCenter.CachedGameData,
+        GlobalCenter.CurrentPlayer).AllDelegateUnitGroups) {
       if (ug.GetMovedTo() != null && ug.GetMoveIndex() == moveIndex) {
         ugsMovedByThisMove.add(ug);
       }
@@ -532,11 +559,14 @@ public class UnitGroup {
         fromTers.add(ug.GetFromTerritory());
       }
     }
-    // Notify all UG's, so they can update move index, or if they're in this buffered move, clear movedTo and reset moveIndex
-    for (final UnitGroup ug : TacticalCenter.get(CachedInstanceCenter.CachedGameData, GlobalCenter.CurrentPlayer).AllDelegateUnitGroups) {
+    // Notify all UG's, so they can update move index, or if they're in this buffered move, clear movedTo and reset
+    // moveIndex
+    for (final UnitGroup ug : TacticalCenter.get(CachedInstanceCenter.CachedGameData,
+        GlobalCenter.CurrentPlayer).AllDelegateUnitGroups) {
       ug.NotifyMoveUndo(moveIndex);
     }
-    DUtils.Log(Level.FINER, "          Move undone. Initial Locations: {0} Target: {1} Units: {2}", fromTers, target, unitsMoved);
+    DUtils.Log(Level.FINER, "          Move undone. Initial Locations: {0} Target: {1} Units: {2}", fromTers, target,
+        unitsMoved);
   }
 
   public int GetMoveIndex() {

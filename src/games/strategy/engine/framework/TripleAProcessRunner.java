@@ -33,7 +33,8 @@ public class TripleAProcessRunner {
     // add in any existing command line items
     for (final String property : GameRunner2.getProperties()) {
       // we add game property above, and we add version bin in the populateBasicJavaArgs
-      if (GameRunner2.TRIPLEA_GAME_PROPERTY.equals(property) || GameRunner2.TRIPLEA_ENGINE_VERSION_BIN.equals(property)) {
+      if (GameRunner2.TRIPLEA_GAME_PROPERTY.equals(property)
+          || GameRunner2.TRIPLEA_ENGINE_VERSION_BIN.equals(property)) {
         continue;
       }
       final String value = System.getProperty(property);
@@ -62,9 +63,10 @@ public class TripleAProcessRunner {
     commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PROPERTY + "=true");
     commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + port);
     commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + playerName);
+    commands.add("-D" + GameRunner2.LOBBY_HOST + "="
+        + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands
-        .add("-D" + GameRunner2.LOBBY_HOST + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
-    commands.add("-D" + GameRunner2.LOBBY_PORT + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+        .add("-D" + GameRunner2.LOBBY_PORT + "=" + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + GameRunner2.LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + GameRunner2.LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
@@ -91,30 +93,30 @@ public class TripleAProcessRunner {
         newClassPath = findOldJar(engineVersionOfGameToJoin, false);
       } catch (final Exception e) {
         if (GameRunner2.areWeOldExtraJar()) {
-          JOptionPane.showMessageDialog(parent, "<html>Please run the default TripleA and try joining the online lobby for it instead. " +
-              "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
-              +
-              "<br><br>Host is using a different engine than you, and can not find correct engine: "
-              + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
+          JOptionPane.showMessageDialog(parent,
+              "<html>Please run the default TripleA and try joining the online lobby for it instead. "
+                  + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. "
+                  + "<br><br>Host is using a different engine than you, and can not find correct engine: "
+                  + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
               "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
         } else {
           JOptionPane.showMessageDialog(parent,
-              "Host is using a different engine than you, and can not find correct engine: " + engineVersionOfGameToJoin.toStringFull("_"),
+              "Host is using a different engine than you, and can not find correct engine: "
+                  + engineVersionOfGameToJoin.toStringFull("_"),
               "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
         }
         return;
       }
       // ask user if we really want to do this?
-      final String messageString = "<html>This TripleA engine is version "
-          + EngineVersion.VERSION.toString()
-          + " and you are trying to join a game made with version "
-          + engineVersionOfGameToJoin.toString()
+      final String messageString = "<html>This TripleA engine is version " + EngineVersion.VERSION.toString()
+          + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
           + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
           + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. This is a new feature and is in 'beta' stage."
           + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will join the host's game."
           + "<br>Your current instance will not be closed. Please report any bugs or issues."
           + "<br><br>Do you wish to continue?</html>";
-      final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to join hosted game?", JOptionPane.YES_NO_OPTION);
+      final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to join hosted game?",
+          JOptionPane.YES_NO_OPTION);
       if (answer != JOptionPane.YES_OPTION) {
         return;
       }
@@ -123,7 +125,8 @@ public class TripleAProcessRunner {
   }
 
   // newClassPath can be null
-  public static void joinGame(final int port, final String hostAddressIP, final String newClassPath, final Messengers messengers) {
+  public static void joinGame(final int port, final String hostAddressIP, final String newClassPath,
+      final Messengers messengers) {
     final List<String> commands = new ArrayList<String>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
     commands.add("-D" + GameRunner2.TRIPLEA_CLIENT_PROPERTY + "=true");
@@ -174,11 +177,13 @@ public class TripleAProcessRunner {
                 }
               }
               if (ourBinJar == null) {
-                throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+                throw new IOException(
+                    "Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
               }
               final String newClassPath = ourBinJar.getCanonicalPath();
               if (newClassPath == null || newClassPath.length() <= 0) {
-                throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+                throw new IOException(
+                    "Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
               }
               return newClassPath;
             } else {
@@ -188,10 +193,12 @@ public class TripleAProcessRunner {
         }
       }
     }
-    // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used
+    // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same
+    // engine as was used
     // for this savegame, and if so try to run it
     // System.out.println("System classpath: " + System.getProperty("java.class.path"));
-    // we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0 savegames.
+    // we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0
+    // savegames.
     final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
     final File oldJarsFolder = new File(GameRunner2.getRootFolder(), "old/");
     if (!oldJarsFolder.exists()) {

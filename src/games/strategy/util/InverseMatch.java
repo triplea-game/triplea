@@ -1,10 +1,7 @@
 package games.strategy.util;
 
 /**
- *
  * A match that returns the negation of the given match.
- *
- *
  */
 public class InverseMatch<T> extends Match<T> {
   private final Match<T> m_match;

@@ -75,14 +75,15 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   /**
-   * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two players
+   * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two
+   * players
    *
    * @param p1
    *        Player 1 in the relationship
    * @param p2
    *        Player 2 in the relationship
-   * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2 players
-   *
+   * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2
+   *         players
    */
   protected RelationshipTypeAttachment getRelationshipTypeAttachment(final PlayerID p1, final PlayerID p2) {
     final RelationshipType relation = getRelationshipType(p1, p2);
@@ -120,11 +121,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
     return getData().getRelationshipTypeList().getNullRelation();
   }
 
-
   /**
    * RelatedPlayers is a class of 2 players that are related, used in relationships.
-   *
-   *
    */
   public class RelatedPlayers implements Serializable {
     private static final long serialVersionUID = 2124258606502106751L;
@@ -167,7 +165,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
     }
 
     /**
-     * convenience method to get relationshipTypeAttachment from a new RelatedPlayers(p1,p2).getRelationshipTypeAttachment();
+     * convenience method to get relationshipTypeAttachment from a new
+     * RelatedPlayers(p1,p2).getRelationshipTypeAttachment();
      *
      * @return RelationshipTypeAttachment between these RelatedPlayers
      */
@@ -180,8 +179,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
       return m_p1.getName() + "-" + m_p2.getName();
     }
   }
-
-
   public class Relationship implements Serializable {
     private static final long serialVersionUID = -6718866176901627180L;
 

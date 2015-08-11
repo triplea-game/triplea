@@ -7,17 +7,13 @@ import java.net.InetSocketAddress;
  * A simple way to connect multiple socket end points.
  * An IMessenger listens for incoming messages, and sends
  * them to all registered listeners.
- *
  * Messages are recieved and sent in order. Note that message listeners are multi threaded, in
  * that they process messages from multiple nodes at the same time, but no more than 1 message
  * from any particular node at a time.
- *
- *
  */
 public interface IMessenger {
   /**
    * Send a message to the given node. Returns immediately.
-   *
    * If the message cannot be delivered, this method will not throw an exception, but will
    * fail silently.
    */
@@ -70,7 +66,6 @@ public interface IMessenger {
   public boolean isServer();
 
   /**
-   *
    * @return local node if we are a server node.
    */
   public INode getServerNode();
@@ -83,6 +78,5 @@ public interface IMessenger {
    * different than the actual port we use.
    */
   public InetSocketAddress getRemoteServerSocketAddress();
-
   // TODO: add this into next release: boolean isShutDown();
 }

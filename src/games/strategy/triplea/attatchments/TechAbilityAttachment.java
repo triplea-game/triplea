@@ -29,8 +29,6 @@ import games.strategy.util.Match;
 /**
  * Attaches to technologies.
  * Also contains static methods of interpreting data from all technology attachments that a player has.
- *
- *
  */
 public class TechAbilityAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1866305599625384294L;
@@ -49,7 +47,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
         return hardCodedTechAttachment;
       }
     }
-    final TechAbilityAttachment rVal = (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
+    final TechAbilityAttachment rVal =
+        (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
     return rVal;
   }
 
@@ -59,7 +58,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public static TechAbilityAttachment get(final TechAdvance type, final String nameOfAttachment) {
     final TechAbilityAttachment rVal = (TechAbilityAttachment) type.getAttachment(nameOfAttachment);
     if (rVal == null) {
-      throw new IllegalStateException("No technology attachment for:" + type.getName() + " with name:" + nameOfAttachment);
+      throw new IllegalStateException(
+          "No technology attachment for:" + type.getName() + " with name:" + nameOfAttachment);
     }
     return rVal;
   }
@@ -79,7 +79,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private int m_repairDiscount = -1; // -1 means not set
   private int m_warBondDiceSides = -1; // -1 means not set
   private int m_warBondDiceNumber = 0;
-  // private int m_rocketDiceSides = -1; // -1 means not set // not needed because this is controlled in the unit attachment with
+  // private int m_rocketDiceSides = -1; // -1 means not set // not needed because this is controlled in the unit
+  // attachment with
   // bombingBonus and bombingMaxDieSides
   private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<UnitType>();
   private int m_rocketDistance = 0;
@@ -464,19 +465,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
    * throw new GameParseException("rocketDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
    * m_rocketDiceSides = v;
    * }
-   *
    * @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
    * public void setRocketDiceSides(final Integer value)
    * {
    * m_rocketDiceSides = value;
    * }
-   *
    * public int getRocketDiceSides()
    * {
    * return m_rocketDiceSides;
    * }
    */
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -566,7 +564,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setUnitAbilitiesGained(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 2) {
-      throw new GameParseException("unitAbilitiesGained must list the unit type, then all abilities gained" + thisErrorMsg());
+      throw new GameParseException(
+          "unitAbilitiesGained must list the unit type, then all abilities gained" + thisErrorMsg());
     }
     String unitType;
     unitType = s[0];
@@ -583,8 +582,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (int i = 1; i < s.length; i++) {
       final String ability = s[i];
       if (!(ability.equals(ABILITY_CAN_BLITZ) || ability.equals(ABILITY_CAN_BOMBARD))) {
-        throw new GameParseException(
-            "unitAbilitiesGained so far only supports: " + ABILITY_CAN_BLITZ + " and " + ABILITY_CAN_BOMBARD + thisErrorMsg());
+        throw new GameParseException("unitAbilitiesGained so far only supports: " + ABILITY_CAN_BLITZ + " and "
+            + ABILITY_CAN_BOMBARD + thisErrorMsg());
       }
       abilities.add(ability);
     }
@@ -1059,7 +1058,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
    * return Math.max(0, rVal);
    * }
    */
-
   private static int getRocketDiceNumber(final UnitType ut, final PlayerID player, final GameData data) {
     int rVal = 0;
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
@@ -1195,7 +1193,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneBases;
   }
 
-  public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player, final GameData data) {
+  public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player,
+      final GameData data) {
     final HashMap<String, HashSet<UnitType>> rVal = new HashMap<String, HashSet<UnitType>>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
@@ -1250,14 +1249,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   /**
-   * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game options/properties.
+   * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game
+   * options/properties.
    *
    * @param data
    * @throws GameParseException
    */
   @InternalDoNotExport
   public static void setDefaultTechnologyAttachments(final GameData data) throws GameParseException {
-    // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its "default" attachment. any
+    // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its
+    // "default" attachment. any
     // non-default tech are ignored.
     for (final TechAdvance techAdvance : TechAdvance.getTechAdvances(data)) {
       final TechAdvance ta;
@@ -1274,26 +1275,30 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final String propertyString = ta.getProperty();
       TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa == null) {
-        // debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic bomber", etc.
+        // debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic
+        // bomber", etc.
         // perhaps just the easy ones, of air, land, and sea?
         if (propertyString.equals(TechAdvance.TECH_PROPERTY_LONG_RANGE_AIRCRAFT)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allAir = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir);
+          final List<UnitType> allAir =
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir);
           for (final UnitType air : allAir) {
             taa.setMovementBonus("2:" + air.getName());
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_AA_RADAR)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allAA = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAAforAnything);
+          final List<UnitType> allAA =
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAAforAnything);
           for (final UnitType aa : allAA) {
             taa.setRadarBonus("1:" + aa.getName());
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_SUPER_SUBS)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allSubs = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsSub);
+          final List<UnitType> allSubs =
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsSub);
           // final int defenseBonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(data);
           for (final UnitType sub : allSubs) {
             taa.setAttackBonus("1:" + sub.getName());
@@ -1316,7 +1321,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allFactories = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeCanProduceUnits);
+          final List<UnitType> allFactories =
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeCanProduceUnits);
           for (final UnitType factory : allFactories) {
             taa.setProductionBonus("2:" + factory.getName());
             taa.setMinimumTerritoryValueForProductionBonus("3");
@@ -1330,7 +1336,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_ROCKETS)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allRockets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsRocket);
+          final List<UnitType> allRockets =
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsRocket);
           for (final UnitType rocket : allRockets) {
             taa.setRocketDiceNumber("1:" + rocket.getName());
           }
@@ -1340,25 +1347,35 @@ public class TechAbilityAttachment extends DefaultAttachment {
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_DESTROYER_BOMBARD)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allDestroyers = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsDestroyer);
+          final List<UnitType> allDestroyers =
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsDestroyer);
           for (final UnitType destroyer : allDestroyers) {
             taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allBombers = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsStrategicBomber);
+          final List<UnitType> allBombers =
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsStrategicBomber);
           final int heavyBomberDiceRollsTotal = games.strategy.triplea.Properties.getHeavyBomberDiceRolls(data);
           final boolean heavyBombersLHTR = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
           for (final UnitType bomber : allBombers) {
             // TODO: The bomber dice rolls get set when the xml is parsed.
             final int heavyBomberDiceRollsBonus =
-                heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID); // we subtract the base rolls
-                                                                                                               // to get the bonus
+                heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID); // we
+                                                                                                               // subtract
+                                                                                                               // the
+                                                                                                               // base
+                                                                                                               // rolls
+                                                                                                               // to get
+                                                                                                               // the
+                                                                                                               // bonus
             taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
             if (heavyBombersLHTR) {
-              // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this does not get changed.
-              // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on, in the xml.)
+              // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
+              // does not get changed.
+              // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on,
+              // in the xml.)
               taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
               taa.setBombingBonus("1:" + bomber.getName()); // LHTR adds 1 to base roll
             }
@@ -1366,12 +1383,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
         }
         // The following technologies should NOT have ability attachments for them:
         // shipyards and industrialTechnology = because it is better to use a Trigger to change player's production
-        // improvedArtillerySupport = because it is already completely atomized and controlled through support attachments
-        // paratroopers = because it is already completely atomized and controlled through unit attachments + game options
+        // improvedArtillerySupport = because it is already completely atomized and controlled through support
+        // attachments
+        // paratroopers = because it is already completely atomized and controlled through unit attachments + game
+        // options
         // mechanizedInfantry = because it is already completely atomized and controlled through unit attachments
-        // IF one of the above named techs changes what it does in a future version of a&a, and the change is large enough or different
+        // IF one of the above named techs changes what it does in a future version of a&a, and the change is large
+        // enough or different
         // enough that it can not be done easily with a new game option,
-        // then it is better to create a new tech rather than change the old one, and give the new one a new name, like paratroopers2 or
+        // then it is better to create a new tech rather than change the old one, and give the new one a new name, like
+        // paratroopers2 or
         // paratroopersAttack or Airborne_Forces, or some crap.
       }
     }
@@ -1385,7 +1406,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final TechAdvance hardCodedAdvance = ((GenericTechAdvance) ta).getAdvance();
       if (hardCodedAdvance != null) {
         throw new GameParseException(
-            "A custom Generic Tech Advance naming a hardcoded tech, may not have a Tech Ability Attachment!" + this.thisErrorMsg());
+            "A custom Generic Tech Advance naming a hardcoded tech, may not have a Tech Ability Attachment!"
+                + this.thisErrorMsg());
       }
     }
   }

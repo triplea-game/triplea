@@ -17,7 +17,6 @@ import games.strategy.triplea.ai.Dynamix_AI.Others.PhaseType;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
-
 public class GlobalCenter {
   public static boolean IsPaused = false;
   public static final Object IsPaused_Object = new Object();
@@ -25,11 +24,11 @@ public class GlobalCenter {
   public static PlayerID FirstDynamixPlayer;
   public static int GameRound;
   private static Resource PUResource;
-
   public static PlayerID CurrentPlayer;
   public static int MapTerCount;
   /**
-   * Please use this for all hard-coded values. (Multiply the hard-coded value by this float, and the hard-coded value will scale up or down
+   * Please use this for all hard-coded values. (Multiply the hard-coded value by this float, and the hard-coded value
+   * will scale up or down
    * with the maps
    */
   public static float MapTerCountScale;
@@ -47,7 +46,8 @@ public class GlobalCenter {
   }
 
   public static void clearStaticInstances() {
-    // This part just resets all the static variables to their default value so that other code will be able to fill in the real info
+    // This part just resets all the static variables to their default value so that other code will be able to fill in
+    // the real info
     // (For example, the Dynamix_AI class sets the FirstDynamixPhase variable)
     FirstDynamixPhase = PhaseType.Unknown;
     FirstDynamixPlayer = null;
@@ -74,7 +74,8 @@ public class GlobalCenter {
     // 75 is considered the 'base' map ter count (For comparison, Great Lakes War has 90)
     MapTerCountScale = (data.getMap().getTerritories().size() / 75.0F);
     IsFFAGame = true;
-    for (final String alliance : data.getAllianceTracker().getAlliances()) // TODO: update this for looking into relationships instead of
+    for (final String alliance : data.getAllianceTracker().getAlliances()) // TODO: update this for looking into
+                                                                           // relationships instead of
                                                                            // alliances.
     {
       final List<PlayerID> playersInAlliance = DUtils.ToList(data.getAllianceTracker().getPlayersInAlliance(alliance));
@@ -88,7 +89,8 @@ public class GlobalCenter {
   }
 
   /**
-   * Generates a merged and averaged production frontier that can be used to determine TUV of units even when player is neutral or unknown.
+   * Generates a merged and averaged production frontier that can be used to determine TUV of units even when player is
+   * neutral or unknown.
    * This method also sets the global FastestUnitMovement value and the AllMapUnitTypes list.
    */
   private static void GenerateMergedAndAveragedProductionFrontier(final GameData data) {
@@ -130,7 +132,8 @@ public class GlobalCenter {
       results.put(unitType, purchaseCountsForUnit.get(unitType));
       final IntegerMap<Resource> cost = new IntegerMap<Resource>();
       cost.put(PUResource, averagedCost);
-      final ProductionRule rule = new ProductionRule("Averaged production rule for unit " + unitType.getName(), data, results, cost);
+      final ProductionRule rule =
+          new ProductionRule("Averaged production rule for unit " + unitType.getName(), data, results, cost);
       MergedAndAveragedProductionFronter.addRule(rule);
     }
   }

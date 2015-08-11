@@ -8,7 +8,6 @@ import java.util.Map;
 
 import games.strategy.engine.delegate.IDelegate;
 
-
 public class DelegateList extends GameDataComponent implements Iterable<IDelegate> {
   private static final long serialVersionUID = 4156921032854553312L;
   private Map<String, IDelegate> m_delegates = new HashMap<String, IDelegate>();

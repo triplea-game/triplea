@@ -33,22 +33,17 @@ import games.strategy.triplea.help.HelpSupport;
 
 public class TripleAWebPoster implements IWebPoster {
   private static final long serialVersionUID = -3013355800798928625L;
-
-
   private String m_host = MicroWebPosterEditor.HTTP_BLANK;
   private Vector<String> m_allHosts = new Vector<String>();
   private String m_siteId = "";
   private boolean m_mailSaveGame = true;
   private String m_gameName = "";
-
   private transient String m_serverMessage = "";
   private transient File m_saveGameFile = null;
   private transient String m_saveGameFileName = "";
   private String[] parties;
 
-
   private static Collection<String> getAlliances(final GameData gameData) {
-
     final Collection<String> rVal = new TreeSet<String>();
     for (final String alliance : gameData.getAllianceTracker().getAlliances()) {
       if (gameData.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
@@ -63,9 +58,7 @@ public class TripleAWebPoster implements IWebPoster {
     try {
       final Collection<String> alliances = getAlliances(gameData);
       final ProductionStat prodStat = new ProductionStat();
-
       String result = "";
-
       for (final String alliance : alliances) {
         final int value = (int) prodStat.getValue(alliance, gameData);
         if (!result.equals("")) {
@@ -80,7 +73,8 @@ public class TripleAWebPoster implements IWebPoster {
   }
 
   @Override
-  public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player, final int round) {
+  public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player,
+      final int round) {
     try {
       final List<Part> parts = new ArrayList<Part>();
       parts.add(createStringPart("siteid", m_siteId));
@@ -97,7 +91,6 @@ public class TripleAWebPoster implements IWebPoster {
         part.setContentType("application/octet-stream");
         parts.add(part);
       }
-
       m_serverMessage = executePost(m_host, "upload.php", parts);
       if (!m_serverMessage.toLowerCase().contains("success")) {
         System.out.println("Unknown error, site response: " + m_serverMessage);
@@ -108,25 +101,23 @@ public class TripleAWebPoster implements IWebPoster {
       e.printStackTrace();
       return false;
     }
-
     return true;
   }
 
   public static String executePost(final String host, final String path, final List<Part> parts) throws Exception {
     final HttpClient client = new HttpClient();
     client.getParams().setParameter("http.protocol.single-cookie-header", true);
-    client.getParams().setParameter("http.useragent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
+    client.getParams().setParameter("http.useragent",
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
     final HttpState httpState = new HttpState();
     final HostConfiguration hostConfiguration = new HostConfiguration();
-
     // add the proxy
     GameRunner2.addProxy(hostConfiguration);
     hostConfiguration.setHost(host);
-
-    final MultipartRequestEntity entity = new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
+    final MultipartRequestEntity entity =
+        new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), new HttpMethodParams());
     final PostMethod post = new PostMethod(getHostUrlPrefix(host) + path);
     post.setRequestEntity(entity);
-
     try {
       final int status = client.executeMethod(hostConfiguration, post, httpState);
       if (status != 200) {
@@ -165,7 +156,8 @@ public class TripleAWebPoster implements IWebPoster {
   }
 
   /**
-   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like a browser
+   * Utility method for creating string parts, since we need to remove transferEncoding and content type to behave like
+   * a browser
    *
    * @param name
    *        the form field name
@@ -297,7 +289,8 @@ class ProductionStat extends AbstractStat {
     for (final Territory place : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       /*
-       * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, and also check if territory is
+       * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, and also check if
+       * territory is
        * contested
        */
       if (ta != null && player != null && player.equals(place.getOwner())

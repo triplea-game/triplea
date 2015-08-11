@@ -10,7 +10,8 @@ import java.util.Set;
 
 import games.strategy.util.Match;
 
-// TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not always...
+// TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
+// always...
 public class RouteFinder {
   private final GameMap m_map;
   private final Match<Territory> m_condition;

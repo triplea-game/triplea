@@ -28,13 +28,11 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate {
   public static String ALLOW_JUMPING_OVER_YOUR_OWN_PIECES = "Allow Jumping Over Your Own Pieces";
   public static String ALLOW_UNCROWNED_PIECES_TO_CAPTURE_BACKWARDS = "Allow Uncrowned Pieces To Capture Backwards";
   public static boolean ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED = false;
-
 
   public enum PIECES {
     PAWN, KING
@@ -111,7 +109,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
   }
 
   /**
-   * Check to see if moving a piece from the start <code>Territory</code> to the end <code>Territory</code> is a valid play.
+   * Check to see if moving a piece from the start <code>Territory</code> to the end <code>Territory</code> is a valid
+   * play.
    *
    * @param start
    *        <code>Territory</code> where the move should start
@@ -125,17 +124,15 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     if (basic != null) {
       return basic;
     }
-
-    final String pieceBasic = isValidPieceMoveBasic(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces);
+    final String pieceBasic =
+        isValidPieceMoveBasic(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces);
     if (pieceBasic != null) {
       return pieceBasic;
     }
-
     final String formedLoop = isValidMoveNoLoops(play, player, data);
     if (formedLoop != null) {
       return formedLoop;
     }
-
     return null;
   }
 
@@ -143,9 +140,11 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    * After a move completes, look to see if any captures occur.
    *
    * @param end
-   *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
+   *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>
+   *        .
    */
-  public static Collection<Territory> checkForCaptures(final IGridPlayData play, final PlayerID player, final GameData data) {
+  public static Collection<Territory> checkForCaptures(final IGridPlayData play, final PlayerID player,
+      final GameData data) {
     // assume it is a legal move
     final Collection<Territory> captured = new HashSet<Territory>();
     int lastY = play.getStart().getY();
@@ -198,7 +197,6 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    * return (IGridGamePlayer) m_bridge.getRemote(id);
    * }
    */
-
   /**
    * Move a piece from the start <code>Territory</code> to the end <code>Territory</code>.
    *
@@ -234,8 +232,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       }
     }
     if (!capturedUnitsTotal.isEmpty()) {
-      m_bridge.getHistoryWriter().addChildToEvent(player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal),
-          capturedUnitsTotal);
+      m_bridge.getHistoryWriter().addChildToEvent(
+          player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal), capturedUnitsTotal);
     }
     final Collection<Territory> refresh = new HashSet<Territory>(play.getAllSteps());
     refresh.addAll(captured);
@@ -349,7 +347,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       }
     }
     final Collection<Territory> allTerritories = PlayDelegate.getAllTerritoriesOnMapWhichCanHaveUnits(tWithUnits, data);
-    final Collection<Territory> myTerritories = Match.getMatches(allTerritories, PlayDelegate.TerritoryHasUnitsOwnedBy(player));
+    final Collection<Territory> myTerritories =
+        Match.getMatches(allTerritories, PlayDelegate.TerritoryHasUnitsOwnedBy(player));
     for (final Territory t : myTerritories) {
       if (!PlayDelegate.getAllValidMovesFromHere(t, player, data).isEmpty()) {
         return false;
@@ -380,12 +379,14 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       }
     }
     final Collection<Territory> allTerritories = PlayDelegate.getAllTerritoriesOnMapWhichCanHaveUnits(tWithUnits, data);
-    final Collection<Territory> myTerritories = Match.getMatches(allTerritories, PlayDelegate.TerritoryHasUnitsOwnedBy(player));
+    final Collection<Territory> myTerritories =
+        Match.getMatches(allTerritories, PlayDelegate.TerritoryHasUnitsOwnedBy(player));
     final List<GridPlayData> validMoves = new ArrayList<GridPlayData>();
     for (final Territory t : myTerritories) {
       validMoves.addAll(PlayDelegate.getAllValidMovesFromHere(t, player, data));
     }
-    // And here is where we check to make sure that the player is taking a capture, if they can, or capturing all the way to the end of a
+    // And here is where we check to make sure that the player is taking a capture, if they can, or capturing all the
+    // way to the end of a
     // sequence
     final List<GridPlayData> captureMoves = Match.getMatches(validMoves, GridPlayDataCaptures(data));
     if (captureMoves.isEmpty()) {
@@ -417,7 +418,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return allTerritories;
   }
 
-  public static Set<GridPlayData> getAllValidMovesFromHere(final Territory start, final PlayerID player, final GameData data) {
+  public static Set<GridPlayData> getAllValidMovesFromHere(final Territory start, final PlayerID player,
+      final GameData data) {
     final Collection<Unit> units = start.getUnits().getMatches(UnitIsOwnedBy(player));
     if (units.isEmpty()) {
       return new HashSet<GridPlayData>();
@@ -433,17 +435,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     }
     final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
     final Set<GridPlayData> validMoves = new HashSet<GridPlayData>();
-    return getAllValidMovesFromHere(validMoves, new HashSet<GridPlayData>(), start, start, new ArrayList<Territory>(), piece,
-        startsAtLowRank, player, data, true,
-        getPropertyAllowUncrownedPiecesToCaptureBackwards(data), getPropertyAllowJumpingOverYourOwnPieces(data));
-
+    return getAllValidMovesFromHere(validMoves, new HashSet<GridPlayData>(), start, start, new ArrayList<Territory>(),
+        piece, startsAtLowRank, player, data, true, getPropertyAllowUncrownedPiecesToCaptureBackwards(data),
+        getPropertyAllowJumpingOverYourOwnPieces(data));
   }
 
-  public static Set<GridPlayData> getAllValidMovesFromHere(final Set<GridPlayData> validMovesSoFar, final Set<GridPlayData> triedMovesSoFar,
-      final Territory originalStart,
-      final Territory thisStart, final List<Territory> middleStepsSoFar, final PIECES unit, final boolean startsAtLowRank,
-      final PlayerID player, final GameData data,
-      final boolean checkInitialMove, final boolean uncrownedCanCaptureBackwards, final boolean allowJumpingOwnPieces) {
+  public static Set<GridPlayData> getAllValidMovesFromHere(final Set<GridPlayData> validMovesSoFar,
+      final Set<GridPlayData> triedMovesSoFar, final Territory originalStart, final Territory thisStart,
+      final List<Territory> middleStepsSoFar, final PIECES unit, final boolean startsAtLowRank, final PlayerID player,
+      final GameData data, final boolean checkInitialMove, final boolean uncrownedCanCaptureBackwards,
+      final boolean allowJumpingOwnPieces) {
     final GameMap map = data.getMap();
     // check 1 move ahead, then start checking 2 moves ahead each time
     if (unit == PIECES.PAWN) {
@@ -475,15 +476,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         if (left != null) {
           final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, left, player);
           if (!triedMovesSoFar.contains(play)) {
-            final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+            final boolean valid =
+                isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
             if (valid) {
               validMovesSoFar.add(play);
               final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
               newMiddleSteps.add(left);
               triedMovesSoFar.add(play);
-              validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, left, newMiddleSteps, unit,
-                  startsAtLowRank, player, data, false,
-                  uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+              validMovesSoFar.addAll(
+                  getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, left, newMiddleSteps, unit,
+                      startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
             }
           }
         }
@@ -493,15 +495,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         if (right != null) {
           final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, right, player);
           if (!triedMovesSoFar.contains(play)) {
-            final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+            final boolean valid =
+                isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
             if (valid) {
               validMovesSoFar.add(play);
               final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
               newMiddleSteps.add(right);
               triedMovesSoFar.add(play);
-              validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, right, newMiddleSteps, unit,
-                  startsAtLowRank, player, data, false,
-                  uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+              validMovesSoFar.addAll(
+                  getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, right, newMiddleSteps, unit,
+                      startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
             }
           }
         }
@@ -512,15 +515,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
           if (left != null) {
             final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, left, player);
             if (!triedMovesSoFar.contains(play)) {
-              final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+              final boolean valid =
+                  isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
               if (valid) {
                 validMovesSoFar.add(play);
                 final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
                 newMiddleSteps.add(left);
                 triedMovesSoFar.add(play);
-                validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, left, newMiddleSteps, unit,
-                    startsAtLowRank, player, data, false,
-                    uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+                validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, left,
+                    newMiddleSteps, unit, startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards,
+                    allowJumpingOwnPieces));
               }
             }
           }
@@ -530,15 +534,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
           if (right != null) {
             final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, right, player);
             if (!triedMovesSoFar.contains(play)) {
-              final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+              final boolean valid =
+                  isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
               if (valid) {
                 validMovesSoFar.add(play);
                 final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
                 newMiddleSteps.add(right);
                 triedMovesSoFar.add(play);
-                validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, right, newMiddleSteps,
-                    unit, startsAtLowRank, player, data, false,
-                    uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+                validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, right,
+                    newMiddleSteps, unit, startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards,
+                    allowJumpingOwnPieces));
               }
             }
           }
@@ -588,15 +593,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         if (leftUp != null) {
           final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, leftUp, player);
           if (!triedMovesSoFar.contains(play)) {
-            final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+            final boolean valid =
+                isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
             if (valid) {
               validMovesSoFar.add(play);
               final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
               newMiddleSteps.add(leftUp);
               triedMovesSoFar.add(play);
-              validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, leftUp, newMiddleSteps, unit,
-                  startsAtLowRank, player, data, false,
-                  uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+              validMovesSoFar.addAll(
+                  getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, leftUp, newMiddleSteps,
+                      unit, startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
             }
           }
         }
@@ -606,15 +612,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         if (rightUp != null) {
           final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, rightUp, player);
           if (!triedMovesSoFar.contains(play)) {
-            final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+            final boolean valid =
+                isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
             if (valid) {
               validMovesSoFar.add(play);
               final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
               newMiddleSteps.add(rightUp);
               triedMovesSoFar.add(play);
-              validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, rightUp, newMiddleSteps,
-                  unit, startsAtLowRank, player, data, false,
-                  uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+              validMovesSoFar.addAll(
+                  getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, rightUp, newMiddleSteps,
+                      unit, startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
             }
           }
         }
@@ -624,15 +631,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         if (leftDown != null) {
           final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, leftDown, player);
           if (!triedMovesSoFar.contains(play)) {
-            final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+            final boolean valid =
+                isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
             if (valid) {
               validMovesSoFar.add(play);
               final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
               newMiddleSteps.add(leftDown);
               triedMovesSoFar.add(play);
-              validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, leftDown, newMiddleSteps,
-                  unit, startsAtLowRank, player, data, false,
-                  uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+              validMovesSoFar.addAll(
+                  getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, leftDown, newMiddleSteps,
+                      unit, startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
             }
           }
         }
@@ -642,15 +650,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         if (rightDown != null) {
           final GridPlayData play = new GridPlayData(originalStart, middleStepsSoFar, rightDown, player);
           if (!triedMovesSoFar.contains(play)) {
-            final boolean valid = isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
+            final boolean valid =
+                isValidPlay(play, player, data, uncrownedCanCaptureBackwards, allowJumpingOwnPieces) == null;
             if (valid) {
               validMovesSoFar.add(play);
               final List<Territory> newMiddleSteps = new ArrayList<Territory>(middleStepsSoFar);
               newMiddleSteps.add(rightDown);
               triedMovesSoFar.add(play);
-              validMovesSoFar.addAll(getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, rightDown, newMiddleSteps,
-                  unit, startsAtLowRank, player, data, false,
-                  uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
+              validMovesSoFar.addAll(
+                  getAllValidMovesFromHere(validMovesSoFar, triedMovesSoFar, originalStart, rightDown, newMiddleSteps,
+                      unit, startsAtLowRank, player, data, false, uncrownedCanCaptureBackwards, allowJumpingOwnPieces));
             }
           }
         }
@@ -728,7 +737,6 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     int lastY = play.getStart().getY();
     int lastX = play.getStart().getX();
     // final int numSteps = play.getAllStepsExceptStart().size();
-
     // because kings can form loops, we must make sure not to capture the same piece twice
     final Set<Territory> capturedAlready = new HashSet<Territory>();
     final GameMap map = data.getMap();
@@ -751,23 +759,27 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         }
         if (lastX < t.getX()) {
           final Territory jumped = map.getTerritoryFromCoordinates(false, lastX + 1, lastY + 1);
-          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert())).isEmpty()) {
+          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert()))
+              .isEmpty()) {
             return "Must Jump Over A Piece";
           } else if (capturedAlready.contains(jumped)) {
             return "Can Not Form Loops";
           } else {
-            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
+            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED
+                || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
               capturedAlready.add(jumped);
             }
           }
         } else {
           final Territory jumped = map.getTerritoryFromCoordinates(false, lastX - 1, lastY + 1);
-          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert())).isEmpty()) {
+          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert()))
+              .isEmpty()) {
             return "Must Jump Over A Piece";
           } else if (capturedAlready.contains(jumped)) {
             return "Can Not Form Loops";
           } else {
-            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
+            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED
+                || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
               capturedAlready.add(jumped);
             }
           }
@@ -787,23 +799,27 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         }
         if (lastX < t.getX()) {
           final Territory jumped = map.getTerritoryFromCoordinates(false, lastX + 1, lastY - 1);
-          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert())).isEmpty()) {
+          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert()))
+              .isEmpty()) {
             return "Must Jump Over A Piece";
           } else if (capturedAlready.contains(jumped)) {
             return "Can Not Form Loops";
           } else {
-            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
+            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED
+                || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
               capturedAlready.add(jumped);
             }
           }
         } else {
           final Territory jumped = map.getTerritoryFromCoordinates(false, lastX - 1, lastY - 1);
-          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert())).isEmpty()) {
+          if (jumped.getUnits().getMatches((allowJumpingOwnPieces ? UnitIsUnit : UnitIsOwnedBy(player).invert()))
+              .isEmpty()) {
             return "Must Jump Over A Piece";
           } else if (capturedAlready.contains(jumped)) {
             return "Can Not Form Loops";
           } else {
-            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
+            if (!ALLOW_JUMPING_SAME_PIECE_TWICE_IF_OWNED
+                || jumped.getUnits().someMatch(UnitIsOwnedBy(player).invert())) {
               capturedAlready.add(jumped);
             }
           }
@@ -817,7 +833,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
 
   public static String isValidMoveNoLoops(final IGridPlayData play, final PlayerID player, final GameData data) {
     // a loop is not just a circle, but a circle that ends going in the same direction as it start in
-    // the only way i can think of to test for this, is to make tuples of territories and their directions (the next territory after them),
+    // the only way i can think of to test for this, is to make tuples of territories and their directions (the next
+    // territory after them),
     // and then make sure that none of the tuples occur more than once
     final List<Territory> territories = play.getAllSteps();
     final int size = territories.size();
@@ -845,8 +862,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return null;
   }
 
-  public static List<GridPlayData> getPlaysWithShortVersionsRemoved(final List<GridPlayData> plays, final PlayerID player,
-      final GameData data) {
+  public static List<GridPlayData> getPlaysWithShortVersionsRemoved(final List<GridPlayData> plays,
+      final PlayerID player, final GameData data) {
     final List<GridPlayData> validLongPlays = new ArrayList<GridPlayData>();
     final List<GridPlayData> allPlays = new ArrayList<GridPlayData>(plays);
     Collections.sort(allPlays, GridPlayData.SmallestToLargestPlays);

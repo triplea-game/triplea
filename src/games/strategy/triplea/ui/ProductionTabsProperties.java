@@ -27,9 +27,11 @@ public class ProductionTabsProperties {
   // production_tabs.tab_units.1=Infantry:Panzer:Transport
   // production_tabs.tab_units.2=Artillery:Fighter:Bomber
   private static final String TAB_UNITS = "production_tabs.tab_units";
-  // The number of rows of units to be used in the panel if rows or columns are "0" the system will calculate based on max units
+  // The number of rows of units to be used in the panel if rows or columns are "0" the system will calculate based on
+  // max units
   private static final String NUMBER_OF_ROWS = "production_tabs.rows";
-  // The number of columns of units to be used in the panel if rows or columns are "0" the system will calculate based on max units
+  // The number of columns of units to be used in the panel if rows or columns are "0" the system will calculate based
+  // on max units
   private static final String NUMBER_OF_COLUMNS = "production_tabs.columns";
   private final Properties m_properties = new Properties();
   private final List<Rule> m_rules;

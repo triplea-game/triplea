@@ -80,9 +80,12 @@ public class DicePanel extends JPanel {
     // we're adding to a box layout, so to prevent the component from
     // grabbing extra space, set the max height.
     // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setMinimumSize(
+        new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setMaximumSize(
+        new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setPreferredSize(
+        new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
     return scroll;
   }
 }

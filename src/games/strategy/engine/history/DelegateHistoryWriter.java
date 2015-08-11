@@ -44,7 +44,6 @@ public class DelegateHistoryWriter implements IDelegateHistoryWriter {
   public void addChildToEvent(final String child, final Object renderingData) {
     getGameModifiedChannel().addChildToEvent(child, renderingData);
   }
-
   /*
    * Set the rendering data for the current event.
    * public void setRenderingData(final Object renderingData)

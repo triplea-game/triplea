@@ -19,7 +19,6 @@ import games.strategy.engine.framework.VerifiedRandomNumbers;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.triplea.formatter.MyFormatter;
 
-
 public class VerifiedRandomNumbersDialog extends JDialog {
   private static final long serialVersionUID = 439577498545812164L;
 

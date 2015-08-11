@@ -7,7 +7,6 @@ import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 
-
 public abstract class MainGameFrame extends JFrame {
   private static final long serialVersionUID = 7433347393639606647L;
   protected LocalPlayers m_localPlayers;

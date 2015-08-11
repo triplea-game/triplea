@@ -5,7 +5,6 @@ import java.util.HashMap;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 
-
 public class KnowledgeCenter {
   private static HashMap<PlayerID, KnowledgeCenter> s_KCInstances = new HashMap<PlayerID, KnowledgeCenter>();
 

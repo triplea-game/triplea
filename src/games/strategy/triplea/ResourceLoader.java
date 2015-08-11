@@ -17,11 +17,8 @@ import games.strategy.util.ClassLoaderUtil;
 import games.strategy.util.Match;
 
 /**
- *
  * Utility for managing where images and property files for maps and units should be loaded from.
- *
  * Based on java Classloaders.
- *
  */
 public class ResourceLoader {
   private final URLClassLoader m_loader;
@@ -68,7 +65,8 @@ public class ResourceLoader {
     });
     if (existing.size() > 1) {
       System.out.println("INFO: Found too many files for: " + mapName + "  found: " + existing);
-      // we no longer throw this error message, instead we simply use the first one we find (prioritizing the user maps folder over the root
+      // we no longer throw this error message, instead we simply use the first one we find (prioritizing the user maps
+      // folder over the root
       // folder)
       // throw new IllegalStateException("Found too many files for: " + mapName + " found: " + existing);
     }
@@ -77,10 +75,10 @@ public class ResourceLoader {
       if (allowNoneFound) {
         return new ArrayList<String>();
       } else {
-        throw new IllegalStateException(
-            "Could not find file folder or zip for map: " + mapName + "\r\n" + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
-                + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
-                + "\r\n" + "\r\n");
+        throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n"
+            + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
+            + "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name."
+            + "\r\n" + "\r\n");
       }
     }
     final File match = existing.iterator().next();
@@ -90,7 +88,8 @@ public class ResourceLoader {
     }
     if (!fileName.equals(mapName)) {
       throw new IllegalStateException("Map case is incorrect, xml: " + mapName + " file: " + match.getName() + "\r\n"
-          + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name." + "\r\n");
+          + "Make sure the mapName property within the xml game file exactly matches the map zip or folder name."
+          + "\r\n");
     }
     final List<String> rVal = new ArrayList<String>();
     rVal.add(match.getAbsolutePath());
@@ -151,9 +150,9 @@ public class ResourceLoader {
   }
 
   /**
-   *
    * @param pathURL
-   *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or File.separator)
+   *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
+   *        File.separator)
    */
   public URL getResource(final String pathURL) {
     final URL rVal = m_loader.getResource(pathURL);
@@ -167,8 +166,8 @@ public class ResourceLoader {
       throw new IllegalStateException(e);
     }
     if (!fileName.endsWith(pathURL)) {
-      throw new IllegalStateException(
-          "The file:" + fileName + "  does not have the correct case.  It must match the case declared in the xml:" + pathURL);
+      throw new IllegalStateException("The file:" + fileName
+          + "  does not have the correct case.  It must match the case declared in the xml:" + pathURL);
     }
     return rVal;
   }

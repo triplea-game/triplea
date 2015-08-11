@@ -10,7 +10,6 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Responsible for checking for a winner in a game of Tic Tac Toe.
- *
  */
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
   /**

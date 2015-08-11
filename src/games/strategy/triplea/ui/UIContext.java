@@ -27,7 +27,6 @@ import games.strategy.triplea.util.Stopwatch;
 
 /**
  * A place to find images and map data for a ui.
- *
  */
 public class UIContext extends AbstractUIContext implements IUIContext {
   protected MapData m_mapData;
@@ -70,14 +69,15 @@ public class UIContext extends AbstractUIContext implements IUIContext {
       m_mapData.close();
     }
     m_mapData = new MapData(m_resourceLoader);
-    m_diceImageFactory = new DiceImageFactory(m_resourceLoader, data.getDiceSides()); // DiceImageFactory needs loader and game data
+    m_diceImageFactory = new DiceImageFactory(m_resourceLoader, data.getDiceSides()); // DiceImageFactory needs loader
+                                                                                      // and game data
     final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
     m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
     if (m_scale < 1) {
       setDrawTerritoryBordersAgainToMedium();
     }
-    m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale, m_mapData.getDefaultUnitWidth(), m_mapData.getDefaultUnitHeight(),
-        m_mapData.getDefaultUnitCounterOffsetWidth(),
+    m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale, m_mapData.getDefaultUnitWidth(),
+        m_mapData.getDefaultUnitHeight(), m_mapData.getDefaultUnitCounterOffsetWidth(),
         m_mapData.getDefaultUnitCounterOffsetHeight());
     m_resourceImageFactory.setResourceLoader(m_resourceLoader, 1);// TODO: separate scale for resources
     m_flagIconImageFactory.setResourceLoader(m_resourceLoader);

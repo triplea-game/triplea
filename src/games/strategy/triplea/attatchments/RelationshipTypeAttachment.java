@@ -18,7 +18,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
-
   private String m_archeType = ARCHETYPE_WAR;
   // private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
   private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
@@ -35,7 +34,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
   /**
    * Creates new RelationshipTypeAttachment
-   *
    */
   public RelationshipTypeAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -47,7 +45,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * @return RelationshipTypeAttachment belonging to the RelationshipType pr
    */
   public static RelationshipTypeAttachment get(final RelationshipType pr) {
-    final RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
+    final RelationshipTypeAttachment rVal =
+        (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
     if (rVal == null) {
       throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
     }
@@ -66,15 +65,16 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * This sets a ArcheType for this relationshipType, there are 3 different archeTypes: War, Allied and Neutral
    * These archeTypes can be accessed by using the constants: WAR_ARCHETYPE, ALLIED_ARCHETYPE, NEUTRAL_ARCHETYPE
    * These archeTypes determine the behavior of isAllied, isWar and isNeutral
-   *
    * These archeTyps determine the default behavior of the engine unless you override some option in this attachment;
    * for example the RelationshipType ColdWar could be based on the WAR_ARCHETYPE but overrides options like "canInvade"
    * "canAttackHomeTerritory"
    * to not allow all-out invasion to mimic a not-all-out-war.
-   * Or you could base it on NEUTRAL_ARCHETYPE but override the options like "canAttackAtSea" and "canFireAA" to mimic a uneasy peace.
+   * Or you could base it on NEUTRAL_ARCHETYPE but override the options like "canAttackAtSea" and "canFireAA" to mimic a
+   * uneasy peace.
    *
    * @param archeType
-   *        the template used to base this relationType on, can be war, allied or neutral, default archeType = WAR_ARCHETYPE
+   *        the template used to base this relationType on, can be war, allied or neutral, default archeType =
+   *        WAR_ARCHETYPE
    * @throws GameParseException
    *         if archeType isn't set to war, allied or neutral
    */
@@ -87,14 +87,14 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     } else if (archeType.toLowerCase().equals(ARCHETYPE_NEUTRAL)) {
       m_archeType = ARCHETYPE_NEUTRAL;
     } else {
-      throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or " + ARCHETYPE_NEUTRAL + " for "
-          + thisErrorMsg());
+      throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
+          + ARCHETYPE_NEUTRAL + " for " + thisErrorMsg());
     }
   }
 
   /**
-   *
-   * @return the ArcheType of this relationshipType, this really shouldn't be called, typically you should call isNeutral, isAllied or
+   * @return the ArcheType of this relationshipType, this really shouldn't be called, typically you should call
+   *         isNeutral, isAllied or
    *         isWar();
    */
   public String getArcheType() {
@@ -106,7 +106,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
+   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
+   * isAllied or isWar();
    * Just for future reference, doesn't do anything right now.
    *
    * @param canFlyOver
@@ -118,7 +119,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
+   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
+   * isAllied or isWar();
    * Just for future reference, doesn't do anything right now.
    *
    * @return whether in this relationshipType you can fly over other territories
@@ -201,7 +203,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
             throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
           }
         } else {
-          throw new GameParseException("upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
+          throw new GameParseException(
+              "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
         }
       }
       m_upkeepCost = integerCost;
@@ -222,8 +225,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAlliancesCanChainTogether(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or "
-          + PROPERTY_TRUE + thisErrorMsg());
+      throw new GameParseException("alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or "
+          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_alliancesCanChainTogether = value;
   }
@@ -242,8 +245,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsDefaultWarPosition(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException(
-          "isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+      throw new GameParseException("isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE
+          + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_isDefaultWarPosition = value;
   }
@@ -262,8 +265,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setGivesBackOriginalTerritories(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or "
-          + PROPERTY_TRUE + thisErrorMsg());
+      throw new GameParseException("givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or "
+          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_givesBackOriginalTerritories = value;
   }
@@ -282,8 +285,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanMoveIntoDuringCombatMove(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or "
-          + PROPERTY_TRUE + thisErrorMsg());
+      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
+          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_canMoveIntoDuringCombatMove = value;
   }
@@ -303,8 +306,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCanMoveThroughCanals(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or "
-          + PROPERTY_TRUE + thisErrorMsg());
+      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
+          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_canMoveThroughCanals = value;
   }
@@ -324,8 +327,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketsCanFlyOver(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
-      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or "
-          + PROPERTY_TRUE + thisErrorMsg());
+      throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
+          + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
     m_rocketsCanFlyOver = value;
   }
@@ -343,7 +346,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   *
    * @return whether this relationship is based on the WAR_ARCHETYPE
    */
   public boolean isWar() {
@@ -351,7 +353,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   *
    * @return whether this relationship is based on the ALLIED_ARCHETYPE
    */
   public boolean isAllied() {
@@ -359,7 +360,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   *
    * @return whether this relationship is based on the NEUTRAL_ARCHETYPE
    */
   public boolean isNeutral() {
@@ -367,14 +367,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /*
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
+   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
+   * isAllied or isWar();
    * Just for future reference, doesn't do anything right now.
-   *
    * @param helpsDefendAtSea
    * should be "true", "false" or "default"
-   *
    * @throws GameParseException
-   *
    * @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
    * public void setHelpsDefendAtSea(final String helpsDefendAtSea) throws GameParseException
    * {
@@ -385,29 +383,25 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * else if (helpsDefendAtSea.toLowerCase().equals(PROPERTY_DEFAULT))
    * m_helpsDefendAtSea = PROPERTY_DEFAULT;
    * else
-   * throw new GameParseException("helpsDefendAtSea must be " + PROPERTY_TRUE + "," + PROPERTY_FALSE + " or " + PROPERTY_DEFAULT + " for "
+   * throw new GameParseException("helpsDefendAtSea must be " + PROPERTY_TRUE + "," + PROPERTY_FALSE + " or " +
+   * PROPERTY_DEFAULT + " for "
    * + thisErrorMsg());
    * }
-   **
-   *
-   * <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral, isAllied or isWar();
+   ** <strong> EXAMPLE</strong> method on how you could do finegrained authorizations instead of looking at isNeutral,
+   * isAllied or isWar();
    * Just for future reference, doesn't do anything right now.
-   *
    * @return whether in this relationshipType you help each other defend at Sea
-   *
    * public boolean getHelpsDefendAtSea()
    * { // War: false, Allied: true, Neutral: false
    * if (m_helpsDefendAtSea.equals(PROPERTY_DEFAULT))
    * return isAllied();
    * return m_helpsDefendAtSea.equals(PROPERTY_TRUE);
    * }
-   *
    * public void resetHelpsDefendAtSea()
    * {
    * m_helpsDefendAtSea = PROPERTY_DEFAULT;
    * }
    */
-
   @Override
   public void validate(final GameData data) throws GameParseException {
     // TODO Auto-generated method stub

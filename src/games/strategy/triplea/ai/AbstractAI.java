@@ -51,27 +51,25 @@ import games.strategy.util.Tuple;
 /**
  * Base class for ais.
  * <p>
- *
  * Control pausing with the AI pause menu option
- *
- * AI's should note that any data that is stored in the ai instance, will be lost when the game is restarted. We cannot save data with an
+ * AI's should note that any data that is stored in the ai instance, will be lost when the game is restarted. We cannot
+ * save data with an
  * AI, since the player may choose to restart the game with a different ai, or with a human player.
  * <p>
- *
- * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase, (as would happen if a player saved the
- * game during the middle of an AI's move phase) it is acceptable for the ai to play badly for a turn, but the ai should recover, and play
+ * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase, (as would happen if
+ * a player saved the
+ * game during the middle of an AI's move phase) it is acceptable for the ai to play badly for a turn, but the ai should
+ * recover, and play
  * correctly when the next phase of the game starts.
  * <p>
- *
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
+ * using a change).
  * <p>
- *
  */
 public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlayer, IGamePlayer {
   private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 
   /**
-   *
    * @param name
    *        - the name of the player (the nation)
    * @param type
@@ -102,8 +100,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
    * @param player
    *        - the player to buy for
    */
-  protected abstract void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data,
-      PlayerID player);
+  protected abstract void purchase(boolean purchaseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate,
+      GameData data, PlayerID player);
 
   /**
    * It is the AI's turn to roll for technology.
@@ -143,16 +141,16 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
    * @param player
    *        - the player to place for
    */
-  protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player);
+  protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data,
+      PlayerID player);
 
   /******************************************
    * The following methods the AI may choose to implemenmt,
    * but in general won't
-   *
    *******************************************/
   @Override
-  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
-      final boolean noneAvailable) {
+  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory,
+      final Collection<Territory> territories, final boolean noneAvailable) {
     // return the first one
     return territories.iterator().next();
   }
@@ -193,15 +191,12 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return candidates.iterator().next();
   }
 
-  /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties
-   */
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
       throw new IllegalStateException(
@@ -210,15 +205,18 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
     }
-    final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0; // TODO: determine which planes we plan to fly to land afterwards (if we are
+    final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0; // TODO: determine which planes we plan to fly to land
+                                                               // afterwards (if we are
                                                                // the attacker or moving player)
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
     final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom); // the list we receive should already be sorted
     /*
-     * final List<Unit> selectFromSorted = new ArrayList<Unit>(); // defaultCasualties has already been sorted, and we accept this sort as a
+     * final List<Unit> selectFromSorted = new ArrayList<Unit>(); // defaultCasualties has already been sorted, and we
+     * accept this sort as a
      * base and then want to modify it further by interleaving carriers with planes
-     * selectFromSorted.addAll(defaultCasualties.getKilled()); // since redoing the sorting can take a long time, we will instead borrow the
+     * selectFromSorted.addAll(defaultCasualties.getKilled()); // since redoing the sorting can take a long time, we
+     * will instead borrow the
      * sorted list from the defaultCasualties
      * for (final Unit u : selectFrom)
      * {
@@ -233,28 +231,28 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
      * throw new IllegalStateException("AI casualty sort failed");
      * }
      */
-    final List<Unit> interleavedTargetList =
-        new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers)); // TODO:
-                                                                                                                                      // if
-                                                                                                                                      // we
-                                                                                                                                      // are
-                                                                                                                                      // going
-                                                                                                                                      // to
-                                                                                                                                      // lose
-                                                                                                                                      // this
-                                                                                                                                      // battle
-                                                                                                                                      // by
-                                                                                                                                      // a
-                                                                                                                                      // wide
-                                                                                                                                      // margin,
-                                                                                                                                      // we
-                                                                                                                                      // may
-                                                                                                                                      // not
-                                                                                                                                      // want
-                                                                                                                                      // to
-                                                                                                                                      // interleave
-                                                                                                                                      // these
-                                                                                                                                      // units
+    final List<Unit> interleavedTargetList = new ArrayList<Unit>(
+        DUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers)); // TODO:
+                                                                                                                  // if
+                                                                                                                  // we
+                                                                                                                  // are
+                                                                                                                  // going
+                                                                                                                  // to
+                                                                                                                  // lose
+                                                                                                                  // this
+                                                                                                                  // battle
+                                                                                                                  // by
+                                                                                                                  // a
+                                                                                                                  // wide
+                                                                                                                  // margin,
+                                                                                                                  // we
+                                                                                                                  // may
+                                                                                                                  // not
+                                                                                                                  // want
+                                                                                                                  // to
+                                                                                                                  // interleave
+                                                                                                                  // these
+                                                                                                                  // units
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }
@@ -264,11 +262,9 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return myCasualties;
   }
 
-  /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
-   */
   @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
+  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+      final Collection<Unit> bombers) {
     if (potentialTargets == null || potentialTargets.isEmpty()) {
       return null;
     }
@@ -280,11 +276,11 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection,
    * games.strategy.engine.data.Territory)
    */
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+      final Territory from) {
     final List<Unit> rVal = new ArrayList<Unit>();
     for (final Unit fighter : fightersThatCanBeMoved) {
       if (Math.random() < 0.8) {
@@ -294,9 +290,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return rVal;
   }
 
-  /*
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
-   */
   @Override
   public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
       final String unitMessage) {
@@ -321,7 +314,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message) {
+  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+      final String message) {
     return null;
   }
 
@@ -329,7 +323,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   public abstract boolean shouldBomberBomb(final Territory territory);
 
   @Override
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics) {
+  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+      final boolean politics) {
     // we are dead, just accept
     if (!getPlayerID().amNotDeadYet(getGameData())) {
       return true;
@@ -344,8 +339,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       return true;
     }
     // would we normally be allies?
-    final List<String> allies =
-        Arrays.asList(new String[] {"Americans", "Australians", "British", "Canadians", "Chinese", "French", "Russians"});
+    final List<String> allies = Arrays
+        .asList(new String[] {"Americans", "Australians", "British", "Canadians", "Chinese", "French", "Russians"});
     if (allies.contains(getPlayerID().getName()) && allies.contains(playerSendingProposal.getName())) {
       return true;
     }
@@ -353,7 +348,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     if (axis.contains(getPlayerID().getName()) && axis.contains(playerSendingProposal.getName())) {
       return true;
     }
-    final Collection<String> myAlliances = new HashSet<String>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerID()));
+    final Collection<String> myAlliances =
+        new HashSet<String>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerID()));
     myAlliances.retainAll(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
     if (!myAlliances.isEmpty()) {
       return true;
@@ -388,7 +384,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
+    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal =
+        new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
     for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
       if (attackTokens.size() <= 0) {
         continue;
@@ -402,8 +399,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
         }
         final IntegerMap<Resource> rMap = new IntegerMap<Resource>();
         final Resource r = attackTokens.keySet().iterator().next();
-        final int num = Math.min(attackTokens.getInt(r), (UnitAttachment.get(u.getType()).getHitPoints()
-            * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
+        final int num = Math.min(attackTokens.getInt(r),
+            (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         rMap.put(r, num);
         HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
         if (attMap == null) {
@@ -423,7 +420,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   /*****************************************
    * The following methods are more for the ui, and the
    * ai will generally not care
-   *
    *****************************************/
   public void battleInfoMessage(final String shortMessage, final DiceRoll dice) {}
 
@@ -443,11 +439,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     pause();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
-   */
   @Override
   public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
       final int diceSides) {
@@ -460,7 +451,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 
   /*****************************************
    * Game Player Methods
-   *
    *****************************************/
   /**
    * The given phase has started. We parse the phase name and call the apropiate method.
@@ -495,7 +485,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
        */
       tech(techDelegate, getGameData(), id);
     } else if (name.endsWith("Move")) {
-
       final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
       /*
        * if (!moveDel.stuffToDoInThisDelegate())
@@ -528,7 +517,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   /**
    * No need to override this.
    */
-  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data, final PlayerID player) {
+  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
+      final PlayerID player) {
     // we should not override this...
   }
 
@@ -576,7 +566,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     final PlayerID id = getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
-    // final HashMap<ICondition, Boolean> testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented
+    // final HashMap<ICondition, Boolean> testedConditions =
+    // DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented
     // out because we want to test the conditions each time to make sure they are still valid
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
@@ -585,9 +576,11 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
         final double random = Math.random(); // should we use bridge's random source here?
-        int MAX_WAR_ACTIONS_PER_TURN = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
+        int MAX_WAR_ACTIONS_PER_TURN =
+            (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((MAX_WAR_ACTIONS_PER_TURN > 0)
-            && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar)) / numPlayers < 0.4) {
+            && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar))
+                / numPlayers < 0.4) {
           if (Math.random() < .9) {
             MAX_WAR_ACTIONS_PER_TURN = 0;
           } else {
@@ -597,7 +590,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
         final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
         while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0) {
           final PoliticalActionAttachment action = actionWarIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()).match(action)) {
+          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+              .match(action)) {
             continue;
           }
           i++;
@@ -619,7 +613,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()).match(action)) {
+          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+              .match(action)) {
             continue;
           }
           if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS)) {
@@ -636,8 +631,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
   }
 
   @Override
-  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices,
-      final int unitsPerPick) {
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
+      final List<Unit> unitChoices, final int unitsPerPick) {
     pause();
     final GameData data = getGameData();
     final PlayerID me = getPlayerID();
@@ -652,7 +647,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       if (notOwned.isEmpty()) {
         // only owned territories left
         final boolean nonFactoryUnitsLeft = Match.someMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
-        final Match<Unit> ownedFactories = new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
+        final Match<Unit> ownedFactories =
+            new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<Territory>(capitals);
         test.retainAll(territoryChoices);
@@ -664,9 +660,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(),
-                  new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me),
-                      Matches.TerritoryIsLand)));
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(
+                  Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             final List<Territory> doesNotHaveFactoryYet =
                 Match.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories).invert());
@@ -679,8 +674,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
             }
           }
         } else {
-          final int maxTerritoriesToPopulate =
-              Math.min(territoryChoices.size(), Math.max(4, Match.countMatches(unitChoices, Matches.UnitCanProduceUnits)));
+          final int maxTerritoriesToPopulate = Math.min(territoryChoices.size(),
+              Math.max(4, Match.countMatches(unitChoices, Matches.UnitCanProduceUnits)));
           test.addAll(territoriesWithFactories);
           if (!test.isEmpty()) {
             if (test.size() < maxTerritoriesToPopulate) {
@@ -696,9 +691,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Match.getMatches(data.getMap().getTerritories(),
-                  new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me),
-                      Matches.TerritoryIsLand)));
+              capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(
+                  Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
             }
             if (capitals.isEmpty()) {
               picked = territoryChoices.get(0);
@@ -728,9 +722,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
           picked = test.get(0);
         } else {
           if (capitals.isEmpty()) {
-            capitals.addAll(Match.getMatches(data.getMap().getTerritories(),
-                new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me),
-                    Matches.TerritoryIsLand)));
+            capitals.addAll(Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(
+                Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.TerritoryIsLand)));
           }
           if (capitals.isEmpty()) {
             picked = territoryChoices.get(0);

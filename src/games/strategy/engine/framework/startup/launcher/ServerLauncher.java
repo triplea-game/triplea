@@ -64,13 +64,14 @@ public class ServerLauncher extends AbstractLauncher {
   // a list of observers that tried to join the game during starup
   // we need to track these, because when we loose connections to them
   // we can ignore the connection lost
-  private final List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
+  private final List<INode> m_observersThatTriedToJoinDuringStartup =
+      Collections.synchronizedList(new ArrayList<INode>());
   private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
 
-  public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger,
-      final IMessenger messenger,
-      final GameSelectorModel gameSelectorModel, final PlayerListing playerListing, final Map<String, INode> remotelPlayers,
-      final ServerModel serverModel, final boolean headless) {
+  public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger,
+      final IChannelMessenger channelMessenger, final IMessenger messenger, final GameSelectorModel gameSelectorModel,
+      final PlayerListing playerListing, final Map<String, INode> remotelPlayers, final ServerModel serverModel,
+      final boolean headless) {
     super(gameSelectorModel, headless);
     m_clientCount = clientCount;
     m_remoteMessenger = remoteMessenger;
@@ -136,7 +137,8 @@ public class ServerLauncher extends AbstractLauncher {
         e.printStackTrace();
         throw new IllegalStateException(e.getMessage());
       }
-      final Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
+      final Set<IGamePlayer> localPlayerSet =
+          m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
       final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
       m_serverGame = new ServerGame(m_gameData, localPlayerSet, m_remotelPlayers, messengers);
       m_serverGame.setInGameLobbyWatcher(m_inGameLobbyWatcher);
@@ -146,14 +148,16 @@ public class ServerLauncher extends AbstractLauncher {
       // tell the clients to start,
       // later we will wait for them to all
       // signal that they are ready.
-      ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes,
-          m_serverGame.getPlayerManager().getPlayerMapping());
-      final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty();// && !m_localPlayerMapping.isEmpty(); // do we need to have a local
+      ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME))
+          .doneSelectingPlayers(gameDataAsBytes, m_serverGame.getPlayerManager().getPlayerMapping());
+      final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty();// && !m_localPlayerMapping.isEmpty(); // do we
+                                                                        // need to have a local
                                                                         // player? i don't think we do...
       if (useSecureRandomSource) {
         // server game.
         // try to find an opponent to be the other side of the crypto random source.
-        final PlayerID remotePlayer = m_serverGame.getPlayerManager().getRemoteOpponent(m_messenger.getLocalNode(), m_gameData);
+        final PlayerID remotePlayer =
+            m_serverGame.getPlayerManager().getRemoteOpponent(m_messenger.getLocalNode(), m_gameData);
         final CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, m_serverGame);
         m_serverGame.setRandomSource(randomSource);
       }
@@ -179,7 +183,6 @@ public class ServerLauncher extends AbstractLauncher {
         } else {
           System.out.println(message);
         }
-
       }
       if (m_headless) {
         HeadlessGameServer.log("Game Successfully Loaded. " + (m_abortLaunch ? "Aborting Launch." : "Starting Game."));
@@ -234,9 +237,8 @@ public class ServerLauncher extends AbstractLauncher {
             try {
               // we are already aborting the launch
               if (!m_abortLaunch) {
-                if (!m_errorLatch.await(
-                    GameRunner2.getServerObserverJoinWaitTime() + GameRunner2.ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME,
-                    TimeUnit.SECONDS)) {
+                if (!m_errorLatch.await(GameRunner2.getServerObserverJoinWaitTime()
+                    + GameRunner2.ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME, TimeUnit.SECONDS)) {
                   System.err.println("Waiting on error latch timed out!");
                 }
               }
@@ -254,7 +256,8 @@ public class ServerLauncher extends AbstractLauncher {
             stopGame();
           }
           try {
-            Thread.sleep(200); // having an oddball issue with the zip stream being closed while parsing to load default game. might be
+            Thread.sleep(200); // having an oddball issue with the zip stream being closed while parsing to load default
+                               // game. might be
                                // caused by closing of stream while unloading map resources.
           } catch (final InterruptedException e) {
           }
@@ -263,11 +266,14 @@ public class ServerLauncher extends AbstractLauncher {
             try {
               System.out.println("Game ended, going back to waiting.");
               if (m_serverModel != null) {
-                m_serverModel.setAllPlayersToNullNodes(); // if we do not do this, we can get into an infinite loop of launching a game,
+                m_serverModel.setAllPlayersToNullNodes(); // if we do not do this, we can get into an infinite loop of
+                                                          // launching a game,
                                                           // then crashing out, then launching, etc.
               }
-              final File f1 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
-              final File f2 = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
+              final File f1 =
+                  new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());
+              final File f2 =
+                  new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSave2FileName());
               final File f;
               if (!f1.exists() && !f2.exists()) {
                 m_gameSelectorModel.resetGameDataToNull();
@@ -336,8 +342,8 @@ public class ServerLauncher extends AbstractLauncher {
     t.start();
   }
 
-  public void addObserver(final IObserverWaitingToJoin blockingObserver, final IObserverWaitingToJoin nonBlockingObserver,
-      final INode newNode) {
+  public void addObserver(final IObserverWaitingToJoin blockingObserver,
+      final IObserverWaitingToJoin nonBlockingObserver, final INode newNode) {
     if (m_isLaunching) {
       m_observersThatTriedToJoinDuringStartup.add(newNode);
       nonBlockingObserver.cannotJoinGame("Game is launching, try again soon");
@@ -416,7 +422,8 @@ public class ServerLauncher extends AbstractLauncher {
       e.printStackTrace();
       if (m_headless && HeadlessGameServer.getInstance() != null) {
         HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
-        // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3, need to see if it
+        // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3,
+        // need to see if it
         // works.
       }
     }
@@ -425,7 +432,8 @@ public class ServerLauncher extends AbstractLauncher {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
-          final String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+          final String message =
+              "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
           JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
         }
       });

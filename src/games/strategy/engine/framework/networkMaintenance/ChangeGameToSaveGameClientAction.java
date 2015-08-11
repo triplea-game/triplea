@@ -10,7 +10,6 @@ import javax.swing.JOptionPane;
 import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
 import games.strategy.net.IClientMessenger;
 
-
 public class ChangeGameToSaveGameClientAction extends AbstractAction {
   private static final long serialVersionUID = -6986376382381381377L;
   private final Component m_parent;

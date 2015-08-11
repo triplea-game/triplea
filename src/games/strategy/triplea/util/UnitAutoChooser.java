@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-
 // TODO - the move computation explodes when multiple transports are selected
 // https://sourceforge.net/tracker/index.php?func=detail&aid=1890628&group_id=44492&atid=439737
 // for now this class is not to be used
@@ -156,10 +155,12 @@ class UnitAutoChooser {
     // categorize dependents for allCategories
     // if m_bCategorizeMovement is true then we use allCategoriesWithMovement as well (see below).
     // tell UnitSeperator not to sort the results since we want to preserve order
-    final Set<UnitCategory> allCategories = UnitSeperator.categorize(m_allUnits, m_dependentsMap, /* ctgzMvmt */false, /* sort */false);
+    final Set<UnitCategory> allCategories =
+        UnitSeperator.categorize(m_allUnits, m_dependentsMap, /* ctgzMvmt */false, /* sort */false);
     // don't categorize dependents for chosenCategories
     // tell UnitSeperator not to sort the results since we want to preserve order
-    final Set<UnitCategory> chosenCategories = UnitSeperator.categorize(m_chosenUnits, null, /* ctgzMvmt */false, /* sort */false);
+    final Set<UnitCategory> chosenCategories =
+        UnitSeperator.categorize(m_chosenUnits, null, /* ctgzMvmt */false, /* sort */false);
     // store occurrence count for chosen categories
     m_chosenCategoryCounts = new IntegerMap<UnitCategory>(chosenCategories.size() + 1, 1);
     // store occurrence count for candidate categories (based on chosen categories)
@@ -177,8 +178,8 @@ class UnitAutoChooser {
           UnitSeperator.categorize(m_allUnits, m_dependentsMap, /* ctgzMvmt */true, /* sort */false);
       solveCandidateCompositeCategories(allCategories, allCategoriesWithMovement, chosenCategories);
     } else if (m_bCategorizeTrnMovement) {
-      final Set<UnitCategory> allCategoriesWithMovement =
-          UnitSeperator.categorize(m_allUnits, m_dependentsMap, /* ctgzMvmt */false, /* ctgzTrnMvmt */true, /* sort */false);
+      final Set<UnitCategory> allCategoriesWithMovement = UnitSeperator.categorize(m_allUnits, m_dependentsMap,
+          /* ctgzMvmt */false, /* ctgzTrnMvmt */true, /* sort */false);
       solveCandidateCompositeCategories(allCategories, allCategoriesWithMovement, chosenCategories);
     } else {
       solveCandidateCompositeCategories(allCategories, allCategories, chosenCategories);
@@ -254,7 +255,8 @@ class UnitAutoChooser {
       // add only the dependent units that were in chosen units
       final Set<UnitCategory> dependentCategories =
           UnitSeperator.categorize(dependentUnits, m_dependentsMap, /* ctgzMvmt */false, /* sort */false);
-      final IntegerMap<UnitCategory> usedCategoryCounts = new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
+      final IntegerMap<UnitCategory> usedCategoryCounts =
+          new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
       for (final UnitCategory chosenCategory : m_chosenCategoryCounts.keySet()) {
         for (final UnitCategory dependentCategory : dependentCategories) {
           for (int i = 0; i < dependentCategory.getUnits().size(); i++) {
@@ -296,7 +298,8 @@ class UnitAutoChooser {
     for (final List<UnitCategory> compositeCategory : m_candidateCompositeCategories) {
       // System.out.println("converting composite category: " + compositeCategory);
       final Set<Unit> compositeCategoryUnits = new LinkedHashSet<Unit>(compositeCategory.size() + 1, 1);
-      final IntegerMap<UnitCategory> usedCategoryCounts = new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
+      final IntegerMap<UnitCategory> usedCategoryCounts =
+          new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
       boolean bUnitsCanAllBeMapped = true;
       for (final UnitCategory category : compositeCategory) {
         final UnitCategory chosenCategory = m_candidateToChosenCategories.get(category);
@@ -369,7 +372,8 @@ class UnitAutoChooser {
     if (m_candidateCompositeCategories.isEmpty() && !m_candidateCategoriesWithoutDependents.isEmpty()) {
       // no composite categories, just add independent units
       final Set<Unit> independentCategoryUnits = new HashSet<Unit>(m_chosenUnits.size());
-      final IntegerMap<UnitCategory> usedCategoryCounts = new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
+      final IntegerMap<UnitCategory> usedCategoryCounts =
+          new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
       for (final UnitCategory category : m_candidateCategoriesWithoutDependents) {
         final UnitCategory chosenCategory = m_candidateToChosenCategories.get(category);
         for (final Unit unit : category.getUnits()) {
@@ -398,7 +402,8 @@ class UnitAutoChooser {
       // There were composite categories, but none could be satisfied
       // Add the simple solution if there is no other solution
       final Set<Unit> simpleSolutionUnits = new HashSet<Unit>(m_chosenUnits.size());
-      final IntegerMap<UnitCategory> usedCategoryCounts = new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
+      final IntegerMap<UnitCategory> usedCategoryCounts =
+          new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
       // preserve original category order
       for (final UnitCategory category : m_candidateCategories) {
         for (final Unit unit : category.getUnits()) {
@@ -474,7 +479,8 @@ class UnitAutoChooser {
       final Iterator<UnitCategory> categoryIter = allCategories.iterator();
       while (categoryIter.hasNext()) {
         final UnitCategory candidateCategory = categoryIter.next();
-        final UnitCategory candidateCategoryNoMovement = allCategoriesToCategoriesWithoutMovement.get(candidateCategory);
+        final UnitCategory candidateCategoryNoMovement =
+            allCategoriesToCategoriesWithoutMovement.get(candidateCategory);
         if (chosenCategory.equalsIgnoreDependents(candidateCategoryNoMovement)) {
           // m_candidateCategories preserves insertion order
           m_candidateCategories.add(candidateCategory);
@@ -539,11 +545,13 @@ class UnitAutoChooser {
     // composite solutions. They also end up in m_candidateUnits that way.
     // Note that we mess up the category order doing it this way, but we
     // reinstate the proper ordering afterwards, in the next step.
-    final Set<UnitCategory> categoriesToCopy = new HashSet<UnitCategory>(m_candidateCategoriesWithoutDependents.size() + 1, 1);
+    final Set<UnitCategory> categoriesToCopy =
+        new HashSet<UnitCategory>(m_candidateCategoriesWithoutDependents.size() + 1, 1);
     for (final UnitCategory category : candidateCategoriesWithDependents) {
       final UnitCategory chosenCategory = m_candidateToChosenCategories.get(category);
       for (final UnitCategory candidateCategory : m_candidateCategoriesWithoutDependents) {
-        final UnitCategory candidateCategoryNoMovement = allCategoriesToCategoriesWithoutMovement.get(candidateCategory);
+        final UnitCategory candidateCategoryNoMovement =
+            allCategoriesToCategoriesWithoutMovement.get(candidateCategory);
         if (chosenCategory.equalsIgnoreDependents(candidateCategoryNoMovement)) {
           categoriesToCopy.add(candidateCategory);
         }
@@ -551,7 +559,8 @@ class UnitAutoChooser {
     }
     candidateCategoriesWithDependents.addAll(categoriesToCopy);
     // create a count of chosenCategories without dependents
-    final IntegerMap<UnitCategory> chosenCategoryCountsNoDependents = new IntegerMap<UnitCategory>(chosenCategories.size() + 1, 1);
+    final IntegerMap<UnitCategory> chosenCategoryCountsNoDependents =
+        new IntegerMap<UnitCategory>(chosenCategories.size() + 1, 1);
     for (final UnitCategory candidateCategory : candidateCategoriesWithDependents) {
       final UnitCategory chosenCategory = m_candidateToChosenCategories.get(candidateCategory);
       if (!chosenDependentCategories.contains(chosenCategory)) {
@@ -560,7 +569,8 @@ class UnitAutoChooser {
     }
     // expand the Set of candidate categories with dependents into a list for easy linear processing
     // preserve original order from m_candidateCategories
-    final List<UnitCategory> candidateCategoriesWithDependentsList = new ArrayList<UnitCategory>(candidateCategoryCountWithDependents);
+    final List<UnitCategory> candidateCategoriesWithDependentsList =
+        new ArrayList<UnitCategory>(candidateCategoryCountWithDependents);
     for (final UnitCategory category : m_candidateCategories) {
       if (candidateCategoriesWithDependents.contains(category)) {
         for (int i = 0; i < m_candidateCategoryCounts.getInt(category); i++) {
@@ -574,7 +584,8 @@ class UnitAutoChooser {
     // System.out.println("chosenCategories: "+chosenCategories);
     // System.out.println("chosenCounts: "+m_chosenCategoryCounts);
     // create and populate an IntegerMap for chosen categories with dependents
-    final IntegerMap<UnitCategory> chosenCategoryCountsWithDependents = new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
+    final IntegerMap<UnitCategory> chosenCategoryCountsWithDependents =
+        new IntegerMap<UnitCategory>(m_chosenCategoryCounts.size() + 1, 1);
     for (final UnitCategory category : candidateCategoriesWithDependents) {
       final UnitCategory chosenCategory = m_candidateToChosenCategories.get(category);
       chosenCategoryCountsWithDependents.put(chosenCategory, m_chosenCategoryCounts.getInt(chosenCategory));
@@ -607,7 +618,8 @@ class UnitAutoChooser {
     // This algorithm should satisfy all cases.
     // See test cases for more examples.
     // intitialize structures for use during recursive processing
-    final List<UnitCategory> currentCandidateCategories = new ArrayList<UnitCategory>(candidateCategoriesWithDependents.size());
+    final List<UnitCategory> currentCandidateCategories =
+        new ArrayList<UnitCategory>(candidateCategoriesWithDependents.size());
     final IntegerMap<UnitCategory> currentCandidateCategoryCounts =
         new IntegerMap<UnitCategory>(candidateCategoriesWithDependents.size() + 1, 1);
     final IntegerMap<UnitCategory> currentChosenCategoryCounts =
@@ -685,10 +697,11 @@ class UnitAutoChooser {
         // Implicit dependents are not included in either of these counts, thus they are ignored here.
         // We ignore implicit dependents here because they are handled below inside the first block,
         // where we determine whether an exact or greedy solution was found.
-        if ((m_bAllowImplicitDependents && chosenCategoryCountsNoDependents.equals(currentChosenCategoryCountsNoDependents)
-            && currentChosenCategoryCounts
-                .greaterThanOrEqualTo(chosenCategoryCountsWithDependents))
-            || (!m_bAllowImplicitDependents && chosenCategoryCountsWithDependents.equals(currentChosenCategoryCounts))) {
+        if ((m_bAllowImplicitDependents
+            && chosenCategoryCountsNoDependents.equals(currentChosenCategoryCountsNoDependents)
+            && currentChosenCategoryCounts.greaterThanOrEqualTo(chosenCategoryCountsWithDependents))
+            || (!m_bAllowImplicitDependents
+                && chosenCategoryCountsWithDependents.equals(currentChosenCategoryCounts))) {
           // Found match.
           // System.out.println("Found match for all categories! Saving and popping stack.");
           // Decide whether to save this solution as an exact solution or as a greedy solution.
@@ -698,12 +711,16 @@ class UnitAutoChooser {
           // If solver is allowing implicit dependents, then all chosen category counts with dependents
           // must match the current category counts with dependents for an exact solution,
           // since we are trying to account for all dependents.
-          // Note that in the case where there are no dependent units in the territory at all, the List we are processing
-          // in this while loop would be empty so this algo would be skipped and an independent solution would be found later.
-          if (!m_bAllowImplicitDependents || (chosenCategoryCountsWithDependents.equals(currentChosenCategoryCountsWithDependents))) {
+          // Note that in the case where there are no dependent units in the territory at all, the List we are
+          // processing
+          // in this while loop would be empty so this algo would be skipped and an independent solution would be found
+          // later.
+          if (!m_bAllowImplicitDependents
+              || (chosenCategoryCountsWithDependents.equals(currentChosenCategoryCountsWithDependents))) {
             // System.out.println("->Found exact solution");
             // save the current candidate categories but don't save the dependent units
-            final List<UnitCategory> newCandidateCompositeCategory = new ArrayList<UnitCategory>(currentCandidateCategories);
+            final List<UnitCategory> newCandidateCompositeCategory =
+                new ArrayList<UnitCategory>(currentCandidateCategories);
             if (!m_candidateCompositeCategories.contains(newCandidateCompositeCategory)) {
               m_candidateCompositeCategories.add(newCandidateCompositeCategory);
               // System.out.println("candidateCompositeCategories: "+m_candidateCompositeCategories);
@@ -718,11 +735,11 @@ class UnitAutoChooser {
           }
           // pop the stack, we've gone as far as we can go
           curIndex = indexStack.pop();
-        } else
-          if ((m_bAllowImplicitDependents && !chosenCategoryCountsNoDependents.greaterThanOrEqualTo(currentChosenCategoryCountsNoDependents)
-              && currentChosenCategoryCounts
-                  .greaterThanOrEqualTo(chosenCategoryCountsWithDependents))
-              || (!m_bAllowImplicitDependents && !chosenCategoryCountsWithDependents.greaterThanOrEqualTo(currentChosenCategoryCounts))) {
+        } else if ((m_bAllowImplicitDependents
+            && !chosenCategoryCountsNoDependents.greaterThanOrEqualTo(currentChosenCategoryCountsNoDependents)
+            && currentChosenCategoryCounts.greaterThanOrEqualTo(chosenCategoryCountsWithDependents))
+            || (!m_bAllowImplicitDependents
+                && !chosenCategoryCountsWithDependents.greaterThanOrEqualTo(currentChosenCategoryCounts))) {
           // Too many categories.
           // System.out.println("Too many categories selected. Discarding and popping stack.");
           // pop the stack, we've gone as far as we can go

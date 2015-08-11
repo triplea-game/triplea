@@ -39,8 +39,6 @@ import games.strategy.sound.ISound;
 
 /**
  * Abstract Game Loader for grid games.
- *
- *
  */
 abstract public class GridGame extends AbstractGameLoader implements IGameLoader {
   private static final long serialVersionUID = -7194416906783331148L;
@@ -59,7 +57,6 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
   /**
    * Should be evenly divided by 2, or else your map might get drawn funny.
    * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
-   *
    */
   public int getSquareWidth() {
     return 50;
@@ -68,7 +65,6 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
   /**
    * Should be evenly divided by 2, or else your map might get drawn funny.
    * (And depending on what your xMapPanel ui class is doing, it might have to be evenly divided by 5 and/or 10 too)
-   *
    */
   public int getSquareHeight() {
     return 50;
@@ -110,7 +106,8 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
         m_game.addDisplay(m_display);
         m_game.addSoundChannel(m_soundChannel);
         initializeGame();
-        connectPlayers(players, null); // technically not needed because we won't have any "local human players" in a headless game.
+        connectPlayers(players, null); // technically not needed because we won't have any "local human players" in a
+                                       // headless game.
         if (headlessFrameUI != null) {
           headlessFrameUI.setLocationRelativeTo(null);
           headlessFrameUI.setSize(700, 400);
@@ -121,9 +118,8 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
         SwingUtilities.invokeAndWait(new Runnable() {
           @Override
           public void run() {
-            final GridGameFrame frame = new GridGameFrame(game, localPlayers, getGridMapPanelClass(), getGridMapDataClass(),
-                getGridTableMenuClass(), getSquareWidth(), getSquareHeight(),
-                getBevelSize());
+            final GridGameFrame frame = new GridGameFrame(game, localPlayers, getGridMapPanelClass(),
+                getGridMapDataClass(), getGridTableMenuClass(), getSquareWidth(), getSquareHeight(), getBevelSize());
             m_display = new GridGameDisplay(frame);
             m_game.addDisplay(m_display);
             m_soundChannel = new DefaultSoundChannel(localPlayers);
@@ -189,9 +185,6 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
     }
   }
 
-  /**
-   * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-   */
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {
     return IGridGameDisplay.class;

@@ -2,7 +2,6 @@ package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.message.IRemote;
 
-
 public interface IRemoteHostUtils extends IRemote {
   public String getConnections();
 

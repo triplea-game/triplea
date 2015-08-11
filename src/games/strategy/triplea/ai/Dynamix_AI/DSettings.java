@@ -12,7 +12,6 @@ import java.util.prefs.Preferences;
 import games.strategy.triplea.ai.Dynamix_AI.Others.BattleCalculationType;
 import games.strategy.triplea.ai.Dynamix_AI.Others.ThreatInvalidationType;
 
-
 public class DSettings implements Serializable {
   private static final long serialVersionUID = 2696071717784800413L;
   public int PurchaseWait_AL = 750;

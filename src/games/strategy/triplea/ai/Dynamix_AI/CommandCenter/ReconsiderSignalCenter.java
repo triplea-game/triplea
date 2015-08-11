@@ -6,9 +6,9 @@ import java.util.HashSet;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 
-
 public class ReconsiderSignalCenter {
-  private static HashMap<PlayerID, ReconsiderSignalCenter> s_RSCInstances = new HashMap<PlayerID, ReconsiderSignalCenter>();
+  private static HashMap<PlayerID, ReconsiderSignalCenter> s_RSCInstances =
+      new HashMap<PlayerID, ReconsiderSignalCenter>();
 
   public static ReconsiderSignalCenter get(final GameData data, final PlayerID player) {
     if (!s_RSCInstances.containsKey(player)) {

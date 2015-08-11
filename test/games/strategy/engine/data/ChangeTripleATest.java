@@ -11,7 +11,6 @@ import java.util.Collection;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 
-
 public class ChangeTripleATest extends TestCase {
   private GameData m_data;
 
@@ -21,7 +20,8 @@ public class ChangeTripleATest extends TestCase {
 
   @Override
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("Big World : 1942", "big_world" + File.separator + "games" + File.separator + "big_world_1942.xml");
+    m_data = LoadGameUtil.loadGame("Big World : 1942",
+        "big_world" + File.separator + "games" + File.separator + "big_world_1942.xml");
   }
 
   private Change serialize(final Change aChange) throws Exception {
@@ -31,7 +31,8 @@ public class ChangeTripleATest extends TestCase {
     output.flush();
     // System.out.println("bytes:" + sink.toByteArray().length);
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
-    final ObjectInputStream input = new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_data), source);
+    final ObjectInputStream input =
+        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(m_data), source);
     final Change newChange = (Change) input.readObject();
     input.close();
     output.close();
@@ -43,7 +44,8 @@ public class ChangeTripleATest extends TestCase {
     final Territory can = m_data.getMap().getTerritory("Western Canada");
     assertEquals(can.getUnits().getUnitCount(), 2);
     // add some units
-    final Change change = ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType("infantry").create(10, null));
+    final Change change =
+        ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType("infantry").create(10, null));
     final ChangePerformer changePerformer = new ChangePerformer(m_data);
     changePerformer.perform(change);
     assertEquals(can.getUnits().getUnitCount(), 12);

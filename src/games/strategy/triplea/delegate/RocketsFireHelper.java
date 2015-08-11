@@ -150,7 +150,8 @@ public class RocketsFireHelper {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<Territory>();
-    final CompositeMatchAnd<Territory> allowed = new CompositeMatchAnd<Territory>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
+    final CompositeMatchAnd<Territory> allowed =
+        new CompositeMatchAnd<Territory>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
     if (!isRocketsCanFlyOverImpassables(data)) {
       allowed.add(Matches.TerritoryIsNotImpassable);
     }
@@ -159,8 +160,8 @@ public class RocketsFireHelper {
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits()
-            .someMatch(new CompositeMatchAnd<Unit>(attackableUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
+        if (current.getUnits().someMatch(new CompositeMatchAnd<Unit>(attackableUnits,
+            Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
           hasFactory.add(current);
         }
       }
@@ -181,8 +182,8 @@ public class RocketsFireHelper {
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
     final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
-    final Collection<Unit> enemyUnits = attackedTerritory.getUnits()
-        .getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
+    final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
+        new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
     final Collection<Unit> enemyTargetsTotal =
         Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
     final Collection<Unit> targets = new ArrayList<Unit>();
@@ -201,7 +202,8 @@ public class RocketsFireHelper {
     }
     final String transcript;
     if (DamageFromBombingDoneToUnits) {
-      // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc etc.
+      // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
+      // etc.
       final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<UnitType>();
       if (rockets == null) {
         legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
@@ -211,7 +213,8 @@ public class RocketsFireHelper {
           legalTargetsForTheseRockets.addAll(UnitAttachment.get(r.getType()).getBombingTargets(data));
         }
       }
-      final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
+      final Collection<Unit> enemyTargets =
+          Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
       if (enemyTargets.isEmpty()) {
         return; // TODO: this sucks
       }
@@ -229,7 +232,8 @@ public class RocketsFireHelper {
       }
       targets.add(target);
     }
-    final boolean doNotUseBombingBonus = !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
+    final boolean doNotUseBombingBonus =
+        !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
     int cost = 0;
     if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(data)) {
       if (doNotUseBombingBonus || rockets == null) {
@@ -239,7 +243,8 @@ public class RocketsFireHelper {
         for (final int r : rolls) {
           cost += r + 1; // we are zero based
         }
-        transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+        transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
+            + MyFormatter.asDice(rolls);
       } else {
         // we must use bombing bonus
         int highestMaxDice = 0;
@@ -249,7 +254,8 @@ public class RocketsFireHelper {
           final UnitAttachment ua = UnitAttachment.get(u.getType());
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
-          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the
+          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
+          // map, and zero for the
           // bonus.
           if (maxDice < 0) {
             maxDice = diceSides;
@@ -272,11 +278,12 @@ public class RocketsFireHelper {
             rolls[i] = r;
             cost += r + 1; // we are zero based
           }
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
+              + MyFormatter.asDice(rolls);
         } else {
           cost = highestBonus * numberOfAttacks;
-          transcript =
-              "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
+          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus
+              + " damage for each rocket";
         }
       }
     } else {
@@ -291,7 +298,8 @@ public class RocketsFireHelper {
           rolls[i] = r;
           cost += r + 1; // we are zero based
         }
-        transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+        transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
+            + MyFormatter.asDice(rolls);
       } else {
         int highestMaxDice = 0;
         int highestBonus = 0;
@@ -300,7 +308,8 @@ public class RocketsFireHelper {
           final UnitAttachment ua = UnitAttachment.get(u.getType());
           int maxDice = ua.getBombingMaxDieSides();
           int bonus = ua.getBombingBonus();
-          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the
+          // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
+          // map, and zero for the
           // bonus.
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
@@ -308,7 +317,8 @@ public class RocketsFireHelper {
           if (bonus < 0 || doNotUseBombingBonus) {
             bonus = 0;
           }
-          // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the
+          // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case
+          // that we reduce the
           // luck by 2/3.
           if (maxDice >= 5) {
             bonus += (maxDice + 1) / 3;
@@ -329,11 +339,12 @@ public class RocketsFireHelper {
             rolls[i] = r;
             cost += r + 1; // we are zero based
           }
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
+              + MyFormatter.asDice(rolls);
         } else {
           cost = highestBonus * numberOfAttacks;
-          transcript =
-              "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
+          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus
+              + " damage for each rocket";
         }
       }
     }
@@ -370,10 +381,12 @@ public class RocketsFireHelper {
     DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
     if (DamageFromBombingDoneToUnits && !targets.isEmpty()) {
       getRemote(bridge).reportMessage(
-          "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next(),
-          "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
-      bridge.getHistoryWriter()
-          .startEvent("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
+          "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to "
+              + targets.iterator().next(),
+          "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to "
+              + targets.iterator().next());
+      bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " does " + cost
+          + " damage to " + targets.iterator().next());
     } else {
       cost *= Properties.getPU_Multiplier(data);
       getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost,
@@ -383,7 +396,8 @@ public class RocketsFireHelper {
       if (cost > availForRemoval) {
         cost = availForRemoval;
       }
-      final String transcriptText = attacked.getName() + " lost " + cost + " PUs to rocket attack by " + player.getName();
+      final String transcriptText =
+          attacked.getName() + " lost " + cost + " PUs to rocket attack by " + player.getName();
       bridge.getHistoryWriter().startEvent(transcriptText);
       final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, PUs, -cost);
       bridge.addChange(rocketCharge);
@@ -402,7 +416,8 @@ public class RocketsFireHelper {
     // kill any units that can die if they have reached max damage (veqryn)
     if (Match.someMatch(targets, Matches.UnitCanDieFromReachingMaxDamage)) {
       final List<Unit> unitsCanDie = Match.getMatches(targets, Matches.UnitCanDieFromReachingMaxDamage);
-      unitsCanDie.retainAll(Match.getMatches(unitsCanDie, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
+      unitsCanDie
+          .retainAll(Match.getMatches(unitsCanDie, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {
         // targets.removeAll(unitsCanDie);
         final Change removeDead = ChangeFactory.removeUnits(attackedTerritory, unitsCanDie);

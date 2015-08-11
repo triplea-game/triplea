@@ -2,7 +2,6 @@ package games.strategy.triplea.oddsCalculator.ta;
 
 /**
  * Listener for Odds Calculator events.
- *
  */
 public interface OddsCalculatorListener {
   /**

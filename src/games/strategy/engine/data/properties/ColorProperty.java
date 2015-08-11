@@ -14,8 +14,8 @@ import javax.swing.SwingUtilities;
 /**
  * User editable property representing a color.
  * <p>
- * Presents a clickable label with the currently selected color, through which a color swatch panel is accessable to change the color.
- *
+ * Presents a clickable label with the currently selected color, through which a color swatch panel is accessable to
+ * change the color.
  */
 public class ColorProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games
@@ -72,7 +72,8 @@ public class ColorProperty extends AEditableProperty {
       public void mouseClicked(final MouseEvent e) {
         System.out.println("Old color: " + m_color);
         try {
-          final Color color = JColorChooser.showDialog(label, "Choose color", (m_color == null ? Color.black : m_color));
+          final Color color =
+              JColorChooser.showDialog(label, "Choose color", (m_color == null ? Color.black : m_color));
           if (color != null) {
             m_color = color;
             System.out.println("New color: " + m_color);

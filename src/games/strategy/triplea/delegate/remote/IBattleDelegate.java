@@ -7,10 +7,8 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 
-
 public interface IBattleDelegate extends IRemote, IDelegate {
   /**
-   *
    * @return the battles currently waiting to be fought
    */
   public BattleListing getBattles();
@@ -34,13 +32,11 @@ public interface IBattleDelegate extends IRemote, IDelegate {
   public String fightCurrentBattle();
 
   /**
-   *
    * @return The location of the currently being fought battle, or null if no battle is in progress.
    */
   public Territory getCurrentBattleTerritory();
 
   /**
-   *
    * @return The current battle if there is one, or null if there is no current battle in progress.
    */
   public IBattle getCurrentBattle();

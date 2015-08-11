@@ -12,7 +12,6 @@ import javax.swing.JScrollPane;
 import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridGameMenu;
 
-
 public class CheckersMenu extends GridGameMenu<GridGameFrame> {
   private static final long serialVersionUID = 2529708521174152340L;
 
@@ -31,8 +30,7 @@ public class CheckersMenu extends GridGameMenu<GridGameFrame> {
       @Override
       public void actionPerformed(final ActionEvent e) {
         // html formatted string
-        final String hints = "<p><b>Checkers</b> "
-            + "<br />http://en.wikipedia.org/wiki/Checkers</p> "
+        final String hints = "<p><b>Checkers</b> " + "<br />http://en.wikipedia.org/wiki/Checkers</p> "
             + "<br /><br /><b>How To Move Pieces</b> "
             + "<br />Click once on the piece (do not hold the mouse button down). "
             + "<br />Then Click once on where you want the piece to go. "

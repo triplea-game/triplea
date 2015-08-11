@@ -13,14 +13,14 @@ import javax.swing.JOptionPane;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.INode;
 
-
 public class SetMapClientAction extends AbstractAction {
   private static final long serialVersionUID = -9156920997678163614L;
   private final Component m_parent;
   private final IClientMessenger m_clientMessenger;
   final List<String> m_availableGames;
 
-  public SetMapClientAction(final Component parent, final IClientMessenger clientMessenger, final List<String> availableGames) {
+  public SetMapClientAction(final Component parent, final IClientMessenger clientMessenger,
+      final List<String> availableGames) {
     super("Change Game To...");
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_clientMessenger = clientMessenger;

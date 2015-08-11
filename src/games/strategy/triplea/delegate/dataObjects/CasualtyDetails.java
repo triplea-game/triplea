@@ -5,7 +5,6 @@ import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
-
 public class CasualtyDetails extends CasualtyList implements Serializable {
   private static final long serialVersionUID = 2261683015991514918L;
   // since this now extends CasualtyList, it has access to the protected fields of m_killed and m_damaged
@@ -27,10 +26,21 @@ public class CasualtyDetails extends CasualtyList implements Serializable {
   }
 
   public CasualtyDetails(final CasualtyList casualties, final boolean autoCalculated) {
-    super((casualties == null ? null : casualties.getKilled()), (casualties == null ? null : casualties.getDamaged()));// since null for the
-                                                                                                                       // lists is illegal,
-                                                                                                                       // we will throw an
-                                                                                                                       // error in super, as
+    super((casualties == null ? null : casualties.getKilled()), (casualties == null ? null : casualties.getDamaged()));// since
+                                                                                                                       // null
+                                                                                                                       // for
+                                                                                                                       // the
+                                                                                                                       // lists
+                                                                                                                       // is
+                                                                                                                       // illegal,
+                                                                                                                       // we
+                                                                                                                       // will
+                                                                                                                       // throw
+                                                                                                                       // an
+                                                                                                                       // error
+                                                                                                                       // in
+                                                                                                                       // super,
+                                                                                                                       // as
                                                                                                                        // intended
     m_autoCalculated = autoCalculated;
   }

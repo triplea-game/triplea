@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted ips (there is no update).
- *
  */
 public class MutedIpController {
   private static final Logger s_logger = Logger.getLogger(MutedIpController.class.getName());
@@ -28,7 +27,6 @@ public class MutedIpController {
   /**
    * Mute the given ip. If muteTill is not null, the mute will expire when muteTill is reached.
    * <p>
-   *
    * If this ip is already muted, this call will update the mute_end.
    */
   public void addMutedIp(final String ip, final Date muteTill) {

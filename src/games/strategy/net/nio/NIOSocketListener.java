@@ -11,7 +11,6 @@ import games.strategy.net.MessageHeader;
 public interface NIOSocketListener {
   /**
    * This connection will leave quarantine.
-   *
    * Messages on this channel will not be read until after this method returns, allowing for setup of the
    * channel.
    */
@@ -22,7 +21,6 @@ public interface NIOSocketListener {
    */
   public void socketError(SocketChannel channel, Exception error);
 
-
   public void messageReceived(MessageHeader message, SocketChannel channel);
 
   /**
@@ -32,10 +30,8 @@ public interface NIOSocketListener {
   public INode getRemoteNode(SocketChannel channel);
 
   /**
-   *
    * Get the node id for the local machine, or null if the remote node is not yet known.
    * The node must be known by the time we have an unquarantined channel.
-   *
    */
   public INode getLocalNode();
 }

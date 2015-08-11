@@ -9,7 +9,6 @@ import games.strategy.util.IntegerMap;
 
 /**
  * Class with an invalidly named clear method
- *
  */
 public class InvalidClearExample extends DefaultAttachment {
   private static final long serialVersionUID = 113427104352979892L;
@@ -21,13 +20,9 @@ public class InvalidClearExample extends DefaultAttachment {
   private final IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setGivesMovement(final String value) {
+  public void setGivesMovement(final String value) {}
 
-  }
-
-  public void resetGivesMovement() {
-
-  }
+  public void resetGivesMovement() {}
 
   public void clearMovement() // badly named, should cause test to fail
   {

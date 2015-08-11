@@ -10,7 +10,6 @@ public class PlainRandomSource implements IRandomSource {
    * Knowing the seed gives a player an advantage.
    * Do something a little more clever than current time.
    * which could potentially be guessed
-   *
    * If the execution path is different before the first random
    * call is made then the object will have a somewhat random
    * adress in the virtual machine, especially if
@@ -31,7 +30,8 @@ public class PlainRandomSource implements IRandomSource {
   private static MersenneTwister s_random;
 
   @Override
-  public synchronized int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException {
+  public synchronized int[] getRandom(final int max, final int count, final String annotation)
+      throws IllegalArgumentException {
     if (count <= 0) {
       throw new IllegalArgumentException("count must be > 0, annotation:" + annotation);
     }

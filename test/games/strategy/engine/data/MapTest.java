@@ -5,7 +5,6 @@ import java.util.Set;
 import games.strategy.util.Match;
 import junit.framework.TestCase;
 
-
 public class MapTest extends TestCase {
   Territory aa;
   Territory ab;

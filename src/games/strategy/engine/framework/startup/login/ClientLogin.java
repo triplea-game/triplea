@@ -30,8 +30,7 @@ public class ClientLogin implements IConnectionLogin {
       final JPasswordField passwordField = new JPasswordField();
       passwordField.setColumns(15);
       EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), passwordField,
-          "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE,
-          new CountDownLatchHandler(true));
+          "Enter a password to join the game", JOptionPane.QUESTION_MESSAGE, new CountDownLatchHandler(true));
       final String password = new String(passwordField.getPassword());
       rVal.put(PASSWORD_PROPERTY, MD5Crypt.crypt(password, challengProperties.get(ClientLoginValidator.SALT_PROPERTY)));
     }
@@ -42,6 +41,7 @@ public class ClientLogin implements IConnectionLogin {
 
   @Override
   public void notifyFailedLogin(final String message) {
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message, new CountDownLatchHandler(true));
+    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message,
+        new CountDownLatchHandler(true));
   }
 }

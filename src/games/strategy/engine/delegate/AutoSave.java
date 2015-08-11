@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * Delegates with this annotation will trigger the autosave when they start or end
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

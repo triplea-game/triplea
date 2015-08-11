@@ -20,11 +20,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
    * 2) server sends challenge (or null if no challenge is to be made)
    * 3) server reads response (or null if no challenge)
    * 4) server send null then client name and node info on success, or an error message if there is an error
-   * 5) if the client reads an error message, the client sends an acknowledgment (we need to make sur the client gets the message before
+   * 5) if the client reads an error message, the client sends an acknowledgment (we need to make sur the client gets
+   * the message before
    * closing the socket)
    */
   private static final Logger s_logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
-
 
   private enum STEP {
     READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR
@@ -39,8 +39,8 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private Map<String, String> challenge;
   private final ServerMessenger m_serverMessenger;
 
-  public ServerQuarantineConversation(final ILoginValidator validator, final SocketChannel channel, final NIOSocket socket,
-      final ServerMessenger serverMessenger) {
+  public ServerQuarantineConversation(final ILoginValidator validator, final SocketChannel channel,
+      final NIOSocket socket, final ServerMessenger serverMessenger) {
     m_validator = validator;
     m_socket = socket;
     m_channel = channel;
@@ -89,8 +89,8 @@ public class ServerQuarantineConversation extends QuarantineConversation {
             s_logger.log(Level.FINER, "read challenge response:" + response);
           }
           if (m_validator != null) {
-            final String error =
-                m_validator.verifyConnection(challenge, response, m_remoteName, m_remoteMac, m_channel.socket().getRemoteSocketAddress());
+            final String error = m_validator.verifyConnection(challenge, response, m_remoteName, m_remoteMac,
+                m_channel.socket().getRemoteSocketAddress());
             if (s_logger.isLoggable(Level.FINER)) {
               s_logger.log(Level.FINER, "error:" + error);
             }
@@ -113,8 +113,8 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           send(new InetSocketAddress[] {(InetSocketAddress) m_channel.socket().getRemoteSocketAddress(),
               m_serverMessenger.getLocalNode().getSocketAddress()});
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          m_serverMessenger.NotifyPlayerLogin(m_remoteName, ((SocketAdaptor) m_channel.socket()).getInetAddress().getHostAddress(),
-              m_remoteMac);
+          m_serverMessenger.NotifyPlayerLogin(m_remoteName,
+              ((SocketAdaptor) m_channel.socket()).getInetAddress().getHostAddress(), m_remoteMac);
           // We are good
           return ACTION.UNQUARANTINE;
         case ACK_ERROR:

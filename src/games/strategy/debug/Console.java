@@ -17,11 +17,9 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-
 public class Console extends JFrame {
   private static final long serialVersionUID = -3489030525309243438L;
   private static Console s_console;
-
   private final JTextArea m_text = new JTextArea(20, 50);
   private final JToolBar m_actions = new JToolBar(SwingConstants.HORIZONTAL);
 
@@ -95,7 +93,6 @@ public class Console extends JFrame {
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     }
   };
-
   private final AbstractAction m_threadDiagnoseAction = new AbstractAction("Enumerate Threads") {
     private static final long serialVersionUID = 4414139104815149199L;
 
@@ -104,7 +101,6 @@ public class Console extends JFrame {
       System.out.println(DebugUtils.getThreadDumps());
     }
   };
-
   private final AbstractAction m_memoryAction = new AbstractAction("Memory") {
     private static final long serialVersionUID = 1053036985791697566L;
 
@@ -113,7 +109,6 @@ public class Console extends JFrame {
       append(DebugUtils.getMemory());
     }
   };
-
   private final AbstractAction m_propertiesAction = new AbstractAction("Properties") {
     private static final long serialVersionUID = -8186358504886470902L;
 
@@ -158,9 +153,7 @@ class ThreadReader implements Runnable {
 /**
  * Allows data written to a byte output stream to be read
  * safely friom a seperate thread.
- *
  * Only readFully() is currently threadSafe for reading.
- *
  */
 class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
   private final Object lock = new Object();

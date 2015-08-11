@@ -35,8 +35,6 @@ import games.strategy.triplea.image.UnitImageFactory;
 
 /**
  * A frame that will run the different map making utilities we have.
- *
- *
  */
 public class MapCreator extends JFrame {
   private static final long serialVersionUID = 3593102638082774498L;
@@ -50,7 +48,6 @@ public class MapCreator extends JFrame {
   private static int s_unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int s_unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static boolean s_runUtilitiesAsSeperateProcesses = true;
-
   final JPanel m_mainPanel;
   final JPanel m_sidePanel;
   final JButton m_part1;
@@ -111,7 +108,6 @@ public class MapCreator extends JFrame {
     createPart2Panel();
     createPart3Panel();
     createPart4Panel();
-
     m_part1.addActionListener(new AbstractAction("Part 1") {
       private static final long serialVersionUID = 5363944759664271421L;
 
@@ -144,7 +140,6 @@ public class MapCreator extends JFrame {
         setupMainPanel(m_panel4);
       }
     });
-
     // set up the menu actions
     final Action exitAction = new AbstractAction("Exit") {
       private static final long serialVersionUID = 5363944759664271421L;
@@ -202,20 +197,20 @@ public class MapCreator extends JFrame {
     final JTextArea text = new JTextArea(12, 10);
     text.setWrapStyleWord(true);
     text.setLineWrap(true);
-    text.setText("Welcome to Veqryn's map creator program for TripleA." +
-        "\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily " +
-        "run them yourself from the command line by reading the docs/developer_documentation.html" +
-        "\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps" +
-        "\r\nName the folder with a short name of your map, do not use any special characters in the name." +
-        "\r\nNext, create 5 folders inside your map folder, with these names: " +
-        "flags, units, baseTiles, reliefTiles, games" +
-        "\r\nThen, create a text file and rename it \"map.properties\" or use one created by this utility." +
-        "\r\n\r\nTo start the Map Utilities, have a png image of your map with just the territory borders " +
-        "and nothing else. The borders must be in black (hex: 000000) and there should not be any " +
-        "anti-aliasing (smoothing) of the lines or edges that stick out." +
-        "\r\nCreate a small image of the map (approx 250 pixels wide) and name it \"smallMap.jpeg\"." +
-        "\r\nPut these in the map's root folder. You can now start the map maker by clicking and filling " +
-        "in the details below, before moving on to 'Step 2' and running the map utilities.");
+    text.setText("Welcome to Veqryn's map creator program for TripleA."
+        + "\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily "
+        + "run them yourself from the command line by reading the docs/developer_documentation.html"
+        + "\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps"
+        + "\r\nName the folder with a short name of your map, do not use any special characters in the name."
+        + "\r\nNext, create 5 folders inside your map folder, with these names: "
+        + "flags, units, baseTiles, reliefTiles, games"
+        + "\r\nThen, create a text file and rename it \"map.properties\" or use one created by this utility."
+        + "\r\n\r\nTo start the Map Utilities, have a png image of your map with just the territory borders "
+        + "and nothing else. The borders must be in black (hex: 000000) and there should not be any "
+        + "anti-aliasing (smoothing) of the lines or edges that stick out."
+        + "\r\nCreate a small image of the map (approx 250 pixels wide) and name it \"smallMap.jpeg\"."
+        + "\r\nPut these in the map's root folder. You can now start the map maker by clicking and filling "
+        + "in the details below, before moving on to 'Step 2' and running the map utilities.");
     final JScrollPane scrollText = new JScrollPane(text);
     m_panel1.add(scrollText);
     m_panel1.add(Box.createVerticalStrut(30));
@@ -225,9 +220,10 @@ public class MapCreator extends JFrame {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher
-              .openFile(new File(GameRunner2.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
-          // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc" + File.separator +
+          DesktopUtilityBrowserLauncher.openFile(
+              new File(GameRunner2.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
+          // DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc"
+          // + File.separator +
           // "map_and_map_skin_making_overview.html");
         } catch (final Exception e1) {
           e1.printStackTrace();
@@ -277,7 +273,6 @@ public class MapCreator extends JFrame {
      * unitZoomText.addActionListener(new AbstractAction("Set the unit scaling (unit image zoom)")
      * {
      * private static final long serialVersionUID = -1453970155236023493L;
-     *
      * public void actionPerformed(final ActionEvent e)
      * {
      * try
@@ -313,7 +308,6 @@ public class MapCreator extends JFrame {
      * unitWidthText.addActionListener(new AbstractAction("Set the width of the unit images")
      * {
      * private static final long serialVersionUID = 7853232919699181788L;
-     *
      * public void actionPerformed(final ActionEvent e)
      * {
      * try
@@ -349,7 +343,6 @@ public class MapCreator extends JFrame {
      * unitHeightText.addActionListener(new AbstractAction("Set the height of the unit images")
      * {
      * private static final long serialVersionUID = 3141138787371791705L;
-     *
      * public void actionPerformed(final ActionEvent e)
      * {
      * try
@@ -364,8 +357,9 @@ public class MapCreator extends JFrame {
      */
     m_panel1.add(unitHeightText);
     m_panel1.add(Box.createVerticalStrut(30));
-    m_panel1.add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>" +
-        "This is useful is you have a very large map, or ever get any Java Heap Space errors.</html>"));
+    m_panel1
+        .add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>"
+            + "This is useful is you have a very large map, or ever get any Java Heap Space errors.</html>"));
     m_panel1.add(new JLabel("Set the amount of memory to use when running new processes (in megabytes [mb]):"));
     final JTextField memoryText = new JTextField("" + (s_memory / (1024 * 1024)));
     memoryText.setMaximumSize(new Dimension(100, 20));
@@ -383,10 +377,10 @@ public class MapCreator extends JFrame {
       }
     });
     /*
-     * memoryText.addActionListener(new AbstractAction("Set the amount of memory to use when running these utilities (in megabytes [mb])")
+     * memoryText.addActionListener(new AbstractAction(
+     * "Set the amount of memory to use when running these utilities (in megabytes [mb])")
      * {
      * private static final long serialVersionUID = 4620736097666227543L;
-     *
      * public void actionPerformed(final ActionEvent e)
      * {
      * try
@@ -578,7 +572,8 @@ public class MapCreator extends JFrame {
     m_panel3.add(Box.createVerticalStrut(30));
     m_panel3.add(new JLabel("Game XML Utilities:"));
     m_panel3.add(new JLabel("Sorry but for now the only XML creator is Wisconsin's 'Part 2' of his map maker."));
-    m_panel3.add(new JLabel("You can try downloading it from our dev forum: http://triplea.sourceforge.net/mywiki/Forum"));
+    m_panel3
+        .add(new JLabel("You can try downloading it from our dev forum: http://triplea.sourceforge.net/mywiki/Forum"));
     m_panel3.add(Box.createVerticalStrut(30));
     final JButton goToWebButton = new JButton("Go To Dev Forum");
     goToWebButton.addActionListener(new AbstractAction("Go To Dev Forum") {
@@ -707,7 +702,8 @@ public class MapCreator extends JFrame {
     final List<String> commands = new ArrayList<String>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath()); // no need for quotes, that will just screw up
+      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath()); // no need for quotes, that
+                                                                                             // will just screw up
                                                                                              // the process builder
     }
     commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + s_unit_zoom);
@@ -742,7 +738,6 @@ public class MapCreator extends JFrame {
         System.out.println("Could not find directory: " + value);
       }
     }
-
     boolean usagePrinted = false;
     for (final String arg2 : args) {
       boolean found = false;
@@ -764,11 +759,9 @@ public class MapCreator extends JFrame {
         System.out.println("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          System.out.println("Arguments\r\n"
-              + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
-              + "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
-              + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
-              + "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+          System.out.println("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+              + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
+              + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
       }
     }

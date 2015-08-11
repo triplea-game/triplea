@@ -10,7 +10,6 @@ import games.strategy.net.INode;
 
 /**
  * Tracks what Node in the networks is playing which roles in the game.
- *
  */
 public class PlayerManager {
   private final Map<String, INode> m_playerMapping;

@@ -108,7 +108,8 @@ public class WW2V3_42_Test extends TestCase {
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
     // all units in sz5 should be involved in the battle
-    final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
+    final MustFightBattle mfb =
+        (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
     assertEquals(5, mfb.getAttackingUnits().size());
   }
 
@@ -133,7 +134,8 @@ public class WW2V3_42_Test extends TestCase {
     battleDelegate(m_data).start();
     // all units in sz5 should be involved in the battle
     // except the italian carrier
-    final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
+    final MustFightBattle mfb =
+        (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
     assertEquals(6, mfb.getAttackingUnits().size());
   }
 
@@ -156,7 +158,8 @@ public class WW2V3_42_Test extends TestCase {
     battleDelegate(m_data).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(m_data).start();
     // all units in sz5 should be involved in the battle
-    final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
+    final MustFightBattle mfb =
+        (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz5, false, null);
     assertEquals(4, mfb.getAttackingUnits().size());
   }
 }

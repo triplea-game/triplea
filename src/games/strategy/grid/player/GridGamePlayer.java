@@ -20,7 +20,6 @@ import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * Represents a human player of Grid Games.
- *
  */
 public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements IGridGamePlayer {
   public GridGamePlayer(final String name, final String type) {
@@ -33,13 +32,11 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
       return;
     }
     super.start(stepName); // must call super.start
-
     enableEditModeMenu();
     /*
      * {
      * CountDownLatch waitToLeaveGame = new CountDownLatch(1);
      * try {
-     *
      * //wait();
      * waitToLeaveGame.await();
      * } catch (InterruptedException e) {}
@@ -53,9 +50,7 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
     } else {
       badStep = true;
     }
-
     disableEditModeMenu();
-
     if (badStep) {
       throw new IllegalArgumentException("Unrecognized step stepName:" + stepName);
     }
@@ -78,7 +73,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to
+                                       // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
@@ -117,8 +113,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
   }
 
   @Override
-  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player,
-      final GameData data, final String message) {
+  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory,
+      final PlayerID player, final GameData data, final String message) {
     return m_ui.selectUnit(startUnit, options, territory, player, data, message);
   }
 
@@ -156,7 +152,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
       try {
         // Set edit mode
         // All GameDataChangeListeners will be notified upon success
-        final IGridEditDelegate editDelegate = (IGridEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
+        final IGridEditDelegate editDelegate =
+            (IGridEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
         editDelegate.setEditMode(editMode);
       } catch (final Exception e) {
         e.printStackTrace();

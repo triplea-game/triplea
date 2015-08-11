@@ -35,32 +35,39 @@ public class UnitAttachmentExporter extends DefaultAttachmentExporter {
     return super.printOption(field, attachment);
   }
 
-  private String consumesUnitsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String consumesUnitsHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printUnitIntegerMap(field, attachment);
   }
 
-  private String mCanBeCapturedOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mCanBeCapturedOnEnteringByHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printPlayerList(field, attachment);
   }
 
-  private String mCreatesUnitsListHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mCreatesUnitsListHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printUnitIntegerMap(field, attachment);
   }
 
-  private String mGivesMovementHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mGivesMovementHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printUnitIntegerMap(field, attachment);
   }
 
-  private String mDestroyedWhenCapturedByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mDestroyedWhenCapturedByHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printPlayerList(field, attachment);
   }
 
-  private String mCanBeGivenByTerritoryToHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mCanBeGivenByTerritoryToHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printPlayerList(field, attachment);
   }
 
   @SuppressWarnings("unchecked")
-  private String mRequiresUnitsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mRequiresUnitsHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     try {
       final ArrayList<String[]> requiresUnitListList = (ArrayList<String[]>) field.get(attachment);
       final Iterator<String[]> iRequiresListList = requiresUnitListList.iterator();
@@ -75,11 +82,11 @@ public class UnitAttachmentExporter extends DefaultAttachmentExporter {
       }
       return returnValue;
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mRequiresUnitsHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mRequiresUnitsHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mRequiresUnitsHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mRequiresUnitsHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     }
   }
 }

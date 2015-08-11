@@ -18,13 +18,11 @@ import games.strategy.grid.player.GridAbstractAI;
 import games.strategy.grid.ui.GridPlayData;
 import games.strategy.grid.ui.IGridPlayData;
 
-
 public class BetterAI extends GridAbstractAI {
   private int m_xDimension;
   private int m_yDimension;
   private boolean m_kingPlayer;
   private PlayerID m_opponent;
-
 
   // private PlayerID m_attacker;
   // private PlayerID m_defender;
@@ -91,12 +89,15 @@ public class BetterAI extends GridAbstractAI {
       } else {
         move = AIAlgorithm.minimaxSearch(initial_state);
       }
-      // System.out.println(m_id.getName() + " should move from (" + move.getStart().getFirst() + "," +move.getStart().getSecond() + ") to
+      // System.out.println(m_id.getName() + " should move from (" + move.getStart().getFirst() + ","
+      // +move.getStart().getSecond() + ") to
       // (" + move.getEnd().getFirst()+ "," +move.getEnd().getSecond() + ")");
       final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemoteDelegate();
       final PlayerID me = getPlayerID();
-      final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
-      final Territory end = getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
+      final Territory start =
+          getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
+      final Territory end =
+          getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
       final IGridPlayData play = new GridPlayData(start, end, me);
       playDel.play(play);
     } catch (final OutOfMemoryError e) {
@@ -118,11 +119,11 @@ public class BetterAI extends GridAbstractAI {
                                     * }
                                     */
     return new State(getGameData().getMap().getTerritories());
-    // return new State(currentPlayer, otherPlayer, m_xDimension, m_yDimension, m_bridge.getGameData().getMap().getTerritories());
+    // return new State(currentPlayer, otherPlayer, m_xDimension, m_yDimension,
+    // m_bridge.getGameData().getMap().getTerritories());
   }
 
   public static int counter = 0;
-
 
   class State extends GameState<Move> {
     private final HashMap<Integer, PlayerID> squareOwner;
@@ -211,7 +212,8 @@ public class BetterAI extends GridAbstractAI {
                 if (squareX == m_kingX && squareY == m_kingY) {
                   final PlayerID left = get(endX - 1, endY + 1);
                   final PlayerID right = get(endX + 1, endY + 1);
-                  if (left != null && right != null && left.equals(m_playerPerformingMove) && right.equals(m_playerPerformingMove)) {
+                  if (left != null && right != null && left.equals(m_playerPerformingMove)
+                      && right.equals(m_playerPerformingMove)) {
                     squareOwner.put(squareX * m_xDimension + squareY, PlayerID.NULL_PLAYERID);
                     m_kingX = -1;
                     m_kingY = -1;
@@ -230,7 +232,8 @@ public class BetterAI extends GridAbstractAI {
                   System.out.println("Possible king capture with king at (" + squareX + "," + squareY + ")");
                   final PlayerID left = get(endX - 1, endY - 1);
                   final PlayerID right = get(endX + 1, endY - 1);
-                  if (left != null && right != null && left.equals(m_playerPerformingMove) && right.equals(m_playerPerformingMove)) {
+                  if (left != null && right != null && left.equals(m_playerPerformingMove)
+                      && right.equals(m_playerPerformingMove)) {
                     squareOwner.put(squareX * m_xDimension + squareY, PlayerID.NULL_PLAYERID);
                     m_kingX = -1;
                     m_kingY = -1;
@@ -252,7 +255,8 @@ public class BetterAI extends GridAbstractAI {
                   System.out.println("Possible king capture with king at (" + squareX + "," + squareY + ")");
                   final PlayerID above = get(endX + 1, endY - 1);
                   final PlayerID below = get(endX + 1, endY + 1);
-                  if (above != null && below != null && above.equals(m_playerPerformingMove) && below.equals(m_playerPerformingMove)) {
+                  if (above != null && below != null && above.equals(m_playerPerformingMove)
+                      && below.equals(m_playerPerformingMove)) {
                     squareOwner.put(squareX * m_xDimension + squareY, PlayerID.NULL_PLAYERID);
                     m_kingX = -1;
                     m_kingY = -1;
@@ -271,7 +275,8 @@ public class BetterAI extends GridAbstractAI {
                   System.out.println("Possible king capture with king at (" + squareX + "," + squareY + ")");
                   final PlayerID above = get(endX - 1, endY - 1);
                   final PlayerID below = get(endX - 1, endY + 1);
-                  if (above != null && below != null && above.equals(m_playerPerformingMove) && below.equals(m_playerPerformingMove)) {
+                  if (above != null && below != null && above.equals(m_playerPerformingMove)
+                      && below.equals(m_playerPerformingMove)) {
                     squareOwner.put(squareX * m_xDimension + squareY, PlayerID.NULL_PLAYERID);
                     m_kingX = -1;
                     m_kingY = -1;
@@ -291,7 +296,8 @@ public class BetterAI extends GridAbstractAI {
     private boolean isKingsSquare(final int x, final int y) {
       if (x == 5 && y == 5) {
         return true;
-      } else if ((x == 0 && (y == 0 || y == m_yDimension - 1)) || (x == m_xDimension - 1 && (y == 0 || y == m_yDimension - 1))) {
+      } else if ((x == 0 && (y == 0 || y == m_yDimension - 1))
+          || (x == m_xDimension - 1 && (y == 0 || y == m_yDimension - 1))) {
         return true;
       } else {
         return false;
@@ -320,7 +326,8 @@ public class BetterAI extends GridAbstractAI {
             final PlayerID destination = this.get(x, startY);
             if (destination.equals(PlayerID.NULL_PLAYERID)) {
               if (kingIsMoving || !isKingsSquare(x, startY)) {
-                final Move move = new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(x, startY));
+                final Move move =
+                    new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(x, startY));
                 successors.add(new State(move, this));
               }
             } else {
@@ -331,7 +338,8 @@ public class BetterAI extends GridAbstractAI {
             final PlayerID destination = this.get(x, startY);
             if (destination.equals(PlayerID.NULL_PLAYERID)) {
               if (kingIsMoving || !isKingsSquare(x, startY)) {
-                final Move move = new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(x, startY));
+                final Move move =
+                    new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(x, startY));
                 successors.add(new State(move, this));
               }
             } else {
@@ -342,7 +350,8 @@ public class BetterAI extends GridAbstractAI {
             final PlayerID destination = this.get(startX, y);
             if (destination.equals(PlayerID.NULL_PLAYERID)) {
               if (kingIsMoving || !isKingsSquare(startX, y)) {
-                final Move move = new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(startX, y));
+                final Move move =
+                    new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(startX, y));
                 successors.add(new State(move, this));
               }
             } else {
@@ -353,7 +362,8 @@ public class BetterAI extends GridAbstractAI {
             final PlayerID destination = this.get(startX, y);
             if (destination.equals(PlayerID.NULL_PLAYERID)) {
               if (kingIsMoving || !isKingsSquare(startX, y)) {
-                final Move move = new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(startX, y));
+                final Move move =
+                    new Move(new Pair<Integer, Integer>(startX, startY), new Pair<Integer, Integer>(startX, y));
                 successors.add(new State(move, this));
               }
             } else {
@@ -372,7 +382,6 @@ public class BetterAI extends GridAbstractAI {
     /*
      * private float getUtilityBasedOnMobility()
      * {
-     *
      * }
      */
     @Override
@@ -443,8 +452,6 @@ public class BetterAI extends GridAbstractAI {
       return squareOwner.values().iterator();
     }
   }
-
-
   class Move {
     private final Pair<Integer, Integer> m_start;
     private final Pair<Integer, Integer> m_end;
@@ -462,8 +469,6 @@ public class BetterAI extends GridAbstractAI {
       return m_end;
     }
   }
-
-
   class Pair<First, Second> {
     private final First m_first;
     private final Second m_second;

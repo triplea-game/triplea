@@ -5,7 +5,6 @@ import java.util.Collection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
-
 public class PlaceData {
   private final Collection<Unit> m_units;
   private final Territory m_at;

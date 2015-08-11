@@ -37,9 +37,8 @@ public class ModeratorController extends AbstractModeratorController implements 
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     s_logger.info(DUtils.Format(
         "User was banned from the lobby(Username ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}",
-        node.getName(), node
-            .getAddress().getHostAddress(),
-        mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
   }
 
   @Override
@@ -54,9 +53,8 @@ public class ModeratorController extends AbstractModeratorController implements 
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     s_logger.info(DUtils.Format(
         "User was banned from the lobby(IP ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}",
-        node.getName(), node.getAddress()
-            .getHostAddress(),
-        mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
   }
 
   @Override
@@ -71,9 +69,8 @@ public class ModeratorController extends AbstractModeratorController implements 
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     s_logger.info(DUtils.Format(
         "User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}",
-        node.getName(), node
-            .getAddress().getHostAddress(),
-        mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
   }
 
   @Override
@@ -87,9 +84,8 @@ public class ModeratorController extends AbstractModeratorController implements 
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     s_logger.info(DUtils.Format(
         "User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}",
-        node.getName(), node
-            .getAddress().getHostAddress(),
-        hashedMac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+        node.getName(), node.getAddress().getHostAddress(), hashedMac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
   }
 
   @Override
@@ -106,9 +102,8 @@ public class ModeratorController extends AbstractModeratorController implements 
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     s_logger.info(DUtils.Format(
         "User was muted on the lobby(Username mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}",
-        node.getName(), node
-            .getAddress().getHostAddress(),
-        mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
   }
 
   @Override
@@ -125,9 +120,8 @@ public class ModeratorController extends AbstractModeratorController implements 
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     s_logger.info(DUtils.Format(
         "User was muted on the lobby(IP mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}",
-        node.getName(), node.getAddress()
-            .getHostAddress(),
-        mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
   }
 
   @Override
@@ -143,16 +137,16 @@ public class ModeratorController extends AbstractModeratorController implements 
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     s_logger.info(DUtils.Format(
         "User was muted on the lobby(Mac mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}",
-        node.getName(), node.getAddress()
-            .getHostAddress(),
-        mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
   }
 
   @Override
   public void boot(final INode node) {
     assertUserIsAdmin();
     /*
-     * if (!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) // Let the master lobby administrator boot admins
+     * if (!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) // Let the master lobby
+     * administrator boot admins
      * throw new IllegalStateException("Can't boot an admin");
      */
     // You can't boot the server node
@@ -162,9 +156,10 @@ public class ModeratorController extends AbstractModeratorController implements 
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     m_serverMessenger.removeConnection(node);
-    s_logger.info(DUtils.Format("User was booted from the lobby. Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
-        node.getName(), node.getAddress().getHostAddress(),
-        mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        "User was booted from the lobby. Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
   }
 
   @Override
@@ -175,11 +170,13 @@ public class ModeratorController extends AbstractModeratorController implements 
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    s_logger.info(DUtils.Format("Getting salt for Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
-        node.getName(),
-        node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        "Getting salt for Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
     return remoteHostUtils.getSalt();
   }
 
@@ -192,11 +189,14 @@ public class ModeratorController extends AbstractModeratorController implements 
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.getChatLogHeadlessHostBot(hashedPassword, salt);
-    s_logger.info(DUtils.Format(((response == null || response.equals("Invalid password!")) ? "Failed" : "Successful")
-        + " Remote get Chat Log of Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}", node.getName(),
-        node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        ((response == null || response.equals("Invalid password!")) ? "Failed" : "Successful")
+            + " Remote get Chat Log of Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
   }
 
@@ -210,19 +210,22 @@ public class ModeratorController extends AbstractModeratorController implements 
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
-    final String response = remoteHostUtils.mutePlayerHeadlessHostBot(playerNameToBeMuted, minutes, hashedPassword, salt);
-    s_logger.info(DUtils.Format((response == null ? "Successful" : "Failed (" + response + ")")
-        + " Remote Mute of " + playerNameToBeMuted + " for " + minutes
-        + " minutes In Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(),
-        getNodeMacAddress(modNode)));
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final String response =
+        remoteHostUtils.mutePlayerHeadlessHostBot(playerNameToBeMuted, minutes, hashedPassword, salt);
+    s_logger.info(DUtils.Format(
+        (response == null ? "Successful" : "Failed (" + response + ")") + " Remote Mute of " + playerNameToBeMuted
+            + " for " + minutes
+            + " minutes In Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
   }
 
   @Override
-  public String bootPlayerHeadlessHostBot(final INode node, final String playerNameToBeBooted, final String hashedPassword,
-      final String salt) {
+  public String bootPlayerHeadlessHostBot(final INode node, final String playerNameToBeBooted,
+      final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
       throw new IllegalStateException("Can not do this for server node");
@@ -230,18 +233,20 @@ public class ModeratorController extends AbstractModeratorController implements 
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.bootPlayerHeadlessHostBot(playerNameToBeBooted, hashedPassword, salt);
-    s_logger.info(DUtils.Format((response == null ? "Successful" : "Failed (" + response + ")")
-        + " Remote Boot of " + playerNameToBeBooted
-        + " In Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}", node.getName(),
-        node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        (response == null ? "Successful" : "Failed (" + response + ")") + " Remote Boot of " + playerNameToBeBooted
+            + " In Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
   }
 
   @Override
-  public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final int hours, final String hashedPassword,
-      final String salt) {
+  public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final int hours,
+      final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (m_serverMessenger.getServerNode().equals(node)) {
       throw new IllegalStateException("Can not do this for server node");
@@ -249,13 +254,15 @@ public class ModeratorController extends AbstractModeratorController implements 
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.banPlayerHeadlessHostBot(playerNameToBeBanned, hours, hashedPassword, salt);
-    s_logger.info(DUtils.Format((response == null ? "Successful" : "Failed (" + response + ")")
-        + " Remote Ban of " + playerNameToBeBanned + " for " + hours
-        + "hours  In Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(),
-        getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        (response == null ? "Successful" : "Failed (" + response + ")") + " Remote Ban of " + playerNameToBeBanned
+            + " for " + hours
+            + "hours  In Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
   }
 
@@ -268,11 +275,14 @@ public class ModeratorController extends AbstractModeratorController implements 
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.stopGameHeadlessHostBot(hashedPassword, salt);
-    s_logger.info(DUtils.Format((response == null ? "Successful" : "Failed (" + response + ")")
-        + " Remote Stopgame of Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}", node.getName(),
-        node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        (response == null ? "Successful" : "Failed (" + response + ")")
+            + " Remote Stopgame of Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
   }
 
@@ -284,16 +294,19 @@ public class ModeratorController extends AbstractModeratorController implements 
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    s_logger.info(
-        DUtils.Format("Started Remote Shutdown of Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
-            node.getName(),
-            node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        "Started Remote Shutdown of Headless HostBot. Host: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.shutDownHeadlessHostBot(hashedPassword, salt);
-    s_logger.info(DUtils.Format((response == null ? "Successful" : "Failed (" + response + ")")
-        + " Remote Shutdown of Headless HostBot. Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}", node.getName(),
-        node.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    s_logger.info(DUtils.Format(
+        (response == null ? "Successful" : "Failed (" + response + ")")
+            + " Remote Shutdown of Headless HostBot. Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5}",
+        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
+        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
   }
 
@@ -348,7 +361,8 @@ public class ModeratorController extends AbstractModeratorController implements 
       throw new IllegalStateException("Can not do this for server node");
     }
     final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-    final IRemoteHostUtils remoteHostUtils = (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
+    final IRemoteHostUtils remoteHostUtils =
+        (IRemoteHostUtils) m_allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.getConnections();
     return response;
   }

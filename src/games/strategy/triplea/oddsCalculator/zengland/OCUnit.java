@@ -88,23 +88,22 @@ public class OCUnit {
 
   public static OCUnit newBB() {
     OCUnit bbUnit = null;
-    bbUnit = new OCUnit(StandardUnits.BBCost, StandardUnits.BBAttack, StandardUnits.BBDefend, StandardUnits.BBMove, StandardUnits.BBName,
-        false, OCUnit.SEAUNIT, true, true);
+    bbUnit = new OCUnit(StandardUnits.BBCost, StandardUnits.BBAttack, StandardUnits.BBDefend, StandardUnits.BBMove,
+        StandardUnits.BBName, false, OCUnit.SEAUNIT, true, true);
     return bbUnit;
   }
 
   public static OCUnit newTwoHitBB() {
     OCUnit bbUnit = null;
-    bbUnit = new OCUnit(StandardUnits.BBCost, StandardUnits.BBAttack, StandardUnits.BBDefend, StandardUnits.BBMove, StandardUnits.BBName,
-        false, OCUnit.SEAUNIT, true, true, 1, 1, 2, false, false,
-        false);
+    bbUnit = new OCUnit(StandardUnits.BBCost, StandardUnits.BBAttack, StandardUnits.BBDefend, StandardUnits.BBMove,
+        StandardUnits.BBName, false, OCUnit.SEAUNIT, true, true, 1, 1, 2, false, false, false);
     return bbUnit;
   }
 
   public static OCUnit newAC() {
     OCUnit acUnit = null;
-    acUnit = new OCUnit(StandardUnits.ACCost, StandardUnits.ACAttack, StandardUnits.ACDefend, StandardUnits.ACMove, StandardUnits.ACName,
-        false, OCUnit.SEAUNIT, false, true);
+    acUnit = new OCUnit(StandardUnits.ACCost, StandardUnits.ACAttack, StandardUnits.ACDefend, StandardUnits.ACMove,
+        StandardUnits.ACName, false, OCUnit.SEAUNIT, false, true);
     return acUnit;
   }
 
@@ -124,8 +123,8 @@ public class OCUnit {
 
   public static OCUnit newIC() {
     OCUnit icUnit = null;
-    icUnit = new OCUnit(StandardUnits.ICCost, StandardUnits.ICAttack, StandardUnits.ICDefend, StandardUnits.ICMove, StandardUnits.ICName,
-        false, OCUnit.LANDUNIT, false, true);
+    icUnit = new OCUnit(StandardUnits.ICCost, StandardUnits.ICAttack, StandardUnits.ICDefend, StandardUnits.ICMove,
+        StandardUnits.ICName, false, OCUnit.LANDUNIT, false, true);
     return icUnit;
   }
 
@@ -145,8 +144,8 @@ public class OCUnit {
 
   public static OCUnit newAA() {
     OCUnit aaUnit = null;
-    aaUnit = new OCUnit(StandardUnits.AACost, StandardUnits.AAAttack, StandardUnits.AADefend, StandardUnits.AAMove, StandardUnits.AAName,
-        true, OCUnit.LANDUNIT, false, true);
+    aaUnit = new OCUnit(StandardUnits.AACost, StandardUnits.AAAttack, StandardUnits.AADefend, StandardUnits.AAMove,
+        StandardUnits.AAName, true, OCUnit.LANDUNIT, false, true);
     return aaUnit;
   }
 
@@ -159,47 +158,43 @@ public class OCUnit {
 
   public static OCUnit newBomber() {
     OCUnit bmb = null;
-    bmb = new OCUnit(StandardUnits.BmbCost, StandardUnits.BmbAttack, StandardUnits.BmbDefend, StandardUnits.BmbMove, StandardUnits.BmbName,
-        false, OCUnit.AIRUNIT, false, true);
+    bmb = new OCUnit(StandardUnits.BmbCost, StandardUnits.BmbAttack, StandardUnits.BmbDefend, StandardUnits.BmbMove,
+        StandardUnits.BmbName, false, OCUnit.AIRUNIT, false, true);
     return bmb;
   }
 
   public static OCUnit newHeavyBomber() {
     OCUnit bmb = null;
-    bmb = new OCUnit(StandardUnits.BmbCost, StandardUnits.BmbAttack, StandardUnits.BmbDefend, StandardUnits.BmbMove, StandardUnits.BmbName,
-        false, OCUnit.AIRUNIT, false, true, 3, 1, 1, false,
-        false, false);
+    bmb = new OCUnit(StandardUnits.BmbCost, StandardUnits.BmbAttack, StandardUnits.BmbDefend, StandardUnits.BmbMove,
+        StandardUnits.BmbName, false, OCUnit.AIRUNIT, false, true, 3, 1, 1, false, false, false);
     return bmb;
   }
 
   public static OCUnit newRevisedHeavyBomber() {
     OCUnit bmb = null;
-    bmb = new OCUnit(StandardUnits.BmbCost, StandardUnits.BmbAttack, StandardUnits.BmbDefend, StandardUnits.BmbMove, StandardUnits.BmbName,
-        false, OCUnit.AIRUNIT, false, true, 1, 2, 1, false,
-        false, false);
+    bmb = new OCUnit(StandardUnits.BmbCost, StandardUnits.BmbAttack, StandardUnits.BmbDefend, StandardUnits.BmbMove,
+        StandardUnits.BmbName, false, OCUnit.AIRUNIT, false, true, 1, 2, 1, false, false, false);
     return bmb;
   }
 
   public static OCUnit newDestroyer() {
     OCUnit des = null;
-    des = new OCUnit(StandardUnits.DesCost, StandardUnits.DesAttack, StandardUnits.DesDefend, StandardUnits.DesMove, StandardUnits.DesName,
-        false, OCUnit.SEAUNIT, false, true, 1, 1, 1, true,
-        false, false);
+    des = new OCUnit(StandardUnits.DesCost, StandardUnits.DesAttack, StandardUnits.DesDefend, StandardUnits.DesMove,
+        StandardUnits.DesName, false, OCUnit.SEAUNIT, false, true, 1, 1, 1, true, false, false);
     return des;
   }
 
   public static OCUnit newRtl() {
     OCUnit rtl = null;
-    rtl = new OCUnit(StandardUnits.RtlCost, StandardUnits.RtlAttack, StandardUnits.RtlDefend, StandardUnits.RtlMove, StandardUnits.RtlName,
-        false, OCUnit.LANDUNIT, false, false, 1, 1, 1, false,
-        true, false);
+    rtl = new OCUnit(StandardUnits.RtlCost, StandardUnits.RtlAttack, StandardUnits.RtlDefend, StandardUnits.RtlMove,
+        StandardUnits.RtlName, false, OCUnit.LANDUNIT, false, false, 1, 1, 1, false, true, false);
     return rtl;
   }
 
   public OCUnit(final int cost, final int attackValue, final int defendValue, final int moveValue, final String name,
-      final boolean noRetaliationHit, final int unitType, final boolean supportShot,
-      final boolean canHitAir, final int maxHits, final int maxRolls, final int maxHp, final boolean blocksNoRetHit,
-      final boolean boostsInfAtt, final boolean boostAmphib) {
+      final boolean noRetaliationHit, final int unitType, final boolean supportShot, final boolean canHitAir,
+      final int maxHits, final int maxRolls, final int maxHp, final boolean blocksNoRetHit, final boolean boostsInfAtt,
+      final boolean boostAmphib) {
     super();
     this.cost = cost;
     this.attackValue = attackValue;
@@ -219,8 +214,7 @@ public class OCUnit {
   }
 
   public OCUnit(final int cost, final int attackValue, final int defendValue, final int moveValue, final String name,
-      final boolean noRetaliationHit, final int unitType, final boolean supportShot,
-      final boolean canHitAir) {
+      final boolean noRetaliationHit, final int unitType, final boolean supportShot, final boolean canHitAir) {
     super();
     this.cost = cost;
     this.attackValue = attackValue;

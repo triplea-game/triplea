@@ -7,8 +7,6 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
 
 /**
  * Invocation handler for the UnifiedMessenger
- *
- *
  */
 /**
  * Handles the invocation for a channel
@@ -19,8 +17,8 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
   private final boolean m_ignoreResults;
   private final Class<?> m_remoteType;
 
-  public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults,
-      final Class<?> remoteType) {
+  public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName,
+      final boolean ignoreResults, final Class<?> remoteType) {
     // equality and hash code are bassed on end point name
     super(endPointName);
     m_messenger = messenger;
@@ -37,7 +35,8 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
     if (args != null) {
       for (final Object o : args) {
         if (o != null && !(o instanceof Serializable)) {
-          throw new IllegalArgumentException(o + " is not serializable, all remote method args must be serializable.  method:" + method);
+          throw new IllegalArgumentException(
+              o + " is not serializable, all remote method args must be serializable.  method:" + method);
         }
       }
     }
@@ -53,11 +52,13 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
           final MessengerException cle = (MessengerException) response.getException();
           cle.fillInInvokerStackTrace();
         } else {
-          // do not chain the exception, we want to keep whatever the original exception's class was, so just add our bit to the stack
+          // do not chain the exception, we want to keep whatever the original exception's class was, so just add our
+          // bit to the stack
           // trace.
           final Throwable throwable = response.getException();
           final StackTraceElement[] exceptionTrace = throwable.getStackTrace();
-          final Exception ourException = new Exception(throwable.getMessage() + " exception in response from other system");
+          final Exception ourException =
+              new Exception(throwable.getMessage() + " exception in response from other system");
           final StackTraceElement[] ourTrace = ourException.getStackTrace();// Thread.currentThread().getStackTrace();
           if (exceptionTrace != null && ourTrace != null) {
             final StackTraceElement[] combinedTrace = new StackTraceElement[(exceptionTrace.length + ourTrace.length)];

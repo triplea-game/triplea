@@ -161,7 +161,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
- *         Main frame for the triple a game
+ * Main frame for the triple a game
  */
 public class TripleAFrame extends MainGameFrame {
   private static final long serialVersionUID = 7640069668264418976L;
@@ -233,7 +233,8 @@ public class TripleAFrame extends MainGameFrame {
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(m_uiContext.getMapData().scrollWrapX());
     model.setScrollY(m_uiContext.getMapData().scrollWrapY());
-    model.setMaxBounds(m_uiContext.getMapData().getMapDimensions().width, m_uiContext.getMapData().getMapDimensions().height);
+    model.setMaxBounds(m_uiContext.getMapData().getMapDimensions().width,
+        m_uiContext.getMapData().getMapDimensions().height);
     final Image small = m_uiContext.getMapImage().getSmallMapImage();
     m_smallView = new MapPanelSmallView(small, model);
     m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext, model);
@@ -241,7 +242,6 @@ public class TripleAFrame extends MainGameFrame {
     m_mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
     this.addKeyListener(m_arrowKeyActionListener);
     m_mapPanel.addKeyListener(m_arrowKeyActionListener);
-
     // link the small and large images
     m_mapPanel.initSmallMap();
     m_mapAndChatPanel = new JPanel();
@@ -288,18 +288,18 @@ public class TripleAFrame extends MainGameFrame {
     final JPanel bottomMessagePanel = new JPanel();
     bottomMessagePanel.setLayout(new GridBagLayout());
     bottomMessagePanel.setBorder(BorderFactory.createEmptyBorder());
-    bottomMessagePanel.add(m_message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
-    bottomMessagePanel.add(m_status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
+    bottomMessagePanel.add(m_message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST,
+        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    bottomMessagePanel.add(m_status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER,
+        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     m_gameSouthPanel.add(bottomMessagePanel, BorderLayout.CENTER);
     m_status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     final JPanel stepPanel = new JPanel();
     stepPanel.setLayout(new GridBagLayout());
     stepPanel.add(m_step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
-    stepPanel.add(m_player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0,
-        0), 0, 0));
+    stepPanel.add(m_player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0), 0, 0));
     stepPanel.add(m_round, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
     m_step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -354,11 +354,11 @@ public class TripleAFrame extends MainGameFrame {
         }
         if (pane.getComponentAt(sel).equals(m_notesPanel)) {
           m_notesPanel.layoutNotes();
-        } else { // for memory management reasons the notes are in a SoftReference, so we must remove our hard reference link to them so it
+        } else { // for memory management reasons the notes are in a SoftReference, so we must remove our hard reference
+                 // link to them so it
                  // can be reclaimed if needed
           m_notesPanel.removeNotes();
         }
-
         if (pane.getComponentAt(sel).equals(m_editPanel)) {
           PlayerID player = null;
           m_data.acquireReadLock();
@@ -375,8 +375,8 @@ public class TripleAFrame extends MainGameFrame {
         }
       }
     });
-    m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel
-        .getPreferredSize().getHeight()));
+    m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(),
+        (int) m_mapPanel.getPreferredSize().getHeight()));
     m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mapAndChatPanel, m_rightHandSidePanel);
     m_gameCenterPanel.setOneTouchExpandable(true);
     m_gameCenterPanel.setDividerSize(8);
@@ -406,14 +406,14 @@ public class TripleAFrame extends MainGameFrame {
   private void addZoomKeyboardShortcuts() {
     final String zoom_map_in = "zoom_map_in";
     // do both = and + (since = is what you get when you hit ctrl+ )
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.META_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.META_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
+    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.META_MASK), zoom_map_in);
+    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('+', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
+    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.META_MASK), zoom_map_in);
+    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
     ((JComponent) getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in) {
       private static final long serialVersionUID = -7565304172320049817L;
 
@@ -425,10 +425,10 @@ public class TripleAFrame extends MainGameFrame {
       }
     });
     final String zoom_map_out = "zoom_map_out";
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.META_MASK), zoom_map_out);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.CTRL_MASK), zoom_map_out);
+    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.META_MASK), zoom_map_out);
+    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.CTRL_MASK), zoom_map_out);
     ((JComponent) getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out) {
       private static final long serialVersionUID = 7677111833274819304L;
 
@@ -556,9 +556,9 @@ public class TripleAFrame extends MainGameFrame {
 
   @Override
   public void shutdown() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.",
-        "Exit", JOptionPane.YES_NO_OPTION, getUIContext()
-            .getCountDownLatchHandler());
+    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
+        "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION,
+        getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
@@ -568,9 +568,9 @@ public class TripleAFrame extends MainGameFrame {
 
   @Override
   public void leaveGame() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.",
-        "Exit", JOptionPane.YES_NO_OPTION, getUIContext()
-            .getCountDownLatchHandler());
+    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
+        "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION,
+        getUIContext().getCountDownLatchHandler());
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
@@ -591,14 +591,12 @@ public class TripleAFrame extends MainGameFrame {
       leaveGame();
     }
   };
-
   private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener() {
     @Override
     public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me) {
       m_unitsBeingMousedOver = units;
     }
   };
-
   public MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener() {
     @Override
     public void mouseEntered(final Territory territory) {
@@ -711,7 +709,8 @@ public class TripleAFrame extends MainGameFrame {
     return m_actionButtons.waitForRepair(bid, allowedPlayersToRepair);
   }
 
-  public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat, final String stepName) {
+  public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat,
+      final String stepName) {
     if (m_messageAndDialogThreadPool == null) {
       return null;
     }
@@ -787,8 +786,8 @@ public class TripleAFrame extends MainGameFrame {
     m_messageAndDialogThreadPool.runTask(new Runnable() {
       @Override
       public void run() {
-        EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error", JOptionPane.ERROR_MESSAGE, true,
-            getUIContext().getCountDownLatchHandler());
+        EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, "Error", JOptionPane.ERROR_MESSAGE,
+            true, getUIContext().getCountDownLatchHandler());
       }
     });
   }
@@ -817,7 +816,8 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     if (title.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
-        && message.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1 && !getUIContext().getShowEndOfTurnReport()) {
+        && message.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
+        && !getUIContext().getShowEndOfTurnReport()) {
       return;
     }
     final String displayMessage = LocalizeHTML.localizeImgLinksInHTML(message);
@@ -825,14 +825,15 @@ public class TripleAFrame extends MainGameFrame {
       m_messageAndDialogThreadPool.runTask(new Runnable() {
         @Override
         public void run() {
-          EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true,
-              getUIContext().getCountDownLatchHandler());
+          EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage, title,
+              JOptionPane.INFORMATION_MESSAGE, true, getUIContext().getCountDownLatchHandler());
         }
       });
     }
   }
 
-  public boolean getOKToLetAirDie(final PlayerID m_id, final Collection<Territory> airCantLand, final boolean movePhase) {
+  public boolean getOKToLetAirDie(final PlayerID m_id, final Collection<Territory> airCantLand,
+      final boolean movePhase) {
     if (airCantLand == null || airCantLand.isEmpty() || m_messageAndDialogThreadPool == null) {
       return true;
     }
@@ -850,19 +851,21 @@ public class TripleAFrame extends MainGameFrame {
     }
     final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
     if (canProduceCarriersUnderFighter && carrierCount > 0) {
-      buf.append("\nYou have " + carrierCount + " " + MyFormatter.pluralize("carrier", carrierCount) + " on which planes can land");
+      buf.append("\nYou have " + carrierCount + " " + MyFormatter.pluralize("carrier", carrierCount)
+          + " on which planes can land");
     }
     final String ok = movePhase ? "End Move Phase" : "Kill Planes";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
     this.m_mapPanel.centerOn(airCantLand.iterator().next());
-    final int choice = EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION,
-        JOptionPane.WARNING_MESSAGE, null, options, cancel,
-        getUIContext().getCountDownLatchHandler());
+    final int choice =
+        EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext().getCountDownLatchHandler());
     return choice == 1;
   }
 
-  public boolean getOKToLetUnitsDie(final PlayerID m_id, final Collection<Territory> unitsCantFight, final boolean movePhase) {
+  public boolean getOKToLetUnitsDie(final PlayerID m_id, final Collection<Territory> unitsCantFight,
+      final boolean movePhase) {
     if (unitsCantFight == null || unitsCantFight.isEmpty() || m_messageAndDialogThreadPool == null) {
       return true;
     }
@@ -877,19 +880,20 @@ public class TripleAFrame extends MainGameFrame {
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
     this.m_mapPanel.centerOn(unitsCantFight.iterator().next());
-    final int choice = EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Units cannot fight", JOptionPane.YES_NO_OPTION,
-        JOptionPane.WARNING_MESSAGE, null, options, cancel,
-        getUIContext().getCountDownLatchHandler());
+    final int choice =
+        EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Units cannot fight", JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE, null, options, cancel, getUIContext().getCountDownLatchHandler());
     return choice == 1;
   }
 
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics) {
+  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+      final boolean politics) {
     if (m_messageAndDialogThreadPool == null) {
       return true;
     }
     m_messageAndDialogThreadPool.waitForAll();
-    final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept " + (politics ? "Political " : "")
-        + "Proposal from " + playerSendingProposal.getName() + "?",
+    final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion,
+        "Accept " + (politics ? "Political " : "") + "Proposal from " + playerSendingProposal.getName() + "?",
         JOptionPane.YES_NO_OPTION, getUIContext().getCountDownLatchHandler());
     return choice == JOptionPane.YES_OPTION;
   }
@@ -899,8 +903,8 @@ public class TripleAFrame extends MainGameFrame {
       return true;
     }
     m_messageAndDialogThreadPool.waitForAll();
-    final int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION, getUIContext()
-        .getCountDownLatchHandler());
+    final int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION,
+        getUIContext().getCountDownLatchHandler());
     return choice == JOptionPane.OK_OPTION;
   }
 
@@ -926,8 +930,7 @@ public class TripleAFrame extends MainGameFrame {
           throw new IllegalStateException();
         }
         EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK",
-            getUIContext().getCountDownLatchHandler());
+            JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUIContext().getCountDownLatchHandler());
       }
     });
   }
@@ -937,16 +940,17 @@ public class TripleAFrame extends MainGameFrame {
       return true;
     }
     m_messageAndDialogThreadPool.waitForAll();
-    final String message = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb") + " in "
-        + location.getName();
-    final String bomb = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb");
+    final String message =
+        (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb") + " in "
+            + location.getName();
+    final String bomb =
+        (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb");
     final String normal = "Attack";
     final String[] choices = {bomb, normal};
     int choice = -1;
     while (choice < 0 || choice > 1) {
       choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION,
-          JOptionPane.INFORMATION_MESSAGE, null, choices, bomb, getUIContext()
-              .getCountDownLatchHandler());
+          JOptionPane.INFORMATION_MESSAGE, null, choices, bomb, getUIContext().getCountDownLatchHandler());
     }
     return choice == JOptionPane.OK_OPTION;
   }
@@ -982,8 +986,7 @@ public class TripleAFrame extends MainGameFrame {
     final JList list = comps.getSecond();
     final String[] options = {"OK", "Cancel"};
     final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION,
-        JOptionPane.PLAIN_MESSAGE, null, options, null, getUIContext()
-            .getCountDownLatchHandler());
+        JOptionPane.PLAIN_MESSAGE, null, options, null, getUIContext().getCountDownLatchHandler());
     if (selection == 0) {
       selected.set((Unit) list.getSelectedValue());
     }
@@ -991,7 +994,8 @@ public class TripleAFrame extends MainGameFrame {
     return selected.get();
   }
 
-  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides) {
+  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
+      final int diceSides) {
     if (m_messageAndDialogThreadPool == null) {
       return new int[numDice];
     }
@@ -1003,7 +1007,8 @@ public class TripleAFrame extends MainGameFrame {
       }
     });
     do {
-      EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE, getUIContext().getCountDownLatchHandler());
+      EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
+          getUIContext().getCountDownLatchHandler());
     } while (chooser.getDice() == null);
     return chooser.getDice();
   }
@@ -1040,17 +1045,17 @@ public class TripleAFrame extends MainGameFrame {
     final JList list = comps.getSecond();
     final String[] options = {"OK"};
     final String title = "Select territory for air units to land, current territory is " + currentTerritory.getName();
-    EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-        null, getUIContext().getCountDownLatchHandler());
+    EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+        null, options, null, getUIContext().getCountDownLatchHandler());
     final Territory selected = (Territory) list.getSelectedValue();
     return selected;
   }
 
-  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player, final List<Territory> territoryChoices,
-      final List<Unit> unitChoices, final int unitsPerPick) {
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player,
+      final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (m_messageAndDialogThreadPool == null) {
-      return new Tuple<Territory, Set<Unit>>(territoryChoices.iterator().next(), new HashSet<Unit>(Match.getNMatches(unitChoices,
-          unitsPerPick, Match.<Unit>getAlwaysMatch())));
+      return new Tuple<Territory, Set<Unit>>(territoryChoices.iterator().next(),
+          new HashSet<Unit>(Match.getNMatches(unitChoices, unitsPerPick, Match.<Unit>getAlwaysMatch())));
     }
     // total hacks
     m_messageAndDialogThreadPool.waitForAll();
@@ -1076,7 +1081,8 @@ public class TripleAFrame extends MainGameFrame {
       }
     }
     m_actionButtons.changeToPickTerritoryAndUnits(player);
-    final Tuple<Territory, Set<Unit>> rVal = m_actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
+    final Tuple<Territory, Set<Unit>> rVal =
+        m_actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
     final int index = m_tabsPanel == null ? -1 : m_tabsPanel.indexOfTab("Actions");
     if (index != -1 && m_inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
@@ -1108,8 +1114,8 @@ public class TripleAFrame extends MainGameFrame {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
     final HashMap<Territory, IntegerMap<Unit>> selection = new HashMap<Territory, IntegerMap<Unit>>();
-    if (possibleUnitsToAttack == null || possibleUnitsToAttack.isEmpty() || attackResourceToken == null || maxNumberOfAttacksAllowed <= 0
-        || m_messageAndDialogThreadPool == null) {
+    if (possibleUnitsToAttack == null || possibleUnitsToAttack.isEmpty() || attackResourceToken == null
+        || maxNumberOfAttacksAllowed <= 0 || m_messageAndDialogThreadPool == null) {
       return selection;
     }
     m_messageAndDialogThreadPool.waitForAll();
@@ -1118,29 +1124,29 @@ public class TripleAFrame extends MainGameFrame {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        final HashMap<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<String, Collection<Unit>>();
+        final HashMap<String, Collection<Unit>> possibleUnitsToAttackStringForm =
+            new HashMap<String, Collection<Unit>>();
         for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
           final List<Unit> units = new ArrayList<Unit>(entry.getValue());
-          Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(m_data),
-              TerritoryEffectHelper.getEffects(entry.getKey()),
-              m_data, true, false));
+          Collections.sort(units,
+              new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(m_data),
+                  TerritoryEffectHelper.getEffects(entry.getKey()), m_data, true, false));
           Collections.reverse(units);
           possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
         }
         m_mapPanel.centerOn(m_data.getMap().getTerritory(possibleUnitsToAttackStringForm.keySet().iterator().next()));
-
-        final IndividualUnitPanelGrouped unitPanel = new IndividualUnitPanelGrouped(possibleUnitsToAttackStringForm, m_data, m_uiContext,
-            "Select Units to Suicide Attack using "
-                + attackResourceToken.getName(),
+        final IndividualUnitPanelGrouped unitPanel = new IndividualUnitPanelGrouped(possibleUnitsToAttackStringForm,
+            m_data, m_uiContext, "Select Units to Suicide Attack using " + attackResourceToken.getName(),
             maxNumberOfAttacksAllowed, true, false);
         unitPanels.add(unitPanel);
         final String optionAttack = "Attack";
         final String optionNone = "None";
         final String optionWait = "Wait";
         final Object[] options = {optionAttack, optionNone, optionWait};
-        final JOptionPane optionPane = new JOptionPane(unitPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null,
-            options, options[2]);
-        final JDialog dialog = new JDialog((Frame) getParent(), "Select units to Suicide Attack using " + attackResourceToken.getName());
+        final JOptionPane optionPane = new JOptionPane(unitPanel, JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
+        final JDialog dialog =
+            new JDialog((Frame) getParent(), "Select units to Suicide Attack using " + attackResourceToken.getName());
         dialog.setContentPane(optionPane);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setLocationRelativeTo(getParent());
@@ -1148,8 +1154,10 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        // final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " +
-        // attackResourceToken.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+        // final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using
+        // " +
+        // attackResourceToken.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+        // options[2]);
         optionPane.addPropertyChangeListener(new PropertyChangeListener() {
           @Override
           public void propertyChange(final PropertyChangeEvent e) {
@@ -1243,8 +1251,10 @@ public class TripleAFrame extends MainGameFrame {
           panelChooser.add(whereFrom);
           panelChooser.add(new JLabel(" "));
           final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
-          final int maxAllowed = Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
-          final UnitChooser chooser = new UnitChooser(possible, Collections.<Unit, Collection<Unit>>emptyMap(), m_data, false, m_uiContext);
+          final int maxAllowed =
+              Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
+          final UnitChooser chooser =
+              new UnitChooser(possible, Collections.<Unit, Collection<Unit>>emptyMap(), m_data, false, m_uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
           choosers.add(new Tuple<Territory, UnitChooser>(from, chooser));
           panelChooser.add(chooser);
@@ -1256,8 +1266,8 @@ public class TripleAFrame extends MainGameFrame {
         final String optionNone = "None";
         final String optionWait = "Wait";
         final Object[] options = {optionScramble, optionNone, optionWait};
-        final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options,
-            options[2]);
+        final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
         final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
         dialog.setContentPane(optionPane);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1266,7 +1276,8 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        // final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(),
+        // final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " +
+        // scrambleTo.getName(),
         // JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
         optionPane.addPropertyChangeListener(new PropertyChangeListener() {
           @Override
@@ -1321,7 +1332,8 @@ public class TripleAFrame extends MainGameFrame {
     return selection;
   }
 
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message) {
+  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+      final String message) {
     if (m_messageAndDialogThreadPool == null) {
       return null;
     }
@@ -1350,7 +1362,8 @@ public class TripleAFrame extends MainGameFrame {
         panelChooser.add(whereFrom);
         panelChooser.add(new JLabel(" "));
         final int maxAllowed = possible.size();
-        final UnitChooser chooser = new UnitChooser(possible, Collections.<Unit, Collection<Unit>>emptyMap(), m_data, false, m_uiContext);
+        final UnitChooser chooser =
+            new UnitChooser(possible, Collections.<Unit, Collection<Unit>>emptyMap(), m_data, false, m_uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         panelChooser.add(chooser);
         chooserScrollPane = new JScrollPane(panelChooser);
@@ -1359,8 +1372,8 @@ public class TripleAFrame extends MainGameFrame {
         final String optionNone = "None";
         final String optionWait = "Wait";
         final Object[] options = {optionSelect, optionNone, optionWait};
-        final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options,
-            options[2]);
+        final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
+            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
         final JDialog dialog = new JDialog((Frame) getParent(), message);
         dialog.setContentPane(optionPane);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1369,7 +1382,8 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        // final int option = JOptionPane.showOptionDialog(getParent(), panel, message, JOptionPane.YES_NO_CANCEL_OPTION,
+        // final int option = JOptionPane.showOptionDialog(getParent(), panel, message,
+        // JOptionPane.YES_NO_CANCEL_OPTION,
         // JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
         optionPane.addPropertyChangeListener(new PropertyChangeListener() {
           @Override
@@ -1521,8 +1535,8 @@ public class TripleAFrame extends MainGameFrame {
           }
           final String[] options = {"OK", "Dont attack"};
           final String message = "Select Rocket Target";
-          final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message, JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.PLAIN_MESSAGE, null, options, null);
+          final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
+              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
           if (selection == 0) {
             selected.set((Territory) list.getSelectedValue());
           }
@@ -1566,8 +1580,8 @@ public class TripleAFrame extends MainGameFrame {
 
   GameStepListener m_stepListener = new GameStepListener() {
     @Override
-    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-        final String stepDisplayName) {
+    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
+        final int round, final String stepDisplayName) {
       updateStep();
     }
   };
@@ -1662,10 +1676,12 @@ public class TripleAFrame extends MainGameFrame {
         @Override
         public void run() {
           final Boolean play = m_requiredTurnSeries.get(player);
-          // System.out.println("Starting for " + player.getName() + ", with requiredTurnSeries equal to " + (play == null ? "null" : play)
+          // System.out.println("Starting for " + player.getName() + ", with requiredTurnSeries equal to " + (play ==
+          // null ? "null" : play)
           // + ", with m_lastStepPlayer equal to " + (m_lastStepPlayer == null ? "null" : m_lastStepPlayer.getName()));
           if (play != null && play.booleanValue()) {
-            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
+            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play
+                                                                                                                     // sound
             m_requiredTurnSeries.put(player, false);
             // System.out.println("Playing Sound for " + player.getName());
           }
@@ -1735,7 +1751,6 @@ public class TripleAFrame extends MainGameFrame {
       }
     }
   };
-
   final KeyListener m_arrowKeyActionListener = new KeyListener() {
     final int diffPixel = 50;
 
@@ -1754,7 +1769,6 @@ public class TripleAFrame extends MainGameFrame {
       } else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
         getMapPanel().setTopLeft(x, y - diffPixel);
       }
-
       // I for info
       if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V) {
         String unitInfo = "";
@@ -1800,7 +1814,6 @@ public class TripleAFrame extends MainGameFrame {
           new Thread(disposePopup, "popup waiter").start();
         }
       }
-
       // and then we do stuff for any custom current action tab
       m_actionButtons.keyPressed(e);
     }
@@ -1937,17 +1950,15 @@ public class TripleAFrame extends MainGameFrame {
 
       @Override
       public void actionPerformed(final ActionEvent ae) {
-        JOptionPane
-            .showMessageDialog(
-                TripleAFrame.this,
-                "Please first left click on the spot you want to save from, Then right click and select 'Save Game From History'"
-                    + "\n\nIt is recommended that when saving the game from the History panel:"
-                    + "\n * Your CURRENT GAME is at the start of some player's turn, and that no moves have been made and no actions taken yet."
-                    + "\n * The point in HISTORY that you are trying to save at, is at the beginning of a player's turn, or the beginning of a round."
-                    + "\nSaving at any other point, could potentially create errors."
-                    + "\nFor example, saving while your current game is in the middle of a move or battle phase will always create errors in the savegame."
-                    + "\nAnd you will also get errors in the savegame if you try to create a save at a point in history such as a move or battle phase.",
-                "Save Game from History", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(TripleAFrame.this,
+            "Please first left click on the spot you want to save from, Then right click and select 'Save Game From History'"
+                + "\n\nIt is recommended that when saving the game from the History panel:"
+                + "\n * Your CURRENT GAME is at the start of some player's turn, and that no moves have been made and no actions taken yet."
+                + "\n * The point in HISTORY that you are trying to save at, is at the beginning of a player's turn, or the beginning of a round."
+                + "\nSaving at any other point, could potentially create errors."
+                + "\nFor example, saving while your current game is in the middle of a move or battle phase will always create errors in the savegame."
+                + "\nAnd you will also get errors in the savegame if you try to create a save at a point in history such as a move or battle phase.",
+            "Save Game from History", JOptionPane.INFORMATION_MESSAGE);
         m_data.acquireReadLock();
         // m_data.acquireWriteLock();
         try {
@@ -1959,12 +1970,15 @@ public class TripleAFrame extends MainGameFrame {
               final GameData datacopy = GameDataUtils.cloneGameData(m_data, true);
               datacopy.getHistory().gotoNode(m_historyPanel.getCurrentPopupNode());
               datacopy.getHistory().removeAllHistoryAfterNode(m_historyPanel.getCurrentPopupNode());
-              // TODO: the saved current delegate is still the current delegate, rather than the delegate at that history popup node
+              // TODO: the saved current delegate is still the current delegate, rather than the delegate at that
+              // history popup node
               // TODO: it still shows the current round number, rather than the round at the history popup node
-              // TODO: this could be solved easily if rounds/steps were changes, but that could greatly increase the file size :(
+              // TODO: this could be solved easily if rounds/steps were changes, but that could greatly increase the
+              // file size :(
               // TODO: this also does not undo the runcount of each delegate step
               @SuppressWarnings("rawtypes")
-              final Enumeration enumeration = ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
+              final Enumeration enumeration =
+                  ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
               enumeration.nextElement();
               int round = 0;
               String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
@@ -1982,7 +1996,8 @@ public class TripleAFrame extends MainGameFrame {
               }
               datacopy.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
               new GameDataManager().saveGame(fout, datacopy);
-              JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+              JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",
+                  JOptionPane.INFORMATION_MESSAGE);
             } catch (final IOException e) {
               e.printStackTrace();
             } finally {
@@ -2121,8 +2136,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     final double scale = m_uiContext.getScale();
     // print map panel to image
-    final BufferedImage mapImage = Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()),
-        false);
+    final BufferedImage mapImage =
+        Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
     final Graphics2D mapGraphics = mapImage.createGraphics();
     try {
       final GameData data = mapPanel.getData();
@@ -2166,18 +2181,22 @@ public class TripleAFrame extends MainGameFrame {
       mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
       mapGraphics.setColor(title_color);
       if (m_uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
-        mapGraphics.drawString(data.getGameName() + " Round " + round, title_x, title_y); // + ": " + (player != null ? player.getName() :
+        mapGraphics.drawString(data.getGameName() + " Round " + round, title_x, title_y); // + ": " + (player != null ?
+                                                                                          // player.getName() :
                                                                                           // "") + " - " + step
       }
       // overlay stats, if enabled
-      final boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_STATS_ENABLED);
+      final boolean stats_enabled =
+          m_uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_STATS_ENABLED);
       if (stats_enabled) {
         // get screenshot properties from map data
-        Color stats_text_color = m_uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_TEXT_COLOR);
+        Color stats_text_color =
+            m_uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_TEXT_COLOR);
         if (stats_text_color == null) {
           stats_text_color = Color.BLACK;
         }
-        Color stats_border_color = m_uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_BORDER_COLOR);
+        Color stats_border_color =
+            m_uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_BORDER_COLOR);
         if (stats_border_color == null) {
           stats_border_color = Color.WHITE;
         }
@@ -2266,7 +2285,8 @@ public class TripleAFrame extends MainGameFrame {
         ImageIO.write(mapImage, "png", file);
       } catch (final Exception e2) {
         e2.printStackTrace();
-        JOptionPane.showMessageDialog(TripleAFrame.this, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
+        JOptionPane.showMessageDialog(TripleAFrame.this, e2.getMessage(), "Error saving Screenshot",
+            JOptionPane.OK_OPTION);
         retval = false;
       }
       // Clean up objects. There might be some overkill here,
@@ -2304,9 +2324,9 @@ public class TripleAFrame extends MainGameFrame {
       }
       // A small warning so users will not over-write a file,
       if (f.exists()) {
-        final int choice = JOptionPane.showConfirmDialog(this, "A file by that name already exists. Do you wish to over write it?",
-            "Over-write?", JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE);
+        final int choice =
+            JOptionPane.showConfirmDialog(this, "A file by that name already exists. Do you wish to over write it?",
+                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (choice != JOptionPane.OK_OPTION) {
           return;
         }
@@ -2316,7 +2336,8 @@ public class TripleAFrame extends MainGameFrame {
         @Override
         public void run() {
           if (saveScreenshot(node, file)) {
-            JOptionPane.showMessageDialog(TripleAFrame.this, "Screenshot Saved", "Screenshot Saved", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(TripleAFrame.this, "Screenshot Saved", "Screenshot Saved",
+                JOptionPane.INFORMATION_MESSAGE);
           }
         }
       };
@@ -2506,7 +2527,8 @@ public class TripleAFrame extends MainGameFrame {
           final ScrollableTextField text = new ScrollableTextField(0, fighters.size());
           text.setBorder(new EmptyBorder(8, 8, 8, 8));
           panel.add(text, BorderLayout.CENTER);
-          panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"), BorderLayout.NORTH);
+          panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"),
+              BorderLayout.NORTH);
           panelRef.set(panel);
           textRef.set(text);
           panelRef.set(panel);
@@ -2518,9 +2540,8 @@ public class TripleAFrame extends MainGameFrame {
       throw new IllegalStateException(e);
     }
     final int choice = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(), "Place fighters on new carrier?",
-        JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new String[] {
-            "OK", "Cancel"},
-        "OK", getUIContext().getCountDownLatchHandler());
+        JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new String[] {"OK", "Cancel"}, "OK",
+        getUIContext().getCountDownLatchHandler());
     if (choice == 0) {
       // arrayList.subList() is not serializable
       return new ArrayList<Unit>(new ArrayList<Unit>(fighters).subList(0, textRef.get().getValue()));
@@ -2540,26 +2561,22 @@ public class TripleAFrame extends MainGameFrame {
    * //m_messageAndDialogThreadPool.waitForAll();
    * return m_actionButtons.getMovePanel();
    * }
-   *
    * public TechPanel getTechPanel()
    * {
    * //m_messageAndDialogThreadPool.waitForAll();
    * return m_actionButtons.getTechPanel();
    * }
-   *
    * public PlacePanel getPlacePanel()
    * {
    * //m_messageAndDialogThreadPool.waitForAll();
    * return m_actionButtons.getPlacePanel();
    * }
-   *
    * public PurchasePanel getPurchasePanel()
    * {
    * //m_messageAndDialogThreadPool.waitForAll();
    * return m_actionButtons.getPurchasePanel();
    * }
    */
-
   Action getShowGameAction() {
     return m_showGameAction;
   }

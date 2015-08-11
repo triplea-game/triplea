@@ -5,7 +5,6 @@ import java.text.NumberFormat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 
-
 public interface IStat {
   public String getName();
 

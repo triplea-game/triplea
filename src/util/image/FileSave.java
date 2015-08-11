@@ -10,7 +10,6 @@ public class FileSave {
 
   /**
    * Default Constructor.
-   *
    * Creates a file selection dialog starting at the current
    * working directory. The user will specify what directory
    * or folder they want their files to be saved in.
@@ -40,12 +39,13 @@ public class FileSave {
     });
   }
 
-  public FileSave(final String title, final int JFileChooserFileSelectionMode, final File selectedFile, final File currentDirectory) {
+  public FileSave(final String title, final int JFileChooserFileSelectionMode, final File selectedFile,
+      final File currentDirectory) {
     this(title, null, currentDirectory, JFileChooserFileSelectionMode, selectedFile, null);
   }
 
-  public FileSave(final String title, final String name, final File currentDirectory, final int JFileChooserFileSelectionMode,
-      final File selectedFile, final FileFilter fileFilter) {
+  public FileSave(final String title, final String name, final File currentDirectory,
+      final int JFileChooserFileSelectionMode, final File selectedFile, final FileFilter fileFilter) {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooserFileSelectionMode);
     chooser.setDialogTitle(title);
@@ -70,7 +70,6 @@ public class FileSave {
 
   /**
    * File getFile()
-   *
    * Returns the directory path as
    * a File object.
    *
@@ -82,7 +81,6 @@ public class FileSave {
 
   /**
    * String getPathString()
-   *
    * Returns the directory path as
    * as string.
    *

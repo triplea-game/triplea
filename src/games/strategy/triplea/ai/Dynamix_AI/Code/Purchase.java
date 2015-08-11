@@ -45,12 +45,11 @@ import games.strategy.util.Match;
 
 /**
  * This class really needs a rewrite...
- *
  */
 @SuppressWarnings({"unchecked", "deprecation"})
 public class Purchase {
-  public static void purchase(final Dynamix_AI ai, final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaser,
-      final GameData data, final PlayerID player) {
+  public static void purchase(final Dynamix_AI ai, final boolean purchaseForBid, int PUsToSpend,
+      final IPurchaseDelegate purchaser, final GameData data, final PlayerID player) {
     if (DSettings.LoadSettings().AIC_disableAllUnitPurchasesAndPlacements) {
       final String message = ai.getName() + " is skipping it's purchase phase, as instructed.";
       DUtils.Log(Level.FINE, message);
@@ -72,15 +71,22 @@ public class Purchase {
         && DSettings.LoadSettings().ResourceCollectionMultiplyPercent != 100) {
       if (GlobalCenter.PUsAtEndOfLastTurn == 0) {
         GlobalCenter.PUsAtEndOfLastTurn =
-            DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player))); // This is a temp
-                                                                                                                      // hack, should
-                                                                                                                      // definately be
+            DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player))); // This
+                                                                                                                      // is
+                                                                                                                      // a
+                                                                                                                      // temp
+                                                                                                                      // hack,
+                                                                                                                      // should
+                                                                                                                      // definately
+                                                                                                                      // be
                                                                                                                       // changed
       }
-      final int PUsCollectedLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource()) - GlobalCenter.PUsAtEndOfLastTurn;
+      final int PUsCollectedLastTurn =
+          player.getResources().getQuantity(GlobalCenter.GetPUResource()) - GlobalCenter.PUsAtEndOfLastTurn;
       // Since we already have the pu's we collected last turn, only add the extra
       final int PUChange =
-          (int) (PUsCollectedLastTurn * DUtils.ToFloat(DSettings.LoadSettings().ResourceCollectionMultiplyPercent)) - PUsCollectedLastTurn;
+          (int) (PUsCollectedLastTurn * DUtils.ToFloat(DSettings.LoadSettings().ResourceCollectionMultiplyPercent))
+              - PUsCollectedLastTurn;
       if (PUChange > 0) {
         final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
         final String message = ai.getName() + " use an RCM cheat, and increase their PUs from "
@@ -123,7 +129,8 @@ public class Purchase {
         }
         Dynamix_AI.Pause();
       } else {
-        for (final Territory ter : Match.getMatches(data.getMap().getTerritories(), DMatches.territoryIsNotIsolated(data))) {
+        for (final Territory ter : Match.getMatches(data.getMap().getTerritories(),
+            DMatches.territoryIsNotIsolated(data))) {
           FactoryCenter.get(data, player).ChosenFactoryTerritories.add(ter);
           DUtils.Log(Level.FINE, "  Purchasing bid units and going to place them all on: {0}", ter);
           final int cost = purchaseFactoryUnits(ter, ai, purchaseForBid, PUsToSpend, purchaser, data, player);
@@ -157,10 +164,12 @@ public class Purchase {
       }
       final float percentageOfInitialPUsNeededForFactoryPurchase =
           DUtils.ToFloat(DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy);
-      if (PUsToSpend > (int) (origR * percentageOfInitialPUsNeededForFactoryPurchase)) // If we used less than X% our money (user set)
+      if (PUsToSpend > (int) (origR * percentageOfInitialPUsNeededForFactoryPurchase)) // If we used less than X% our
+                                                                                       // money (user set)
       {
-        DUtils.Log(Level.FINE, "  We used less than " + DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy
-            + "% our money in purchases, so attempting to purchase a new factory.");
+        DUtils.Log(Level.FINE,
+            "  We used less than " + DSettings.LoadSettings().AA_resourcePercentageThatMustExistForFactoryBuy
+                + "% our money in purchases, so attempting to purchase a new factory.");
         Unit factory = null;
         int factoryCost = 0;
         for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
@@ -184,7 +193,8 @@ public class Purchase {
             if (ter.getUnits().someMatch(Matches.UnitCanProduceUnitsAndIsConstruction)) {
               continue;
             }
-            final List<Unit> attackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+            final List<Unit> attackers =
+                DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
             final List<Unit> defenders = new ArrayList<Unit>(ter.getUnits().getUnits());
             final AggregateResults results = DUtils.GetBattleResults(attackers, defenders, ter, data, 250, true);
             if (results.getAttackerWinPercent() < .1F || attackers.isEmpty()) {
@@ -211,9 +221,17 @@ public class Purchase {
       final List<Territory> ourCaps = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
       List<Territory> ourTers = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
       if (!ourCaps.isEmpty()) {
-        ourTers = DSorting.SortTerritoriesByLandThenNoCondDistance_A(ourTers, data, ourCaps.iterator().next()); // We want to repair the
-                                                                                                                // factories close to our
-                                                                                                                // capital first
+        ourTers = DSorting.SortTerritoriesByLandThenNoCondDistance_A(ourTers, data, ourCaps.iterator().next()); // We
+                                                                                                                // want
+                                                                                                                // to
+                                                                                                                // repair
+                                                                                                                // the
+                                                                                                                // factories
+                                                                                                                // close
+                                                                                                                // to
+                                                                                                                // our
+                                                                                                                // capital
+                                                                                                                // first
       }
       final List<RepairRule> rrules = player.getRepairFrontier().getRules();
       final HashMap<Unit, IntegerMap<RepairRule>> factoryRepairs = new HashMap<Unit, IntegerMap<RepairRule>>();
@@ -223,10 +241,12 @@ public class Purchase {
       final boolean bombingDoneOnUnitsDirectly = Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
       for (final RepairRule rrule : rrules) {
         for (final Territory fixTerr : ourTers) {
-          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixTerr)) {
+          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+              .match(fixTerr)) {
             continue;
           }
-          if (bombingDoneOnUnitsDirectly) // If bombing in this map is done to units instead of territories, we figure repair amount based
+          if (bombingDoneOnUnitsDirectly) // If bombing in this map is done to units instead of territories, we figure
+                                          // repair amount based
                                           // on [max - current] unit production capacity
           {
             for (final Unit unitToFix : Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitCanBeDamaged)) {
@@ -235,15 +255,23 @@ public class Purchase {
               }
               int repairAmount = TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, false, false)
                   - TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, true, false);
-              repairAmount = Math.min(repairAmount, origPUs / 4); // Never spend more than one-fourth of all the player's money on a factory
+              repairAmount = Math.min(repairAmount, origPUs / 4); // Never spend more than one-fourth of all the
+                                                                  // player's money on a factory
                                                                   // repair
-              repairAmount = Math.min(repairAmount, maxPUsWeWantToSpendOnRepairs - totalRepairCosts); // Don't let the total repair costs
-                                                                                                      // equal more than the 'total max
-                                                                                                      // spend' amount that was set earlier
-                                                                                                      // to half of total PUs
+              repairAmount = Math.min(repairAmount, maxPUsWeWantToSpendOnRepairs - totalRepairCosts); // Don't let the
+                                                                                                      // total repair
+                                                                                                      // costs
+                                                                                                      // equal more than
+                                                                                                      // the 'total max
+                                                                                                      // spend' amount
+                                                                                                      // that was set
+                                                                                                      // earlier
+                                                                                                      // to half of
+                                                                                                      // total PUs
               repairAmount = Math.min(repairAmount, PUsToSpend); // Don't spend more PUs than we have!
               if (repairAmount > 0) {
-                DUtils.Log(Level.FINER, "    Purchasing repairs for a unit. Territory: {0} Unit: {1} Repair Amount: {2}", fixTerr.getName(),
+                DUtils.Log(Level.FINER,
+                    "    Purchasing repairs for a unit. Territory: {0} Unit: {1} Repair Amount: {2}", fixTerr.getName(),
                     unitToFix, repairAmount);
                 final IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
                 repairMap.add(rrule, repairAmount);
@@ -272,17 +300,18 @@ public class Purchase {
     FactoryCenter.get(data, player).ChosenFactoryTerritories = sortedLocations;
   }
 
-  public static int purchaseFactoryUnits(final Territory ter, final Dynamix_AI ai, final boolean purchaseForBid, int PUsToSpend,
-      final IPurchaseDelegate purchaser, final GameData data,
-      final PlayerID player) {
+  public static int purchaseFactoryUnits(final Territory ter, final Dynamix_AI ai, final boolean purchaseForBid,
+      int PUsToSpend, final IPurchaseDelegate purchaser, final GameData data, final PlayerID player) {
     DUtils.Log(Level.FINER, "    Purchasing units for territory. Ter: {0}", ter);
     int result = 0;
     // TODO: first, we do not even know if this map has units that can bomb a factory
     // second, we should check and see if the enemy has any of these bombers within range
-    // third, we should check if we have an AA unit nearby already, that we can move to the factory instead of producing a new one
-    if (!ter.isWater() && ter.getOwner().equals(player) && ter.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged)
-        && !ter.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly)
-        && TerritoryAttachment.get(ter) != null && DUtils.GetCheckedUnitProduction(ter) > 0) {
+    // third, we should check if we have an AA unit nearby already, that we can move to the factory instead of producing
+    // a new one
+    if (!ter.isWater() && ter.getOwner().equals(player)
+        && ter.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged)
+        && !ter.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly) && TerritoryAttachment.get(ter) != null
+        && DUtils.GetCheckedUnitProduction(ter) > 0) {
       Unit aa = null;
       for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
         final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
@@ -306,7 +335,8 @@ public class Purchase {
         }
       }
     }
-    final PurchaseGroup bestPurchaseGroup = CalculateBestPurchaseGroup(ter, data, player, purchaser, PUsToSpend, purchaseForBid);
+    final PurchaseGroup bestPurchaseGroup =
+        CalculateBestPurchaseGroup(ter, data, player, purchaser, PUsToSpend, purchaseForBid);
     if (bestPurchaseGroup == null) {
       return result;
     }
@@ -337,26 +367,30 @@ public class Purchase {
     return result;
   }
 
-  private static PurchaseGroup CalculateBestPurchaseGroup(final Territory ter, final GameData data, final PlayerID player,
-      final IPurchaseDelegate purchaser, float PUsLeftToSpend,
-      final boolean purchaseForBid) {
+  private static PurchaseGroup CalculateBestPurchaseGroup(final Territory ter, final GameData data,
+      final PlayerID player, final IPurchaseDelegate purchaser, float PUsLeftToSpend, final boolean purchaseForBid) {
     final Territory ncmTarget = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter,
         DUtils.ToList(ter.getUnits().getUnits()), new ArrayList<NCM_Task>());
     if (ncmTarget == null) // No ncm target, so buy random units
     {
-      // TODO: I've told the AI not to purchase any infrastructure, or any units with maxBuiltPerPlayer. However, a better written AI would
+      // TODO: I've told the AI not to purchase any infrastructure, or any units with maxBuiltPerPlayer. However, a
+      // better written AI would
       // be smarter and buy units with these, but buy them correctly / legally.
-      // I am considering also telling it not to purchase anything with unitPlacementRestrictions, or requiresUnits, or consumesUnits
-      if (data.getMap().getNeighbors(ter,
-          DUtils.CompMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(data, player)).invert()))
-          .size() > 0) {
-        return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
-            DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))),
+      // I am considering also telling it not to purchase anything with unitPlacementRestrictions, or requiresUnits, or
+      // consumesUnits
+      if (data.getMap().getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater,
+          Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(data, player)).invert())).size() > 0) {
+        return new PurchaseGroup(
+            Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, DUtils.CompMatchAnd(Matches.UnitIsNotAA,
+                Matches.UnitIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))),
             purchaser, data, player);
       } else {
-        return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
-            DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsInfrastructure.invert(),
-                Matches.UnitHasMaxBuildRestrictions.invert()))),
+        return new PurchaseGroup(
+            Collections
+                .singleton(
+                    DUtils.GetRandomUnitForPlayerMatching(player,
+                        DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA,
+                            Matches.UnitIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))),
             purchaser, data, player);
       }
     }
@@ -384,7 +418,8 @@ public class Purchase {
     }
     final List<Unit> allUnits = new ArrayList<Unit>();
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
-    // TODO: why on earth are we "creating" these units here? Doesn't wisconsin know that they stick around in memory forever?
+    // TODO: why on earth are we "creating" these units here? Doesn't wisconsin know that they stick around in memory
+    // forever?
     for (final ProductionRule rule : rules) {
       final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
       if (!(resourceOrUnit instanceof UnitType)) {
@@ -396,21 +431,34 @@ public class Purchase {
     }
     final List<Unit> defendUnits = new ArrayList<Unit>(ncmTarget.getUnits().getUnits());
     final List<Unit> unitsToBuy = new ArrayList<Unit>();
-    for (int i = 0; i < Math.min(productionSpaceLeft, DSettings.LoadSettings().AA_maxUnitTypesForPurchaseMix); i++) // Do X(user-set)
-                                                                                                                    // different unit types
-                                                                                                                    // at most because we
-                                                                                                                    // dont want this to
-                                                                                                                    // take too long
+    for (int i = 0; i < Math.min(productionSpaceLeft, DSettings.LoadSettings().AA_maxUnitTypesForPurchaseMix); i++) // Do
+                                                                                                                    // X(user-set)
+                                                                                                                    // different
+                                                                                                                    // unit
+                                                                                                                    // types
+                                                                                                                    // at
+                                                                                                                    // most
+                                                                                                                    // because
+                                                                                                                    // we
+                                                                                                                    // dont
+                                                                                                                    // want
+                                                                                                                    // this
+                                                                                                                    // to
+                                                                                                                    // take
+                                                                                                                    // too
+                                                                                                                    // long
     {
-      Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnArmyTheMostPerPU(ncmTarget, data, player, unitsOnTheWay, allUnits, defendUnits,
-          Matches.UnitHasEnoughMovement(1),
+      Unit unit = DUtils.CalculateUnitThatWillHelpWinAttackOnArmyTheMostPerPU(ncmTarget, data, player, unitsOnTheWay,
+          allUnits, defendUnits, Matches.UnitHasEnoughMovement(1),
           DSettings.LoadSettings().CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
       if (unit == null) {
         DUtils.Log(Level.FINER, "        No units found to select for purchasing!");
         return null;
       }
-      unit = unit.getType().create(player); // Don't add the actual unit we created before, otherwise if we purchase the same unit type
-                                            // twice, we will end up doing calc's with multiples of the same unit, which is bad
+      unit = unit.getType().create(player); // Don't add the actual unit we created before, otherwise if we purchase the
+                                            // same unit type
+                                            // twice, we will end up doing calc's with multiples of the same unit, which
+                                            // is bad
       final int cost = DUtils.GetTUVOfUnit(unit, GlobalCenter.GetPUResource());
       if (PUsLeftToSpend - cost < 0) {
         break;

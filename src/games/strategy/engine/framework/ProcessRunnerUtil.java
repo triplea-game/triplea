@@ -11,8 +11,6 @@ import games.strategy.util.Version;
 
 /**
  * To hold various static utility methods for running a java program.
- *
- *
  */
 public class ProcessRunnerUtil {
   public static void populateBasicJavaArgs(final List<String> commands) {
@@ -24,7 +22,8 @@ public class ProcessRunnerUtil {
   }
 
   public static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
-    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to
+    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to
+    // add 64m to that to
     // compensate
     // final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
     final long maxMemory = GameRunner2.getMaxMemoryInBytes();
@@ -42,7 +41,8 @@ public class ProcessRunnerUtil {
       commands.add(System.getProperty("java.class.path"));
     }
     commands.add("-Xmx" + maxMemory);
-    // commands.add("-Xmx896m"); // this should never ever go above 1000mb, because some users have errors because some JVM's can't handle
+    // commands.add("-Xmx896m"); // this should never ever go above 1000mb, because some users have errors because some
+    // JVM's can't handle
     // that much
     // preserve noddraw to fix 1742775
     final String[] preservedSystemProperties = {"sun.java2d.noddraw"};
@@ -73,8 +73,10 @@ public class ProcessRunnerUtil {
         // nothing
       }
     }
-    commands.add("-D" + GameRunner2.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString()); // since we are setting the xmx already, we need to
-                                                                                         // make sure this property is set so that triplea
+    commands.add("-D" + GameRunner2.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString()); // since we are setting the xmx
+                                                                                         // already, we need to
+                                                                                         // make sure this property is
+                                                                                         // set so that triplea
                                                                                          // doesn't restart
   }
 

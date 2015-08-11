@@ -31,10 +31,11 @@ public class HistoryWriter implements java.io.Serializable {
   /**
    * Can only be called if we are currently in a round or a step
    */
-  public void startNextStep(final String stepName, final String delegateName, final PlayerID player, final String stepDisplayName) {
+  public void startNextStep(final String stepName, final String delegateName, final PlayerID player,
+      final String stepDisplayName) {
     assertCorrectThread();
-    s_logger.log(Level.FINE,
-        "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player + " displayName:" + stepDisplayName);
+    s_logger.log(Level.FINE, "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player
+        + " displayName:" + stepDisplayName);
     // we are being called for the first time
     if (m_current == null) {
       int round = 0;
@@ -150,8 +151,8 @@ public class HistoryWriter implements java.io.Serializable {
       closeCurrent();
     }
     if (!isCurrentStep()) {
-      throw new IllegalStateException("Cant add an event, not a step. " +
-          "Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
+      throw new IllegalStateException("Cant add an event, not a step. "
+          + "Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
     }
     final Event event = new Event(eventName, m_history.getChanges().size());
     /*

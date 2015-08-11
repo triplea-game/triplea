@@ -32,7 +32,8 @@ import games.strategy.util.LocalizeHTML;
 
 public class NewGameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
-  private static NewGameChooserModel s_cachedGameModel = null; // any methods touching s_cachedGameModel should be both static and
+  private static NewGameChooserModel s_cachedGameModel = null; // any methods touching s_cachedGameModel should be both
+                                                               // static and
                                                                // synchronized
   private JButton m_okButton;
   private JButton m_cancelButton;
@@ -78,10 +79,10 @@ public class NewGameChooser extends JDialog {
     leftPanel.setLayout(new GridBagLayout());
     final JLabel gamesLabel = new JLabel("Games");
     gamesLabel.setFont(gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2));
-    leftPanel.add(gamesLabel,
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-    leftPanel.add(listScroll,
-        new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 10, 0, 0), 0, 0));
+    leftPanel.add(gamesLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 10, 10, 10), 0, 0));
+    leftPanel.add(listScroll, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.EAST,
+        GridBagConstraints.BOTH, new Insets(0, 10, 0, 0), 0, 0));
     mainSplit.setLeftComponent(leftPanel);
     mainSplit.setRightComponent(m_infoPanel);
     mainSplit.setBorder(null);

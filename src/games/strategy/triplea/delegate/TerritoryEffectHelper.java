@@ -14,7 +14,6 @@ import games.strategy.triplea.attatchments.TerritoryEffectAttachment;
 
 /**
  * Placeholder for all calculations to do with TerritoryEffects
- *
  */
 public class TerritoryEffectHelper {
   public static Collection<TerritoryEffect> getEffects(final Territory location) {
@@ -28,7 +27,8 @@ public class TerritoryEffectHelper {
     }
   }
 
-  public static int getTerritoryCombatBonus(final UnitType type, final Collection<TerritoryEffect> effects, final boolean defending) {
+  public static int getTerritoryCombatBonus(final UnitType type, final Collection<TerritoryEffect> effects,
+      final boolean defending) {
     if (type == null || effects == null || effects.isEmpty()) {
       return 0;
     }

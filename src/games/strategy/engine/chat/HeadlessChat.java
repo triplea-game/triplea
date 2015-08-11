@@ -21,8 +21,6 @@ import games.strategy.sound.SoundPath;
 
 /**
  * Headless version of ChatPanel.
- *
- *
  */
 public class HeadlessChat implements IChatListener, IChatPanel {
   private static final int MAX_LENGTH = 1000 * 200; // roughly 1000 chat messages
@@ -41,8 +39,8 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     }
   };
 
-  public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger,
-      final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
+  public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
+      final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
     setChat(chat);
   }
@@ -133,8 +131,8 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         for (final ChatMessage message : m_chat.getChatHistory()) {
           if (message.getFrom().equals(m_chat.getServerNode().getName())) {
             if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-              addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER", "ADMIN_CHAT_CONTROL",
-                  false);
+              addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+                  "ADMIN_CHAT_CONTROL", false);
               continue;
             } else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
               addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
@@ -157,14 +155,16 @@ public class HeadlessChat implements IChatListener, IChatPanel {
 
   /** thread safe */
   @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound) {
+  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
+      final String sound) {
     // TODO: I don't really think we need a new thread for this...
     final Thread t = new Thread(new Runnable() {
       @Override
       public void run() {
         if (from.equals(m_chat.getServerNode().getName())) {
           if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-            addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER", "ADMIN_CHAT_CONTROL", false);
+            addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+                "ADMIN_CHAT_CONTROL", false);
             return;
           } else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
             addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
@@ -187,8 +187,8 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = trimMessage(originalMessage);
     final String time = simpleDateFormat.format(new Date());
-    final String prefix =
-        thirdperson ? (m_showTime ? "* " + time + " " + from : "* " + from) : (m_showTime ? time + " " + from + ": " : from + ": ");
+    final String prefix = thirdperson ? (m_showTime ? "* " + time + " " + from : "* " + from)
+        : (m_showTime ? time + " " + from + ": " : from + ": ");
     final String fullMessage = prefix + " " + message + "\n";
     m_lastText = fullMessage;
     final String currentAllText = m_allText.toString();

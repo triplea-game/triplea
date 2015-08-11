@@ -31,7 +31,8 @@ public class StatusController implements IStatusController {
     synchronized (m_mutex) {
       m_status.remove(to);
     }
-    final IStatusChannel channel = (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+    final IStatusChannel channel =
+        (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(to, null);
   }
 
@@ -48,7 +49,8 @@ public class StatusController implements IStatusController {
     synchronized (m_mutex) {
       m_status.put(node, newStatus);
     }
-    final IStatusChannel channel = (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+    final IStatusChannel channel =
+        (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(node, newStatus);
   }
 }

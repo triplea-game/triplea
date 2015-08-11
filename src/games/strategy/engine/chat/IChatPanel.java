@@ -3,10 +3,9 @@ package games.strategy.engine.chat;
 import javax.swing.DefaultListCellRenderer;
 
 /**
- * Not sure if this is the right way to go about it, but we need a headless version, so I'm making an interface so we can use the headless
+ * Not sure if this is the right way to go about it, but we need a headless version, so I'm making an interface so we
+ * can use the headless
  * or non-headless versions as we like.
- *
- *
  */
 public interface IChatPanel {
   public void shutDown();

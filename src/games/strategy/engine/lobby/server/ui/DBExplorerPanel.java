@@ -36,9 +36,10 @@ public class DBExplorerPanel extends JPanel {
   private void createComponents() {
     m_execute = new JButton("Execute");
     m_sql = new JTextArea();
-    m_sql.setText("select * from ta_users " + "\n\n" + "update ta_users set password = \'foo\' where username = \'1152218272375\'\n\n"
-        + "select * from ta_users where CAST(joined as DATE) < CAST('2008-11-12' AS DATE) \n" + "select * from bad_words \n"
-        + "select * from banned_ips \n" + "\n"
+    m_sql.setText("select * from ta_users " + "\n\n"
+        + "update ta_users set password = \'foo\' where username = \'1152218272375\'\n\n"
+        + "select * from ta_users where CAST(joined as DATE) < CAST('2008-11-12' AS DATE) \n"
+        + "select * from bad_words \n" + "select * from banned_ips \n" + "\n"
         + "delete from banned_ips where ip = \'192.168.1.0\'");
     m_table = new JTable();
   }
@@ -61,7 +62,8 @@ public class DBExplorerPanel extends JPanel {
 
   public static boolean isNotQuery(String sql) {
     sql = sql.toUpperCase().trim();
-    return (sql.startsWith("INSERT") || sql.startsWith("UPDATE") || sql.startsWith("CREATE") || sql.startsWith("DELETE"));
+    return (sql.startsWith("INSERT") || sql.startsWith("UPDATE") || sql.startsWith("CREATE")
+        || sql.startsWith("DELETE"));
   }
 
   private void execute() {

@@ -16,12 +16,10 @@ import games.strategy.util.Version;
 /**
  * data from the server indicating what players are available to be
  * taken, and what players are being played.
- *
  * This object also contains versioning info which the client should
  * check to ensure that it is playing the same game as the server.
- *
- * (updated by veqryn to be the object that, besides game options, determines the starting setup for game. ie: who is playing what)
- *
+ * (updated by veqryn to be the object that, besides game options, determines the starting setup for game. ie: who is
+ * playing what)
  */
 public class PlayerListing implements Serializable {
   // keep compatability with older versions
@@ -44,13 +42,15 @@ public class PlayerListing implements Serializable {
    * Creates a new instance of PlayerListingMessage
    */
   public PlayerListing(final Map<String, String> playerToNodeListing, final Map<String, Boolean> playersEnabledListing,
-      final Map<String, String> localPlayerTypes, final Version gameVersion,
-      final String gameName, final String gameRound, final Collection<String> playersAllowedToBeDisabled,
+      final Map<String, String> localPlayerTypes, final Version gameVersion, final String gameName,
+      final String gameRound, final Collection<String> playersAllowedToBeDisabled,
       final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrderLinkedHashMap) {
-    m_playerToNodeListing = playerToNodeListing == null ? new HashMap<String, String>() : new HashMap<String, String>(playerToNodeListing);
-    m_playersEnabledListing =
-        playersEnabledListing == null ? new HashMap<String, Boolean>() : new HashMap<String, Boolean>(playersEnabledListing);
-    m_localPlayerTypes = localPlayerTypes == null ? new HashMap<String, String>() : new HashMap<String, String>(localPlayerTypes);
+    m_playerToNodeListing =
+        playerToNodeListing == null ? new HashMap<String, String>() : new HashMap<String, String>(playerToNodeListing);
+    m_playersEnabledListing = playersEnabledListing == null ? new HashMap<String, Boolean>()
+        : new HashMap<String, Boolean>(playersEnabledListing);
+    m_localPlayerTypes =
+        localPlayerTypes == null ? new HashMap<String, String>() : new HashMap<String, String>(localPlayerTypes);
     m_playersAllowedToBeDisabled =
         playersAllowedToBeDisabled == null ? new HashSet<String>() : new HashSet<String>(playersAllowedToBeDisabled);
     m_gameVersion = gameVersion;
@@ -102,7 +102,6 @@ public class PlayerListing implements Serializable {
   }
 
   public static Map<String, Collection<String>> collectPlayerNamesAndAlliancesInTurnOrder(final GameData data) {
-
     final LinkedHashMap<String, Collection<String>> map = new LinkedHashMap<String, Collection<String>>();
     for (final PlayerID player : data.getPlayerList().getPlayers()) {
       map.put(player.getName(), data.getAllianceTracker().getAlliancesPlayerIsIn(player));

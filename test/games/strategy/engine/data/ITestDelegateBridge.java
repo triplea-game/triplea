@@ -6,10 +6,8 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 /**
- *
- *
- *         Not for actual use, suitable for testing. Never returns messages, but can get
- *         random and implements changes immediately.
+ * Not for actual use, suitable for testing. Never returns messages, but can get
+ * random and implements changes immediately.
  */
 public interface ITestDelegateBridge extends IDelegateBridge {
   /**

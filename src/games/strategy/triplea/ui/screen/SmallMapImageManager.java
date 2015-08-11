@@ -19,7 +19,6 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 
-
 public class SmallMapImageManager {
   private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
   private final int UNIT_BOX_SIZE = 4;
@@ -27,7 +26,8 @@ public class SmallMapImageManager {
   private Image m_offscreen;
   private final TileManager m_tileManager;
 
-  public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen, final TileManager tileManager) {
+  public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen,
+      final TileManager tileManager) {
     m_view = view;
     m_offscreen = Util.copyImage(offscreen, false);
     m_tileManager = tileManager;

@@ -9,11 +9,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- *
  * A utility class for mapping Objects to ints. <br>
  * Supports adding and comparing of maps.
- *
- *
  */
 public class IntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
@@ -204,7 +201,6 @@ public class IntegerMap<T> implements Cloneable, Serializable {
 
   /**
    * Will return zero if empty.
-   *
    */
   public int highestValue() {
     if (m_values.isEmpty()) {
@@ -221,7 +217,6 @@ public class IntegerMap<T> implements Cloneable, Serializable {
 
   /**
    * Will return zero if empty.
-   *
    */
   public int lowestValue() {
     if (m_values.isEmpty()) {

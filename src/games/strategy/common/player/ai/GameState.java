@@ -7,7 +7,6 @@ import java.util.Collection;
  *
  * @param <Play>
  *        class capable of representing a game play
- * @see "Chapter 6 of Artificial Intelligence, 2nd ed. by Stuart Russell & Peter Norvig"
  */
 public abstract class GameState<Play> {
   /**
@@ -51,11 +50,14 @@ public abstract class GameState<Play> {
    * Test to see if the current state represents a pseudu-terminal state.
    * This method is used during alpha-beta pruning.
    * <p>
-   * If this method returns <code>true</code>, then <code>successors()</code> must return a non-empty <code>Collection</code>.
+   * If this method returns <code>true</code>, then <code>successors()</code> must return a non-empty
+   * <code>Collection</code>.
    * <p>
-   * Likewise, if this method returns <code>false</code>, then <code>successors()</code> must return an empty <code>Collection</code>.
+   * Likewise, if this method returns <code>false</code>, then <code>successors()</code> must return an empty
+   * <code>Collection</code>.
    * <p>
-   * All endgame states are pseudo-terminal states. Additionally, any state which the AI search algorithm should not search beyond are
+   * All endgame states are pseudo-terminal states. Additionally, any state which the AI search algorithm should not
+   * search beyond are
    * pseudo-terminal states.
    *
    * @return <code>true</code> this state represents a pseudo-terminal state, <code>false</code> otherwise.

@@ -16,7 +16,6 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 
-
 public class ChangeGameOptionsClientAction extends AbstractAction {
   private static final long serialVersionUID = -6419002646689952824L;
   private final Component m_parent;
@@ -50,7 +49,8 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       if (buttonPressed == null || buttonPressed.equals(cancel)) {
         return;
       } else {
-        // ok was clicked. changing them in the ui changes the underlying properties, but it doesn't change the hosts, so we need to send it
+        // ok was clicked. changing them in the ui changes the underlying properties, but it doesn't change the hosts,
+        // so we need to send it
         // back to the host.
         final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
         byte[] newBytes = null;

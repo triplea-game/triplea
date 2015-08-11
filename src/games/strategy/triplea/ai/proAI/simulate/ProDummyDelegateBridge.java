@@ -2,19 +2,6 @@ package games.strategy.triplea.ai.proAI.simulate;
 
 import java.util.Properties;
 
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
@@ -81,7 +68,8 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation) {
     return m_randomSource.getRandom(max, count, annotation);
   }
 
@@ -129,5 +117,4 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   public void setBattle(final MustFightBattle battle) {
     m_battle = battle;
   }
-
 }

@@ -30,11 +30,13 @@ public class StatusManager {
         notifyStatusChanged(node, status);
       }
     };
-    if (messengers.getMessenger().isServer() && !messengers.getRemoteMessenger().hasLocalImplementor(IStatusController.STATUS_CONTROLLER)) {
+    if (messengers.getMessenger().isServer()
+        && !messengers.getRemoteMessenger().hasLocalImplementor(IStatusController.STATUS_CONTROLLER)) {
       final StatusController controller = new StatusController(messengers);
       messengers.getRemoteMessenger().registerRemote(controller, IStatusController.STATUS_CONTROLLER);
     }
-    m_messengers.getChannelMessenger().registerChannelSubscriber(m_statusChannelSubscribor, IStatusChannel.STATUS_CHANNEL);
+    m_messengers.getChannelMessenger().registerChannelSubscriber(m_statusChannelSubscribor,
+        IStatusChannel.STATUS_CHANNEL);
     final IStatusController controller =
         (IStatusController) m_messengers.getRemoteMessenger().getRemote(IStatusController.STATUS_CONTROLLER);
     final Map<INode, String> values = controller.getAllStatus();
@@ -47,7 +49,8 @@ public class StatusManager {
   }
 
   public void shutDown() {
-    m_messengers.getChannelMessenger().unregisterChannelSubscriber(m_statusChannelSubscribor, IStatusChannel.STATUS_CHANNEL);
+    m_messengers.getChannelMessenger().unregisterChannelSubscriber(m_statusChannelSubscribor,
+        IStatusChannel.STATUS_CHANNEL);
   }
 
   /**

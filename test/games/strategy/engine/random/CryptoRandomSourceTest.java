@@ -2,7 +2,6 @@ package games.strategy.engine.random;
 
 import junit.framework.TestCase;
 
-
 public class CryptoRandomSourceTest extends TestCase {
   public CryptoRandomSourceTest(final String name) {
     super(name);
@@ -24,8 +23,8 @@ public class CryptoRandomSourceTest extends TestCase {
   }
 
   public void testThereAndBackAgain() {
-    final int[] ints =
-        new int[] {0, 1, 12, 123, 0xFF, 0x100, -1, 124152, 532153, 123121, 0xABCDEF12, 0xFF00DD00, Integer.MAX_VALUE, Integer.MIN_VALUE};
+    final int[] ints = new int[] {0, 1, 12, 123, 0xFF, 0x100, -1, 124152, 532153, 123121, 0xABCDEF12, 0xFF00DD00,
+        Integer.MAX_VALUE, Integer.MIN_VALUE};
     final int[] thereAndBack = CryptoRandomSource.bytesToInts(CryptoRandomSource.intsToBytes(ints));
     for (int i = 0; i < ints.length; i++) {
       assertEquals("at " + i, ints[i], thereAndBack[i]);

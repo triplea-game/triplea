@@ -11,7 +11,8 @@ public class NullWebPoster implements IWebPoster {
   private static final long serialVersionUID = 1871745918801353205L;
 
   @Override
-  public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player, final int round) {
+  public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player,
+      final int round) {
     return true;
   }
 
@@ -21,14 +22,10 @@ public class NullWebPoster implements IWebPoster {
   }
 
   @Override
-  public void setMailSaveGame(final boolean mail) {
-
-  }
+  public void setMailSaveGame(final boolean mail) {}
 
   @Override
-  public void addSaveGame(final File saveGame, final String fileName) {
-
-  }
+  public void addSaveGame(final File saveGame, final String fileName) {}
 
   @Override
   public String getDisplayName() {

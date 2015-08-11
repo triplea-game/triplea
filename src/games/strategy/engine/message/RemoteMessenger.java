@@ -5,8 +5,6 @@ import java.lang.reflect.Proxy;
 
 /**
  * An implementation of IRemoteMessenger based on MessageManager and Messenger.
- *
- *
  */
 public class RemoteMessenger implements IRemoteMessenger {
   private final UnifiedMessenger m_unifiedMessenger;
@@ -24,8 +22,8 @@ public class RemoteMessenger implements IRemoteMessenger {
   public IRemote getRemote(final RemoteName remoteName, final boolean ignoreResults) {
     final InvocationHandler ih =
         new UnifiedInvocationHandler(m_unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
-    final IRemote rVal =
-        (IRemote) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {remoteName.getClazz()}, ih);
+    final IRemote rVal = (IRemote) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+        new Class[] {remoteName.getClazz()}, ih);
     return rVal;
   }
 

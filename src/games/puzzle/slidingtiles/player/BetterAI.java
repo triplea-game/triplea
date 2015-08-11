@@ -18,21 +18,16 @@ import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * AI player for n-puzzle.
- *
  * Capable of playing using depth-limited iterative deepening depth-first search algorithm.
- *
  */
 public class BetterAI extends GridAbstractAI {
   private int m_xDimension;
   private int m_yDimension;
 
-
   /** Algorithms available for use in BetterAI */
   public enum Algorithm {
     DFS
   }
-
-
   /** Heuristic */
   public enum Heuristic {
     NUMBER_OF_MISPLACED_TILES, MANHATTAN_DISTANCE
@@ -90,8 +85,10 @@ public class BetterAI extends GridAbstractAI {
     } else {
       iPlayDelegate.signalStatus(" ");
       final Move move = m_moves.pop();
-      final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
-      final Territory end = getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
+      final Territory start =
+          getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
+      final Territory end =
+          getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
       final IGridPlayData play = new GridPlayData(start, end, me);
       iPlayDelegate.play(play);
       // if (playDel.play(start,end)==null)
@@ -106,7 +103,6 @@ public class BetterAI extends GridAbstractAI {
   }
 
   public static int counter = 0;
-
 
   class State extends GameState<Move> {
     private final int[][] m_data;
@@ -290,8 +286,6 @@ public class BetterAI extends GridAbstractAI {
       }
     }
   }
-
-
   class Move {
     private final Pair<Integer, Integer> m_start;
     private final Pair<Integer, Integer> m_end;
@@ -314,8 +308,6 @@ public class BetterAI extends GridAbstractAI {
       return m_start + " -> " + m_end;
     }
   }
-
-
   class Pair<First, Second> {
     private final First m_first;
     private final Second m_second;

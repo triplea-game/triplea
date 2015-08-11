@@ -38,8 +38,6 @@ import games.strategy.util.EventThreadJOptionPane;
 
 /**
  * The game frame for a headless server.
- *
- *
  */
 public class HeadlessGameServerUI extends MainGameFrame {
   private static final long serialVersionUID = -3446398256211409031L;
@@ -133,15 +131,13 @@ public class HeadlessGameServerUI extends MainGameFrame {
       leaveGame();
     }
   };
-
   GameStepListener m_stepListener = new GameStepListener() {
     @Override
-    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-        final String stepDisplayName) {
+    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
+        final int round, final String stepDisplayName) {
       updateStep();
     }
   };
-
   GameDataChangeListener m_dataChangeListener = new GameDataChangeListener() {
     @Override
     public void gameDataChanged(final Change change) {
@@ -225,8 +221,8 @@ public class HeadlessGameServerUI extends MainGameFrame {
 
   @Override
   public void leaveGame() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.",
-        "Exit", JOptionPane.YES_NO_OPTION,
+    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
+        "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION,
         (m_uiContext == null ? new CountDownLatchHandler(true) : m_uiContext.getCountDownLatchHandler()));
     if (rVal != JOptionPane.OK_OPTION) {
       return;
@@ -282,8 +278,8 @@ public class HeadlessGameServerUI extends MainGameFrame {
 
   @Override
   public void shutdown() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.",
-        "Exit", JOptionPane.YES_NO_OPTION,
+    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
+        "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION,
         (m_uiContext == null ? new CountDownLatchHandler(true) : m_uiContext.getCountDownLatchHandler()));
     if (rVal != JOptionPane.OK_OPTION) {
       return;

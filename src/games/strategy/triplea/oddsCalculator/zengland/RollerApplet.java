@@ -25,7 +25,6 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 
 public class RollerApplet extends Applet implements Runnable, ItemListener, KeyListener, ActionListener {
-
   private static final long serialVersionUID = -6537455000443362041L;
   private static String WW2V1 = "World War 2 Version 1";
   private static String WW2V2 = "World War 2 Version 2";
@@ -242,7 +241,8 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
       final UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
       int avgTot = 0;
       if (battles > 0) {
-        avgTot = Math.round((float) totRemAtt.get(ugp.getAttUnitGroup().getUnit().getName()).intValue() / (float) battles);
+        avgTot =
+            Math.round((float) totRemAtt.get(ugp.getAttUnitGroup().getUnit().getName()).intValue() / (float) battles);
       }
       if (lossPercent < 50) {
         ugp.setRemAtt(avgTot);
@@ -267,7 +267,8 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
       final UnitGroupPanel ugp = (UnitGroupPanel) p.getComponent(0);
       int avgTot = 0;
       if (battles > 0) {
-        avgTot = Math.round((float) totRemDef.get(ugp.getDefUnitGroup().getUnit().getName()).intValue() / (float) battles);
+        avgTot =
+            Math.round((float) totRemDef.get(ugp.getDefUnitGroup().getUnit().getName()).intValue() / (float) battles);
       }
       if (lossPercent > 50) {
         ugp.setRemDef(avgTot);

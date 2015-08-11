@@ -21,12 +21,14 @@ public class MockBattle extends AbstractBattle {
     this(battleSite, null, null, null);
   }
 
-  public MockBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final GameData data) {
+  public MockBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+      final GameData data) {
     super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
   }
 
   @Override
-  public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets) {
+  public Change addAttackChange(final Route route, final Collection<Unit> units,
+      final HashMap<Unit, HashSet<Unit>> targets) {
     return ChangeFactory.EMPTY_CHANGE;
   }
 
@@ -34,8 +36,8 @@ public class MockBattle extends AbstractBattle {
   public void fight(final IDelegateBridge bridge) {}
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge,
-      final boolean withdrawn) {}
+  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+      final IDelegateBridge bridge, final boolean withdrawn) {}
 
   @Override
   public void removeAttack(final Route route, final Collection<Unit> units) {}

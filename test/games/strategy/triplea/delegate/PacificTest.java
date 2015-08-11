@@ -138,7 +138,8 @@ public class PacificTest extends DelegateTest {
     final List<Unit> infantryUS = infantry.create(1, americans);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-    DiceRoll roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
+    DiceRoll roll =
+        DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines hit on a 2 (0 base)
     final List<Unit> marineUS = marine.create(1, americans);
@@ -149,7 +150,8 @@ public class PacificTest extends DelegateTest {
     // Defending Chinese infantry hit on a 2 (0 base)
     final List<Unit> infantryChina = infantry.create(1, chinese);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
   }
 
@@ -163,7 +165,8 @@ public class PacificTest extends DelegateTest {
     final List<Unit> infantryUS = infantry.create(1, americans);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-    DiceRoll roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
+    DiceRoll roll =
+        DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(0, roll.getHits());
     // Defending US marines miss on a 2 (0 base)
     final List<Unit> marineUS = marine.create(1, americans);
@@ -174,11 +177,13 @@ public class PacificTest extends DelegateTest {
     // Defending Chinese infantry still hit on a 2 (0 base)
     final List<Unit> infantryChina = infantry.create(1, chinese);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US infantry hit on a 1 (0 base)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
-    roll = DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(infantryUS, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines hit on a 1 (0 base)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
@@ -187,7 +192,8 @@ public class PacificTest extends DelegateTest {
     // Chinese units
     // Defending Chinese infantry still hit on a 2 (0 base)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
   }
 
@@ -268,7 +274,8 @@ public class PacificTest extends DelegateTest {
     assertEquals(2, Bonin.getUnits().size());
     assertEquals(1, SZ24.getUnits().size());
     // validate movement
-    final String results = m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+    final String results =
+        m_delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
     // verify unit counts after move
     assertEquals(1, Bonin.getUnits().size());

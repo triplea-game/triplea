@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-
 public class GameParseException extends Exception {
   private static final long serialVersionUID = 4015574053053781872L;
 

@@ -11,11 +11,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 
 /**
- *
  * Abstract superclass for all action panels. <br>
- *
- *
- *
  */
 public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
@@ -58,10 +54,8 @@ public abstract class ActionPanel extends JPanel {
    * Waitfor another thread to call release.
    * If the thread is interupted, we will return silently.
    * <p>
-   *
    * A memory barrier will be crossed both on entering and before exiting this method.
    * <p>
-   *
    * This method will return in the event of the game shutting down.
    * <p>
    */
@@ -90,7 +84,6 @@ public abstract class ActionPanel extends JPanel {
   /**
    * Release the latch acquired by waitOnNewLatch()
    * <p>
-   *
    * This method will crossed on entering this method.
    * <p>
    */
@@ -140,7 +133,8 @@ public abstract class ActionPanel extends JPanel {
   }
 
   /**
-   * Can override to have specific commands done by key presses (like hitting "N" for next unit, on the move action panel)
+   * Can override to have specific commands done by key presses (like hitting "N" for next unit, on the move action
+   * panel)
    *
    * @param e
    */

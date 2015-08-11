@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-
 public class ProductionRule extends DefaultNamed implements Serializable {
   private static final long serialVersionUID = -6598296283127741307L;
   private IntegerMap<Resource> m_cost = new IntegerMap<Resource>();

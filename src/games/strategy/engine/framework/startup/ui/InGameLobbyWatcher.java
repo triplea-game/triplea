@@ -41,14 +41,10 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.UniversalPlugAndPlayHelper;
 
 /**
- *
  * Watches a game in progress, and updates the Lobby with the state of the game.
  * <p>
- *
  * This class opens its own connection to the lobby, and its own messenger.
  * <p>
- *
- *
  */
 public class InGameLobbyWatcher {
   public static final String LOBBY_WATCHER_NAME = "lobby_watcher";
@@ -68,8 +64,8 @@ public class InGameLobbyWatcher {
   private IGame m_game;
   private final GameStepListener m_gameStepListener = new GameStepListener() {
     @Override
-    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-        final String displayName) {
+    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
+        final int round, final String displayName) {
       InGameLobbyWatcher.this.gameStepChanged(stepName, round);
     }
   };
@@ -85,7 +81,6 @@ public class InGameLobbyWatcher {
   /**
    * Reads SystemProperties to see if we should connect to a lobby server
    * <p>
-   *
    * After creation, those properties are cleared, since we should watch the first start game.
    * <p>
    *
@@ -103,12 +98,10 @@ public class InGameLobbyWatcher {
     System.getProperties().remove(GameRunner2.LOBBY_HOST);
     System.getProperties().remove(GameRunner2.LOBBY_PORT);
     System.getProperties().remove(GameRunner2.LOBBY_GAME_HOSTED_BY);
-
     // add them as temporary properties (in case we load an old savegame and need them again)
     System.getProperties().setProperty(GameRunner2.LOBBY_HOST + GameRunner2.OLD_EXTENSION, host);
     System.getProperties().setProperty(GameRunner2.LOBBY_PORT + GameRunner2.OLD_EXTENSION, port);
     System.getProperties().setProperty(GameRunner2.LOBBY_GAME_HOSTED_BY + GameRunner2.OLD_EXTENSION, hostedBy);
-
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
       public void notifyFailedLogin(final String message) {}
@@ -125,8 +118,8 @@ public class InGameLobbyWatcher {
     try {
       System.out.println("host:" + host + " port:" + port);
       final String mac = MacFinder.GetHashedMacAddress();
-      final ClientMessenger messenger =
-          new ClientMessenger(host, Integer.parseInt(port), getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
+      final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),
+          getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
       final RemoteMessenger rm = new RemoteMessenger(um);
       final HeartBeat h = new HeartBeat(messenger.getServerNode());
@@ -174,30 +167,29 @@ public class InGameLobbyWatcher {
     }
   }
 
-  public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IServerMessenger serverMessenger,
-      final JComponent parent, final InGameLobbyWatcher oldWatcher) {
+  public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger,
+      final IServerMessenger serverMessenger, final JComponent parent, final InGameLobbyWatcher oldWatcher) {
     m_messenger = messenger;
     m_remoteMessenger = remoteMessenger;
     m_gameMessenger = serverMessenger;
     final String password = System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY);
     final boolean passworded = password != null && password.length() > 0;
-    final Date startDateTime =
-        (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getStartDateTime() == null) ? new Date()
-            : oldWatcher.m_gameDescription
-                .getStartDateTime();
-    final int playerCount = (oldWatcher == null || oldWatcher.m_gameDescription == null) ? (HeadlessGameServer.headless() ? 0 : 1)
-        : oldWatcher.m_gameDescription.getPlayerCount();
+    final Date startDateTime = (oldWatcher == null || oldWatcher.m_gameDescription == null
+        || oldWatcher.m_gameDescription.getStartDateTime() == null) ? new Date()
+            : oldWatcher.m_gameDescription.getStartDateTime();
+    final int playerCount = (oldWatcher == null || oldWatcher.m_gameDescription == null)
+        ? (HeadlessGameServer.headless() ? 0 : 1) : oldWatcher.m_gameDescription.getPlayerCount();
     final GameStatus gameStatus =
         (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getStatus() == null)
-            ? GameStatus.WAITING_FOR_PLAYERS
-            : oldWatcher.m_gameDescription.getStatus();
-    final String gameRound = (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getRound() == null)
-        ? "-" : oldWatcher.m_gameDescription.getRound();
-    m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), startDateTime, "???",
-        playerCount, gameStatus, gameRound, m_gameMessenger
-            .getLocalNode().getName(),
+            ? GameStatus.WAITING_FOR_PLAYERS : oldWatcher.m_gameDescription.getStatus();
+    final String gameRound =
+        (oldWatcher == null || oldWatcher.m_gameDescription == null || oldWatcher.m_gameDescription.getRound() == null)
+            ? "-" : oldWatcher.m_gameDescription.getRound();
+    m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(),
+        startDateTime, "???", playerCount, gameStatus, gameRound, m_gameMessenger.getLocalNode().getName(),
         System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, EngineVersion.VERSION.toString(), "0");
-    final ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
+    final ILobbyGameController controller =
+        (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
     synchronized (m_mutex) {
       controller.postGame(m_gameID, (GameDescription) m_gameDescription.clone());
     }
@@ -244,7 +236,8 @@ public class InGameLobbyWatcher {
                 final String message = "Your computer is not reachable from the internet.\r\n"
                     + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\r\n"
                     + "(The firewall exception must be updated every time a new version of TripleA comes out.)\r\n"
-                    + "And that your Router is configured to send TCP traffic on port " + portString + " to your local ip address.\r\n"
+                    + "And that your Router is configured to send TCP traffic on port " + portString
+                    + " to your local ip address.\r\n"
                     + "See 'How To Host...' in the help menu, at the top of the lobby screen.\r\n"
                     + "The server tried to connect to your external ip: " + addressUsed + "\r\n";
                 if (HeadlessGameServer.headless()) {
@@ -254,24 +247,25 @@ public class InGameLobbyWatcher {
                 final int port = Integer.parseInt(portString);
                 final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
                 JOptionPane.showMessageDialog(parentComponent, message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
-                final String question = "TripleA has a new feature (in BETA) that will attempt to set your Port Forwarding for you.\r\n"
-                    + "You must have Universal Plug and Play (UPnP) enabled on your router.\r\n"
-                    + "Only around half of all routers come with UPnP enabled by default.\r\n\r\n"
-                    + "If this does not work, try turning on UPnP in your router, then try this all again.\r\n"
-                    + "(To change your router's settings, click 'How To Host...' in the help menu, or use google search.)\r\n\r\n"
-                    + "If TripleA previously successfully set your port forwarding, but you still can not host, \r\n"
-                    + "then the problem is most likely your firewall. Try creating an exception for TripleA in the firewall.\r\n"
-                    + "Or disable the firewall briefly just to test.\r\n"
-                    + "The firewall exception must be updated every time a new version of TripleA comes out.\r\n";
-                final int answer = JOptionPane.showConfirmDialog(parentComponent, question, "Try Setting Port Forwarding with UPnP?",
-                    JOptionPane.YES_NO_OPTION);
+                final String question =
+                    "TripleA has a new feature (in BETA) that will attempt to set your Port Forwarding for you.\r\n"
+                        + "You must have Universal Plug and Play (UPnP) enabled on your router.\r\n"
+                        + "Only around half of all routers come with UPnP enabled by default.\r\n\r\n"
+                        + "If this does not work, try turning on UPnP in your router, then try this all again.\r\n"
+                        + "(To change your router's settings, click 'How To Host...' in the help menu, or use google search.)\r\n\r\n"
+                        + "If TripleA previously successfully set your port forwarding, but you still can not host, \r\n"
+                        + "then the problem is most likely your firewall. Try creating an exception for TripleA in the firewall.\r\n"
+                        + "Or disable the firewall briefly just to test.\r\n"
+                        + "The firewall exception must be updated every time a new version of TripleA comes out.\r\n";
+                final int answer = JOptionPane.showConfirmDialog(parentComponent, question,
+                    "Try Setting Port Forwarding with UPnP?", JOptionPane.YES_NO_OPTION);
                 if (answer != JOptionPane.YES_OPTION) {
                   System.exit(-1);
                 }
                 UniversalPlugAndPlayHelper.attemptAddingPortForwarding(parentComponent, port);
                 if (JOptionPane.showConfirmDialog(parentComponent,
-                    "Do you want to view the tutorial on how to host?  This will open in your internet browser.", "View Help Website?",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
+                    "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                   DesktopUtilityBrowserLauncher.openURL(
                       "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
                 }

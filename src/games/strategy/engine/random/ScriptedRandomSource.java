@@ -5,21 +5,14 @@ import java.util.StringTokenizer;
 /**
  * A random source for use while debugging.
  * <p>
- *
  * Returns the random numbers designated in the system property triplea.scriptedRandom
  * <p>
- *
  * for example, to roll 1,2,3 use -Dtriplea.scriptedRandom=1,2,3
  * <p>
- *
  * When scripted random runs out of numbers, the numbers will repeat.
  * <p>
- *
  * Special characters are also allowed in the sequence.
- *
  * e - the random source will throw an error p - the random source will pause and never return.
- *
- *
  */
 public class ScriptedRandomSource implements IRandomSource {
   public static final int PAUSE = -2;
@@ -33,7 +26,8 @@ public class ScriptedRandomSource implements IRandomSource {
    * Should we use a scripted random sourcce.
    */
   public static boolean useScriptedRandom() {
-    return System.getProperty(SCRIPTED_RANDOM_PROPERTY) != null && System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0;
+    return System.getProperty(SCRIPTED_RANDOM_PROPERTY) != null
+        && System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0;
   }
 
   /**
@@ -78,7 +72,8 @@ public class ScriptedRandomSource implements IRandomSource {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException, IllegalStateException {
+  public int[] getRandom(final int max, final int count, final String annotation)
+      throws IllegalArgumentException, IllegalStateException {
     if (count <= 0) {
       throw new IllegalArgumentException("count must be > 0, annotation:" + annotation);
     }

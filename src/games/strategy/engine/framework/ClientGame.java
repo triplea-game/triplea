@@ -19,14 +19,14 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ui.ErrorHandler;
 
-
 public class ClientGame extends AbstractGame {
   public static final RemoteName getRemoteStepAdvancerName(final INode node) {
-    return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(), IGameStepAdvancer.class);
+    return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(),
+        IGameStepAdvancer.class);
   }
 
-  public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers, final Map<String, INode> remotePlayerMapping,
-      final Messengers messengers) {
+  public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers,
+      final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     super(data, gamePlayers, remotePlayerMapping, messengers);
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
@@ -80,16 +80,18 @@ public class ClientGame extends AbstractGame {
                 m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
               }
             }
-            // TODO: this is causing problems if the very last step is a client step. we end up creating a new round before the host's
+            // TODO: this is causing problems if the very last step is a client step. we end up creating a new round
+            // before the host's
             // rounds has started.
-            // right now, fixing it with a hack. but in reality we probably need to have a better way of determining when a new round has
+            // right now, fixing it with a hack. but in reality we probably need to have a better way of determining
+            // when a new round has
             // started (like with a roundChanged listener).
             if ((currentRound - 1 > round && ourOriginalCurrentRound >= round)
                 || (currentRound > round && ourOriginalCurrentRound < round)) {
-              System.err.println(
-                  "Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
-              throw new IllegalStateException(
-                  "Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
+              System.err.println("Can not create more rounds that host currently has. Host Round:" + round
+                  + " and new Client Round:" + currentRound);
+              throw new IllegalStateException("Can not create more rounds that host currently has. Host Round:" + round
+                  + " and new Client Round:" + currentRound);
             }
           } finally {
             m_data.releaseWriteLock();
@@ -174,7 +176,8 @@ public class ClientGame extends AbstractGame {
             if (i > 300 && !shownErrorMessage) {
               System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
               shownErrorMessage = true;
-              // TODO: should we throw an illegal state error? or just return? or a game over exception? should we request the server to
+              // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
+              // request the server to
               // send the step update again or something?
             }
           } catch (final InterruptedException e) {
@@ -187,12 +190,14 @@ public class ClientGame extends AbstractGame {
       }
       final IGamePlayer gp = m_gamePlayers.get(player);
       if (gp == null) {
-        throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
+        throw new IllegalStateException(
+            "Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
       }
       /*
        * if (HeadlessGameServer.headless())
        * {
-       * System.out.println("Client local player step: " + stepName + " for PlayerID: " + player.getName() + ", player name: " +
+       * System.out.println("Client local player step: " + stepName + " for PlayerID: " + player.getName() +
+       * ", player name: " +
        * gp.getName() + ", player type: "
        * + gp.getType() + ". All local players: " + m_gamePlayers + ". All players: " + m_playerManager);
        * }

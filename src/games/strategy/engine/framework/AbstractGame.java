@@ -27,8 +27,6 @@ import games.strategy.util.ListenerList;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
- *
- *
  */
 abstract public class AbstractGame implements IGame {
   protected static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
@@ -46,8 +44,8 @@ abstract public class AbstractGame implements IGame {
   protected boolean m_firstRun = true;
   protected final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
 
-  public AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers, final Map<String, INode> remotePlayerMapping,
-      final Messengers messengers) {
+  public AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
+      final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     m_data = data;
     m_messenger = messengers.getMessenger();
     m_remoteMessenger = messengers.getRemoteMessenger();
@@ -93,8 +91,8 @@ abstract public class AbstractGame implements IGame {
    * @param displayName
    *        display name
    */
-  protected void notifyGameStepListeners(final String stepName, final String delegateName, final PlayerID player, final int round,
-      final String displayName) {
+  protected void notifyGameStepListeners(final String stepName, final String delegateName, final PlayerID player,
+      final int round, final String displayName) {
     for (final GameStepListener listener : m_gameStepListeners) {
       listener.gameStepChanged(stepName, delegateName, player, round, displayName);
     }
@@ -112,7 +110,6 @@ abstract public class AbstractGame implements IGame {
    * m_data.getGameLoader().shutDown();
    * }
    */
-
   @Override
   public GameData getData() {
     return m_data;
@@ -187,5 +184,4 @@ abstract public class AbstractGame implements IGame {
   public void removeSoundChannel(final ISound soundChannel) {
     m_channelMessenger.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
   }
-
 }

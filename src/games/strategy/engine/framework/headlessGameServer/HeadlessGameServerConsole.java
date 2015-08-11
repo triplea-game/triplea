@@ -22,8 +22,6 @@ import games.strategy.net.IServerMessenger;
 
 /**
  * Terminal line console.
- *
- *
  */
 public class HeadlessGameServerConsole {
   private final HeadlessGameServer server;
@@ -433,7 +431,8 @@ public class HeadlessGameServerConsole {
         if (server != null && server.getSetupPanelModel() != null) {
           final ISetupPanel setup = server.getSetupPanelModel().getPanel();
           if (setup != null && setup instanceof ServerSetupPanel) {
-            ((ServerSetupPanel) setup).shutDown();// this is causing a deadlock when in a shutdown hook, due to swing/awt. so we will shut
+            ((ServerSetupPanel) setup).shutDown();// this is causing a deadlock when in a shutdown hook, due to
+                                                  // swing/awt. so we will shut
                                                   // it down here instead.
           }
         }
@@ -475,21 +474,12 @@ public class HeadlessGameServerConsole {
   }
 
   private void showHelp() {
-    out.println("Available commands:\n"
-        + "  help - show this message\n"
-        + "  status - show status information\n"
+    out.println("Available commands:\n" + "  help - show this message\n" + "  status - show status information\n"
         + "  dump - prints threads, memory, status, connections, to the log file\n"
-        + "  connections - show all connected players\n"
-        + "  mute - mute player\n"
-        + "  boot - boot player\n"
-        + "  ban - ban player\n"
-        + "  send - sends a chat message\n"
-        + "  chatmode - toggles the showing of chat messages as they come in\n"
-        + "  chatlog - shows the chat log\n"
-        + "  memory - show memory usage\n"
-        + "  threads - get thread dumps\n"
-        + "  save - saves game to filename\n"
-        + "  stop - saves then stops current game and goes back to waiting\n"
-        + "  quit - quit\n");
+        + "  connections - show all connected players\n" + "  mute - mute player\n" + "  boot - boot player\n"
+        + "  ban - ban player\n" + "  send - sends a chat message\n"
+        + "  chatmode - toggles the showing of chat messages as they come in\n" + "  chatlog - shows the chat log\n"
+        + "  memory - show memory usage\n" + "  threads - get thread dumps\n" + "  save - saves game to filename\n"
+        + "  stop - saves then stops current game and goes back to waiting\n" + "  quit - quit\n");
   }
 }

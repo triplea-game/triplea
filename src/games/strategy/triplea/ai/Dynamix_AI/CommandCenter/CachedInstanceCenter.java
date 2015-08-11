@@ -6,7 +6,6 @@ import games.strategy.triplea.delegate.BattleTracker;
 
 /**
  * Note that this class will most likely be removed when the AI is completed...
- *
  */
 public class CachedInstanceCenter {
   public static GameData CachedGameData = null;

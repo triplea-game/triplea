@@ -19,16 +19,16 @@ import games.strategy.grid.ui.GridMapPanel;
 
 /**
  * Main class responsible for Chess game.
- *
- *
  */
 public class Chess extends GridGame implements IGameLoader {
   private static final long serialVersionUID = 6963459871530489560L;
   private static final String HUMAN_PLAYER_TYPE = "Human";
   // private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
-  private static final String HEURISTIC_COMPUTER_PLAYER_TYPE = "Mostly Random AI"; // the heuristic ai is basically random, so no need to
+  private static final String HEURISTIC_COMPUTER_PLAYER_TYPE = "Mostly Random AI"; // the heuristic ai is basically
+                                                                                   // random, so no need to
                                                                                    // have two random AIs
-  // private static final String ALPHA_BETA_COMPUTER_PLAYER_TYPE = "Alpha-Beta AI"; // this ai was an experiment, and it didn't turn out
+  // private static final String ALPHA_BETA_COMPUTER_PLAYER_TYPE = "Alpha-Beta AI"; // this ai was an experiment, and it
+  // didn't turn out
   // well.
   public static final String AI_SEARCH_DEPTH_PROPERTY = "AI Search Depth";
 

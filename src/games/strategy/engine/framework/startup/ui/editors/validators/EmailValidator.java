@@ -4,12 +4,9 @@ import games.strategy.util.Util;
 
 /**
  * A validator which validates that a text string is an email
- *
  */
 public class EmailValidator implements IValidator {
-
   private final boolean m_validIfEmpty;
-
 
   /**
    * create a new instance
@@ -27,6 +24,5 @@ public class EmailValidator implements IValidator {
       return m_validIfEmpty;
     }
     return Util.isMailValid(text);
-
   }
 }

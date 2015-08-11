@@ -7,10 +7,8 @@ import games.strategy.engine.delegate.IDelegate;
 /**
  * A single step in a game.
  * <p>
- *
- * Typically turn based strategy games are composed of a set of distinct phases (in chess this would be two, white move, black move).
- *
- *
+ * Typically turn based strategy games are composed of a set of distinct phases (in chess this would be two, white move,
+ * black move).
  */
 public class GameStep extends GameDataComponent {
   private static final long serialVersionUID = -7944468945162840931L;
@@ -22,7 +20,6 @@ public class GameStep extends GameDataComponent {
   private int m_runCount = 0;
   private int m_maxRunCount = -1;
   private final Properties m_properties;
-
   public static final String PROPERTY_skipPosting = "skipPosting";
   public static final String PROPERTY_turnSummaryPlayers = "turnSummaryPlayers";
   public static final String PROPERTY_airborneMove = "airborneMove";
@@ -54,8 +51,8 @@ public class GameStep extends GameDataComponent {
    * @param stepProperties
    *        properties of the game step
    */
-  public GameStep(final String name, final String displayName, final PlayerID player, final IDelegate delegate, final GameData data,
-      final Properties stepProperties) {
+  public GameStep(final String name, final String displayName, final PlayerID player, final IDelegate delegate,
+      final GameData data, final Properties stepProperties) {
     super(data);
     m_name = name;
     m_displayName = displayName;
@@ -82,7 +79,8 @@ public class GameStep extends GameDataComponent {
       return false;
     }
     final GameStep other = (GameStep) o;
-    return other.m_name.equals(this.m_name) && other.m_delegate.equals(this.m_delegate) && other.m_player.equals(this.m_player);
+    return other.m_name.equals(this.m_name) && other.m_delegate.equals(this.m_delegate)
+        && other.m_player.equals(this.m_player);
   }
 
   public boolean hasReachedMaxRunCount() {

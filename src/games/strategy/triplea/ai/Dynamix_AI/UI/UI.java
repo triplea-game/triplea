@@ -6,7 +6,6 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.ui.TripleAFrame;
 
-
 public class UI {
   public static void Initialize(final TripleAFrame frame) {
     if (!SwingUtilities.isEventDispatchThread()) {

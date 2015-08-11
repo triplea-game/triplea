@@ -19,12 +19,12 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
-
 class CountryChart {
   private Collection<Territory> m_terrCollection;
   private GameData m_data;
   private Iterator<Territory> m_terrIterator;
-  private final Map<Territory, List<Map<UnitType, Integer>>> m_infoMap = new HashMap<Territory, List<Map<UnitType, Integer>>>();
+  private final Map<Territory, List<Map<UnitType, Integer>>> m_infoMap =
+      new HashMap<Territory, List<Map<UnitType, Integer>>>();
   private PrintGenerationData m_printData;
 
   protected void saveToFile(final PlayerID player, final PrintGenerationData printData) {
@@ -70,7 +70,8 @@ class CountryChart {
       }
       countryFileWriter.write("\r\n");
       // Print Territories and Info
-      m_terrIterator = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
+      m_terrIterator =
+          Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
       while (m_terrIterator.hasNext()) {
         final Territory currentTerritory = m_terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());

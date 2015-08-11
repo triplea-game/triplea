@@ -12,19 +12,15 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * This is not actually a dice server, it just uses the normal TripleA PlainRandomSource for dice roll
  * This way your dice rolls are not registered anywhere, and you do not rely on any external web based service rolling
  * the dice.
- *
  * Because DiceServers must be serializable read resolve must be implemented
- *
  */
 public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
   private transient IRandomSource _randomSource;
 
-
   public InternalDiceServer() {
     _randomSource = new PlainRandomSource();
   }
-
 
   @Override
   public EditorPanel getEditor() {
@@ -37,15 +33,14 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameID, final String gameUUID)
-      throws IOException {
+  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameID,
+      final String gameUUID) throws IOException {
     // the interface is rather stupid, you have to return a string here, which is then passed back in getDice()
     final int[] ints = _randomSource.getRandom(max, numDice, "Internal Dice Server");
     final StringBuilder sb = new StringBuilder();
     for (final int i : ints) {
       sb.append(i).append(",");
     }
-
     final String intArrayString = sb.substring(0, sb.length() - 1);
     return intArrayString;
   }
@@ -71,9 +66,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public void setToAddress(final String toAddress) {
-
-  }
+  public void setToAddress(final String toAddress) {}
 
   @Override
   public String getCcAddress() {
@@ -81,9 +74,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public void setCcAddress(final String ccAddress) {
-
-  }
+  public void setCcAddress(final String ccAddress) {}
 
   @Override
   public String getInfoText() {
@@ -113,9 +104,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public void setGameId(final String gameId) {
-
-  }
+  public void setGameId(final String gameId) {}
 
   @Override
   public String getGameId() {

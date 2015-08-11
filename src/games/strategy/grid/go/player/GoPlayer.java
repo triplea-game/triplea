@@ -23,13 +23,13 @@ public class GoPlayer extends GridGamePlayer {
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to
+                                       // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
     // if (playDel.haveTwoPassedInARow())
     // return;
-
     // change to active player
     m_ui.changeActivePlayer(getPlayerID());
     final GoMapPanel mapPanel = ((GoMapPanel) m_ui.getMainPanel());
@@ -69,19 +69,18 @@ public class GoPlayer extends GridGamePlayer {
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
-      System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to err too
+      System.err.println(errorContext);// for some reason the client is not seeing or getting these errors, so print to
+                                       // err too
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
     // if (!endTurnDel.haveTwoPassedInARow())
     // return;
-
     m_ui.changeActivePlayer(getPlayerID());
     final GoMapPanel mapPanel = ((GoMapPanel) m_ui.getMainPanel());
     if (mapPanel != null) {
       mapPanel.changePhase(GO_DELEGATE_PHASE.ENDGAME);
     }
-
     // Get the relevant delegate
     // final PlayerID me = getPlayerID();
     IGridEndTurnData endTurnData = null;
@@ -107,7 +106,6 @@ public class GoPlayer extends GridGamePlayer {
         }
       }
     }
-
     // TODO: move all end game stuff to play delegate. it is such a hack sitting here
     IGridEndTurnData forumPoster = null;
     CountDownLatch waiting = null;
@@ -127,5 +125,4 @@ public class GoPlayer extends GridGamePlayer {
       mapPanel.removeShutdownLatch(waiting);
     }
   }
-
 }

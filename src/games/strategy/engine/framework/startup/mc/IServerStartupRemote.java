@@ -7,10 +7,8 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 
-
 public interface IServerStartupRemote extends IRemote {
   /**
-   *
    * @return a listing of the players in the game
    */
   public PlayerListing getPlayerListing();

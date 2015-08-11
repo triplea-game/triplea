@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete bad words (there is no update).
- *
  */
 public class BadWordController {
   private static final Logger s_logger = Logger.getLogger(BadWordController.class.getName());

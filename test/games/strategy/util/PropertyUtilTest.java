@@ -10,14 +10,12 @@ public class PropertyUtilTest extends TestCase {
    * final JLabel label = new JLabel("TestCase");
    * assertEquals("TestCase", PropertyUtil.get("text", label));
    * }
-   *
    * public void testSet()
    * {
    * final JLabel label = new JLabel("TestCase");
    * PropertyUtil.set("text", "changed", label);
    * assertEquals("changed", PropertyUtil.get("text", label));
    * }
-   *
    * public void testSetInt()
    * {
    * final JLabel label = new JLabel();
@@ -25,7 +23,6 @@ public class PropertyUtilTest extends TestCase {
    * PropertyUtil.get("IconTextGap", label);
    * }
    */
-
   public void testGetFieldObject() {
     final RulesAttachment at = new RulesAttachment("test", null, null);
     int uses = (Integer) PropertyUtil.getPropertyFieldObject("uses", at);

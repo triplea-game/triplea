@@ -42,7 +42,8 @@ public class EngineVersionProperties {
   private final String m_linkAlt;
   private final String m_changelogLink;
   private volatile boolean m_done = false;
-  // private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties"; // only for testing when
+  // private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties"; //
+  // only for testing when
   // sourceforge is down
   private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
 
@@ -52,11 +53,14 @@ public class EngineVersionProperties {
 
   private EngineVersionProperties(final Properties props) {
     m_latestVersionOut = new Version(props.getProperty("LATEST", EngineVersion.VERSION.toStringFull(".")));
-    final Version showUpdatesFromTemp = new Version(props.getProperty("SHOW_FROM", EngineVersion.VERSION.toStringFull(".")));
-    m_showUpdatesFrom = (EngineVersion.VERSION.isLessThan(showUpdatesFromTemp, false) ? EngineVersion.VERSION : showUpdatesFromTemp);
+    final Version showUpdatesFromTemp =
+        new Version(props.getProperty("SHOW_FROM", EngineVersion.VERSION.toStringFull(".")));
+    m_showUpdatesFrom =
+        (EngineVersion.VERSION.isLessThan(showUpdatesFromTemp, false) ? EngineVersion.VERSION : showUpdatesFromTemp);
     m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/");
     m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
-    m_changelogLink = props.getProperty("CHANGELOG", "https://triplea.svn.sourceforge.net/svnroot/triplea/trunk/triplea/changelog.txt");
+    m_changelogLink = props.getProperty("CHANGELOG",
+        "https://triplea.svn.sourceforge.net/svnroot/triplea/trunk/triplea/changelog.txt");
     m_releaseNotes = new HashMap<Version, String>();
     for (final Entry<Object, Object> entry : props.entrySet()) {
       final String key = (String) entry.getKey();
@@ -127,7 +131,8 @@ public class EngineVersionProperties {
   }
 
   private static void runInBackground(final Component parent, final String waitMessage, final Runnable r) {
-    // we do not need to alert the user to this, or have a waiting window or progress window. just check in the background.
+    // we do not need to alert the user to this, or have a waiting window or progress window. just check in the
+    // background.
     // BackgroundTaskRunner.runInBackground(parent, waitMessage, r);
     r.run();
   }
@@ -140,7 +145,6 @@ public class EngineVersionProperties {
     config.setHost(url.getHost());
     // add the proxy
     GameRunner2.addProxy(config);
-
     final GetMethod method = new GetMethod(url.getPath());
     // pretend to be ie
     method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
@@ -190,12 +194,13 @@ public class EngineVersionProperties {
     text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
     text.append("<br />Your current version: " + EngineVersion.VERSION);
     text.append("<br />Latest version available for download: " + getLatestVersionOut());
-    text.append("<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion() + "\">"
-        + getLinkToDownloadLatestVersion() + "</a>");
+    text.append("<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion()
+        + "\">" + getLinkToDownloadLatestVersion() + "</a>");
     text.append("<br />Backup Mirror: <a class=\"external\" href=\"" + getLinkAltToDownloadLatestVersion() + "\">"
         + getLinkAltToDownloadLatestVersion() + "</a>");
-    text.append("<br /><br />Please note that installing a new version of TripleA will not remove any old copies of TripleA."
-        + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your shortcuts to the new TripleA.");
+    text.append(
+        "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of TripleA."
+            + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your shortcuts to the new TripleA.");
     text.append("<br /><br />What is new:<br />");
     text.append("</html>");
     return text.toString();
@@ -211,18 +216,17 @@ public class EngineVersionProperties {
         text.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
       }
     }
-    text.append(
-        "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">" + getChangeLogLink() + "</a><br />");
+    text.append("Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">"
+        + getChangeLogLink() + "</a><br />");
     text.append("</html>");
     return text.toString();
   }
 
   public Component getCurrentFeaturesComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
-    final JEditorPane intro = new JEditorPane("text/html",
-        "<html><h2>What is new in version " + EngineVersion.VERSION + "</h2><br />"
-            + "Please visit our forum to get involved: "
-            + "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
+    final JEditorPane intro = new JEditorPane("text/html", "<html><h2>What is new in version " + EngineVersion.VERSION
+        + "</h2><br />" + "Please visit our forum to get involved: "
+        + "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
     intro.setEditable(false);
     intro.setOpaque(false);
     intro.setBorder(BorderFactory.createEmptyBorder());
@@ -245,8 +249,8 @@ public class EngineVersionProperties {
         releaseNotesBuilder.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
       }
     }
-    releaseNotesBuilder.append(
-        "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">" + getChangeLogLink() + "</a><br />");
+    releaseNotesBuilder.append("Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink()
+        + "\">" + getChangeLogLink() + "</a><br />");
     releaseNotesBuilder.append("</html>");
     final JEditorPane updates = new JEditorPane("text/html", releaseNotesBuilder.toString());
     updates.setEditable(false);

@@ -25,8 +25,6 @@ import games.strategy.util.Tuple;
 /**
  * A class of attachments that can be "activated" during a user action delegate.
  * For now they will just be conditions that can then fire triggers.
- *
- *
  */
 public class UserActionAttachment extends AbstractUserActionAttachment implements ICondition {
   private static final long serialVersionUID = 5268397563276055355L;
@@ -51,11 +49,13 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
     return get(player, nameOfAttachment, null);
   }
 
-  public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment, final Collection<PlayerID> playersToSearch) {
+  public static UserActionAttachment get(final PlayerID player, final String nameOfAttachment,
+      final Collection<PlayerID> playersToSearch) {
     UserActionAttachment rVal = (UserActionAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
       if (playersToSearch == null) {
-        throw new IllegalStateException("UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+        throw new IllegalStateException(
+            "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       } else {
         for (final PlayerID otherPlayer : playersToSearch) {
           if (otherPlayer == player) {
@@ -66,7 +66,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
             return rVal;
           }
         }
-        throw new IllegalStateException("UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+        throw new IllegalStateException(
+            "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       }
     }
     return rVal;
@@ -88,7 +89,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
     final String[] s = value.split(":");
     if (s.length != 6) {
       throw new GameParseException(
-          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance" + thisErrorMsg());
+          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
+              + thisErrorMsg());
     }
     TriggerAttachment trigger = null;
     for (final PlayerID player : getData().getPlayerList().getPlayers()) {
@@ -111,7 +113,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
     options = options.replaceFirst((s[0] + ":"), "");
     final int numberOfTimes = getInt(s[1]);
     if (numberOfTimes < 0) {
-      throw new GameParseException("activateTrigger must be positive for the number of times to fire: " + s[1] + thisErrorMsg());
+      throw new GameParseException(
+          "activateTrigger must be positive for the number of times to fire: " + s[1] + thisErrorMsg());
     }
     getBool(s[2]);
     getBool(s[3]);
@@ -137,8 +140,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
     m_activateTrigger = new ArrayList<Tuple<String, String>>();
   }
 
-  public static void fireTriggers(final UserActionAttachment actionAttachment, final HashMap<ICondition, Boolean> testedConditionsSoFar,
-      final IDelegateBridge aBridge) {
+  public static void fireTriggers(final UserActionAttachment actionAttachment,
+      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge) {
     final GameData data = aBridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
@@ -165,19 +168,18 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
       if (testConditionsToFire) {
         if (!testedConditionsSoFar.containsKey(toFire)) {
           // this should directly add the new tests to testConditionsToFire...
-          TriggerAttachment.collectTestsForAllTriggers(toFireSet, aBridge, new HashSet<ICondition>(testedConditionsSoFar.keySet()),
-              testedConditionsSoFar);
+          TriggerAttachment.collectTestsForAllTriggers(toFireSet, aBridge,
+              new HashSet<ICondition>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
         }
         if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).match(toFire)) {
           continue;
         }
       }
       for (int i = 0; i < numberOfTimesToFire; ++i) {
-        aBridge.getHistoryWriter().startEvent(
-            MyFormatter.attachmentNameToText(actionAttachment.getName()) + " activates a trigger called: "
-                + MyFormatter.attachmentNameToText(toFire.getName()));
-        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, aBridge, null, null, useUsesToFire, testUsesToFire,
-            testChanceToFire, false);
+        aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(actionAttachment.getName())
+            + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
+        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, aBridge, null, null, useUsesToFire,
+            testUsesToFire, testChanceToFire, false);
       }
     }
   }
@@ -193,12 +195,12 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
    * @param player
    * @return gets the valid actions for this player.
    */
-  public static Collection<UserActionAttachment> getValidActions(final PlayerID player, final HashMap<ICondition, Boolean> testedConditions,
-      final GameData data) {
+  public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
+      final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     // if (!player.amNotDeadYet(data))
     // return new ArrayList<UserActionAttachment>();
-    return Match.getMatches(getUserActionAttachments(player),
-        new CompositeMatchAnd<UserActionAttachment>(Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions)));
+    return Match.getMatches(getUserActionAttachments(player), new CompositeMatchAnd<UserActionAttachment>(
+        Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
 
   @Override

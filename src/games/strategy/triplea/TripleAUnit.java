@@ -26,11 +26,10 @@ import games.strategy.util.Tuple;
 /**
  * Extended unit for triplea games.
  * <p>
- *
- * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters on this directly will
+ * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters
+ * on this directly will
  * not serialize the changes across the network.
  * <p>
- *
  */
 public class TripleAUnit extends Unit {
   // compatable with 0.9.2
@@ -55,30 +54,24 @@ public class TripleAUnit extends Unit {
   public static final String DISABLED = "disabled";
   public static final String LAUNCHED = "launched";
   public static final String AIRBORNE = "airborne";
-
   private TripleAUnit m_transportedBy = null; // the transport that is currently transporting us
   private List<Unit> m_unloaded = Collections.emptyList(); // the units we have unloaded this turn
   private Boolean m_wasLoadedThisTurn = Boolean.FALSE; // was this unit loaded this turn?
   private Territory m_unloadedTo = null; // the territory this unit was unloaded to this turn
   private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE; // was this unit unloaded in combat phase this turn?
-
   private int m_alreadyMoved = 0; // movement used this turn
   private int m_bonusMovement = 0; // movement used this turn
   private int m_unitDamage = 0; // amount of damage unit has sustained
-
   private boolean m_submerged = false; // is this submarine submerged
   private PlayerID m_originalOwner = null; // original owner of this unit
-
   private boolean m_wasInCombat = false; // Was this unit in combat
   private boolean m_wasLoadedAfterCombat = false;
   private boolean m_wasAmphibious = false;
-
   private Territory m_originatedFrom = null; // the territory this unit started in (for use with scrambling)
   private boolean m_wasScrambled = false;
   private int m_maxScrambleCount = -1;
   private boolean m_wasInAirBattle = false;
   private boolean m_disabled = false;
-
   private int m_launched = 0; // the number of airborne units launched by this unit this turn
   private boolean m_airborne = false; // was this unit airborne and launched this turn
 
@@ -101,7 +94,6 @@ public class TripleAUnit extends Unit {
 
   /**
    * This is a very slow method because it checks all territories on the map. Try not to use this method if possible.
-   *
    */
   public List<Unit> getTransporting() {
     // we don't store the units we are transporting
@@ -395,7 +387,8 @@ public class TripleAUnit extends Unit {
   }
 
   public int getHowMuchCanThisUnitBeRepaired(final Unit u, final Territory t) {
-    return Math.max(0, (this.getHowMuchDamageCanThisUnitTakeTotal(u, t) - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
+    return Math.max(0,
+        (this.getHowMuchDamageCanThisUnitTakeTotal(u, t) - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
   }
 
   public int getHowMuchShouldUnitBeRepairedToNotBeDisabled(final Unit u, final Territory t) {
@@ -409,17 +402,18 @@ public class TripleAUnit extends Unit {
     return Math.max(0, currentDamage - maxOperationalDamage);
   }
 
-  public static int getProductionPotentialOfTerritory(final Collection<Unit> unitsAtStartOfStepInTerritory, final Territory producer,
-      final PlayerID player, final GameData data,
-      final boolean accountForDamage, final boolean mathMaxZero) {
-    return getHowMuchCanUnitProduce(getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer,
-        player, data, accountForDamage, mathMaxZero);
+  public static int getProductionPotentialOfTerritory(final Collection<Unit> unitsAtStartOfStepInTerritory,
+      final Territory producer, final PlayerID player, final GameData data, final boolean accountForDamage,
+      final boolean mathMaxZero) {
+    return getHowMuchCanUnitProduce(
+        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player,
+        data, accountForDamage, mathMaxZero);
   }
 
-  public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player, final GameData data,
-      final boolean accountForDamage) {
-    final CompositeMatchAnd<Unit> factoryMatch =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+  public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
+      final GameData data, final boolean accountForDamage) {
+    final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(
+        Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
       factoryMatch.add(Matches.UnitIsLand.invert());
     } else {
@@ -443,8 +437,8 @@ public class TripleAUnit extends Unit {
     return highestUnit;
   }
 
-  public static int getHowMuchCanUnitProduce(final Unit u, final Territory producer, final PlayerID player, final GameData data,
-      final boolean accountForDamage, final boolean mathMaxZero) {
+  public static int getHowMuchCanUnitProduce(final Unit u, final Territory producer, final PlayerID player,
+      final GameData data, final boolean accountForDamage, final boolean mathMaxZero) {
     if (u == null) {
       return 0;
     }
@@ -464,9 +458,12 @@ public class TripleAUnit extends Unit {
     if (accountForDamage) {
       if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         if (ua.getCanProduceXUnits() < 0) {
-          productionCapacity = territoryUnitProduction - taUnit.getUnitDamage(); // we could use territoryUnitProduction OR
-                                                                                 // territoryProduction if we wanted to, however we should
-                                                                                 // change damage to be based on whichever we choose.
+          productionCapacity = territoryUnitProduction - taUnit.getUnitDamage(); // we could use territoryUnitProduction
+                                                                                 // OR
+                                                                                 // territoryProduction if we wanted to,
+                                                                                 // however we should
+                                                                                 // change damage to be based on
+                                                                                 // whichever we choose.
         } else {
           productionCapacity = ua.getCanProduceXUnits() - taUnit.getUnitDamage();
         }
@@ -474,20 +471,25 @@ public class TripleAUnit extends Unit {
         productionCapacity = territoryProduction;
         if (productionCapacity < 1) {
           productionCapacity =
-              (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) ? 0 : 1;
+              (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) ? 0
+                  : 1;
         }
       }
     } else {
-      if (ua.getCanProduceXUnits() < 0 && !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+      if (ua.getCanProduceXUnits() < 0
+          && !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         productionCapacity = territoryProduction;
-      } else
-        if (ua.getCanProduceXUnits() < 0 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+      } else if (ua.getCanProduceXUnits() < 0
+          && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         productionCapacity = territoryUnitProduction;
       } else {
         productionCapacity = ua.getCanProduceXUnits();
       }
-      if (productionCapacity < 1 && !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        productionCapacity = (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) ? 0 : 1;
+      if (productionCapacity < 1
+          && !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+        productionCapacity =
+            (games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data)) ? 0
+                : 1;
       }
     }
     // Increase production if have industrial technology
@@ -502,15 +504,16 @@ public class TripleAUnit extends Unit {
   }
 
   /**
-   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max damage for the new units.
+   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max
+   * damage for the new units.
    *
    * @param unitGivingAttributes
    * @param unitsThatWillGetAttributes
    * @param t
    * @return change for unit's properties
    */
-  public static Change translateAttributesToOtherUnits(final Unit unitGivingAttributes, final Collection<Unit> unitsThatWillGetAttributes,
-      final Territory t) {
+  public static Change translateAttributesToOtherUnits(final Unit unitGivingAttributes,
+      final Collection<Unit> unitsThatWillGetAttributes, final Territory t) {
     final CompositeChange changes = new CompositeChange();
     // must look for m_hits, m_unitDamage,
     final TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;

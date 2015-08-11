@@ -10,11 +10,9 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 
 /**
  * Responsible for checking for a winner in a game of n-puzzle.
- *
  */
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
   // private CountDownLatch m_waiting;
-
   /**
    * Called before the delegate will run.
    */

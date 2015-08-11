@@ -10,7 +10,8 @@ public class Step extends IndexedHistoryNode {
 
   /** Creates a new instance of StepChangedMessage */
   /** Creates a new instance of StepChangedMessage */
-  Step(final String stepName, final String delegateName, final PlayerID player, final int changeStartIndex, final String displayName) {
+  Step(final String stepName, final String delegateName, final PlayerID player, final int changeStartIndex,
+      final String displayName) {
     super(displayName, changeStartIndex, true);
     m_stepName = stepName;
     m_delegateName = delegateName;
@@ -43,7 +44,8 @@ class StepHistorySerializer implements SerializationWriter {
   private final PlayerID m_playerID;
   private final String m_displayName;
 
-  public StepHistorySerializer(final String stepName, final String delegateName, final PlayerID playerID, final String displayName) {
+  public StepHistorySerializer(final String stepName, final String delegateName, final PlayerID playerID,
+      final String displayName) {
     m_stepName = stepName;
     m_delegateName = delegateName;
     m_playerID = playerID;

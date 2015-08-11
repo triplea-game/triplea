@@ -22,7 +22,8 @@ public class Tuple<T, S> implements Serializable {
 
   @Override
   public String toString() {
-    return "[" + (m_first == null ? "null" : m_first.toString()) + ", " + (m_second == null ? "null" : m_second.toString()) + "]";
+    return "[" + (m_first == null ? "null" : m_first.toString()) + ", "
+        + (m_second == null ? "null" : m_second.toString()) + "]";
   }
 
   @Override

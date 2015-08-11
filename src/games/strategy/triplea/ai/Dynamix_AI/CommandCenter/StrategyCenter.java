@@ -7,7 +7,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.ai.Dynamix_AI.Others.StrategyType;
 
-
 public class StrategyCenter {
   private static HashMap<PlayerID, StrategyCenter> s_SCInstances = new HashMap<PlayerID, StrategyCenter>();
 

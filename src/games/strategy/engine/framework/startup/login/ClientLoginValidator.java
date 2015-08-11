@@ -12,14 +12,12 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Version;
 
 /**
- *
  * If we require a password, then we challenge the client with a salt value, the salt
  * being different for each login attempt. . The client hashes the password entered by
  * the user with this salt, and sends it back to us. This prevents the password from
  * travelling over the network in plain text, and also prevents someone listening on
  * the connection from getting enough information to log in (since the salt will change
  * on the next login attempt)
- *
  */
 public class ClientLoginValidator implements ILoginValidator {
   public static final String SALT_PROPERTY = "Salt";
@@ -27,7 +25,6 @@ public class ClientLoginValidator implements ILoginValidator {
   static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
   static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
   static final String INVALID_MAC = "Invalid mac address";
-
   private final IServerMessenger m_serverMessenger;
   private String m_password;
 
@@ -37,7 +34,6 @@ public class ClientLoginValidator implements ILoginValidator {
 
   /**
    * Set the password required for the game, or to null if no password is required.
-   *
    */
   public void setGamePassword(final String password) {
     m_password = password;
@@ -61,8 +57,8 @@ public class ClientLoginValidator implements ILoginValidator {
   }
 
   @Override
-  public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient,
-      final String clientName, final String hashedMac,
+  public String verifyConnection(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient, final String clientName, final String hashedMac,
       final SocketAddress remoteAddress) {
     final String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
     if (versionString == null || versionString.length() > 20 || versionString.trim().length() == 0) {
@@ -85,7 +81,8 @@ public class ClientLoginValidator implements ILoginValidator {
     if (hashedMac == null) {
       return UNABLE_TO_OBTAIN_MAC;
     }
-    if (hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$") || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
+    if (hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")
+        || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
       return INVALID_MAC; // Must have been tampered with
     }
     if (m_serverMessenger.IsMacMiniBanned(hashedMac)) {

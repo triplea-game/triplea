@@ -21,7 +21,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 
-
 public class RepairPanel extends ActionPanel {
   private static final long serialVersionUID = 3045997038627313714L;
   private final JLabel actionLabel = new JLabel();
@@ -76,7 +75,8 @@ public class RepairPanel extends ActionPanel {
     });
   }
 
-  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid, final Collection<PlayerID> allowedPlayersToRepair) {
+  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+      final Collection<PlayerID> allowedPlayersToRepair) {
     m_bid = bid;
     m_allowedPlayersToRepair = allowedPlayersToRepair;
     refreshActionLabelText();
@@ -98,8 +98,8 @@ public class RepairPanel extends ActionPanel {
     public void actionPerformed(final ActionEvent e) {
       final PlayerID player = getCurrentPlayer();
       final GameData data = getData();
-      m_repair = ProductionRepairPanel.getProduction(player, m_allowedPlayersToRepair, (JFrame) getTopLevelAncestor(), data, m_bid,
-          m_repair, getMap().getUIContext());
+      m_repair = ProductionRepairPanel.getProduction(player, m_allowedPlayersToRepair, (JFrame) getTopLevelAncestor(),
+          data, m_bid, m_repair, getMap().getUIContext());
       m_unitsPanel.setUnitsFromRepairRuleMap(m_repair, player, data);
       final int totalValues = getTotalValues(m_repair);
       if (totalValues == 0) {
@@ -132,8 +132,7 @@ public class RepairPanel extends ActionPanel {
       final boolean hasPurchased = getTotalValues(m_repair) != 0;
       if (!hasPurchased) {
         final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(RepairPanel.this),
-            "Are you sure you dont want to repair anything?", "End Purchase",
-            JOptionPane.YES_NO_OPTION);
+            "Are you sure you dont want to repair anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
         if (rVal != JOptionPane.YES_OPTION) {
           return;
         }
@@ -141,7 +140,8 @@ public class RepairPanel extends ActionPanel {
       // give a warning if the player tries to produce too much
       // does this piece of code even do anything? why is it here?
       /*
-       * if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction() || isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+       * if(isWW2V2() || isRestrictedPurchase() || isSBRAffectsUnitProduction() ||
+       * isDamageFromBombingDoneToUnitsInsteadOfTerritories())
        * {
        * int totalProd = 0;
        * getData().acquireReadLock();
@@ -153,7 +153,6 @@ public class RepairPanel extends ActionPanel {
        * PlayerID player = getCurrentPlayer();
        * if(isIncreasedFactoryProduction(player))
        * addedProd = 2;
-       *
        * for(Territory t : Match.getMatches(getData().getMap().getTerritories(),
        * Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getData(), getCurrentPlayer())))
        * {

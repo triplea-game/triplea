@@ -6,7 +6,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.annotations.GameProperty;
 
-
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -4833151445864523853L;
   private boolean m_needsKing = false;

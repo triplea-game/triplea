@@ -31,7 +31,6 @@ import games.strategy.util.MD5Crypt;
 
 /**
  * GUI for the lobby.
- *
  */
 public class LobbyAdminConsole extends JFrame {
   private static final long serialVersionUID = -3982159130973521505L;
@@ -66,7 +65,8 @@ public class LobbyAdminConsole extends JFrame {
     m_executor = new DBExplorerPanel();
     m_allUsers = new AllUsersPanel(m_server.getMessenger());
     m_lobbyGamePanel = new LobbyGamePanel(m_server.getMessengers());
-    final Chat chat = new Chat(LobbyServer.LOBBY_CHAT, m_server.getMessengers(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
+    final Chat chat =
+        new Chat(LobbyServer.LOBBY_CHAT, m_server.getMessengers(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
     m_chatPanel = new ChatMessagePanel(chat);
   }
 
@@ -108,8 +108,8 @@ public class LobbyAdminConsole extends JFrame {
     m_exit.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final int option =
-            JOptionPane.showConfirmDialog(LobbyAdminConsole.this, "Are you Sure?", "Are you Sure", JOptionPane.YES_NO_OPTION);
+        final int option = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, "Are you Sure?", "Are you Sure",
+            JOptionPane.YES_NO_OPTION);
         if (option != JOptionPane.YES_OPTION) {
           return;
         }
@@ -139,7 +139,8 @@ public class LobbyAdminConsole extends JFrame {
       JOptionPane.showMessageDialog(this, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    final int rVal = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, combo, "Select player to debug", JOptionPane.OK_CANCEL_OPTION);
+    final int rVal = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, combo, "Select player to debug",
+        JOptionPane.OK_CANCEL_OPTION);
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
@@ -155,7 +156,8 @@ public class LobbyAdminConsole extends JFrame {
           public void run() {
             s_logger.info("Getting debug info for:" + node);
             final RemoteName remoteName = HeartBeat.getHeartBeatName(node);
-            final IHeartBeat heartBeat = (IHeartBeat) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
+            final IHeartBeat heartBeat =
+                (IHeartBeat) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
             s_logger.info("Debug info for:" + node);
             s_logger.info(heartBeat.getDebugInfo());
             s_logger.info("Debug info finished");
@@ -183,13 +185,14 @@ public class LobbyAdminConsole extends JFrame {
       JOptionPane.showMessageDialog(this, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    final int rVal = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, combo, "Select player to debug", JOptionPane.OK_CANCEL_OPTION);
+    final int rVal = JOptionPane.showConfirmDialog(LobbyAdminConsole.this, combo, "Select player to debug",
+        JOptionPane.OK_CANCEL_OPTION);
     if (rVal != JOptionPane.OK_OPTION) {
       return;
     }
     final String name = (String) combo.getSelectedItem();
-    final String password =
-        JOptionPane.showInputDialog(null, "Host Remote Access Password?", "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
+    final String password = JOptionPane.showInputDialog(null, "Host Remote Access Password?",
+        "Host Remote Access Password?", JOptionPane.QUESTION_MESSAGE);
     for (final INode node : m_server.getMessenger().getNodes()) {
       if (node.getName().equals(name)) {
         // run in a seperate thread
@@ -201,7 +204,8 @@ public class LobbyAdminConsole extends JFrame {
           public void run() {
             s_logger.info("Starting Remote Host Action for: " + node);
             final RemoteName remoteName = RemoteHostUtils.getRemoteHostUtilsName(node);
-            final IRemoteHostUtils hostUtils = (IRemoteHostUtils) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
+            final IRemoteHostUtils hostUtils =
+                (IRemoteHostUtils) m_server.getMessengers().getRemoteMessenger().getRemote(remoteName);
             s_logger.info("Remote Host Action for:" + node);
             final String salt = hostUtils.getSalt();
             final String hashedPassword = MD5Crypt.crypt(password, salt);

@@ -17,11 +17,13 @@ public class PlayerAttachmentExporter extends DefaultAttachmentExporter {
     return super.printOption(field, attachment);
   }
 
-  private String mGiveUnitControlHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mGiveUnitControlHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printPlayerList(field, attachment);
   }
 
-  private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printPlayerList(field, attachment);
   }
 }

@@ -24,7 +24,6 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 
-
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
   private static final String s_MOVE_PANEL_CANCEL = "movePanel.cancel";
@@ -239,7 +238,8 @@ public abstract class AbstractMovePanel extends ActionPanel {
         if (getRootPane() != null) {
           final String key = s_MOVE_PANEL_CANCEL;
           getRootPane().getActionMap().put(key, m_CANCEL_MOVE_ACTION);
-          getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
+          getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
         }
       }
     });

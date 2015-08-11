@@ -112,8 +112,8 @@ public class LHTRTest extends TestCase {
         return null;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleaPlayer player = (ITripleaPlayer) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
     bridge.setRemote(player);
     // move 1 fighter over the aa gun in caucus
     final Route route = new Route();
@@ -132,7 +132,8 @@ public class LHTRTest extends TestCase {
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
-    TechTracker.addAdvance(japanese, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, m_data, japanese));
+    TechTracker.addAdvance(japanese, bridge,
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, m_data, japanese));
     // after tech advance, this is now 3
     assertEquals(3, attachment.getDefense(japanese));
     assertEquals(3, attachment.getAttack(japanese));
@@ -149,11 +150,13 @@ public class LHTRTest extends TestCase {
     final PlayerID british = m_data.getPlayerList().getPlayerID("British");
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
+    battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
+        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    TechTracker.addAdvance(british, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+    TechTracker.addAdvance(british, bridge,
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {2, 2, 3}));
     // if we try to move aa, then the game will ask us if we want to move
@@ -164,8 +167,8 @@ public class LHTRTest extends TestCase {
         return null;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleaPlayer player = (ITripleaPlayer) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
     bridge.setRemote(player);
     final int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
@@ -186,11 +189,13 @@ public class LHTRTest extends TestCase {
     new ChangePerformer(m_data).perform(change);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
-    battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
+    battle.addAttackChange(m_data.getMap().getRoute(uk, germany),
+        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
     addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
     tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    TechTracker.addAdvance(british, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
+    TechTracker.addAdvance(british, bridge,
+        TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 3, 2, 3, 0, 1}));
     // if we try to move aa, then the game will ask us if we want to move
@@ -201,8 +206,8 @@ public class LHTRTest extends TestCase {
         return null;
       }
     };
-    final ITripleaPlayer player = (ITripleaPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        new Class[] {ITripleaPlayer.class}, handler);
+    final ITripleaPlayer player = (ITripleaPlayer) Proxy
+        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {ITripleaPlayer.class}, handler);
     bridge.setRemote(player);
     final int PUsBeforeRaid = germans.getResources().getQuantity(m_data.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
