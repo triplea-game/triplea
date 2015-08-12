@@ -244,8 +244,7 @@ public class NewGameChooser extends JDialog {
     s_cachedGameModel = new NewGameChooserModel();
   }
 
-  // any methods touching s_cachedGameModel should be both static and synchronized
-  public synchronized static void clearNewGameChooserModel() {
+  public static void clearNewGameChooserModel() {
     if (s_cachedGameModel != null) {
       s_cachedGameModel.clear();
       s_cachedGameModel = null;
