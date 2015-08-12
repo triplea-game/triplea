@@ -9,7 +9,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -39,11 +38,11 @@ public class AggregateResults implements Serializable {
    * This could be null if we have zero results!
    */
   public BattleResults GetBattleResultsClosestToAverage() {
-    float closestBattleDif = Integer.MAX_VALUE;
+    double closestBattleDif = Integer.MAX_VALUE;
     BattleResults closestBattle = null;
     for (final BattleResults results : m_results) {
-      float dif = DUtils.MNN((float) (results.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft()));
-      dif += DUtils.MNN((float) (results.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft()));
+      double dif = Math.abs(results.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft());
+      dif += Math.abs(results.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft());
       if (dif < closestBattleDif) {
         closestBattleDif = dif;
         closestBattle = results;

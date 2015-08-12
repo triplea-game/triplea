@@ -48,14 +48,13 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
-import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.ui.ErrorHandler;
 
 /**
  *
  *
- *         Represents a running game.
- *         Lookups to get a GamePlayer from PlayerId and the current Delegate.
+ * Represents a running game.
+ * Lookups to get a GamePlayer from PlayerId and the current Delegate.
  */
 public class ServerGame extends AbstractGame {
   public static final RemoteName SERVER_REMOTE =
@@ -158,7 +157,6 @@ public class ServerGame extends AbstractGame {
       public void shutDown() {}
     };
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-    CachedInstanceCenter.CachedGameData = data;
     setupDelegateMessaging(data);
     m_randomStats = new RandomStats(m_remoteMessenger);
     m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
@@ -504,7 +502,6 @@ public class ServerGame extends AbstractGame {
       }
       final DefaultDelegateBridge bridge =
           new DefaultDelegateBridge(m_data, this, new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
-      CachedInstanceCenter.CachedDelegateBridge = bridge;
       if (m_delegateRandomSource == null) {
         m_delegateRandomSource =
             (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource, new Class[] {IRandomSource.class});
@@ -531,8 +528,6 @@ public class ServerGame extends AbstractGame {
     }
     final DefaultDelegateBridge bridge =
         new DefaultDelegateBridge(m_data, this, new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
-    CachedInstanceCenter.CachedDelegateBridge = bridge;
-    CachedInstanceCenter.CachedGameData = m_data;
     if (m_delegateRandomSource == null) {
       m_delegateRandomSource =
           (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource, new Class[] {IRandomSource.class});

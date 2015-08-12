@@ -22,7 +22,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -214,27 +213,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom); // the list we receive should already be sorted
 
     final List<Unit> interleavedTargetList =
-        new ArrayList<Unit>(DUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers)); // TODO:
-                                                                                                                                      // if
-                                                                                                                                      // we
-                                                                                                                                      // are
-                                                                                                                                      // going
-                                                                                                                                      // to
-                                                                                                                                      // lose
-                                                                                                                                      // this
-                                                                                                                                      // battle
-                                                                                                                                      // by
-                                                                                                                                      // a
-                                                                                                                                      // wide
-                                                                                                                                      // margin,
-                                                                                                                                      // we
-                                                                                                                                      // may
-                                                                                                                                      // not
-                                                                                                                                      // want
-                                                                                                                                      // to
-                                                                                                                                      // interleave
-                                                                                                                                      // these
-                                                                                                                                      // units
+        new ArrayList<Unit>(AdvancedUtils.interleaveCarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers));
+    // TODO: if we are going to lose this battle by a wide margin, we may not want to interleave these units
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }
