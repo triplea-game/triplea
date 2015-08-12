@@ -5,7 +5,6 @@ import games.strategy.net.INode;
 
 /**
  * We are waiting for the results of a remote invocation.
- *
  */
 public class InvocationInProgress {
   private final INode m_waitingOn;
@@ -24,7 +23,6 @@ public class InvocationInProgress {
   }
 
   /**
-   *
    * @return true if there are no more results to process
    */
   public boolean process(final HubInvocationResults hubresults, final INode from) {

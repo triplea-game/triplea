@@ -19,8 +19,6 @@ import games.strategy.grid.ui.GridMapPanel;
 
 /**
  * Main class responsible for Go game.
- *
- *
  */
 public class Go extends GridGame implements IGameLoader {
   private static final long serialVersionUID = 2560802787325950593L;

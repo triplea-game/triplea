@@ -6,10 +6,7 @@ import java.util.Stack;
 
 /**
  * Utility class implementing AI game algorithms.
- *
  * Currently, minimax and alpha-beta algorithms are implemented.
- *
- * @see "Chapter 6 of Artificial Intelligence, 2nd ed. by Stuart Russell & Peter Norvig"
  */
 public class AIAlgorithm {
   public static <Play> Stack<Play> depthFirstSearch(final GameState<Play> state, final int maxDepth) {
@@ -29,8 +26,8 @@ public class AIAlgorithm {
     }
   }
 
-  private static <Play> Stack<Play> dfs(final GameState<Play> state, final Set<GameState<Play>> visitedStates, Stack<Play> plays,
-      final int depth, final int maxDepth) {
+  private static <Play> Stack<Play> dfs(final GameState<Play> state, final Set<GameState<Play>> visitedStates,
+      Stack<Play> plays, final int depth, final int maxDepth) {
     final int playsSoFar = plays.size();
     if (depth < maxDepth) {
       int childCounter = -1;
@@ -182,7 +179,6 @@ public class AIAlgorithm {
     }
     return new Pair<Float, Play>(value, bestMove);
   }
-
 
   static class Pair<First, Second> {
     private final First m_first;

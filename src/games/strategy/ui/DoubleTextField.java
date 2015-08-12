@@ -18,7 +18,8 @@ public class DoubleTextField extends JTextField {
   private double m_max = Double.MAX_VALUE;
   private double m_min = Double.MIN_VALUE;
   private String m_terr = null;
-  private final ListenerList<DoubleTextFieldChangeListener> m_listeners = new ListenerList<DoubleTextFieldChangeListener>();
+  private final ListenerList<DoubleTextFieldChangeListener> m_listeners =
+      new ListenerList<DoubleTextFieldChangeListener>();
 
   public static void main(final String[] args) {
     final JFrame frame = new JFrame();
@@ -126,7 +127,6 @@ public class DoubleTextField extends JTextField {
     return value <= m_max && value >= m_min;
   }
 
-
   /**
    * Make sure that no non numeric data is typed.
    */
@@ -183,7 +183,6 @@ public class DoubleTextField extends JTextField {
       listener.changedValue(this);
     }
   }
-
 
   private class LostFocus extends FocusAdapter {
     @Override

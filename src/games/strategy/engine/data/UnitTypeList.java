@@ -8,9 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
- *
- *          A collection of unit types
+ * A collection of unit types
  */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
   private static final long serialVersionUID = 9002927658524651749L;

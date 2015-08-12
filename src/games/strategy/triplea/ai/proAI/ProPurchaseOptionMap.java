@@ -6,19 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -43,7 +30,6 @@ public class ProPurchaseOptionMap {
 
   public ProPurchaseOptionMap(final PlayerID player, final GameData data) {
     LogUtils.log(Level.FINE, "Purchase Options");
-
     // Initialize lists
     landFodderOptions = new ArrayList<ProPurchaseOption>();
     landAttackOptions = new ArrayList<ProPurchaseOption>();
@@ -56,7 +42,6 @@ public class ProPurchaseOptionMap {
     aaOptions = new ArrayList<ProPurchaseOption>();
     factoryOptions = new ArrayList<ProPurchaseOption>();
     specialOptions = new ArrayList<ProPurchaseOption>();
-
     // Add each production rule to appropriate list(s)
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     for (final ProductionRule rule : rules) {
@@ -66,11 +51,10 @@ public class ProPurchaseOptionMap {
         continue;
       }
       final UnitType unitType = (UnitType) resourceOrUnit;
-
       // Add rule to appropriate purchase option list
-      if ((UnitAttachment.get(unitType).getMovement(player) <= 0 && !(UnitAttachment.get(unitType).getCanProduceUnits()))
-          || Matches.UnitTypeConsumesUnitsOnCreation.match(unitType)
-          || UnitAttachment.get(unitType).getIsSuicide()) {
+      if ((UnitAttachment.get(unitType).getMovement(player) <= 0
+          && !(UnitAttachment.get(unitType).getCanProduceUnits()))
+          || Matches.UnitTypeConsumesUnitsOnCreation.match(unitType) || UnitAttachment.get(unitType).getIsSuicide()) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         LogUtils.log(Level.FINER, "Special: " + ppo);
@@ -119,7 +103,6 @@ public class ProPurchaseOptionMap {
     if (landDefenseOptions.isEmpty()) {
       landDefenseOptions.addAll(landAttackOptions);
     }
-
     // Print categorized options
     LogUtils.log(Level.FINE, "Purchase Categories");
     logOptions(landFodderOptions, "Land Fodder Options: ");
@@ -216,5 +199,4 @@ public class ProPurchaseOptionMap {
     sb.delete(sb.length() - 2, sb.length());
     LogUtils.log(Level.FINER, sb.toString());
   }
-
 }

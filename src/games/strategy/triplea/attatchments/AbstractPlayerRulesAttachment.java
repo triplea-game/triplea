@@ -17,12 +17,9 @@ import games.strategy.util.IntegerMap;
  * While things like m_alliedOwnershipTerritories (a conditions for testing ownership of territories,
  * or m_objectiveValue (the money given if the condition is true), would NOT go in This class. <br>
  * Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
- *
- *
  */
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
-
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
   // These variables are related to a "rulesAttatchment" that changes certain rules for the attached player. They are not related to
   // conditions at all.
@@ -43,7 +40,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 
   // It would wreck most map xmls to move the rulesAttatchment's to another class, so don't move them out of here please!
   // However, any new rules attachments that are not conditions, should be put into the "PlayerAttachment" class.
-
   public AbstractPlayerRulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -118,7 +114,8 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   public void setProductionPerXTerritories(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("productionPerXTerritories can not be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(
+          "productionPerXTerritories can not be empty or have more than two fields" + thisErrorMsg());
     }
     String unitTypeToProduce;
     if (s.length == 1) {

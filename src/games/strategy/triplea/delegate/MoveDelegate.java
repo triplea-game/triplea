@@ -40,12 +40,9 @@ import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
- *
  * Responsible for moving units on the board.
  * <p>
  * Responsible for checking the validity of a move, and for moving the units. <br>
- *
- *
  */
 public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate {
   public static String CLEANING_UP_DURING_MOVEMENT_PHASE = "Cleaning up during movement phase";
@@ -78,32 +75,22 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       HashMap<ICondition, Boolean> testedConditions = null;
-      final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-          AbstractTriggerAttachment.availableUses,
-          AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          new CompositeMatchOr<TriggerAttachment>(
-              AbstractTriggerAttachment.notificationMatch(),
-              TriggerAttachment.playerPropertyMatch(),
-              TriggerAttachment.relationshipTypePropertyMatch(),
-              TriggerAttachment.territoryPropertyMatch(),
-              TriggerAttachment.territoryEffectPropertyMatch(),
-              TriggerAttachment.removeUnitsMatch(),
-              TriggerAttachment.changeOwnershipMatch()));
-
-      final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-          AbstractTriggerAttachment.availableUses,
-          AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          new CompositeMatchOr<TriggerAttachment>(
-              TriggerAttachment.placeMatch()));
-
+      final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
+          new CompositeMatchAnd<TriggerAttachment>(AbstractTriggerAttachment.availableUses,
+              AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
+              new CompositeMatchOr<TriggerAttachment>(AbstractTriggerAttachment.notificationMatch(),
+                  TriggerAttachment.playerPropertyMatch(), TriggerAttachment.relationshipTypePropertyMatch(),
+                  TriggerAttachment.territoryPropertyMatch(), TriggerAttachment.territoryEffectPropertyMatch(),
+                  TriggerAttachment.removeUnitsMatch(), TriggerAttachment.changeOwnershipMatch()));
+      final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch =
+          new CompositeMatchAnd<TriggerAttachment>(AbstractTriggerAttachment.availableUses,
+              AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
+              new CompositeMatchOr<TriggerAttachment>(TriggerAttachment.placeMatch()));
       final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-          moveCombatDelegateBeforeBonusTriggerMatch,
-          moveCombatDelegateAfterBonusTriggerMatch);
-
+          moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data, false) && games.strategy.triplea.Properties.getTriggers(data)) {
-        final HashSet<TriggerAttachment> toFirePossible =
-            TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
-                moveCombatDelegateAllTriggerMatch, m_bridge);
+        final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+            new HashSet<PlayerID>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch, m_bridge);
         if (!toFirePossible.isEmpty()) {
           // collect conditions and test them for ALL triggers, both those that we will first before and those we will fire after.
           testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
@@ -112,53 +99,54 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
                   moveCombatDelegateBeforeBonusTriggerMatch, m_bridge);
           if (!toFireBeforeBonus.isEmpty()) {
             // get all triggers that are satisfied based on the tested conditions.
-            final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFireBeforeBonus,
-                AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+            final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(
+                Match.getMatches(toFireBeforeBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
             // now list out individual types to fire, once for each of the matches above.
-            TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
-            TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
-            TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
-            TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
-            TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
-            TriggerAttachment.triggerChangeOwnership(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
-            TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+            TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+                true);
+            TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true,
+                true, true);
+            TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, m_bridge, null, null,
+                true, true, true, true);
+            TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true,
+                true, true);
+            TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true,
+                true, true, true);
+            TriggerAttachment.triggerChangeOwnership(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+                true);
+            TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+                true);
           }
         }
       }
-
       // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at
       // beginning of combat move)
       if (GameStepPropertiesHelper.isRepairUnits(data)) {
         MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_player);
       }
-
       // reset any bonus of units, and give movement to units which begin the turn in the same territory as units with giveMovement (like
       // air and naval bases)
       if (GameStepPropertiesHelper.isGiveBonusMovement(data)) {
         resetAndGiveBonusMovement();
       }
-
       // take away all movement from allied fighters sitting on damaged carriers
       removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
-
       // placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
       if (GameStepPropertiesHelper.isCombatMove(data, false) && games.strategy.triplea.Properties.getTriggers(data)) {
-        final HashSet<TriggerAttachment> toFireAfterBonus =
-            TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
-                moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
+        final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(
+            new HashSet<PlayerID>(Collections.singleton(m_player)), moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
         if (!toFireAfterBonus.isEmpty()) {
           // get all triggers that are satisfied based on the tested conditions.
-          final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFireAfterBonus,
-              AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+          final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(
+              Match.getMatches(toFireAfterBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
           // now list out individual types to fire, once for each of the matches above.
-          TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+          TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+              true);
         }
       }
-
       if (GameStepPropertiesHelper.isResetUnitStateAtStart(data)) {
         resetUnitStateAndDelegateState();
       }
-
       m_needToInitialize = false;
     }
   }
@@ -328,9 +316,9 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
 
   private void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge aBridge, final PlayerID player) {
     final GameData data = aBridge.getData();
-    final Match<Unit> crippledAlliedCarriersMatch =
-        new CompositeMatchAnd<Unit>(Matches.isUnitAllied(player, data), Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier,
-            Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+    final Match<Unit> crippledAlliedCarriersMatch = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(player, data),
+        Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier,
+        Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
     final Match<Unit> ownedFightersMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir,
         Matches.UnitCanLandOnCarrier, Matches.unitHasMovementLeft);
     final CompositeChange change = new CompositeChange();
@@ -339,7 +327,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       if (ownedFighters.isEmpty()) {
         continue;
       }
-      final Collection<Unit> crippledAlliedCarriers = Match.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
+      final Collection<Unit> crippledAlliedCarriers =
+          Match.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
       if (crippledAlliedCarriers.isEmpty()) {
         continue;
       }
@@ -368,18 +357,20 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
           }
           int bonusMovement = Integer.MIN_VALUE;
           final Collection<Unit> givesBonusUnits = new ArrayList<Unit>();
-          final Match<Unit> givesBonusUnit =
-              new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanGiveBonusMovementToThisUnit(u));
+          final Match<Unit> givesBonusUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data),
+              Matches.UnitCanGiveBonusMovementToThisUnit(u));
           givesBonusUnits.addAll(Match.getMatches(t.getUnits().getUnits(), givesBonusUnit));
           if (Matches.UnitIsSea.match(u)) {
             final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
-            final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsLand));
+            final List<Territory> neighbors =
+                new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsLand));
             for (final Territory current : neighbors) {
               givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
             }
           } else if (Matches.UnitIsLand.match(u)) {
             final Match<Unit> givesBonusUnitSea = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsSea);
-            final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsWater));
+            final List<Territory> neighbors =
+                new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsWater));
             for (final Territory current : neighbors) {
               givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
             }
@@ -402,8 +393,10 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
 
   public static void repairMultipleHitPointUnits(final IDelegateBridge aBridge, final PlayerID player) {
     final GameData data = aBridge.getData();
-    final boolean repairOnlyOwn = games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(aBridge.getData());
-    final Match<Unit> damagedUnits = new CompositeMatchAnd<Unit>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
+    final boolean repairOnlyOwn =
+        games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(aBridge.getData());
+    final Match<Unit> damagedUnits =
+        new CompositeMatchAnd<Unit>(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
     final Match<Unit> damagedUnitsOwned = new CompositeMatchAnd<Unit>(damagedUnits, Matches.unitIsOwnedBy(player));
     final Map<Territory, Set<Unit>> damagedMap = new HashMap<Territory, Set<Unit>>();
     final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
@@ -417,8 +410,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
           damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnits));// we repair everyone's
         }
       } else {
-        damaged = new HashSet<Unit>(current.getUnits().getMatches(
-            new CompositeMatchAnd<Unit>(damagedUnitsOwned, Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
+        damaged = new HashSet<Unit>(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedUnitsOwned,
+            Matches.UnitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
       }
       if (!damaged.isEmpty()) {
         damagedMap.put(current, damaged);
@@ -442,18 +435,19 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
         }
       }
     }
-    aBridge.getHistoryWriter().startEvent(newHitsMap.size() + " " + MyFormatter.pluralize("unit", newHitsMap.size()) + " repaired.",
+    aBridge.getHistoryWriter().startEvent(
+        newHitsMap.size() + " " + MyFormatter.pluralize("unit", newHitsMap.size()) + " repaired.",
         new HashSet<Unit>(newHitsMap.keySet()));
     aBridge.addChange(ChangeFactory.unitsHit(newHitsMap));
     // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air units to leave while
     // damaged, we need to remove those air units now
-    final Collection<Unit> damagedCarriers =
-        Match.getMatches(fullyRepaired.keySet(), Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
+    final Collection<Unit> damagedCarriers = Match.getMatches(fullyRepaired.keySet(),
+        Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
     // now cycle through those now-repaired carriers, and remove allied air from being dependant
     final CompositeChange clearAlliedAir = new CompositeChange();
     for (final Unit carrier : damagedCarriers) {
-      final CompositeChange change = MustFightBattle.clearTransportedByForAlliedAirOnCarrier(Collections.singleton(carrier),
-          fullyRepaired.get(carrier), carrier.getOwner(), data);
+      final CompositeChange change = MustFightBattle.clearTransportedByForAlliedAirOnCarrier(
+          Collections.singleton(carrier), fullyRepaired.get(carrier), carrier.getOwner(), data);
       if (!change.isEmpty()) {
         clearAlliedAir.add(change);
       }
@@ -466,24 +460,27 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   /**
    * This has to be the exact same as Matches.UnitCanBeRepairedByFacilitiesInItsTerritory()
    */
-  public static int getLargestRepairRateForThisUnit(final Unit unitToBeRepaired, final Territory territoryUnitIsIn, final GameData data) {
+  public static int getLargestRepairRateForThisUnit(final Unit unitToBeRepaired, final Territory territoryUnitIsIn,
+      final GameData data) {
     if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
       return 1;
     }
     final Set<Unit> repairUnitsForThisUnit = new HashSet<Unit>();
     final PlayerID owner = unitToBeRepaired.getOwner();
-    final Match<Unit> repairUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(owner, data), Matches.UnitCanRepairOthers,
-        Matches.UnitCanRepairThisUnit(unitToBeRepaired));
+    final Match<Unit> repairUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(owner, data),
+        Matches.UnitCanRepairOthers, Matches.UnitCanRepairThisUnit(unitToBeRepaired));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.UnitIsSea.match(unitToBeRepaired)) {
       final Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
-      final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsLand));
+      final List<Territory> neighbors =
+          new ArrayList<Territory>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsLand));
       for (final Territory current : neighbors) {
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
       }
     } else if (Matches.UnitIsLand.match(unitToBeRepaired)) {
       final Match<Unit> repairUnitSea = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsSea);
-      final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsWater));
+      final List<Territory> neighbors =
+          new ArrayList<Territory>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsWater));
       for (final Territory current : neighbors) {
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitSea));
       }
@@ -504,9 +501,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     final GameData data = getData();
     // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
     final PlayerID player = getUnitsOwner(units);
-    final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents,
-        GameStepPropertiesHelper.isNonCombatMove(data, false),
-        m_movesToUndo, data);
+    final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded,
+        newDependents, GameStepPropertiesHelper.isNonCombatMove(data, false), m_movesToUndo, data);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
@@ -547,11 +543,12 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     }
     // do the move
     final UndoableMove currentMove = new UndoableMove(data, units, route);
-    final String transcriptText =
-        MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
+    final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName()
+        + " to " + route.getEnd().getName();
     m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
     if (isKamikaze) {
-      m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units", kamikazeUnits);
+      m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units",
+          kamikazeUnits);
     }
     // MoveDescription description = new MoveDescription(units, route);
     // m_bridge.getHistoryWriter().setRenderingData(description);
@@ -563,7 +560,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   }
 
   public static Collection<Territory> getEmptyNeutral(final Route route) {
-    final Match<Territory> emptyNeutral = new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
+    final Match<Territory> emptyNeutral =
+        new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
     final Collection<Territory> neutral = route.getMatches(emptyNeutral);
     return neutral;
   }
@@ -572,13 +570,14 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     final int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
     final int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
     final int bonusMovement = TripleAUnit.get(unit).getBonusMovement();
-    return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, (maxMovement + bonusMovement) - 1), TripleAUnit.ALREADY_MOVED);
+    return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, (maxMovement + bonusMovement) - 1),
+        TripleAUnit.ALREADY_MOVED);
   }
 
   private void removeAirThatCantLand() {
     final GameData data = getData();
-    final boolean lhtrCarrierProd =
-        AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
+    final boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProduction(data)
+        || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
     for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, m_player)) {
       if (p.getUnits().someMatch(Matches.UnitIsCarrier)) {
@@ -611,7 +610,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
    *         done either because there is not sufficient transport capacity or because
    *         a unit is not with its transport)
    */
-  public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
+  public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units,
+      final Collection<Unit> transportsToLoad) {
     if (route.isLoad()) {
       return mapTransportsToLoad(units, transportsToLoad);
     }
@@ -637,8 +637,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
    *         done either because there is not sufficient transport capacity or because
    *         a unit is not with its transport)
    */
-  public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units, final Collection<Unit> transportsToLoad,
-      final boolean isload, final PlayerID player) {
+  public static Map<Unit, Unit> mapTransports(final Route route, final Collection<Unit> units,
+      final Collection<Unit> transportsToLoad, final boolean isload, final PlayerID player) {
     if (isload) {
       return mapTransportsToLoad(units, transportsToLoad);
     }
@@ -664,8 +664,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
    *         done either because there is not sufficient transport capacity or because
    *         a unit is not with its transport)
    */
-  public static Map<Unit, Unit> mapAirTransports(final Route route, final Collection<Unit> units, final Collection<Unit> transportsToLoad,
-      final boolean isload, final PlayerID player) {
+  public static Map<Unit, Unit> mapAirTransports(final Route route, final Collection<Unit> units,
+      final Collection<Unit> transportsToLoad, final boolean isload, final PlayerID player) {
     return mapTransports(route, units, transportsToLoad, isload, player);
     // return mapUnitsToAirTransports(units, Match.getMatches(transportsToLoad, Matches.UnitIsAirTransport));
   }
@@ -693,7 +693,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
    * transport. If no units are loaded in the transports then an empty Map will
    * be returned.
    */
-  private static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units, final Collection<Unit> transports) {
+  private static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
+      final Collection<Unit> transports) {
     final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
     final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
@@ -716,7 +717,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   /**
    * Returns a map of unit -> transport. Tries to find transports to load all
    * units. If it can't succeed returns an empty Map.
-   *
    */
   private static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units, final Collection<Unit> transports) {
     final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
@@ -749,7 +749,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
     };
     // fill transports with the lowest capacity first
     Collections.sort(canTransport, transportCapacityComparator);
-
     final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
     final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
     final Comparator<Unit> previouslyLoadedToLast = transportsThatPreviouslyUnloadedComeLast();
@@ -855,7 +854,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   public void PUsLost(final Territory t, final int amt) {
     m_PUsLost.add(t, amt);
   }
-
 }
 
 

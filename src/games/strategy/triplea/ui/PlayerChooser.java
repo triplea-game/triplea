@@ -16,7 +16,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.ui.Util;
 
-
 public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList m_list;
@@ -26,14 +25,14 @@ public class PlayerChooser extends JOptionPane {
   private final boolean m_allowNeutral;
 
   // private JOptionPane m_pane;
-
   /** Creates new PlayerChooser */
   public PlayerChooser(final PlayerList players, final IUIContext uiContext, final boolean allowNeutral) {
     this(players, null, uiContext, allowNeutral);
   }
 
   /** Creates new PlayerChooser */
-  public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final IUIContext uiContext, final boolean allowNeutral) {
+  public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final IUIContext uiContext,
+      final boolean allowNeutral) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
@@ -54,7 +53,6 @@ public class PlayerChooser extends JOptionPane {
     m_list.setSelectedValue(m_defaultPlayer, true);
     m_list.setFocusable(false);
     m_list.setCellRenderer(new PlayerChooserRenderer(m_players, m_uiContext));
-
     m_list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent evt) {
@@ -64,7 +62,6 @@ public class PlayerChooser extends JOptionPane {
         }
       }
     });
-
     setMessage(m_list);
   }
 
@@ -79,7 +76,6 @@ public class PlayerChooser extends JOptionPane {
     }
     return null;
   }
-
 }
 
 
@@ -92,8 +88,8 @@ class PlayerChooserRenderer extends DefaultListCellRenderer {
   }
 
   @Override
-  public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected,
-      final boolean cellHasFocus) {
+  public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+      final boolean isSelected, final boolean cellHasFocus) {
     super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
     if (m_uiContext == null || (PlayerID) value == PlayerID.NULL_PLAYERID) {
       setIcon(new ImageIcon(Util.createImage(32, 32, true)));

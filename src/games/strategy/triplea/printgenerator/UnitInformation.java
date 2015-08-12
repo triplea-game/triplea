@@ -59,25 +59,24 @@ class UnitInformation {
           unitInformation.write(capitalizeFirst(currentType.getName()) + ",");
         }
         unitInformation.write(getCostInformation(currentType) + ",");
-        unitInformation
-            .write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + "," + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
-                + currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + ","
-                + (currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) == false ? "-" : "true") + ","
-                + (currentAttachment.getArtillery() == false ? "-" : "true") + ","
-                + (currentAttachment.getArtillerySupportable() == false ? "-" : "true") + ","
-                + (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + ","
-                + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
-                + (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
-                + (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
-                + (currentAttachment.getIsAir() == false ? "-" : "true") + ","
-                + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","
-                + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","
-                + (currentAttachment.getIsSea() == false ? "-" : "true") + ","
-                + (currentAttachment.getHitPoints()) + ","
-                + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
-                + (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + ","
-                + (currentAttachment.getIsSub() == false ? "-" : "true") + ","
-                + (currentAttachment.getIsDestroyer() == false ? "-" : "true"));
+        unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + ","
+            + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
+            + currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + ","
+            + (currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) == false ? "-" : "true") + ","
+            + (currentAttachment.getArtillery() == false ? "-" : "true") + ","
+            + (currentAttachment.getArtillerySupportable() == false ? "-" : "true") + ","
+            + (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + ","
+            + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
+            + (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
+            + (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
+            + (currentAttachment.getIsAir() == false ? "-" : "true") + ","
+            + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","
+            + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","
+            + (currentAttachment.getIsSea() == false ? "-" : "true") + "," + (currentAttachment.getHitPoints()) + ","
+            + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
+            + (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + ","
+            + (currentAttachment.getIsSub() == false ? "-" : "true") + ","
+            + (currentAttachment.getIsDestroyer() == false ? "-" : "true"));
         unitInformation.write("\r\n");
       }
       unitInformation.write("\r\n");
@@ -93,7 +92,8 @@ class UnitInformation {
 
   private int getCostInformation(final UnitType type) {
     if (m_data.getProductionFrontierList().getProductionFrontier("production") != null) {
-      final List<ProductionRule> productionRules = m_data.getProductionFrontierList().getProductionFrontier("production").getRules();
+      final List<ProductionRule> productionRules =
+          m_data.getProductionFrontierList().getProductionFrontier("production").getRules();
       final Iterator<ProductionRule> productionIterator = productionRules.iterator();
       while (productionIterator.hasNext()) {
         final ProductionRule currentRule = productionIterator.next();
@@ -104,8 +104,10 @@ class UnitInformation {
         }
       }
     } else {
-      if (BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data).getInt(type) > 0) {
-        return BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data).getInt(type);
+      if (BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data)
+          .getInt(type) > 0) {
+        return BattleCalculator.getCostsForTUV(m_data.getPlayerList().getPlayers().iterator().next(), m_data)
+            .getInt(type);
       }
     }
     return -1;

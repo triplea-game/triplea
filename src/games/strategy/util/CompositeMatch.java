@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Base class for composite matches.<br>
  * Can add a match, or an inverse match. <br>
  * Subclasses must override match, and can call getMatches() to get a list of
  * matches added.
- *
  */
 public abstract class CompositeMatch<T> extends Match<T> {
   private final List<Match<T>> m_matches = new ArrayList<Match<T>>(4);

@@ -24,9 +24,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.util.IntegerMap;
 
 /**
- *
  * A Simple panel that displays a list of units.
- *
  */
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
@@ -38,30 +36,31 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   /**
-   *
    * @param units
    *        a HashMap in the form ProductionRule -> number of units
    *        assumes that each production rule has 1 result, which is simple the number of units
    */
-  public void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player, final GameData data) {
+  public void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player,
+      final GameData data) {
     removeAll();
     final TreeSet<ProductionRule> productionRules = new TreeSet<ProductionRule>(productionRuleComparator);
     productionRules.addAll(units.keySet());
     for (final ProductionRule productionRule : productionRules) {
       final int quantity = units.getInt(productionRule);
       for (final NamedAttachable resourceOrUnit : productionRule.getResults().keySet()) {
-        addUnits(player, data, quantity * productionRule.getResults().getInt(resourceOrUnit), resourceOrUnit, false, false);
+        addUnits(player, data, quantity * productionRule.getResults().getInt(resourceOrUnit), resourceOrUnit, false,
+            false);
       }
     }
   }
 
   /**
-   *
    * @param units
    *        a HashMap in the form RepairRule -> number of units
    *        assumes that each repair rule has 1 result, which is simply the number of units
    */
-  public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player, final GameData data) {
+  public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
+      final GameData data) {
     removeAll();
     final Set<Unit> entries = units.keySet();
     for (final Unit unit : entries) {
@@ -82,20 +81,19 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   /**
-   *
    * @param categories
    *        a collection of UnitCategories
    */
   public void setUnitsFromCategories(final Collection<UnitCategory> categories, final GameData data) {
     removeAll();
     for (final UnitCategory category : categories) {
-      addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.hasDamageOrBombingUnitDamage(),
-          category.getDisabled());
+      addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(),
+          category.hasDamageOrBombingUnitDamage(), category.getDisabled());
     }
   }
 
-  private void addUnits(final PlayerID player, final GameData data, final int quantity, final NamedAttachable unit, final boolean damaged,
-      final boolean disabled) {
+  private void addUnits(final PlayerID player, final GameData data, final int quantity, final NamedAttachable unit,
+      final boolean damaged, final boolean disabled) {
     final JLabel label = new JLabel();
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {

@@ -183,7 +183,8 @@ public class GameSelectorModel extends Observable {
       if (message == null && e.getStackTrace() != null) {
         message = e.getClass().getName() + "  at  " + e.getStackTrace()[0].toString();
       }
-      message = "Exception while parsing: " + file.getName() + " : " + (gameName.get() != null ? gameName.get() + " : " : "") + message;
+      message = "Exception while parsing: " + file.getName() + " : "
+          + (gameName.get() != null ? gameName.get() + " : " : "") + message;
       System.out.println(message);
       if (ui != null) {
         error(message + "\r\nPlease see console for full error log!", ui);
@@ -196,7 +197,8 @@ public class GameSelectorModel extends Observable {
   }
 
   private void error(final String message, final Component ui) {
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game", JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
+        JOptionPane.ERROR_MESSAGE);
   }
 
   public synchronized GameData getGameData() {
@@ -381,8 +383,8 @@ public class GameSelectorModel extends Observable {
     NewGameChooserEntry selectedGame = null;
     final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     // just in case flush doesn't work, we still force it again here
-    final String userPreferredDefaultGameName = (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF,
-        DEFAULT_GAME_NAME));
+    final String userPreferredDefaultGameName =
+        (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME));
     final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
     selectedGame = model.findByName(userPreferredDefaultGameName);
     if (selectedGame == null) {

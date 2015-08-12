@@ -11,7 +11,6 @@ import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * Display for a Grid Game.
- *
  */
 public class GridGameDisplay implements IGridGameDisplay {
   @SuppressWarnings("unused")
@@ -20,11 +19,9 @@ public class GridGameDisplay implements IGridGameDisplay {
 
   /**
    * Construct a new display for a King's Table game.
-   *
    * The display
    *
    * @param ui
-   * @see games.strategy.engine.display.IDisplay
    */
   public GridGameDisplay(final GridGameFrame ui) {
     m_ui = ui;
@@ -35,9 +32,6 @@ public class GridGameDisplay implements IGridGameDisplay {
     return m_ui;
   }
 
-  /**
-   * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
-   */
   @Override
   public void initialize(final IDisplayBridge bridge) {
     m_displayBridge = bridge;
@@ -46,8 +40,6 @@ public class GridGameDisplay implements IGridGameDisplay {
 
   /**
    * Process a user request to exit the program.
-   *
-   * @see games.strategy.engine.display.IDisplay#shutdown()
    */
   @Override
   public void shutDown() {

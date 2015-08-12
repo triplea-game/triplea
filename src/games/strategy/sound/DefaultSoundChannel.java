@@ -12,8 +12,6 @@ import games.strategy.triplea.TripleAPlayer;
 /**
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move delegate) to also be played
  * on clients.
- *
- *
  */
 public class DefaultSoundChannel implements ISound {
   private LocalPlayers m_localPlayers;
@@ -86,8 +84,8 @@ public class DefaultSoundChannel implements ISound {
   }
 
   @Override
-  public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo,
-      final Collection<PlayerID> butNotThesePlayers,
+  public void playSoundToPlayers(final String clipName, final String subFolder,
+      final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers) {
     if (playersToSendTo == null || playersToSendTo.isEmpty()) {
       return;

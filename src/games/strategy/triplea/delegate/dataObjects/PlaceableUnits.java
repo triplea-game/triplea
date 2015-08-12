@@ -30,7 +30,6 @@ public class PlaceableUnits implements java.io.Serializable {
   }
 
   /**
-   *
    * @return -1 if no limit
    */
   public int getMaxUnits() {

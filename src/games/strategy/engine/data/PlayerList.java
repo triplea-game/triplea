@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID> {
   private static final long serialVersionUID = -3895068111754745446L;
   // maps String playerName -> PlayerID
@@ -47,7 +46,6 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   }
 
   /**
-   *
    * @return a new arraylist copy of the players
    */
   public List<PlayerID> getPlayers() {

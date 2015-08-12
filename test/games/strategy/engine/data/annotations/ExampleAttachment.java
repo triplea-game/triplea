@@ -8,27 +8,20 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.util.IntegerMap;
 
 /**
- *
  * Test attachment that demonstrates how @GameProperty is used
- *
  */
 public class ExampleAttachment extends DefaultAttachment {
-
-
   private static final long serialVersionUID = -5820318094331518742L;
   private int m_techCost;
   private boolean m_heavyBomber;
   private String m_attribute;
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
-
   @InternalDoNotExport
   private String m_notAProperty = "str";
-
 
   public ExampleAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
-
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTechCost(final String techCost) {
@@ -132,5 +125,4 @@ public class ExampleAttachment extends DefaultAttachment {
   public void validate(final GameData data) throws GameParseException {
     // TODO Auto-generated method stub
   }
-
 }

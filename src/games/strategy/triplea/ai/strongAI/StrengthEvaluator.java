@@ -46,9 +46,8 @@ public class StrengthEvaluator {
   // gives our sea Strength within one and two territories of ourTerr
   // defensive strength
   // allied determines whether allied or enemy evaluation
-  public void evalStrength(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea, final boolean contiguous,
-      final boolean tFirst, final boolean includeAllies,
-      final boolean allied) {
+  public void evalStrength(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea,
+      final boolean contiguous, final boolean tFirst, final boolean includeAllies, final boolean allied) {
     Collection<Unit> seaUnits = new ArrayList<Unit>();
     Collection<Unit> airUnits = new ArrayList<Unit>();
     Collection<Unit> landUnits = new ArrayList<Unit>();
@@ -169,9 +168,9 @@ public class StrengthEvaluator {
       }
     }
   }
-  public static StrengthEvaluator evalStrengthAt(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea,
-      final boolean contiguous, final boolean tFirst,
-      final boolean includeAllies) {
+
+  public static StrengthEvaluator evalStrengthAt(final GameData data, final PlayerID player, final Territory ourTerr,
+      final boolean sea, final boolean contiguous, final boolean tFirst, final boolean includeAllies) {
     final StrengthEvaluator strEval = new StrengthEvaluator();
     strEval.evalStrength(data, player, ourTerr, sea, contiguous, tFirst, includeAllies, true);
     strEval.evalStrength(data, player, ourTerr, sea, contiguous, tFirst, false, false);

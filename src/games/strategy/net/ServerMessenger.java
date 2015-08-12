@@ -40,7 +40,6 @@ import games.strategy.net.nio.ServerQuarantineConversation;
 
 /**
  * A Messenger that can have many clients connected to it.
- *
  */
 public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private static Logger s_logger = Logger.getLogger(ServerMessenger.class.getName());
@@ -50,7 +49,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private boolean m_shutdown = false;
   private final NIOSocket m_nioSocket;
   private final CopyOnWriteArrayList<IMessageListener> m_listeners = new CopyOnWriteArrayList<IMessageListener>();
-  private final CopyOnWriteArrayList<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<IMessengerErrorListener>();
+  private final CopyOnWriteArrayList<IMessengerErrorListener> m_errorListeners =
+      new CopyOnWriteArrayList<IMessengerErrorListener>();
   private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionListeners =
       new CopyOnWriteArrayList<IConnectionChangeListener>();
   private boolean m_acceptNewConnection = false;
@@ -60,7 +60,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   private final ConcurrentHashMap<SocketChannel, INode> m_channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
 
   // A hack, till I think of something better
-  public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory) throws IOException {
+  public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory)
+      throws IOException {
     m_socketChannel = ServerSocketChannel.open();
     m_socketChannel.configureBlocking(false);
     m_socketChannel.socket().setReuseAddress(true);
@@ -91,17 +92,11 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     this(name, portNumber, new DefaultObjectStreamFactory());
   }
 
-  /*
-   * @see IMessenger#addMessageListener(Class, IMessageListener)
-   */
   @Override
   public void addMessageListener(final IMessageListener listener) {
     m_listeners.add(listener);
   }
 
-  /*
-   * @see IMessenger#removeMessageListener(Class, IMessageListener)
-   */
   @Override
   public void removeMessageListener(final IMessageListener listener) {
     m_listeners.remove(listener);
@@ -320,13 +315,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
-  public static final String YOU_HAVE_BEEN_MUTED_LOBBY = "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; // Special
-                                                                                                                                             // character
-                                                                                                                                             // to
-                                                                                                                                             // stop
-                                                                                                                                             // spoofing
-                                                                                                                                             // by
-                                                                                                                                             // server
+  public static final String YOU_HAVE_BEEN_MUTED_LOBBY =
+      "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; // Special
+                                                                                          // character
+                                                                                          // to
+                                                                                          // stop
+                                                                                          // spoofing
+                                                                                          // by
+                                                                                          // server
   public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; // Special character to
                                                                                                                     // stop spoofing by host
 
@@ -385,10 +381,12 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     if (isLobby()) {
       rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
     } else {
-      rn = new RemoteName(ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
+      rn = new RemoteName(
+          ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
           IChatChannel.class);
     }
-    final RemoteMethodCall call = new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
+    final RemoteMethodCall call =
+        new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
     final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
     send(spokeInvoke, to);
   }
@@ -596,7 +594,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
   public INode getLocalNode() {
     return m_node;
   }
-
 
   private class ConnectionHandler implements Runnable {
     @Override

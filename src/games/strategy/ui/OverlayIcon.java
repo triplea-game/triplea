@@ -39,7 +39,8 @@ public class OverlayIcon implements Icon {
 
   @Override
   public int getIconWidth() {
-    return m_back.getIconWidth() > (m_front.getIconWidth() + m_x_offset) ? m_back.getIconWidth() : (m_front.getIconWidth() + m_x_offset);
+    return m_back.getIconWidth() > (m_front.getIconWidth() + m_x_offset) ? m_back.getIconWidth()
+        : (m_front.getIconWidth() + m_x_offset);
   }
 
   @Override

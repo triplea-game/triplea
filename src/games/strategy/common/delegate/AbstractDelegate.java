@@ -14,7 +14,6 @@ import games.strategy.sound.ISound;
 /**
  * Base class designed to make writing custom delegates simpler.
  * Code common to all delegates is implemented here.
- *
  */
 public abstract class AbstractDelegate implements IDelegate {
   protected String m_name;
@@ -136,23 +135,19 @@ public abstract class AbstractDelegate implements IDelegate {
    */
   protected IRemotePlayer getRemotePlayer(final PlayerID player) {
     // you should over ride this. (also, do not make a static version of this, in this class.)
-
     // if its the null player, return a do nothing proxy
     // if (player.isNull())
     // return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     return m_bridge.getRemotePlayer(player);
   }
 }
-
 /*
  * All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
- *
  * class ExtendedDelegateState implements Serializable
  * {
  * Serializable superState;
  * // add other variables here:
  * }
- *
  * @Override
  * public Serializable saveState()
  * {
@@ -161,7 +156,6 @@ public abstract class AbstractDelegate implements IDelegate {
  * // add other variables to state here:
  * return state;
  * }
- *
  * @Override
  * public void loadState(Serializable state)
  * {

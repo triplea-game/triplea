@@ -15,9 +15,7 @@ import games.strategy.ui.Util;
 /**
  * Utility class to get image for a Unit.
  * <p>
- *
  * This class is a simplified version of Sean Bridges's games.strategy.triplea.image.UnitImageFactory.
- *
  */
 public class UnitImageFactory {
   private static final String FILE_NAME_BASE = "units/";

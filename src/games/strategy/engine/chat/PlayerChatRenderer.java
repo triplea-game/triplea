@@ -24,9 +24,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
   private final IGame m_game;
   private final IUIContext m_uiContext;
-
   int m_maxIconCounter = 0;
-
   HashMap<String, List<Icon>> m_iconMap = new HashMap<String, List<Icon>>();
   HashMap<String, Set<String>> m_playerMap = new HashMap<String, Set<String>>();
 
@@ -37,8 +35,8 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   @Override
-  public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected,
-      final boolean cellHasFocus) {
+  public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+      final boolean isSelected, final boolean cellHasFocus) {
     final List<Icon> icons = m_iconMap.get(value.toString());
     if (icons != null) {
       super.getListCellRendererComponent(list, ((INode) value).getName(), index, isSelected, cellHasFocus);
@@ -65,7 +63,6 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
 
   private void setIconMap() {
     final PlayerManager playerManager = m_game.getPlayerManager();
-
     PlayerList playerList;
     m_game.getData().acquireReadLock();
     try {

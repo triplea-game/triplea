@@ -32,7 +32,6 @@ import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-
 public class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
   private final List<ChooserEntry> m_entries = new ArrayList<ChooserEntry>();
@@ -48,8 +47,8 @@ public class UnitChooser extends JPanel {
   private final Match<Collection<Unit>> m_match;
 
   /** Creates new UnitChooser */
-  public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final GameData data,
+  public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
+      final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
       final IUIContext context) {
     m_dependents = dependent;
     m_data = data;
@@ -59,8 +58,8 @@ public class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final GameData data,
+  public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
+      final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
       final IUIContext context, final Match<Collection<Unit>> match) {
     m_match = match;
     m_dependents = dependent;
@@ -75,14 +74,14 @@ public class UnitChooser extends JPanel {
     this(units, Collections.<Unit>emptyList(), dependent, data, allowTwoHit, uiContext);
   }
 
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent,
-      final GameData data, final boolean allowTwoHit,
+  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
       final IUIContext uiContext) {
     this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
   }
 
-  public UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections, final Map<Unit, Collection<Unit>> dependent,
-      final GameData data, final boolean allowMultipleHits,
+  public UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowMultipleHits,
       final IUIContext uiContext) {
     m_dependents = dependent;
     m_data = data;
@@ -95,9 +94,10 @@ public class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits, final IUIContext uiContext) {
+  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
+      final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
+      final IUIContext uiContext) {
     m_dependents = dependent;
     m_data = data;
     m_allowMultipleHits = allowMultipleHits;
@@ -107,10 +107,10 @@ public class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits, final IUIContext uiContext,
-      final Match<Collection<Unit>> match) {
+  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
+      final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
+      final IUIContext uiContext, final Match<Collection<Unit>> match) {
     m_dependents = dependent;
     m_data = data;
     m_allowMultipleHits = allowMultipleHits;
@@ -120,17 +120,17 @@ public class UnitChooser extends JPanel {
     layoutEntries();
   }
 
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent,
-      final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data, final boolean allowMultipleHits,
-      final IUIContext uiContext,
-      final Match<Collection<Unit>> match) {
+  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
+      final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data,
+      final boolean allowMultipleHits, final IUIContext uiContext, final Match<Collection<Unit>> match) {
     m_dependents = dependent;
     m_data = data;
     m_allowMultipleHits = allowMultipleHits;
     m_uiContext = uiContext;
     m_match = match;
-    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories, defaultSelections);
+    createEntries(units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories,
+        defaultSelections);
     layoutEntries();
   }
 
@@ -206,10 +206,11 @@ public class UnitChooser extends JPanel {
     return selected;
   }
 
-  private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost,
+  private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
+      final boolean categorizeMovement, final boolean categorizeTransportCost,
       final Collection<Unit> defaultSelections) {
-    final Collection<UnitCategory> categories = UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
+    final Collection<UnitCategory> categories =
+        UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
     final Collection<UnitCategory> defaultSelectionsCategorized =
         UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
     final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
@@ -218,9 +219,9 @@ public class UnitChooser extends JPanel {
     }
   }
 
-  private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost,
-      final boolean categorizeTerritories, final Collection<Unit> defaultSelections) {
+  private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
+      final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTerritories,
+      final Collection<Unit> defaultSelections) {
     final Collection<UnitCategory> categories =
         UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
     final Collection<UnitCategory> defaultSelectionsCategorized =
@@ -241,8 +242,8 @@ public class UnitChooser extends JPanel {
   }
 
   private void addCategory(final UnitCategory category, final int defaultValue) {
-    final ChooserEntry entry =
-        new ChooserEntry(category, m_total, m_textFieldListener, m_data, m_allowMultipleHits, defaultValue, m_uiContext);
+    final ChooserEntry entry = new ChooserEntry(category, m_total, m_textFieldListener, m_data, m_allowMultipleHits,
+        defaultValue, m_uiContext);
     m_entries.add(entry);
   }
 
@@ -259,7 +260,8 @@ public class UnitChooser extends JPanel {
     m_selectNoneButton.setPreferredSize(buttonSize);
     m_autoSelectButton = new JButton("All");
     m_autoSelectButton.setPreferredSize(buttonSize);
-    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+        nullInsets, 0, 0));
     m_selectNoneButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -277,11 +279,11 @@ public class UnitChooser extends JPanel {
       entry.createComponents(this, yIndex);
       yIndex++;
     }
-    add(m_autoSelectButton,
-        new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE, nullInsets, 0, 0));
+    add(m_autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, nullInsets, 0, 0));
     yIndex++;
-    add(m_leftToSelect,
-        new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    add(m_leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+        GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     if (m_match != null) {
       m_autoSelectButton.setVisible(false);
       m_selectNoneButton.setVisible(false);
@@ -355,7 +357,8 @@ public class UnitChooser extends JPanel {
     }
   }
 
-  private void addToCollection(final Collection<Unit> addTo, final ChooserEntry entry, final int quantity, final boolean addDependents) {
+  private void addToCollection(final Collection<Unit> addTo, final ChooserEntry entry, final int quantity,
+      final boolean addDependents) {
     final Collection<Unit> possible = entry.getCategory().getUnits();
     if (possible.size() < quantity) {
       throw new IllegalStateException("Not enough units");
@@ -398,14 +401,14 @@ class ChooserEntry {
   private static Insets nullInsets = new Insets(0, 0, 0, 0);
   private final IUIContext m_uiContext;
 
-  ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener, final GameData data,
-      final boolean allowTwoHit, final int defaultValue,
-      final IUIContext uiContext) {
+  ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,
+      final GameData data, final boolean allowTwoHit, final int defaultValue, final IUIContext uiContext) {
     m_hitTextFieldListener = listener;
     m_data = data;
     m_category = category;
     m_leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
-    m_hasMultipleHits = allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
+    m_hasMultipleHits =
+        allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
     m_hitTexts = new ArrayList<ScrollableTextField>(Math.max(1, category.getHitPoints() - category.getDamaged()));
     m_defaultHits = new ArrayList<Integer>(Math.max(1, category.getHitPoints() - category.getDamaged()));
     final int numUnits = category.getUnits().size();
@@ -422,33 +425,31 @@ class ChooserEntry {
 
   public void createComponents(final JPanel panel, final int yIndex) {
     int gridx = 0;
-    for (int i = 0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints() - m_category.getDamaged()) : 1); i++) {
+    for (int i =
+        0; i < (m_hasMultipleHits ? Math.max(1, m_category.getHitPoints() - m_category.getDamaged()) : 1); i++) {
       final ScrollableTextField scroll = new ScrollableTextField(0, m_category.getUnits().size());
       m_hitTexts.add(scroll);
       scroll.setValue(m_defaultHits.get(i));
       scroll.addChangeListener(m_hitTextFieldListener);
       final JLabel label = new JLabel("x" + m_category.getUnits().size());
       m_hitLabel.add(label);
-      panel.add(new UnitChooserEntryIcon(i > 0, m_uiContext),
-          new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,
-              (i == 0 ? 0 : 8), 0, 0), 0, 0));
+      panel.add(new UnitChooserEntryIcon(i > 0, m_uiContext), new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0,
+          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, (i == 0 ? 0 : 8), 0, 0), 0, 0));
       if (i == 0) {
         if (m_category.getMovement() != -1) {
-          panel.add(new JLabel("mvt " + m_category.getMovement()),
-              new GridBagConstraints(gridx, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4,
-                  0, 4), 0, 0));
+          panel.add(new JLabel("mvt " + m_category.getMovement()), new GridBagConstraints(gridx, yIndex, 1, 1, 0, 0,
+              GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
         }
         if (m_category.getTransportCost() != -1) {
-          panel.add(new JLabel("cst " + m_category.getTransportCost()),
-              new GridBagConstraints(gridx, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(
-                  0, 4, 0, 4), 0, 0));
+          panel.add(new JLabel("cst " + m_category.getTransportCost()), new GridBagConstraints(gridx, yIndex, 1, 1, 0,
+              0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
         }
         gridx++;
       }
-      panel.add(label,
-          new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-      panel.add(scroll, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 4, 0, 0), 0, 0));
+      panel.add(label, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+      panel.add(scroll, new GridBagConstraints(gridx++, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
       scroll.addChangeListener(new ScrollableTextFieldListener() {
         @Override
         public void changedValue(final ScrollableTextField field) {
@@ -546,7 +547,6 @@ class ChooserEntry {
     return m_hasMultipleHits;
   }
 
-
   class UnitChooserEntryIcon extends JComponent {
     private static final long serialVersionUID = 591598594559651745L;
     private final boolean m_forceDamaged;
@@ -561,14 +561,14 @@ class ChooserEntry {
     public void paint(final Graphics g) {
       super.paint(g);
       g.drawImage(m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data,
-          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(),
-          m_category.getDisabled()), 0, 0, this);
+          m_forceDamaged || m_category.hasDamageOrBombingUnitDamage(), m_category.getDisabled()), 0, 0, this);
       final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
       int index = 1;
       while (iter.hasNext()) {
         final UnitOwner holder = iter.next();
         final int x = m_uiContext.getUnitImageFactory().getUnitImageWidth() * index;
-        final Image unitImg = m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
+        final Image unitImg =
+            m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
         g.drawImage(unitImg, x, 0, this);
         index++;
       }

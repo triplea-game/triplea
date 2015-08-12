@@ -22,8 +22,6 @@ import games.strategy.util.Match;
 /**
  * An attachment, attached to a player that will describe which political
  * actions a player may take.
- *
- *
  */
 public class PoliticalActionAttachment extends AbstractUserActionAttachment implements ICondition {
   private static final long serialVersionUID = 4392770599777282477L;
@@ -38,7 +36,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
     final Iterator<String> iter = map.keySet().iterator();
     while (iter.hasNext()) {
       final IAttachment a = map.get(iter.next());
-      if (a.getName().startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX) && a instanceof PoliticalActionAttachment) {
+      if (a.getName().startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX)
+          && a instanceof PoliticalActionAttachment) {
         returnList.add((PoliticalActionAttachment) a);
       }
     }
@@ -86,20 +85,20 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
   public void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = relChange.split(":");
     if (s.length != 3) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:newRelation\n" + thisErrorMsg());
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange
+          + " \n Use: player1:player2:newRelation\n" + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[0]) == null) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown in: " + getName() + thisErrorMsg());
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0]
+          + " unknown in: " + getName() + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[1]) == null) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName() + thisErrorMsg());
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1]
+          + " unknown in: " + getName() + thisErrorMsg());
     }
     if (!Matches.isValidRelationshipName(getData()).match(s[2])) {
-      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2]
-          + " unknown in: " + getName() + thisErrorMsg());
+      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
+          + s[2] + " unknown in: " + getName() + thisErrorMsg());
     }
     m_relationshipChange.add(relChange);
   }
@@ -122,7 +121,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
   }
 
   /**
-   *
    * @return a set of all other players involved in this PoliticalAction
    */
   public Set<PlayerID> getOtherPlayers() {
@@ -145,9 +143,10 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment impl
     if (!games.strategy.triplea.Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<PoliticalActionAttachment>();
     }
-    return Match.getMatches(getPoliticalActionAttachments(player), new CompositeMatchAnd<PoliticalActionAttachment>(
-        Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions),
-        Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
+    return Match.getMatches(getPoliticalActionAttachments(player),
+        new CompositeMatchAnd<PoliticalActionAttachment>(
+            Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions),
+            Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
   }
 
   @Override

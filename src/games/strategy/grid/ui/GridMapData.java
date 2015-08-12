@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 
-
 public class GridMapData {
   // maps String -> Polygons
   protected Map<String, Polygon> m_polys;
@@ -22,14 +21,13 @@ public class GridMapData {
 
   // protected final GameMap m_map;
   // protected final GameData m_gameData;
-
   public GridMapData(final GameMap map, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight,
       final int topLeftOffsetWidth, final int topLeftOffsetHeight) {
     setMapData(map, x_dim, y_dim, squareWidth, squareHeight, topLeftOffsetWidth, topLeftOffsetHeight);
   }
 
-  public synchronized void setMapData(final GameMap map, final int x_dim, final int y_dim, final int squareWidth, final int squareHeight,
-      final int topLeftOffsetWidth, final int topLeftOffsetHeight) {
+  public synchronized void setMapData(final GameMap map, final int x_dim, final int y_dim, final int squareWidth,
+      final int squareHeight, final int topLeftOffsetWidth, final int topLeftOffsetHeight) {
     m_gridWidth = x_dim;
     m_gridHeight = y_dim;
     m_squareWidth = squareWidth;
@@ -45,8 +43,9 @@ public class GridMapData {
     for (int y = 0; y < y_dim; y++) {
       for (int x = 0; x < x_dim; x++) {
         final Territory territory = map.getTerritoryFromCoordinates(x, y);
-        final Polygon p = new Polygon(new int[] {x_offset, x_offset + m_squareWidth, x_offset + m_squareWidth, x_offset},
-            new int[] {y_offset, y_offset, y_offset + m_squareHeight, y_offset + m_squareHeight}, 4);
+        final Polygon p =
+            new Polygon(new int[] {x_offset, x_offset + m_squareWidth, x_offset + m_squareWidth, x_offset},
+                new int[] {y_offset, y_offset, y_offset + m_squareHeight, y_offset + m_squareHeight}, 4);
         m_polys.put(territory.getName(), p);
         x_offset += m_squareWidth;
       }

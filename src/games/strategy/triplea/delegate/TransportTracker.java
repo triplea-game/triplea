@@ -18,10 +18,8 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 
 /**
- *
- *
- *          Tracks which transports are carrying which units. Also tracks the capacity
- *          that has been unloaded. To reset the unloaded call clearUnloadedCapacity().
+ * Tracks which transports are carrying which units. Also tracks the capacity
+ * that has been unloaded. To reset the unloaded call clearUnloadedCapacity().
  */
 public class TransportTracker {
   public static int getCost(final Collection<Unit> units) {
@@ -97,7 +95,8 @@ public class TransportTracker {
   /**
    * Returns a map of transport -> collection of transported units.
    */
-  public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> transports, final Collection<Unit> transportedUnits) {
+  public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> transports,
+      final Collection<Unit> transportedUnits) {
     final Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
     for (final Unit transported : transportedUnits) {
       final Unit transport = transportedBy(transported);
@@ -209,8 +208,8 @@ public class TransportTracker {
   public static int getAvailableCapacity(final Unit unit) {
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     // Check if there are transports available, also check for destroyer capacity (Tokyo Express)
-    if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false) && ua.getIsDestroyer()
-        && !unit.getOwner().getName().equals("Japanese"))) {
+    if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false)
+        && ua.getIsDestroyer() && !unit.getOwner().getName().equals("Japanese"))) {
       return 0;
     }
     final int capacity = ua.getTransportCapacity();
@@ -281,7 +280,8 @@ public class TransportTracker {
         }
       } else {
         // cannot unload to two different territories in combat phase
-        if (!GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && !taUnit.getUnloadedTo().equals(territory)) {
+        if (!GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true)
+            && !taUnit.getUnloadedTo().equals(territory)) {
           return true;
         }
       }

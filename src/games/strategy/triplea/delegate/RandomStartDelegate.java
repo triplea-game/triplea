@@ -30,8 +30,6 @@ import games.strategy.util.Tuple;
  * Either divide all neutral territories between players randomly, or let them pick one by one.
  * After that, any remaining units get placed one by one.
  * (Note that m_player may not be used here, because this delegate is not run by any player [it is null])
- *
- *
  */
 public class RandomStartDelegate extends BaseTripleADelegate {
   private static final int UNITS_PER_PICK = 1;
@@ -83,7 +81,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     final boolean randomTerritories = games.strategy.triplea.Properties.getTerritoriesAreAssignedRandomly(data);
     final Match<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
     final Match<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
-    final List<Territory> allPickableTerritories = Match.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
+    final List<Territory> allPickableTerritories =
+        Match.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
     final List<PlayerID> playersCanPick = new ArrayList<PlayerID>();
     playersCanPick.addAll(Match.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
     // we need a main event
@@ -105,7 +104,6 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         Thread.sleep(250);
       } catch (final InterruptedException e) {
       }
-
       Territory picked;
       if (randomTerritories) {
         pos += hitRandom[i];
@@ -124,22 +122,22 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         }
         change.add(ChangeFactory.removeUnits(m_currentPickingPlayer, unitsToPlace));
         change.add(ChangeFactory.addUnits(picked, unitsToPlace));
-        m_bridge.getHistoryWriter().addChildToEvent(
-            m_currentPickingPlayer.getName() + " receives territory " + picked.getName() + " with units "
-                + MyFormatter.unitsToTextNoOwner(unitsToPlace),
-            picked);
+        m_bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " receives territory "
+            + picked.getName() + " with units " + MyFormatter.unitsToTextNoOwner(unitsToPlace), picked);
         m_bridge.addChange(change);
       } else {
         Tuple<Territory, Set<Unit>> pick;
         Set<Unit> unitsToPlace;
         while (true) {
-          pick = getRemotePlayer(m_currentPickingPlayer).pickTerritoryAndUnits(new ArrayList<Territory>(allPickableTerritories),
+          pick = getRemotePlayer(m_currentPickingPlayer).pickTerritoryAndUnits(
+              new ArrayList<Territory>(allPickableTerritories),
               new ArrayList<Unit>(m_currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
           picked = pick.getFirst();
           unitsToPlace = pick.getSecond();
-          if (!allPickableTerritories.contains(picked) || !m_currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
-              || unitsToPlace.size() > UNITS_PER_PICK
-              || (unitsToPlace.size() < UNITS_PER_PICK && unitsToPlace.size() < m_currentPickingPlayer.getUnits().getUnits().size())) {
+          if (!allPickableTerritories.contains(picked)
+              || !m_currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
+              || unitsToPlace.size() > UNITS_PER_PICK || (unitsToPlace.size() < UNITS_PER_PICK
+                  && unitsToPlace.size() < m_currentPickingPlayer.getUnits().getUnits().size())) {
             getRemotePlayer(m_currentPickingPlayer).reportMessage("Chosen territory or units invalid!",
                 "Chosen territory or units invalid!");
           } else {
@@ -154,10 +152,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         }
         change.add(ChangeFactory.removeUnits(m_currentPickingPlayer, unitsToPlace));
         change.add(ChangeFactory.addUnits(picked, unitsToPlace));
-        m_bridge.getHistoryWriter().addChildToEvent(
-            m_currentPickingPlayer.getName() + " picks territory " + picked.getName() + " and places in it "
-                + MyFormatter.unitsToTextNoOwner(unitsToPlace),
-            unitsToPlace);
+        m_bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " picks territory "
+            + picked.getName() + " and places in it " + MyFormatter.unitsToTextNoOwner(unitsToPlace), unitsToPlace);
         m_bridge.addChange(change);
       }
       allPickableTerritories.remove(picked);
@@ -175,20 +171,22 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (m_currentPickingPlayer == null || !playersCanPick.contains(m_currentPickingPlayer)) {
         m_currentPickingPlayer = playersCanPick.get(0);
       }
-
       final List<Territory> territoriesToPickFrom = data.getMap().getTerritoriesOwnedBy(m_currentPickingPlayer);
       Tuple<Territory, Set<Unit>> pick;
       Territory picked;
       Set<Unit> unitsToPlace;
       while (true) {
-        pick = getRemotePlayer(m_currentPickingPlayer).pickTerritoryAndUnits(new ArrayList<Territory>(territoriesToPickFrom),
+        pick = getRemotePlayer(m_currentPickingPlayer).pickTerritoryAndUnits(
+            new ArrayList<Territory>(territoriesToPickFrom),
             new ArrayList<Unit>(m_currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
         picked = pick.getFirst();
         unitsToPlace = pick.getSecond();
-        if (!territoriesToPickFrom.contains(picked) || !m_currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
-            || unitsToPlace.size() > UNITS_PER_PICK
-            || (unitsToPlace.size() < UNITS_PER_PICK && unitsToPlace.size() < m_currentPickingPlayer.getUnits().getUnits().size())) {
-          getRemotePlayer(m_currentPickingPlayer).reportMessage("Chosen territory or units invalid!", "Chosen territory or units invalid!");
+        if (!territoriesToPickFrom.contains(picked)
+            || !m_currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
+            || unitsToPlace.size() > UNITS_PER_PICK || (unitsToPlace.size() < UNITS_PER_PICK
+                && unitsToPlace.size() < m_currentPickingPlayer.getUnits().getUnits().size())) {
+          getRemotePlayer(m_currentPickingPlayer).reportMessage("Chosen territory or units invalid!",
+              "Chosen territory or units invalid!");
         } else {
           break;
         }
@@ -201,10 +199,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       change.add(ChangeFactory.removeUnits(m_currentPickingPlayer, unitsToPlace));
       change.add(ChangeFactory.addUnits(picked, unitsToPlace));
       m_bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " places "
-          + MyFormatter.unitsToTextNoOwner(unitsToPlace) + " in territory " + picked.getName(),
-          unitsToPlace);
+          + MyFormatter.unitsToTextNoOwner(unitsToPlace) + " in territory " + picked.getName(), unitsToPlace);
       m_bridge.addChange(change);
-
       final PlayerID lastPlayer = m_currentPickingPlayer;
       m_currentPickingPlayer = getNextPlayer(playersCanPick, m_currentPickingPlayer);
       if (!playerCanPickMatch.match(lastPlayer)) {

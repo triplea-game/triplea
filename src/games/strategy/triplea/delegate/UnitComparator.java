@@ -80,8 +80,8 @@ public class UnitComparator {
   /**
    * Return a Comparator that will order the specified transports in preferred load order.
    */
-  public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports, final Route route, final PlayerID player,
-      final boolean noTies) {
+  public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports, final Route route,
+      final PlayerID player, final boolean noTies) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
     final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
     return new Comparator<Unit>() {
@@ -131,8 +131,8 @@ public class UnitComparator {
   /**
    * Return a Comparator that will order the specified transports in preferred unload order.
    */
-  public static Comparator<Unit> getUnloadableTransportsComparator(final List<Unit> transports, final Route route, final PlayerID player,
-      final boolean noTies) {
+  public static Comparator<Unit> getUnloadableTransportsComparator(final List<Unit> transports, final Route route,
+      final PlayerID player, final boolean noTies) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
     final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
     return new Comparator<Unit>() {
@@ -180,8 +180,8 @@ public class UnitComparator {
   /**
    * Return a Comparator that will order the specified units in preferred move order.
    */
-  public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units, final Route route, final PlayerID player,
-      final boolean noTies) {
+  public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units, final Route route,
+      final PlayerID player, final boolean noTies) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(units);
     return new Comparator<Unit>() {
       @Override
@@ -240,10 +240,11 @@ public class UnitComparator {
    * Return a Comparator that will order the specified units in preferred unload order.
    * If needed it may also inspect the transport holding the units.
    */
-  public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units, final Route route, final PlayerID player,
-      final boolean noTies) {
+  public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units, final Route route,
+      final PlayerID player, final boolean noTies) {
     // compare transports
-    final Comparator<Unit> unloadableTransportsComparator = getUnloadableTransportsComparator(units, route, player, false);
+    final Comparator<Unit> unloadableTransportsComparator =
+        getUnloadableTransportsComparator(units, route, player, false);
     // if noTies is set, sort by hashcode so that result is deterministic
     final Comparator<Unit> movableUnitsComparator = getMovableUnitsComparator(units, route, player, noTies);
     return new Comparator<Unit>() {

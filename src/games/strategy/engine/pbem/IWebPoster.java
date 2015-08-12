@@ -18,7 +18,6 @@ public interface IWebPoster extends IBean {
    */
   public boolean postTurnSummary(final GameData gameData, final String turnSummary, final String player, int round);
 
-
   public boolean getMailSaveGame();
 
   public void setMailSaveGame(boolean mail);
@@ -43,7 +42,6 @@ public interface IWebPoster extends IBean {
 
   /**
    * Get the display name
-   *
    */
   @Override
   public String getDisplayName();
@@ -57,7 +55,6 @@ public interface IWebPoster extends IBean {
 
   /**
    * Get the host URL.
-   *
    */
   public String getHost();
 

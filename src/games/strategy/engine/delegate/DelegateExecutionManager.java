@@ -17,16 +17,12 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
 /**
  * Manages when delegates are allowed to execute.
  * <p>
- *
  * When saving a game, we want to ensure that no delegate is executing, otherwise the delegate could modify the state of the game while the
  * game is being saved, resulting in an invalid save game.
  * <p>
- *
  * This class effectivly keeps a count of how many threads are executing in the delegates, and provides a way of blocking further threads
  * from starting execution in a delegate.
  * <p>
- *
- *
  */
 public class DelegateExecutionManager {
   private final Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName());
@@ -34,7 +30,6 @@ public class DelegateExecutionManager {
    * Delegate execution can be thought of as a read/write lock.
    * Many delegates can be executing at one time (to execute you acquire the read lock), but
    * only 1 block can be held (the block is equivalent to the read lock).
-   *
    */
   private final ReentrantReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
   private final ThreadLocal<Boolean> m_currentThreadHasReadLock = new ThreadLocal<Boolean>();
@@ -45,14 +40,11 @@ public class DelegateExecutionManager {
   }
 
   /**
-   *
    * When this method returns true, threads will not be able to enter delegates until
    * a call to resumeDelegateExecution is made.
    * <p>
-   *
    * When delegateExecution is blocked, it also blocks subsequent cals to blockDelegateExecution(...)
    * <p>
-   *
    * If timeToWaitMS is > 0, we will give up trying to block delegate execution after timeTiWaitMS has elapsed.
    * <p>
    *
@@ -63,16 +55,18 @@ public class DelegateExecutionManager {
     if (!rVal) {
       if (sm_logger.isLoggable(Level.FINE)) {
         sm_logger.fine("Could not block delegate execution. Read Lock count: " + m_readWriteLock.getReadLockCount()
-            + " Write Hold count: " + m_readWriteLock.getWriteHoldCount() + " Queue Length: " + m_readWriteLock.getQueueLength()
-            + " Current Thread Has Lock: " + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
-            + m_readWriteLock.hasQueuedThreads()
-            + " Is Write Locked: " + m_readWriteLock.isWriteLocked() + " toString: " + m_readWriteLock.toString());
+            + " Write Hold count: " + m_readWriteLock.getWriteHoldCount() + " Queue Length: "
+            + m_readWriteLock.getQueueLength() + " Current Thread Has Lock: "
+            + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
+            + m_readWriteLock.hasQueuedThreads() + " Is Write Locked: " + m_readWriteLock.isWriteLocked()
+            + " toString: " + m_readWriteLock.toString());
       } else {
-        HeadlessGameServer.log("Could not block delegate execution. Read Lock count: " + m_readWriteLock.getReadLockCount()
-            + " Write Hold count: " + m_readWriteLock.getWriteHoldCount() + " Queue Length: " + m_readWriteLock.getQueueLength()
-            + " Current Thread Has Lock: " + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
-            + m_readWriteLock.hasQueuedThreads()
-            + " Is Write Locked: " + m_readWriteLock.isWriteLocked() + " toString: " + m_readWriteLock.toString());
+        HeadlessGameServer.log("Could not block delegate execution. Read Lock count: "
+            + m_readWriteLock.getReadLockCount() + " Write Hold count: " + m_readWriteLock.getWriteHoldCount()
+            + " Queue Length: " + m_readWriteLock.getQueueLength() + " Current Thread Has Lock: "
+            + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
+            + m_readWriteLock.hasQueuedThreads() + " Is Write Locked: " + m_readWriteLock.isWriteLocked()
+            + " toString: " + m_readWriteLock.toString());
       }
     } else {
       if (sm_logger.isLoggable(Level.FINE)) {
@@ -84,7 +78,6 @@ public class DelegateExecutionManager {
 
   /**
    * Allow delegate execution to resume.
-   *
    */
   public void resumeDelegateExecution() {
     if (sm_logger.isLoggable(Level.FINE)) {
@@ -100,7 +93,6 @@ public class DelegateExecutionManager {
   /**
    * Used to create an object the exits delegate execution.
    * <p>
-   *
    * Objects on this method will decrement the thread lock count when called, and will increment it again when execution is finished.
    */
   public Object createOutboundImplementation(final Object implementor, final Class<?>[] interfaces) {
@@ -139,7 +131,6 @@ public class DelegateExecutionManager {
   /**
    * Use to create an object that begins delegate execution.
    * <p>
-   *
    * Objects on this method will increment the thread lock count when called, and will decrement it again when execution is finished.
    */
   public Object createInboundImplementation(final Object implementor, final Class<?>[] interfaces) {

@@ -62,7 +62,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   public static final String OOL_SEPARATOR_REGEX = ";";
   public static final String OOL_AMOUNT_DESCRIPTOR = "^";
   public static final String OOL_AMOUNT_DESCRIPTOR_REGEX = "\\^";
-
   private GameData m_data = null;
   private PlayerID m_attacker = null;
   private PlayerID m_defender = null;
@@ -126,10 +125,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
    */
   @Override
   @SuppressWarnings("unchecked")
-  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
-      final Collection<Unit> defending,
-      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
-          throws IllegalStateException {
+  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
+      final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException {
     if (m_isRunning) {
       return;
     }
@@ -137,13 +135,16 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     if (!m_isDataSet) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
-    m_attacker = m_data.getPlayerList().getPlayerID((attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName()));
-    m_defender = m_data.getPlayerList().getPlayerID((defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()));
+    m_attacker =
+        m_data.getPlayerList().getPlayerID((attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName()));
+    m_defender =
+        m_data.getPlayerList().getPlayerID((defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()));
     m_location = m_data.getMap().getTerritory(location.getName());
     m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
     m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
     m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
-    m_territoryEffects = (Collection<TerritoryEffect>) GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
+    m_territoryEffects =
+        (Collection<TerritoryEffect>) GameDataUtils.translateIntoOtherGameData(territoryEffects, m_data);
     final ChangePerformer changePerformer = new ChangePerformer(m_data);
     changePerformer.perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
     changePerformer.perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
@@ -153,10 +154,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location,
-      final Collection<Unit> attacking,
-      final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects,
-      final int runCount) {
+  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+      final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
+      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
     return calculate();
   }
@@ -245,27 +245,27 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   private AggregateResults calculate(final int count) {
     m_isRunning = true;
     final long start = System.currentTimeMillis();
-
     final AggregateResults rVal = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if the AI and a human
     // are both using the calc)
     // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a per-thread, per-calc
     // caching
-    final List<Unit> attackerOrderOfLosses = OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
-    final List<Unit> defenderOrderOfLosses = OddsCalculator.getUnitListByOOL(m_defenderOrderOfLosses, m_defendingUnits, m_data);
+    final List<Unit> attackerOrderOfLosses =
+        OddsCalculator.getUnitListByOOL(m_attackerOrderOfLosses, m_attackingUnits, m_data);
+    final List<Unit> defenderOrderOfLosses =
+        OddsCalculator.getUnitListByOOL(m_defenderOrderOfLosses, m_defendingUnits, m_data);
     for (int i = 0; i < count && !m_cancelled; i++) {
       final CompositeChange allChanges = new CompositeChange();
-      final DummyDelegateBridge bridge1 =
-          new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
-              m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft, m_retreatWhenOnlyAirLeft,
-              m_retreatWhenMetaPowerIsLower);
+      final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, m_data, allChanges, attackerOrderOfLosses,
+          defenderOrderOfLosses, m_keepOneAttackingLandUnit, m_retreatAfterRound, m_retreatAfterXUnitsLeft,
+          m_retreatWhenOnlyAirLeft, m_retreatWhenMetaPowerIsLower);
       final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
       final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
       battle.setHeadless(true);
       battle.isAmphibious();
-      battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, (m_amphibious ? m_attackingUnits : new ArrayList<Unit>()),
-          m_defender, m_territoryEffects);
+      battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits,
+          (m_amphibious ? m_attackingUnits : new ArrayList<Unit>()), m_defender, m_territoryEffects);
       // battle.setAttackingFromAndMap(attackingFromMap);
       bridge1.setBattle(battle);
       battle.fight(bridge);
@@ -351,7 +351,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     final Set<Unit> unitsLeft = new HashSet<Unit>(units);
     final List<Unit> order = new ArrayList<Unit>();
     for (final Tuple<Integer, UnitType> section : map) {
-      final List<Unit> unitsOfType = Match.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
+      final List<Unit> unitsOfType =
+          Match.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
       order.addAll(unitsOfType);
       unitsLeft.removeAll(unitsOfType);
     }
@@ -400,11 +401,11 @@ class DummyDelegateBridge implements IDelegateBridge {
       final List<Unit> attackerOrderOfLosses, final List<Unit> defenderOrderOfLosses,
       final boolean attackerKeepOneLandUnit, final int retreatAfterRound, final int retreatAfterXUnitsLeft,
       final boolean retreatWhenOnlyAirLeft, final boolean retreatWhenMetaPowerIsLower) {
-    m_attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses, attackerKeepOneLandUnit,
-        retreatAfterRound, retreatAfterXUnitsLeft,
-        retreatWhenOnlyAirLeft, retreatWhenMetaPowerIsLower);
-    m_defendingPlayer =
-        new DummyPlayer(this, false, "battle calc dummy", "None (AI)", defenderOrderOfLosses, false, retreatAfterRound, -1, false, false);
+    m_attackingPlayer =
+        new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses, attackerKeepOneLandUnit,
+            retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft, retreatWhenMetaPowerIsLower);
+    m_defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", defenderOrderOfLosses, false,
+        retreatAfterRound, -1, false, false);
     m_data = data;
     m_attacker = attacker;
     m_allChanges = allChanges;
@@ -445,7 +446,8 @@ class DummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation) {
     return m_randomSource.getRandom(max, count, annotation);
   }
 
@@ -531,9 +533,9 @@ class DummyPlayer extends AbstractAI {
   private final boolean m_isAttacker;
   private final List<Unit> m_orderOfLosses;
 
-  public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name, final String type,
-      final List<Unit> orderOfLosses,
-      final boolean keepAtLeastOneLand, final int retreatAfterRound, final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft,
+  public DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name,
+      final String type, final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand, final int retreatAfterRound,
+      final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft,
       final boolean retreatWhenMetaPowerIsLower) {
     super(name, type);
     m_keepAtLeastOneLand = keepAtLeastOneLand;
@@ -567,14 +569,16 @@ class DummyPlayer extends AbstractAI {
   }
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {}
-
-  @Override
-  protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {}
-
-  @Override
-  protected void purchase(final boolean purcahseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data,
+  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
       final PlayerID player) {}
+
+  @Override
+  protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+      final PlayerID player) {}
+
+  @Override
+  protected void purchase(final boolean purcahseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+      final GameData data, final PlayerID player) {}
 
   @Override
   protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {}
@@ -585,7 +589,8 @@ class DummyPlayer extends AbstractAI {
   }
 
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+      final Territory from) {
     throw new UnsupportedOperationException();
   }
 
@@ -604,7 +609,8 @@ class DummyPlayer extends AbstractAI {
     if (submerge) {
       // submerge if all air vs subs
       final CompositeMatch<Unit> seaSub = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsSub);
-      final CompositeMatch<Unit> planeNotDestroyer = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
+      final CompositeMatch<Unit> planeNotDestroyer =
+          new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsDestroyer.invert());
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
       if (ourUnits == null || enemyUnits == null) {
@@ -649,17 +655,18 @@ class DummyPlayer extends AbstractAI {
           // assume we are attacker
           final int ourHP = BattleCalculator.getTotalHitpointsLeft(ourUnits);
           final int enemyHP = BattleCalculator.getTotalHitpointsLeft(enemyUnits);
-          final int ourPower = DiceRoll.getTotalPowerAndRolls(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits, ourUnits, enemyUnits, !m_isAttacker, false,
-                  (m_isAttacker ? battle.getAttacker() : battle.getDefender()),
+          final int ourPower = DiceRoll
+              .getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(ourUnits, ourUnits, enemyUnits,
+                  !m_isAttacker, false, (m_isAttacker ? battle.getAttacker() : battle.getDefender()),
                   m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
-                  (battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<Unit>())),
-              m_bridge.getData()).getFirst();
-          final int enemyPower = DiceRoll.getTotalPowerAndRolls(
-              DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, enemyUnits, ourUnits, m_isAttacker, false,
-                  (m_isAttacker ? battle.getDefender() : battle.getAttacker()),
-                  m_bridge.getData(), battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
-                  (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())),
+                  (battle.isAmphibious() && m_isAttacker ? ourUnits : new ArrayList<Unit>())), m_bridge.getData())
+              .getFirst();
+          final int enemyPower =
+              DiceRoll.getTotalPowerAndRolls(
+                  DiceRoll.getUnitPowerAndRollsForNormalBattles(enemyUnits, enemyUnits, ourUnits, m_isAttacker, false,
+                      (m_isAttacker ? battle.getDefender() : battle.getAttacker()), m_bridge.getData(),
+                      battle.getTerritory(), battle.getTerritoryEffects(), battle.isAmphibious(),
+                      (battle.isAmphibious() && !m_isAttacker ? enemyUnits : new ArrayList<Unit>())),
               m_bridge.getData()).getFirst();
           final int diceSides = m_bridge.getData().getDiceSides();
           final int ourMetaPower = BattleCalculator.getNormalizedMetaPower(ourPower, ourHP, diceSides);
@@ -669,7 +676,6 @@ class DummyPlayer extends AbstractAI {
           }
         }
       }
-
       return null;
     }
   }
@@ -681,17 +687,18 @@ class DummyPlayer extends AbstractAI {
   }
 
   @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message) {
+  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+      final String message) {
     return null;
   }
 
   // Added new collection autoKilled to handle killing units prior to casualty selection
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     final List<Unit> rDamaged = new ArrayList<Unit>(defaultCasualties.getDamaged());
     final List<Unit> rKilled = new ArrayList<Unit>(defaultCasualties.getKilled());
@@ -748,15 +755,11 @@ class DummyPlayer extends AbstractAI {
   }
 
   @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
+  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+      final Collection<Unit> bombers) {
     throw new UnsupportedOperationException();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
-   */
   @Override
   public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
       final int diceSides) {

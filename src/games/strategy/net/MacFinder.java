@@ -12,7 +12,6 @@ import java.util.List;
 
 import games.strategy.util.MD5Crypt;
 
-
 public class MacFinder {
   // For quick testing
   public static void main(final String[] args) {
@@ -27,7 +26,6 @@ public class MacFinder {
 
   /**
    * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3
-   *
    */
   public static String GetHashedMacAddress() {
     final String mac = GetMacAddress();

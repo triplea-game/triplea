@@ -9,19 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -41,8 +28,6 @@ import games.strategy.util.Match;
 
 /**
  * Pro politics AI.
- *
- * @since 2015
  */
 public class ProPoliticsAI {
   private final ProAI ai;
@@ -63,19 +48,19 @@ public class ProPoliticsAI {
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     final List<PoliticalActionAttachment> results = new ArrayList<PoliticalActionAttachment>();
     LogUtils.log(Level.FINE, "Politics for " + player.getName());
-
     // Find valid war actions
     final List<PoliticalActionAttachment> actionChoicesTowardsWar =
         BasicPoliticalAI.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     LogUtils.log(Level.FINEST, "War options: " + actionChoicesTowardsWar);
-    final List<PoliticalActionAttachment> validWarActions = Match.getMatches(actionChoicesTowardsWar,
-        new CompositeMatchAnd<PoliticalActionAttachment>(
+    final List<PoliticalActionAttachment> validWarActions =
+        Match.getMatches(actionChoicesTowardsWar, new CompositeMatchAnd<PoliticalActionAttachment>(
             Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     LogUtils.log(Level.FINEST, "Valid War options: " + validWarActions);
-
     // Divide war actions into enemy and neutral
-    final Map<PoliticalActionAttachment, List<PlayerID>> enemyMap = new HashMap<PoliticalActionAttachment, List<PlayerID>>();
-    final Map<PoliticalActionAttachment, List<PlayerID>> neutralMap = new HashMap<PoliticalActionAttachment, List<PlayerID>>();
+    final Map<PoliticalActionAttachment, List<PlayerID>> enemyMap =
+        new HashMap<PoliticalActionAttachment, List<PlayerID>>();
+    final Map<PoliticalActionAttachment, List<PlayerID>> neutralMap =
+        new HashMap<PoliticalActionAttachment, List<PlayerID>>();
     for (final PoliticalActionAttachment action : validWarActions) {
       final List<PlayerID> warPlayers = new ArrayList<PlayerID>();
       for (final String relationshipChange : action.getRelationshipChange()) {
@@ -103,7 +88,6 @@ public class ProPoliticsAI {
     }
     LogUtils.log(Level.FINER, "Neutral options: " + neutralMap);
     LogUtils.log(Level.FINER, "Enemy options: " + enemyMap);
-
     if (!enemyMap.isEmpty()) {
       // Find all attack options
       final Map<Territory, ProAttackTerritoryData> attackMap = new HashMap<Territory, ProAttackTerritoryData>();
@@ -112,16 +96,17 @@ public class ProPoliticsAI {
       final Map<Unit, Set<Territory>> bombardMap = new HashMap<Unit, Set<Territory>>();
       final List<ProAmphibData> transportMapList = new ArrayList<ProAmphibData>();
       final Map<Territory, Set<Territory>> landRoutesMap = new HashMap<Territory, Set<Territory>>();
-      final List<Territory> myUnitTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
-      attackOptionsUtils.findPotentialAttackOptions(player, myUnitTerritories, attackMap, unitAttackMap, transportAttackMap, bombardMap,
-          landRoutesMap, transportMapList);
-      final List<ProAttackTerritoryData> prioritizedTerritories =
-          attackOptionsUtils.removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap, true);
-      LogUtils.log(Level.FINEST,
-          player.getName() + ", numAttackOptions=" + prioritizedTerritories.size() + ", options=" + prioritizedTerritories);
-
+      final List<Territory> myUnitTerritories =
+          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+      attackOptionsUtils.findPotentialAttackOptions(player, myUnitTerritories, attackMap, unitAttackMap,
+          transportAttackMap, bombardMap, landRoutesMap, transportMapList);
+      final List<ProAttackTerritoryData> prioritizedTerritories = attackOptionsUtils
+          .removeTerritoriesThatCantBeConquered(player, attackMap, unitAttackMap, transportAttackMap, true);
+      LogUtils.log(Level.FINEST, player.getName() + ", numAttackOptions=" + prioritizedTerritories.size() + ", options="
+          + prioritizedTerritories);
       // Find attack options per war action
-      final Map<PoliticalActionAttachment, Double> attackPercentageMap = new HashMap<PoliticalActionAttachment, Double>();
+      final Map<PoliticalActionAttachment, Double> attackPercentageMap =
+          new HashMap<PoliticalActionAttachment, Double>();
       for (final PoliticalActionAttachment action : enemyMap.keySet()) {
         int count = 0;
         final List<PlayerID> enemyPlayers = enemyMap.get(action);
@@ -135,9 +120,9 @@ public class ProPoliticsAI {
         attackPercentageMap.put(action, attackPercentage);
         LogUtils.log(Level.FINEST, enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
       }
-
       // Decide whether to declare war on an enemy
-      final List<PoliticalActionAttachment> options = new ArrayList<PoliticalActionAttachment>(attackPercentageMap.keySet());
+      final List<PoliticalActionAttachment> options =
+          new ArrayList<PoliticalActionAttachment>(attackPercentageMap.keySet());
       Collections.shuffle(options);
       for (final PoliticalActionAttachment action : options) {
         final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
@@ -164,7 +149,6 @@ public class ProPoliticsAI {
         LogUtils.log(Level.FINER, "Declared war on " + enemyMap.get(options.get(0)));
       }
     }
-
     // Old code used for non-war actions
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesOther =
@@ -178,7 +162,8 @@ public class ProPoliticsAI {
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()).match(action)) {
+          if (!Matches.AbstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+              .match(action)) {
             continue;
           }
           if (action.getCostPU() > 0 && action.getCostPU() > player.getResources().getQuantity(Constants.PUS)) {
@@ -205,5 +190,4 @@ public class ProPoliticsAI {
       politicsDelegate.attemptAction(action);
     }
   }
-
 }

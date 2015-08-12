@@ -27,8 +27,6 @@ import games.strategy.util.CountDownLatchHandler;
 
 /**
  * Abstraction by veqryn.
- *
- *
  */
 public abstract class AbstractUIContext implements IUIContext {
   // static
@@ -280,7 +278,6 @@ public abstract class AbstractUIContext implements IUIContext {
     }
   }
 
-
   @Override
   public boolean isShutDown() {
     return m_isShutDown;
@@ -294,7 +291,6 @@ public abstract class AbstractUIContext implements IUIContext {
       }
       m_isShutDown = true;
       m_latchesToCloseOnShutdown.shutDown();
-
       for (final Window window : m_windowsToCloseOnShutdown) {
         closeWindow(window);
       }
@@ -308,7 +304,6 @@ public abstract class AbstractUIContext implements IUIContext {
 
   /**
    * returns the map skins for the game data.
-   *
    * returns is a map of display-name -> map directory
    */
   public static Map<String, String> getSkins(final GameData data) {
@@ -330,7 +325,8 @@ public abstract class AbstractUIContext implements IUIContext {
         // jar files
         if (f.getName().endsWith(".zip") && f.getName().startsWith(mapName + "-")) {
           final String nameWithExtension = f.getName().substring(f.getName().indexOf('-') + 1);
-          rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4), f.getName().substring(0, f.getName().length() - 4));
+          rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4),
+              f.getName().substring(0, f.getName().length() - 4));
         }
       }
       // directories

@@ -15,7 +15,6 @@ import javax.swing.JComponent;
  * <p>
  * Company:
  * </p>
- *
  */
 public interface IEditableProperty {
   /**
@@ -49,20 +48,17 @@ public interface IEditableProperty {
   public void setValue(Object value) throws ClassCastException;
 
   /**
-   *
    * @return component used to edit this property
    */
   public JComponent getEditorComponent();
 
   /**
    * Get the view (read only) component for this property
-   *
    */
   public JComponent getViewComponent();
 
   /**
    * Description of what this property is, can be used for tooltip.
-   *
    */
   public String getDescription();
 

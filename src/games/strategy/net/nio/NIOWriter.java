@@ -17,20 +17,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * A thread that writes socket data using NIO .<br>
- *
  * Data is written in packets that are enqued on our buffer.
- *
  * Packets are sent to the sockets in the order that they are received.
- *
  */
 public class NIOWriter {
   private static final Logger s_logger = Logger.getLogger(NIOWriter.class.getName());
   private final Selector m_selector;
   private final IErrorReporter m_errorReporter;
   // this is the data we are writing
-  private final Map<SocketChannel, List<SocketWriteData>> m_writing = new HashMap<SocketChannel, List<SocketWriteData>>();
+  private final Map<SocketChannel, List<SocketWriteData>> m_writing =
+      new HashMap<SocketChannel, List<SocketWriteData>>();
   // these are the sockets we arent selecting on, but should now
   private List<SocketChannel> m_socketsToWake = new ArrayList<SocketChannel>();
   // the writing thread and threads adding data to write synchronize on this lock

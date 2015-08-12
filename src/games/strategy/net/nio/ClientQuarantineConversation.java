@@ -15,7 +15,6 @@ import games.strategy.net.Node;
 public class ClientQuarantineConversation extends QuarantineConversation {
   private static final Logger s_logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
 
-
   private enum STEP {
     READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
   };
@@ -71,7 +70,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
      * the thread that creates the socket will often be, or will block the
      * swing event thread, but the getting of a username/password
      * must be done in the swing event thread.
-     *
      * So we have complex code to switch back and forth.
      */
     try {

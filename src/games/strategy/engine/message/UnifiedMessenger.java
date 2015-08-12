@@ -27,7 +27,6 @@ import games.strategy.thread.ThreadPool;
 /**
  * A messenger general enough that both Channel and Remote messenger can be
  * based on it.
- *
  */
 public class UnifiedMessenger {
   private final static Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
@@ -88,7 +87,6 @@ public class UnifiedMessenger {
 
   /**
    * Invoke and wait for all implementors on all vms to finish executing.
-   *
    */
   public RemoteMethodCallResults invokeAndWait(final String endPointName, final RemoteMethodCall remoteCall) {
     EndPoint local;
@@ -123,8 +121,8 @@ public class UnifiedMessenger {
     final Invoke invoke = new HubInvoke(methodCallID, true, remoteCall);
     send(invoke, m_messenger.getServerNode());
     if (s_logger.isLoggable(Level.FINER)) {
-      s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
-          + " with id:" + methodCallID);
+      s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:"
+          + remoteCall.getRemoteName() + " with id:" + methodCallID);
     }
     try {
       latch.await();
@@ -132,8 +130,8 @@ public class UnifiedMessenger {
       s_logger.log(Level.WARNING, e.getMessage());
     }
     if (s_logger.isLoggable(Level.FINER)) {
-      s_logger.log(Level.FINER,
-          "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
+      s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:"
+          + remoteCall.getRemoteName() + " with id:" + methodCallID);
     }
     RemoteMethodCallResults results;
     // the countdownlatch map will be cleared when the results come in
@@ -170,7 +168,8 @@ public class UnifiedMessenger {
     }
   }
 
-  public void addImplementor(final RemoteName endPointDescriptor, final Object implementor, final boolean singleThreaded) {
+  public void addImplementor(final RemoteName endPointDescriptor, final Object implementor,
+      final boolean singleThreaded) {
     if (!endPointDescriptor.getClazz().isAssignableFrom(implementor.getClass())) {
       throw new IllegalArgumentException(implementor + " does not implement " + endPointDescriptor.getClazz());
     }
@@ -300,7 +299,8 @@ public class UnifiedMessenger {
       // regardless, the other side is expecting our reply
       if (local == null) {
         if (invoke.needReturnValues) {
-          send(new HubInvocationResults(new RemoteMethodCallResults(new RemoteNotFoundException("No implementors for " + invoke.call)),
+          send(new HubInvocationResults(
+              new RemoteMethodCallResults(new RemoteNotFoundException("No implementors for " + invoke.call)),
               invoke.methodCallID), from);
         }
         return;
@@ -320,7 +320,8 @@ public class UnifiedMessenger {
       final Runnable task = new Runnable() {
         @Override
         public void run() {
-          final List<RemoteMethodCallResults> results = localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
+          final List<RemoteMethodCallResults> results =
+              localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
           if (invoke.needReturnValues) {
             RemoteMethodCallResults result = null;
             if (results.size() == 1) {
@@ -375,12 +376,9 @@ public class UnifiedMessenger {
 
 /**
  * This is where the methods finally get called.
- *
  * An endpoint contains the implementors for a given name that are local to this
  * node.
- *
  * You can invoke the method and get the results for all the implementors.
- *
  */
 class EndPoint {
   // the next number we are going to give
@@ -433,7 +431,6 @@ class EndPoint {
   }
 
   /**
-   *
    * @return is this the first implementor
    */
   public boolean addImplementor(final Object implementor) {
@@ -464,7 +461,6 @@ class EndPoint {
   }
 
   /**
-   *
    * @return - we have no more implementors
    */
   boolean removeImplementor(final Object implementor) {
@@ -489,7 +485,8 @@ class EndPoint {
    * threaded, then the method will not run until the number comes up. Acquire
    * with getNumber() @return a List of RemoteMethodCallResults
    */
-  public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, final long number, final INode messageOriginator) {
+  public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, final long number,
+      final INode messageOriginator) {
     try {
       if (m_singleThreaded) {
         waitTillCanBeRun(number);
@@ -521,7 +518,8 @@ class EndPoint {
    * @param call
    * @param implementor
    */
-  private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor, final INode messageOriginator) {
+  private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor,
+      final INode messageOriginator) {
     call.resolve(m_remoteClass);
     Method method;
     try {
@@ -644,7 +642,8 @@ abstract class Invoke implements Externalizable {
 
   @Override
   public String toString() {
-    return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:" + methodCallID;
+    return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:"
+        + methodCallID;
   }
 
   public Invoke(final GUID methodCallID, final boolean needReturnValues, final RemoteMethodCall call) {

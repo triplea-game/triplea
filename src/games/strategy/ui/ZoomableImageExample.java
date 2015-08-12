@@ -17,10 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 /**
- *
- *
- *          Start with one arg that is the filename
- *          press z to set the zoom.
+ * Start with one arg that is the filename
+ * press z to set the zoom.
  */
 public class ZoomableImageExample extends JFrame {
   private static final long serialVersionUID = -2966214293779872824L;

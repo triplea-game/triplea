@@ -8,8 +8,6 @@ import games.strategy.engine.message.IChannelSubscribor;
 /**
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move delegate) to also be played
  * on clients.
- *
- *
  */
 public interface ISound extends IChannelSubscribor {
   /**
@@ -66,8 +64,8 @@ public interface ISound extends IChannelSubscribor {
    * @param includeObservers
    *        Whether to include non-playing machines
    */
-  public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo,
-      final Collection<PlayerID> butNotThesePlayers,
+  public void playSoundToPlayers(final String clipName, final String subFolder,
+      final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers);
 
   /**

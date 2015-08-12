@@ -8,7 +8,6 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
 
 /**
  * Please refer to the comments on GameObjectOutputStream
- *
  */
 public class GameObjectInputStream extends ObjectInputStream {
   private final GameObjectStreamFactory m_dataSource;

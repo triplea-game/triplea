@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted usernames (there is no update).
- *
  */
 public class MutedUsernameController {
   private static final Logger s_logger = Logger.getLogger(MutedUsernameController.class.getName());
@@ -28,7 +27,6 @@ public class MutedUsernameController {
   /**
    * Mute the given username. If muteTill is not null, the mute will expire when muteTill is reached.
    * <p>
-   *
    * If this username is already muted, this call will update the mute_end.
    */
   public void addMutedUsername(final String username, final Date muteTill) {
@@ -42,7 +40,8 @@ public class MutedUsernameController {
     s_logger.fine("Muting username:" + username);
     final Connection con = Database.getConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)");
+      final PreparedStatement ps =
+          con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)");
       ps.setString(1, username);
       ps.setTimestamp(2, muteTillTs);
       ps.execute();

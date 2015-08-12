@@ -28,8 +28,8 @@ public class LobbyClient {
 
   public boolean isAdmin() {
     if (isAdmin == null) {
-      final IModeratorController controller =
-          (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+          .getRemote(ModeratorController.getModeratorControllerName());
       isAdmin = controller.isAdmin();
     }
     return isAdmin;

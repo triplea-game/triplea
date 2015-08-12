@@ -17,7 +17,6 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * A cache for serialized beans that should be stored locally.
  * This is used to store settings which are not game related, and should therefore not go into the options cache
  * This is often used by editors to remember previous values
- *
  */
 public class LocalBeanCache {
   private static final LocalBeanCache s_INSTANCE = new LocalBeanCache();
@@ -30,11 +29,9 @@ public class LocalBeanCache {
 
   Map<String, IBean> m_map = new HashMap<String, IBean>();
 
-
   private LocalBeanCache() {
     m_file = new File(GameRunner2.getUserRootFolder(), "local.cache");
     m_map = loadMap();
-
     // add a shutdown, just in case someone forgets to call writeToDisk
     final Thread shutdown = new Thread(new Runnable() {
       @Override
@@ -43,12 +40,10 @@ public class LocalBeanCache {
       }
     });
     Runtime.getRuntime().addShutdownHook(shutdown);
-
   }
 
   @SuppressWarnings("unchecked")
   private Map<String, IBean> loadMap() {
-
     if (m_file.exists()) {
       try {
         FileInputStream fin = null;
@@ -92,9 +87,7 @@ public class LocalBeanCache {
       }
     }
     return new HashMap<String, IBean>();
-
   }
-
 
   /**
    * adds a new Serializable to the cache
@@ -114,14 +107,12 @@ public class LocalBeanCache {
    */
   public void writeToDisk() {
     synchronized (m_mutex) {
-
       ObjectOutputStream out = null;
       FileOutputStream fout = null;
       try {
         fout = new FileOutputStream(m_file, false);
         out = new ObjectOutputStream(fout);
         out.writeObject(m_map);
-
       } catch (final IOException e) {
         // ignore
       } finally {

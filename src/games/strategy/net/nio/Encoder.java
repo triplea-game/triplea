@@ -13,7 +13,6 @@ import games.strategy.net.Node;
 
 /**
  * Encodes data to be written by a writer
- *
  */
 public class Encoder {
   private static final Logger s_logger = Logger.getLogger(Encoder.class.getName());
@@ -54,7 +53,8 @@ public class Encoder {
     m_writer.enque(data, to);
   }
 
-  private void write(final MessageHeader header, final ObjectOutputStream out, final SocketChannel remote) throws IOException {
+  private void write(final MessageHeader header, final ObjectOutputStream out, final SocketChannel remote)
+      throws IOException {
     if (header.getFrom() == null) {
       throw new IllegalArgumentException("null from");
     }

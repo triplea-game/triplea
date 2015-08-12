@@ -9,7 +9,6 @@ import games.strategy.engine.framework.GameRunner2;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.DoubleTextFieldChangeListener;
 
-
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;
   private final double m_max;
@@ -17,8 +16,8 @@ public class DoubleProperty extends AEditableProperty {
   private double m_value;
   private final int m_places;
 
-  public DoubleProperty(final String name, final String description, final double max, final double min, final double def,
-      final int numberOfPlaces) {
+  public DoubleProperty(final String name, final String description, final double max, final double min,
+      final double def, final int numberOfPlaces) {
     super(name, description);
     if (max < min) {
       throw new IllegalThreadStateException("Max must be greater than min");

@@ -10,8 +10,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 /**
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
- *
- *
  */
 public class BattleRecord extends GameDataComponent {
   /**
@@ -28,8 +26,6 @@ public class BattleRecord extends GameDataComponent {
    * AIR_BATTLE_STALEMATE = Neither side has air units left <br>
    * NO_BATTLE = No battle was fought, possibly because the territory you were about to bomb was conquered before the bombing could begin,
    * etc.<br>
-   *
-   *
    */
   public enum BattleResultDescription {
     BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED, AIR_BATTLE_WON, AIR_BATTLE_LOST, AIR_BATTLE_STALEMATE, NO_BATTLE
@@ -45,7 +41,6 @@ public class BattleRecord extends GameDataComponent {
   private int m_bombingDamage = 0;
   private BattleType m_battleType;
   private BattleResults m_battleResults;
-
   // Something in IBattle (formerly part of BattleResults) can not be Serialized, which can causing MAJOR problems. So the IBattle should
   // never be part of BattleResults or BattleRecord.
 
@@ -63,8 +58,8 @@ public class BattleRecord extends GameDataComponent {
     m_battleResults = record.m_battleResults;
   }
 
-
-  protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType, final GameData data) {
+  protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType,
+      final GameData data) {
     super(data);
     m_battleSite = battleSite;
     m_attacker = attacker;
@@ -72,7 +67,8 @@ public class BattleRecord extends GameDataComponent {
   }
 
   protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
-      final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage) {
+      final BattleResultDescription battleResultDescription, final BattleResults battleResults,
+      final int bombingDamage) {
     m_defender = defender;
     m_attackerLostTUV = attackerLostTUV;
     m_defenderLostTUV = defenderLostTUV;

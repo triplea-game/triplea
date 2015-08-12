@@ -11,7 +11,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.grid.delegate.AbstractPlayByEmailOrForumDelegate;
 import games.strategy.grid.ui.display.IGridGameDisplay;
 
-
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
   /**
    * Called before the delegate will run.
@@ -84,8 +83,8 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate {
     final Iterator<PlayerID> iter = enemies.iterator();
     while (iter.hasNext()) {
       final PlayerID e = iter.next();
-      if (PlayDelegate.getKingTerritories(e, data).isEmpty() ||
-          (PlayDelegate.areWeInCheck(e, data, testForCheckTurnsAhead)
+      if (PlayDelegate.getKingTerritories(e, data).isEmpty()
+          || (PlayDelegate.areWeInCheck(e, data, testForCheckTurnsAhead)
               && !PlayDelegate.canWeMakeAValidMoveThatIsNotPuttingUsInCheck(e, data, testForCheckTurnsAhead))) {
         iter.remove();
       }

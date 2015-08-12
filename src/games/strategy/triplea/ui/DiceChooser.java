@@ -33,8 +33,8 @@ public class DiceChooser extends JPanel {
   // private final GameData m_data;
   private int m_diceSides = 6;
 
-  public DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final int diceSides,
-      final GameData data) {
+  public DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
+      final int diceSides, final GameData data) {
     m_uiContext = uiContext;
     m_numRolls = numRolls;
     m_diceSides = diceSides;
@@ -104,17 +104,18 @@ public class DiceChooser extends JPanel {
       diceButtonPanel.add(Box.createHorizontalStrut(4));
       final int dieNum = roll;
       final DieType dieType = hit ? DieType.HIT : DieType.MISS;
-      final JButton button = new JButton(new AbstractAction(null, m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType)) {
-        private static final long serialVersionUID = 8900816143434068634L;
+      final JButton button =
+          new JButton(new AbstractAction(null, m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType)) {
+            private static final long serialVersionUID = 8900816143434068634L;
 
-        @Override
-        public void actionPerformed(final ActionEvent event) {
-          addDie(dieNum);
-        }
-      });
+            @Override
+            public void actionPerformed(final ActionEvent event) {
+              addDie(dieNum);
+            }
+          });
       m_buttons.add(button);
-      button.setPreferredSize(
-          new Dimension(m_uiContext.getDiceImageFactory().DIE_WIDTH + 4, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 4));
+      button.setPreferredSize(new Dimension(m_uiContext.getDiceImageFactory().DIE_WIDTH + 4,
+          m_uiContext.getDiceImageFactory().DIE_HEIGHT + 4));
       diceButtonPanel.add(button);
     }
     diceButtonPanel.add(Box.createHorizontalStrut(4));
@@ -141,9 +142,12 @@ public class DiceChooser extends JPanel {
     // we're adding to a box layout, so to prevent the component from
     // grabbing extra space, set the max height.
     // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setMinimumSize(
+        new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setMaximumSize(
+        new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
+    scroll.setPreferredSize(
+        new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
     add(scroll);
     add(Box.createVerticalStrut(8));
     add(labelPanel);

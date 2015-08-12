@@ -8,13 +8,13 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-
 public class RemoteHostUtils implements IRemoteHostUtils {
   private final INode m_serverNode;
   private final IServerMessenger m_serverMessenger;
 
   public static final RemoteName getRemoteHostUtilsName(final INode node) {
-    return new RemoteName(IRemoteHostUtils.class, "games.strategy.engine.lobby.server.RemoteHostUtils:" + node.toString());
+    return new RemoteName(IRemoteHostUtils.class,
+        "games.strategy.engine.lobby.server.RemoteHostUtils:" + node.toString());
   }
 
   public RemoteHostUtils(final INode serverNode, final IServerMessenger gameServerMessenger) {
@@ -55,8 +55,8 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String mutePlayerHeadlessHostBot(final String playerNameToBeMuted, final int minutes, final String hashedPassword,
-      final String salt) {
+  public String mutePlayerHeadlessHostBot(final String playerNameToBeMuted, final int minutes,
+      final String hashedPassword, final String salt) {
     if (!MessageContext.getSender().equals(m_serverNode)) {
       return "Not accepted!";
     }
@@ -68,7 +68,8 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword, final String salt) {
+  public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword,
+      final String salt) {
     if (!MessageContext.getSender().equals(m_serverNode)) {
       return "Not accepted!";
     }
@@ -80,8 +81,8 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours, final String hashedPassword,
-      final String salt) {
+  public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours,
+      final String hashedPassword, final String salt) {
     if (!MessageContext.getSender().equals(m_serverNode)) {
       return "Not accepted!";
     }

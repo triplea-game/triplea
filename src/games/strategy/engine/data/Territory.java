@@ -2,7 +2,6 @@ package games.strategy.engine.data;
 
 import java.io.Serializable;
 
-
 public class Territory extends NamedAttachable implements NamedUnitHolder, Serializable, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
   private final boolean m_water;

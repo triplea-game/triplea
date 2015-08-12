@@ -26,7 +26,6 @@ import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
-
 public class Tile {
   public static final LockUtil S_TILE_LOCKUTIL = new LockUtil();
   private static final boolean DRAW_DEBUG = false;
@@ -94,7 +93,6 @@ public class Tile {
    * a correct image
    *
    * @return the image we currently have.
-   *
    */
   public Image getRawImage() {
     if (m_imageRef == null) {

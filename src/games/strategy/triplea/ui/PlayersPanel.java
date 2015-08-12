@@ -15,9 +15,7 @@ import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
 
 /**
- *
  * Panel to show who is playing which players
- *
  */
 public class PlayersPanel extends JPanel {
   private static final long serialVersionUID = 9177417134839960231L;
@@ -37,6 +35,7 @@ public class PlayersPanel extends JPanel {
 
   public static void showPlayers(final IGame game, final IUIContext context, final Component parent) {
     final PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), context, game.getData());
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players", JOptionPane.PLAIN_MESSAGE);
+    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players",
+        JOptionPane.PLAIN_MESSAGE);
   }
 }

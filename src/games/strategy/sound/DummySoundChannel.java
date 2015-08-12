@@ -6,8 +6,6 @@ import games.strategy.engine.data.PlayerID;
 
 /**
  * Just a dummy sound channel that doesn't do squat.
- *
- *
  */
 public class DummySoundChannel implements ISound {
   @Override
@@ -24,8 +22,8 @@ public class DummySoundChannel implements ISound {
       final boolean doNotIncludeClients, final boolean doNotIncludeObservers) {}
 
   @Override
-  public void playSoundToPlayers(final String clipName, final String subFolder, final Collection<PlayerID> playersToSendTo,
-      final Collection<PlayerID> butNotThesePlayers,
+  public void playSoundToPlayers(final String clipName, final String subFolder,
+      final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers) {}
 
   @Override

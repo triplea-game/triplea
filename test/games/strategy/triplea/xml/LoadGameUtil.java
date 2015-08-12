@@ -12,8 +12,7 @@ import games.strategy.engine.framework.GameRunner2;
 
 public class LoadGameUtil {
   public static GameData loadGame(final String map, final String game) {
-    InputStream is = openInputStream(game);
-
+    final InputStream is = openInputStream(game);
     if (is == null) {
       throw new IllegalStateException(game + " does not exist");
     }
@@ -32,16 +31,13 @@ public class LoadGameUtil {
    * First try to load the game as a file on the classpath, if not found there
    * then try to load it from either the "maps" or "test_data" folders.
    */
-  private static InputStream openInputStream(String game) {
+  private static InputStream openInputStream(final String game) {
     InputStream is = LoadGameUtil.class.getResourceAsStream(game);
-
     if (is == null) {
       File f = new File(new File(GameRunner2.getRootFolder(), "maps"), game);
-
       if (!f.exists()) {
         f = new File(new File(GameRunner2.getRootFolder(), "test_data"), game);
       }
-
       if (f.exists()) {
         try {
           is = new FileInputStream(f);

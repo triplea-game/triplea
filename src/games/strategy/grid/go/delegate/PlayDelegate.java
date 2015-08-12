@@ -30,7 +30,6 @@ import games.strategy.util.Match;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 
-
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
   protected List<Map<Territory, PlayerID>> m_previousMapStates = new ArrayList<Map<Territory, PlayerID>>();
@@ -89,7 +88,8 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    return !haveTwoPassedInARow() && (m_firstPlayerToPass == null || m_passesInARow == 1 || m_firstPlayerToPass.equals(m_player))
+    return !haveTwoPassedInARow()
+        && (m_firstPlayerToPass == null || m_passesInARow == 1 || m_firstPlayerToPass.equals(m_player))
         && (m_player.getName().equalsIgnoreCase("Black") || m_blackHandicap <= 0);
   }
 
@@ -140,17 +140,14 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
     if (basic != null) {
       return basic;
     }
-
     final String pieceBasic = isValidPieceMoveBasic(play, player, data);
     if (pieceBasic != null) {
       return pieceBasic;
     }
-
     final String superko = isValidNonSuperPositionalKo(play, player, data);
     if (superko != null) {
       return superko;
     }
-
     return null;
   }
 
@@ -160,7 +157,8 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
   public static Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> getAllValidMovesCaptureMovesAndInvalidMoves(
       final PlayerID player, final GameData data) {
     final List<Territory> validMovesWithoutCapture = new ArrayList<Territory>();
-    final List<Tuple<Territory, Collection<Territory>>> validCaptureMoves = new ArrayList<Tuple<Territory, Collection<Territory>>>();
+    final List<Tuple<Territory, Collection<Territory>>> validCaptureMoves =
+        new ArrayList<Tuple<Territory, Collection<Territory>>>();
     final List<Territory> invalidMoves = new ArrayList<Territory>();
     for (final Territory t : data.getMap().getTerritories()) {
       final GridPlayData play = new GridPlayData(t, player);
@@ -175,8 +173,8 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
         invalidMoves.add(t);
       }
     }
-    return new Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>>(validMovesWithoutCapture,
-        validCaptureMoves, invalidMoves);
+    return new Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>>(
+        validMovesWithoutCapture, validCaptureMoves, invalidMoves);
   }
 
   /**
@@ -185,7 +183,8 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
    * @param end
    *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
    */
-  public static Collection<Territory> checkForCaptures(final IGridPlayData play, final PlayerID player, final GameData data) {
+  public static Collection<Territory> checkForCaptures(final IGridPlayData play, final PlayerID player,
+      final GameData data) {
     // assume it is a legal move
     final Collection<Territory> captured = new HashSet<Territory>();
     if (play.isPass()) {
@@ -240,8 +239,8 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
       }
     }
     if (!capturedUnitsTotal.isEmpty()) {
-      m_bridge.getHistoryWriter().addChildToEvent(player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal),
-          capturedUnitsTotal);
+      m_bridge.getHistoryWriter().addChildToEvent(
+          player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal), capturedUnitsTotal);
     }
     m_capturedUnits.addAll(capturedUnitsTotal);
     final Collection<Territory> refresh = new HashSet<Territory>(play.getAllSteps());
@@ -294,7 +293,8 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
     return m_capturedUnits;
   }
 
-  public static String isValidNonSuperPositionalKo(final IGridPlayData play, final PlayerID player, final GameData data) {
+  public static String isValidNonSuperPositionalKo(final IGridPlayData play, final PlayerID player,
+      final GameData data) {
     // first create the current state, then perform the move on it, then test if this state has existed before.
     final Map<Territory, PlayerID> currentState = getCurrentMapState(data);
     // there are only 2 changes: add our unit, and remove any captures
@@ -302,7 +302,6 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
     for (final Territory t : checkForCaptures(play, player, data)) {
       currentState.remove(t);
     }
-
     {
       // should we change to be part of the IDelegate, and call through remote?
       // the client will not be able to use this block at all, because it doesn't have the local delegate, (only the remote)
@@ -366,14 +365,14 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
     if (play.getStart().getUnits().getUnitCount() > 0) {
       return "A Piece Is In That Position";
     }
-
     return null;
   }
 
   public static String isValidPieceMoveBasic(final IGridPlayData play, final PlayerID player, final GameData data) {
     final Territory start = play.getStart();
     // does our new piece form a chain with anyone else?
-    final Set<Territory> chain = getOwnedStoneChainsConnectedToThisTerritory(start, new HashSet<Territory>(), player, data, true);
+    final Set<Territory> chain =
+        getOwnedStoneChainsConnectedToThisTerritory(start, new HashSet<Territory>(), player, data, true);
     if (areAllLibertiesTakenByEnemy(play, chain, player, data)) {
       final Collection<Territory> captures = checkForCaptures(play, player, data);
       if (captures.isEmpty()) {
@@ -383,8 +382,8 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
     return null;
   }
 
-  public static boolean areAllLibertiesTakenByEnemy(final IGridPlayData play, final Collection<Territory> chain, final PlayerID player,
-      final GameData data) {
+  public static boolean areAllLibertiesTakenByEnemy(final IGridPlayData play, final Collection<Territory> chain,
+      final PlayerID player, final GameData data) {
     final Set<Territory> liberties = getAllNeighborsOfTerritoryChain(chain, data);
     for (final Territory t : liberties) {
       if (t.equals(play.getStart())) {
@@ -413,12 +412,13 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
   /**
    * Does not include the start territory in the returned set.
    */
-  public static List<Set<Territory>> getEnemyStoneChainsConnectedToThisTerritory(final Territory start, final PlayerID player,
-      final GameData data) {
+  public static List<Set<Territory>> getEnemyStoneChainsConnectedToThisTerritory(final Territory start,
+      final PlayerID player, final GameData data) {
     final Collection<PlayerID> enemies = data.getPlayerList().getPlayers();
     enemies.remove(player);
     final PlayerID enemy = enemies.iterator().next();
-    final List<Territory> neighbors = Match.getMatches(data.getMap().getNeighbors(start), PlayDelegate.TerritoryHasUnitsOwnedBy(enemy));
+    final List<Territory> neighbors =
+        Match.getMatches(data.getMap().getNeighbors(start), PlayDelegate.TerritoryHasUnitsOwnedBy(enemy));
     final List<Set<Territory>> enemyGroups = new ArrayList<Set<Territory>>();
     for (final Territory t : neighbors) {
       enemyGroups.add(getOwnedStoneChainsConnectedToThisTerritory(t, new HashSet<Territory>(), enemy, data, true));
@@ -429,11 +429,11 @@ public class PlayDelegate extends AbstractDelegate implements IGoPlayDelegate {
   /**
    * Does not include the start territory in the returned set by default.
    */
-  public static Set<Territory> getOwnedStoneChainsConnectedToThisTerritory(final Territory start, final Set<Territory> chainsSoFar,
-      final PlayerID player, final GameData data,
-      final boolean includeStart) {
+  public static Set<Territory> getOwnedStoneChainsConnectedToThisTerritory(final Territory start,
+      final Set<Territory> chainsSoFar, final PlayerID player, final GameData data, final boolean includeStart) {
     // we do not care who has a piece in the start territory, we are only checking for groups owned by the player argument
-    final List<Territory> neighbors = Match.getMatches(data.getMap().getNeighbors(start), PlayDelegate.TerritoryHasUnitsOwnedBy(player));
+    final List<Territory> neighbors =
+        Match.getMatches(data.getMap().getNeighbors(start), PlayDelegate.TerritoryHasUnitsOwnedBy(player));
     neighbors.removeAll(chainsSoFar);
     chainsSoFar.addAll(neighbors);
     for (final Territory t : neighbors) {

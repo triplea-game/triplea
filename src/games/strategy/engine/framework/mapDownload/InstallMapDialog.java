@@ -110,9 +110,10 @@ public class InstallMapDialog extends JDialog {
   private void createComponents() {
     m_installButton = new JButton("Install Games");
     m_cancelButton = new JButton("Cancel");
-    m_intro = new JLabel("<html>Click on any number of maps on the left side, then click 'Install' at the bottom to download them. "
-        + "<br />Hold down CTRL to select more than one. "
-        + "<br />Red and Bold means your map is out of date. Italics means your map is up-to-date. </html>");
+    m_intro = new JLabel(
+        "<html>Click on any number of maps on the left side, then click 'Install' at the bottom to download them. "
+            + "<br />Hold down CTRL to select more than one. "
+            + "<br />Red and Bold means your map is out of date. Italics means your map is up-to-date. </html>");
     m_intro.setHorizontalAlignment(SwingConstants.CENTER);
     final Vector<String> gameNames = new Vector<String>();
     final LinkedHashMap<String, DownloadFileDescription> gameMap = new LinkedHashMap<String, DownloadFileDescription>();
@@ -142,8 +143,8 @@ public class InstallMapDialog extends JDialog {
     final ListCellRenderer oldRenderer = m_gamesList.getCellRenderer();
     m_gamesList.setCellRenderer(new ListCellRenderer() {
       @Override
-      public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected,
-          final boolean cellHasFocus) {
+      public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+          final boolean isSelected, final boolean cellHasFocus) {
         String mapName = (String) value;
         if (mapName.trim().length() == 0) {
           mapName = " ";
@@ -155,7 +156,8 @@ public class InstallMapDialog extends JDialog {
               installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, mapName + ".zip");
             }
             if (installed != null && installed.exists()) {
-              if (description.getVersion() != null && description.getVersion().isGreaterThan(getVersion(installed), true)) {
+              if (description.getVersion() != null
+                  && description.getVersion().isGreaterThan(getVersion(installed), true)) {
                 mapName = "<html><b><font color=\"red\">" + mapName + "</font></b></html>";
               } else {
                 mapName = "<html><i>" + mapName + "</i></html>";
@@ -230,8 +232,8 @@ public class InstallMapDialog extends JDialog {
           }
           final File destination = new File(GameRunner2.getUserMapsFolder(), map.getMapName() + ".zip");
           if (destination.exists()) {
-            final String msg = "<html>Replace map: " + map.getMapName() + " ?" +
-                "<br>You have version " + getVersionString(getVersion(destination)) + " installed, replace with version "
+            final String msg = "<html>Replace map: " + map.getMapName() + " ?" + "<br>You have version "
+                + getVersionString(getVersion(destination)) + " installed, replace with version "
                 + getVersionString(map.getVersion()) + "?</html>";
             if (replaceOldQuestion(msg)) {
               toDownload.add(map);
@@ -248,13 +250,14 @@ public class InstallMapDialog extends JDialog {
           install(map, i++, toDownload.size());
           installed = true;
         }
-
         if (installed) {
           // TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
           // https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
-          EventThreadJOptionPane.showMessageDialog(getRootPane(),
-              ((toDownload.size() > 1) ? "Maps" : "Map") + " successfully installed, please restart TripleA before playing",
-              new CountDownLatchHandler(true));
+          EventThreadJOptionPane
+              .showMessageDialog(getRootPane(),
+                  ((toDownload.size() > 1) ? "Maps" : "Map")
+                      + " successfully installed, please restart TripleA before playing",
+                  new CountDownLatchHandler(true));
           setVisible(false);
         }
       }
@@ -268,8 +271,8 @@ public class InstallMapDialog extends JDialog {
   }
 
   private boolean replaceOldQuestion(final String message) {
-    final int rVal =
-        EventThreadJOptionPane.showConfirmDialog(this, message, "Overwrite?", JOptionPane.YES_NO_OPTION, new CountDownLatchHandler(true));
+    final int rVal = EventThreadJOptionPane.showConfirmDialog(this, message, "Overwrite?", JOptionPane.YES_NO_OPTION,
+        new CountDownLatchHandler(true));
     if (rVal != JOptionPane.OK_OPTION) {
       return false;
     }
@@ -292,7 +295,8 @@ public class InstallMapDialog extends JDialog {
     final File tempFile = new File(System.getProperty("java.io.tmpdir"), "tadownload:" + UUID.randomUUID().toString());
     tempFile.deleteOnExit();
     final DownloadRunnable download = new DownloadRunnable(selected.getUrl());
-    final String message = "Downloading" + ((total > 1) ? (" (" + count + " of " + total + "): ") : ": ") + selected.getMapName();
+    final String message =
+        "Downloading" + ((total > 1) ? (" (" + count + " of " + total + "): ") : ": ") + selected.getMapName();
     BackgroundTaskRunner.runInBackground(getRootPane(), message, download);
     if (download.getError() != null) {
       Util.notifyError(this, download.getError());
@@ -368,7 +372,8 @@ public class InstallMapDialog extends JDialog {
         zis.read(new byte[512]);
       }
     } catch (final Exception e) {
-      throw new IOException("zip file could not be opened, it may have been corrupted during the download, please try again");
+      throw new IOException(
+          "zip file could not be opened, it may have been corrupted during the download, please try again");
     }
   }
 

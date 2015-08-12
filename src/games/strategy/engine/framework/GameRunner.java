@@ -3,14 +3,11 @@ package games.strategy.engine.framework;
 import javax.swing.JOptionPane;
 
 /**
- *
- *
- *         This class starts and runs the game.
- *         <p>
- *
- *         This class is compiled to run under older jdks (1.3 at least), and should not do anything more than check the java version
- *         number, and then delegate to GameRunner2
- *         <p>
+ * This class starts and runs the game.
+ * <p>
+ * This class is compiled to run under older jdks (1.3 at least), and should not do anything more than check the java version
+ * number, and then delegate to GameRunner2
+ * <p>
  */
 public class GameRunner {
   public static boolean isWindows() {
@@ -23,7 +20,6 @@ public class GameRunner {
 
   /**
    * Get version number of Java VM.
-   *
    */
   private static void checkJavaVersion() {
     // note - this method should not use any new language features (this includes string concatention using +
@@ -35,16 +31,14 @@ public class GameRunner {
     final boolean v15 = version.contains("1.5");
     if (v15 || v14 || v13 || v12) {
       if (isMac()) {
-        JOptionPane.showMessageDialog(
-            null,
+        JOptionPane.showMessageDialog(null,
             "TripleA requires a java runtime greater than or equal to 6 [ie: Java 6]. (Note, this requires Mac OS X >= 10.5 or 10.6 depending.) \nPlease download a newer version of java from http://www.java.com/",
             "ERROR", JOptionPane.ERROR_MESSAGE);
         System.exit(-1);
       } else {
         JOptionPane.showMessageDialog(null,
             "TripleA requires a java runtime greater than or equal to 6 [ie: Java 6]. \nPlease download a newer version of java from http://www.java.com/",
-            "ERROR",
-            JOptionPane.ERROR_MESSAGE);
+            "ERROR", JOptionPane.ERROR_MESSAGE);
         System.exit(-1);
       }
     }

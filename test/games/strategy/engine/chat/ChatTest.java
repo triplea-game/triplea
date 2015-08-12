@@ -211,7 +211,8 @@ class TestChatListener implements IChatListener {
   }
 
   @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound) {
+  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
+      final String sound) {
     synchronized (this) {
       m_messages.add(message);
       m_thirdPerson.add(thirdperson);

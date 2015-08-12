@@ -10,7 +10,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.annotations.GameProperty;
 
-
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3602673484709292709L;
   public static final String ATTACHMENT_NAME = "playerAttachment";

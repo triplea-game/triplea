@@ -29,22 +29,6 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-/*
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version. This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-/*
- * ChatFrame.java Swing ui for chatting.
- *
- * Created on January 14, 2002, 11:08 AM
- */
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.DefaultSoundChannel;
@@ -52,12 +36,9 @@ import games.strategy.sound.SoundPath;
 
 /**
  * A Chat window.
- *
  * Mutiple chat panels can be connected to the same Chat.
  * <p>
- *
  * We can change the chat we are connected to using the setChat(...) method.
- *
  */
 public class ChatMessagePanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = 118727200083595226L;
@@ -138,8 +119,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         for (final ChatMessage message : m_chat.getChatHistory()) {
           if (message.getFrom().equals(m_chat.getServerNode().getName())) {
             if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-              addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER", "ADMIN_CHAT_CONTROL",
-                  false);
+              addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+                  "ADMIN_CHAT_CONTROL", false);
               continue;
             } else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
               addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
@@ -177,11 +158,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     content.add(sendPanel, BorderLayout.SOUTH);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see javax.swing.JComponent#requestFocusInWindow()
-   */
   @Override
   public boolean requestFocusInWindow() {
     return m_nextMessage.requestFocusInWindow();
@@ -243,13 +219,15 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   /** thread safe */
   @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound) {
+  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
+      final String sound) {
     final Runnable runner = new Runnable() {
       @Override
       public void run() {
         if (from.equals(m_chat.getServerNode().getName())) {
           if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-            addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER", "ADMIN_CHAT_CONTROL", false);
+            addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+                "ADMIN_CHAT_CONTROL", false);
             return;
           } else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
             addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);

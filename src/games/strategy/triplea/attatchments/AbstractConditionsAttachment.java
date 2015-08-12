@@ -21,8 +21,6 @@ import games.strategy.util.Match;
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold conditions (ie: RulesAttachments),
  * should extend this instead of DefaultAttachment.
- *
- *
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
   private static final long serialVersionUID = -9008441256118867078L;
@@ -33,7 +31,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   protected static final String XOR = "XOR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
-
   protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can
                                                                                         // contain
   protected String m_conditionType = AND; // m_conditionType modifies the relationship of m_conditions
@@ -135,7 +132,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                   + thisErrorMsg());
         }
       } else if (nums.length == 2) {
-        if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1]))) {
+        if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0
+            || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1]))) {
           throw new GameParseException(
               "conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y"
                   + thisErrorMsg());
@@ -179,7 +177,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (testedConditions.containsKey(this)) {
       return testedConditions.get(this);
     }
-    return areConditionsMet(new ArrayList<ICondition>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
+    return areConditionsMet(new ArrayList<ICondition>(this.getConditions()), testedConditions,
+        this.getConditionType()) != this.getInvert();
   }
 
   public static Match<AbstractConditionsAttachment> isSatisfiedAbstractConditionsAttachmentMatch(
@@ -209,8 +208,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     for (final ICondition condition : startingListOfConditions) {
       for (final ICondition subCondition : condition.getConditions()) {
         if (!allConditionsNeededSoFar.contains(subCondition)) {
-          allConditionsNeededSoFar
-              .addAll(getAllConditionsRecursive(new HashSet<ICondition>(Collections.singleton(subCondition)), allConditionsNeededSoFar));
+          allConditionsNeededSoFar.addAll(getAllConditionsRecursive(
+              new HashSet<ICondition>(Collections.singleton(subCondition)), allConditionsNeededSoFar));
         }
       }
     }
@@ -229,14 +228,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (allConditionsTestedSoFar == null) {
       allConditionsTestedSoFar = new HashMap<ICondition, Boolean>();
     }
-
     for (final ICondition c : rules) {
       if (!allConditionsTestedSoFar.containsKey(c)) {
         testAllConditionsRecursive(new HashSet<ICondition>(c.getConditions()), allConditionsTestedSoFar, aBridge);
         allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, aBridge));
       }
     }
-
     return allConditionsTestedSoFar;
   }
 
@@ -249,8 +246,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * @param conditionType
    * @param data
    */
-  public static boolean areConditionsMet(final List<ICondition> rulesToTest, final HashMap<ICondition, Boolean> testedConditions,
-      final String conditionType) {
+  public static boolean areConditionsMet(final List<ICondition> rulesToTest,
+      final HashMap<ICondition, Boolean> testedConditions, final String conditionType) {
     boolean met = false;
     if (conditionType.equals("AND")) {
       for (final ICondition c : rulesToTest) {
@@ -315,10 +312,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       final int j = getInt(s[1]);
       if (i > j || i < 0 || j < 0 || i > 120 || j > 120) {
         throw new GameParseException(
-            "chance should have a format of \"x:y\" where x is <= y and both x and y are >=0 and <=120" + thisErrorMsg());
+            "chance should have a format of \"x:y\" where x is <= y and both x and y are >=0 and <=120"
+                + thisErrorMsg());
       }
     } catch (final IllegalArgumentException iae) {
-      throw new GameParseException("Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance" + thisErrorMsg());
+      throw new GameParseException(
+          "Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance" + thisErrorMsg());
     }
     m_chance = chance;
   }
@@ -406,11 +405,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       }
       final String newChance = newToHit + ":" + diceSides;
       if (historyChild) {
-        aBridge.getHistoryWriter()
-            .addChildToEvent("Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
+        aBridge.getHistoryWriter().addChildToEvent(
+            "Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
       } else {
-        aBridge.getHistoryWriter()
-            .startEvent("Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
+        aBridge.getHistoryWriter().startEvent(
+            "Failure changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
       }
       aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
     }

@@ -19,7 +19,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.util.IntegerMap;
 
-
 public class EditProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 5826523459539469173L;
 
@@ -45,7 +44,8 @@ public class EditProductionPanel extends ProductionPanel {
   }
 
   @Override
-  protected void initRules(final PlayerID player, final GameData data, final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(final PlayerID player, final GameData data,
+      final IntegerMap<ProductionRule> initialPurchase) {
     m_data.acquireReadLock();
     try {
       m_id = player;

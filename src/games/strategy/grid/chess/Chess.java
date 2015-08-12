@@ -19,8 +19,6 @@ import games.strategy.grid.ui.GridMapPanel;
 
 /**
  * Main class responsible for Chess game.
- *
- *
  */
 public class Chess extends GridGame implements IGameLoader {
   private static final long serialVersionUID = 6963459871530489560L;
@@ -45,12 +43,10 @@ public class Chess extends GridGame implements IGameLoader {
       if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE)) {
         final GridGamePlayer player = new GridGamePlayer(name, type);
         iplayers.add(player);
-      }
-      else if (type.equals(HEURISTIC_COMPUTER_PLAYER_TYPE)) {
+      } else if (type.equals(HEURISTIC_COMPUTER_PLAYER_TYPE)) {
         final HeuristicAI ai = new HeuristicAI(name, type);
         iplayers.add(ai);
-      }
-      else {
+      } else {
         throw new IllegalStateException("Player type not recognized:" + type);
       }
     }

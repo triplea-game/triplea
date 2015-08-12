@@ -18,7 +18,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 public class AdvancedUtils {
-
   public static Unit getLastUnitMatching(final List<Unit> units, final Match<Unit> match, final int endIndex) {
     final int index = getIndexOfLastUnitMatching(units, match, endIndex);
     if (index == -1) {
@@ -61,7 +60,8 @@ public class AdvancedUtils {
       final TripleAUnit tu = TripleAUnit.get(unit);
       if (tu.getMovementLeft() < lowestMovement) {
         // If like was added so units on transport wouldn't slow transport down
-        if (TripleAUnit.get(unit).getTransportedBy() == null || !list.contains(TripleAUnit.get(unit).getTransportedBy())) {
+        if (TripleAUnit.get(unit).getTransportedBy() == null
+            || !list.contains(TripleAUnit.get(unit).getTransportedBy())) {
           lowestMovement = tu.getMovementLeft();
         }
       }
@@ -86,15 +86,15 @@ public class AdvancedUtils {
     return fastestMovement;
   }
 
-  public static Route trimRouteAtFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount, final PlayerID player,
-      final GameData data) {
+  public static Route trimRouteAtFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
+      final PlayerID player, final GameData data) {
     return trimRouteAtFirstTerMatchingX(route, newRouteJumpCount, player, data,
-        Matches.territoryHasUnitsThatMatch(
-            new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player))));
+        Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
+            Matches.unitIsEnemyOf(data, player))));
   }
 
-  public static Route trimRouteAtFirstTerMatchingX(final Route route, final int newRouteJumpCount, final PlayerID player,
-      final GameData data, final Match<Territory> match) {
+  public static Route trimRouteAtFirstTerMatchingX(final Route route, final int newRouteJumpCount,
+      final PlayerID player, final GameData data, final Match<Territory> match) {
     final List<Territory> newTers = new ArrayList<Territory>();
     int i = 0;
     for (final Territory ter : route.getTerritories()) {
@@ -116,8 +116,8 @@ public class AdvancedUtils {
         Matches.isTerritoryEnemyAndNotUnownedWater(player, data));
   }
 
-  public static Route trimRouteBeforeFirstTerMatching(final Route route, final int newRouteJumpCount, final PlayerID player,
-      final GameData data, final Match<Territory> match) {
+  public static Route trimRouteBeforeFirstTerMatching(final Route route, final int newRouteJumpCount,
+      final PlayerID player, final GameData data, final Match<Territory> match) {
     final List<Territory> newTers = new ArrayList<Territory>();
     int i = 0;
     for (final Territory ter : route.getTerritories()) {
@@ -136,14 +136,15 @@ public class AdvancedUtils {
     return new Route(newTers);
   }
 
-  public static Route trimRouteBeforeFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount, final PlayerID player,
-      final GameData data) {
+  public static Route trimRouteBeforeFirstTerWithEnemyUnits(final Route route, final int newRouteJumpCount,
+      final PlayerID player, final GameData data) {
     return trimRouteBeforeFirstTerMatching(route, newRouteJumpCount, player, data,
-        Matches.territoryHasUnitsThatMatch(
-            new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1), Matches.unitIsEnemyOf(data, player))));
+        Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1),
+            Matches.unitIsEnemyOf(data, player))));
   }
 
-  public static Route trimRouteToLength(final Route route, final int newRouteJumpCount, final PlayerID player, final GameData data) {
+  public static Route trimRouteToLength(final Route route, final int newRouteJumpCount, final PlayerID player,
+      final GameData data) {
     final List<Territory> newTers = new ArrayList<Territory>();
     int i = 0;
     for (final Territory ter : route.getTerritories()) {
@@ -159,18 +160,19 @@ public class AdvancedUtils {
     return new Route(newTers);
   }
 
-  public static List<Territory> getTerritoriesWithinXDistanceOfY(final GameData data, final Territory start, final int maxDistance) {
+  public static List<Territory> getTerritoriesWithinXDistanceOfY(final GameData data, final Territory start,
+      final int maxDistance) {
     return getTerritoriesWithinXDistanceOfYMatchingZ(data, start, maxDistance, Match.ALWAYS_MATCH);
   }
 
-  public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZ(final GameData data, final Territory start, final int maxDistance,
-      final Match<Territory> match) {
-    return getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, start, maxDistance, match, Match.ALWAYS_MATCH);
+  public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZ(final GameData data, final Territory start,
+      final int maxDistance, final Match<Territory> match) {
+    return getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(data, start, maxDistance, match,
+        Match.ALWAYS_MATCH);
   }
 
-  public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data, final Territory start,
-      final int maxDistance, final Match<Territory> match,
-      final Match<Territory> routeMatch) {
+  public static List<Territory> getTerritoriesWithinXDistanceOfYMatchingZAndHavingRouteMatchingA(final GameData data,
+      final Territory start, final int maxDistance, final Match<Territory> match, final Match<Territory> routeMatch) {
     final HashSet<Territory> processed = new HashSet<Territory>();
     processed.add(start);
     final List<Territory> result = new ArrayList<Territory>();
@@ -223,7 +225,8 @@ public class AdvancedUtils {
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
-              new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+              new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+              result.size() - 1);
           if (seekedCarrierIndex == -1) {
             break; // No carriers left
           }
@@ -247,9 +250,9 @@ public class AdvancedUtils {
             i--; // We removed carrier in earlier part of list, so decrease index
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
-            seekedCarrier =
-                getLastUnitMatching(result, new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                    result.size() - 1);
+            seekedCarrier = getLastUnitMatching(result,
+                new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+                result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }
@@ -287,9 +290,9 @@ public class AdvancedUtils {
               planeMoveCount++;
             }
             // Find the next carrier
-            seekedCarrier =
-                getLastUnitMatching(result, new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
-                    result.size() - 1);
+            seekedCarrier = getLastUnitMatching(result,
+                new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
+                result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }

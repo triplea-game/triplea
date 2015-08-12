@@ -100,7 +100,6 @@ import games.strategy.util.Tuple;
 
 /**
  * User interface for Grid Games.
- *
  */
 public class GridGameFrame extends MainGameFrame {
   private static final long serialVersionUID = -8888229639450608930L;
@@ -114,10 +113,8 @@ public class GridGameFrame extends MainGameFrame {
   protected boolean m_gameOver;
   protected CountDownLatch m_waiting;
   protected PlayerID m_currentPlayer = PlayerID.NULL_PLAYERID;
-
   protected IGridEditDelegate m_editDelegate;
   private final ButtonModel m_editModeButtonModel;
-
   protected JPanel m_gameMainPanel = new JPanel();
   protected JPanel m_gameSouthPanel;
   protected JPanel m_rightHandSidePanel = new JPanel();
@@ -137,9 +134,10 @@ public class GridGameFrame extends MainGameFrame {
    * @param game
    * @param players
    */
-  public GridGameFrame(final IGame game, final LocalPlayers players, final Class<? extends GridMapPanel> gridMapPanelClass,
-      final Class<? extends GridMapData> gridMapDataClass,
-      final Class<? extends GridGameMenu<GridGameFrame>> menuBarClass, final int squareWidth, final int squareHeight, final int bevelSize) {
+  public GridGameFrame(final IGame game, final LocalPlayers players,
+      final Class<? extends GridMapPanel> gridMapPanelClass, final Class<? extends GridMapData> gridMapDataClass,
+      final Class<? extends GridGameMenu<GridGameFrame>> menuBarClass, final int squareWidth, final int squareHeight,
+      final int bevelSize) {
     super("TripleA - " + game.getData().getGameName(), players);
     m_gameOver = false;
     m_waiting = null;
@@ -153,10 +151,10 @@ public class GridGameFrame extends MainGameFrame {
     // and the size of each square (50 by 50)
     // m_mapData = new GridMapData(m_data, x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
     try {
-      final Constructor<? extends GridMapData> mapDataConstructor = gridMapDataClass.getConstructor(new Class[] {
-          GameMap.class, int.class, int.class, int.class, int.class, int.class, int.class});
-      final GridMapData gridMapData =
-          mapDataConstructor.newInstance(m_data.getMap(), x_dim, y_dim, squareWidth, squareHeight, bevelSize, bevelSize);
+      final Constructor<? extends GridMapData> mapDataConstructor = gridMapDataClass.getConstructor(
+          new Class[] {GameMap.class, int.class, int.class, int.class, int.class, int.class, int.class});
+      final GridMapData gridMapData = mapDataConstructor.newInstance(m_data.getMap(), x_dim, y_dim, squareWidth,
+          squareHeight, bevelSize, bevelSize);
       m_mapData = gridMapData;
     } catch (final Exception e) {
       e.printStackTrace();
@@ -167,12 +165,11 @@ public class GridGameFrame extends MainGameFrame {
     model.setScrollX(false);
     model.setScrollY(false);
     model.setMaxBounds(m_mapData.getMapDimensions().width, m_mapData.getMapDimensions().height);
-
     // MapPanel is the Swing component that actually displays the gameboard.
     // m_mapPanel = new KingsTableMapPanel(mapData);
     try {
-      final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] {
-          GameData.class, GridMapData.class, GridGameFrame.class, ImageScrollModel.class});
+      final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass
+          .getConstructor(new Class[] {GameData.class, GridMapData.class, GridGameFrame.class, ImageScrollModel.class});
       final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(m_data, m_mapData, this, model);
       m_mapPanel = gridMapPanel;
     } catch (final Exception e) {
@@ -182,7 +179,6 @@ public class GridGameFrame extends MainGameFrame {
     // add arrow key listener
     this.addKeyListener(m_arrowKeyActionListener);
     m_mapPanel.addKeyListener(m_arrowKeyActionListener);
-
     // This label will display whose turn it is
     m_status = new JLabel("Some Text To Set A Reasonable preferred Size");
     m_status.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -193,11 +189,9 @@ public class GridGameFrame extends MainGameFrame {
     m_error.setAlignmentX(Component.CENTER_ALIGNMENT);
     m_error.setPreferredSize(m_error.getPreferredSize());
     m_error.setText(" ");
-
     // initialize m_editModeButtonModel before setJMenuBar()
     m_editModeButtonModel = new JToggleButton.ToggleButtonModel();
     m_editModeButtonModel.setEnabled(false);
-
     // next we add the chat panel, but only if there is one (only because we are hosting/network game)
     m_mapAndChatPanel = new JPanel();
     m_mapAndChatPanel.setLayout(new BorderLayout());
@@ -217,7 +211,6 @@ public class GridGameFrame extends MainGameFrame {
     } else {
       m_mapAndChatPanel.add(m_mapPanel, BorderLayout.CENTER);
     }
-
     // status and error panel
     m_gameMainPanel.setLayout(new BorderLayout());
     m_gameMainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 0));
@@ -227,7 +220,6 @@ public class GridGameFrame extends MainGameFrame {
     m_gameSouthPanel.add(m_status);
     m_gameSouthPanel.add(m_error);
     m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
-
     // now make right hand side panel, and add it to center panel
     m_rightHandSidePanel.setLayout(new BorderLayout());
     final Dimension rightSidePanel = new Dimension(200, 200);
@@ -239,7 +231,6 @@ public class GridGameFrame extends MainGameFrame {
     m_gameCenterPanel.setResizeWeight(1.0);
     m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
     m_gameCenterPanel.resetToPreferredSizes();
-
     // set up the edit mode overlay text
     this.setGlassPane(new JComponent() {
       private static final long serialVersionUID = 9077566112856052017L;
@@ -251,12 +242,10 @@ public class GridGameFrame extends MainGameFrame {
         g.drawString("Edit Mode", 200, 200);
       }
     });
-
     // finally, set the content pane for this frame
     // this.setContentPane(m_mainPanel);
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);
-
     // Set up the menu bar and window title
     try {
       final Constructor<? extends GridGameMenu<GridGameFrame>> menuConstructor =
@@ -267,7 +256,6 @@ public class GridGameFrame extends MainGameFrame {
       e.printStackTrace();
       throw new IllegalStateException("Could not initalize Menu Bar for: " + menuBarClass);
     }
-
     this.setTitle(m_game.getData().getGameName());
     // If a user tries to close this frame, treat it as if they have asked to leave the game
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -277,10 +265,8 @@ public class GridGameFrame extends MainGameFrame {
         leaveGame();
       }
     });
-
     m_dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     m_data.addDataChangeListener(m_dataChangeListener);
-
     this.pack();
     // minimizeRightSidePanel(); // for whatever reason it is better to do this after we show the frame
   }
@@ -303,20 +289,21 @@ public class GridGameFrame extends MainGameFrame {
      */
   }
 
-  public static void renderUnits(final Container container, final GridBagConstraints mainConstraints, final Collection<Unit> units,
-      final GridMapPanel mapPanel, final GameData data) {
+  public static void renderUnits(final Container container, final GridBagConstraints mainConstraints,
+      final Collection<Unit> units, final GridMapPanel mapPanel, final GameData data) {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     for (final Unit u : units) {
-      final JLabel label = new JLabel(new ImageIcon(mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner(), data)));
+      final JLabel label =
+          new JLabel(new ImageIcon(mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner(), data)));
       label.setToolTipText(u.getType().getName());
       panel.add(label);
     }
     container.add(panel, mainConstraints);
   }
 
-  public static void renderObject(final Container container, final GridBagConstraints mainConstraints, final Object renderObject,
-      final GridMapPanel mapPanel, final GameData data) {
+  public static void renderObject(final Container container, final GridBagConstraints mainConstraints,
+      final Object renderObject, final GridMapPanel mapPanel, final GameData data) {
     if (renderObject == null) {
       return;
     }
@@ -348,7 +335,8 @@ public class GridGameFrame extends MainGameFrame {
     scroll.setBorder(null);
     final Insets insets = new Insets(5, 0, 0, 0);
     title.setText(message);
-    rightSide.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
+    rightSide.add(scroll,
+        new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
     final GridBagConstraints mainConstraints =
         new GridBagConstraints(0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
     renderObject(rightSide, mainConstraints, renderObject, m_mapPanel, m_data);
@@ -517,7 +505,8 @@ public class GridGameFrame extends MainGameFrame {
               // TODO: this could be solved easily if rounds/steps were changes, but that could greatly increase the file size :(
               // TODO: this also does not undo the runcount of each delegate step
               @SuppressWarnings("rawtypes")
-              final Enumeration enumeration = ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
+              final Enumeration enumeration =
+                  ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
               enumeration.nextElement();
               int round = 0;
               String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
@@ -535,7 +524,8 @@ public class GridGameFrame extends MainGameFrame {
               }
               datacopy.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
               new GameDataManager().saveGame(fout, datacopy);
-              JOptionPane.showMessageDialog(GridGameFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+              JOptionPane.showMessageDialog(GridGameFrame.this, "Game Saved", "Game Saved",
+                  JOptionPane.INFORMATION_MESSAGE);
             } catch (final IOException e) {
               e.printStackTrace();
             } finally {
@@ -595,9 +585,9 @@ public class GridGameFrame extends MainGameFrame {
       }
       // A small warning so users will not over-write a file,
       if (f.exists()) {
-        final int choice = JOptionPane.showConfirmDialog(this, "A file by that name already exists. Do you wish to over write it?",
-            "Over-write?", JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE);
+        final int choice =
+            JOptionPane.showConfirmDialog(this, "A file by that name already exists. Do you wish to over write it?",
+                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (choice != JOptionPane.OK_OPTION) {
           return;
         }
@@ -607,7 +597,8 @@ public class GridGameFrame extends MainGameFrame {
         @Override
         public void run() {
           if (saveScreenshot(node, data, file)) {
-            JOptionPane.showMessageDialog(GridGameFrame.this, "Screenshot Saved", "Screenshot Saved", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(GridGameFrame.this, "Screenshot Saved", "Screenshot Saved",
+                JOptionPane.INFORMATION_MESSAGE);
           }
         }
       };
@@ -643,8 +634,8 @@ public class GridGameFrame extends MainGameFrame {
     }
     final double scale = 1;
     // print map panel to image
-    final BufferedImage mapImage =
-        Util.createImage((int) (scale * m_mapPanel.getImageWidth()), (int) (scale * m_mapPanel.getImageHeight()), false);
+    final BufferedImage mapImage = Util.createImage((int) (scale * m_mapPanel.getImageWidth()),
+        (int) (scale * m_mapPanel.getImageHeight()), false);
     final Graphics2D mapGraphics = mapImage.createGraphics();
     try {
       data.acquireReadLock();
@@ -672,13 +663,13 @@ public class GridGameFrame extends MainGameFrame {
       mapGraphics.setColor(title_color);
       mapGraphics.drawString(data.getGameName() + "    Round " + round, title_x, title_y); // + ": " + (player != null ? player.getName() :
                                                                                            // "") + " - " + step
-
       // save Image as .png
       try {
         ImageIO.write(mapImage, "png", file);
       } catch (final Exception e2) {
         e2.printStackTrace();
-        JOptionPane.showMessageDialog(GridGameFrame.this, e2.getMessage(), "Error saving Screenshot", JOptionPane.OK_OPTION);
+        JOptionPane.showMessageDialog(GridGameFrame.this, e2.getMessage(), "Error saving Screenshot",
+            JOptionPane.OK_OPTION);
         retval = false;
       }
       // Clean up objects. There might be some overkill here,
@@ -789,7 +780,6 @@ public class GridGameFrame extends MainGameFrame {
 
   /**
    * This only applies to the UI for this local machine. Therefore it returns the "last" active player that was played on this machine.
-   *
    */
   public PlayerID getActivePlayer() {
     return m_currentPlayer;
@@ -812,8 +802,8 @@ public class GridGameFrame extends MainGameFrame {
   public void leaveGame() {
     if (!m_gameOver) {
       // Make sure the user really wants to leave the game.
-      final int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit",
-          JOptionPane.YES_NO_OPTION);
+      final int rVal = JOptionPane.showConfirmDialog(this,
+          "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
       if (rVal != JOptionPane.OK_OPTION) {
         return;
       }
@@ -843,7 +833,6 @@ public class GridGameFrame extends MainGameFrame {
 
   /**
    * Process a user request to stop the game.
-   *
    * This method is responsible for de-activating this frame.
    */
   @Override
@@ -886,8 +875,8 @@ public class GridGameFrame extends MainGameFrame {
   @Override
   public void shutdown() {
     if (!m_gameOver) {
-      final int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit",
-          JOptionPane.YES_NO_OPTION);
+      final int rVal = JOptionPane.showConfirmDialog(this,
+          "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
       if (rVal != JOptionPane.OK_OPTION) {
         return;
       }
@@ -976,7 +965,6 @@ public class GridGameFrame extends MainGameFrame {
       } else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
         m_mapPanel.setTopLeft(x, y - diffPixel);
       }
-
       // minimize or maximize the right side panel
       if (keyCode == KeyEvent.VK_N) {
         minimizeRightSidePanel();
@@ -984,7 +972,6 @@ public class GridGameFrame extends MainGameFrame {
       if (keyCode == KeyEvent.VK_M) {
         maximizeRightSidePanel();
       }
-
       // do other map panel specific things
       m_mapPanel.doKeyListenerEvents(e);
     }
@@ -996,8 +983,8 @@ public class GridGameFrame extends MainGameFrame {
     public void keyReleased(final KeyEvent e) {}
   };
 
-  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player,
-      final GameData data, final String message) {
+  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory,
+      final PlayerID player, final GameData data, final String message) {
     if (options == null || options.isEmpty()) {
       return null;
     }
@@ -1015,7 +1002,8 @@ public class GridGameFrame extends MainGameFrame {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         if (startUnit != null) {
-          panel.add(new JLabel("Promoting: " + startUnit.getType().getName() + (territory == null ? "" : " in " + territory.getName())),
+          panel.add(new JLabel(
+              "Promoting: " + startUnit.getType().getName() + (territory == null ? "" : " in " + territory.getName())),
               BorderLayout.NORTH);
         }
         final JScrollPane scroll = new JScrollPane(list);
@@ -1027,8 +1015,7 @@ public class GridGameFrame extends MainGameFrame {
     final JList list = comps.getSecond();
     final String[] selectionOptions = {"OK", "Cancel"};
     final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION,
-        JOptionPane.PLAIN_MESSAGE, null, selectionOptions, null,
-        m_mapPanel.getCountDownLatchHandler());
+        JOptionPane.PLAIN_MESSAGE, null, selectionOptions, null, m_mapPanel.getCountDownLatchHandler());
     if (selection == 0) {
       selected.set((UnitType) list.getSelectedValue());
     }
@@ -1136,8 +1123,8 @@ class UnitCellRenderer extends DefaultListCellRenderer {
   }
 
   @Override
-  public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected,
-      final boolean hasFocus) {
+  public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+      final boolean isSelected, final boolean hasFocus) {
     final JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
     PlayerID player;
     UnitType type;

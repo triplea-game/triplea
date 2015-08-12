@@ -18,7 +18,6 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
 /**
  * Base class for editors.
  * Editors fire property Events in response when changed, so other editors or GUI can be notified
- *
  */
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
@@ -30,16 +29,12 @@ public abstract class EditorPanel extends JPanel {
     m_labelColor = new JLabel().getForeground();
   }
 
-
   /**
    * registers a listener for editor changes
    *
    * @param listener
    *        the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
    *        will both be null
-   * @see java.beans.PropertyChangeEvent#getOldValue()
-   * @see java.beans.PropertyChangeEvent#getOldValue()
-   *
    */
   @Override
   public void addPropertyChangeListener(final PropertyChangeListener listener) {
@@ -93,7 +88,6 @@ public abstract class EditorPanel extends JPanel {
       color = Color.RED;
       label.setForeground(color);
     }
-
     if (label != null) {
       label.setForeground(color);
     }
@@ -139,7 +133,6 @@ public abstract class EditorPanel extends JPanel {
    * Sets the label with for labels in the first column of the gridBagLayout.
    * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
    *
-   * @see SelectAndViewEditor
    * @param width
    *        the new width of the labels
    */
@@ -164,7 +157,6 @@ public abstract class EditorPanel extends JPanel {
   protected void fireEditorChanged() {
     firePropertyChange(EDITOR_CHANGE, null, null);
   }
-
 
   /**
    * Document listener which calls fireEditorChanged in response to any document change

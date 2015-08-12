@@ -22,12 +22,9 @@ import games.strategy.util.Match;
 
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment
- *
- *
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment implements ICondition {
   private static final long serialVersionUID = -6977650137928964759L;
-
   @InternalDoNotExport
   protected boolean m_countEach = false; // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
                                          // purposes of m_objectiveValue
@@ -37,11 +34,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @InternalDoNotExport
   protected int m_territoryCount = -1; // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to
                                        // determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
-
   protected ArrayList<PlayerID> m_players = new ArrayList<PlayerID>(); // A list of players that can be used with
                                                                        // directOwnershipTerritories, directExclusionTerritories,
                                                                        // directPresenceTerritories, or any of the other territory lists
-
   protected int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
   protected int m_uses = -1; // only matters for objectiveValue, does not affect the condition
   protected HashMap<Integer, Integer> m_turns = null; // condition for what turn it is
@@ -95,7 +90,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChance(final String chance) throws GameParseException {
     throw new GameParseException(
-        "chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions" + thisErrorMsg());
+        "chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions"
+            + thisErrorMsg());
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -141,7 +137,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   /**
    * Used to determine if there is a multiple on this national objective (if the user specified 'each' in the count.
    * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of territories.
-   *
    */
   public int getEachMultiple() {
     if (!getCountEach()) {
@@ -167,7 +162,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   /**
    * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not
    * be tested for in isSatisfied.
-   *
    */
   public int getUses() {
     return m_uses;
@@ -276,9 +270,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an
    * actual list of territories.
    * Also sets territoryCount.
-   *
    */
-  protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players, final GameData data) {
+  protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players,
+      final GameData data) {
     final GameMap gameMap = data.getMap();
     if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
     {
@@ -307,8 +301,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     } else if (name.equals("controlledNoWater")) {
       final Set<Territory> ownedTerrsNoWater = new HashSet<Territory>();
       for (final PlayerID player : players) {
-        ownedTerrsNoWater
-            .addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player), Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+        ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player),
+            Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
       return ownedTerrsNoWater;
@@ -349,8 +343,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       return getTerritoriesBasedOnStringName(terrs[0], players, data);
     } else if (terrs.length == 2) {
       if (!terrs[1].equals("controlled") && !terrs[1].equals("controlledNoWater") && !terrs[1].equals("original")
-          && !terrs[1].equals("originalNoWater") && !terrs[1].equals("all")
-          && !terrs[1].equals("map") && !terrs[1].equals("enemy")) {
+          && !terrs[1].equals("originalNoWater") && !terrs[1].equals("all") && !terrs[1].equals("map")
+          && !terrs[1].equals("enemy")) {
         return getListedTerritories(terrs, true, true); // Get the list of territories
       } else {
         final Set<Territory> rVal = getTerritoriesBasedOnStringName(terrs[1], players, data);
@@ -409,9 +403,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         continue;
       }
       // Skip looking for the territory if the original list contains one of the 'group' commands
-      if (name.equals("controlled") || name.equals("controlledNoWater") || name.equals("original") || name.equals("originalNoWater")
-          || name.equals("all")
-          || name.equals("map") || name.equals("enemy")) {
+      if (name.equals("controlled") || name.equals("controlledNoWater") || name.equals("original")
+          || name.equals("originalNoWater") || name.equals("all") || name.equals("map") || name.equals("enemy")) {
         break;
       }
       // Validate all territories exist

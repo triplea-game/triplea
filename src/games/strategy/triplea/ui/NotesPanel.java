@@ -34,7 +34,6 @@ public class NotesPanel extends JPanel {
 
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
     m_refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     m_refresh.addActionListener(new AbstractAction("Refresh Notes") {
       private static final long serialVersionUID = 8439704398303765832L;

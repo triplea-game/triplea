@@ -45,15 +45,14 @@ import games.strategy.util.Match;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 
-
 public class GoMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 2560185139493126853L;
   protected Set<Territory> m_territoryGroupsThatShouldDie = null; // which stones are dead?
-  protected Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> m_allMovesPossibleList = null;
+  protected Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> m_allMovesPossibleList =
+      null;
   protected boolean m_passing = false; // two passes sends us to end turn (end game) delegate
   protected boolean m_wantToContinuePlaying = false; // after we get to end game, if players disagree on score, game will continue
   protected GO_DELEGATE_PHASE m_phase = GO_DELEGATE_PHASE.PLAY;
-
 
   public enum GO_DELEGATE_PHASE {
     PLAY, ENDGAME
@@ -86,7 +85,8 @@ public class GoMapPanel extends GridMapPanel {
   }
 
   @Override
-  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player) {
+  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn,
+      final PlayerID player) {
     if (clickedOn == null) {
       return null;
     }
@@ -141,9 +141,7 @@ public class GoMapPanel extends GridMapPanel {
       }
       g2d.setColor(backgroundColor);
       g2d.fillPolygon(p);
-
       g2d.setColor(Color.black);
-
       g2d.translate(-xOffset, -yOffset);
       if (at.getY() != 0 && at.getX() != 0) {
         g2d.drawPolygon(p);
@@ -170,8 +168,9 @@ public class GoMapPanel extends GridMapPanel {
         final boolean starx = (x - 3) % 6 == 0;
         final boolean stary = (y - 3) % 6 == 0;
         if (starx && stary) {
-          final Ellipse2D.Double circle = new Ellipse2D.Double(m_mapData.getBevelWidth() + (x * m_mapData.getSquareWidth()) + xOffset - 4,
-              m_mapData.getBevelHeight() + (y * m_mapData.getSquareHeight()) + xOffset - 4, 8, 8);
+          final Ellipse2D.Double circle =
+              new Ellipse2D.Double(m_mapData.getBevelWidth() + (x * m_mapData.getSquareWidth()) + xOffset - 4,
+                  m_mapData.getBevelHeight() + (y * m_mapData.getSquareHeight()) + xOffset - 4, 8, 8);
           g2d.fill(circle);
         }
       }
@@ -199,7 +198,8 @@ public class GoMapPanel extends GridMapPanel {
       g2d.setColor(Color.gray);
       final Territory last = m_lastMove.getStart();
       final Rectangle start = m_mapData.getPolygon(last).getBounds();
-      g2d.draw(new RoundRectangle2D.Double(start.x, start.y, start.width, start.height, start.width / 3, start.height / 3));
+      g2d.draw(
+          new RoundRectangle2D.Double(start.x, start.y, start.width, start.height, start.width / 3, start.height / 3));
     }
   }
 
@@ -208,7 +208,8 @@ public class GoMapPanel extends GridMapPanel {
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
       // draw a yellow warning x for empty territories we can't place into
       g2d.setColor(Color.yellow);
-      final List<Territory> invalid = Match.getMatches(m_allMovesPossibleList.getThird(), PlayDelegate.TerritoryHasNoUnits);
+      final List<Territory> invalid =
+          Match.getMatches(m_allMovesPossibleList.getThird(), PlayDelegate.TerritoryHasNoUnits);
       for (final Territory t : invalid) {
         final Polygon p = m_mapData.getPolygon(t);
         final Rectangle rect = p.getBounds();
@@ -297,7 +298,8 @@ public class GoMapPanel extends GridMapPanel {
         m_allMovesPossibleList = getAllPossibleMovesList(m_parentGridGameFrame.getActivePlayer());
       }
     } else if (m_phase == GO_DELEGATE_PHASE.ENDGAME) {
-      final Territory clickedAt = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+      final Territory clickedAt =
+          m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
       if (clickedAt == null) {
         return;
       }
@@ -310,8 +312,8 @@ public class GoMapPanel extends GridMapPanel {
         return;
       } else {
         final PlayerID owner = units.iterator().next().getOwner();
-        final Set<Territory> group =
-            PlayDelegate.getOwnedStoneChainsConnectedToThisTerritory(clickedAt, new HashSet<Territory>(), owner, m_gameData, true);
+        final Set<Territory> group = PlayDelegate.getOwnedStoneChainsConnectedToThisTerritory(clickedAt,
+            new HashSet<Territory>(), owner, m_gameData, true);
         if (m_territoryGroupsThatShouldDie.containsAll(group)) {
           m_territoryGroupsThatShouldDie.removeAll(group);
         } else {
@@ -323,14 +325,14 @@ public class GoMapPanel extends GridMapPanel {
 
   @Override
   public void mouseReleased(final MouseEvent e) {
-    final Territory at = m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
+    final Territory at =
+        m_mapData.getTerritoryAt(e.getX() + m_model.getX(), e.getY() + m_model.getY(), m_gameData.getMap());
     if (at != null) {
       notifyTerritorySelected(at, new MouseDetails(e, e.getX(), e.getY()));
     }
     if (BaseEditDelegate.getEditMode(m_gameData)) {
       return;
     }
-
     if (m_phase == GO_DELEGATE_PHASE.PLAY) {
       if (e.getButton() != MouseEvent.BUTTON1) // (e.isControlDown() || e.isAltDown() || e.isShiftDown())
       {
@@ -448,13 +450,12 @@ public class GoMapPanel extends GridMapPanel {
 
   // TODO: move all end game input stuff to play delegate (or a new delegate), and leave the end turn delegate to just pbem input
   @Override
-  public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting)
-      throws InterruptedException {
+  public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge,
+      final CountDownLatch waiting) throws InterruptedException {
     // Make sure we have a valid CountDownLatch.
     if (waiting == null || waiting.getCount() != 1) {
       throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
     }
-
     IGridEndTurnData endPhaseData = new GridEndTurnData(null, false, player);
     final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) bridge.getRemoteDelegate();
     final IGridEndTurnData lastEndTurnData = endTurnDel.getTerritoryAdjustment();
@@ -463,7 +464,6 @@ public class GoMapPanel extends GridMapPanel {
     if (lastEndTurnData != null && player.equals(lastEndTurnData.getPlayer())) {
       return endPhaseData;
     }
-
     final boolean hasTwoPasses = endTurnDel.haveTwoPassedInARow();
     // we might be doing PBEM but not actually have enough passes to be in end game
     // final boolean waitForPBEM = waitForPlayByEmailOrForumPoster(player, bridge);
@@ -471,14 +471,12 @@ public class GoMapPanel extends GridMapPanel {
     if (/* !waitForPBEM && */!hasTwoPasses) {
       return endPhaseData;
     }
-
     if (hasTwoPasses) {
       // The mouse listeners need access to the CountDownLatch, so store as a member variable.
       m_waiting = waiting;
       this.updateAllImages();
       // Wait for a play or an attempt to leave the game
       m_waiting.await();
-
       if (m_territoryGroupsThatShouldDie == null && !m_wantToContinuePlaying) {
         // the play is invalid and must have been interrupted. So, reset the member variables, and throw an exception.
         m_territoryGroupsThatShouldDie = null;
@@ -496,8 +494,8 @@ public class GoMapPanel extends GridMapPanel {
 
   // TODO: such a hack. do it right by moving the end game crap to play delegate, and have the only interaction in end turn be the forum
   // poster
-  public IGridEndTurnData waitForEndTurnForumPoster(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting)
-      throws InterruptedException {
+  public IGridEndTurnData waitForEndTurnForumPoster(final PlayerID player, final IPlayerBridge bridge,
+      final CountDownLatch waiting) throws InterruptedException {
     if (waiting == null || waiting.getCount() != 1) {
       throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
     }

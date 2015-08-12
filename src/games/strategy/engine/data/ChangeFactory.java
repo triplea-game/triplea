@@ -31,7 +31,6 @@ import games.strategy.util.PropertyUtil;
  * 2) Execute that change through DelegateBridge.addChange()).
  * <p>
  * In this way changes to the game data can be co-ordinated across the network.
- *
  */
 public class ChangeFactory {
   public static final Change EMPTY_CHANGE = new Change() {
@@ -164,7 +163,8 @@ public class ChangeFactory {
     return new RemoveAvailableTech(tf, ta, player);
   }
 
-  public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue, final String property) {
+  public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue,
+      final String property) {
     return new ChangeAttachmentChange(attachment, newValue, property);
   }
 
@@ -172,8 +172,8 @@ public class ChangeFactory {
    * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
    * list rather than overwriting.
    */
-  public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue, final String property,
-      final boolean getRaw, final boolean resetFirst) {
+  public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue,
+      final String property, final boolean getRaw, final boolean resetFirst) {
     return new ChangeAttachmentChange(attachment, newValue, property, getRaw, resetFirst);
   }
 
@@ -181,9 +181,8 @@ public class ChangeFactory {
    * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
    * list rather than overwriting.
    */
-  public static Change attachmentPropertyChange(final Attachable attachment, final String attachmentName, final Object newValue,
-      final Object oldValue, final String property,
-      final boolean clearFirst) {
+  public static Change attachmentPropertyChange(final Attachable attachment, final String attachmentName,
+      final Object newValue, final Object oldValue, final String property, final boolean clearFirst) {
     return new ChangeAttachmentChange(attachment, attachmentName, newValue, oldValue, property, clearFirst);
   }
 
@@ -191,7 +190,8 @@ public class ChangeFactory {
    * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a
    * list rather than overwriting.
    */
-  public static Change attachmentPropertyReset(final IAttachment attachment, final String property, final boolean getRaw) {
+  public static Change attachmentPropertyReset(final IAttachment attachment, final String property,
+      final boolean getRaw) {
     return new AttachmentPropertyReset(attachment, property, getRaw);
   }
 
@@ -207,14 +207,16 @@ public class ChangeFactory {
     return new ObjectPropertyChange(unit, propertyName, newValue);
   }
 
-  public static Change addAttachmentChange(final IAttachment attachment, final Attachable attachable, final String name) {
+  public static Change addAttachmentChange(final IAttachment attachment, final Attachable attachable,
+      final String name) {
     return new AddAttachmentChange(attachment, attachable, name);
   }
 
-  public static Change addGridGameMapChange(final GameMap map, final String gridType, final String name, final int xs, final int ys,
-      final Set<String> water,
-      final String horizontalConnections, final String verticalConnections, final String diagonalConnections) {
-    return new AddGridGameMapChange(map, gridType, name, xs, ys, water, horizontalConnections, verticalConnections, diagonalConnections);
+  public static Change addGridGameMapChange(final GameMap map, final String gridType, final String name, final int xs,
+      final int ys, final Set<String> water, final String horizontalConnections, final String verticalConnections,
+      final String diagonalConnections) {
+    return new AddGridGameMapChange(map, gridType, name, xs, ys, water, horizontalConnections, verticalConnections,
+        diagonalConnections);
   }
 
   public static Change addBattleRecords(final BattleRecords records, final GameData data) {
@@ -229,8 +231,8 @@ public class ChangeFactory {
    *
    * @return the Change of relationship between 2 players
    */
-  public static Change relationshipChange(final PlayerID player, final PlayerID player2, final RelationshipType currentRelation,
-      final RelationshipType newRelation) {
+  public static Change relationshipChange(final PlayerID player, final PlayerID player2,
+      final RelationshipType currentRelation, final RelationshipType newRelation) {
     return new RelationshipChange(player, player2, currentRelation, newRelation);
   }
 
@@ -257,7 +259,6 @@ public class ChangeFactory {
   public static Change markNoMovementChange(final Unit unit) {
     return unitPropertyChange(unit, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED);
   }
-
 }
 
 
@@ -281,7 +282,8 @@ class AttachmentPropertyReset extends Change {
     m_property = property;
   }
 
-  AttachmentPropertyReset(final Attachable attachTo, final String attachmentName, final Object oldValue, final String property) {
+  AttachmentPropertyReset(final Attachable attachTo, final String attachmentName, final Object oldValue,
+      final String property) {
     m_attachmentName = attachmentName;
     m_attachedTo = attachTo;
     m_oldValue = oldValue;
@@ -309,7 +311,8 @@ class AttachmentPropertyReset extends Change {
 
   @Override
   public String toString() {
-    return "AttachmentPropertyClear attached to:" + m_attachedTo + " name:" + m_attachmentName + ", reset old value:" + m_oldValue;
+    return "AttachmentPropertyClear attached to:" + m_attachedTo + " name:" + m_attachmentName + ", reset old value:"
+        + m_oldValue;
   }
 }
 
@@ -321,7 +324,8 @@ class AttachmentPropertyResetUndo extends Change {
   private final Object m_newValue;
   private final String m_property;
 
-  AttachmentPropertyResetUndo(final Attachable attachTo, final String attachmentName, final Object newValue, final String property) {
+  AttachmentPropertyResetUndo(final Attachable attachTo, final String attachmentName, final Object newValue,
+      final String property) {
     m_attachmentName = attachmentName;
     m_attachedTo = attachTo;
     m_newValue = newValue;
@@ -349,17 +353,16 @@ class AttachmentPropertyResetUndo extends Change {
 
   @Override
   public String toString() {
-    return "AttachmentPropertyClearUndo attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue;
+    return "AttachmentPropertyClearUndo attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:"
+        + m_newValue;
   }
 }
 
 
 /**
  * RelationshipChange this creates a change in relationshipType between two players, for example from Neutral to War.
- *
  */
 class RelationshipChange extends Change {
-
   private static final long serialVersionUID = 2694339584633196289L;
   private final String m_player1;
   private final String m_player2;
@@ -374,7 +377,8 @@ class RelationshipChange extends Change {
     m_NewRelation = newRelation.getName();
   }
 
-  private RelationshipChange(final String player1, final String player2, final String oldRelation, final String newRelation) {
+  private RelationshipChange(final String player1, final String player2, final String oldRelation,
+      final String newRelation) {
     m_player1 = player1;
     m_player2 = player2;
     m_OldRelation = oldRelation;
@@ -392,12 +396,13 @@ class RelationshipChange extends Change {
      * if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
      * throw new IllegalStateException("RelationshipChange may not have null arguments");
      */
-    data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1), data.getPlayerList().getPlayerID(m_player2),
-        data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
+    data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1),
+        data.getPlayerList().getPlayerID(m_player2), data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
     // now redraw territories in case of new hostility
     if (Matches.RelationshipTypeIsAtWar.match(data.getRelationshipTypeList().getRelationshipType(m_NewRelation))) {
       for (final Territory t : Match.getMatches(data.getMap().getTerritories(),
-          new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player1)),
+          new CompositeMatchAnd<Territory>(
+              Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player1)),
               Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player2))))) {
         t.notifyChanged();
       }
@@ -410,7 +415,8 @@ class RelationshipChange extends Change {
      * if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
      * throw new IllegalStateException("RelationshipChange may not have null arguments");
      */
-    return "Add relation change. " + m_player1 + " and " + m_player2 + " change from " + m_OldRelation + " to " + m_NewRelation;
+    return "Add relation change. " + m_player1 + " and " + m_player2 + " change from " + m_OldRelation + " to "
+        + m_NewRelation;
   }
 }
 
@@ -495,8 +501,8 @@ class RemoveUnits extends Change {
   protected void perform(final GameData data) {
     final UnitHolder holder = data.getUnitHolder(m_name, m_type);
     if (!holder.getUnits().containsAll(m_units)) {
-      throw new IllegalStateException(
-          "Not all units present in:" + m_name + ".  Trying to remove:" + m_units + " present:" + holder.getUnits().getUnits());
+      throw new IllegalStateException("Not all units present in:" + m_name + ".  Trying to remove:" + m_units
+          + " present:" + holder.getUnits().getUnits());
     }
     holder.getUnits().removeAllUnits(m_units);
   }
@@ -674,7 +680,6 @@ class ChangeUnitProduction extends Change {
      */
     return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
   }
-
 }
 
 
@@ -950,8 +955,8 @@ class AddGridGameMapChange extends Change {
   final int m_oldYs;
 
   public AddGridGameMapChange(final GameMap map, final String gridType, final String name, final int xs, final int ys,
-      final Set<String> water, final String horizontalConnections,
-      final String verticalConnections, final String diagonalConnections) {
+      final Set<String> water, final String horizontalConnections, final String verticalConnections,
+      final String diagonalConnections) {
     m_oldXs = map.getXDimension();
     m_oldYs = map.getYDimension();
     m_gridType = gridType;
@@ -998,8 +1003,8 @@ class AddGridGameMapChange extends Change {
     }
   }
 
-  public AddGridGameMapChange(final String gridType, final String name, final int oldXs, final int oldYs, final int newXs, final int newYs,
-      final Set<String> oldWater, final Set<String> water,
+  public AddGridGameMapChange(final String gridType, final String name, final int oldXs, final int oldYs,
+      final int newXs, final int newYs, final Set<String> oldWater, final Set<String> water,
       final String horizontalConnections, final String verticalConnections, final String diagonalConnections,
       final Map<Territory, Set<Territory>> removeTerritoriesAndConnections,
       final Map<Territory, Set<Territory>> addTerritoriesAndConnections) {
@@ -1026,8 +1031,8 @@ class AddGridGameMapChange extends Change {
         for (final Territory t : m_removeTerritoriesAndConnections.keySet()) {
           map.removeTerritory(t);
         }
-        GameParser.setGrids(data, m_gridType, m_name, Integer.toString(m_xs), Integer.toString(m_ys), m_water, m_horizontalConnections,
-            m_verticalConnections, m_diagonalConnections, true);
+        GameParser.setGrids(data, m_gridType, m_name, Integer.toString(m_xs), Integer.toString(m_ys), m_water,
+            m_horizontalConnections, m_verticalConnections, m_diagonalConnections, true);
         map.notifyChanged();
       } catch (final Exception e) {
         e.printStackTrace();
@@ -1037,9 +1042,9 @@ class AddGridGameMapChange extends Change {
 
   @Override
   public Change invert() {
-    return new AddGridGameMapChange(m_gridType, m_name, m_xs, m_ys, m_oldXs, m_oldYs, m_water, m_oldWater, m_horizontalConnections,
-        m_verticalConnections, m_diagonalConnections,
-        m_addTerritoriesAndConnections, m_removeTerritoriesAndConnections);
+    return new AddGridGameMapChange(m_gridType, m_name, m_xs, m_ys, m_oldXs, m_oldYs, m_water, m_oldWater,
+        m_horizontalConnections, m_verticalConnections, m_diagonalConnections, m_addTerritoriesAndConnections,
+        m_removeTerritoriesAndConnections);
   }
 }
 
@@ -1141,7 +1146,8 @@ class ObjectPropertyChange extends Change {
     return value;
   }
 
-  public ObjectPropertyChange(final Object object, final String property, final Object newValue, final Object oldValue) {
+  public ObjectPropertyChange(final Object object, final String property, final Object newValue,
+      final Object oldValue) {
     m_object = object;
     // prevent multiple copies of the property names being held in the game
     m_property = property.intern();
@@ -1168,7 +1174,8 @@ class ObjectPropertyChange extends Change {
 
   @Override
   public String toString() {
-    return "Property change, unit:" + m_object + " property:" + m_property + " newValue:" + m_newValue + " oldValue:" + m_oldValue;
+    return "Property change, unit:" + m_object + " property:" + m_property + " newValue:" + m_newValue + " oldValue:"
+        + m_oldValue;
   }
 }
 
@@ -1200,8 +1207,8 @@ class GenericTechChange extends Change {
     m_property = property;
   }
 
-  public GenericTechChange(final Attachable attachTo, final String attachmentName, final Boolean newValue, final Boolean oldValue,
-      final String property) {
+  public GenericTechChange(final Attachable attachTo, final String attachmentName, final Boolean newValue,
+      final Boolean oldValue, final String property) {
     m_attachmentName = attachmentName;
     m_attachedTo = attachTo;
     m_newValue = newValue;
@@ -1222,16 +1229,12 @@ class GenericTechChange extends Change {
 
   @Override
   public String toString() {
-    return "GenericTechChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue + " old value:"
-        + m_oldValue;
+    return "GenericTechChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue
+        + " old value:" + m_oldValue;
   }
 }
 
 
-/**
- *
- *
- */
 class AddBattleRecordsChange extends Change {
   private static final long serialVersionUID = -6927678548172402611L;
   private final BattleRecords m_recordsToAdd;
@@ -1274,10 +1277,6 @@ class AddBattleRecordsChange extends Change {
 }
 
 
-/**
- *
- *
- */
 class RemoveBattleRecordsChange extends Change {
   private static final long serialVersionUID = 3286634991233029854L;
   private final BattleRecords m_recordsToRemove;

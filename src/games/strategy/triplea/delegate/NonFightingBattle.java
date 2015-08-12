@@ -30,7 +30,6 @@ import games.strategy.util.Util;
  * Example is a naval invasion into an empty country,
  * but the battle cannot be fought until a naval battle
  * occurs.
- *
  */
 public class NonFightingBattle extends AbstractBattle {
   private static final long serialVersionUID = -1699534010648145123L;
@@ -42,12 +41,14 @@ public class NonFightingBattle extends AbstractBattle {
                                                                                                                   // where, needed for
                                                                                                                   // undoing moves)
 
-  public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final GameData data) {
+  public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+      final GameData data) {
     super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
   }
 
   @Override
-  public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets) {
+  public Change addAttackChange(final Route route, final Collection<Unit> units,
+      final HashMap<Unit, HashSet<Unit>> targets) {
     final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
     for (final Unit unit : addedTransporting.keySet()) {
       if (m_dependentUnits.get(unit) != null) {
@@ -65,7 +66,8 @@ public class NonFightingBattle extends AbstractBattle {
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     attackingFromMapUnits.addAll(units);
     // are we amphibious
-    if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand)) {
+    if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
+        && Match.someMatch(units, Matches.UnitIsLand)) {
       m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
       m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
       m_isAmphibious = true;
@@ -91,9 +93,8 @@ public class NonFightingBattle extends AbstractBattle {
       m_whoWon = WhoWon.DEFENDER;
       m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     }
-    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV,
-        m_battleResultDescription,
-        new BattleResults(this, m_data), 0);
+    m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
+        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data), 0);
     end();
   }
 
@@ -169,8 +170,8 @@ public class NonFightingBattle extends AbstractBattle {
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge,
-      final boolean withdrawn) {
+  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+      final IDelegateBridge bridge, final boolean withdrawn) {
     if (withdrawn) {
       return;
     }

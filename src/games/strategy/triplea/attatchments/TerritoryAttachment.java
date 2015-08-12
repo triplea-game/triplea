@@ -19,13 +19,14 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.MyFormatter;
 
-
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
-    final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
-    final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
+    final List<Territory> capitalsListOriginal =
+        new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
+    final List<Territory> capitalsListOwned =
+        new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
     final PlayerAttachment pa = PlayerAttachment.get(player);
     // if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() >
     // capitalsListOwned.size())) return false;
@@ -379,7 +380,6 @@ public class TerritoryAttachment extends DefaultAttachment {
   /**
    * Use getProduction() instead.
    * DO NOT DELETE THIS!
-   *
    */
   @Deprecated
   public int getProductionOnly() {
@@ -540,7 +540,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void setWhenCapturedByGoesTo(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length != 2) {
-      throw new GameParseException("whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
+      throw new GameParseException(
+          "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
       final PlayerID player = getData().getPlayerList().getPlayerID(name);
@@ -757,32 +758,26 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
     }
-
     if (m_isImpassible) {
       sb.append("Is Impassable");
       sb.append(br);
     }
-
     if (m_capital != null && m_capital.length() > 0) {
       sb.append("A Capital of " + m_capital);
       sb.append(br);
     }
-
     if (m_victoryCity != 0) {
       sb.append("Is a Victory location");
       sb.append(br);
     }
-
     if (m_kamikazeZone) {
       sb.append("Is Kamikaze Zone");
       sb.append(br);
     }
-
     if (m_blockadeZone) {
       sb.append("Is a Blockade Zone");
       sb.append(br);
     }
-
     if (m_convoyRoute) {
       if (!m_convoyAttached.isEmpty()) {
         sb.append("Needs: " + MyFormatter.defaultNamedToTextList(m_convoyAttached) + br);
@@ -810,14 +805,12 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
     }
     sb.append(br);
-
     if (!t.isWater() && m_unitProduction > 0
         && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       sb.append("Base Unit Production: ");
       sb.append(m_unitProduction);
       sb.append(br);
     }
-
     if (m_production > 0 || (m_resources != null && m_resources.toString().length() > 0)) {
       sb.append("Production: ");
       sb.append(br);
@@ -827,14 +820,14 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
       if (m_resources != null) {
         if (useHTML) {
-          sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + (m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
+          sb.append("&nbsp;&nbsp;&nbsp;&nbsp;"
+              + (m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {
           sb.append(m_resources.toString());
         }
         sb.append(br);
       }
     }
-
     final Iterator<TerritoryEffect> iter = m_territoryEffect.iterator();
     if (iter.hasNext()) {
       sb.append("Territory Effects: ");
@@ -844,7 +837,6 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + iter.next().getName());
       sb.append(br);
     }
-
     return sb.toString();
   }
 

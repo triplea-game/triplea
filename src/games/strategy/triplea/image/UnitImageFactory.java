@@ -34,10 +34,8 @@ public class UnitImageFactory {
    * You probably want getUnitImageHeight(), which takes scale factor into account.
    **/
   private static int UNIT_ICON_HEIGHT = DEFAULT_UNIT_ICON_SIZE;
-
   private static int UNIT_COUNTER_OFFSET_WIDTH = DEFAULT_UNIT_ICON_SIZE / 4;
   private static int UNIT_COUNTER_OFFSET_HEIGHT = UNIT_ICON_HEIGHT;
-
   private static final String FILE_NAME_BASE = "units/";
   // maps Point -> image
   private final Map<String, Image> m_images = new HashMap<String, Image>();
@@ -51,8 +49,7 @@ public class UnitImageFactory {
   public UnitImageFactory() {}
 
   public void setResourceLoader(final ResourceLoader loader, final double scaleFactor, final int initialUnitWidth,
-      final int initialUnitHeight, final int initialUnitCounterOffsetWidth,
-      final int initialUnitCounterOffsetHeight) {
+      final int initialUnitHeight, final int initialUnitCounterOffsetWidth, final int initialUnitCounterOffsetHeight) {
     UNIT_ICON_WIDTH = initialUnitWidth;
     UNIT_ICON_HEIGHT = initialUnitHeight;
     UNIT_COUNTER_OFFSET_WIDTH = initialUnitCounterOffsetWidth;
@@ -79,14 +76,12 @@ public class UnitImageFactory {
     return m_scaleFactor;
   }
 
-
   /**
    * Return the width of scaled units.
    */
   public int getUnitImageWidth() {
     return (int) (m_scaleFactor * UNIT_ICON_WIDTH);
   }
-
 
   /**
    * Return the height of scaled units
@@ -112,7 +107,8 @@ public class UnitImageFactory {
   /**
    * Return the appropriate unit image.
    */
-  public Image getImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged, final boolean disabled) {
+  public Image getImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+      final boolean disabled) {
     final String baseName = getBaseImageName(type, player, data, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (m_images.containsKey(fullName)) {
@@ -141,7 +137,8 @@ public class UnitImageFactory {
     return getBaseImageURL(baseImageName, id, m_resourceLoader);
   }
 
-  public static URL getBaseImageURL(final String baseImageName, final PlayerID id, final ResourceLoader resourceLoader) {
+  public static URL getBaseImageURL(final String baseImageName, final PlayerID id,
+      final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName);
@@ -180,7 +177,8 @@ public class UnitImageFactory {
   /**
    * Return a icon image for a unit.
    */
-  public ImageIcon getIcon(final UnitType type, final PlayerID player, final GameData data, final boolean damaged, final boolean disabled) {
+  public ImageIcon getIcon(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
+      final boolean disabled) {
     final String baseName = getBaseImageName(type, player, data, damaged, disabled);
     final String fullName = baseName + player.getName();
     if (m_icons.containsKey(fullName)) {
@@ -192,8 +190,8 @@ public class UnitImageFactory {
     return icon;
   }
 
-  public static String getBaseImageName(final UnitType type, final PlayerID id, final GameData data, final boolean damaged,
-      final boolean disabled) {
+  public static String getBaseImageName(final UnitType type, final PlayerID id, final GameData data,
+      final boolean damaged, final boolean disabled) {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());
     if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled")) {
@@ -224,7 +222,8 @@ public class UnitImageFactory {
         if (TechTracker.hasLongRangeAir(id)) {
           name.append("_lr");
         }
-        if (TechTracker.hasJetFighter(id) && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0)) {
+        if (TechTracker.hasJetFighter(id)
+            && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0)) {
           name.append("_jp");
         }
       }

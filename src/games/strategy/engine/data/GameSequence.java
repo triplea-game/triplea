@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
   private final List<GameStep> m_allOriginalSteps = new ArrayList<GameStep>(); // meant purely so that we never lose our step objects, and
@@ -29,7 +28,8 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * @param stepDisplayName
    * @param player
    */
-  public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName, final PlayerID player) {
+  public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName,
+      final PlayerID player) {
     // System.out.println("Finding step for: Player: " + player + " at Step: " + stepDisplayName);
     m_round = currentRound;
     boolean found = false;
@@ -45,8 +45,8 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     }
     if (!found) {
       m_currentIndex = 0;
-      System.err
-          .println("Step Not Found (" + stepDisplayName + ":" + player.getName() + "), will instead use: " + m_steps.get(m_currentIndex));
+      System.err.println("Step Not Found (" + stepDisplayName + ":" + player.getName() + "), will instead use: "
+          + m_steps.get(m_currentIndex));
     } else {
       // System.out.println("Step Found: " + m_steps.get(m_currentIndex));
     }
@@ -118,7 +118,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Only tests to see if we are on the last step.
    * Used for finding if we need to make a new round or not.
    * Does not change any data or fields.
-   *
    */
   public boolean testWeAreOnLastStep() {
     synchronized (m_currentStepMutex) {

@@ -108,10 +108,10 @@ public class MainPanel extends JPanel implements Observer {
     m_mainPanel.setLayout(new GridBagLayout());
     m_mainPanel.setBorder(BorderFactory.createEmptyBorder());
     m_gameSetupPanelHolder.setLayout(new BorderLayout());
-    m_mainPanel.add(m_gameSelectorPanel,
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(00, 0, 0, 0), 0, 0));
-    m_mainPanel.add(m_gameSetupPanelScroll,
-        new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
+    m_mainPanel.add(m_gameSelectorPanel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.VERTICAL, new Insets(00, 0, 0, 0), 0, 0));
+    m_mainPanel.add(m_gameSetupPanelScroll, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
+        GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
     addChat();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(m_initialSize);

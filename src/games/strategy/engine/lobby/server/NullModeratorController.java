@@ -8,8 +8,6 @@ import games.strategy.net.Messengers;
 
 /**
  * For Server Games, not the Lobby.
- *
- *
  */
 public class NullModeratorController extends AbstractModeratorController implements IModeratorController {
   public NullModeratorController(final IServerMessenger messenger, final Messengers messengers) {
@@ -28,8 +26,8 @@ public class NullModeratorController extends AbstractModeratorController impleme
   }
 
   @Override
-  public String bootPlayerHeadlessHostBot(final INode node, final String playerNameToBeBooted, final String hashedPassword,
-      final String salt) {
+  public String bootPlayerHeadlessHostBot(final INode node, final String playerNameToBeBooted,
+      final String hashedPassword, final String salt) {
     return null;
   }
 
@@ -49,8 +47,8 @@ public class NullModeratorController extends AbstractModeratorController impleme
   }
 
   @Override
-  public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final int hours, final String hashedPassword,
-      final String salt) {
+  public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final int hours,
+      final String hashedPassword, final String salt) {
     return null;
   }
 

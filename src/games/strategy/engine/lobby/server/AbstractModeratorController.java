@@ -8,7 +8,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 
-
 public abstract class AbstractModeratorController implements IModeratorController {
   protected final static Logger s_logger = Logger.getLogger(ModeratorController.class.getName());
   protected final IServerMessenger m_serverMessenger;

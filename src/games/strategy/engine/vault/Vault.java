@@ -23,18 +23,13 @@ import games.strategy.engine.message.RemoteName;
  * A vault is a secure way for the client and server to share information without
  * trusting each other.
  * <p>
- *
  * Data can be locked in the vault by a node. This data then is not readable by other nodes until the data is unlocked.
  * <p>
- *
  * When the data is unlocked by the original node, other nodes can read the data. When data is put in the vault, it cant be changed by the
  * originating node.
  * <p>
- *
  * NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultID id)<code> method
  * should be called when it is no longer needed.
- *
- *
  */
 public class Vault {
   private static final RemoteName VAULT_CHANNEL =
@@ -163,7 +158,6 @@ public class Vault {
   /**
    * allow other nodes to see the data.
    * <p>
-   *
    * You can only unlock data that was locked by the same instance of the Vault
    *
    * @param id
@@ -191,7 +185,6 @@ public class Vault {
 
   /**
    * Get the unlocked data.
-   *
    */
   public byte[] get(final VaultID id) throws NotUnlockedException {
     if (m_verifiedValues.containsKey(id)) {
@@ -222,7 +215,6 @@ public class Vault {
    * An id can be released by any node.
    * <p>
    * If the id has already been released, then nothing will happen.
-   *
    */
   public void release(final VaultID id) {
     getRemoteBroadcaster().release(id);

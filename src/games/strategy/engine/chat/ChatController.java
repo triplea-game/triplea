@@ -34,9 +34,7 @@ public class ChatController implements IChatController {
   protected final Object m_mutex = new Object();
   private final String m_chatChannel;
   private long m_version;
-
   private final ScheduledExecutorService m_pingThread = Executors.newScheduledThreadPool(1);
-
   private final IConnectionChangeListener m_connectionChangeListener = new IConnectionChangeListener() {
     @Override
     public void connectionAdded(final INode to) {}
@@ -60,8 +58,7 @@ public class ChatController implements IChatController {
   }
 
   public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger,
-      final IChannelMessenger channelMessenger,
-      final IModeratorController moderatorController) {
+      final IChannelMessenger channelMessenger, final IModeratorController moderatorController) {
     m_chatName = name;
     m_messenger = messenger;
     m_remoteMessenger = remoteMessenger;
@@ -70,7 +67,6 @@ public class ChatController implements IChatController {
     m_chatChannel = getChatChannelName(name);
     m_remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
     ((IServerMessenger) m_messenger).addConnectionChangeListener(m_connectionChangeListener);
-
     m_pingThread.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {
@@ -85,7 +81,8 @@ public class ChatController implements IChatController {
   }
 
   public ChatController(final String name, final Messengers messenger, final ModeratorController moderatorController) {
-    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), moderatorController);
+    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(),
+        moderatorController);
   }
 
   // clean up
@@ -103,7 +100,8 @@ public class ChatController implements IChatController {
   }
 
   private IChatChannel getChatBroadcaster() {
-    final IChatChannel chatter = (IChatChannel) m_channelMessenger.getChannelBroadcastor(new RemoteName(m_chatChannel, IChatChannel.class));
+    final IChatChannel chatter =
+        (IChatChannel) m_channelMessenger.getChannelBroadcastor(new RemoteName(m_chatChannel, IChatChannel.class));
     return chatter;
   }
 

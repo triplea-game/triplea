@@ -35,8 +35,8 @@ public class Utils {
     return rVal;
   }
 
-  public static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units, final boolean attacking,
-      final boolean sea) {
+  public static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
+      final boolean attacking, final boolean sea) {
     if (AIUtils.strength(units, attacking, sea) < maxStrength) {
       return new ArrayList<Unit>(units);
     }
@@ -60,12 +60,13 @@ public class Utils {
     return strength;
   }
 
-  public static Route findNearest(final Territory start, final Match<Territory> endCondition, final Match<Territory> routeCondition,
-      final GameData data) {
+  public static Route findNearest(final Territory start, final Match<Territory> endCondition,
+      final Match<Territory> routeCondition, final GameData data) {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.match(t)) {
-        final CompositeMatchOr<Territory> routeOrEnd = new CompositeMatchOr<Territory>(routeCondition, Matches.territoryIs(t));
+        final CompositeMatchOr<Territory> routeOrEnd =
+            new CompositeMatchOr<Territory>(routeCondition, Matches.territoryIs(t));
         final Route r = data.getMap().getRoute(start, t, routeOrEnd);
         if (r != null) {
           if (shortestRoute == null || r.getLength() < shortestRoute.getLength()) {
@@ -105,7 +106,8 @@ public class Utils {
    * Return Territories containing any unit depending on unitCondition
    * Differs from findCertainShips because it doesn't require the units be owned
    */
-  public static List<Territory> findUnitTerr(final GameData data, final PlayerID player, final Match<Unit> unitCondition) {
+  public static List<Territory> findUnitTerr(final GameData data, final PlayerID player,
+      final Match<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
     final CompositeMatch<Unit> limitShips = new CompositeMatchAnd<Unit>(unitCondition);
     final List<Territory> shipTerr = new ArrayList<Territory>();

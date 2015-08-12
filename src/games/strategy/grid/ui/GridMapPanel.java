@@ -61,7 +61,6 @@ import games.strategy.util.Tuple;
 
 /**
  * Custom component for displaying a Grid Game gameboard and pieces.
- *
  */
 public abstract class GridMapPanel extends ImageScrollerLargeView implements MouseListener {
   private static final long serialVersionUID = -1318170171400997968L;
@@ -218,11 +217,10 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
   }
 
   protected GameMapListener GAME_MAP_LISTENER = new GameMapListener() {
-
     @Override
     public void gameMapDataChanged() {
-      m_mapData.setMapData(m_gameData.getMap(), m_gameData.getMap().getXDimension(), m_gameData.getMap().getYDimension(),
-          m_mapData.getSquareWidth(), m_mapData.getSquareHeight(),
+      m_mapData.setMapData(m_gameData.getMap(), m_gameData.getMap().getXDimension(),
+          m_gameData.getMap().getYDimension(), m_mapData.getSquareWidth(), m_mapData.getSquareHeight(),
           m_mapData.getBevelHeight(), m_mapData.getBevelHeight());
       m_imageScrollModel.setMaxBounds(m_mapData.getMapDimensions());
       mapDataAndDimensionsChanged();
@@ -284,7 +282,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
         final Rectangle start = m_mapData.getPolygon(last).getBounds();
         final Rectangle end = m_mapData.getPolygon(t).getBounds();
-        g2d.drawLine(start.x + (start.width / 2), start.y + (start.height / 2), end.x + (end.width / 2), end.y + (end.height / 2));
+        g2d.drawLine(start.x + (start.width / 2), start.y + (start.height / 2), end.x + (end.width / 2),
+            end.y + (end.height / 2));
         last = t;
       }
     }
@@ -340,7 +339,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
     }
     // The waitForPlay method is waiting for mouse input.
     // Let it know that we have processed mouse input.
-    if (!BaseEditDelegate.getEditMode(m_gameData) && (m_waiting != null && (m_clickedAt != null && m_releasedAt != null))) {
+    if (!BaseEditDelegate.getEditMode(m_gameData)
+        && (m_waiting != null && (m_clickedAt != null && m_releasedAt != null))) {
       m_waiting.countDown();
     }
   }
@@ -467,8 +467,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
     }
   }
 
-  public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting)
-      throws InterruptedException {
+  public IGridEndTurnData waitForEndTurn(final PlayerID player, final IPlayerBridge bridge,
+      final CountDownLatch waiting) throws InterruptedException {
     // Make sure we have a valid CountDownLatch.
     if (waiting == null || waiting.getCount() != 1) {
       throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
@@ -509,7 +509,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
     return false;
   }
 
-  protected void showPlayByEmailOrForumPosterPanel(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) {
+  protected void showPlayByEmailOrForumPosterPanel(final PlayerID player, final IPlayerBridge bridge,
+      final CountDownLatch waiting) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -520,11 +521,10 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
     });
   }
 
-  protected JPanel getPlayByEmailOrForumPosterPanel(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting,
-      final PBEMMessagePoster poster,
-      final boolean allowIncludeTerritorySummary, final boolean allowIncludeTerritoryAllPlayersSummary,
-      final boolean allowIncludeProductionSummary, final boolean allowDiceBattleDetails,
-      final boolean allowDiceStatistics) {
+  protected JPanel getPlayByEmailOrForumPosterPanel(final PlayerID player, final IPlayerBridge bridge,
+      final CountDownLatch waiting, final PBEMMessagePoster poster, final boolean allowIncludeTerritorySummary,
+      final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary,
+      final boolean allowDiceBattleDetails, final boolean allowDiceStatistics) {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.setBorder(new EmptyBorder(5, 5, 0, 0));
@@ -544,8 +544,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
     };
     m_forumPosterComponent = new ForumPosterComponent(m_gameData, doneAction, "Turn Summary");
     panel.add(m_forumPosterComponent.layoutComponents(poster, delegate, bridge, m_parentGridGameFrame, hasPosted,
-        allowIncludeTerritorySummary, allowIncludeTerritoryAllPlayersSummary, allowIncludeProductionSummary, allowDiceBattleDetails,
-        allowDiceStatistics));
+        allowIncludeTerritorySummary, allowIncludeTerritoryAllPlayersSummary, allowIncludeProductionSummary,
+        allowDiceBattleDetails, allowDiceStatistics));
     return panel;
   }
 
@@ -553,7 +553,8 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
 
   protected abstract Collection<Territory> getCapturesForPlay(final IGridPlayData play);
 
-  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn, final PlayerID player) {
+  protected Tuple<Collection<IGridPlayData>, Collection<Territory>> getValidMovesList(final Territory clickedOn,
+      final PlayerID player) {
     if (clickedOn == null) {
       return null;
     }

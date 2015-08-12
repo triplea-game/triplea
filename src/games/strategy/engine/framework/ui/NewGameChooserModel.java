@@ -144,7 +144,8 @@ public class NewGameChooserModel extends DefaultListModel {
     } catch (final EngineVersionException e) {
       System.out.println(e.getMessage());
     } catch (final SAXParseException e) {
-      System.err.println("Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+      System.err
+          .println("Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
       e.printStackTrace();
     } catch (final Exception e) {
       System.err.println("Could not parse:" + uri);
@@ -161,7 +162,8 @@ public class NewGameChooserModel extends DefaultListModel {
     return null;
   }
 
-  private NewGameChooserEntry createEntry(final URI uri) throws IOException, GameParseException, SAXException, EngineVersionException {
+  private NewGameChooserEntry createEntry(final URI uri)
+      throws IOException, GameParseException, SAXException, EngineVersionException {
     return new NewGameChooserEntry(uri);
   }
 

@@ -29,13 +29,10 @@ import games.strategy.util.CountUpAndDownLatch;
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up the run count
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
- *
- * @since 2014
  */
 public class ConcurrentOddsCalculator implements IOddsCalculator {
   private static final Logger s_logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
-
   private int m_currentThreads = MAX_THREADS;
   private final ExecutorService m_executor;
   private final CopyOnWriteArrayList<OddsCalculator> m_workers = new CopyOnWriteArrayList<OddsCalculator>();
@@ -54,8 +51,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private final List<OddsCalculatorListener> m_listeners = new ArrayList<OddsCalculatorListener>();
 
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
-    m_executor =
-        Executors.newFixedThreadPool(MAX_THREADS, new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
+    m_executor = Executors.newFixedThreadPool(MAX_THREADS,
+        new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
     s_logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
   }
 
@@ -107,15 +104,16 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
                                                                                                                   // the gc works
     final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy)); // make sure it is a decent size
                                                                                                   // regardless of how stupid the gc is
-    final int numberOfTimesWeCanCopyMax = Math.max(1, (int) (Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)))); // we
-                                                                                                                                      // leave
-                                                                                                                                      // some
-                                                                                                                                      // memory
-                                                                                                                                      // left
-                                                                                                                                      // over
-                                                                                                                                      // just
-                                                                                                                                      // in
-                                                                                                                                      // case
+    final int numberOfTimesWeCanCopyMax =
+        Math.max(1, (int) (Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)))); // we
+                                                                                                    // leave
+                                                                                                    // some
+                                                                                                    // memory
+                                                                                                    // left
+                                                                                                    // over
+                                                                                                    // just
+                                                                                                    // in
+                                                                                                    // case
     if (timeToCopyInMillis > 3000) {
       return Math.min(numberOfTimesWeCanCopyMax, Math.max(1, (MAX_THREADS / 2))); // use half the number of threads available if we took
                                                                                   // more than 3 seconds to copy
@@ -210,9 +208,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   }
 
   @Override
-  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
-      final Collection<Unit> defending,
-      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, int runCount) {
+  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
+      final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects, int runCount) {
     synchronized (m_mutexCalcIsRunning) {
       awaitLatch();
       m_isCalcSet = false;
@@ -260,7 +258,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           list.add(workerResult);
         }
       }
-
       // Wait for all worker futures to complete and combine results
       final AggregateResults results = new AggregateResults(totalRunCount);
       final Set<InterruptedException> interruptExceptions = new HashSet<InterruptedException>();
@@ -304,10 +301,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender, final Territory location,
-      final Collection<Unit> attacking,
-      final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects,
-      final int runCount) {
+  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+      final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
+      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     synchronized (m_mutexCalcIsRunning) {
       setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
       return calculate();
@@ -442,8 +438,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
 /**
  * Borrowed from Executors$DefaultThreadFactory, but allows for custom name and daemon.
- *
- *
  */
 class DaemonThreadFactory implements ThreadFactory {
   private static final AtomicInteger poolNumber = new AtomicInteger(1);

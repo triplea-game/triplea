@@ -11,7 +11,6 @@ import games.strategy.engine.data.GameObjectInputStream;
 import games.strategy.engine.data.GameObjectOutputStream;
 import games.strategy.net.IObjectStreamFactory;
 
-
 public class GameObjectStreamFactory implements IObjectStreamFactory {
   private GameData m_data;
 

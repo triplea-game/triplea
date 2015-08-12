@@ -14,8 +14,8 @@ public class GridEndTurnData implements IGridEndTurnData {
   protected final Set<Territory> m_territoryUnitsRemovalAdjustment;
   protected final boolean m_wantToContinuePlaying;
 
-  public GridEndTurnData(final Collection<Territory> territoryUnitsRemovalAdjustment, final boolean wantToContinuePlaying,
-      final PlayerID player) {
+  public GridEndTurnData(final Collection<Territory> territoryUnitsRemovalAdjustment,
+      final boolean wantToContinuePlaying, final PlayerID player) {
     m_player = player;
     m_territoryUnitsRemovalAdjustment =
         (territoryUnitsRemovalAdjustment == null ? null : new HashSet<Territory>(territoryUnitsRemovalAdjustment));
@@ -29,7 +29,8 @@ public class GridEndTurnData implements IGridEndTurnData {
 
   @Override
   public Set<Territory> getTerritoryUnitsRemovalAdjustment() {
-    return (m_territoryUnitsRemovalAdjustment == null ? null : new HashSet<Territory>(m_territoryUnitsRemovalAdjustment));
+    return (m_territoryUnitsRemovalAdjustment == null ? null
+        : new HashSet<Territory>(m_territoryUnitsRemovalAdjustment));
   }
 
   @Override
@@ -44,9 +45,10 @@ public class GridEndTurnData implements IGridEndTurnData {
 
   @Override
   public String toString() {
-    return (m_player == null ? "" : m_player.getName() + " ")
-        + (m_wantToContinuePlaying ? "continuing play"
-            : (m_territoryUnitsRemovalAdjustment == null || m_territoryUnitsRemovalAdjustment.isEmpty() ? "making no territory adjustments"
-                : "changing the following territories: " + MyFormatter.defaultNamedToTextList(m_territoryUnitsRemovalAdjustment)));
+    return (m_player == null ? "" : m_player.getName() + " ") + (m_wantToContinuePlaying ? "continuing play"
+        : (m_territoryUnitsRemovalAdjustment == null || m_territoryUnitsRemovalAdjustment.isEmpty()
+            ? "making no territory adjustments"
+            : "changing the following territories: "
+                + MyFormatter.defaultNamedToTextList(m_territoryUnitsRemovalAdjustment)));
   }
 }

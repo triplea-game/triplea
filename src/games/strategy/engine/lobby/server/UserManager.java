@@ -22,7 +22,8 @@ public class UserManager implements IUserManager {
   public String updateUser(final String userName, final String emailAddress, final String hashedPassword) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
-      s_logger.severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
+      s_logger
+          .severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
       return "Sorry, but I can't let you do that";
     }
     try {

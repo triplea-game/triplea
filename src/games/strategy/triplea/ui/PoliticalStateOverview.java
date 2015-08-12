@@ -30,8 +30,6 @@ import games.strategy.util.Triple;
 /**
  * A panel that shows the current political state, this has no other
  * functionality then a view on the current politics.
- *
- *
  */
 public class PoliticalStateOverview extends JPanel {
   private static final long serialVersionUID = -8445782272897831080L;
@@ -66,16 +64,16 @@ public class PoliticalStateOverview extends JPanel {
     int currentCell = 1;
     final Insets insets = new Insets(5, 2, 5, 2);
     for (final PlayerID p : m_data.getPlayerList()) {
-      this.add(getPlayerLabel(p),
-          new GridBagConstraints(currentCell++, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+      this.add(getPlayerLabel(p), new GridBagConstraints(currentCell++, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER,
+          GridBagConstraints.BOTH, insets, 0, 0));
     }
     // draw vertical labels and dividers
     currentCell = 1;
     for (final PlayerID p : m_data.getPlayerList()) {
-      this.add(new JSeparator(), new GridBagConstraints(0, currentCell++, 20, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-          new Insets(0, 0, 0, 0), 0, 0));
-      this.add(getPlayerLabel(p),
-          new GridBagConstraints(0, currentCell++, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets, 0, 0));
+      this.add(new JSeparator(), new GridBagConstraints(0, currentCell++, 20, 1, 0.1, 0.1, GridBagConstraints.WEST,
+          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+      this.add(getPlayerLabel(p), new GridBagConstraints(0, currentCell++, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
+          GridBagConstraints.BOTH, insets, 0, 0));
     }
     // draw cells
     int x = 1;
@@ -83,11 +81,11 @@ public class PoliticalStateOverview extends JPanel {
     for (final PlayerID pVertical : m_data.getPlayerList()) {
       for (final PlayerID pHorizontal : m_data.getPlayerList()) {
         if (pHorizontal.equals(pVertical)) {
-          this.add(new JLabel(PoliticalStateOverview.LABEL_SELF),
-              new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, insets, 0, 0));
+          this.add(new JLabel(PoliticalStateOverview.LABEL_SELF), new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0,
+              GridBagConstraints.CENTER, GridBagConstraints.NONE, insets, 0, 0));
         } else {
-          this.add(getRelationshipLabel(pVertical, pHorizontal),
-              new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+          this.add(getRelationshipLabel(pVertical, pHorizontal), new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0,
+              GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
         }
       }
       y = y + 2;
@@ -125,7 +123,8 @@ public class PoliticalStateOverview extends JPanel {
     return relationshipLabelPanel;
   }
 
-  private JComponent getRelationshipComponent(final PlayerID player1, final PlayerID player2, final RelationshipType relType) {
+  private JComponent getRelationshipComponent(final PlayerID player1, final PlayerID player2,
+      final RelationshipType relType) {
     if (!m_editable) {
       return new JLabel(relType.getName());
     } else {
@@ -134,13 +133,15 @@ public class PoliticalStateOverview extends JPanel {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-          final List<RelationshipType> types = new ArrayList<RelationshipType>(m_data.getRelationshipTypeList().getAllRelationshipTypes());
+          final List<RelationshipType> types =
+              new ArrayList<RelationshipType>(m_data.getRelationshipTypeList().getAllRelationshipTypes());
           types.remove(m_data.getRelationshipTypeList().getNullRelation());
           types.remove(m_data.getRelationshipTypeList().getSelfRelation());
           final Object[] possibilities = types.toArray();
-          final RelationshipType chosenRelationship = (RelationshipType) JOptionPane.showInputDialog(PoliticalStateOverview.this,
-              "Change Current Relationship between " + player1.getName() + " and " + player2.getName(),
-              "Change Current Relationship", JOptionPane.PLAIN_MESSAGE, null, possibilities, relType);
+          final RelationshipType chosenRelationship =
+              (RelationshipType) JOptionPane.showInputDialog(PoliticalStateOverview.this,
+                  "Change Current Relationship between " + player1.getName() + " and " + player2.getName(),
+                  "Change Current Relationship", JOptionPane.PLAIN_MESSAGE, null, possibilities, relType);
           if (chosenRelationship != null) {
             // remove any old ones
             final Iterator<Triple<PlayerID, PlayerID, RelationshipType>> iter = m_editChanges.iterator();
@@ -211,7 +212,6 @@ public class PoliticalStateOverview extends JPanel {
 
   /**
    * Redraw this panel (because of changed politics)
-   *
    */
   public void redrawPolitics() {
     this.removeAll();

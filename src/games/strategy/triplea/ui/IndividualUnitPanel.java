@@ -31,11 +31,8 @@ import games.strategy.util.Triple;
  * For when you do not want things condensed into categories.
  * <p>
  * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
- *
  * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per
  * unit.
- *
- *
  */
 public class IndividualUnitPanel extends JPanel {
   private static final long serialVersionUID = -4222938655315991715L;
@@ -50,7 +47,6 @@ public class IndividualUnitPanel extends JPanel {
   private ScrollableTextField m_textFieldPurelyForListening;
   private final ScrollableTextFieldListener m_countOptionalTextFieldListener;
   private final boolean m_showSelectAll;
-
   private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener() {
     @Override
     public void changedValue(final ScrollableTextField field) {
@@ -73,9 +69,9 @@ public class IndividualUnitPanel extends JPanel {
    * @param showSelectAll
    * @param optionalListener
    */
-  public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data, final IUIContext uiContext,
-      final int max,
-      final boolean showMinAndMax, final boolean showSelectAll, final ScrollableTextFieldListener optionalListener) {
+  public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data,
+      final IUIContext uiContext, final int max, final boolean showMinAndMax, final boolean showSelectAll,
+      final ScrollableTextFieldListener optionalListener) {
     m_data = data;
     m_uiContext = uiContext;
     m_title = new JTextArea(title);
@@ -107,9 +103,9 @@ public class IndividualUnitPanel extends JPanel {
    * @param showSelectAll
    * @param optionalListener
    */
-  public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent, final String title,
-      final GameData data, final IUIContext context, final int max,
-      final boolean showMinAndMax, final boolean showSelectAll, final ScrollableTextFieldListener optionalListener) {
+  public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent,
+      final String title, final GameData data, final IUIContext context, final int max, final boolean showMinAndMax,
+      final boolean showSelectAll, final ScrollableTextFieldListener optionalListener) {
     m_data = data;
     m_uiContext = context;
     m_title = new JTextArea(title);
@@ -134,8 +130,8 @@ public class IndividualUnitPanel extends JPanel {
       }
       final int thisMin = Math.max(0, entry.getValue().getSecond());
       final int thisCurrent = Math.max(thisMin, Math.min(thisMax, entry.getValue().getThird()));
-      m_entries
-          .add(new SingleUnitPanel(entry.getKey(), m_data, m_uiContext, m_textFieldListener, thisMax, thisMin, thisCurrent, showMinAndMax));
+      m_entries.add(new SingleUnitPanel(entry.getKey(), m_data, m_uiContext, m_textFieldListener, thisMax, thisMin,
+          thisCurrent, showMinAndMax));
     }
     layoutEntries();
   }
@@ -194,7 +190,8 @@ public class IndividualUnitPanel extends JPanel {
     m_selectNoneButton.setPreferredSize(buttonSize);
     m_autoSelectButton = new JButton("Max");
     m_autoSelectButton.setPreferredSize(buttonSize);
-    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+        nullInsets, 0, 0));
     m_selectNoneButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -213,12 +210,12 @@ public class IndividualUnitPanel extends JPanel {
       yIndex++;
     }
     if (m_showSelectAll) {
-      add(m_autoSelectButton,
-          new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE, nullInsets, 0, 0));
+      add(m_autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+          GridBagConstraints.NONE, nullInsets, 0, 0));
       yIndex++;
     }
-    add(m_leftToSelect,
-        new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    add(m_leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST,
+        GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
   }
 
   public IntegerMap<Unit> getSelected() {
@@ -269,8 +266,7 @@ class SingleUnitPanel extends JPanel {
   private final ScrollableTextFieldListener m_countTextFieldListener;
 
   public SingleUnitPanel(final Unit unit, final GameData data, final IUIContext uiContext,
-      final ScrollableTextFieldListener textFieldListener, final int max, final int min,
-      final boolean showMaxAndMin) {
+      final ScrollableTextFieldListener textFieldListener, final int max, final int min, final boolean showMaxAndMin) {
     this(unit, data, uiContext, textFieldListener, max, min, 0, showMaxAndMin);
   }
 
@@ -293,9 +289,10 @@ class SingleUnitPanel extends JPanel {
     setCount(currentValue);
     setLayout(new GridBagLayout());
     final JLabel label = new JLabel(new ImageIcon(img));
-    add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
-    add(m_textField,
-        new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(0, 0, 0, 10), 0, 0));
+    add(m_textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(0, 0, 0, 0), 0, 0));
   }
 
   public int getCount() {
@@ -331,8 +328,8 @@ class SingleUnitPanel extends JPanel {
   }
 
   public void createComponents(final JPanel panel, final int yIndex) {
-    panel.add(this,
-        new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    panel.add(this, new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     m_textField.addChangeListener(m_countTextFieldListener);
   }
 }

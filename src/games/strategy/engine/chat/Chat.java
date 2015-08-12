@@ -21,13 +21,10 @@ import games.strategy.sound.SoundPath;
 import games.strategy.util.Tuple;
 
 /**
- *
  * chat logic.
  * <p>
- *
  * A chat can be bound to multiple chat panels.
  * <p>
- *
  */
 public class Chat {
   private final List<IChatListener> m_listeners = new CopyOnWriteArrayList<IChatListener>();
@@ -49,7 +46,6 @@ public class Chat {
   private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<INode, LinkedHashSet<String>>();
   private static final String TAG_MODERATOR = "[Mod]";
   private final CHAT_SOUND_PROFILE m_chatSoundProfile;
-
 
   public enum CHAT_SOUND_PROFILE {
     LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
@@ -140,8 +136,8 @@ public class Chat {
         // and run any queued messages. Queued messages may be ignored if the
         // server version is incorrect.
         // this all seems a lot more involved than it needs to be.
-        final IChatController controller =
-            (IChatController) m_messengers.getRemoteMessenger().getRemote(ChatController.getChatControlerRemoteName(m_chatName));
+        final IChatController controller = (IChatController) m_messengers.getRemoteMessenger()
+            .getRemote(ChatController.getChatControlerRemoteName(m_chatName));
         m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
             new RemoteName(m_chatChannelName, IChatChannel.class));
         final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
@@ -193,20 +189,21 @@ public class Chat {
         new RemoteName(m_chatChannelName, IChatChannel.class));
     if (m_messengers.getMessenger().isConnected()) {
       final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(m_chatName);
-      final IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(chatControllerName);
+      final IChatController controller =
+          (IChatController) m_messengers.getRemoteMessenger().getRemote(chatControllerName);
       controller.leaveChat();
     }
   }
 
   public void sendSlap(final String playerName) {
-    final IChatChannel remote =
-        (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
+    final IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger()
+        .getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
   }
 
   public void sendMessage(final String message, final boolean meMessage) {
-    final IChatChannel remote =
-        (IChatChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
+    final IChatChannel remote = (IChatChannel) m_messengers.getChannelMessenger()
+        .getChannelBroadcastor(new RemoteName(m_chatChannelName, IChatChannel.class));
     if (meMessage) {
       remote.meMessageOccured(message);
     } else {
@@ -411,7 +408,6 @@ public class Chat {
   };
 
   /**
-   *
    * While using this, you should synchronize on getMutex().
    *
    * @return the messages that have occured so far.

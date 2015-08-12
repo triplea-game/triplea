@@ -23,11 +23,9 @@ import javax.swing.SwingUtilities;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
-
 public class Util {
   // all we have is static methods
   private Util() {}
-
 
   public static interface Task<T> {
     public T run();
@@ -68,7 +66,6 @@ public class Util {
   }
 
   private static final Component c = new Component() {
-
     private static final long serialVersionUID = 1800075529163275600L;
   };
 
@@ -88,8 +85,8 @@ public class Util {
   }
 
   public static void notifyError(final Component parent, final String message) {
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error", JOptionPane.ERROR_MESSAGE,
-        new CountDownLatchHandler(true));
+    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error",
+        JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
   }
 
   // public static Image createVolatileImage(int width, int height)

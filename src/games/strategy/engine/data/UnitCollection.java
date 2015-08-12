@@ -12,9 +12,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 /**
- *
- *
- *          A collection of units.
+ * A collection of units.
  */
 public class UnitCollection extends GameDataComponent implements Iterable<Unit> {
   private static final long serialVersionUID = -3534037864426122864L;
@@ -181,7 +179,6 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   /**
-   *
    * @return a Set of all players who have units in this collection.
    */
   public Set<PlayerID> getPlayersWithUnits() {
@@ -194,7 +191,6 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit> 
   }
 
   /**
-   *
    * @return the count of units each player has in this collection.
    */
   public IntegerMap<PlayerID> getPlayerUnitCounts() {

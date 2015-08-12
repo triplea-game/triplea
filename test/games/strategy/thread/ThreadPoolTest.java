@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-
 public class ThreadPoolTest extends TestCase {
   /** Creates a new instance of ThreadPoolTest */
   public ThreadPoolTest(final String s) {

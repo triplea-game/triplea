@@ -5,7 +5,6 @@ import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
-
 public class CasualtyDetails extends CasualtyList implements Serializable {
   private static final long serialVersionUID = 2261683015991514918L;
   // since this now extends CasualtyList, it has access to the protected fields of m_killed and m_damaged

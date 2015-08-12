@@ -47,7 +47,8 @@ public class Pact_of_Steel_2_Test extends TestCase {
     final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // this National Objective russia has to own at least 3 of the 5 territories by itself
-    final RulesAttachment russian_easternEurope = RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
+    final RulesAttachment russian_easternEurope =
+        RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
     final Collection<Territory> terrs = new ArrayList<Territory>();
     terrs.add(Norway);
     terrs.add(Eastern_Europe);
@@ -181,7 +182,6 @@ public class Pact_of_Steel_2_Test extends TestCase {
     // TODO
   }
 
-
   /*
    * Add Utilities here
    */
@@ -195,10 +195,6 @@ public class Pact_of_Steel_2_Test extends TestCase {
     return rVal;
   }
 
-  /***********************************************************
-  ************************************************************
-  ************************************************************
-  ***********************************************************/
   /*
    * Add assertions here
    */

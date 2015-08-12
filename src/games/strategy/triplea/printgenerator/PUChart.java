@@ -21,7 +21,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-
 class PUChart {
   private final GameData m_data;
   private final Iterator<PlayerID> m_playerIterator;

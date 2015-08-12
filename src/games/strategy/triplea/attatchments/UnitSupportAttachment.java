@@ -18,7 +18,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 
-
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
   private HashSet<UnitType> m_unitType = null;
@@ -26,20 +25,16 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private boolean m_offence = false; // Do Not Export
   @InternalDoNotExport
   private boolean m_defence = false; // Do Not Export
-
   @InternalDoNotExport
   private boolean m_roll = false;
   @InternalDoNotExport
   private boolean m_strength = false;
-
   private int m_bonus = 0;
   private int m_number = 0;
-
   @InternalDoNotExport
   private boolean m_allied = false;
   @InternalDoNotExport
   private boolean m_enemy = false;
-
   private String m_bonusType = null;
   private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
   private boolean m_impArtTech = false;
@@ -349,7 +344,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
    */
   @InternalDoNotExport
   public static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException {
-    final String attachmentName = (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD) + type.getName();
+    final String attachmentName =
+        (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD) + type.getName();
     final UnitSupportAttachment rule = new UnitSupportAttachment(attachmentName, type, data);
     rule.setBonus("1");
     rule.setBonusType(Constants.OLD_ART_RULE_NAME);

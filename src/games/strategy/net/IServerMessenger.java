@@ -4,9 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- *
  * A server messenger. Additional methods for accepting new connections.
- *
  */
 public interface IServerMessenger extends IMessenger {
   public void setAcceptNewConnections(boolean accept);

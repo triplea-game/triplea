@@ -82,7 +82,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * @param p2
    *        Player 2 in the relationship
    * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2 players
-   *
    */
   protected RelationshipTypeAttachment getRelationshipTypeAttachment(final PlayerID p1, final PlayerID p2) {
     final RelationshipType relation = getRelationshipType(p1, p2);
@@ -120,11 +119,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
     return getData().getRelationshipTypeList().getNullRelation();
   }
 
-
   /**
    * RelatedPlayers is a class of 2 players that are related, used in relationships.
-   *
-   *
    */
   public class RelatedPlayers implements Serializable {
     private static final long serialVersionUID = 2124258606502106751L;
@@ -180,8 +176,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
       return m_p1.getName() + "-" + m_p2.getName();
     }
   }
-
-
   public class Relationship implements Serializable {
     private static final long serialVersionUID = -6718866176901627180L;
 

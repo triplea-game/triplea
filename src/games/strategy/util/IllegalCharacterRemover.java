@@ -3,12 +3,10 @@ package games.strategy.util;
 /**
  * Designed to remove/replace<br>
  * / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
- *
- *
  */
 public class IllegalCharacterRemover {
-  private static final char[] ILLEGAL_CHARACTERS = {'/', '\b', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', '\'',
-      ':', '.', ',', '^', '[', ']', '=', '+', ';'};
+  private static final char[] ILLEGAL_CHARACTERS = {'/', '\b', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<',
+      '>', '|', '\"', '\'', ':', '.', ',', '^', '[', ']', '=', '+', ';'};
 
   /**
    * Designed to remove / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;

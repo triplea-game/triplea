@@ -24,12 +24,9 @@ public class CompositeRouteFinder {
 
   /**
    * This class can find composite routes between two territories.
-   *
    * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
-   *
    * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2 length neutral route.
    * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
-   *
    * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
    *
    * @param map
@@ -100,7 +97,8 @@ public class CompositeRouteFinder {
     return AssembleRoute(start, end, previous);
   }
 
-  private Route AssembleRoute(final Territory start, final Territory end, final HashMap<Territory, Territory> previous) {
+  private Route AssembleRoute(final Territory start, final Territory end,
+      final HashMap<Territory, Territory> previous) {
     final List<Territory> routeTers = new ArrayList<Territory>();
     Territory curTer = end;
     while (previous.containsKey(curTer)) {

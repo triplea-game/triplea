@@ -6,7 +6,6 @@ import games.strategy.util.PropertyUtil;
 
 /**
  * Contains some utility methods that subclasses can use to make writing attachments easier.
- *
  * FYI: You may never have a hashmap/linkedhashmap of any other "attachment" within an attachment.
  * This is because there will be a circular reference from this hashmap -> attachment1 -> playerid -> attachment2 -> hashmap -> attachment1,
  * and this causes major problems for Java's deserializing.
@@ -14,7 +13,6 @@ import games.strategy.util.PropertyUtil;
  * attachment going in the wrong bucket,
  * so that a .get(attachment1) will result in a null instead of giving the key for attachment1. So just don't have maps of attachments, in
  * an attachment. Thx, Veqryn.
- *
  */
 public abstract class DefaultAttachment extends GameDataComponent implements IAttachment {
   private static final long serialVersionUID = -1985116207387301730L;
@@ -59,10 +57,11 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     }
   }
 
-  protected static IllegalArgumentException getSetterExceptionMessage(final DefaultAttachment failingObject, final String propertyName,
-      final String givenValue, final String... allowedValues) {
+  protected static IllegalArgumentException getSetterExceptionMessage(final DefaultAttachment failingObject,
+      final String propertyName, final String givenValue, final String... allowedValues) {
     final StringBuilder rVal = new StringBuilder();
-    rVal.append(failingObject.getClass().getName() + ": " + failingObject.getName() + ": property " + propertyName + " must be either ");
+    rVal.append(failingObject.getClass().getName() + ": " + failingObject.getName() + ": property " + propertyName
+        + " must be either ");
     rVal.append(allowedValues[0]);
     for (int i = 1; i < allowedValues.length; ++i) {
       rVal.append(" or " + allowedValues[i]);
@@ -75,7 +74,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   /**
-   *
    * @param property
    * @return null or the toString() of the field value
    */

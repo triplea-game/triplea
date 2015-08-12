@@ -24,7 +24,8 @@ public class LocalLauncher extends AbstractLauncher {
   private final IRandomSource m_randomSource;
   private final PlayerListing m_playerListing;
 
-  public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource, final PlayerListing playerListing) {
+  public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource,
+      final PlayerListing playerListing) {
     super(gameSelectorModel);
     m_randomSource = randomSource;
     m_playerListing = playerListing;
@@ -38,7 +39,8 @@ public class LocalLauncher extends AbstractLauncher {
       m_gameData.doPreGameStartDataModifications(m_playerListing);
       final IServerMessenger messenger = new DummyMessenger();
       final Messengers messengers = new Messengers(messenger);
-      final Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
+      final Set<IGamePlayer> gamePlayers =
+          m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
       game = new ServerGame(m_gameData, gamePlayers, new HashMap<String, INode>(), messengers);
       game.setRandomSource(m_randomSource);
       // for debugging, we can use a scripted random source
@@ -60,7 +62,6 @@ public class LocalLauncher extends AbstractLauncher {
           JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
         }
       });
-
     } catch (final Exception ex) {
       ex.printStackTrace();
       exceptionLoadingGame = ex;

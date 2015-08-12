@@ -11,7 +11,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import junit.framework.TestCase;
 
-
 public class DelegateTest extends TestCase {
   protected GameData m_data;
   protected PlayerID black;

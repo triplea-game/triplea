@@ -13,7 +13,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 
-
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
 
@@ -29,7 +28,8 @@ public class TechAttachment extends DefaultAttachment {
 
   public static TechAttachment get(final PlayerID id, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
-      throw new IllegalStateException("TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
+      throw new IllegalStateException(
+          "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
     }
     final TechAttachment attachment = (TechAttachment) id.getAttachment(nameOfAttachment);
     // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them

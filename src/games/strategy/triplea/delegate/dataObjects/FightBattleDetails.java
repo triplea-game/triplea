@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.dataObjects;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
-
 public class FightBattleDetails {
   private final boolean m_bombingRaid;
   private final BattleType m_type;

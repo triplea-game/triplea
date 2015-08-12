@@ -15,8 +15,6 @@ import games.strategy.util.Match;
 
 /**
  * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment
- *
- *
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment implements ICondition {
   private static final long serialVersionUID = 3569461523853104614L;
@@ -41,7 +39,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // set "actionAccept" to "UK" so UK can accept this action to go through.
   protected ArrayList<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
 
-  public static Match<AbstractUserActionAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
+  public static Match<AbstractUserActionAttachment> isSatisfiedMatch(
+      final HashMap<ICondition, Boolean> testedConditions) {
     return new Match<AbstractUserActionAttachment>() {
       @Override
       public boolean match(final AbstractUserActionAttachment value) {
@@ -200,7 +199,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   public void useAttempt(final IDelegateBridge aBridge) {
-    aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
+    aBridge
+        .addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
   }
 
   public boolean hasAttemptsLeft() {

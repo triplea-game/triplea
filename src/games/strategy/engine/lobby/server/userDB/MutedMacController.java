@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted macs (there is no update).
- *
  */
 public class MutedMacController {
   private static final Logger s_logger = Logger.getLogger(MutedMacController.class.getName());
@@ -28,7 +27,6 @@ public class MutedMacController {
   /**
    * Mute the given mac. If muteTill is not null, the mute will expire when muteTill is reached.
    * <p>
-   *
    * If this mac is already muted, this call will update the mute_end.
    */
   public void addMutedMac(final String mac, final Date muteTill) {

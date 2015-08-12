@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.util.ListenerList;
 
-
 public class ScrollableTextField extends JPanel {
   private static final long serialVersionUID = 6940592988573672224L;
 

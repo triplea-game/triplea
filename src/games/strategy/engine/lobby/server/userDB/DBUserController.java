@@ -16,7 +16,6 @@ public class DBUserController {
   private final static Logger s_logger = Logger.getLogger(DBUserController.class.getName());
 
   /**
-   *
    * @return if this user is valid
    */
   public String validate(final String userName, final String email, final String hashedPassword) {
@@ -98,7 +97,8 @@ public class DBUserController {
     }
     final Connection con = Database.getConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
+      final PreparedStatement ps =
+          con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
       ps.setString(1, hashedPassword);
       ps.setString(2, email);
       ps.setBoolean(3, admin);
@@ -128,8 +128,8 @@ public class DBUserController {
     }
     final Connection con = Database.getConnection();
     try {
-      final PreparedStatement ps =
-          con.prepareStatement("insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
+      final PreparedStatement ps = con.prepareStatement(
+          "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
       ps.setString(1, name);
       ps.setString(2, hashedPassword);
       ps.setString(3, email);
@@ -153,7 +153,6 @@ public class DBUserController {
 
   /**
    * Validate the username password, returning true if the user is able to login.
-   *
    * This has the side effect of updating the users last login time.
    */
   public boolean login(final String userName, final String hashedPassword) {
@@ -184,7 +183,6 @@ public class DBUserController {
   }
 
   /**
-   *
    * @return null if no such user
    */
   public DBUser getUser(final String userName) {
@@ -197,8 +195,8 @@ public class DBUserController {
       if (!rs.next()) {
         return null;
       }
-      final DBUser user = new DBUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"), rs.getTimestamp("lastLogin"),
-          rs.getTimestamp("joined"));
+      final DBUser user = new DBUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"),
+          rs.getTimestamp("lastLogin"), rs.getTimestamp("joined"));
       rs.close();
       ps.close();
       return user;

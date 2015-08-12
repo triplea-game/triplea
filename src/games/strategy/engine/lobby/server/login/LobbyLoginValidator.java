@@ -51,10 +51,11 @@ public class LobbyLoginValidator implements ILoginValidator {
   }
 
   @Override
-  public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient,
-      final String clientName, final String clientMac,
+  public String verifyConnection(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
-    final String error = verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac, remoteAddress);
+    final String error = verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName,
+        clientMac, remoteAddress);
     if (error != null) {
       s_logger.info("Bad login attemp from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
@@ -77,7 +78,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
     final Version clientVersion = new Version(clientVersionString);
     if (!clientVersion.equals(LobbyServer.LOBBY_VERSION)) {
-      return "Wrong version, we require" + LobbyServer.LOBBY_VERSION.toString() + " but trying to log in with " + clientVersionString;
+      return "Wrong version, we require" + LobbyServer.LOBBY_VERSION.toString() + " but trying to log in with "
+          + clientVersionString;
     }
     for (final String s : getBadWords()) {
       if (clientName.toLowerCase().contains(s.toLowerCase())) {
@@ -92,7 +94,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (hashedMac == null) {
       return UNABLE_TO_OBTAIN_MAC;
     }
-    if (hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$") || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
+    if (hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")
+        || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
       return INVALID_MAC; // Must have been tampered with
     }
     final Tuple<Boolean, Timestamp> macBanned = new BannedMacController().isMacBanned(hashedMac);
@@ -160,8 +163,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return new BadWordController().list();
   }
 
-  private String validatePassword(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient,
-      final String clientName) {
+  private String validatePassword(final Map<String, String> propertiesSentToClient,
+      final Map<String, String> propertiesReadFromClient, final String clientName) {
     final DBUserController userController = new DBUserController();
     if (!userController.login(clientName, propertiesReadFromClient.get(HASHED_PASSWORD_KEY))) {
       if (userController.doesUserExist(clientName)) {

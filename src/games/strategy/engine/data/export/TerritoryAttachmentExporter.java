@@ -48,7 +48,8 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
     return "";
   }
 
-  private String mUnitProductionHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mUnitProductionHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     final TerritoryAttachment att = (TerritoryAttachment) attachment;
     if (!(att.getProduction() == att.getUnitProduction())) {
       return printIntegerOption(field, "unitProduction", attachment, true);
@@ -56,11 +57,13 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
     return "";
   }
 
-  private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printPlayerList(field, attachment);
   }
 
-  private String mChangeUnitOwnersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mChangeUnitOwnersHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printPlayerList(field, attachment);
   }
 }

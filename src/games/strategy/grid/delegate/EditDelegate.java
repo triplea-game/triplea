@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Match;
 
-
 public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate {
   @Override
   public String removeUnits(final Territory territory, final Collection<Unit> units) {
@@ -37,15 +36,15 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate 
     }
     for (final PlayerID p : owners) {
       final List<Unit> unitsOwned = Match.getMatches(units, Matches.unitIsOwnedBy(p));
-      logEvent(
-          "Removing units owned by " + p.getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(unitsOwned),
-          unitsOwned);
+      logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": "
+          + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
       m_bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
     }
     return null;
   }
 
-  public static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
+  public static String validateRemoveUnits(final GameData data, final Territory territory,
+      final Collection<Unit> units) {
     final String result = null;
     if (units.isEmpty()) {
       return "No units selected";
@@ -71,8 +70,8 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate 
     if (units == null || units.isEmpty()) {
       return null;
     }
-    logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName() + ": "
-        + MyFormatter.unitsToTextNoOwner(units), units);
+    logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName()
+        + ": " + MyFormatter.unitsToTextNoOwner(units), units);
     m_bridge.addChange(ChangeFactory.addUnits(territory, units));
     return null;
   }
@@ -100,13 +99,14 @@ public class EditDelegate extends BaseEditDelegate implements IGridEditDelegate 
     if (territory == null) {
       return null;
     }
-    logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to " + player.getName(),
-        territory);
+    logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to "
+        + player.getName(), territory);
     m_bridge.addChange(ChangeFactory.changeOwner(territory, player));
     return null;
   }
 
-  public static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player) {
+  public static String validateChangeTerritoryOwner(final GameData data, final Territory territory,
+      final PlayerID player) {
     final String result = null;
     final TerritoryAttachment ta = TerritoryAttachment.get(territory, true);
     if (ta == null) {

@@ -37,28 +37,25 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-
 public class RulesAttachment extends AbstractPlayerRulesAttachment implements ICondition {
   private static final long serialVersionUID = 7301965634079412516L;
-
   private ArrayList<TechAdvance> m_techs = null; // condition for having techs
   @InternalDoNotExport
   private int m_techCount = -1; // Do Not Export (do not include in IAttachment).
-
   private ArrayList<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
   private HashSet<PlayerID> m_atWarPlayers = null; // condition for being at war
   @InternalDoNotExport
   private int m_atWarCount = -1; // Do Not Export (do not include in IAttachment).
   private String m_destroyedTUV = null; // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to
                                         // the prices the defender pays for the units]
-  private ArrayList<Tuple<String, ArrayList<Territory>>> m_battle = new ArrayList<Tuple<String, ArrayList<Territory>>>(); // condition for
-                                                                                                                          // having had a
-                                                                                                                          // battle in some
-                                                                                                                          // territory,
-                                                                                                                          // attacker or
-                                                                                                                          // defender, win
-                                                                                                                          // or lost, etc.
-
+  private ArrayList<Tuple<String, ArrayList<Territory>>> m_battle =
+      new ArrayList<Tuple<String, ArrayList<Territory>>>(); // condition for
+                                                            // having had a
+                                                            // battle in some
+                                                            // territory,
+                                                            // attacker or
+                                                            // defender, win
+                                                            // or lost, etc.
   // these next 9 variables use m_territoryCount for determining the number needed.
   private String[] m_alliedOwnershipTerritories = null; // ownership related
   private String[] m_directOwnershipTerritories = null;
@@ -90,8 +87,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     return get(player, nameOfAttachment, null, false);
   }
 
-  public static RulesAttachment get(final PlayerID player, final String nameOfAttachment, final Collection<PlayerID> playersToSearch,
-      final boolean allowNull) {
+  public static RulesAttachment get(final PlayerID player, final String nameOfAttachment,
+      final Collection<PlayerID> playersToSearch, final boolean allowNull) {
     RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
     if (rVal == null) {
       if (playersToSearch == null) {
@@ -184,7 +181,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   public void setBattle(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 5) {
-      throw new GameParseException("battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
+      throw new GameParseException(
+          "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
     }
     final PlayerID attacker = getData().getPlayerList().getPlayerID(s[0]);
     if (attacker == null && !s[0].equalsIgnoreCase("any")) {
@@ -248,18 +246,23 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     final String[] s = value.split(":");
     if (s.length < 3 || s.length > 4) {
       throw new GameParseException(
-          "relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\"" + thisErrorMsg());
+          "relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\""
+              + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[0]) == null) {
-      throw new GameParseException("playername: " + s[0] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
+      throw new GameParseException(
+          "playername: " + s[0] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerID(s[1]) == null) {
-      throw new GameParseException("playername: " + s[1] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
+      throw new GameParseException(
+          "playername: " + s[1] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
-    if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) || Matches
-            .isValidRelationshipName(getData()).match(s[2]))) {
-      throw new GameParseException("relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
+    if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
+        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
+        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
+        || Matches.isValidRelationshipName(getData()).match(s[2]))) {
+      throw new GameParseException(
+          "relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
     if (s.length == 4 && Integer.parseInt(s[3]) < -1) {
       throw new GameParseException(
@@ -447,7 +450,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 
   public void resetEnemyPresenceTerritories() {
     m_enemyPresenceTerritories = null;
-
   }
 
   // exclusion types = original or list
@@ -665,8 +667,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     // check meta conditions (conditions which hold other conditions)
     if (objectiveMet && m_conditions.size() > 0) {
       if (testedConditions == null) {
-        testedConditions =
-            testAllConditionsRecursive(getAllConditionsRecursive(new HashSet<ICondition>(m_conditions), null), null, aBridge);
+        testedConditions = testAllConditionsRecursive(
+            getAllConditionsRecursive(new HashSet<ICondition>(m_conditions), null), null, aBridge);
       }
       objectiveMet = areConditionsMet(new ArrayList<ICondition>(m_conditions), testedConditions, m_conditionType);
     }
@@ -686,15 +688,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     if (objectiveMet && getDirectPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectPresenceTerritories();
-      objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "direct",
-          getTerritoryCount(), players, data);
+      objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+          "direct", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedPresenceTerritories();
-      objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "allied",
-          getTerritoryCount(), players, data);
+      objectiveMet = checkUnitPresence(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+          "allied", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
@@ -707,29 +709,29 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     if (objectiveMet && getDirectExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "direct",
-          getTerritoryCount(), players, data);
+      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+          "direct", getTerritoryCount(), players, data);
     }
     // Check for allied unit exclusions
     if (objectiveMet && getAlliedExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "allied",
-          getTerritoryCount(), players, data);
+      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+          "allied", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (ANY UNITS)
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy",
-          getTerritoryCount(), players, data);
+      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+          "enemy", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
     if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemySurfaceExclusionTerritories();
-      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy_surface",
-          getTerritoryCount(), players, data);
+      objectiveMet = checkUnitExclusions(objectiveMet, getTerritoryListBasedOnInputFromXML(terrs, players, data),
+          "enemy_surface", getTerritoryCount(), players, data);
     }
     // Check for Territory Ownership rules
     if (objectiveMet && getAlliedOwnershipTerritories() != null) {
@@ -813,9 +815,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       final int requiredDestroyedTUV = getInt(s[0]);
       if (requiredDestroyedTUV >= 0) {
         final boolean justCurrentRound = s[1].equals("currentRound");
-        final int destroyedTUVforThisRoundSoFar =
-            BattleRecordsList.getTUVdamageCausedByPlayer(playerAttachedTo, data.getBattleRecordsList(),
-                0, data.getSequence().getRound(), justCurrentRound, false);
+        final int destroyedTUVforThisRoundSoFar = BattleRecordsList.getTUVdamageCausedByPlayer(playerAttachedTo,
+            data.getBattleRecordsList(), 0, data.getSequence().getRound(), justCurrentRound, false);
         if (requiredDestroyedTUV > destroyedTUVforThisRoundSoFar) {
           objectiveMet = false;
         }
@@ -843,14 +844,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
           start = getInt(rounds[0]);
           end = getInt(rounds[1]);
         }
-        objectiveMet = BattleRecordsList.getWereThereBattlesInTerritoriesMatching(attacker, defender, resultType, entry.getSecond(), brl,
-            start, end, currentRound);
+        objectiveMet = BattleRecordsList.getWereThereBattlesInTerritoriesMatching(attacker, defender, resultType,
+            entry.getSecond(), brl, start, end, currentRound);
         if (!objectiveMet) {
           break;
         }
       }
     }
-
     // "chance" should ALWAYS be checked last!
     final int hitTarget = getChanceToHit();
     final int diceSides = getChanceDiceSides();
@@ -875,15 +875,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
         final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE,
             "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
         objectiveMet = rollResult <= hitTarget;
-        final String notificationMessage = (objectiveMet ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget
-            + " out of " + diceSides + " Result: " + rollResult
-            + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
+        final String notificationMessage = (objectiveMet ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE)
+            + " (Rolled at " + hitTarget + " out of " + diceSides + " Result: " + rollResult + "  for "
+            + MyFormatter.attachmentNameToText(this.getName()) + ")";
         aBridge.getHistoryWriter().startEvent(notificationMessage);
         changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, objectiveMet, true);
-        ((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+        ((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
+            notificationMessage);
       }
     }
-
     return objectiveMet != m_invert;
   }
 
@@ -938,7 +938,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       useSpecific = true;
     }
     for (final Territory terr : Territories) {
-      final Collection<Unit> allUnits = Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
+      final Collection<Unit> allUnits =
+          Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
       if (exclType.equals("direct")) {
         allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
       } else if (exclType.equals("allied")) {
@@ -1016,7 +1017,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
     while (ownedTerrIter.hasNext()) {
       // get all the units in the territory
       final Territory terr = ownedTerrIter.next();
-      final Collection<Unit> allUnits = Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
+      final Collection<Unit> allUnits =
+          Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
       if (exclType.equals("allied")) { // any allied units in the territory. (does not include owned units)
         allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
         allUnits.retainAll(Match.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
@@ -1025,9 +1027,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
       } else if (exclType.equals("enemy")) { // any enemy units in the territory
         allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
-        allUnits.retainAll(Match.getMatches(allUnits,
-            new CompositeMatchAnd<Unit>(Matches.enemyUnitOfAnyOfThesePlayers(players, data), Matches.UnitIsNotSub,
-                Matches.UnitIsNotTransportButCouldBeCombatTransport)));
+        allUnits.retainAll(
+            Match.getMatches(allUnits, new CompositeMatchAnd<Unit>(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
+                Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
       } else {
         return false;
       }
@@ -1084,8 +1086,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
    * Checks for allied ownership of the collection of territories. Once the needed number threshold is reached, the satisfied flag is set
    * to true and returned
    */
-  private boolean checkAlliedOwnership(boolean satisfied, final Collection<Territory> listedTerrs, final int numberNeeded,
-      final Collection<PlayerID> players, final GameData data) {
+  private boolean checkAlliedOwnership(boolean satisfied, final Collection<Territory> listedTerrs,
+      final int numberNeeded, final Collection<PlayerID> players, final GameData data) {
     int numberMet = 0;
     satisfied = false;
     final Collection<PlayerID> allies =
@@ -1111,8 +1113,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   /**
    * Checks for direct ownership of the collection of territories. Once the needed number threshold is reached, return true.
    */
-  private boolean checkDirectOwnership(boolean satisfied, final Collection<Territory> listedTerrs, final int numberNeeded,
-      final Collection<PlayerID> players) {
+  private boolean checkDirectOwnership(boolean satisfied, final Collection<Territory> listedTerrs,
+      final int numberNeeded, final Collection<PlayerID> players) {
     int numberMet = 0;
     satisfied = false;
     for (final Territory listedTerr : listedTerrs) {

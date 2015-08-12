@@ -7,9 +7,7 @@ import games.strategy.net.INode;
 
 /**
  * A callback remote.
- *
  * Allows the server to add the player as an observer when the game is in progress.
- *
  */
 public interface IObserverWaitingToJoin extends IRemote {
   /**

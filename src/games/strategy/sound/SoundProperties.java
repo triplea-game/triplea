@@ -11,8 +11,6 @@ import games.strategy.triplea.ResourceLoader;
 
 /**
  * sounds.properties file helper class
- *
- *
  */
 public class SoundProperties {
   // Filename
@@ -51,7 +49,6 @@ public class SoundProperties {
   }
 
   /**
-   *
    * @param objectiveKey
    * @return the string property, or null if not found
    */

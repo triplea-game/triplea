@@ -15,19 +15,14 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
 
 /**
- *
- *
- *          Represents a battle.
+ * Represents a battle.
  */
 public interface IBattle extends java.io.Serializable {
   public static enum WhoWon {
     NOTFINISHED, DRAW, ATTACKER, DEFENDER
   }
-
-
   public static enum BattleType {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
-
     private final String m_type;
 
     private BattleType(final String type) {
@@ -74,7 +69,6 @@ public interface IBattle extends java.io.Serializable {
 
   /**
    * The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc.
-   *
    */
   public BattleType getBattleType();
 
@@ -108,7 +102,8 @@ public interface IBattle extends java.io.Serializable {
    * @param bridge
    *        - IDelegateBridge
    */
-  public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
+  public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
+      boolean withdrawn);
 
   /**
    * Add a bombardment unit.

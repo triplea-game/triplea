@@ -24,7 +24,6 @@ public class BattleResults extends GameDataComponent implements Serializable {
 
   // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with BattleResults being
   // saved into BattleRecords
-
   /**
    * This battle must have been fought. If fight() was not run on this battle, then the WhoWon will not have been set yet, which will give
    * an error with this constructor.
@@ -65,7 +64,6 @@ public class BattleResults extends GameDataComponent implements Serializable {
   public void setWhoWon(final WhoWon whoWon) {
     m_whoWon = whoWon;
   }
-
 
   public List<Unit> getRemainingAttackingUnits() {
     return m_remainingAttackingUnits;

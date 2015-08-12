@@ -33,7 +33,6 @@ import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
 
-
 public interface IDrawable {
   public Logger s_logger = Logger.getLogger(IDrawable.class.getName());
   public static final int BASE_MAP_LEVEL = 1;
@@ -51,7 +50,6 @@ public interface IDrawable {
   public static final int UNITS_LEVEL = 15;
   public static final int TERRITORY_OVERLAY_LEVEL = 16;
 
-
   /**
    * This is for the optional extra territory borders. LOW means off
    */
@@ -61,15 +59,12 @@ public interface IDrawable {
 
   /**
    * Draw the tile
-   *
    * If the graphics are scaled, then unscaled and scaled will be non null.
    * <p>
-   *
    * The affine transform will be set to the scaled version.
-   *
-   *
    */
-  public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled);
+  public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled,
+      AffineTransform scaled);
 
   public int getLevel();
 }
@@ -108,18 +103,18 @@ class TerritoryNameDrawable implements IDrawable {
         if (ta.getConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null) {
           drawComments = true;
           if (ta.getConvoyAttached().isEmpty()) {
-            commentText = MyFormatter.defaultNamedToTextList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data))
-                + " " + ta.getOriginalOwner().getName()
-                + " Blockade Route";
+            commentText = MyFormatter
+                .defaultNamedToTextList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data))
+                + " " + ta.getOriginalOwner().getName() + " Blockade Route";
           } else {
-            commentText =
-                MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " " + ta.getOriginalOwner().getName() + " Convoy Route";
+            commentText = MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " "
+                + ta.getOriginalOwner().getName() + " Convoy Route";
           }
         } else if (ta.getConvoyRoute()) {
           drawComments = true;
           if (ta.getConvoyAttached().isEmpty()) {
-            commentText = MyFormatter.defaultNamedToTextList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data))
-                + " Blockade Route";
+            commentText = MyFormatter.defaultNamedToTextList(
+                TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data)) + " Blockade Route";
           } else {
             commentText = MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " Convoy Route";
           }
@@ -185,8 +180,8 @@ class TerritoryNameDrawable implements IDrawable {
     }
   }
 
-  private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img, final String prod,
-      final boolean drawFromTopLeft) {
+  private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, final int y, final Image img,
+      final String prod, final boolean drawFromTopLeft) {
     int yNormal = y;
     if (img == null) {
       if (graphics.getFont().getSize() <= 0) {
@@ -332,7 +327,8 @@ abstract class MapTileDrawable implements IDrawable {
       graphics.setTransform(scaled);
     }
     if (oldAlphaValue == null) {
-      graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
+      graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+          RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
     } else {
       graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldAlphaValue);
     }
@@ -541,7 +537,8 @@ class TerritoryEffectDrawable implements IDrawable {
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    graphics.drawImage(mapData.getTerritoryEffectImage(m_effect.getName()), m_point.x - bounds.x, m_point.y - bounds.y, null);
+    graphics.drawImage(mapData.getTerritoryEffectImage(m_effect.getName()), m_point.x - bounds.x, m_point.y - bounds.y,
+        null);
   }
 
   @Override
@@ -625,8 +622,8 @@ class SeaZoneOutlineDrawable implements IDrawable {
 
 
 abstract class TerritoryDrawable {
-  protected final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled,
-      final AffineTransform scaled, final Territory territory,
+  protected final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
+      final AffineTransform unscaled, final AffineTransform scaled, final Territory territory,
       final Paint territoryPaint) {
     final List<Polygon> polys = mapData.getPolygons(territory);
     for (Polygon polygon : polys) {

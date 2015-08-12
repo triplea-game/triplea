@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-
 public class Resource extends NamedAttachable {
   private static final long serialVersionUID = 7471431759007499935L;
 

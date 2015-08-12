@@ -4,16 +4,11 @@ import java.awt.Dimension;
 import java.util.Observable;
 
 /**
- *
  * Model for an ImageScroller. Generally one large view and one small view will be
  * connected to the same model.
  * <p>
- *
  * notifies its observers when changes occur.
  * <p>
- *
- *
- *
  */
 public class ImageScrollModel extends Observable {
   private int m_x;
@@ -83,7 +78,6 @@ public class ImageScrollModel extends Observable {
     if (m_boxHeight > m_maxHeight) {
       m_y = 0;
     }
-
     if (!m_scrollX) {
       if (m_x < 0) {
         m_x = 0;

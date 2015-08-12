@@ -29,7 +29,6 @@ import games.strategy.util.ClassLoaderUtil;
 
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
- *
  */
 public class AvailableGames {
   private static final boolean s_delayedParsing = false;
@@ -69,8 +68,8 @@ public class AvailableGames {
     return getGameXMLLocation(m_availableGames.get(gameName));
   }
 
-  private static void populateAvailableGames(final Map<String, URI> availableGames, final Set<String> availableMapFolderOrZipNames,
-      final Set<String> mapNamePropertyList) {
+  private static void populateAvailableGames(final Map<String, URI> availableGames,
+      final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
     System.out.println("Parsing all available games (this could take a while). ");
     for (final File map : allMapFiles()) {
       if (map.isDirectory()) {
@@ -129,9 +128,11 @@ public class AvailableGames {
               // we have to close the loader to allow files to be deleted on windows
               ClassLoaderUtil.closeLoader(loader);
               try {
-                final boolean added = addToAvailableGames(new URI(url.toString().replace(" ", "%20")), availableGames, mapNamePropertyList);
+                final boolean added = addToAvailableGames(new URI(url.toString().replace(" ", "%20")), availableGames,
+                    mapNamePropertyList);
                 if (added && map.getName().length() > 4) {
-                  availableMapFolderOrZipNames.add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
+                  availableMapFolderOrZipNames
+                      .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
                 }
               } catch (final URISyntaxException e) {
                 // only happens when URI couldn't be build and therefore no entry was added. That's fine
@@ -151,7 +152,8 @@ public class AvailableGames {
     }
   }
 
-  public static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames, final Set<String> mapNamePropertyList) {
+  public static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames,
+      final Set<String> mapNamePropertyList) {
     if (uri == null) {
       return false;
     }
@@ -171,8 +173,8 @@ public class AvailableGames {
           return true;
         }
       } catch (final Exception e2) {// ignore
-        System.err.println("Exception while parsing: " + uri.toString() + " : " + (gameName.get() != null ? gameName.get() + " : " : "")
-            + e2.getMessage());
+        System.err.println("Exception while parsing: " + uri.toString() + " : "
+            + (gameName.get() != null ? gameName.get() + " : " : "") + e2.getMessage());
       }
     } catch (final Exception e1) {// ignore
       System.err.println("Exception while opening: " + uri.toString() + " : " + e1.getMessage());
@@ -216,8 +218,8 @@ public class AvailableGames {
         data = new GameParser().parse(input, gameName, false);
       } catch (final Exception e2) {
         error = true;
-        System.err.println("Exception while parsing: " + uri.toString() + " : " + (gameName.get() != null ? gameName.get() + " : " : "")
-            + e2.getMessage());
+        System.err.println("Exception while parsing: " + uri.toString() + " : "
+            + (gameName.get() != null ? gameName.get() + " : " : "") + e2.getMessage());
       }
     } catch (final Exception e1) {
       error = true;

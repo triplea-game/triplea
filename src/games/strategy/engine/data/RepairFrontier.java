@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule> {
   private static final long serialVersionUID = -5148536624986056753L;
   private final List<RepairRule> m_rules = new ArrayList<RepairRule>();
