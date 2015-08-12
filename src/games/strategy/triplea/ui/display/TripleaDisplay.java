@@ -21,9 +21,6 @@ public class TripleaDisplay implements ITripleaDisplay {
   private IDisplayBridge m_displayBridge;
   private final TripleAFrame m_ui;
 
-  /**
-   * @param ui
-   */
   public TripleaDisplay(final TripleAFrame ui) {
     m_ui = ui;
   }
@@ -34,9 +31,6 @@ public class TripleaDisplay implements ITripleaDisplay {
     m_displayBridge.toString();
   }
 
-  /*
-   * games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection)
-   */
   @Override
   public void showBattle(final GUID battleID, final Territory location, final String battleTitle,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
@@ -53,18 +47,12 @@ public class TripleaDisplay implements ITripleaDisplay {
     m_ui.getBattlePanel().listBattle(battleID, steps);
   }
 
-  /*
-   * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
-   */
   @Override
   public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     m_ui.getBattlePanel().casualtyNotification(step, dice, player, killed, damaged, dependents);
   }
 
-  /*
-   * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
-   */
   @Override
   public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {

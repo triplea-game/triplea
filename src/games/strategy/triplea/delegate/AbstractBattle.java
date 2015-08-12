@@ -30,7 +30,8 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   private static final long serialVersionUID = 871090498661731337L;
   protected final GUID m_battleID = new GUID();
   /**
-   * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results for an odds
+   * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results
+   * for an odds
    * calculator so we can skip some steps for efficiency.
    */
   protected boolean m_headless = false;
@@ -45,8 +46,8 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   protected BattleType m_battleType;
   protected boolean m_isOver = false;
   /**
-   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on then we lose the corresponding
-   * collection of units.
+   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on
+   * then we lose the corresponding collection of units.
    */
   protected final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
   protected List<Unit> m_attackingUnits = new ArrayList<Unit>();
@@ -69,7 +70,8 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     m_battleType = battleType;
     m_data = data;
     m_defender = findDefender(battleSite, attacker, data);
-    // Make sure that if any of the incoming data is null, we are still OK (tests and mockbattle use null for a lot of this stuff)
+    // Make sure that if any of the incoming data is null, we are still OK
+    // (tests and mockbattle use null for a lot of this stuff)
   }
 
   @Override
@@ -88,8 +90,8 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     if (m_headless) {
       return;
     }
-    // we were having a problem with units that had been killed previously were still part of MFB's variables, so we double check that the
-    // stuff still exists here.
+    // we were having a problem with units that had been killed previously were still part of
+    // MFB's variables, so we double check that the stuff still exists here.
     m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
     m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
   }
@@ -208,10 +210,6 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   @Override
   abstract public void removeAttack(Route route, Collection<Unit> units);
 
-  /*
-   * games.strategy.triplea.delegate.IBattle#unitsLostInPrecedingBattle(games.strategy.triplea.delegate.IBattle,java.util.Collection<Unit>,
-   * games.strategy.engine.delegate.IDelegateBridge)
-   */
   @Override
   abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
       boolean withdrawn);
@@ -225,7 +223,8 @@ abstract public class AbstractBattle implements IBattle, Serializable {
    * 2 Battles are equal if they occur in the same territory,
    * and are both of the same type (bombing / not-bombing),
    * and are both of the same sub-type of bombing/normal
-   * (ex: MustFightBattle, or StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc). <br>
+   * (ex: MustFightBattle, or StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc).
+   * <br>
    * Equals in the sense that they should never occupy the same Set if these conditions are met.
    */
   @Override
@@ -298,8 +297,8 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   }
 
   /**
-   * The maximum number of hits that this collection of units can sustain, taking into account units with two hits, and accounting for
-   * existing damage.
+   * The maximum number of hits that this collection of units can sustain, taking into account units
+   * with two hits, and accounting for existing damage.
    */
   public static int getMaxHits(final Collection<Unit> units) {
     int count = 0;

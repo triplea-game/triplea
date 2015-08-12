@@ -51,14 +51,17 @@ import games.strategy.util.Tuple;
  * Base class for ais.
  * <p>
  * Control pausing with the AI pause menu option
- * AI's should note that any data that is stored in the ai instance, will be lost when the game is restarted. We cannot save data with an
- * AI, since the player may choose to restart the game with a different ai, or with a human player.
+ * AI's should note that any data that is stored in the ai instance, will be lost when the game is restarted.
+ * We cannot save data with an AI, since the player may choose to restart the game with a different ai,
+ * or with a human player.
  * <p>
- * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase, (as would happen if a player saved the
- * game during the middle of an AI's move phase) it is acceptable for the ai to play badly for a turn, but the ai should recover, and play
- * correctly when the next phase of the game starts.
+ * If an ai finds itself starting in the middle of a move phase, or the middle of a purchase phase,
+ * (as would happen if a player saved the game during the middle of an AI's move phase) it is acceptable
+ * for the ai to play badly for a turn, but the ai should recover, and play correctly when the next phase
+ * of the game starts.
  * <p>
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
+ * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done
+ * through an IDelegate using a change).
  * <p>
  */
 public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlayer, IGamePlayer {
@@ -200,11 +203,12 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
     }
-    final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0; // TODO: determine which planes we plan to fly to land afterwards (if we are
-                                                               // the attacker or moving player)
+    // TODO: determine which planes we plan to fly to land afterwards (if we are the attacker or moving player)
+    final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0;
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
-    final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom); // the list we receive should already be sorted
+    // the list we receive should already be sorted
+    final List<Unit> selectFromSorted = new ArrayList<Unit>(selectFrom);
     final List<Unit> interleavedTargetList = new ArrayList<Unit>(
         AdvancedUtils.interleaveCarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers));
     // TODO: if we are going to lose this battle by a wide margin, we may not want to interleave these units
@@ -230,9 +234,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     return factories.iterator().next();
   }
 
-  /*
-   * games.strategy.engine.data.Territory)
-   */
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
@@ -521,8 +522,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     final PlayerID id = getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
-    // final HashMap<ICondition, Boolean> testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented
-    // out because we want to test the conditions each time to make sure they are still valid
+    // We want to test the conditions each time to make sure they are still valid
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
           BasicPoliticalAI.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
