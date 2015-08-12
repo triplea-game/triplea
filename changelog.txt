@@ -1,4 +1,43 @@
 Changes for 1.8.0.7
+
+* Hard AI - Improved performance on large maps. (redrum)
+
+* Hard AI - Added support for valuing exposed units when attacking. (redrum)
+
+* Hard AI - Improved air units landing safely. (redrum)
+
+* Hard AI - Added scrambling support. (redrum)
+
+* Hard AI - Improved transport movement and defense. (redrum)
+
+* Hard AI - Added support for purchasing and landing on carriers. (redrum)
+
+* Hard AI - Improved naval non-combat move and avoid sea units getting stuck. (redrum)
+
+* Hard AI - Improved casualty selection to consider unit cost. (redrum)
+
+* Hard AI - Added unit support attachment consideration for purchasing and movement. (redrum)
+
+* Hard AI - Added politics support for 2 team maps such as Global 1940. (redrum)
+
+* Hard AI - Added support for WW2v1 non-limit placing of units. (redrum)
+
+* Hard AI - Added support for territory effects. (redrum)
+
+* Hard AI - Added support for China on WW2v3. (redrum)
+
+* Hard AI - Added support for unit placement limits. (redrum)
+
+* Hard AI - Fixed sorting bug causing error: Comparison method violates its general contract. (redrum)
+
+* Hard AI - Improved carrier/fighter casualty sorting to avoid leaving fighters stranded. (redrum)
+
+* Hard AI - Units of the same type are now moved all at once rather than one at a time. (redrum)
+
+* Hard AI - Fixed several rare NullPointerException errors. (redrum)
+
+* Fixed issue with TripleA logging users out of axisandallies.org when posting turns. (redrum)
+
 * Fixed bug with movement validation for fighters launching from a carrier and flying into enemy land territory then returning. (veqryn)
 
 * Bug fixes on unit casualty sorters, and switching approximate method in as the default. (veqryn)
