@@ -80,6 +80,12 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
         items.add(seperator);
       }
     }
+    if( m_movePanel.getUndoableMoves() != null && m_movePanel.getUndoableMoves().size() > 1 ) {
+      JButton undoAllButton = new JButton("Undo All");
+      undoAllButton.addActionListener( new UndoAllMovesActionListener());
+      items.add(undoAllButton);
+    }
+
     final int scrollIncrementFinal = scrollIncrement + seperatorSize.height;
     // JScrollPane scroll = new JScrollPane(items);
     scroll = new JScrollPane(items) {
@@ -88,8 +94,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       @Override
       public void paint(final Graphics g) {
         if (previousVisibleIndex != null) {
-          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex),
-              1, scrollIncrementFinal));
+          items.scrollRectToVisible(
+              new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex), 1, scrollIncrementFinal));
           previousVisibleIndex = null;
         }
         super.paint(g);
@@ -118,8 +124,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final Dimension buttonSize = new Dimension(80, 22);
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
-      final Icon icon = m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
-          category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+      final Icon icon = m_movePanel.getMap().getUIContext().getUnitImageFactory()
+          .getIcon(category.getType(), category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
       final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon, SwingConstants.LEFT);
       unitsBox.add(label);
     }
@@ -128,7 +134,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final Box textBox = new Box(BoxLayout.X_AXIS);
     textBox.add(text);
     textBox.add(Box.createHorizontalGlue());
-    final JButton cancelButton = new JButton(new UndoMoveAction(move.getIndex()));
+    final JButton cancelButton = new JButton(new UndoMoveActionListener(move.getIndex()));
     setSize(buttonSize, cancelButton);
     final JButton viewbutton = new JButton(new ViewAction(move));
     setSize(buttonSize, viewbutton);
@@ -154,11 +160,12 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     cancelButton.setMaximumSize(buttonSize);
   }
 
-  class UndoMoveAction extends AbstractAction {
+
+  class UndoMoveActionListener extends AbstractAction {
     private static final long serialVersionUID = -397312652244693138L;
     private final int m_moveIndex;
 
-    public UndoMoveAction(final int index) {
+    public UndoMoveActionListener(final int index) {
       super("Undo");
       m_moveIndex = index;
     }
@@ -175,6 +182,25 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       }
     }
   }
+
+  class UndoAllMovesActionListener extends AbstractAction {
+    private static final long serialVersionUID = 7908136093303143896L;
+
+    public UndoAllMovesActionListener() {
+      super("UndoAllMoves");
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      int moveCount = m_movePanel.getUndoableMoves().size();
+      boolean suppressErrorMsgToUser = true;
+      for( int i = moveCount -1; i >= 0; i -- ) {
+        m_movePanel.undoMove(i, suppressErrorMsgToUser);
+      }
+    }
+  }
+
+
   class ViewAction extends AbstractAction {
     private static final long serialVersionUID = -6999284663802575467L;
     private final AbstractUndoableMove m_move;
