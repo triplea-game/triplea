@@ -43,7 +43,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.AbstractAI;
-import games.strategy.triplea.ai.Dynamix_AI.DUtils;
+import games.strategy.triplea.ai.AdvancedUtils;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -1301,7 +1301,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       }
     }
     for (final Territory t : transTerr2) {
-         // Determine our available loaded units
+      // Determine our available loaded units
       final List<Unit> ourLandingUnits = new ArrayList<Unit>();
       final List<Unit> mytrans = t.getUnits().getMatches(ourTransUnit);
       mytrans.removeAll(unitsAlreadyMoved);
@@ -2272,7 +2272,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
           // calculate if we can win the sea battle,
           ourShipStrength += BBStrength * 2.0F;
           final List<Unit> enemyShipsAtTarget = targetTerr2.getUnits().getMatches(Matches.enemyUnit(player, data));
-          enemyStrengthAtTarget = SUtils.strength(enemyShipsAtTarget, false, true, tFirst);;
+          enemyStrengthAtTarget = SUtils.strength(enemyShipsAtTarget, false, true, tFirst);
+          ;
           final List<Unit> shipsAtTarget = targetTerr2.getUnits().getMatches(Matches.alliedUnit(player, data));
           ourShipStrength += SUtils.strength(shipsAtTarget, false, true, tFirst);
           final float strengthDiff = enemyStrengthAtTarget - ourShipStrength;
@@ -2867,7 +2868,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       myBomberStrength = SUtils.strength(myBombers, true, false, tFirst);
       myTotalStrength = myFighterStrength + myBomberStrength;
 
-      
+
       for (final Territory badGuys : enemyNeighbors) {
         final List<Unit> enemyUnits = badGuys.getUnits().getMatches(Matches.enemyUnit(player, data));
         float badGuyStrength = 0.0F;
@@ -2884,7 +2885,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         final List<Unit> allUnits = new ArrayList<Unit>();
         allUnits.addAll(myFighters);
         allUnits.addAll(myBombers);
-      
+
         final HashMap<PlayerID, IntegerMap<UnitType>> costMap = SUtils.getPlayerCostMap(data);
         final boolean weWinTUV = SUtils.calculateTUVDifference(badGuys, allUnits, enemyUnits, costMap, player, data, false,
             Properties.getAirAttackSubRestricted(data), tFirst);
@@ -2920,8 +2921,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
                 actualStrength += SUtils.airstrength(b, true);
               }
             }
-            if (myAttackers.size() > 0)
-            {
+            if (myAttackers.size() > 0) {
               moveUnits.add(myAttackers2);
               moveRoutes.add(myRoute);
               alreadyMoved.addAll(myAttackers2);
@@ -4346,6 +4346,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     }
     setSeaTerrAttacked(seaTerrAttacked);
   }
+
   /**
    * check for planes that need to land
    *
@@ -4353,8 +4354,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
    * don't let planes stay in territory alone if it can be attacked
    * we've already check Carriers in moveNonComPlanes
    */
-  private void CheckPlanes(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
-  {
+  private void CheckPlanes(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
+      final PlayerID player) {
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final Match<Territory> canLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), new Match<Territory>() {
       @Override
@@ -6550,11 +6551,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       if (closestPortTer == null || closestPortTer.equals(ter)) {
         continue; // No coastal ter found to go to
       }
-      final int slowestUnitMovement = DUtils.GetSlowestMovementUnitInList(unmovedUnits);
+      final int slowestUnitMovement = AdvancedUtils.getSlowestMovementUnitInList(unmovedUnits);
       Route passableLandRoute = data.getMap().getRoute(ter, closestPortTer,
           new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable));
       if (passableLandRoute != null) {
-        passableLandRoute = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(passableLandRoute, slowestUnitMovement, player, data);
+        passableLandRoute = AdvancedUtils.trimRouteBeforeFirstTerWithEnemyUnits(passableLandRoute, slowestUnitMovement, player, data);
       }
       if (passableLandRoute != null) {
         moveUnits.add(unmovedUnits);
@@ -6606,7 +6607,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         transportSpaceNeededForTerUnits += transportCost;
       }
       int transportSpaceLeftNearby = 0;
-      for (final Territory seaTer : DUtils.GetTerritoriesWithinXDistanceOfYMatchingZ(data, ter, 3, Matches.TerritoryIsWater)) {
+      for (final Territory seaTer : AdvancedUtils.getTerritoriesWithinXDistanceOfYMatchingZ(data, ter, 3, Matches.TerritoryIsWater)) {
         for (final Unit transport : seaTer.getUnits().getMatches(unusedTransportMatch)) {
           transportSpaceLeftNearby += UnitAttachment.get(transport.getUnitType()).getTransportCapacity();
         }
@@ -6633,7 +6634,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         if (unitsToMoveToTer.isEmpty()) {
           continue;
         }
-        final int slowestUnitMovement = DUtils.GetSlowestMovementUnitInList(unitsToMoveToTer);
+        final int slowestUnitMovement = AdvancedUtils.getSlowestMovementUnitInList(unitsToMoveToTer);
         final HashMap<Match<Territory>, Integer> matches = new HashMap<Match<Territory>, Integer>();
         matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasAlliedUnits(player, data)), 2);
         matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data)), 3);
@@ -6641,7 +6642,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         Route seaRoute =
             data.getMap().getCompositeRoute(seaTer, data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).iterator().next(), matches);
         if (seaRoute != null) {
-          seaRoute = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(seaRoute, slowestUnitMovement, player, data);
+          seaRoute = AdvancedUtils.trimRouteBeforeFirstTerWithEnemyUnits(seaRoute, slowestUnitMovement, player, data);
         }
         if (seaRoute != null) {
           foundAnyUnusedTransports = true;
@@ -6666,7 +6667,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       if (unitsToMoveToTer.isEmpty()) {
         continue;
       }
-      final int slowestUnitMovement = DUtils.GetSlowestMovementUnitInList(unitsToMoveToTer);
+      final int slowestUnitMovement = AdvancedUtils.getSlowestMovementUnitInList(unitsToMoveToTer);
       final HashMap<Match<Territory>, Integer> matches = new HashMap<Match<Territory>, Integer>();
       matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasAlliedUnits(player, data)), 2);
       matches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data)), 3);
@@ -6674,7 +6675,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       Route seaRoute =
           data.getMap().getCompositeRoute(seaTer, data.getMap().getNeighbors(ourCap, Matches.TerritoryIsWater).iterator().next(), matches);
       if (seaRoute != null) {
-        seaRoute = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(seaRoute, slowestUnitMovement, player, data);
+        seaRoute = AdvancedUtils.trimRouteBeforeFirstTerWithEnemyUnits(seaRoute, slowestUnitMovement, player, data);
       }
       if (seaRoute != null) {
         moveUnits.add(unitsToMoveToTer);

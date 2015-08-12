@@ -28,7 +28,6 @@ import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.DummySound;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.ai.weakAI.DoesNothingAI;
@@ -50,7 +49,6 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
   public static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy (AI)";
   public static final String STRONG_COMPUTER_PLAYER_TYPE = "Medium (AI)";
   public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
-  public static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Land-Only (AI)";
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
   // public static final String NONE = "None (AI)";
   protected transient ITripleaDisplay m_display;
@@ -66,8 +64,6 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         players.add(new StrongAI(name, type));
       } else if (type.equals(PRO_COMPUTER_PLAYER_TYPE)) {
         players.add(new ProAI(name, type));
-      } else if (type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE)) {
-        players.add(new Dynamix_AI(name, type));
       } else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE)) {
         players.add(new DoesNothingAI(name, type));
       } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE)) {
@@ -197,7 +193,6 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         WEAK_COMPUTER_PLAYER_TYPE,
         STRONG_COMPUTER_PLAYER_TYPE,
         PRO_COMPUTER_PLAYER_TYPE,
-        DYNAMIX_COMPUTER_PLAYER_TYPE,
         DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
   }
 

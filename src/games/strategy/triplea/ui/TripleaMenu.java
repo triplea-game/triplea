@@ -83,7 +83,6 @@ import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.stats.IStat;
 import games.strategy.sound.SoundOptions;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -305,7 +304,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
     addFocusOnCasualties(menuGame);
     addShowEnemyCasualties(menuGame);
     addShowAIBattles(menuGame);
-    addChangeDynamixAISettings(menuGame);
     addChangeProAISettings(menuGame);
     addAISleepDuration(menuGame);
     addShowDiceStats(menuGame);
@@ -765,35 +763,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       }
     });
     parentMenu.add(showAIBattlesBox);
-  }
-
-  private void addChangeDynamixAISettings(final JMenu parentMenu) {
-    boolean areThereDynamixAIs = false;
-    final Set<IGamePlayer> players = (m_frame).getLocalPlayers().getLocalPlayers();
-    for (final IGamePlayer player : players) {
-      if (player instanceof Dynamix_AI) {
-        areThereDynamixAIs = true;
-      }
-    }
-    if (areThereDynamixAIs) {
-      Dynamix_AI.ClearAIInstancesMemory();
-      Dynamix_AI.Initialize(m_frame);
-      for (final IGamePlayer player : players) {
-        if (player instanceof Dynamix_AI) {
-          Dynamix_AI.AddDynamixAIIntoAIInstancesMemory((Dynamix_AI) player);
-        }
-      }
-      parentMenu.addSeparator();
-      parentMenu.add(new AbstractAction("Change Dynamix AI Settings") {
-        private static final long serialVersionUID = 2257295609477283292L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          Dynamix_AI.ShowSettingsWindow();
-        }
-      }).setMnemonic(KeyEvent.VK_C);
-      parentMenu.addSeparator();
-    }
   }
 
   private void addChangeProAISettings(final JMenu parentMenu) {

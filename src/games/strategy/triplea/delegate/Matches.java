@@ -3585,6 +3585,24 @@ public class Matches {
     }
   };
 
+  public static <T> Match<T> isNotInList(final List<T> list) {
+    return new Match<T>() {
+      @Override
+      public boolean match(final T ter) {
+        return !list.contains(ter);
+      }
+    };
+  }
+
+  public static <T> Match<T> isInList(final List<T> list) {
+    return new Match<T>() {
+      @Override
+      public boolean match(final T ter) {
+        return list.contains(ter);
+      }
+    };
+  }
+
   /** Creates new Matches */
   private Matches() {}
 }

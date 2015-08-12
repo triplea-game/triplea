@@ -23,7 +23,6 @@ import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
-import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ai.proAI.ProAI;
 
 public class GameSelectorModel extends Observable {
@@ -301,8 +300,7 @@ public class GameSelectorModel extends Observable {
   }
 
   public void loadDefaultGame(final Component ui) {
-    // clear out dynamix's properties (this ended up being the best place to put it, as we have definitely left a game at this point)
-    Dynamix_AI.gameOverClearCachedGameDataAll();
+    // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game at this point)
     ProAI.gameOverClearCache();
     loadDefaultGame(ui, false);
   }
