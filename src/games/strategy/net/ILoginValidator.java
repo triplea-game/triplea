@@ -7,7 +7,6 @@ import java.util.Map;
  * Code to validate a login attempt.
  * <p>
  *
- * @see games.strategy.net.IConnectionLogin
  *
  */
 public interface ILoginValidator {

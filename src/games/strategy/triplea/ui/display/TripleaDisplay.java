@@ -29,9 +29,7 @@ public class TripleaDisplay implements ITripleaDisplay {
     m_ui = ui;
   }
 
-  /*
-   * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
-   */
+
   @Override
   public void initialize(final IDisplayBridge bridge) {
     m_displayBridge = bridge;
@@ -39,9 +37,7 @@ public class TripleaDisplay implements ITripleaDisplay {
   }
 
   /*
-   * (non-Javadoc)
    *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, java.util.List,
    * games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection)
    */
   @Override
@@ -56,18 +52,13 @@ public class TripleaDisplay implements ITripleaDisplay {
         defender, isAmphibious, battleType, amphibiousLandAttackers);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#listBattleSteps(games.strategy.net.GUID, java.lang.String, java.util.List)
-   */
+
   @Override
   public void listBattleSteps(final GUID battleID, final List<String> steps) {
     m_ui.getBattlePanel().listBattle(battleID, steps);
   }
 
   /*
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll,
    * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
    */
   @Override
@@ -78,7 +69,6 @@ public class TripleaDisplay implements ITripleaDisplay {
   }
 
   /*
-   * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll,
    * games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
    */
   @Override

@@ -426,9 +426,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return m_techCost;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<ITechDelegate> getRemoteType() {
     return ITechDelegate.class;

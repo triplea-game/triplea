@@ -10,18 +10,14 @@ import java.util.logging.LogRecord;
 public class TALogFormatter extends Formatter {
   private boolean m_showDates = false;
 
-  /**
-   *
-   */
+
   public TALogFormatter() {}
 
   public void setShowDates(final boolean aVal) {
     m_showDates = aVal;
   }
 
-  /*
-   * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
-   */
+
   @Override
   public String format(final LogRecord record) {
     String shortName;

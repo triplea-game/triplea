@@ -134,9 +134,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     return PoliticalActionAttachment.getValidActions(m_player, testedConditions, data);
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<IPoliticsDelegate> getRemoteType() {
     return IPoliticsDelegate.class;

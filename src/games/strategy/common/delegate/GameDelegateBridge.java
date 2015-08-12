@@ -83,37 +83,25 @@ public class GameDelegateBridge implements IDelegateBridge {
     return m_bridge.getStepName();
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
-   */
+
   @Override
   public IRemotePlayer getRemotePlayer() {
     return m_bridge.getRemotePlayer();
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
-   */
+
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     return m_bridge.getRemotePlayer(id);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
-   */
+
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     return m_bridge.getDisplayChannelBroadcaster();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.engine.delegate.IDelegateBridge#getSoundChannelBroadcaster()
-   */
+
   @Override
   public ISound getSoundChannelBroadcaster() {
     return m_bridge.getSoundChannelBroadcaster();

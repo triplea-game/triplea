@@ -189,9 +189,7 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
     }
   }
 
-  /**
-   * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-   */
+
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {
     return IGridGameDisplay.class;

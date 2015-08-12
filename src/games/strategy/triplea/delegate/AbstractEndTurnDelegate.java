@@ -488,9 +488,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return m_displayName;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IAbstractForumPosterDelegate.class;

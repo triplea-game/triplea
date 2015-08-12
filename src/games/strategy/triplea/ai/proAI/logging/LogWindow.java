@@ -21,7 +21,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 /**
  * GUI class used to display logging window and logging settings.
  *
- * @since 2014
  */
 public class LogWindow extends javax.swing.JDialog {
   private static final long serialVersionUID = -5989598624017028122L;

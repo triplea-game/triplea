@@ -804,7 +804,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     // called from one of those methods, the exception will be propogated out of execute(),
     // and the execute method can be called again
     // it is allowed for an iexecutable to add other iexecutables to the stack
-    //
     // if you read the code in linear order, ignore wrapping stuff in annonymous iexecutables, then the code
     // can be read as it will execute
     // store the steps in a list

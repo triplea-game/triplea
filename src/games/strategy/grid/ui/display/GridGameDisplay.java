@@ -24,7 +24,6 @@ public class GridGameDisplay implements IGridGameDisplay {
    * The display
    *
    * @param ui
-   * @see games.strategy.engine.display.IDisplay
    */
   public GridGameDisplay(final GridGameFrame ui) {
     m_ui = ui;
@@ -35,9 +34,7 @@ public class GridGameDisplay implements IGridGameDisplay {
     return m_ui;
   }
 
-  /**
-   * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
-   */
+
   @Override
   public void initialize(final IDisplayBridge bridge) {
     m_displayBridge = bridge;
@@ -47,7 +44,6 @@ public class GridGameDisplay implements IGridGameDisplay {
   /**
    * Process a user request to exit the program.
    *
-   * @see games.strategy.engine.display.IDisplay#shutdown()
    */
   @Override
   public void shutDown() {

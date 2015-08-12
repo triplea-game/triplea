@@ -242,8 +242,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return m_battleTracker.getPendingBattleSites();
   }
 
-  /**
-   */
+
   private boolean isShoreBombardPerGroundUnitRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getShoreBombardPerGroundUnitRestricted(data);
   }
@@ -1537,23 +1536,17 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return whereCanLand;
   }
 
-  /**
-   */
+
   private static boolean isIgnoreTransportInMovement(final GameData data) {
     return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
   }
 
-  /**
-   */
+
   private static boolean isIgnoreSubInMovement(final GameData data) {
     return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-   */
+
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IBattleDelegate.class;

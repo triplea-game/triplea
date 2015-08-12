@@ -196,9 +196,7 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
         DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
   }
 
-  /*
-   * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-   */
+
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {
     return ITripleaDisplay.class;

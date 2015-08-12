@@ -71,9 +71,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     }
   };
 
-  /*
-   * @see games.strategy.engine.gamePlayer.PlayerBridge#getRemote()
-   */
+
   @Override
   public IRemote getRemoteDelegate() {
     if (m_game.isGameOver()) {

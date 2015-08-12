@@ -38,9 +38,7 @@ public class RemoteRandom implements IRemoteRandom {
     m_game = game;
   }
 
-  /*
-   * @see games.strategy.engine.random.IRemoteRandom#generate(int, int, java.lang.String)
-   */
+
   @Override
   public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultID) throws IllegalStateException {
     if (m_waitingForUnlock) {
@@ -65,9 +63,7 @@ public class RemoteRandom implements IRemoteRandom {
     return m_localNumbers;
   }
 
-  /*
-   * @see games.strategy.engine.random.IRemoteRandom#unlock()
-   */
+
   @Override
   public void verifyNumbers() throws IllegalStateException {
     final Vault vault = m_game.getVault();

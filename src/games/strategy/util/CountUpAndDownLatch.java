@@ -48,15 +48,12 @@ public class CountUpAndDownLatch implements Serializable {
     sync.releaseShared(1);
   }
 
-  /**
-   * @see CountDownLatch#countDown()
-   */
+
   public void countDown() {
     sync.releaseShared(-1);
   }
 
   /**
-   * @see CountDownLatch#countDown()
    * @param delta
    *        the amount to increment (or if negative, decrement countDown)
    */
@@ -83,9 +80,7 @@ public class CountUpAndDownLatch implements Serializable {
     }
   }
 
-  /**
-   * @see CountDownLatch#getCount()
-   */
+
   public int getCount() {
     return sync.getCount();
   }
@@ -97,16 +92,12 @@ public class CountUpAndDownLatch implements Serializable {
     return originalCount;
   }
 
-  /**
-   * @see CountDownLatch#await()
-   */
+
   public void await() throws InterruptedException {
     sync.acquireSharedInterruptibly(1);
   }
 
-  /**
-   * @see CountDownLatch#await(long,TimeUnit)
-   */
+
   public boolean await(final long timeout, final TimeUnit unit) throws InterruptedException {
     return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
   }
@@ -223,9 +214,7 @@ public class CountUpAndDownLatch implements Serializable {
  *
  * If our state is already at zero, we will wait until it becomes positive again before counting down.
  *
- * @see CountDownLatch#countDown()
  *
- * @see CountDownLatch#await()
  *
  * @param countDownIfInterrupted
  * if true, we will countDown after we are interrupted, before we throw the interruption up.
@@ -239,9 +228,7 @@ public class CountUpAndDownLatch implements Serializable {
  *
  * If our state is already at zero, we will wait until it becomes positive again before counting down.
  *
- * @see CountDownLatch#countDown()
  *
- * @see CountDownLatch#await(long,TimeUnit)
  *
  * @param countDownIfInterrupted
  * if true, we will countDown after we are interrupted, before we throw the interruption up.
@@ -262,7 +249,6 @@ public class CountUpAndDownLatch implements Serializable {
  * }
  **
  *
- * @see CountDownLatch#countDown()
  *
  * @param delta
  * the amount to increment (or if negative, decrement countDown)
@@ -281,9 +267,7 @@ public class CountUpAndDownLatch implements Serializable {
  *
  * If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
  *
- * @see CountDownLatch#countDown()
  *
- * @see CountDownLatch#await()
  *
  * @param delta
  * the amount to increment (or if negative, decrement countDown)
@@ -300,9 +284,7 @@ public class CountUpAndDownLatch implements Serializable {
  *
  * If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
  *
- * @see CountDownLatch#countDown()
  *
- * @see CountDownLatch#await(long,TimeUnit)
  *
  * @param delta
  * the amount to increment (or if negative, decrement countDown)
@@ -372,7 +354,6 @@ public class CountUpAndDownLatch implements Serializable {
  *
  * If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
  *
- * @see CountDownLatch#await()
  *
  * public void awaitOrWaitIfZeroToStartAwaiting() throws InterruptedException {
  * awaitOrWaitIfZeroToStartAwaiting(0, 0, TimeUnit.MILLISECONDS);
@@ -381,7 +362,6 @@ public class CountUpAndDownLatch implements Serializable {
  *
  * If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
  *
- * @see CountDownLatch#await(long,TimeUnit)
  *
  * public boolean awaitOrWaitIfZeroToStartAwaiting(final long timeoutToWaitOnceAwaiting, final long timeoutToWaitIfZeroToStartAwaiting,
  * final TimeUnit unit) throws InterruptedException {

@@ -91,17 +91,13 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     this(name, portNumber, new DefaultObjectStreamFactory());
   }
 
-  /*
-   * @see IMessenger#addMessageListener(Class, IMessageListener)
-   */
+
   @Override
   public void addMessageListener(final IMessageListener listener) {
     m_listeners.add(listener);
   }
 
-  /*
-   * @see IMessenger#removeMessageListener(Class, IMessageListener)
-   */
+
   @Override
   public void removeMessageListener(final IMessageListener listener) {
     m_listeners.remove(listener);

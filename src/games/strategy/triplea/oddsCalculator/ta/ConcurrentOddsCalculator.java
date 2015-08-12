@@ -30,7 +30,6 @@ import games.strategy.util.CountUpAndDownLatch;
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up the run count
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  *
- * @since 2014
  */
 public class ConcurrentOddsCalculator implements IOddsCalculator {
   private static final Logger s_logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());

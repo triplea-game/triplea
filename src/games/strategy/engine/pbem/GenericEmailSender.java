@@ -262,7 +262,6 @@ public class GenericEmailSender implements IEmailSender {
    * Get the message encryption
    *
    * @return the selected encryption
-   * @see Encryption
    */
   public Encryption getEncryption() {
     return m_encryption;

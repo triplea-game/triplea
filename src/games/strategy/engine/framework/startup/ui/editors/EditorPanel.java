@@ -37,8 +37,6 @@ public abstract class EditorPanel extends JPanel {
    * @param listener
    *        the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
    *        will both be null
-   * @see java.beans.PropertyChangeEvent#getOldValue()
-   * @see java.beans.PropertyChangeEvent#getOldValue()
    *
    */
   @Override
@@ -139,7 +137,6 @@ public abstract class EditorPanel extends JPanel {
    * Sets the label with for labels in the first column of the gridBagLayout.
    * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
    *
-   * @see SelectAndViewEditor
    * @param width
    *        the new width of the labels
    */

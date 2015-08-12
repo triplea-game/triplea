@@ -47,9 +47,7 @@ public class TestGameLoader implements IGameLoader {
     return null;
   }
 
-  /*
-   * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
-   */
+
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {
     return IChannelSubscribor.class;
@@ -60,11 +58,7 @@ public class TestGameLoader implements IGameLoader {
     return IChannelSubscribor.class;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
-   */
+
   @Override
   public Class<? extends IRemote> getRemotePlayerType() {
     return IRemote.class;

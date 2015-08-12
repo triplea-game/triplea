@@ -14,7 +14,6 @@ import java.net.URLConnection;
  * "multipart/form-data" to a java.net.URLConnection for
  * POSTing. This is primarily for file uploading to HTTP servers.
  *
- * @since JDK1.3
  */
 public class MultiPartFormOutputStream {
   /**
@@ -47,8 +46,6 @@ public class MultiPartFormOutputStream {
    *        the output stream
    * @param boundary
    *        the boundary
-   * @see #createBoundary()
-   * @see #getContentType(String)
    */
   public MultiPartFormOutputStream(final OutputStream os, final String boundary) {
     if (os == null) {
@@ -393,7 +390,6 @@ public class MultiPartFormOutputStream {
    * milliseconds.
    *
    * @return a multipart boundary string
-   * @see #getContentType(String)
    */
   public static String createBoundary() {
     return "--------------------" + Long.toString(System.currentTimeMillis(), 16);
@@ -412,7 +408,6 @@ public class MultiPartFormOutputStream {
    * @param boundary
    *        the boundary string
    * @return the content type string
-   * @see #createBoundary()
    */
   public static String getContentType(final String boundary) {
     return "multipart/form-data; boundary=" + boundary;

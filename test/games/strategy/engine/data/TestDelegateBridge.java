@@ -126,27 +126,19 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     return m_historyWriter;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
-   */
+
   @Override
   public IRemotePlayer getRemotePlayer() {
     return m_remote;
   }
 
-  /*
-   * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
-   */
+
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     return m_remote;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
-   */
+
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     return m_dummyDisplay;
@@ -181,11 +173,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   @Override
   public void stopGameSequence() {}
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see games.strategy.engine.delegate.IDelegateBridge#getData()
-   */
+
   @Override
   public GameData getData() {
     return m_data;
