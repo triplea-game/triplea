@@ -88,8 +88,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       @Override
       public void paint(final Graphics g) {
         if (previousVisibleIndex != null) {
-          items.scrollRectToVisible(
-              new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex), 1, scrollIncrementFinal));
+          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex),
+              1, scrollIncrementFinal));
           previousVisibleIndex = null;
         }
         super.paint(g);
@@ -118,8 +118,8 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     final Dimension buttonSize = new Dimension(80, 22);
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
-      final Icon icon = m_movePanel.getMap().getUIContext().getUnitImageFactory()
-          .getIcon(category.getType(), category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+      final Icon icon = m_movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
+          category.getOwner(), m_data, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
       final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon, SwingConstants.LEFT);
       unitsBox.add(label);
     }
@@ -154,7 +154,6 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
     cancelButton.setMaximumSize(buttonSize);
   }
 
-
   class UndoMoveAction extends AbstractAction {
     private static final long serialVersionUID = -397312652244693138L;
     private final int m_moveIndex;
@@ -176,8 +175,6 @@ abstract public class AbstractUndoableMovesPanel extends JPanel {
       }
     }
   }
-
-
   class ViewAction extends AbstractAction {
     private static final long serialVersionUID = -6999284663802575467L;
     private final AbstractUndoableMove m_move;

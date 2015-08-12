@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * Some utility methods for dealing with collections.
- *
  */
 public class Util {
   /**

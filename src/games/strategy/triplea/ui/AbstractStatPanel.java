@@ -16,12 +16,9 @@ import games.strategy.triplea.util.PlayerOrderComparator;
 
 /**
  * Hold some common things like GameData for stats panels and other tab panels.
- *
- *
  */
 public abstract class AbstractStatPanel extends JPanel {
   private static final long serialVersionUID = 1906611524937548809L;
-
   protected GameData m_data;
 
   /**
@@ -42,11 +39,9 @@ public abstract class AbstractStatPanel extends JPanel {
   abstract public void setGameData(final GameData data);
 
   /**
-   *
    * @return all the alliances with more than one player.
    */
   public Collection<String> getAlliances() {
-
     final Collection<String> rVal = new TreeSet<String>();
     for (final String alliance : m_data.getAllianceTracker().getAlliances()) {
       if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
@@ -61,7 +56,6 @@ public abstract class AbstractStatPanel extends JPanel {
     Collections.sort(players, new PlayerOrderComparator(m_data));
     return players;
   }
-
 
   class ResourceStat extends AbstractStat {
     final Resource m_resource;

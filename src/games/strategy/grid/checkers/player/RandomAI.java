@@ -31,7 +31,8 @@ public class RandomAI extends GridAbstractAI {
     // Get the collection of territories from the map
     final GameData data = getGameData();
     final PlayerID me = getPlayerID();
-    final List<Tuple<GridPlayData, Collection<Territory>>> validMoves = new ArrayList<Tuple<GridPlayData, Collection<Territory>>>();
+    final List<Tuple<GridPlayData, Collection<Territory>>> validMoves =
+        new ArrayList<Tuple<GridPlayData, Collection<Territory>>>();
     final List<GridPlayData> valid = PlayDelegate.getAllValidMoves(me, data);
     for (final GridPlayData v : valid) {
       final Collection<Territory> captures = PlayDelegate.checkForCaptures(v, me, data);
@@ -47,10 +48,12 @@ public class RandomAI extends GridAbstractAI {
     } while (error != null && iter.hasNext());
   }
 
-  static Comparator<Tuple<GridPlayData, Collection<Territory>>> getBestCaptureComparator(final PlayerID player, final GameData data) {
+  static Comparator<Tuple<GridPlayData, Collection<Territory>>> getBestCaptureComparator(final PlayerID player,
+      final GameData data) {
     return new Comparator<Tuple<GridPlayData, Collection<Territory>>>() {
       @Override
-      public int compare(final Tuple<GridPlayData, Collection<Territory>> t1, final Tuple<GridPlayData, Collection<Territory>> t2) {
+      public int compare(final Tuple<GridPlayData, Collection<Territory>> t1,
+          final Tuple<GridPlayData, Collection<Territory>> t2) {
         if ((t1 == null && t2 == null) || t1 == t2) {
           return 0;
         }

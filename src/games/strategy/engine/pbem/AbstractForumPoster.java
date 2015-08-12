@@ -8,24 +8,19 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * Abstract Forum poster that takes care of storing the username, password, and other common properties
- *
  */
 public abstract class AbstractForumPoster implements IForumPoster {
   private static final String USE_TRANSITIVE_PASSWORD = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
   private static final long serialVersionUID = -734015230309508040L;
-
-
   protected String m_username = null;
   protected String m_password = null;
   protected transient String m_transPassword;
   protected String m_topicId = null;
   protected boolean m_includeSaveGame = true;
   protected boolean m_alsoPostAfterCombatMove = false;
-
   protected transient File m_saveGameFile = null;
   protected transient String m_turnSummaryRef = null;
   protected transient String m_saveGameFileName = null;
-
 
   @Override
   public String getTurnSummaryRef() {
@@ -111,5 +106,4 @@ public abstract class AbstractForumPoster implements IForumPoster {
   public EditorPanel getEditor() {
     return new ForumPosterEditor(this);
   }
-
 }

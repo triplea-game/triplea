@@ -9,7 +9,6 @@ import games.strategy.util.IntegerMap;
 
 /**
  * Class with an invalid return for an adder (the return type must be an integerMap)
- *
  */
 public class InvalidFieldTypeExample extends DefaultAttachment {
   private static final long serialVersionUID = 6465866180845982327L;
@@ -22,17 +21,11 @@ public class InvalidFieldTypeExample extends DefaultAttachment {
   private String m_givesMovement; // this should be an integermap, since that is what we are returning. should cause test to fail.
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setGivesMovement(final String value) {
+  public void setGivesMovement(final String value) {}
 
-  }
+  public void resetGivesMovement() {}
 
-  public void resetGivesMovement() {
-
-  }
-
-  public void clearMovement() {
-
-  }
+  public void clearMovement() {}
 
   public IntegerMap<UnitType> getGivesMovement() {
     return new IntegerMap<UnitType>();

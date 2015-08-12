@@ -20,7 +20,6 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.triplea.ui.history.IHistoryDetailsPanel;
 
-
 public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel {
   private static final long serialVersionUID = 7703367732080472172L;
   protected final GameData m_data;
@@ -45,7 +44,8 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
     removeAll();
     final Insets insets = new Insets(5, 0, 0, 0);
     m_title.setText(node.getTitle());
-    add(m_scroll, new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
+    add(m_scroll,
+        new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
     final GridBagConstraints mainConstraints =
         new GridBagConstraints(0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
     if (node instanceof Renderable) {
@@ -73,11 +73,11 @@ public class GridHistoryDetailsPanel extends JPanel implements IHistoryDetailsPa
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     for (final Unit u : units) {
-      final JLabel label = new JLabel(new ImageIcon(m_mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner(), m_data)));
+      final JLabel label =
+          new JLabel(new ImageIcon(m_mapPanel.getUnitImageFactory().getImage(u.getType(), u.getOwner(), m_data)));
       label.setToolTipText(u.getType().getName());
       panel.add(label);
     }
     add(panel, mainConstraints);
   }
-
 }

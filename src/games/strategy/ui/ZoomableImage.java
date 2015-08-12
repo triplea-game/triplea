@@ -10,14 +10,10 @@ import java.awt.Rectangle;
 import javax.swing.JComponent;
 
 /**
- *
- *
- *          An image that can be zoomed in and out.
- *
- *          Warning not finished. Thats why its not public.
- *          Development was abandoned when it turned out when it appeared that zooming would be
- *          too slow.
- *
+ * An image that can be zoomed in and out.
+ * Warning not finished. Thats why its not public.
+ * Development was abandoned when it turned out when it appeared that zooming would be
+ * too slow.
  */
 class ZoomableImage extends JComponent {
   private static final long serialVersionUID = 3324558973854619020L;

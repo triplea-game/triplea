@@ -31,7 +31,6 @@ public class BooleanProperty extends AEditableProperty {
   }
 
   /**
-   *
    * @return component used to edit this property
    */
   @Override

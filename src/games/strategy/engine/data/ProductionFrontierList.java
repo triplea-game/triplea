@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
 public class ProductionFrontierList extends GameDataComponent {
   private static final long serialVersionUID = -7565214499087021809L;
   private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<String, ProductionFrontier>();

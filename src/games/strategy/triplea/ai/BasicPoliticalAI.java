@@ -19,14 +19,13 @@ import games.strategy.util.Match;
  * tries to get from Neutral to War with state if it is free with everyone this
  * AI will not go through a different Neutral state to reach a War state. (ie go
  * from NAP to Peace to War)
- *
- *
  */
 public class BasicPoliticalAI {
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
-    for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id, testedConditions, data)) {
+    for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id, testedConditions,
+        data)) {
       if (wantToPerFormActionTowardsWar(nextAction, id, data)) {
         acceptableActions.add(nextAction);
       }
@@ -38,7 +37,8 @@ public class BasicPoliticalAI {
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
-    final Collection<PoliticalActionAttachment> validActions = PoliticalActionAttachment.getValidActions(id, testedConditions, data);
+    final Collection<PoliticalActionAttachment> validActions =
+        PoliticalActionAttachment.getValidActions(id, testedConditions, data);
     validActions.removeAll(warActions);
     for (final PoliticalActionAttachment nextAction : validActions) {
       if (warActions.contains(nextAction)) {
@@ -65,7 +65,8 @@ public class BasicPoliticalAI {
     return acceptableActions;
   }
 
-  private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID id, final GameData data) {
+  private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID id,
+      final GameData data) {
     return isFree(nextAction) && goesTowardsWar(nextAction, id, data);
   }
 
@@ -74,7 +75,8 @@ public class BasicPoliticalAI {
   // only switches from a Neutral to an War state... won't go through
   // in-between neutral states
   // TODO have another look at this part.
-  private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID p0, final GameData data) {
+  private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID p0,
+      final GameData data) {
     for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
       final String[] relationshipChange = relationshipChangeString.split(":");
       final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
@@ -83,7 +85,8 @@ public class BasicPoliticalAI {
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
         final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
-        if (currentType.getRelationshipTypeAttachment().isNeutral() && newType.getRelationshipTypeAttachment().isWar()) {
+        if (currentType.getRelationshipTypeAttachment().isNeutral()
+            && newType.getRelationshipTypeAttachment().isWar()) {
           return true;
         }
       }
@@ -91,7 +94,8 @@ public class BasicPoliticalAI {
     return false;
   }
 
-  private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0, final GameData data) {
+  private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0,
+      final GameData data) {
     for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
       final String[] relationshipChange = relationshipChangeString.split(":");
       final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
@@ -101,7 +105,8 @@ public class BasicPoliticalAI {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
         final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
         if (currentType.getRelationshipTypeAttachment().isAllied()
-            && (newType.getRelationshipTypeAttachment().isNeutral() || newType.getRelationshipTypeAttachment().isWar())) {
+            && (newType.getRelationshipTypeAttachment().isNeutral()
+                || newType.getRelationshipTypeAttachment().isWar())) {
           return true;
         }
       }
@@ -113,7 +118,8 @@ public class BasicPoliticalAI {
     return nextAction.getCostPU() <= 0;
   }
 
-  private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player, final GameData data) {
+  private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player,
+      final GameData data) {
     // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable price.
     final float production = AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
     return production >= 21 && (nextAction.getCostPU()) <= ((production / 10));

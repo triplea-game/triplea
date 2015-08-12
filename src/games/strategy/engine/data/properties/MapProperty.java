@@ -14,7 +14,6 @@ import javax.swing.JComponent;
 /**
  * Basically creates a map of other properties.
  *
- *
  * @param <T>
  *        String or something with a valid toString()
  * @param <U>
@@ -32,7 +31,8 @@ public class MapProperty<T, U> extends AEditableProperty {
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  private void resetProperties(final Map<T, U> map, final List<IEditableProperty> properties, final String name, final String description) {
+  private void resetProperties(final Map<T, U> map, final List<IEditableProperty> properties, final String name,
+      final String description) {
     properties.clear();
     for (final Entry<T, U> entry : map.entrySet()) {
       final String key = (String) entry.getKey();
@@ -52,7 +52,8 @@ public class MapProperty<T, U> extends AEditableProperty {
       } else if (value instanceof Double) {
         properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
       } else {
-        throw new IllegalArgumentException("Can not instantiate MapProperty with: " + value.getClass().getCanonicalName());
+        throw new IllegalArgumentException(
+            "Can not instantiate MapProperty with: " + value.getClass().getCanonicalName());
       }
     }
   }

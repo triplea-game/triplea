@@ -23,9 +23,7 @@ import games.strategy.util.Version;
 
 /**
  * LobbyServer.java
- *
  * Created on May 23, 2006, 6:44 PM
- *
  */
 public class LobbyServer {
   // System properties for the lobby
@@ -36,7 +34,6 @@ public class LobbyServer {
   // should the lobby take commands from stdin,
   // set to true to enable
   private static final String TRIPLEA_LOBBY_CONSOLE_PROPERTY = "triplea.lobby.console";
-
   public static final String ADMIN_USERNAME = "Admin";
   private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
@@ -67,9 +64,8 @@ public class LobbyServer {
     final StatusManager statusManager = new StatusManager(m_messengers);
     // we dont need this manager now
     statusManager.shutDown();
-    final LobbyGameController controller = new LobbyGameController(
-        (ILobbyGameBroadcaster) m_messengers.getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL),
-        server);
+    final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers
+        .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
     controller.register(m_messengers.getRemoteMessenger());
     // now we are open for business
     server.setAcceptNewConnections(true);
@@ -145,7 +141,6 @@ public class LobbyServer {
   private static void handleCommandLineArgs(final String[] args) {
     System.getProperties().setProperty(HeadlessGameServer.TRIPLEA_HEADLESS, "true");
     final String[] properties = getProperties();
-
     boolean usagePrinted = false;
     for (final String arg2 : args) {
       boolean found = false;
@@ -182,9 +177,7 @@ public class LobbyServer {
   }
 
   private static void usage() {
-    System.out.println("Arguments\n"
-        + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<port number (ex: 3303)>\n"
-        + "   " + TRIPLEA_LOBBY_UI_PROPERTY + "=<true/false>\n"
-        + "   " + TRIPLEA_LOBBY_CONSOLE_PROPERTY + "=<true/false>\n");
+    System.out.println("Arguments\n" + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<port number (ex: 3303)>\n" + "   "
+        + TRIPLEA_LOBBY_UI_PROPERTY + "=<true/false>\n" + "   " + TRIPLEA_LOBBY_CONSOLE_PROPERTY + "=<true/false>\n");
   }
 }

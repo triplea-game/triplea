@@ -9,8 +9,6 @@ import games.strategy.triplea.ResourceLoader;
 
 /**
  * Returns a bunch of messages from politicstext.properties
- *
- *
  */
 public class PoliticsText {
   // Filename

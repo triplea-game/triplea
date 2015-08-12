@@ -18,7 +18,6 @@ import games.strategy.grid.ui.GridMapPanel;
 import games.strategy.grid.ui.IGridPlayData;
 import games.strategy.ui.ImageScrollModel;
 
-
 public class KingsTableMapPanel extends GridMapPanel {
   private static final long serialVersionUID = 9111624780451084800L;
 
@@ -29,7 +28,8 @@ public class KingsTableMapPanel extends GridMapPanel {
 
   @Override
   protected String isValidPlay(final IGridPlayData play) {
-    return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData);
+    return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(),
+        m_gameData);
   }
 
   @Override
@@ -46,7 +46,8 @@ public class KingsTableMapPanel extends GridMapPanel {
     // g2d.fillRect(0, 0, getWidth(), getHeight());
     g2d.fillRect(0, 0, m_model.getMaxWidth(), m_model.getMaxHeight());
     g2d.setColor(Color.white);
-    g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(), m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
+    g2d.fillRect(m_mapData.getBevelWidth(), m_mapData.getBevelHeight(),
+        m_model.getMaxWidth() - (m_mapData.getBevelWidth() * 2),
         m_model.getMaxHeight() - (m_mapData.getBevelHeight() * 2));
     for (final Map.Entry<Territory, Polygon> entry : m_mapData.getTerritoryPolygons(m_gameData.getMap()).entrySet()) {
       final Polygon p = entry.getValue();
@@ -67,8 +68,9 @@ public class KingsTableMapPanel extends GridMapPanel {
       if (image != null) {
         final Rectangle square = p.getBounds();
         if (at.equals(m_clickedAt)) {
-          g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5), square.y - (m_mapData.getSquareHeight() / 5),
-              square.width + (2 * m_mapData.getSquareWidth() / 5), square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
+          g2d.drawImage(image, square.x - (m_mapData.getSquareWidth() / 5),
+              square.y - (m_mapData.getSquareHeight() / 5), square.width + (2 * m_mapData.getSquareWidth() / 5),
+              square.height + (2 * m_mapData.getSquareHeight() / 5), null, null);
         } else {
           g2d.drawImage(image, square.x, square.y, square.width, square.height, null, null);
         }
@@ -76,5 +78,4 @@ public class KingsTableMapPanel extends GridMapPanel {
       g2d.drawPolygon(p);
     }
   }
-
 }

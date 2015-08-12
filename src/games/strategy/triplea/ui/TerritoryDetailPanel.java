@@ -42,7 +42,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   private final TripleAFrame m_frame;
   private Territory m_new_territory = null; // if not null, shift is pressed
 
-  public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext, final TripleAFrame frame) {
+  public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext,
+      final TripleAFrame frame) {
     super(data);
     m_frame = frame;
     m_uiContext = uiContext;
@@ -81,12 +82,11 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       }
     });
     final JComponent contentPane = (JComponent) m_frame.getContentPane();
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK),
-        show_battle_calc);
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK),
-        show_battle_calc);
+    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);
+    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc);
     contentPane.getActionMap().put(show_battle_calc, showBattleCalc);
-
     // freeze/unfreeze this panel when shift is pressed/released
     final String freeze_panel = "freeze_panel";
     final Action freezePanel = new AbstractAction(freeze_panel) {
@@ -116,7 +116,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, false), freeze_panel);
     contentPane.getActionMap().put(freeze_panel, freezePanel);
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true), unfreeze_panel);
+    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true),
+        unfreeze_panel);
     contentPane.getActionMap().put(unfreeze_panel, unfreezePanel);
   }
 
@@ -156,7 +157,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     refresh();
   }
 
-  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext, final GameData data) {
+  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext,
+      final GameData data) {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -175,9 +177,11 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
           item.hasDamageOrBombingUnitDamage(), item.getDisabled());
       final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
       // overlay flag onto upper-right of icon
-      final Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
+      final Icon flaggedUnitIcon =
+          new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
       final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
-      final String toolTipText = "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer, true) + "</html>";
+      final String toolTipText =
+          "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer, true) + "</html>";
       label.setToolTipText(toolTipText);
       panel.add(label);
     }

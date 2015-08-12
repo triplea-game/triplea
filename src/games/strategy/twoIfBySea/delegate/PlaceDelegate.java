@@ -9,15 +9,11 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 /**
- *
  * Logic for placing units.
  * <p>
- *
- *
  */
 public class PlaceDelegate extends AbstractPlaceDelegate {
   /**
-   *
    * @return gets the production of the territory, ignores whether the territory was an original factory
    */
   @Override

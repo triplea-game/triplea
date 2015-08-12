@@ -12,14 +12,11 @@ import games.strategy.net.INode;
 import games.strategy.net.Node;
 
 /**
- *
  * NOTE - this class is not thread safe. Modifications should be done holding an
  * external lock.
- *
  */
 public class GameDescription implements Externalizable, Cloneable {
   private static final long serialVersionUID = 508593169141567546L;
-
 
   public enum GameStatus {
     LAUNCHING {
@@ -52,20 +49,18 @@ public class GameDescription implements Externalizable, Cloneable {
   private int m_version = Integer.MIN_VALUE;
   private String m_hostName;
   private String m_comment;
-
   private boolean m_passworded;
   private String m_engineVersion;
   private String m_gameVersion;
-
   private String m_botSupportEmail =
       HeadlessGameServer.getInstance() != null ? System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_EMAIL, "") : "";
 
   // if you add a field, add it to write/read object as well for Externalizable
   public GameDescription() {}
 
-  public GameDescription(final INode hostedBy, final int port, final Date startDateTime, final String gameName, final int playerCount,
-      final GameStatus status, final String round,
-      final String hostName, final String comment, final boolean passworded, final String engineVersion, final String gameVersion) {
+  public GameDescription(final INode hostedBy, final int port, final Date startDateTime, final String gameName,
+      final int playerCount, final GameStatus status, final String round, final String hostName, final String comment,
+      final boolean passworded, final String engineVersion, final String gameVersion) {
     m_hostName = hostName;
     m_hostedBy = hostedBy;
     m_port = port;
@@ -92,7 +87,6 @@ public class GameDescription implements Externalizable, Cloneable {
   /**
    * The version number is updated after every change. This handles
    * synchronization problems where updates arrive out of order
-   *
    */
   public int getVersion() {
     return m_version;
@@ -250,7 +244,7 @@ public class GameDescription implements Externalizable, Cloneable {
 
   @Override
   public String toString() {
-    return "Game Hosted By:" + m_hostName + " gameName:" + m_gameName + " at:" + m_hostedBy.getAddress() + ":" + m_port + " playerCount:"
-        + m_playerCount;
+    return "Game Hosted By:" + m_hostName + " gameName:" + m_gameName + " at:" + m_hostedBy.getAddress() + ":" + m_port
+        + " playerCount:" + m_playerCount;
   }
 }

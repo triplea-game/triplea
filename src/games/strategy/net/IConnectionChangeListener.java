@@ -1,6 +1,5 @@
 package games.strategy.net;
 
-
 public interface IConnectionChangeListener {
   /**
    * A connection has been added.

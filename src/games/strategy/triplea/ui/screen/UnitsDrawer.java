@@ -35,9 +35,9 @@ public class UnitsDrawer implements IDrawable {
   private final String m_territoryName;
   private final IUIContext m_uiContext;
 
-  public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final int damaged,
-      final int bombingUnitDamage, final boolean disabled,
-      final boolean overflow, final String territoryName, final IUIContext uiContext2) {
+  public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint,
+      final int damaged, final int bombingUnitDamage, final boolean disabled, final boolean overflow,
+      final String territoryName, final IUIContext uiContext2) {
     m_count = count;
     m_unitType = unitType;
     m_playerName = playerName;
@@ -66,16 +66,16 @@ public class UnitsDrawer implements IDrawable {
     if (m_overflow) {
       graphics.setColor(Color.BLACK);
       graphics.fillRect(m_placementPoint.x - bounds.x - 2,
-          m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight(), m_uiContext.getUnitImageFactory()
-              .getUnitImageWidth() + 2,
-          3);
+          m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight(),
+          m_uiContext.getUnitImageFactory().getUnitImageWidth() + 2, 3);
     }
     final UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
     if (type == null) {
       throw new IllegalStateException("Type not found:" + m_unitType);
     }
     final PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
-    final Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged > 0 || m_bombingUnitDamage > 0, m_disabled);
+    final Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data,
+        m_damaged > 0 || m_bombingUnitDamage > 0, m_disabled);
     graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
     // more then 1 unit of this category
     if (m_count != 1) {
@@ -89,8 +89,10 @@ public class UnitsDrawer implements IDrawable {
           if (font.getSize() > 0) {
             graphics.setColor(MapImage.getPropertyUnitCountColor());
             graphics.setFont(font);
-            graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + 2 * stackSize
-                + (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10), m_placementPoint.y - 2 * stackSize - bounds.y
+            graphics.drawString(String.valueOf(m_count),
+                m_placementPoint.x - bounds.x + 2 * stackSize
+                    + (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10),
+                m_placementPoint.y - 2 * stackSize - bounds.y
                     + m_uiContext.getUnitImageFactory().getUnitImageHeight() * 1 / 3);
           }
         }
@@ -100,8 +102,8 @@ public class UnitsDrawer implements IDrawable {
           graphics.setColor(MapImage.getPropertyUnitCountColor());
           graphics.setFont(font);
           graphics.drawString(String.valueOf(m_count),
-              m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()), m_placementPoint.y - bounds.y
-                  + m_uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
+              m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()),
+              m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
         }
       }
     }
@@ -112,8 +114,8 @@ public class UnitsDrawer implements IDrawable {
     }
   }
 
-  private void displayFactoryDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type,
-      final Image img) {
+  private void displayFactoryDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics,
+      final UnitType type, final Image img) {
     final Font font = MapImage.getPropertyMapFont();
     if (m_territoryName.length() != 0 && font.getSize() > 0 && m_bombingUnitDamage > 0) {
       graphics.setColor(MapImage.getPropertyUnitFactoryDamageColor());
@@ -124,13 +126,14 @@ public class UnitsDrawer implements IDrawable {
     }
   }
 
-  private void displayHitDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type,
-      final Image img) {
+  private void displayHitDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics,
+      final UnitType type, final Image img) {
     final Font font = MapImage.getPropertyMapFont();
     if (m_territoryName.length() != 0 && font.getSize() > 0 && m_damaged > 1) {
       graphics.setColor(MapImage.getPropertyUnitHitDamageColor());
       graphics.setFont(font);
-      graphics.drawString("" + m_damaged, m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4),
+      graphics.drawString("" + m_damaged,
+          m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4),
           m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
     }
   }

@@ -4,8 +4,6 @@ import games.strategy.common.ui.MainGameFrame;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
- *
- *
  */
 public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame> extends AbstractBasePlayer {
   protected CustomGameFrame m_ui;

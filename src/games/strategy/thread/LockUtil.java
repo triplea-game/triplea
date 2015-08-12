@@ -10,19 +10,14 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 
 /**
- *
  * Utility class for ensuring that locks are acquired in a consistent order.
  * <p>
- *
  * Simply use this class and call acquireLock(aLock) releaseLock(aLock) instead of lock.lock(), lock.release(). If locks are acquired in an
  * inconsistent order, an error message will be printed.
  * <p>
- *
  * This class is not terribly good for multithreading as it locks globally on all calls, but that is ok, as this code is meant more for when
  * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
  * <p>
- *
- *
  */
 public class LockUtil {
   // the locks the current thread has
@@ -103,7 +98,6 @@ public class LockUtil {
     m_errorReporter = reporter;
   }
 
-
   public static class ErrorReporter {
     public void reportError(final Lock from, final Lock to) {
       System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
@@ -119,8 +113,6 @@ public class LockUtil {
       return builder.toString();
     }
   }
-
-
   protected static final class WeakLockRef extends WeakReference<Lock> {
     // cache the hash code to make sure it doesn't change if our reference
     // has been cleared

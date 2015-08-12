@@ -21,7 +21,6 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 public class ExtendedStats extends StatPanel {
-
   private static final long serialVersionUID = 2502397606419491543L;
   private IStat[] m_statsExtended = new IStat[] {};
 
@@ -95,7 +94,6 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-
   class TechCountStat extends AbstractStat {
     @Override
     public String getName() {
@@ -156,8 +154,6 @@ public class ExtendedStats extends StatPanel {
       return count;
     }
   }
-
-
   class GenericResourceStat extends AbstractStat {
     private String m_name = null;
 
@@ -175,8 +171,6 @@ public class ExtendedStats extends StatPanel {
       return player.getResources().getQuantity(m_name);
     }
   }
-
-
   class GenericTechNameStat extends AbstractStat {
     private TechAdvance m_ta = null;
 
@@ -197,8 +191,6 @@ public class ExtendedStats extends StatPanel {
       return 0;
     }
   }
-
-
   class GenericUnitNameStat extends AbstractStat {
     private UnitType m_ut = null;
 
@@ -214,15 +206,14 @@ public class ExtendedStats extends StatPanel {
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       int rVal = 0;
-      final Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
+      final Match<Unit> ownedBy =
+          new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
       for (final Territory place : data.getMap().getTerritories()) {
         rVal += place.getUnits().countMatches(ownedBy);
       }
       return rVal;
     }
   }
-
-
   class TechTokenStat extends ResourceStat {
     public TechTokenStat() {
       super(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
@@ -232,5 +223,4 @@ public class ExtendedStats extends StatPanel {
   public IStat[] getStats() {
     return m_stats;
   }
-
 }

@@ -15,7 +15,6 @@ import games.strategy.engine.framework.GameRunner2;
 
 /**
  * Moved out of Console class, so that we don't need swing.
- *
  */
 public class DebugUtils {
   private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
@@ -26,8 +25,8 @@ public class DebugUtils {
     final ThreadInfo[] threadInfo = threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);
     for (final ThreadInfo info : threadInfo) {
       if (info != null) {
-        result.append("thread<" + info.getThreadId() + "," + info.getThreadName() + ">\n").append("state:" + info.getThreadState())
-            .append("\n");
+        result.append("thread<" + info.getThreadId() + "," + info.getThreadName() + ">\n")
+            .append("state:" + info.getThreadState()).append("\n");
         if (info.getLockName() != null) {
           result.append("locked on:" + info.getLockName())
               .append(" locked owned by:<" + info.getLockOwnerId() + "," + info.getLockOwnerName() + ">\n");
@@ -119,8 +118,8 @@ public class DebugUtils {
     final StringBuilder builder = new StringBuilder("WINDOWS\n");
     for (final Frame f : Frame.getFrames()) {
       if (f.isVisible()) {
-        builder.append("window:").append("class " + f.getClass()).append(" size " + f.getSize()).append(" title " + f.getTitle())
-            .append("\n");
+        builder.append("window:").append("class " + f.getClass()).append(" size " + f.getSize())
+            .append(" title " + f.getTitle()).append("\n");
       }
     }
     return builder.toString();

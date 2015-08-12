@@ -6,7 +6,6 @@ import java.util.List;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 
-
 public interface IGridPlayData extends Serializable {
   public Territory getStart();
 

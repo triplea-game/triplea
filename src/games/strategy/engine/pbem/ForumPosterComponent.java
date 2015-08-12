@@ -46,7 +46,6 @@ public class ForumPosterComponent extends JPanel {
   protected Action m_showDetailsAction;
   protected Action m_showDiceStatisticsAction;
   protected Action m_doneAction;
-
   protected String m_title;
   protected IAbstractForumPosterDelegate m_forumPosterDelegate;
 
@@ -71,8 +70,8 @@ public class ForumPosterComponent extends JPanel {
       public void actionPerformed(final ActionEvent event) {
         m_postButton.setEnabled(false);
         updateHistoryLog();
-        PBEMMessagePoster.postTurn(m_title, m_historyLog, m_includeSavegameCheckBox.isSelected(), m_poster, m_forumPosterDelegate, m_frame,
-            m_postButton);
+        PBEMMessagePoster.postTurn(m_title, m_historyLog, m_includeSavegameCheckBox.isSelected(), m_poster,
+            m_forumPosterDelegate, m_frame, m_postButton);
         m_repostTurnSummaryCheckBox.setSelected(false);
       }
     };
@@ -140,12 +139,11 @@ public class ForumPosterComponent extends JPanel {
     m_repostTurnSummaryCheckBox = new JCheckBox(m_repostAction);
   }
 
-  public ForumPosterComponent layoutComponents(final PBEMMessagePoster poster, final IAbstractForumPosterDelegate forumPosterDelegate,
-      final IPlayerBridge bridge, final MainGameFrame frame,
-      final boolean hasPosted, final boolean allowIncludeTerritorySummary, final boolean allowIncludeTerritoryAllPlayersSummary,
-      final boolean allowIncludeProductionSummary,
-      final boolean allowDiceBattleDetails,
-      final boolean allowDiceStatistics) {
+  public ForumPosterComponent layoutComponents(final PBEMMessagePoster poster,
+      final IAbstractForumPosterDelegate forumPosterDelegate, final IPlayerBridge bridge, final MainGameFrame frame,
+      final boolean hasPosted, final boolean allowIncludeTerritorySummary,
+      final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary,
+      final boolean allowDiceBattleDetails, final boolean allowDiceStatistics) {
     m_forumPosterDelegate = forumPosterDelegate;
     m_frame = frame;
     m_bridge = bridge;
@@ -155,7 +153,6 @@ public class ForumPosterComponent extends JPanel {
     // return;
     // if (skipPosting() || Boolean.parseBoolean(m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))
     // return;
-
     // SwingUtilities.invokeLater(new Runnable()
     // {
     // public void run()
@@ -181,8 +178,8 @@ public class ForumPosterComponent extends JPanel {
       add(m_showDiceStatisticsCheckbox);
     }
     // we always send savegame with emails i think?
-    m_includeSavegameCheckBox.setSelected(
-        m_poster.getEmailSender() != null || (m_poster.getForumPoster() != null && m_poster.getForumPoster().getIncludeSaveGame()));
+    m_includeSavegameCheckBox.setSelected(m_poster.getEmailSender() != null
+        || (m_poster.getForumPoster() != null && m_poster.getForumPoster().getIncludeSaveGame()));
     add(m_includeSavegameCheckBox);
     m_repostTurnSummaryCheckBox.setSelected(!hasPosted);
     add(m_repostTurnSummaryCheckBox);
@@ -212,7 +209,6 @@ public class ForumPosterComponent extends JPanel {
     } else if (m_includeTerritoryCheckbox.isSelected()) {
       m_historyLog.printTerritorySummary(m_data, allowedIDs);
     }
-
     if (m_includeProductionCheckbox.isSelected()) {
       m_historyLog.printProductionSummary(m_data);
     }

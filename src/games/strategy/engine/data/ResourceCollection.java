@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
   private final IntegerMap<Resource> m_resources = new IntegerMap<Resource>();
@@ -60,8 +59,8 @@ public class ResourceCollection extends GameDataComponent {
     }
     final int current = getQuantity(resource);
     if ((current - quantity) < 0) {
-      throw new IllegalArgumentException(
-          "Cant remove more than player has of resource: " + resource.getName() + ". current:" + current + " toRemove: " + quantity);
+      throw new IllegalArgumentException("Cant remove more than player has of resource: " + resource.getName()
+          + ". current:" + current + " toRemove: " + quantity);
     }
     change(resource, -quantity);
   }
@@ -130,7 +129,6 @@ public class ResourceCollection extends GameDataComponent {
     for (final Resource resource : cost.keySet()) {
       removeResource(resource, cost.getInt(resource));
     }
-
   }
 
   public void subtract(final IntegerMap<Resource> cost, final int quantity) {

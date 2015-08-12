@@ -29,7 +29,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
-
 public class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;
   private int m_rows;
@@ -39,9 +38,8 @@ public class TabbedProductionPanel extends ProductionPanel {
     super(uiContext);
   }
 
-  public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
-      final IntegerMap<ProductionRule> initialPurchase,
-      final IUIContext uiContext) {
+  public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
+      final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final IUIContext uiContext) {
     return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }
 
@@ -57,11 +55,14 @@ public class TabbedProductionPanel extends ProductionPanel {
     } finally {
       m_data.releaseReadLock();
     }
-    add(new JLabel("<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: "
-        + totalWithoutTechTokensOrVPs.toString() + ")</html>"),
-        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+    add(new JLabel(
+        "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: "
+            + totalWithoutTechTokensOrVPs.toString() + ")</html>"),
+        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+            new Insets(8, 8, 8, 0), 0, 0));
     final JTabbedPane tabs = new JTabbedPane();
-    add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
+    add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(8, 8, 8, 0), 0, 0));
     final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules);
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
     calculateXY(properties, largestList(ruleLists));
@@ -70,9 +71,11 @@ public class TabbedProductionPanel extends ProductionPanel {
         tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
       }
     }
-    add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
+    add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(8, 8, 0, 12), 0, 0));
     m_done = new JButton(m_done_action);
-    add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 8, 0), 0, 0));
+    add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(0, 0, 8, 0), 0, 0));
     final Dimension dtab = tabs.getPreferredSize();
     final Dimension dthis = this.getPreferredSize();
     if (dtab != null && dthis != null) {
@@ -91,14 +94,19 @@ public class TabbedProductionPanel extends ProductionPanel {
         || properties.getRows() * properties.getColumns() < largestList) {
       int m_maxColumns;
       if (largestList <= 36) {
-        m_maxColumns = Math.max(8, Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), BigDecimal.ROUND_UP).intValue()));
+        m_maxColumns = Math.max(8,
+            Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), BigDecimal.ROUND_UP).intValue()));
       } else if (largestList <= 64) {
-        m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4), BigDecimal.ROUND_UP).intValue()));
+        m_maxColumns = Math.max(8,
+            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4), BigDecimal.ROUND_UP).intValue()));
       } else {
-        m_maxColumns = Math.max(8, Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), BigDecimal.ROUND_UP).intValue()));
+        m_maxColumns = Math.max(8,
+            Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), BigDecimal.ROUND_UP).intValue()));
       }
-      m_rows = Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns), BigDecimal.ROUND_UP).intValue());
-      m_columns = Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue());
+      m_rows =
+          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns), BigDecimal.ROUND_UP).intValue());
+      m_columns =
+          Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue());
     } else {
       m_rows = Math.max(2, properties.getRows());
       m_columns = Math.max(3, properties.getColumns()); // There are small display problems if the size is less than 2x3 cells.

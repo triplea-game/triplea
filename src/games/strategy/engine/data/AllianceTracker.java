@@ -10,14 +10,10 @@ import java.util.Set;
 
 /**
  * Tracks alliances between players.
- *
  * An alliance is a named entity, players are added to an alliance.
- *
  * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for alliance based
  * victory conditions.
- *
  * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
- *
  */
 public class AllianceTracker extends GameDataComponent {
   private static final long serialVersionUID = 2815023984535209353L;
@@ -48,7 +44,6 @@ public class AllianceTracker extends GameDataComponent {
   }
 
   /**
-   *
    * @return a set of all the games alliances, this will return an empty set if you aren't using alliances
    */
   public Set<String> getAlliances() {
@@ -67,7 +62,6 @@ public class AllianceTracker extends GameDataComponent {
    * @param allianceName
    *        Alliance name
    * @return all the players in the given alliance
-   *
    */
   public HashSet<PlayerID> getPlayersInAlliance(final String allianceName) {
     final Iterator<PlayerID> keys = m_alliances.keySet().iterator();

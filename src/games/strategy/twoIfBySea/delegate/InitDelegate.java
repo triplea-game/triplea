@@ -11,8 +11,6 @@ package games.strategy.twoIfBySea.delegate;
  * </p>
  * <p>
  * </p>
- *
- *
  */
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.InitializationDelegate;

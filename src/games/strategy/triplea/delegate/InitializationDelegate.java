@@ -29,7 +29,6 @@ import games.strategy.util.Match;
 
 /**
  * This delegate is only supposed to be run once, per game, at the start of the game.
- *
  */
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean m_needToInitialize = true;
@@ -110,10 +109,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
   /**
    * Want to make sure that all units in the sea that can be transported are
    * marked as being transported by something.
-   *
    * We assume that all transportable units in the sea are in a transport, no
    * exceptions.
-   *
    */
   private void initTransportedLandUnits(final IDelegateBridge aBridge) {
     // m_firstRun = false;
@@ -154,18 +151,20 @@ public class InitializationDelegate extends BaseTripleADelegate {
             try {
               aBridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
             } catch (final IllegalStateException e) {
-              System.err.println("You can only edit add transports+units after the initialization delegate of the game is finished.  "
-                  + "If this error came up and you have not used Edit Mode to add units + transports, then please report this as a bug:  \r\n"
-                  + e.getMessage());
+              System.err.println(
+                  "You can only edit add transports+units after the initialization delegate of the game is finished.  "
+                      + "If this error came up and you have not used Edit Mode to add units + transports, then please report this as a bug:  \r\n"
+                      + e.getMessage());
             }
             found = true;
             break;
           }
         }
         if (!found) {
-          throw new IllegalStateException("Cannot load all land units in sea transports. " + "Please make sure you have enough transports. "
-              + "You may need to re-order the xml's placement of transports and land units, "
-              + "as the engine will try to fill them in the order they are given.");
+          throw new IllegalStateException(
+              "Cannot load all land units in sea transports. " + "Please make sure you have enough transports. "
+                  + "You may need to re-order the xml's placement of transports and land units, "
+                  + "as the engine will try to fill them in the order they are given.");
         }
       }
     }
@@ -254,9 +253,12 @@ public class InitializationDelegate extends BaseTripleADelegate {
       if (destroyer != null && !frontier.getRules().contains(destroyer)) {
         change.add(ChangeFactory.addProductionRule(destroyer, frontier));
       }
-      final ProductionRule artilleryIT = data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
-      final ProductionRule destroyerIT = data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
-      final ProductionFrontier frontierIT = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
+      final ProductionRule artilleryIT =
+          data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
+      final ProductionRule destroyerIT =
+          data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
+      final ProductionFrontier frontierIT =
+          data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
       if (artilleryIT != null && !frontierIT.getRules().contains(artilleryIT)) {
         change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
       }
@@ -280,7 +282,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
-      final ProductionFrontier frontierShipyards = data.getProductionFrontierList().getProductionFrontier("productionShipyards");
+      final ProductionFrontier frontierShipyards =
+          data.getProductionFrontierList().getProductionFrontier("productionShipyards");
       /*
        * Remove the hardcoded productionRules and work through those from the XML as specified
        */
@@ -292,7 +295,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
        * ProductionRule buyBomber = data.getProductionRuleList().getProductionRule("buyBomber");
        * ProductionRule buyFactory = data.getProductionRuleList().getProductionRule("buyFactory");
        * ProductionRule buyAAGun = data.getProductionRuleList().getProductionRule("buyAAGun");
-       *
        * change.add(ChangeFactory.addProductionRule(buyInfantry, frontierShipyards));
        * change.add(ChangeFactory.addProductionRule(buyArtillery, frontierShipyards));
        * change.add(ChangeFactory.addProductionRule(buyArmour, frontierShipyards));
@@ -304,7 +306,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
       /*
        * Find the productionRules, if the unit is NOT a sea unit, add it to the ShipYards prod rule.
        */
-      final ProductionFrontier frontierNONShipyards = data.getProductionFrontierList().getProductionFrontier("production");
+      final ProductionFrontier frontierNONShipyards =
+          data.getProductionFrontierList().getProductionFrontier("production");
       final Collection<ProductionRule> rules = frontierNONShipyards.getRules();
       for (final ProductionRule rule : rules) {
         final String ruleName = rule.getName();
@@ -375,7 +378,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
     aBridge.getHistoryWriter().startEvent("Adding original owners");
     aBridge.addChange(changes);
   }
-
 
   @Override
   public Class<? extends IRemote> getRemoteType() {

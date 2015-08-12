@@ -6,14 +6,11 @@ import games.strategy.engine.data.GameData;
  * <p>
  * Title: TripleA
  * </p>
- *
- *
  */
 public class Properties implements Constants {
   // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior of TripleA.
   // If you want something to default to "true", when change the wording of the constant to make it a negative of itself, then default to
   // false. (ex: "Do not do something", false; instead of "Do something", true;)
-
   public static int getNeutralCharge(final GameData data) {
     return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);
   }
@@ -305,7 +302,6 @@ public class Properties implements Constants {
     return data.getProperties().get(IGNORE_SUB_IN_MOVEMENT, false);
   }
 
-
   public static boolean getUnplacedUnitsLive(final GameData data) {
     return data.getProperties().get(UNPLACED_UNITS_LIVE, false);
   }
@@ -388,7 +384,7 @@ public class Properties implements Constants {
     return data.getProperties().get(LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS, false);
   }
 
-   public static int getHeavyBomberDiceRolls(final GameData data) {
+  public static int getHeavyBomberDiceRolls(final GameData data) {
     return data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS, 2);
   }
 
@@ -435,7 +431,6 @@ public class Properties implements Constants {
   public static boolean getLL_DAMAGE_ONLY(final GameData data) {
     return data.getProperties().get(LL_DAMAGE_ONLY, false);
   }
-
 
   public static boolean getKamikaze_Airplanes(final GameData data) {
     return data.getProperties().get(KAMIKAZE, false);

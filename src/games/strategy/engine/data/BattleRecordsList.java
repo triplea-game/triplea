@@ -11,19 +11,17 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 
 /**
  * A holder for BattleRecords
- *
- *
  */
 public class BattleRecordsList extends GameDataComponent implements Serializable {
   private static final long serialVersionUID = 7515693859612849475L;
-
   private final Map<Integer, BattleRecords> m_battleRecords = new HashMap<Integer, BattleRecords>();
 
   public BattleRecordsList(final GameData data) {
     super(data);
   }
 
-  public static void addRecords(final Map<Integer, BattleRecords> recordList, final Integer currentRound, final BattleRecords other) {
+  public static void addRecords(final Map<Integer, BattleRecords> recordList, final Integer currentRound,
+      final BattleRecords other) {
     final BattleRecords current = recordList.get(currentRound);
     if (current == null) {
       recordList.put(currentRound, other);
@@ -33,7 +31,8 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
     recordList.put(currentRound, current);
   }
 
-  public static void removeRecords(final Map<Integer, BattleRecords> recordList, final Integer round, final BattleRecords other) {
+  public static void removeRecords(final Map<Integer, BattleRecords> recordList, final Integer round,
+      final BattleRecords other) {
     final BattleRecords current = recordList.get(round);
     if (current == null) {
       throw new IllegalStateException("Trying to remove records for round that does not exist");
@@ -85,9 +84,8 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
   }
 
   // Interpretation stuff below
-  public static int getTUVdamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl, final int beginningRound,
-      final int endRound,
-      final boolean currentRoundOnly, final boolean includeNullPlayer) {
+  public static int getTUVdamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl,
+      final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
     int damageCausedByAttacker = 0;
     final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
     if (currentRoundOnly) {
@@ -111,8 +109,8 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
       }
     }
     for (final BattleRecords br : brs) {
-      damageCausedByAttacker +=
-          BattleRecords.getLostTUVforBattleRecords(BattleRecords.getRecordsForPlayerID(attacker, br), false, includeNullPlayer);
+      damageCausedByAttacker += BattleRecords
+          .getLostTUVforBattleRecords(BattleRecords.getRecordsForPlayerID(attacker, br), false, includeNullPlayer);
     }
     return damageCausedByAttacker;
   }
@@ -131,9 +129,9 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
    * @param endRound
    * @param currentRoundOnly
    */
-  public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender, final String battleType,
-      final Collection<Territory> anyOfTheseTerritories,
-      final BattleRecordsList brl, final int beginningRound, final int endRound, final boolean currentRoundOnly) {
+  public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender,
+      final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,
+      final int beginningRound, final int endRound, final boolean currentRoundOnly) {
     final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
     if (currentRoundOnly) {
       if (brl != null && brl.getCurrentRoundCopy() != null) {
@@ -151,8 +149,8 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
     // null for attacker means any attacker
     for (final BattleRecords br : brs) {
       if (BattleRecords.getWereThereBattlesInTerritoriesMatching(
-          (attacker == null ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerID(attacker, br)), attacker, defender,
-          battleType, anyOfTheseTerritories)) {
+          (attacker == null ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerID(attacker, br)),
+          attacker, defender, battleType, anyOfTheseTerritories)) {
         return true;
       }
     }

@@ -9,7 +9,6 @@ import games.strategy.engine.history.EventChild;
 
 /**
  * Synchronizes a GameData by listening on the history channel for messages.
- *
  * All modifications to the History are done in the SwingEventThread, so
  * this class can be used to display a history tree to the user.
  */
@@ -27,7 +26,8 @@ public class HistorySynchronizer {
   public HistorySynchronizer(final GameData data, final IGame game) {
     // this is not the way to use this.
     if (game.getData() == data) {
-      throw new IllegalStateException("You dont need a history synchronizer to synchronize game data that is managed by an IGame");
+      throw new IllegalStateException(
+          "You dont need a history synchronizer to synchronize game data that is managed by an IGame");
     }
     m_data = data;
     m_data.forceChangesOnlyInSwingEventThread();
@@ -38,7 +38,8 @@ public class HistorySynchronizer {
       data.releaseReadLock();
     }
     m_game = game;
-    m_game.getChannelMessenger().registerChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
+    m_game.getChannelMessenger().registerChannelSubscriber(m_gameModifiedChannelListener,
+        IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   private final IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel() {
@@ -116,7 +117,8 @@ public class HistorySynchronizer {
   };
 
   public void deactivate() {
-    m_game.getChannelMessenger().unregisterChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
+    m_game.getChannelMessenger().unregisterChannelSubscriber(m_gameModifiedChannelListener,
+        IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   /**

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -60,15 +59,12 @@ import games.strategy.util.Tuple;
 
 /**
  * Pro AI.
- *
  */
 public class ProAI extends AbstractAI {
   private final static Logger s_logger = Logger.getLogger(ProAI.class.getName());
-
   private final static IOddsCalculator s_battleCalculator = new ConcurrentOddsCalculator("ProAI"); // if non-static, then only need 1 for
                                                                                                    // the entire AI instance and must be
                                                                                                    // shutdown when AI is gc'ed.
-
   // Utilities
   private final ProUtils utils;
   private final ProBattleUtils battleUtils;
@@ -78,7 +74,6 @@ public class ProAI extends AbstractAI {
   private final ProTerritoryValueUtils territoryValueUtils;
   private final ProSimulateTurnUtils simulateTurnUtils;
   private final ProPurchaseUtils purchaseUtils;
-
   // Phases
   private final ProCombatMoveAI combatMoveAI;
   private final ProNonCombatMoveAI nonCombatMoveAI;
@@ -86,7 +81,6 @@ public class ProAI extends AbstractAI {
   private final ProRetreatAI retreatAI;
   private final ProScrambleAI scrambleAI;
   private final ProPoliticsAI politicsAI;
-
   // Data
   private GameData data;
   private Map<Territory, ProAttackTerritoryData> storedCombatMoveMap;
@@ -104,12 +98,12 @@ public class ProAI extends AbstractAI {
     moveUtils = new ProMoveUtils(this, utils);
     territoryValueUtils = new ProTerritoryValueUtils(this, utils, battleUtils);
     simulateTurnUtils = new ProSimulateTurnUtils(this, utils, battleUtils, moveUtils);
-    combatMoveAI =
-        new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
-    nonCombatMoveAI =
-        new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
-    purchaseAI =
-        new ProPurchaseAI(this, utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils, territoryValueUtils, purchaseUtils);
+    combatMoveAI = new ProCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils,
+        territoryValueUtils, purchaseUtils);
+    nonCombatMoveAI = new ProNonCombatMoveAI(utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils,
+        territoryValueUtils, purchaseUtils);
+    purchaseAI = new ProPurchaseAI(this, utils, battleUtils, transportUtils, attackOptionsUtils, moveUtils,
+        territoryValueUtils, purchaseUtils);
     retreatAI = new ProRetreatAI(this, battleUtils);
     scrambleAI = new ProScrambleAI(this, battleUtils, attackOptionsUtils);
     politicsAI = new ProPoliticsAI(this, utils, attackOptionsUtils);
@@ -157,7 +151,8 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {
+  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+      final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
@@ -173,12 +168,13 @@ public class ProAI extends AbstractAI {
         storedCombatMoveMap = null;
       }
     }
-    LogUtils.log(Level.FINE, player.getName() + " time for nonCombat=" + nonCombat + " time=" + (System.currentTimeMillis() - start));
+    LogUtils.log(Level.FINE,
+        player.getName() + " time for nonCombat=" + nonCombat + " time=" + (System.currentTimeMillis() - start));
   }
 
   @Override
-  protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data,
-      final PlayerID player) {
+  protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+      final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
@@ -190,16 +186,13 @@ public class ProAI extends AbstractAI {
     } else {
       // Repair factories
       PUsToSpend = purchaseAI.repair(PUsToSpend, purchaseDelegate, data, player);
-
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = purchaseUtils.findPurchaseTerritories(player);
       if (purchaseTerritories.isEmpty()) {
         LogUtils.log(Level.FINE, "No possible place territories owned so exiting purchase logic");
         return;
       }
-
       LogUtils.log(Level.FINE, "Starting simulation for purchase phase");
-
       // Setup data copy and delegates
       GameData dataCopy;
       try {
@@ -217,13 +210,11 @@ public class ProAI extends AbstractAI {
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
-
       // Determine turn sequence
       final List<GameStep> gameSteps = new ArrayList<GameStep>();
       for (final GameStep gameStep : dataCopy.getSequence()) {
         gameSteps.add(gameStep);
       }
-
       // Simulate the next phases until place/end of turn is reached then use simulated data for purchase
       final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
       final Map<Unit, Territory> unitTerritoryMap = utils.createUnitTerritoryMap(playerCopy);
@@ -232,17 +223,20 @@ public class ProAI extends AbstractAI {
         if (!playerCopy.equals(step.getPlayerID())) {
           continue;
         }
-        dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(), step.getPlayerID());
+        dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(),
+            step.getPlayerID());
         final String stepName = step.getName();
         LogUtils.log(Level.FINE, "Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
           final Map<Territory, ProAttackTerritoryData> factoryMoveMap =
               nonCombatMoveAI.doNonCombatMove(null, null, moveDel, dataCopy, playerCopy, true);
           if (storedFactoryMoveMap == null) {
-            storedFactoryMoveMap = simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
+            storedFactoryMoveMap =
+                simulateTurnUtils.transferMoveMap(factoryMoveMap, unitTerritoryMap, dataCopy, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
-          final Map<Territory, ProAttackTerritoryData> moveMap = combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
+          final Map<Territory, ProAttackTerritoryData> moveMap =
+              combatMoveAI.doCombatMove(moveDel, dataCopy, playerCopy, true);
           if (storedCombatMoveMap == null) {
             storedCombatMoveMap = simulateTurnUtils.transferMoveMap(moveMap, unitTerritoryMap, dataCopy, data, player);
           }
@@ -266,7 +260,8 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
+  protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+      final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOOLCache();
     LogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
@@ -295,7 +290,6 @@ public class ProAI extends AbstractAI {
       myStrength += SUtils.strength(areaTerr.getUnits().getUnits(), false, false, false) * 0.75F;
     }
     final boolean capDanger = myStrength < (eStrength * 1.25F + 3.0F);
-
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int PUs = player.getResources().getQuantity(pus);
     final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
@@ -330,24 +324,21 @@ public class ProAI extends AbstractAI {
     final PlayerID player = getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
-
     // If battle is null or amphibious then don't retreat
     if (battle == null || battleTerritory == null || battle.isAmphibious()) {
       return null;
     }
-
     // If I'm attacker, have more unit strength, and isn't land battle with only air left then don't retreat
     final boolean isAttacker = player.equals(battle.getAttacker());
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     final double strengthDifference = battleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
-    LogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers=" + attackers.size()
-        + ", defenders=" + defenders.size() + ", submerge="
-        + submerge + ", attacker=" + isAttacker);
-    if (isAttacker && strengthDifference > 50 && (battleTerritory.isWater() || Match.someMatch(attackers, Matches.UnitIsLand))) {
+    LogUtils.log(Level.FINE, player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
+        + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker);
+    if (isAttacker && strengthDifference > 50
+        && (battleTerritory.isWater() || Match.someMatch(attackers, Matches.UnitIsLand))) {
       return null;
     }
-
     s_battleCalculator.setGameData(getGameData());
     return retreatAI.retreatQuery(battleID, submerge, battleTerritory, possibleTerritories, message);
   }
@@ -358,7 +349,8 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+      final Territory from) {
     final List<Unit> rVal = new ArrayList<Unit>();
     // for (final Unit fighter : fightersThatCanBeMoved)
     // rVal.add(fighter);
@@ -366,11 +358,11 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
       throw new IllegalStateException(
@@ -379,7 +371,6 @@ public class ProAI extends AbstractAI {
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
     }
-
     // Consider unit cost
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
@@ -392,7 +383,6 @@ public class ProAI extends AbstractAI {
       final PlayerID player = getPlayerID();
       final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
       final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
-
       // If defender and could lose battle then don't consider unit cost as just trying to survive
       boolean needToCheck = true;
       final boolean isAttacker = player.equals(battle.getAttacker());
@@ -409,7 +399,6 @@ public class ProAI extends AbstractAI {
           needToCheck = false;
         }
       }
-
       // Use bubble sort to save expensive units
       while (needToCheck) {
         needToCheck = false;
@@ -426,17 +415,15 @@ public class ProAI extends AbstractAI {
         }
       }
     }
-
     // Interleave carriers and planes
-    final List<Unit> interleavedTargetList = new ArrayList<Unit>(ProTransportUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
+    final List<Unit> interleavedTargetList =
+        new ArrayList<Unit>(ProTransportUtils.InterleaveUnits_CarriersAndPlanes(selectFromSorted, 0));
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }
-
     if (count != myCasualties.size()) {
       throw new IllegalStateException("AI chose wrong number of casualties");
     }
-
     return myCasualties;
   }
 
@@ -457,20 +444,15 @@ public class ProAI extends AbstractAI {
     final PlayerID player = getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
-
     // If battle is null then don't scramble
     if (battle == null) {
       return null;
     }
-
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    LogUtils.log(Level.FINE, player.getName() + " checking scramble to " + scrambleTo + ", attackers=" + attackers.size() + ", defenders="
-        + defenders.size() + ", possibleScramblers="
-        + possibleScramblers);
-
+    LogUtils.log(Level.FINE, player.getName() + " checking scramble to " + scrambleTo + ", attackers="
+        + attackers.size() + ", defenders=" + defenders.size() + ", possibleScramblers=" + possibleScramblers);
     s_battleCalculator.setGameData(getGameData());
-
     return scrambleAI.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
 
@@ -481,19 +463,15 @@ public class ProAI extends AbstractAI {
     final PlayerID player = getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(unitTerritory, false, BattleType.NORMAL);
-
     // If battle is null then don't attack
     if (battle == null) {
       return false;
     }
-
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-    LogUtils.log(Level.FINE,
-        player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers + ", defenders=" + defenders);
-
+    LogUtils.log(Level.FINE, player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers
+        + ", defenders=" + defenders);
     s_battleCalculator.setGameData(getGameData());
-
     // Calculate battle results
     final ProBattleResultData result =
         battleUtils.calculateBattleResults(player, unitTerritory, attackers, defenders, new HashSet<Unit>(), true);

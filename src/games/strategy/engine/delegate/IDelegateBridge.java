@@ -12,18 +12,12 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ISound;
 
 /**
- *
- *
- *
  * A class that communicates with the Delegate. DelegateBridge co-ordinates
  * comunication between the Delegate and both the players and the game data.
- *
  * The reason for communicating through a DelegateBridge is to achieve network
  * transparancy.
- *
  * The delegateBridge allows the Delegate to talk to the player in a safe
  * manner.
- *
  */
 public interface IDelegateBridge {
   /**
@@ -35,7 +29,6 @@ public interface IDelegateBridge {
 
   /**
    * Get a remote reference to the given player.
-   *
    */
   public IRemotePlayer getRemotePlayer(PlayerID id);
 
@@ -61,10 +54,8 @@ public interface IDelegateBridge {
   public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation);
 
   /**
-   *
    * Return a random value to be used by the delegate.
    * <p>
-   *
    * Delegates should not use random data that comes from any other source.
    * <p>
    *
@@ -73,12 +64,12 @@ public interface IDelegateBridge {
    *        a string used to describe the random event.
    *        <p>
    */
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation);
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation);
 
   /**
    * return the delegate history writer for this game.
    * <p>
-   *
    * The delegate history writer allows writing to the game history.
    * <p>
    */
@@ -87,7 +78,6 @@ public interface IDelegateBridge {
   /**
    * Return an object that implements the IDisplay interface for the game.
    * <p>
-   *
    * Methods called on this returned object will be invoked on all displays in the game, including those on remote machines
    * <p>
    */
@@ -96,14 +86,12 @@ public interface IDelegateBridge {
   /**
    * Return an object that implements the ISound interface for the game.
    * <p>
-   *
    * Methods called on this returned object will be invoked on all sound channels in the game, including those on remote machines
    * <p>
    */
   public ISound getSoundChannelBroadcaster();
 
   /**
-   *
    * @return the propertie for this step.
    *         <p>
    */
@@ -112,10 +100,8 @@ public interface IDelegateBridge {
   /**
    * After this step finishes executing, the next delegate will not be called.
    * <p>
-   *
    * This methd allows the delegate to signal that the game is over, but does not force the ui or the display to shutdown.
    * <p>
-   *
    */
   public void stopGameSequence();
 

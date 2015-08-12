@@ -18,11 +18,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- *
- *
  * Utiltity to read and write files in the form of
  * String -> a list of points, or string-> list of polygons
- *
  */
 public class PointFileReaderWriter {
   /** Creates a new instance of PointFileReader */
@@ -104,7 +101,8 @@ public class PointFileReaderWriter {
     write(out, sink);
   }
 
-  public static void writeOneToManyPolygons(final OutputStream sink, final Map<String, List<Polygon>> mapping) throws Exception {
+  public static void writeOneToManyPolygons(final OutputStream sink, final Map<String, List<Polygon>> mapping)
+      throws Exception {
     final StringBuilder out = new StringBuilder();
     final Iterator<String> keyIter = mapping.keySet().iterator();
     while (keyIter.hasNext()) {
@@ -220,7 +218,8 @@ public class PointFileReaderWriter {
     return mapping;
   }
 
-  private static void readMultiplePolygons(final String line, final HashMap<String, List<Polygon>> mapping) throws IOException {
+  private static void readMultiplePolygons(final String line, final HashMap<String, List<Polygon>> mapping)
+      throws IOException {
     try {
       // this loop is executed a lot when loading games
       // so it is hand optimized

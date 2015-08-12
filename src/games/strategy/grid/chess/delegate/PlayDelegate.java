@@ -34,7 +34,6 @@ import games.strategy.util.Match;
 import games.strategy.util.Quadruple;
 import games.strategy.util.Tuple;
 
-
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate {
   /**
@@ -105,25 +104,22 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    * @param end
    *        <code>Territory</code> where the move should end
    */
-  public static String isValidPlay(final Territory start, final Territory end, final PlayerID player, final GameData data,
-      final int testForCheckTurnsAhead) {
+  public static String isValidPlay(final Territory start, final Territory end, final PlayerID player,
+      final GameData data, final int testForCheckTurnsAhead) {
     // System.out.println("Start: " + start.getX() + "," + start.getY() + " End: " + end.getX() + "," + end.getY());
     final String basic = isValidMoveBasic(start, end, player, data);
     if (basic != null) {
       return basic;
     }
-
     final String pieceBasic = isValidPieceMoveBasic(start, end, player, data, testForCheckTurnsAhead - 1);
     if (pieceBasic != null) {
       return pieceBasic;
     }
-
     if (testForCheckTurnsAhead > 0) {
       if (testTerritoryForUsInCheckAfter(start, end, player, data, testForCheckTurnsAhead - 1)) {
         return "Illegal To Move Into Check Or Stay In Check";
       }
     }
-
     return null;
   }
 
@@ -133,8 +129,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
    * @param end
    *        <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
    */
-  public static Collection<Territory> checkForCaptures(final Territory start, final Territory end, final PlayerID player,
-      final GameData data) {
+  public static Collection<Territory> checkForCaptures(final Territory start, final Territory end,
+      final PlayerID player, final GameData data) {
     // should only be able to capture 1 piece at most
     final Collection<Territory> captured = new HashSet<Territory>(1);
     // except for the weird pawn rule (En passant), the captured piece will always be on the end territory
@@ -144,13 +140,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     // En passant
     if (start.getUnits().someMatch(UnitIsPawn) && isValidEnPassant(start, end, player, data) == null) {
       final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
-      final Territory territoryOfEnemyPawn =
-          data.getMap().getTerritoryFromCoordinates(false, end.getX(), (startsAtLowRank ? end.getY() - 1 : end.getY() + 1));
+      final Territory territoryOfEnemyPawn = data.getMap().getTerritoryFromCoordinates(false, end.getX(),
+          (startsAtLowRank ? end.getY() - 1 : end.getY() + 1));
       if (territoryOfEnemyPawn.getUnits().getUnitCount() > 0) {
         captured.add(territoryOfEnemyPawn);
       }
     }
-
     return captured;
   }
 
@@ -172,9 +167,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       final Set<UnitType> allowed = getData().getUnitTypeList().getAllUnitTypes();
       allowed.remove(getData().getUnitTypeList().getUnitType("king"));
       allowed.remove(getData().getUnitTypeList().getUnitType("pawn"));
-      final UnitType selectedUnit =
-          ((IGridGamePlayer) getRemotePlayer(player)).selectUnit(units.iterator().next(), allowed, end, player, getData(),
-              "Promote Pawn to what piece?");
+      final UnitType selectedUnit = ((IGridGamePlayer) getRemotePlayer(player)).selectUnit(units.iterator().next(),
+          allowed, end, player, getData(), "Promote Pawn to what piece?");
       if (selectedUnit == null) {
         promotionUnits.add(getData().getUnitTypeList().getUnitType("queen").create(player));
       } else {
@@ -211,8 +205,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       }
     }
     if (!capturedUnitsTotal.isEmpty()) {
-      m_bridge.getHistoryWriter().addChildToEvent(player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal),
-          capturedUnitsTotal);
+      m_bridge.getHistoryWriter().addChildToEvent(
+          player.getName() + " captures units: " + MyFormatter.unitsToText(capturedUnitsTotal), capturedUnitsTotal);
     }
     final Collection<Territory> refresh = new HashSet<Territory>();
     refresh.add(start);
@@ -228,8 +222,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       if (end.getX() > start.getX()) {
         final Territory rookTerOld = map.getTerritoryFromCoordinates(lastColumn, start.getY());
         final Territory rookTerNew = map.getTerritoryFromCoordinates(end.getX() - 1, start.getY());
-        final List<Unit> rook =
-            rookTerOld.getUnits().getMatches(new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
+        final List<Unit> rook = rookTerOld.getUnits()
+            .getMatches(new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
         final Change removeRook = ChangeFactory.removeUnits(rookTerOld, rook);
         final Change addRook = ChangeFactory.addUnits(rookTerNew, rook);
         change.add(removeRook);
@@ -244,8 +238,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       } else {
         final Territory rookTerOld = map.getTerritoryFromCoordinates(0, start.getY());
         final Territory rookTerNew = map.getTerritoryFromCoordinates(end.getX() + 1, start.getY());
-        final List<Unit> rook =
-            rookTerOld.getUnits().getMatches(new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
+        final List<Unit> rook = rookTerOld.getUnits()
+            .getMatches(new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
         final Change removeRook = ChangeFactory.removeUnits(rookTerOld, rook);
         final Change addRook = ChangeFactory.addUnits(rookTerNew, rook);
         change.add(removeRook);
@@ -259,7 +253,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         lastMovedPieces.addAll(rook);
       }
     }
-    change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(player), lastMovedPieces, PlayerAttachment.LAST_PIECES_MOVED));
+    change.add(ChangeFactory.attachmentPropertyChange(PlayerAttachment.get(player), lastMovedPieces,
+        PlayerAttachment.LAST_PIECES_MOVED));
     m_bridge.addChange(change);
     final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
     display.refreshTerritories(refresh);
@@ -363,9 +358,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return false;
   }
 
-  public static List<Tuple<Territory, Territory>> getMovesThatCaptureThisTerritory(final Territory end, final PlayerID player,
-      final GameData data, final int testForCheckTurnsAhead,
-      final boolean endAsSoonAsFindOne) {
+  public static List<Tuple<Territory, Territory>> getMovesThatCaptureThisTerritory(final Territory end,
+      final PlayerID player, final GameData data, final int testForCheckTurnsAhead, final boolean endAsSoonAsFindOne) {
     final List<Tuple<Territory, Territory>> available = new ArrayList<Tuple<Territory, Territory>>();
     final Collection<Territory> allTerritories = data.getMap().getTerritories();
     final Collection<Territory> allOur = Match.getMatches(allTerritories, TerritoryHasUnitsOwnedBy(player));
@@ -388,12 +382,13 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
   /**
    * How many of our pieces can be captured by the enemy?
    */
-  public static Collection<Tuple<Territory, List<Tuple<Territory, Territory>>>> whichOfOurPiecesCanBeCaptured(final PlayerID player,
-      final GameData data) {
+  public static Collection<Tuple<Territory, List<Tuple<Territory, Territory>>>> whichOfOurPiecesCanBeCaptured(
+      final PlayerID player, final GameData data) {
     final Collection<Tuple<Territory, List<Tuple<Territory, Territory>>>> capturedPieces =
         new ArrayList<Tuple<Territory, List<Tuple<Territory, Territory>>>>();
     // check if any of our opponents are in check
-    final Collection<Territory> allOur = Match.getMatches(data.getMap().getTerritories(), TerritoryHasUnitsOwnedBy(player));
+    final Collection<Territory> allOur =
+        Match.getMatches(data.getMap().getTerritories(), TerritoryHasUnitsOwnedBy(player));
     for (final PlayerID enemy : data.getPlayerList().getPlayers()) {
       if (enemy.equals(player)) {
         continue;
@@ -411,14 +406,14 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
   /**
    * If we move our piece from start to end, can an opponent capture it?
    */
-  public static boolean testTerritoryForEnemyCaptureUsAfter(final Territory start, final Territory end, final PlayerID player,
-      final GameData data, final int testForCheckTurnsAhead) {
-    final Quadruple<Territory, Territory, PlayerID, GameData> temp = copyGameDataAndAttemptMove(start, end, player, data);
+  public static boolean testTerritoryForEnemyCaptureUsAfter(final Territory start, final Territory end,
+      final PlayerID player, final GameData data, final int testForCheckTurnsAhead) {
+    final Quadruple<Territory, Territory, PlayerID, GameData> temp =
+        copyGameDataAndAttemptMove(start, end, player, data);
     // final Territory newTempStart = temp.getFirst();
     final Territory newTempEnd = temp.getSecond();
     final PlayerID newTempPlayer = temp.getThird();
     final GameData newTempData = temp.getForth();
-
     // check if any of our opponents are in check
     for (final PlayerID enemy : newTempData.getPlayerList().getPlayers()) {
       if (enemy.equals(newTempPlayer)) {
@@ -434,14 +429,14 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
   /**
    * If we move our piece from start to end, does that put any of our opponents into check?
    */
-  public static boolean testTerritoryForEnemyInCheckAfter(final Territory start, final Territory end, final PlayerID player,
-      final GameData data, final int testForCheckTurnsAhead) {
-    final Quadruple<Territory, Territory, PlayerID, GameData> temp = copyGameDataAndAttemptMove(start, end, player, data);
+  public static boolean testTerritoryForEnemyInCheckAfter(final Territory start, final Territory end,
+      final PlayerID player, final GameData data, final int testForCheckTurnsAhead) {
+    final Quadruple<Territory, Territory, PlayerID, GameData> temp =
+        copyGameDataAndAttemptMove(start, end, player, data);
     // final Territory newTempStart = temp.getFirst();
     // final Territory newTempEnd = temp.getSecond();
     final PlayerID newTempPlayer = temp.getThird();
     final GameData newTempData = temp.getForth();
-
     // check if any of our opponents are in check
     for (final PlayerID enemy : newTempData.getPlayerList().getPlayers()) {
       if (enemy.equals(newTempPlayer)) {
@@ -457,9 +452,10 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
   /**
    * If we move our piece from start to end, does that put us in check?
    */
-  public static boolean testTerritoryForUsInCheckAfter(final Territory start, final Territory end, final PlayerID player,
-      final GameData data, final int testForCheckTurnsAhead) {
-    final Quadruple<Territory, Territory, PlayerID, GameData> temp = copyGameDataAndAttemptMove(start, end, player, data);
+  public static boolean testTerritoryForUsInCheckAfter(final Territory start, final Territory end,
+      final PlayerID player, final GameData data, final int testForCheckTurnsAhead) {
+    final Quadruple<Territory, Territory, PlayerID, GameData> temp =
+        copyGameDataAndAttemptMove(start, end, player, data);
     // final Territory newTempStart = temp.getFirst();
     // final Territory newTempEnd = temp.getSecond();
     final PlayerID newTempPlayer = temp.getThird();
@@ -470,8 +466,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return areWeInCheck(newTempPlayer, newTempData, testForCheckTurnsAhead);
   }
 
-  public static Quadruple<Territory, Territory, PlayerID, GameData> copyGameDataAndAttemptMove(final Territory start, final Territory end,
-      final PlayerID player, final GameData data) {
+  public static Quadruple<Territory, Territory, PlayerID, GameData> copyGameDataAndAttemptMove(final Territory start,
+      final Territory end, final PlayerID player, final GameData data) {
     if (start == null || end == null || player == null || data == null) {
       throw new IllegalArgumentException("copyGameDataAndAttemptMove can not accept null arguments");
     }
@@ -499,7 +495,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     }
     changePerformer.perform(ChangeFactory.removeUnits(newTempStart, unitsToMove));
     changePerformer.perform(ChangeFactory.addUnits(newTempEnd, unitsToMove));
-    return new Quadruple<Territory, Territory, PlayerID, GameData>(newTempStart, newTempEnd, newTempPlayer, newTempData);
+    return new Quadruple<Territory, Territory, PlayerID, GameData>(newTempStart, newTempEnd, newTempPlayer,
+        newTempData);
   }
 
   public static Collection<Territory> getKingTerritories(final PlayerID player, final GameData data) {
@@ -544,7 +541,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return false;
   }
 
-  public static String isValidMoveBasic(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidMoveBasic(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     if (start == null || end == null) {
       return "Can Not Move Off Board";
     }
@@ -565,8 +563,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return null;
   }
 
-  public static String isValidPieceMoveBasic(final Territory start, final Territory end, final PlayerID player, final GameData data,
-      final int testForCheckTurnsAhead) {
+  public static String isValidPieceMoveBasic(final Territory start, final Territory end, final PlayerID player,
+      final GameData data, final int testForCheckTurnsAhead) {
     final Collection<Unit> units = start.getUnits().getUnits();
     final Unit unit = units.iterator().next();
     if (UnitIsPawn.match(unit)) {
@@ -585,7 +583,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return "?? Unit";
   }
 
-  public static String isValidPawnMove(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidPawnMove(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     final GameMap map = data.getMap();
     final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
     if (startsAtLowRank) {
@@ -604,7 +603,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
           }
           return null;
         }
-      } else if (end.getY() - start.getY() == 2 && end.getX() == start.getX() && start.getUnits().someMatch(UnitHasNeverMovedBefore)) {
+      } else if (end.getY() - start.getY() == 2 && end.getX() == start.getX()
+          && start.getUnits().someMatch(UnitHasNeverMovedBefore)) {
         if (map.getTerritoryFromCoordinates(false, end.getX(), end.getY() - 1).getUnits().getUnitCount() > 0) {
           return "A Piece Is In The Way";
         }
@@ -629,7 +629,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
           }
           return null;
         }
-      } else if (start.getY() - end.getY() == 2 && end.getX() == start.getX() && start.getUnits().someMatch(UnitHasNeverMovedBefore)) {
+      } else if (start.getY() - end.getY() == 2 && end.getX() == start.getX()
+          && start.getUnits().someMatch(UnitHasNeverMovedBefore)) {
         if (map.getTerritoryFromCoordinates(false, end.getX(), end.getY() + 1).getUnits().getUnitCount() > 0) {
           return "A Piece Is In The Way";
         }
@@ -642,16 +643,19 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return "Invalid Move";
   }
 
-  public static String isValidEnPassant(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidEnPassant(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
     final int yLevelOfPawnShouldBe = (startsAtLowRank ? data.getMap().getYDimension() - 4 : 3);
     final int yLevelOfEnemyPawn = (startsAtLowRank ? end.getY() - 1 : end.getY() + 1);
     if (yLevelOfEnemyPawn != yLevelOfPawnShouldBe) {
       return "Invalid Move";
     }
-    final Territory territoryOfEnemyPawn = data.getMap().getTerritoryFromCoordinates(false, end.getX(), yLevelOfEnemyPawn);
+    final Territory territoryOfEnemyPawn =
+        data.getMap().getTerritoryFromCoordinates(false, end.getX(), yLevelOfEnemyPawn);
     if (!territoryOfEnemyPawn.getUnits()
-        .getMatches(new CompositeMatchAnd<Unit>(UnitIsPawn, UnitHasOnlyMovedOnce, UnitIsOwnedBy(player).invert())).isEmpty()) {
+        .getMatches(new CompositeMatchAnd<Unit>(UnitIsPawn, UnitHasOnlyMovedOnce, UnitIsOwnedBy(player).invert()))
+        .isEmpty()) {
       final Collection<Unit> lastMovedPiecesNotByCurrentPlayer = new ArrayList<Unit>();
       for (final PlayerID enemy : data.getPlayerList().getPlayers()) {
         if (enemy.equals(player)) {
@@ -659,14 +663,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
         }
         lastMovedPiecesNotByCurrentPlayer.addAll(PlayerAttachment.get(enemy).getLastPiecesMoved());
       }
-      if (lastMovedPiecesNotByCurrentPlayer.containsAll(territoryOfEnemyPawn.getUnits().getMatches(UnitIsOwnedBy(player).invert()))) {
+      if (lastMovedPiecesNotByCurrentPlayer
+          .containsAll(territoryOfEnemyPawn.getUnits().getMatches(UnitIsOwnedBy(player).invert()))) {
         return null;
       }
     }
     return "Invalid Move";
   }
 
-  public static boolean isValidPawnPromotion(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static boolean isValidPawnPromotion(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     final boolean startsAtLowRank = PlayerBeginsAtLowestRank.match(player);
     if (!start.getUnits().someMatch(UnitIsPawn)) {
       return false;
@@ -680,7 +686,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return false;
   }
 
-  public static String isValidKnightMove(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidKnightMove(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     if (end.getX() - 2 == start.getX()) {
       if (end.getY() - 1 == start.getY() || end.getY() + 1 == start.getY()) {
         return null;
@@ -701,20 +708,23 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return "Invalid Move";
   }
 
-  public static String isValidBishopMove(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidBishopMove(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     final GameMap map = data.getMap();
     if (Math.abs(end.getX() - start.getX()) == Math.abs(end.getY() - start.getY())) {
       if (end.getX() > start.getX()) {
         if (end.getY() > start.getY()) {
           for (int i = 1; start.getX() + i < end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() + i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() + i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
           return null;
         } else {
           for (int i = 1; start.getX() + i < end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() - i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() - i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
@@ -723,14 +733,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       } else {
         if (end.getY() > start.getY()) {
           for (int i = 1; start.getX() - i > end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() + i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() + i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
           return null;
         } else {
           for (int i = 1; start.getX() - i > end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() - i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() - i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
@@ -741,7 +753,8 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return "Invalid Move";
   }
 
-  public static String isValidRookMove(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidRookMove(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     final GameMap map = data.getMap();
     if (Math.abs(end.getX() - start.getX()) > 0 && Math.abs(end.getY() - start.getY()) == 0) {
       if (end.getX() > start.getX()) {
@@ -779,20 +792,23 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return "Invalid Move";
   }
 
-  public static String isValidQueenMove(final Territory start, final Territory end, final PlayerID player, final GameData data) {
+  public static String isValidQueenMove(final Territory start, final Territory end, final PlayerID player,
+      final GameData data) {
     final GameMap map = data.getMap();
     if (Math.abs(end.getX() - start.getX()) == Math.abs(end.getY() - start.getY())) {
       if (end.getX() > start.getX()) {
         if (end.getY() > start.getY()) {
           for (int i = 1; start.getX() + i < end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() + i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() + i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
           return null;
         } else {
           for (int i = 1; start.getX() + i < end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() - i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() + i, start.getY() - i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
@@ -801,14 +817,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
       } else {
         if (end.getY() > start.getY()) {
           for (int i = 1; start.getX() - i > end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() + i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() + i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
           return null;
         } else {
           for (int i = 1; start.getX() - i > end.getX(); i++) {
-            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() - i).getUnits().getUnitCount() > 0) {
+            if (map.getTerritoryFromCoordinates(false, start.getX() - i, start.getY() - i).getUnits()
+                .getUnitCount() > 0) {
               return "A Piece Is In The Way";
             }
           }
@@ -851,16 +869,16 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
     return "Invalid Move";
   }
 
-  public static String isValidKingMove(final Territory start, final Territory end, final PlayerID player, final GameData data,
-      final int testForCheckTurnsAhead) {
+  public static String isValidKingMove(final Territory start, final Territory end, final PlayerID player,
+      final GameData data, final int testForCheckTurnsAhead) {
     if (Math.abs(end.getX() - start.getX()) <= 1 && Math.abs(end.getY() - start.getY()) <= 1) {
       return null;
     }
     return isValidKingCastling(start, end, player, data, testForCheckTurnsAhead);
   }
 
-  public static String isValidKingCastling(final Territory start, final Territory end, final PlayerID player, final GameData data,
-      final int testForCheckTurnsAhead) {
+  public static String isValidKingCastling(final Territory start, final Territory end, final PlayerID player,
+      final GameData data, final int testForCheckTurnsAhead) {
     // castling
     final Collection<Unit> units = start.getUnits().getUnits();
     final Unit unit = units.iterator().next();
@@ -876,31 +894,35 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate 
             return "May Not Castle While In Check";
           }
           if (end.getX() > start.getX()) {
-            final List<Unit> rook = map.getTerritoryFromCoordinates(lastColumn, start.getY()).getUnits().getMatches(
-                new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
+            final List<Unit> rook = map.getTerritoryFromCoordinates(lastColumn, start.getY()).getUnits()
+                .getMatches(new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
             if (!rook.isEmpty()) {
               for (int i = start.getX() + 1; i < lastColumn; i++) {
                 if (map.getTerritoryFromCoordinates(false, i, start.getY()).getUnits().getUnitCount() > 0) {
                   return "Can Not Castle King With Pieces In The Way";
                 }
               }
-              final Territory moveThroughTerritoryForKing = map.getTerritoryFromCoordinates(false, end.getX() - 1, start.getY());
-              if (testTerritoryForUsInCheckAfter(start, moveThroughTerritoryForKing, player, data, testForCheckTurnsAhead)) {
+              final Territory moveThroughTerritoryForKing =
+                  map.getTerritoryFromCoordinates(false, end.getX() - 1, start.getY());
+              if (testTerritoryForUsInCheckAfter(start, moveThroughTerritoryForKing, player, data,
+                  testForCheckTurnsAhead)) {
                 return "Illegal To Move Through Check To Castle";
               }
               return null;
             }
           } else {
-            final List<Unit> rook = map.getTerritoryFromCoordinates(0, start.getY()).getUnits().getMatches(
-                new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
+            final List<Unit> rook = map.getTerritoryFromCoordinates(0, start.getY()).getUnits()
+                .getMatches(new CompositeMatchAnd<Unit>(UnitIsRook, UnitIsOwnedBy(player), UnitHasNeverMovedBefore));
             if (!rook.isEmpty()) {
               for (int i = 1; i < start.getX(); i++) {
                 if (map.getTerritoryFromCoordinates(false, i, start.getY()).getUnits().getUnitCount() > 0) {
                   return "Can Not Castle King With Pieces In The Way";
                 }
               }
-              final Territory moveThroughTerritoryForKing = map.getTerritoryFromCoordinates(false, end.getX() + 1, start.getY());
-              if (testTerritoryForUsInCheckAfter(start, moveThroughTerritoryForKing, player, data, testForCheckTurnsAhead)) {
+              final Territory moveThroughTerritoryForKing =
+                  map.getTerritoryFromCoordinates(false, end.getX() + 1, start.getY());
+              if (testTerritoryForUsInCheckAfter(start, moveThroughTerritoryForKing, player, data,
+                  testForCheckTurnsAhead)) {
                 return "Illegal To Move Through Check To Castle";
               }
               return null;

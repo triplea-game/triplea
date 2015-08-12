@@ -36,7 +36,6 @@ public class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
   private final static Logger s_logger = Logger.getLogger(LoginPanel.class.getName());
 
-
   public static enum ReturnValue {
     CANCEL, LOGON, CREATE_ACCOUNT
   }
@@ -94,18 +93,18 @@ public class LoginPanel extends JPanel {
     final JPanel main = new JPanel();
     add(main, BorderLayout.CENTER);
     main.setLayout(new GridBagLayout());
-    main.add(new JLabel("Username:"),
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 20, 0, 0), 0, 0));
-    main.add(m_userName,
-        new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(10, 5, 0, 40), 0, 0));
-    main.add(new JLabel("Password:"),
-        new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_password,
-        new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 0, 40), 0, 0));
-    main.add(m_anonymous,
-        new GridBagConstraints(0, 2, 2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
-    main.add(m_createAccount,
-        new GridBagConstraints(0, 3, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
+    main.add(new JLabel("Username:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(10, 20, 0, 0), 0, 0));
+    main.add(m_userName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(10, 5, 0, 40), 0, 0));
+    main.add(new JLabel("Password:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
+    main.add(m_password, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(5, 5, 0, 40), 0, 0));
+    main.add(m_anonymous, new GridBagConstraints(0, 2, 2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(5, 20, 0, 0), 0, 0));
+    main.add(m_createAccount, new GridBagConstraints(0, 3, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(5, 20, 0, 0), 0, 0));
     final JPanel buttons = new JPanel();
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
     buttons.add(m_logon);
@@ -158,14 +157,16 @@ public class LoginPanel extends JPanel {
     final String userName = m_userName.getText();
     final boolean anonymous = m_anonymous.isSelected();
     if (DBUserController.validateUserName(userName) != null) {
-      JOptionPane.showMessageDialog(this, DBUserController.validateUserName(userName), "Invalid Username", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, DBUserController.validateUserName(userName), "Invalid Username",
+          JOptionPane.ERROR_MESSAGE);
       return;
     } else if (m_password.getPassword().length == 0 && !anonymous) {
-      JOptionPane.showMessageDialog(LoginPanel.this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(LoginPanel.this, "You must enter a password", "No Password",
+          JOptionPane.ERROR_MESSAGE);
       return;
     } else if (m_password.getPassword().length < 3 && !anonymous) {
-      JOptionPane.showMessageDialog(LoginPanel.this, "Passwords must be at least three characters long", "Invalid password",
-          JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(LoginPanel.this, "Passwords must be at least three characters long",
+          "Invalid password", JOptionPane.ERROR_MESSAGE);
       return;
     }
     m_returnValue = ReturnValue.LOGON;

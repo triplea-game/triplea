@@ -78,10 +78,10 @@ public class NewGameChooser extends JDialog {
     leftPanel.setLayout(new GridBagLayout());
     final JLabel gamesLabel = new JLabel("Games");
     gamesLabel.setFont(gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2));
-    leftPanel.add(gamesLabel,
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-    leftPanel.add(listScroll,
-        new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 10, 0, 0), 0, 0));
+    leftPanel.add(gamesLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 10, 10, 10), 0, 0));
+    leftPanel.add(listScroll, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.EAST,
+        GridBagConstraints.BOTH, new Insets(0, 10, 0, 0), 0, 0));
     mainSplit.setLeftComponent(leftPanel);
     mainSplit.setRightComponent(m_infoPanel);
     mainSplit.setBorder(null);

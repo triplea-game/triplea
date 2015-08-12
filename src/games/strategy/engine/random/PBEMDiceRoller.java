@@ -21,12 +21,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 /**
- *
  * Its a bit messy, but the threads are a pain to deal with We want to be able
  * to call this from any thread, and have a dialog that doesnt close until the
  * dice roll finishes. If there is an error we wait until we get a good roll
  * before returning.
- *
  */
 public class PBEMDiceRoller implements IRandomSource {
   private final String m_gameUUID;
@@ -53,7 +51,8 @@ public class PBEMDiceRoller implements IRandomSource {
    */
   public void test() {
     // TODO: do a test based on data.getDiceSides()
-    final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_remoteDiceServer, "test-roll");
+    final HttpDiceRollerDialog dialog =
+        new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_remoteDiceServer, "test-roll");
     dialog.setTest();
     dialog.roll();
   }
@@ -79,7 +78,8 @@ public class PBEMDiceRoller implements IRandomSource {
       }
       return result.get();
     }
-    final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_remoteDiceServer, m_gameUUID);
+    final HttpDiceRollerDialog dialog =
+        new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_remoteDiceServer, m_gameUUID);
     dialog.roll();
     return dialog.getDiceRoll();
   }
@@ -131,7 +131,6 @@ class HttpDiceRollerDialog extends JDialog {
   private final int m_count;
   private final int m_sides;
   private final String m_subjectMessage;
-
   private final String m_gameID;
   private final IRemoteDiceServer m_diceServer;
   private final String m_gameUUID;
@@ -141,7 +140,6 @@ class HttpDiceRollerDialog extends JDialog {
   private Window m_owner;
 
   /**
-   *
    * @param owner
    *        owner frame
    * @param sides
@@ -289,11 +287,8 @@ class HttpDiceRollerDialog extends JDialog {
    * should be called from a thread other than the event thread after we are
    * open (or at least in the process of opening) will close the window and
    * notify any waiting threads when completed successfully.
-   *
    * Before contacting Irony Dice Server, check if email has a reasonable
    * valid syntax.
-   *
-   *
    */
   private void rollInSeperateThread() throws IllegalStateException {
     if (SwingUtilities.isEventDispatchThread()) {
@@ -323,7 +318,8 @@ class HttpDiceRollerDialog extends JDialog {
     }
     // an error in networking
     catch (final SocketException ex) {
-      appendText("Connection failure:" + ex.getMessage() + "\n" + "Please ensure your Internet connection is working, and try again.");
+      appendText("Connection failure:" + ex.getMessage() + "\n"
+          + "Please ensure your Internet connection is working, and try again.");
       notifyError();
     } catch (final InvocationTargetException e) {
       appendText("\nError:" + e.getMessage() + "\n\n");

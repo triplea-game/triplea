@@ -10,7 +10,6 @@ import games.strategy.kingstable.ui.display.DummyDisplay;
 
 /**
  * Test suite for the King's Table play delegate.
- *
  */
 public class PlayDelegateTest extends DelegateTest {
   PlayDelegate m_delegate;
@@ -26,7 +25,6 @@ public class PlayDelegateTest extends DelegateTest {
 
   /**
    * This method will be called before each test method in this class is run.
-   *
    * So, if there were four test methods in this class, this method would be called four times - once per method.
    */
   @Override

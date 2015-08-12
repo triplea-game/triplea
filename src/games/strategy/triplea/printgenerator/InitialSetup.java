@@ -11,7 +11,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.triplea.attatchments.UnitAttachment;
 
-
 public class InitialSetup {
   private Iterator<UnitType> m_unitTypeIterator;
   private Iterator<PlayerID> m_playerIterator;

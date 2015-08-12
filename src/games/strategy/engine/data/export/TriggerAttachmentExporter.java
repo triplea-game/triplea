@@ -50,7 +50,8 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
   }
 
   @SuppressWarnings("unchecked")
-  private String mAvailableTechsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mAvailableTechsHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     try {
       final Map<String, Map<TechAdvance, Boolean>> availableTechsCategoryMap =
           (Map<String, Map<TechAdvance, Boolean>>) field.get(attachment);
@@ -73,16 +74,17 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
       }
       return returnValue;
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mAvailableTechsHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mAvailableTechsHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mAvailableTechsHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mAvailableTechsHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     }
   }
 
   @SuppressWarnings("unchecked")
-  private String mUnitPropertyHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mUnitPropertyHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     try {
       String returnValue = "";
       final List<String> unitPropertyList = (List<String>) field.get(attachment);
@@ -95,11 +97,11 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
       }
       return returnValue;
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mUnitPropertyHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mUnitPropertyHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mUnitPropertyHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mUnitPropertyHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     }
   }
 
@@ -107,7 +109,8 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
   private String mPlacementHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
     try {
       String returnValue = "";
-      final Map<Territory, IntegerMap<UnitType>> placements = (Map<Territory, IntegerMap<UnitType>>) field.get(attachment);
+      final Map<Territory, IntegerMap<UnitType>> placements =
+          (Map<Territory, IntegerMap<UnitType>>) field.get(attachment);
       if (placements == null) {
         return "";
       }
@@ -124,11 +127,11 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
       }
       return returnValue;
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mPlacementHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mPlacementHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mPlacementHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mPlacementHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     }
   }
 
@@ -139,7 +142,8 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter {
   @SuppressWarnings("unchecked")
   private String mSupportHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
     try {
-      final Map<UnitSupportAttachment, Boolean> unitSupportAttachmentMap = (Map<UnitSupportAttachment, Boolean>) field.get(attachment);
+      final Map<UnitSupportAttachment, Boolean> unitSupportAttachmentMap =
+          (Map<UnitSupportAttachment, Boolean>) field.get(attachment);
       if (unitSupportAttachmentMap == null) {
         return "";
       }

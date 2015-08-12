@@ -13,8 +13,8 @@ public class DownloadFileDescription {
     return hostedUrl;
   }
 
-  public DownloadFileDescription(final String url, final String description, final String mapName, final Version version,
-      final String hostedUrl) {
+  public DownloadFileDescription(final String url, final String description, final String mapName,
+      final Version version, final String hostedUrl) {
     super();
     this.url = url;
     this.description = description;

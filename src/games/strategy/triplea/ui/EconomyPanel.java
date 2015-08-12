@@ -21,7 +21,6 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
 
 public class EconomyPanel extends AbstractStatPanel {
-
   private static final long serialVersionUID = -7713792841831042952L;
   private IStat[] m_statsResource;
   private ResourceTableModel m_resourceModel;
@@ -42,7 +41,6 @@ public class EconomyPanel extends AbstractStatPanel {
     final JScrollPane scroll = new JScrollPane(table);
     add(scroll);
   }
-
 
   class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = 5197895788633898324L;
@@ -73,7 +71,6 @@ public class EconomyPanel extends AbstractStatPanel {
         m_isDirty = false;
       }
       return m_collectedData[row][col];
-
     }
 
     private synchronized void loadData() {
@@ -86,7 +83,8 @@ public class EconomyPanel extends AbstractStatPanel {
         for (final PlayerID player : players) {
           m_collectedData[row][0] = player.getName();
           for (int i = 0; i < m_statsResource.length; i++) {
-            m_collectedData[row][i + 1] = m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, m_data));
+            m_collectedData[row][i + 1] =
+                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, m_data));
           }
           row++;
         }
@@ -95,7 +93,8 @@ public class EconomyPanel extends AbstractStatPanel {
           final String alliance = allianceIterator.next();
           m_collectedData[row][0] = alliance;
           for (int i = 0; i < m_statsResource.length; i++) {
-            m_collectedData[row][i + 1] = m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, m_data));
+            m_collectedData[row][i + 1] =
+                m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, m_data));
           }
           row++;
         }

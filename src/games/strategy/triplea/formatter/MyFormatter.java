@@ -21,9 +21,7 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.util.IntegerMap;
 
 /**
- *
  * Provides useful methods for converting things to text.
- *
  */
 public class MyFormatter {
   /**
@@ -50,11 +48,9 @@ public class MyFormatter {
     while (iter.hasNext()) {
       final Unit unit = iter.next();
       if (unit == null || unit.getUnitType() == null) {
-        throw new IllegalStateException(
-            "Trying to format a unit that does not exist.  " +
-                "If you are using Dynamix AI, then this is being caused by switching maps with the ai (it is still thinking about the last map's units).  "
-                +
-                "Try restarting TripleA every time you switch maps and wish to play with Dynamix AI.");
+        throw new IllegalStateException("Trying to format a unit that does not exist.  "
+            + "If you are using Dynamix AI, then this is being caused by switching maps with the ai (it is still thinking about the last map's units).  "
+            + "Try restarting TripleA every time you switch maps and wish to play with Dynamix AI.");
       }
       if (owner == null || owner.equals(unit.getOwner())) {
         map.add(unit.getUnitType(), 1);
@@ -237,7 +233,8 @@ public class MyFormatter {
     return defaultNamedToTextList(list, ", ", false);
   }
 
-  public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final boolean showQuantity) {
+  public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list,
+      final boolean showQuantity) {
     return defaultNamedToTextList(list, ", ", showQuantity);
   }
 
@@ -285,8 +282,8 @@ public class MyFormatter {
     return buf.toString();
   }
 
-  public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map, final String separator,
-      final String assignment, final boolean valueBeforeKey) {
+  public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map,
+      final String separator, final String assignment, final boolean valueBeforeKey) {
     final StringBuilder buf = new StringBuilder("");
     for (final Entry<? extends DefaultNamed, Integer> entry : map.entrySet()) {
       buf.append(separator);
@@ -301,8 +298,8 @@ public class MyFormatter {
     return buf.toString().replaceFirst(separator, "");
   }
 
-  public static String integerUnitMapToString(final IntegerMap<? extends Unit> map, final String separator, final String assignment,
-      final boolean valueBeforeKey) {
+  public static String integerUnitMapToString(final IntegerMap<? extends Unit> map, final String separator,
+      final String assignment, final boolean valueBeforeKey) {
     final StringBuilder buf = new StringBuilder("");
     for (final Entry<? extends Unit, Integer> entry : map.entrySet()) {
       buf.append(separator);

@@ -50,7 +50,8 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
   }
 
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+      final Territory from) {
     return null;
   }
 
@@ -70,7 +71,6 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
       final Collection<Territory> possibleTerritories, final String message) {
     return null;
   }
-
 
   @Override
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
@@ -94,23 +94,24 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
   }
 
   @Override
-  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
-      final boolean noneAvailable) {
+  public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory,
+      final Collection<Territory> territories, final boolean noneAvailable) {
     return null;
   }
 
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
-      final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer, final Collection<Unit> enemyUnits,
-      final boolean amphibious,
-      final Collection<Unit> amphibiousLandAttackers, final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
+  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties, final GUID battleID, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
   }
 
   @Override
-  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides) {
+  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
+      final int diceSides) {
     return null;
   }
 
@@ -131,11 +132,13 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
   }
 
   @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers) {
+  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+      final Collection<Unit> bombers) {
     if (potentialTargets == null || potentialTargets.isEmpty()) {
       return null; // is null even allowed?
     }
-    final Collection<Unit> typicalFactories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
+    final Collection<Unit> typicalFactories =
+        Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
     if (typicalFactories.isEmpty()) {
       return potentialTargets.iterator().next();
     }
@@ -148,7 +151,8 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
   }
 
   @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message) {
+  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+      final String message) {
     return null;
   }
 
@@ -159,8 +163,8 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
   }
 
   @Override
-  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices, final List<Unit> unitChoices,
-      final int unitsPerPick) {
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
+      final List<Unit> unitChoices, final int unitsPerPick) {
     return null;
   }
 }

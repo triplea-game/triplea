@@ -9,7 +9,6 @@ import games.strategy.engine.vault.VaultID;
 /**
  * A random source that generates numbers using a secure algorithm shared
  * between two players.
- *
  * Code originally contributed by Ben Giddings.
  */
 public class CryptoRandomSource implements IRandomSource {
@@ -36,8 +35,8 @@ public class CryptoRandomSource implements IRandomSource {
   public static int[] bytesToInts(final byte[] bytes) {
     final int[] rVal = new int[bytes.length / 4];
     for (int i = 0; i < rVal.length; i++) {
-      rVal[i] = byteToIntUnsigned(bytes[4 * i]) + (byteToIntUnsigned(bytes[4 * i + 1]) << 8) + (byteToIntUnsigned(bytes[4 * i + 2]) << 16)
-          + (byteToIntUnsigned(bytes[4 * i + 3]) << 24);
+      rVal[i] = byteToIntUnsigned(bytes[4 * i]) + (byteToIntUnsigned(bytes[4 * i + 1]) << 8)
+          + (byteToIntUnsigned(bytes[4 * i + 2]) << 16) + (byteToIntUnsigned(bytes[4 * i + 3]) << 24);
     }
     return rVal;
   }
@@ -76,7 +75,8 @@ public class CryptoRandomSource implements IRandomSource {
    * Delegates should not use random data that comes from any other source.
    */
   @Override
-  public int[] getRandom(final int max, final int count, final String annotation) throws IllegalArgumentException, IllegalStateException {
+  public int[] getRandom(final int max, final int count, final String annotation)
+      throws IllegalArgumentException, IllegalStateException {
     if (count <= 0) {
       throw new IllegalArgumentException("Invalid count:" + count);
     }
@@ -86,14 +86,16 @@ public class CryptoRandomSource implements IRandomSource {
     // lock it so the client knows that its there, but cant read it
     final VaultID localID = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
-    final IRemoteRandom remote = (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
+    final IRemoteRandom remote =
+        (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
     final Object clientRandom = remote.generate(max, count, annotation, localID);
     if (!(clientRandom instanceof int[])) {
-      System.out.println("Client remote random generated: " + clientRandom + ".  Asked for: " + count + "x" + max + " for " + annotation); // Let
-                                                                                                                                           // the
-                                                                                                                                           // error
-                                                                                                                                           // be
-                                                                                                                                           // thrown
+      System.out.println("Client remote random generated: " + clientRandom + ".  Asked for: " + count + "x" + max
+          + " for " + annotation); // Let
+                                   // the
+                                   // error
+                                   // be
+                                   // thrown
     }
     final int[] remoteNumbers = (int[]) clientRandom;
     // unlock ours, tell the client he can verify

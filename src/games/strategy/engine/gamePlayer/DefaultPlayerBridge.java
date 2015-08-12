@@ -21,8 +21,6 @@ import games.strategy.engine.message.RemoteNotFoundException;
 
 /**
  * Default implementation of PlayerBridge.
- *
- *
  */
 public class DefaultPlayerBridge implements IPlayerBridge {
   private final IGame m_game;
@@ -58,8 +56,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
 
   private final GameStepListener m_gameStepListener = new GameStepListener() {
     @Override
-    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-        final String displayName) {
+    public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player,
+        final int round, final String displayName) {
       if (stepName == null) {
         throw new IllegalArgumentException("Null step");
       }
@@ -71,7 +69,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     }
   };
 
-
   @Override
   public IRemote getRemoteDelegate() {
     if (m_game.isGameOver()) {
@@ -82,8 +79,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       try {
         final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
         if (delegate == null) {
-          final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. CurrentStep: " + m_currentStep
-              + ", and CurrentDelegate: " + m_currentDelegate;
+          final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. CurrentStep: "
+              + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
           System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
                                             // too
           throw new IllegalStateException(errorMessage); // Veqryn: hope that this suffices...?
@@ -93,9 +90,9 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           remoteName = ServerGame.getRemoteName(delegate);
         } catch (final Exception e) {
           e.printStackTrace();
-          final String errorMessage = "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
-              + m_currentStep + ", and CurrentDelegate: "
-              + m_currentDelegate;
+          final String errorMessage =
+              "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
+                  + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
           System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
                                             // too
           throw new IllegalStateException(errorMessage, e);
@@ -119,7 +116,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       try {
         final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(name);
         if (delegate == null) {
-          final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. Looking for delegate named: " + name;
+          final String errorMessage =
+              "IDelegate in DefaultPlayerBridge.getRemote() can not be null. Looking for delegate named: " + name;
           System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
                                             // too
           throw new IllegalStateException(errorMessage);
@@ -127,7 +125,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         if (!(delegate instanceof IPersistentDelegate)) {
           return null;
         }
-        return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+        return getRemoteThatChecksForGameOver(
+            m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
       } finally {
         m_game.getData().releaseReadLock();
       }

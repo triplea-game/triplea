@@ -72,7 +72,6 @@ public class MapData {
   public static final String PROPERTY_SCREENSHOT_STATS_Y = "screenshot.stats.y";
   public static final String PROPERTY_SCREENSHOT_STATS_TEXT_COLOR = "screenshot.stats.text.color";
   public static final String PROPERTY_SCREENSHOT_STATS_BORDER_COLOR = "screenshot.stats.border.color";
-
   public static final String CENTERS_FILE = "centers.txt";
   public static final String POLYGON_FILE = "polygons.txt";
   public static final String PLACEMENT_FILE = "place.txt";
@@ -89,8 +88,8 @@ public class MapData {
   public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   public static final String DECORATIONS_FILE = "decorations.txt";
   // default colour if none is defined.
-  private final List<Color> m_defaultColours = new ArrayList<Color>(
-      Arrays.asList(new Color[] {Color.RED, Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
+  private final List<Color> m_defaultColours = new ArrayList<Color>(Arrays.asList(new Color[] {Color.RED, Color.MAGENTA,
+      Color.YELLOW, Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY}));
   // maps PlayerName as String to Color
   private final Map<String, Color> m_playerColors = new HashMap<String, Color>();
   // maps String -> List of points
@@ -118,9 +117,7 @@ public class MapData {
   // maps String -> List of String
   private Map<String, List<String>> m_contains;
   private Properties m_mapProperties;
-
   private Map<String, List<Point>> m_territoryEffects;
-
   // we shouldnt draw the names to these territories
   private Set<String> m_undrawnTerritoriesNames;
   private Map<Image, List<Point>> m_decorations;
@@ -148,20 +145,19 @@ public class MapData {
 
   /**
    * Constructor TerritoryData(java.lang.String)
-   *
    * Sets the map directory for this instance of TerritoryData
    *
    * @param java
    *        .lang.String
    *        mapNameDir the given map directory
-   *
    */
   public MapData(final ResourceLoader loader) {
     m_resourceLoader = loader;
     try {
       final String prefix = "";
       m_place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
-      m_territoryEffects = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
+      m_territoryEffects =
+          PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
       m_polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
       m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
       m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
@@ -251,7 +247,6 @@ public class MapData {
 
   /**
    * Does not take account of any scaling.
-   *
    */
   public int getDefaultUnitWidth() {
     if (m_mapProperties.getProperty(PROPERTY_UNITS_WIDTH) == null) {
@@ -267,7 +262,6 @@ public class MapData {
 
   /**
    * Does not take account of any scaling.
-   *
    */
   public int getDefaultUnitHeight() {
     if (m_mapProperties.getProperty(PROPERTY_UNITS_HEIGHT) == null) {
@@ -283,7 +277,6 @@ public class MapData {
 
   /**
    * Does not take account of any scaling.
-   *
    */
   public int getDefaultUnitCounterOffsetWidth() {
     // if it is not set, divide by 4 so that it is roughly centered
@@ -300,7 +293,6 @@ public class MapData {
 
   /**
    * Does not take account of any scaling.
-   *
    */
   public int getDefaultUnitCounterOffsetHeight() {
     // put at bottom of unit, if not set
@@ -334,11 +326,13 @@ public class MapData {
   }
 
   public int getMapCursorHotspotX() {
-    return Math.max(0, Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_X, "0"))));
+    return Math.max(0,
+        Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_X, "0"))));
   }
 
   public int getMapCursorHotspotY() {
-    return Math.max(0, Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
+    return Math.max(0,
+        Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
   }
 
   public boolean getHasMapBlends() {
@@ -473,7 +467,6 @@ public class MapData {
   }
 
   /**
-   *
    * @return a Set of territory names as Strings. generally this shouldnt be
    *         used, instead you should use aGameData.getMap().getTerritories()
    */
@@ -638,7 +631,8 @@ public class MapData {
     final String widthProperty = m_mapProperties.getProperty(PROPERTY_MAP_WIDTH);
     final String heightProperty = m_mapProperties.getProperty(PROPERTY_MAP_HEIGHT);
     if (widthProperty == null || heightProperty == null) {
-      throw new IllegalStateException("Missing " + PROPERTY_MAP_WIDTH + " or " + PROPERTY_MAP_HEIGHT + " in " + MAP_PROPERTIES);
+      throw new IllegalStateException(
+          "Missing " + PROPERTY_MAP_WIDTH + " or " + PROPERTY_MAP_HEIGHT + " in " + MAP_PROPERTIES);
     }
     final int width = Integer.parseInt(widthProperty.trim());
     final int height = Integer.parseInt(heightProperty.trim());

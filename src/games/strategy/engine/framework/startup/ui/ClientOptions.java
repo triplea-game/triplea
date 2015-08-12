@@ -21,7 +21,6 @@ import games.strategy.ui.IntTextField;
 
 /**
  * UI for choosing client options.
- *
  */
 public class ClientOptions extends JDialog {
   private static final long serialVersionUID = 8036055679545539809L;
@@ -33,7 +32,8 @@ public class ClientOptions extends JDialog {
   /**
    * Creates a new instance of ClientOptions
    */
-  public ClientOptions(final Component parent, final String defaultName, final int defaultPort, final String defaultAddress) {
+  public ClientOptions(final Component parent, final String defaultName, final int defaultPort,
+      final String defaultAddress) {
     super(JOptionPane.getFrameForComponent(parent), "Client options", true);
     initComponents();
     layoutComponents();

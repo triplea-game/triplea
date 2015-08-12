@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
-
 public interface ITripleaDisplay extends IDisplay {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
@@ -34,8 +33,8 @@ public interface ITripleaDisplay extends IDisplay {
    * @param message
    * @param title
    */
-  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
-      final String message, final String title);
+  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
+      final Collection<PlayerID> butNotThesePlayers, final String message, final String title);
 
   /**
    * Display info about the battle.
@@ -62,13 +61,12 @@ public interface ITripleaDisplay extends IDisplay {
    * @param isAmphibious
    */
   public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits,
-      Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
-      Collection<Unit> attackingWaitingToDie, Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits,
-      final PlayerID attacker,
-      final PlayerID defender, final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers);
+      Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
+      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
+      final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
+      final Collection<Unit> amphibiousLandAttackers);
 
   /**
-   *
    * @param battleID
    *        - the battle we are listing steps for
    * @param currentStep
@@ -85,7 +83,6 @@ public interface ITripleaDisplay extends IDisplay {
 
   /**
    * Notify that the casualties occurred
-   *
    */
   public void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
       Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents);
@@ -93,20 +90,18 @@ public interface ITripleaDisplay extends IDisplay {
   /**
    * Notify that the casualties occurred, and only the casualty
    */
-  public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead, Map<Unit, Collection<Unit>> dependents);
-
-  public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits, Collection<Unit> addedUnits,
+  public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
+
+  public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits,
+      Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
 
   /*
    * Notify that the casualties occurred
-   *
    * public void scrambleNotification(GUID battleID, String step, PlayerID player, Collection<Unit> scrambled, Map<Unit, Collection<Unit>>
    * dependents);
-   *
    * public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer);
    */
-
   /**
    * Notification of the results of a bombing raid
    */

@@ -12,8 +12,6 @@ import games.strategy.triplea.Constants;
 /**
  * Returns an intelligent formatter, and returns value for alliances
  * by summing our value for all players in the alliance.
- *
- *
  */
 public abstract class AbstractStat implements IStat {
   protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");

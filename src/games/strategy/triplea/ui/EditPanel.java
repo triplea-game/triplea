@@ -124,8 +124,8 @@ public class EditPanel extends ActionPanel {
         final MustMoveWithDetails mustMoveWithDetails;
         try {
           getData().acquireReadLock();
-          mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits, new HashMap<Unit, Collection<Unit>>(),
-              getData(), getCurrentPlayer());
+          mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits,
+              new HashMap<Unit, Collection<Unit>>(), getData(), getCurrentPlayer());
         } finally {
           getData().releaseReadLock();
         }
@@ -146,7 +146,8 @@ public class EditPanel extends ActionPanel {
               return selectedUnitTypes.contains(o.getType());
             }
           });
-          final int allCategories = UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
+          final int allCategories =
+              UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           final int selectedCategories =
               UnitSeperator.categorize(m_selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           mustChoose = (allCategories != selectedCategories);
@@ -154,11 +155,10 @@ public class EditPanel extends ActionPanel {
         Collection<Unit> bestUnits;
         if (mustChoose) {
           final String chooserText = "Remove units from " + m_selectedTerritory + ":";
-          final UnitChooser chooser =
-              new UnitChooser(allUnits, m_selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, false, getData(),
-                  /* allowTwoHit= */false, getMap().getUIContext());
-          final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, chooserText, JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.PLAIN_MESSAGE, null, null, null);
+          final UnitChooser chooser = new UnitChooser(allUnits, m_selectedUnits, mustMoveWithDetails.getMustMoveWith(),
+              true, false, getData(), /* allowTwoHit= */false, getMap().getUIContext());
+          final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, chooserText,
+              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
           if (option != JOptionPane.OK_OPTION) {
             CANCEL_EDIT_ACTION.actionPerformed(null);
             return;
@@ -193,10 +193,10 @@ public class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         m_currentAction = this;
         setWidgetActivation();
-        final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+        final PlayerChooser playerChooser =
+            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
         dialog.setVisible(true);
-
         final PlayerID player = playerChooser.getSelected();
         if (player == null) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -217,10 +217,8 @@ public class EditPanel extends ActionPanel {
         int newTotal = oldTotal;
         final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
         PUsField.setMaximumSize(PUsField.getPreferredSize());
-        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField), "Select new number of PUs",
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-            null,
-            null, null);
+        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField),
+            "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
@@ -231,7 +229,8 @@ public class EditPanel extends ActionPanel {
         }
         final String result = m_frame.getEditDelegate().changePUs(player, newTotal);
         if (result != null) {
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+              JOptionPane.ERROR_MESSAGE);
         }
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
@@ -243,10 +242,10 @@ public class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         m_currentAction = this;
         setWidgetActivation();
-        final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+        final PlayerChooser playerChooser =
+            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to get technology");
         dialog.setVisible(true);
-
         final PlayerID player = playerChooser.getSelected();
         if (player == null) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -268,8 +267,8 @@ public class EditPanel extends ActionPanel {
         techList.setLayoutOrientation(JList.VERTICAL);
         techList.setVisibleRowCount(10);
         final JScrollPane scroll = new JScrollPane(techList);
-        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to add", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, null, null);
+        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to add",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
           return;
@@ -283,7 +282,8 @@ public class EditPanel extends ActionPanel {
         }
         final String result = m_frame.getEditDelegate().addTechAdvance(player, advance);
         if (result != null) {
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+              JOptionPane.ERROR_MESSAGE);
         }
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
@@ -295,10 +295,10 @@ public class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         m_currentAction = this;
         setWidgetActivation();
-        final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+        final PlayerChooser playerChooser =
+            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to remove technology");
         dialog.setVisible(true);
-
         final PlayerID player = playerChooser.getSelected();
         if (player == null) {
           CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -344,7 +344,8 @@ public class EditPanel extends ActionPanel {
         }
         final String result = m_frame.getEditDelegate().removeTechAdvance(player, advance);
         if (result != null) {
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+              JOptionPane.ERROR_MESSAGE);
         }
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
@@ -368,17 +369,18 @@ public class EditPanel extends ActionPanel {
           return;
         }
         sortUnitsToRemove(units, m_selectedTerritory);
-        Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()),
-            null, getData(), true, false));
+        Collections.sort(units, new UnitBattleComparator(false,
+            BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
-        final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<Unit, Triple<Integer, Integer, Integer>>();
+        final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
+            new HashMap<Unit, Triple<Integer, Integer, Integer>>();
         for (final Unit u : units) {
-          currentDamageMap.put(u,
-              new Triple<Integer, Integer, Integer>(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
+          currentDamageMap.put(u, new Triple<Integer, Integer, Integer>(
+              UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
         }
-        final IndividualUnitPanel unitPanel =
-            new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage", getData(), getMap().getUIContext(), -1, true, true, null);
+        final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage",
+            getData(), getMap().getUIContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Hit Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -389,7 +391,8 @@ public class EditPanel extends ActionPanel {
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
         final String result = m_frame.getEditDelegate().changeUnitHitDamage(newDamageMap, m_selectedTerritory);
         if (result != null) {
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+              JOptionPane.ERROR_MESSAGE);
         }
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
@@ -413,20 +416,21 @@ public class EditPanel extends ActionPanel {
           return;
         }
         sortUnitsToRemove(units, m_selectedTerritory);
-        Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()),
-            null, getData(), true, false));
+        Collections.sort(units, new UnitBattleComparator(false,
+            BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
         Collections.reverse(units);
         final int currentDamage = 0;
         // unit mapped to <max, min, current>
-        final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<Unit, Triple<Integer, Integer, Integer>>();
+        final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
+            new HashMap<Unit, Triple<Integer, Integer, Integer>>();
         for (final Unit u : units) {
           currentDamageMap.put(u,
               new Triple<Integer, Integer, Integer>(
-                  ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory),
-                  0, ((TripleAUnit) u).getUnitDamage()));
+                  ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory), 0,
+                  ((TripleAUnit) u).getUnitDamage()));
         }
-        final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage", getData(),
-            getMap().getUIContext(), -1, true, true, null);
+        final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage",
+            getData(), getMap().getUIContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Bombing Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -437,7 +441,8 @@ public class EditPanel extends ActionPanel {
         final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
         final String result = m_frame.getEditDelegate().changeUnitBombingDamage(newDamageMap, m_selectedTerritory);
         if (result != null) {
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+              JOptionPane.ERROR_MESSAGE);
         }
         CANCEL_EDIT_ACTION.actionPerformed(null);
       }
@@ -452,8 +457,8 @@ public class EditPanel extends ActionPanel {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder());
-        final JLabel helpText =
-            new JLabel("<html><b>Click the buttons inside the relationship squares to change the relationships between players.</b>"
+        final JLabel helpText = new JLabel(
+            "<html><b>Click the buttons inside the relationship squares to change the relationships between players.</b>"
                 + "<br />Please note that none of this is validated by the engine or map, so the results are not guaranteed to be perfectly what you expect."
                 + "<br />In addition, any maps that use triggers could be royalled messed up by changing editing political relationships:"
                 + "<br /><em>Example: Take a map where America gets some benefit (like upgraded factories) after it goes to war for the first time, "
@@ -470,16 +475,18 @@ public class EditPanel extends ActionPanel {
         final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to
                                                                // account for
         final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
-        scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
-            (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
-        final int option = JOptionPane.showConfirmDialog(m_frame, scroll, "Change Political Relationships", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE);
+        scroll.setPreferredSize(
+            new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
+                (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
+        final int option = JOptionPane.showConfirmDialog(m_frame, scroll, "Change Political Relationships",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (option == JOptionPane.OK_OPTION) {
           final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges = pui.getEditChanges();
           if (relationshipChanges != null && !relationshipChanges.isEmpty()) {
             final String result = m_frame.getEditDelegate().changePoliticalRelationships(relationshipChanges);
             if (result != null) {
-              JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+                  JOptionPane.ERROR_MESSAGE);
             }
           }
         }
@@ -522,7 +529,8 @@ public class EditPanel extends ActionPanel {
     setWidgetActivation();
   }
 
-  private void sortUnitsToRemove(final List<Unit> units, /* final MustMoveWithDetails mustMoveWith, */final Territory territory) {
+  private void sortUnitsToRemove(final List<Unit> units,
+      /* final MustMoveWithDetails mustMoveWith, */final Territory territory) {
     if (units.isEmpty()) {
       return;
     }
@@ -530,7 +538,8 @@ public class EditPanel extends ActionPanel {
     Collections.sort(units, getRemovableUnitsOrder(units, /* mustMoveWith, */territory, true));
   }
 
-  public static Comparator<Unit> getRemovableUnitsOrder(final List<Unit> units, final Territory territory, final boolean noTies) {
+  public static Comparator<Unit> getRemovableUnitsOrder(final List<Unit> units, final Territory territory,
+      final boolean noTies) {
     final Comparator<Unit> removableUnitsOrder = new Comparator<Unit>() {
       @Override
       public int compare(final Unit unit1, final Unit unit2) {
@@ -704,10 +713,10 @@ public class EditPanel extends ActionPanel {
             return;
           }
           final String text = "Remove from " + t.getName();
-          final UnitChooser chooser =
-              new UnitChooser(unitsToMove, m_selectedUnits, null, false, false, getData(), false, getMap().getUIContext());
-          final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text, JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.PLAIN_MESSAGE, null, null, null);
+          final UnitChooser chooser = new UnitChooser(unitsToMove, m_selectedUnits, null, false, false, getData(),
+              false, getMap().getUIContext());
+          final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
+              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
           if (option != JOptionPane.OK_OPTION) {
             return;
           }
@@ -770,21 +779,22 @@ public class EditPanel extends ActionPanel {
       if (m_currentAction == m_changeTerritoryOwnerAction) {
         final TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta == null) {
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), "No TerritoryAttachment for " + territory + ".", "Could not perform edit",
-              JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(getTopLevelAncestor(), "No TerritoryAttachment for " + territory + ".",
+              "Could not perform edit", JOptionPane.ERROR_MESSAGE);
           return;
         }
         // PlayerID defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
         final PlayerID defaultPlayer = ta.getOriginalOwner();
-        final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUIContext(), true);
+        final PlayerChooser playerChooser =
+            new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUIContext(), true);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
         dialog.setVisible(true);
-
         final PlayerID player = playerChooser.getSelected();
         if (player != null) {
           final String result = m_frame.getEditDelegate().changeTerritoryOwner(territory, player);
           if (result != null) {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+                JOptionPane.ERROR_MESSAGE);
           }
         }
         SwingUtilities.invokeLater(new Runnable() {
@@ -799,7 +809,6 @@ public class EditPanel extends ActionPanel {
             new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUIContext(), allowNeutral);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
         dialog.setVisible(true);
-
         final PlayerID player = playerChooser.getSelected();
         if (player != null) {
           // open production panel for adding new units
@@ -817,7 +826,8 @@ public class EditPanel extends ActionPanel {
           }
           final String result = m_frame.getEditDelegate().addUnits(territory, units);
           if (result != null) {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
+                JOptionPane.ERROR_MESSAGE);
           }
         }
         SwingUtilities.invokeLater(new Runnable() {

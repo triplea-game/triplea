@@ -49,11 +49,11 @@ public class Fire implements IExecutable {
   private final boolean m_isAmphibious;
   private final Collection<Unit> m_amphibiousLandAttackers;
 
-  public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire, final PlayerID firingPlayer,
-      final PlayerID hitPlayer, final Collection<Unit> firingUnits,
-      final String stepName, final String text, final MustFightBattle battle, final boolean defending,
-      final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack,
-      final boolean headless, final Territory battleSite, final Collection<TerritoryEffect> territoryEffects,
+  public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire,
+      final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits, final String stepName,
+      final String text, final MustFightBattle battle, final boolean defending,
+      final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack, final boolean headless,
+      final Territory battleSite, final Collection<TerritoryEffect> territoryEffects,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     /*
      * This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
@@ -75,8 +75,10 @@ public class Fire implements IExecutable {
     m_battleSite = battleSite;
     m_territoryEffects = territoryEffects;
     m_allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;
-    m_allFriendlyUnitsNotIncludingWaitingToDie = m_defending ? m_battle.getDefendingUnits() : m_battle.getAttackingUnits();
-    m_allEnemyUnitsNotIncludingWaitingToDie = !m_defending ? m_battle.getDefendingUnits() : m_battle.getAttackingUnits();
+    m_allFriendlyUnitsNotIncludingWaitingToDie =
+        m_defending ? m_battle.getDefendingUnits() : m_battle.getAttackingUnits();
+    m_allEnemyUnitsNotIncludingWaitingToDie =
+        !m_defending ? m_battle.getDefendingUnits() : m_battle.getAttackingUnits();
     m_isAmphibious = m_battle.isAmphibious();
     m_amphibiousLandAttackers = m_battle.getAmphibiousLandAttackers();
   }
@@ -105,8 +107,8 @@ public class Fire implements IExecutable {
       CasualtyDetails message;
       final Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits,
           new CompositeMatchOr<Unit>(Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSea));
-      final Collection<Unit> transportsOnly =
-          Match.getMatches(m_attackableUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
+      final Collection<Unit> transportsOnly = Match.getMatches(m_attackableUnits,
+          new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
       // more hits than combat units
       if (hitCount > numPossibleHits) {
@@ -130,7 +132,8 @@ public class Fire implements IExecutable {
           match.add(Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = Match.getMatches(transportsOnly, match);
           final int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
-          transportsOnly.removeAll(Match.getNMatches(playerTransports, transportsToRemove, Matches.UnitIsTransportButNotCombatTransport));
+          transportsOnly.removeAll(
+              Match.getNMatches(playerTransports, transportsToRemove, Matches.UnitIsTransportButNotCombatTransport));
         }
         m_killed = nonTransports;
         m_damaged = Collections.emptyList();
@@ -138,11 +141,10 @@ public class Fire implements IExecutable {
         if (extraHits > transportsOnly.size()) {
           extraHits = transportsOnly.size();
         }
-        message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly, m_allEnemyUnitsNotIncludingWaitingToDie,
-            m_firingPlayer,
-            m_allFriendlyUnitsNotIncludingWaitingToDie, m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge,
-            m_text, m_dice, !m_defending, m_battleID,
-            m_isHeadless, extraHits, true);
+        message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, transportsOnly,
+            m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer, m_allFriendlyUnitsNotIncludingWaitingToDie,
+            m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice,
+            !m_defending, m_battleID, m_isHeadless, extraHits, true);
         m_killed.addAll(message.getKilled());
         m_confirmOwnCasualties = true;
       }
@@ -154,11 +156,10 @@ public class Fire implements IExecutable {
       }
       // less than possible number
       else {
-        message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports, m_allEnemyUnitsNotIncludingWaitingToDie,
-            m_firingPlayer,
-            m_allFriendlyUnitsNotIncludingWaitingToDie, m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge,
-            m_text, m_dice, !m_defending, m_battleID,
-            m_isHeadless, m_dice.getHits(), true);
+        message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, nonTransports,
+            m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer, m_allFriendlyUnitsNotIncludingWaitingToDie,
+            m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice,
+            !m_defending, m_battleID, m_isHeadless, m_dice.getHits(), true);
         m_killed = message.getKilled();
         m_damaged = message.getDamaged();
         m_confirmOwnCasualties = message.getAutoCalculated();
@@ -176,11 +177,10 @@ public class Fire implements IExecutable {
       // Choose casualties
       else {
         CasualtyDetails message;
-        message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits, m_allEnemyUnitsNotIncludingWaitingToDie,
-            m_firingPlayer,
-            m_allFriendlyUnitsNotIncludingWaitingToDie, m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge,
-            m_text, m_dice, !m_defending, m_battleID,
-            m_isHeadless, m_dice.getHits(), true);
+        message = BattleCalculator.selectCasualties(m_stepName, m_hitPlayer, m_attackableUnits,
+            m_allEnemyUnitsNotIncludingWaitingToDie, m_firingPlayer, m_allFriendlyUnitsNotIncludingWaitingToDie,
+            m_isAmphibious, m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, m_text, m_dice,
+            !m_defending, m_battleID, m_isHeadless, m_dice.getHits(), true);
         m_killed = message.getKilled();
         m_damaged = message.getDamaged();
         m_confirmOwnCasualties = message.getAutoCalculated();
@@ -192,13 +192,14 @@ public class Fire implements IExecutable {
     if (m_isHeadless) {
       return;
     }
-    AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer, new ArrayList<Unit>(m_killed),
-        new ArrayList<Unit>(m_damaged), m_dependentUnits);
+    AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer,
+        new ArrayList<Unit>(m_killed), new ArrayList<Unit>(m_damaged), m_dependentUnits);
     final Runnable r = new Runnable() {
       @Override
       public void run() {
         try {
-          AbstractBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue", m_hitPlayer);
+          AbstractBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue",
+              m_hitPlayer);
         } catch (final ConnectionLostException cle) {
           // somone else will deal with this
           // System.out.println(cle.getMessage());
@@ -268,7 +269,6 @@ public class Fire implements IExecutable {
     stack.push(rollDice);
     return;
   }
-
 
   private boolean isTransportCasualtiesRestricted(final GameData data) {
     return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);

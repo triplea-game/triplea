@@ -3,7 +3,6 @@ package games.strategy.engine.chat;
 import java.util.ArrayList;
 import java.util.List;
 
-
 class SentMessagesHistory {
   private final List<String> m_history = new ArrayList<String>();
   private int m_HistoryPosition;

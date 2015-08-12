@@ -13,7 +13,6 @@ import games.strategy.util.Tuple;
 /**
  * All the info neccassary to describe a method call in one handy
  * serializable package.
- *
  */
 public class RemoteMethodCall implements Externalizable {
   private static final long serialVersionUID = 4630825927685836207L;
@@ -30,8 +29,8 @@ public class RemoteMethodCall implements Externalizable {
 
   public RemoteMethodCall() {}
 
-  public RemoteMethodCall(final String remoteName, final String methodName, final Object[] args, final Class<?>[] argTypes,
-      final Class<?> remoteInterface) {
+  public RemoteMethodCall(final String remoteName, final String methodName, final Object[] args,
+      final Class<?>[] argTypes, final Class<?> remoteInterface) {
     if (argTypes == null) {
       throw new IllegalArgumentException("ArgTypes are null");
     }
@@ -151,7 +150,8 @@ public class RemoteMethodCall implements Externalizable {
     out.writeUTF(m_remoteName);
     out.writeByte(m_methodNumber);
     if (m_args == null) {
-      out.writeByte(Byte.MAX_VALUE);;
+      out.writeByte(Byte.MAX_VALUE);
+      ;
     } else {
       out.writeByte(m_args.length);
       for (final Object m_arg : m_args) {

@@ -16,12 +16,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * A panel for showing the battle steps in a display.
- *
  * Contains code for walking from the current step, to a given step
  * there is a delay while we walk so that the user can see the steps progression.
- *
  * Users of this class should deactive it after they are done.
- *
  */
 class BattleStepsPanel extends JPanel implements Active {
   private static final long serialVersionUID = 911638924664810435L;
@@ -169,7 +166,6 @@ class BattleStepsPanel extends JPanel implements Active {
   /**
    * This method blocks until the last step is reached, unless
    * this method is called from the swing event thread.
-   *
    */
   public void walkToLastStep() {
     synchronized (m_mutex) {
@@ -180,7 +176,6 @@ class BattleStepsPanel extends JPanel implements Active {
 
   /**
    * Set the target step for this panel
-   *
    * This method returns immediatly, and must be called from the swing event thread.
    */
   public void setStep(final String step) {

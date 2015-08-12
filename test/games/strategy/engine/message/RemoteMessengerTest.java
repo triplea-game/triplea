@@ -11,13 +11,11 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
 
-
 public class RemoteMessengerTest extends TestCase {
   private int SERVER_PORT = -1;
   private IMessenger m_messenger;
   private RemoteMessenger m_remoteMessenger;
   private UnifiedMessengerHub m_hub;
-
 
   @Override
   protected void setUp() throws Exception {
@@ -26,7 +24,6 @@ public class RemoteMessengerTest extends TestCase {
     m_remoteMessenger = new RemoteMessenger(new UnifiedMessenger(m_messenger));
     SERVER_PORT = TestUtil.getUniquePort();
   }
-
 
   @Override
   protected void tearDown() throws Exception {

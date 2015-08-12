@@ -44,7 +44,6 @@ public class ModeratorControllerTest extends TestCase {
     final InetAddress bannedAddress = InetAddress.getByAddress(new byte[] {(byte) 10, (byte) 10, (byte) 10, (byte) 10});
     new BannedIpController().removeBannedIp(bannedAddress.getHostAddress());
     MessageContext.setSenderNodeForThread(m_adminNode);
-
     final INode booted = new Node("foo", bannedAddress, 0);
     m_controller.banIp(booted, null); // this test is failing because any kind of ban requires a mac address for the logging information,
                                       // yet this node has no mac address. need to fix this somehow.

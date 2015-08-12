@@ -38,15 +38,12 @@ import games.strategy.triplea.ResourceLoader;
 
 /**
  * Utility for loading and playing sound clips.
- *
  * Stores a preference in the user preferences for being silent.
  * The property will persist and be reloaded after the virtual machine
  * has been stopped and restarted.
- *
  * <br>
  * <br>
  * <br>
- *
  * <br>
  * <br>
  * How it works: <br>
@@ -103,8 +100,6 @@ import games.strategy.triplea.ResourceLoader;
  * 5. If no sounds are found, then use all the sounds located at "generic/sound_key/" (which for us would be "generic/game_start").
  * (if any sounds are found in step 4 above, then we ignore the generic folder completely) <br>
  * 6. Randomize the list's order, then pick one, and play the sound.
- *
- *
  */
 public class ClipPlayer {
   private static ClipPlayer s_clipPlayer;
@@ -115,7 +110,6 @@ public class ClipPlayer {
   private final Set<String> m_subFolders = new HashSet<String>();
   private final ClipCache m_clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
                                                            // so we'll be safe and pick 24
-
   // standard settings
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
@@ -174,7 +168,6 @@ public class ClipPlayer {
 
   /**
    * If set to true, no sounds will play.
-   *
    * This property is persisted using the java.util.prefs API, and will
    * persist after the vm has stopped.
    *
@@ -277,7 +270,6 @@ public class ClipPlayer {
   }
 
   /**
-   *
    * @param clipName
    *        String - the file name of the clip
    * @param subFolder
@@ -288,7 +280,6 @@ public class ClipPlayer {
   }
 
   /**
-   *
    * @param clipName
    *        String - the file name of the clip
    */
@@ -405,7 +396,6 @@ public class ClipPlayer {
   }
 
   /**
-   *
    * @param resourceAndPathURL
    *        (URL uses '/', not File.separator or '\')
    */
@@ -448,10 +438,10 @@ public class ClipPlayer {
       if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.indexOf(".zip!") != -1) {
         // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test if it exists, if it
         // starts with that it doesn't exist
-        final int index1 =
-            Math.max(0, Math.min(soundFilePath.length(), soundFilePath.indexOf("file:") != -1 ? soundFilePath.indexOf("file:") + 5 : 0));
-        final String zipFilePath =
-            soundFilePath.substring(index1, Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
+        final int index1 = Math.max(0, Math.min(soundFilePath.length(),
+            soundFilePath.indexOf("file:") != -1 ? soundFilePath.indexOf("file:") + 5 : 0));
+        final String zipFilePath = soundFilePath.substring(index1,
+            Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
         if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
           ZipFile zf = null;
           try {
@@ -469,8 +459,9 @@ public class ClipPlayer {
                 final Enumeration<? extends ZipEntry> zipEnumeration = zf.entries();
                 while (zipEnumeration.hasMoreElements()) {
                   final ZipEntry zipElement = zipEnumeration.nextElement();
-                  if (zipElement != null && zipElement.getName() != null && zipElement.getName().indexOf(resourceAndPathURL) != -1 &&
-                      (zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
+                  if (zipElement != null && zipElement.getName() != null
+                      && zipElement.getName().indexOf(resourceAndPathURL) != -1
+                      && (zipElement.getName().endsWith(".wav") || zipElement.getName().endsWith(".au")
                           || zipElement.getName().endsWith(".aiff") || zipElement.getName().endsWith(".midi"))) {
                     try {
                       final URL zipSoundURL = m_resourceLoader.getResource(zipElement.getName());
@@ -600,7 +591,8 @@ public class ClipPlayer {
     getInstance();
     final File root = new File(GameRunner2.getRootFolder(), "assets" + File.separator + "sounds");
     for (final File folder : root.listFiles()) {
-      if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial") || folder.getName().equals("classical"))) {
+      if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial")
+          || folder.getName().equals("classical"))) {
         continue;
       }
       for (final File file : folder.listFiles()) {
@@ -615,7 +607,8 @@ public class ClipPlayer {
     }
     while (true) {
       for (final File folder : root.listFiles()) {
-        if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial") || folder.getName().equals("classical"))) {
+        if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial")
+            || folder.getName().equals("classical"))) {
           continue;
         }
         for (final File file : folder.listFiles()) {

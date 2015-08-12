@@ -10,7 +10,6 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
 
-
 public class ChannelMessengerTest extends TestCase {
   private IServerMessenger m_server;
   private IMessenger m_client1;
@@ -54,9 +53,7 @@ public class ChannelMessengerTest extends TestCase {
     }
   }
 
-  public void testDummy() {
-
-  }
+  public void testDummy() {}
 
   public void testLocalCall() {
     final RemoteName descriptor = new RemoteName(IChannelBase.class, "testLocalCall");
@@ -185,8 +182,8 @@ class ChannelSubscribor implements IChannelBase {
   }
 
   @Override
-  public void testArray(final int[] ints, final short[] shorts, final byte[] bytes, final boolean[] bools, final float[] floats,
-      final Object[] objects) {
+  public void testArray(final int[] ints, final short[] shorts, final byte[] bytes, final boolean[] bools,
+      final float[] floats, final Object[] objects) {
     incrementCount();
   }
 }

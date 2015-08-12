@@ -16,7 +16,6 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 
-
 public class ChangeGameOptionsClientAction extends AbstractAction {
   private static final long serialVersionUID = -6419002646689952824L;
   private final Component m_parent;

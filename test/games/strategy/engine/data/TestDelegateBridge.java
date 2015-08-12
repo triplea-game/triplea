@@ -18,10 +18,8 @@ import games.strategy.sound.ISound;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 /**
- *
- *
- *          Not for actual use, suitable for testing. Never returns messages, but can get
- *          random and implements changes immediately.
+ * Not for actual use, suitable for testing. Never returns messages, but can get
+ * random and implements changes immediately.
  */
 public class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData m_data;
@@ -59,7 +57,8 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation) {
     return m_randomSource.getRandom(max, count, annotation);
   }
 
@@ -126,18 +125,15 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     return m_historyWriter;
   }
 
-
   @Override
   public IRemotePlayer getRemotePlayer() {
     return m_remote;
   }
 
-
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     return m_remote;
   }
-
 
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
@@ -172,7 +168,6 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void stopGameSequence() {}
-
 
   @Override
   public GameData getData() {

@@ -82,7 +82,6 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   /**
-   *
    * @param p1
    *        player1
    * @param p2
@@ -112,7 +111,6 @@ public class RelationshipInterpreter extends GameDataComponent {
     neutrals.remove(p1);
     return neutrals;
   }
-
 
   public boolean canMoveLandUnitsOverOwnedLand(final PlayerID p1, final PlayerID p2) {
     return Matches.RelationshipTypeCanMoveLandUnitsOverOwnedLand.match(getRelationshipType(p1, p2));

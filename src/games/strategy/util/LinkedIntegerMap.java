@@ -9,12 +9,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- *
  * A utility class for mapping Objects to ints. <br>
  * Supports adding and comparing of maps. <br>
  * Uses LinkedHashMap to keep insert order.
- *
- *
  */
 public class LinkedIntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
@@ -205,7 +202,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
 
   /**
    * Will return zero if empty.
-   *
    */
   public int highestValue() {
     if (m_values.isEmpty()) {
@@ -222,7 +218,6 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
 
   /**
    * Will return zero if empty.
-   *
    */
   public int lowestValue() {
     if (m_values.isEmpty()) {

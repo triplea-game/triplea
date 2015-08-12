@@ -7,18 +7,15 @@ import games.strategy.triplea.help.HelpSupport;
 
 /**
  * A pre configured Email sender that uses Hotmail's SMTP server
- *
  */
 public class HotmailEmailSender extends GenericEmailSender {
   private static final long serialVersionUID = 3511375113962472063L;
-
 
   public HotmailEmailSender() {
     setHost("smtp.live.com");
     setPort(587);
     setEncryption(Encryption.TLS);
   }
-
 
   @Override
   public EditorPanel getEditor() {

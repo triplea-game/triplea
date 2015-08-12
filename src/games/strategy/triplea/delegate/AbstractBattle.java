@@ -26,7 +26,6 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.IntegerMap;
 
-
 abstract public class AbstractBattle implements IBattle, Serializable {
   private static final long serialVersionUID = 871090498661731337L;
   protected final GUID m_battleID = new GUID();
@@ -55,14 +54,13 @@ abstract public class AbstractBattle implements IBattle, Serializable {
   protected List<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
   protected List<Unit> m_bombardingUnits = new ArrayList<Unit>();
   protected Collection<TerritoryEffect> m_territoryEffects;
-
   protected BattleResultDescription m_battleResultDescription;
   protected WhoWon m_whoWon = WhoWon.NOTFINISHED;
   protected int m_attackerLostTUV = 0;
   protected int m_defenderLostTUV = 0;
 
-  public AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean isBombingRun,
-      final BattleType battleType, final GameData data) {
+  public AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+      final boolean isBombingRun, final BattleType battleType, final GameData data) {
     m_battleTracker = battleTracker;
     m_attacker = attacker;
     m_battleSite = battleSite;
@@ -136,7 +134,6 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     return new ArrayList<Unit>(m_defendingUnits);
   }
 
-
   @Override
   abstract public boolean isEmpty();
 
@@ -147,7 +144,6 @@ abstract public class AbstractBattle implements IBattle, Serializable {
 
   @Override
   public void cancelBattle(final IDelegateBridge bridge) {}
-
 
   @Override
   public boolean isBombingRun() {
@@ -202,25 +198,23 @@ abstract public class AbstractBattle implements IBattle, Serializable {
     m_headless = aBool;
   }
 
-
   @Override
   abstract public void fight(IDelegateBridge bridge);
 
-
   @Override
-  abstract public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets);
-
+  abstract public Change addAttackChange(final Route route, final Collection<Unit> units,
+      final HashMap<Unit, HashSet<Unit>> targets);
 
   @Override
   abstract public void removeAttack(Route route, Collection<Unit> units);
 
   /*
-   *
    * games.strategy.triplea.delegate.IBattle#unitsLostInPrecedingBattle(games.strategy.triplea.delegate.IBattle,java.util.Collection<Unit>,
    * games.strategy.engine.delegate.IDelegateBridge)
    */
   @Override
-  abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
+  abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
+      boolean withdrawn);
 
   @Override
   public int hashCode() {
@@ -232,7 +226,6 @@ abstract public class AbstractBattle implements IBattle, Serializable {
    * and are both of the same type (bombing / not-bombing),
    * and are both of the same sub-type of bombing/normal
    * (ex: MustFightBattle, or StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc). <br>
-   *
    * Equals in the sense that they should never occupy the same Set if these conditions are met.
    */
   @Override
@@ -247,8 +240,8 @@ abstract public class AbstractBattle implements IBattle, Serializable {
 
   @Override
   public String toString() {
-    return "Battle in:" + m_battleSite + " battle type:" + m_battleType + " defender:" + m_defender.getName() + " attacked by:"
-        + m_attacker.getName() + " attacking with: " + m_attackingUnits;
+    return "Battle in:" + m_battleSite + " battle type:" + m_battleType + " defender:" + m_defender.getName()
+        + " attacked by:" + m_attacker.getName() + " attacking with: " + m_attackingUnits;
   }
 
   public static PlayerID findDefender(final Territory battleSite, final PlayerID attacker, final GameData data) {

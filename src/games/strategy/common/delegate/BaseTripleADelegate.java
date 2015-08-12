@@ -19,7 +19,6 @@ import games.strategy.util.Match;
 /**
  * Base class designed to make writing custom TripleA delegates simpler.
  * Code common to all TripleA delegates is implemented here.
- *
  */
 public abstract class BaseTripleADelegate extends AbstractDelegate implements IDelegate {
   private boolean m_startBaseStepsFinished = false;
@@ -91,14 +90,11 @@ public abstract class BaseTripleADelegate extends AbstractDelegate implements ID
     final GameData data = getData();
     if (games.strategy.triplea.Properties.getTriggers(data)) {
       final String stepName = data.getSequence().getStep().getName();
-
       // we use AND in order to make sure there are uses and when is set correctly.
       final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
-          TriggerAttachment.availableUses,
-          TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
-
-      TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()), baseDelegateWhenTriggerMatch,
-          m_bridge, beforeOrAfter, stepName);
+          TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
+      TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()),
+          baseDelegateWhenTriggerMatch, m_bridge, beforeOrAfter, stepName);
     }
     PoliticsDelegate.chainAlliancesTogether(m_bridge);
   }
@@ -143,13 +139,11 @@ class BaseDelegateState implements Serializable {
 }
 /*
  * All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
- *
  * class ExtendedDelegateState implements Serializable
  * {
  * Serializable superState;
  * // add other variables here:
  * }
- *
  * @Override
  * public Serializable saveState()
  * {
@@ -158,7 +152,6 @@ class BaseDelegateState implements Serializable {
  * // add other variables to state here:
  * return state;
  * }
- *
  * @Override
  * public void loadState(Serializable state)
  * {

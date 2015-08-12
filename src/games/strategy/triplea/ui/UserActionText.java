@@ -9,8 +9,6 @@ import games.strategy.triplea.ResourceLoader;
 
 /**
  * Same as PoliticsText but for user actions.
- *
- *
  */
 public class UserActionText {
   // Filename

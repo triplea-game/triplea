@@ -20,8 +20,8 @@ public class DoesNothingAI extends AbstractAI {
   }
 
   @Override
-  protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data,
-      final PlayerID player) {
+  protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate,
+      final GameData data, final PlayerID player) {
     // spend whatever we have
     if (!player.getResources().isEmpty()) {
       (new WeakAI(this.getName(), this.getType())).purchase(purchaseForBid, PUsToSpend, purchaseDelegate, data, player);
@@ -35,12 +35,14 @@ public class DoesNothingAI extends AbstractAI {
   }
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player) {
+  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+      final PlayerID player) {
     pause();
   }
 
   @Override
-  protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player) {
+  protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+      final PlayerID player) {
     // place whatever we have
     if (!player.getUnits().isEmpty()) {
       (new WeakAI(this.getName(), this.getType())).place(placeForBid, placeDelegate, data, player);
@@ -54,7 +56,8 @@ public class DoesNothingAI extends AbstractAI {
   }
 
   @Override
-  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data, final PlayerID player) {
+  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
+      final PlayerID player) {
     // destroy whatever we have
     final ResourceCollection resourceCollection = player.getResources();
     final Change removeChange = ChangeFactory.removeResourceCollection(player, resourceCollection);
@@ -72,7 +75,8 @@ public class DoesNothingAI extends AbstractAI {
   }
 
   @Override
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion, final boolean politics) {
+  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+      final boolean politics) {
     // we are dead, just accept
     if (!getPlayerID().amNotDeadYet(getGameData())) {
       return true;

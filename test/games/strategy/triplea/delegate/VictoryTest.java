@@ -17,10 +17,8 @@ import junit.framework.TestCase;
  * "Victory" map is just a branch/mod of Pact of Steel 2.
  * POS2 is an actual game with good gameplay that we don't want to mess with, so
  * "Victory" is more of an xml purely for testing purposes, and probably should never be played.
- *
  */
 public class VictoryTest extends TestCase {
-
   private GameData m_data;
   private PlayerID m_italians;
   private ITestDelegateBridge m_bridge;
@@ -33,11 +31,11 @@ public class VictoryTest extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
     m_data = LoadGameUtil.loadGame("victory_test", "victory_test.xml");
-
     m_italians = m_data.getPlayerList().getPlayerID("Italians");
     m_bridge = GameDataTestUtil.getDelegateBridge(m_italians, m_data);
     // we need to initialize the original owner
-    final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
+    final InitializationDelegate initDel =
+        (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(m_bridge);
     initDel.start();
     initDel.end();
@@ -54,7 +52,6 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, armour.create(1, m_italians)));
-
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
@@ -69,12 +66,12 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fw_africa, armour.create(1, m_italians)));
-
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
     moveDelegate.start();
-    final String error = moveDelegate.move(fw_africa.getUnits().getUnits(), m_data.getMap().getRoute(fw_africa, b_congo));
+    final String error =
+        moveDelegate.move(fw_africa.getUnits().getUnits(), m_data.getMap().getRoute(fw_africa, b_congo));
     moveDelegate.end();
     assertEquals(error, null);
   }
@@ -85,14 +82,12 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, armour.create(1, m_italians)));
-
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
     moveDelegate.start();
     String error = moveDelegate.move(libya.getUnits().getUnits(), m_data.getMap().getRoute(libya, a_egypt));
     assertEquals(error, null); // first step is legal
-
     // second step isn't legal because we lost blitz even though we took the mountain
     error = moveDelegate.move(a_egypt.getUnits().getUnits(), m_data.getMap().getRoute(a_egypt, b_congo));
     moveDelegate.end();
@@ -105,7 +100,6 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fw_africa, armour.create(1, m_italians)));
-
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
@@ -123,7 +117,6 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(libya, motorized.create(1, m_italians)));
-
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
@@ -137,25 +130,20 @@ public class VictoryTest extends TestCase {
     final Territory b_congo = m_data.getMap().getTerritory("Belgian Congo");
     final Territory kenya = m_data.getMap().getTerritory("Kenya");
     final Territory fe_africa = m_data.getMap().getTerritory("French Equatorial Africa");
-
     final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
     final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
-
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(fe_africa, m_italians));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(fe_africa, armour.create(1, m_italians)));
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(kenya, m_italians));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(kenya, motorized.create(1, m_italians)));
-
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
     moveDelegate.start();
     String error = moveDelegate.move(fe_africa.getUnits().getUnits(), m_data.getMap().getRoute(fe_africa, b_congo));
     assertEquals(null, error);
-
     error = moveDelegate.move(kenya.getUnits().getUnits(), m_data.getMap().getRoute(kenya, b_congo));
     assertEquals(null, error);
-
     error = moveDelegate.move(b_congo.getUnits().getUnits(), m_data.getMap().getRoute(b_congo, fe_africa));
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
     moveDelegate.end();
@@ -166,36 +154,28 @@ public class VictoryTest extends TestCase {
     final Territory kenya = m_data.getMap().getTerritory("Kenya");
     final UnitType motorized = m_data.getUnitTypeList().getUnitType("motorized");
     final UnitType armour = m_data.getUnitTypeList().getUnitType("armour");
-
     new ChangePerformer(m_data).perform(ChangeFactory.changeOwner(kenya, m_italians));
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(kenya, motorized.create(1, m_italians)));
-
     final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
     m_bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
     moveDelegate.start();
-
     final int fuelAmount = m_italians.getResources().getQuantity("Fuel");
     final int puAmount = m_italians.getResources().getQuantity("PUs");
-
     moveDelegate.move(kenya.getUnits().getUnits(), m_data.getMap().getRoute(kenya, b_congo));
     assertEquals(fuelAmount - 1, m_italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, m_italians.getResources().getQuantity("PUs"));
-
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(kenya, armour.create(1, m_italians)));
     moveDelegate.move(kenya.getUnits().getUnits(), m_data.getMap().getRoute(kenya, b_congo));
     assertEquals(fuelAmount - 1, m_italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, m_italians.getResources().getQuantity("PUs"));
-
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(kenya, motorized.create(5, m_italians)));
     moveDelegate.move(kenya.getUnits().getUnits(), m_data.getMap().getRoute(kenya, b_congo));
     assertEquals(fuelAmount - 6, m_italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 6, m_italians.getResources().getQuantity("PUs"));
-
     new ChangePerformer(m_data).perform(ChangeFactory.addUnits(kenya, motorized.create(50, m_italians)));
     final String error = moveDelegate.move(kenya.getUnits().getUnits(), m_data.getMap().getRoute(kenya, b_congo));
     assertTrue(error.startsWith("Not enough resources to perform this move"));
-
     moveDelegate.end();
   }
 
@@ -204,7 +184,6 @@ public class VictoryTest extends TestCase {
   }
 
   public void testMultipleResourcesToPurchase() {
-
     final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
     final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
     m_bridge.setStepName("italianPurchase");
@@ -218,11 +197,9 @@ public class VictoryTest extends TestCase {
     final String error = purchaseDelegate.purchase(purchaseList);
     assertEquals(null, error);
     assertEquals(italianResources, m_italians.getResources().getResourcesCopy());
-
   }
 
   public void testNotEnoughMultipleResourcesToPurchase() {
-
     final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
     final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
     m_bridge.setStepName("italianPurchase");
@@ -235,11 +212,9 @@ public class VictoryTest extends TestCase {
     purchaseList.add(armourtest, 1);
     final String error = purchaseDelegate.purchase(purchaseList);
     assertEquals(PurchaseDelegate.NOT_ENOUGH_RESOURCES, error);
-
   }
 
   public void testPUOnlyResourcesToPurchase() {
-
     final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
     final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
     m_bridge.setStepName("italianPurchase");
@@ -256,7 +231,6 @@ public class VictoryTest extends TestCase {
   }
 
   public void testNoPUResourcesToPurchase() {
-
     final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
     final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
     m_bridge.setStepName("italianPurchase");
@@ -270,7 +244,6 @@ public class VictoryTest extends TestCase {
     final String error = purchaseDelegate.purchase(purchaseList);
     assertEquals(null, error);
     assertEquals(italianResources, m_italians.getResources().getResourcesCopy());
-
   }
 
   public void testTerritoryEffectsOnCombat() {

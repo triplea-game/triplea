@@ -18,11 +18,8 @@ import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
 
 /**
- *
- *
- *          A small image that tracks a selection area within a small image. Generally
- *          used in conjunction with a ImageScrollerLarrgeView.
- *
+ * A small image that tracks a selection area within a small image. Generally
+ * used in conjunction with a ImageScrollerLarrgeView.
  */
 public class ImageScrollerSmallView extends JComponent {
   private static final long serialVersionUID = 7010099211049677928L;

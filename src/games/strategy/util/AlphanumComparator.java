@@ -5,12 +5,10 @@ import java.util.Comparator;
 /**
  * This is an updated version with enhancements made by Daniel Migowski,
  * Andre Bogus, and David Koelle
- *
  * To convert to use Templates (Java 1.5+):
  * - Change "implements Comparator" to "implements Comparator<String>"
  * - Change "compare(Object o1, Object o2)" to "compare(String s1, String s2)"
  * - Remove the type checking and casting in compare().
- *
  * To use this class:
  * Use the static "sort" method from the java.util.Collections class:
  * Collections.sort(your list, new AlphanumComparator());
@@ -54,14 +52,11 @@ public class AlphanumComparator implements Comparator<String> {
     int thatMarker = 0;
     final int s1Length = s1.length();
     final int s2Length = s2.length();
-
     while (thisMarker < s1Length && thatMarker < s2Length) {
       final String thisChunk = getChunk(s1, s1Length, thisMarker);
       thisMarker += thisChunk.length();
-
       final String thatChunk = getChunk(s2, s2Length, thatMarker);
       thatMarker += thatChunk.length();
-
       // If both chunks contain numeric characters, sort them numerically
       int result = 0;
       if (isDigit(thisChunk.charAt(0)) && isDigit(thatChunk.charAt(0))) {
@@ -80,12 +75,10 @@ public class AlphanumComparator implements Comparator<String> {
       } else {
         result = thisChunk.compareTo(thatChunk);
       }
-
       if (result != 0) {
         return result;
       }
     }
-
     return s1Length - s2Length;
   }
 }

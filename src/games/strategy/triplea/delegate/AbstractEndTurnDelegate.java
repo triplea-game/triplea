@@ -40,9 +40,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
- *
- *
- *          At the end of the turn collect income.
+ * At the end of the turn collect income.
  */
 public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractForumPosterDelegate {
   public static final String END_TURN_REPORT_STRING = "End of Turn Report for ";
@@ -91,12 +89,12 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       int total = m_player.getResources().getQuantity(PUs) + toAdd;
       final String transcriptText;
       if (blockadeLoss == 0) {
-        transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with " + total
-            + MyFormatter.pluralize(" PU", total) + " total";
+        transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with "
+            + total + MyFormatter.pluralize(" PU", total) + " total";
       } else {
-        transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss
-            + " lost to blockades)" + "; end with " + total
-            + MyFormatter.pluralize(" PU", total) + " total";
+        transcriptText =
+            m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss
+                + " lost to blockades)" + "; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
       }
       m_bridge.getHistoryWriter().startEvent(transcriptText);
       endTurnReport.append(transcriptText + "<br />");
@@ -106,12 +104,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         total += bonds;
         toAdd += bonds;
         final String bondText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds)
-            + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total)
-            + " total";
+            + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
         m_bridge.getHistoryWriter().startEvent(bondText);
         endTurnReport.append("<br />" + bondText + "<br />");
       }
-
       if (total < 0) {
         toAdd -= total;
         total = 0;
@@ -119,17 +115,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
       m_bridge.addChange(change);
       if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
-        final Change changeVP =
-            (ChangeFactory.attachmentPropertyChange(pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
+        final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa,
+            (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
         final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
         final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
         m_bridge.addChange(ccVP);
       }
-
       endTurnReport.append("<br />" + addOtherResources(m_bridge));
-
       endTurnReport.append("<br />" + doNationalObjectivesAndOtherEndTurnEffects(m_bridge));
-
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
       final int currentPUs = m_player.getResources().getQuantity(PUs);
       final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
@@ -156,22 +149,21 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       relationshipUpkeepTotalCost = -1 * relationshipUpkeepTotalCost;
       if (relationshipUpkeepTotalCost != 0) {
         final int newTotal = currentPUs + relationshipUpkeepTotalCost;
-        final String transcriptText2 =
-            m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1 * relationshipUpkeepTotalCost)
-                + MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost)
-                + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
-                + MyFormatter.pluralize(" PU", newTotal);
+        final String transcriptText2 = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ")
+            + (-1 * relationshipUpkeepTotalCost) + MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost)
+            + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
+            + MyFormatter.pluralize(" PU", newTotal);
         m_bridge.getHistoryWriter().startEvent(transcriptText2);
         endTurnReport.append("<br />" + transcriptText2 + "<br />");
         final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
         m_bridge.addChange(upkeep);
       }
     }
-
     if (GameStepPropertiesHelper.isRepairUnits(data)) {
       MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_bridge.getPlayerID());
     }
-    if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty()) {
+    if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null
+        && !pa.getGiveUnitControl().isEmpty()) {
       changeUnitOwnership(m_bridge);
     }
     m_needToInitialize = false;
@@ -182,9 +174,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (endTurnReport != null && endTurnReport.trim().length() > 6 && !m_player.isAI()) {
       final ITripleaPlayer currentPlayer = getRemotePlayer(m_player);
       final String player = m_player.getName();
-      currentPlayer.reportMessage(
-          "<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player + "</b><br /><br />" + endTurnReport + "</html>",
-          END_TURN_REPORT_STRING + player);
+      currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player
+          + "</b><br /><br />" + endTurnReport + "</html>", END_TURN_REPORT_STRING + player);
     }
   }
 
@@ -273,7 +264,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (giveWarBondsTo == null) {
       return "";
     }
-    final String annotation = player.getName() + " rolling to resolve War Bonds, and giving results to " + giveWarBondsTo.getName() + ": ";
+    final String annotation =
+        player.getName() + " rolling to resolve War Bonds, and giving results to " + giveWarBondsTo.getName() + ": ";
     final DiceRoll dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int totalWarBonds = 0;
     for (int i = 0; i < dice.size(); i++) {
@@ -281,9 +273,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
     final Resource PUs = data.getResourceList().getResource(Constants.PUS);
     final int currentPUs = giveWarBondsTo.getResources().getQuantity(PUs);
-    final String transcriptText = player.getName() + " rolls " + totalWarBonds + MyFormatter.pluralize(" PU", totalWarBonds)
-        + " from War Bonds, giving the total to " + giveWarBondsTo.getName()
-        + ", who ends with " + (currentPUs + totalWarBonds) + MyFormatter.pluralize(" PU", (currentPUs + totalWarBonds)) + " total";
+    final String transcriptText =
+        player.getName() + " rolls " + totalWarBonds + MyFormatter.pluralize(" PU", totalWarBonds)
+            + " from War Bonds, giving the total to " + giveWarBondsTo.getName() + ", who ends with "
+            + (currentPUs + totalWarBonds) + MyFormatter.pluralize(" PU", (currentPUs + totalWarBonds)) + " total";
     aBridge.getHistoryWriter().startEvent(transcriptText);
     final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, PUs, totalWarBonds);
     aBridge.addChange(change);
@@ -297,7 +290,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
     final Collection<Territory> territories = aBridge.getData().getMap().getTerritories();
     final CompositeChange change = new CompositeChange();
-    final Collection<Tuple<Territory, Collection<Unit>>> changeList = new ArrayList<Tuple<Territory, Collection<Unit>>>();
+    final Collection<Tuple<Territory, Collection<Unit>>> changeList =
+        new ArrayList<Tuple<Territory, Collection<Unit>>>();
     for (final Territory currTerritory : territories) {
       final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory, true);
       // if ownership should change in this territory
@@ -306,8 +300,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         for (final PlayerID terrNewOwner : terrNewOwners) {
           if (PossibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
-            final Collection<Unit> units = currTerritory.getUnits()
-                .getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
+            final Collection<Unit> units =
+                currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player),
+                    Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
               changeList.add(new Tuple<Territory, Collection<Unit>>(currTerritory, units));
@@ -319,15 +314,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (!change.isEmpty() && !changeList.isEmpty()) {
       if (changeList.size() == 1) {
         final Tuple<Territory, Collection<Unit>> tuple = changeList.iterator().next();
-        aBridge.getHistoryWriter().startEvent(
-            "Some Units in " + tuple.getFirst().getName() + " change ownership: " + MyFormatter.unitsToTextNoOwner(tuple.getSecond()),
-            tuple.getSecond());
+        aBridge.getHistoryWriter().startEvent("Some Units in " + tuple.getFirst().getName() + " change ownership: "
+            + MyFormatter.unitsToTextNoOwner(tuple.getSecond()), tuple.getSecond());
       } else {
         aBridge.getHistoryWriter().startEvent("Units Change Ownership");
         for (final Tuple<Territory, Collection<Unit>> tuple : changeList) {
-          aBridge.getHistoryWriter().addChildToEvent(
-              "Some Units in " + tuple.getFirst().getName() + " change ownership: " + MyFormatter.unitsToTextNoOwner(tuple.getSecond()),
-              tuple.getSecond());
+          aBridge.getHistoryWriter().addChildToEvent("Some Units in " + tuple.getFirst().getName()
+              + " change ownership: " + MyFormatter.unitsToTextNoOwner(tuple.getSecond()), tuple.getSecond());
         }
       }
       aBridge.addChange(change);
@@ -378,8 +371,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     boolean rolledDice = false;
     for (final Territory b : blockable) {
       // match will check for land, convoy zones, and also contested territories
-      final List<Territory> viableNeighbors = Match.getMatches(map.getNeighbors(b),
-          new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.territoryCanCollectIncomeFrom(player, data)));
+      final List<Territory> viableNeighbors =
+          Match.getMatches(map.getNeighbors(b), new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player),
+              Matches.territoryCanCollectIncomeFrom(player, data)));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {
         continue;
@@ -404,8 +398,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           } catch (final InterruptedException e) {
           }
           final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
-          final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice, enemies.iterator().next().getOwner(),
-              DiceType.BOMBING, transcript);
+          final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice,
+              enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);
           transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
           rolledDice = true;
           for (final int d : dice) {
@@ -438,7 +432,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final Tuple<Integer, List<Territory>> tuple = damagePerBlockadeZone.get(b);
       int damageForZone = tuple.getFirst();
       final List<Territory> terrsLosingIncome = new ArrayList<Territory>(tuple.getSecond());
-      Collections.sort(terrsLosingIncome, getSingleNeighborBlockadesThenHighestToLowestProduction(blockadeZonesSorted, map));
+      Collections.sort(terrsLosingIncome,
+          getSingleNeighborBlockadesThenHighestToLowestProduction(blockadeZonesSorted, map));
       final Iterator<Territory> iter = terrsLosingIncome.iterator();
       while (damageForZone > 0 && iter.hasNext()) {
         final Territory t = iter.next();
@@ -488,15 +483,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return m_displayName;
   }
 
-
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IAbstractForumPosterDelegate.class;
   }
 
-
-  private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(final Collection<Territory> blockadeZones,
-      final GameMap map) {
+  private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(
+      final Collection<Territory> blockadeZones, final GameMap map) {
     return new Comparator<Territory>() {
       @Override
       public int compare(final Territory t1, final Territory t2) {

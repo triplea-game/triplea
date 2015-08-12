@@ -20,7 +20,6 @@ import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
 import junit.framework.TestCase;
 
-
 public class ParserTest extends TestCase {
   private GameData gameData;
 
@@ -106,13 +105,15 @@ public class ParserTest extends TestCase {
   }
 
   public void testAttatchments() {
-    TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold").getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
+    TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
+        .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "gold");
     att = (TestAttachment) gameData.getUnitTypeList().getUnitType("inf").getAttachment(Constants.INF_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "inf");
     att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "us of a");
-    att = (TestAttachment) gameData.getPlayerList().getPlayerID("chretian").getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+    att = (TestAttachment) gameData.getPlayerList().getPlayerID("chretian")
+        .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "liberal");
   }
 

@@ -85,7 +85,8 @@ public class ClientModel implements IMessengerErrorListener {
   private Map<String, String> m_playersToNodes = new HashMap<String, String>();
   private Map<String, Boolean> m_playersEnabledListing = new HashMap<String, Boolean>();
   private Collection<String> m_playersAllowedToBeDisabled = new HashSet<String>();
-  private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
+  private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
+      new LinkedHashMap<String, Collection<String>>();
 
   ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     m_typePanelModel = typePanelModel;
@@ -158,8 +159,8 @@ public class ClientModel implements IMessengerErrorListener {
       return false;
     } catch (final Exception ioe) {
       ioe.printStackTrace(System.out);
-      EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE,
-          new CountDownLatchHandler(true));
+      EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error",
+          JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
       return false;
     }
     m_messenger.addErrorListener(this);
@@ -167,15 +168,17 @@ public class ClientModel implements IMessengerErrorListener {
     m_channelMessenger = new ChannelMessenger(unifiedMessenger);
     m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
     m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
-    m_chatPanel =
-        new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME, Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+    m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME,
+        Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       m_gameSelectorModel.setClientModelForHostBots(this);
-      ((ChatPanel) m_chatPanel).getChatMessagePanel().addServerMessage("Welcome to an automated dedicated host service (a host bot). "
-          + "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
-          + "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
+      ((ChatPanel) m_chatPanel).getChatMessagePanel()
+          .addServerMessage("Welcome to an automated dedicated host service (a host bot). "
+              + "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
+              + "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
     }
-    m_remoteMessenger.registerRemote(m_observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
+    m_remoteMessenger.registerRemote(m_observerWaitingToJoin,
+        ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
     // save this, it will be cleared later
     m_gameDataOnStartup = m_gameSelectorModel.getGameData();
     final IServerStartupRemote serverStartup = getServerStartup();
@@ -277,13 +280,15 @@ public class ClientModel implements IMessengerErrorListener {
         @Override
         public void run() {
           m_typePanelModel.showSelectType();
-          EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason, new CountDownLatchHandler(true));
+          EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason,
+              new CountDownLatchHandler(true));
         }
       });
     }
   };
 
-  private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone, final boolean gameRunning) {
+  private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
+      final boolean gameRunning) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -311,7 +316,8 @@ public class ClientModel implements IMessengerErrorListener {
     t.start();
   }
 
-  private void startGameInNewThread(final byte[] gameData, final Map<String, INode> players, final boolean gameRunning) {
+  private void startGameInNewThread(final byte[] gameData, final Map<String, INode> players,
+      final boolean gameRunning) {
     final GameData data;
     try {
       data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null); // this normally takes a couple seconds, but can take
@@ -387,7 +393,8 @@ public class ClientModel implements IMessengerErrorListener {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        m_gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(), listing.getGameVersion().toString());
+        m_gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
+            listing.getGameVersion().toString());
       }
     });
     synchronized (this) {
@@ -437,8 +444,8 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private void connectionLost() {
-    EventThreadJOptionPane.showMessageDialog(m_ui, " Connection To Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE,
-        new CountDownLatchHandler(true));
+    EventThreadJOptionPane.showMessageDialog(m_ui, " Connection To Server Lost", "Connection Lost",
+        JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
     if (m_game != null) {
       m_game.shutDown();
       m_game = null;
@@ -481,7 +488,8 @@ public class ClientModel implements IMessengerErrorListener {
     return new ChangeGameToSaveGameClientAction(parent, getMessenger());
   }
 
-  public Action getHostBotChangeToAutosaveClientAction(final Component parent, final SaveGameFileChooser.AUTOSAVE_TYPE autosaveType) {
+  public Action getHostBotChangeToAutosaveClientAction(final Component parent,
+      final SaveGameFileChooser.AUTOSAVE_TYPE autosaveType) {
     return new ChangeToAutosaveClientAction(parent, getMessenger(), autosaveType);
   }
 
@@ -492,7 +500,8 @@ public class ClientModel implements IMessengerErrorListener {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("ClientModel GameData:" + (m_gameDataOnStartup == null ? "null" : m_gameDataOnStartup.getGameName()) + "\n");
+    sb.append(
+        "ClientModel GameData:" + (m_gameDataOnStartup == null ? "null" : m_gameDataOnStartup.getGameName()) + "\n");
     sb.append("Connected:" + (m_messenger == null ? "null" : m_messenger.isConnected()) + "\n");
     sb.append(m_messenger);
     sb.append("\n");

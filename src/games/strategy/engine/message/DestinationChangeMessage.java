@@ -1,9 +1,7 @@
 package games.strategy.engine.message;
 
 /**
- *
- *
- *         A destination has been added or removed
+ * A destination has been added or removed
  */
 class DestinationChangeMessage implements java.io.Serializable {
   private final boolean m_add;

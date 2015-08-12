@@ -6,12 +6,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.IRemote;
 
 /**
- *
- *
- *          Communication with the GamePlayer goes through the PlayerBridge to
- *          make the game network transparent.
- *
- *
+ * Communication with the GamePlayer goes through the PlayerBridge to
+ * make the game network transparent.
  */
 public interface IPlayerBridge {
   /**
@@ -40,7 +36,6 @@ public interface IPlayerBridge {
    * Get the name of the current delegate being executed. TODO: add this in to next release
    * public String getDelegateName();
    */
-
   /**
    * Get the properties for the current step.
    */

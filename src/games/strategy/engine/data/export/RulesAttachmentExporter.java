@@ -69,19 +69,20 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       final String count = "" + ((RulesAttachment) attachment).getTerritoryCount();
       return printCountOption(fieldName.substring(2), returnValue, count);
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for territoryCountListHandler on option: " + fieldName + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for territoryCountListHandler on option: " + fieldName + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
+          + " on Attachment: " + attachment.getName());
     } catch (final SecurityException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for territoryCountListHandler on option: " + fieldName + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName
+          + " on Attachment: " + attachment.getName());
     }
   }
 
   @SuppressWarnings("unchecked")
-  private String mAtWarPlayersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mAtWarPlayersHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     try {
       final Set<PlayerID> atWarPlayers = (Set<PlayerID>) field.get(attachment);
       if (atWarPlayers == null) {
@@ -98,25 +99,27 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter {
       }
       return printCountOption(option, value, "" + count);
     } catch (final IllegalArgumentException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final IllegalAccessException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final SecurityException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     } catch (final NoSuchFieldException e) {
-      throw new AttachmentExportException(
-          "e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
+      throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName()
+          + " on Attachment: " + attachment.getName());
     }
   }
 
-  private String mUnitPresenceHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mUnitPresenceHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printUnitIntegerMap(field, attachment);
   }
 
-  private String mProductionPerXTerritoriesHandler(final Field field, final IAttachment attachment) throws AttachmentExportException {
+  private String mProductionPerXTerritoriesHandler(final Field field, final IAttachment attachment)
+      throws AttachmentExportException {
     return printUnitIntegerMap(field, attachment);
   }
 

@@ -11,8 +11,6 @@ import games.strategy.util.Version;
 
 /**
  * To hold various static utility methods for running a java program.
- *
- *
  */
 public class ProcessRunnerUtil {
   public static void populateBasicJavaArgs(final List<String> commands) {

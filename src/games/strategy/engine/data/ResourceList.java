@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class ResourceList extends GameDataComponent {
   private static final long serialVersionUID = -8812702449627698253L;
   private final Map<String, Resource> m_resourceList = new HashMap<String, Resource>();
-
 
   public ResourceList(final GameData data) {
     super(data);

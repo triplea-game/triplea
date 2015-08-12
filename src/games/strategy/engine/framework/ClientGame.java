@@ -19,14 +19,14 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ui.ErrorHandler;
 
-
 public class ClientGame extends AbstractGame {
   public static final RemoteName getRemoteStepAdvancerName(final INode node) {
-    return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(), IGameStepAdvancer.class);
+    return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(),
+        IGameStepAdvancer.class);
   }
 
-  public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers, final Map<String, INode> remotePlayerMapping,
-      final Messengers messengers) {
+  public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers,
+      final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     super(data, gamePlayers, remotePlayerMapping, messengers);
     m_gameModifiedChannel = new IGameModifiedChannel() {
       @Override
@@ -86,10 +86,10 @@ public class ClientGame extends AbstractGame {
             // started (like with a roundChanged listener).
             if ((currentRound - 1 > round && ourOriginalCurrentRound >= round)
                 || (currentRound > round && ourOriginalCurrentRound < round)) {
-              System.err.println(
-                  "Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
-              throw new IllegalStateException(
-                  "Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
+              System.err.println("Can not create more rounds that host currently has. Host Round:" + round
+                  + " and new Client Round:" + currentRound);
+              throw new IllegalStateException("Can not create more rounds that host currently has. Host Round:" + round
+                  + " and new Client Round:" + currentRound);
             }
           } finally {
             m_data.releaseWriteLock();
@@ -187,7 +187,8 @@ public class ClientGame extends AbstractGame {
       }
       final IGamePlayer gp = m_gamePlayers.get(player);
       if (gp == null) {
-        throw new IllegalStateException("Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
+        throw new IllegalStateException(
+            "Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
       }
       gp.start(stepName);
     }

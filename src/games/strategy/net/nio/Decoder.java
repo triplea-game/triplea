@@ -23,9 +23,7 @@ import games.strategy.net.Node;
 import games.strategy.net.nio.QuarantineConversation.ACTION;
 
 /**
- *
  * A thread to Decode messages from a reader.
- *
  */
 public class Decoder {
   private static final Logger s_logger = Logger.getLogger(Decoder.class.getName());
@@ -118,7 +116,8 @@ public class Decoder {
     }
   }
 
-  private void sendQuarantine(final SocketChannel channel, final QuarantineConversation conversation, final MessageHeader header) {
+  private void sendQuarantine(final SocketChannel channel, final QuarantineConversation conversation,
+      final MessageHeader header) {
     final ACTION a = conversation.message(header.getMessage());
     if (a == ACTION.TERMINATE) {
       if (s_logger.isLoggable(Level.FINER)) {

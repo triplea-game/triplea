@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.proAI;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
@@ -99,5 +98,4 @@ public class ProPlaceTerritory {
   public boolean isCanHold() {
     return canHold;
   }
-
 }

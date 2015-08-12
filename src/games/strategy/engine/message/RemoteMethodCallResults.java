@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-
 /**
  * The results of a method execution.
- *
  * Note that either one of m_rVal or m_exception will be null,
  * since the method can either throw or return
- *
  */
 class RemoteMethodCallResults implements Externalizable {
   private static final long serialVersionUID = 4562274411264858613L;

@@ -24,7 +24,6 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-
 public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implements IGoEndTurnDelegate {
   protected Tuple<PlayerID, IGridEndTurnData> m_groupsThatShouldDie = null;
   protected boolean m_canScore = false;
@@ -37,8 +36,8 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
     super.start();
     if (haveTwoPassedInARow()) {
       final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
-      display.setStatus(
-          "End Game: " + m_player.getName() + " must click all dead groups. Pless 'C' to confirm, or 'R' to reject and continue playing.");
+      display.setStatus("End Game: " + m_player.getName()
+          + " must click all dead groups. Pless 'C' to confirm, or 'R' to reject and continue playing.");
       display.refreshTerritories(getData().getMap().getTerritories());
       if (m_groupsThatShouldDie != null && m_groupsThatShouldDie.getSecond() != null) {
         display.showGridEndTurnData(m_groupsThatShouldDie.getSecond());
@@ -50,8 +49,9 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
   public void end() {
     super.end();
     if (m_canScore && haveTwoPassedInARow()) {
-      final Tuple<Tuple<PlayerID, Integer>, Tuple<PlayerID, Integer>> scores = getFinalScores((m_groupsThatShouldDie == null
-          ? new HashSet<Territory>() : m_groupsThatShouldDie.getSecond().getTerritoryUnitsRemovalAdjustment()), getData());
+      final Tuple<Tuple<PlayerID, Integer>, Tuple<PlayerID, Integer>> scores =
+          getFinalScores((m_groupsThatShouldDie == null ? new HashSet<Territory>()
+              : m_groupsThatShouldDie.getSecond().getTerritoryUnitsRemovalAdjustment()), getData());
       final PlayerID p1 = scores.getFirst().getFirst();
       final int score1 = scores.getFirst().getSecond();
       final PlayerID p2 = scores.getSecond().getFirst();
@@ -68,8 +68,8 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
     }
   }
 
-  public static Tuple<Tuple<PlayerID, Integer>, Tuple<PlayerID, Integer>> getFinalScores(final Collection<Territory> deadGroups,
-      final GameData data) {
+  public static Tuple<Tuple<PlayerID, Integer>, Tuple<PlayerID, Integer>> getFinalScores(
+      final Collection<Territory> deadGroups, final GameData data) {
     final Map<Territory, PlayerID> currentState = getCurrentAreaScoreState(deadGroups, data);
     final IntegerMap<PlayerID> score = new IntegerMap<PlayerID>();
     for (final Entry<Territory, PlayerID> entry : currentState.entrySet()) {
@@ -117,8 +117,10 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
     return haveTwoPassedInARow() || super.delegateCurrentlyRequiresUserInput();
   }
 
-  public static Map<Territory, PlayerID> getCurrentAreaScoreState(final Collection<Territory> deadGroups, final GameData data) {
-    final boolean onlySurroundedTerritoryNotAllArea = data.getProperties().get("Territory Not Area Counts Towards Score", false);
+  public static Map<Territory, PlayerID> getCurrentAreaScoreState(final Collection<Territory> deadGroups,
+      final GameData data) {
+    final boolean onlySurroundedTerritoryNotAllArea =
+        data.getProperties().get("Territory Not Area Counts Towards Score", false);
     final Map<Territory, PlayerID> currentAreaScoreState = new HashMap<Territory, PlayerID>();
     for (final Territory t : data.getMap().getTerritories()) {
       final Set<PlayerID> towners = new HashSet<PlayerID>();
@@ -134,8 +136,7 @@ public class EndTurnDelegate extends AbstractPlayByEmailOrForumDelegate implemen
   }
 
   public static Set<PlayerID> getAllNeighboringPlayers(final Territory start, final Set<PlayerID> playersSoFar,
-      final Set<Territory> checkedAlready, final Collection<Territory> deadGroups,
-      final GameData data) {
+      final Set<Territory> checkedAlready, final Collection<Territory> deadGroups, final GameData data) {
     if (playersSoFar.size() >= 2) {
       return playersSoFar;
     }

@@ -60,7 +60,8 @@ public class ClientSetupPanel extends SetupPanel {
 
   private void internalPlayersChanged() {
     final Map<String, String> players = m_model.getPlayerToNodesMapping();
-    final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+    final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
+        m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
     final Map<String, Boolean> enabledPlayers = m_model.getPlayersEnabledListing();
     final Collection<String> disableable = m_model.getPlayersAllowedToBeDisabled();
     if (!m_model.getIsServerHeadlessCached()) {
@@ -69,8 +70,8 @@ public class ClientSetupPanel extends SetupPanel {
     m_playerRows = new ArrayList<PlayerRow>();
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
-      final PlayerRow playerRow =
-          new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name), IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
+      final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
+          IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
       m_playerRows.add(playerRow);
       playerRow.update(players.get(name), enabledPlayers.get(name), disableable.contains(name));
     }
@@ -178,7 +179,6 @@ public class ClientSetupPanel extends SetupPanel {
     return false;
   }
 
-
   class PlayerRow {
     private final JCheckBox m_enabledCheckBox;
     private final JLabel m_playerNameLabel;
@@ -187,7 +187,8 @@ public class ClientSetupPanel extends SetupPanel {
     private final String m_localPlayerType;
     private JLabel m_alliance;
 
-    PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType, final boolean enabled) {
+    PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType,
+        final boolean enabled) {
       m_playerNameLabel = new JLabel(playerName);
       m_playerLabel = new JLabel("");
       m_playerComponent = new JLabel("");

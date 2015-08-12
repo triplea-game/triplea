@@ -55,7 +55,8 @@ public class MapImage {
   private static Color PROPERTY_UNIT_FACTORY_DAMAGE_COLOR = null;
   private static Color PROPERTY_UNIT_HIT_DAMAGE_COLOR = null;
   private static final String PROPERTY_MAP_FONT_SIZE_STRING = "PROPERTY_MAP_FONT_SIZE";
-  private static final String PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING = "PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR";
+  private static final String PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING =
+      "PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR";
   private static final String PROPERTY_UNIT_COUNT_COLOR_STRING = "PROPERTY_UNIT_COUNT_COLOR";
   private static final String PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING = "PROPERTY_UNIT_FACTORY_DAMAGE_COLOR";
   private static final String PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING = "PROPERTY_UNIT_HIT_DAMAGE_COLOR";
@@ -88,7 +89,8 @@ public class MapImage {
   public static Color getPropertyUnitFactoryDamageColor() {
     if (PROPERTY_UNIT_FACTORY_DAMAGE_COLOR == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-      PROPERTY_UNIT_FACTORY_DAMAGE_COLOR = new Color(pref.getInt(PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING, Color.black.getRGB()));
+      PROPERTY_UNIT_FACTORY_DAMAGE_COLOR =
+          new Color(pref.getInt(PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING, Color.black.getRGB()));
     }
     return PROPERTY_UNIT_FACTORY_DAMAGE_COLOR;
   }
@@ -96,7 +98,8 @@ public class MapImage {
   public static Color getPropertyUnitHitDamageColor() {
     if (PROPERTY_UNIT_HIT_DAMAGE_COLOR == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-      PROPERTY_UNIT_HIT_DAMAGE_COLOR = new Color(pref.getInt(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING, Color.black.getRGB()));
+      PROPERTY_UNIT_HIT_DAMAGE_COLOR =
+          new Color(pref.getInt(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING, Color.black.getRGB()));
     }
     return PROPERTY_UNIT_HIT_DAMAGE_COLOR;
   }

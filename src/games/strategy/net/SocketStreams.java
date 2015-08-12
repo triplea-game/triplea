@@ -10,11 +10,9 @@ import java.net.Socket;
 /**
  * A holder for all the streams associated with a socket.
  * <p>
- *
  * We need this because we can only buffer a socket once (otherwise you have issues when the first buffer reads bytes that weren't meant for
  * it)
  * <p>
- *
  */
 public class SocketStreams {
   private final InputStream m_socketIn;

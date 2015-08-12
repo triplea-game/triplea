@@ -51,7 +51,8 @@ public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel 
     m_mapPanel.setRoute(null);
     final Insets insets = new Insets(5, 0, 0, 0);
     m_title.setText(node.getTitle());
-    add(m_scroll, new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
+    add(m_scroll,
+        new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
     final GridBagConstraints mainConstraints =
         new GridBagConstraints(0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
     if (node instanceof Renderable) {

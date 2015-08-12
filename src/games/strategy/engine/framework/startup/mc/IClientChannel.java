@@ -7,7 +7,6 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 
-
 public interface IClientChannel extends IChannelSubscribor {
   public static final RemoteName CHANNEL_NAME =
       new RemoteName("games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
@@ -15,7 +14,6 @@ public interface IClientChannel extends IChannelSubscribor {
   public void playerListingChanged(PlayerListing listing);
 
   /**
-   *
    * @param gameData
    * @param players
    *        who is playing who

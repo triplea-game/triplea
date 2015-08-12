@@ -23,20 +23,14 @@ import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 /**
  * Utility to get connections to the database.
  * <p>
- *
  * The database is embedded within the jvm.
  * <p>
- *
  * Getting a connection will cause the database (and the neccessary tables) to be created if it does not already exist.
  * <p>
- *
  * The database will be shutdown on System.exit through a shutdown hook.
  * <p>
- *
  * Getting a connection will also schedule backups at regular intervals.
  * <p>
- *
- *
  */
 public class Database {
   private final static Logger s_logger = Logger.getLogger(Database.class.getName());
@@ -110,39 +104,45 @@ public class Database {
         rs.close();
         if (!existing.contains("TA_USERS")) {
           final Statement s = conn.createStatement();
-          s.execute("create table ta_users" + "(" + "userName varchar(40) NOT NULL PRIMARY KEY, " + "password varchar(40) NOT NULL, "
-              + "email varchar(40) NOT NULL, "
-              + "joined timestamp NOT NULL, " + "lastLogin timestamp NOT NULL, " + "admin integer NOT NULL " + ")");
+          s.execute("create table ta_users" + "(" + "userName varchar(40) NOT NULL PRIMARY KEY, "
+              + "password varchar(40) NOT NULL, " + "email varchar(40) NOT NULL, " + "joined timestamp NOT NULL, "
+              + "lastLogin timestamp NOT NULL, " + "admin integer NOT NULL " + ")");
           s.close();
         }
         if (!existing.contains("BANNED_USERNAMES")) {
           final Statement s = conn.createStatement();
-          s.execute("create table banned_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
+          s.execute("create table banned_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, "
+              + "ban_till timestamp  " + ")");
           s.close();
         }
         if (!existing.contains("BANNED_IPS")) {
           final Statement s = conn.createStatement();
-          s.execute("create table banned_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
+          s.execute(
+              "create table banned_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
           s.close();
         }
         if (!existing.contains("BANNED_MACS")) {
           final Statement s = conn.createStatement();
-          s.execute("create table banned_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
+          s.execute("create table banned_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  "
+              + ")");
           s.close();
         }
         if (!existing.contains("MUTED_USERNAMES")) {
           final Statement s = conn.createStatement();
-          s.execute("create table muted_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
+          s.execute("create table muted_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, "
+              + "mute_till timestamp  " + ")");
           s.close();
         }
         if (!existing.contains("MUTED_IPS")) {
           final Statement s = conn.createStatement();
-          s.execute("create table muted_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
+          s.execute(
+              "create table muted_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
           s.close();
         }
         if (!existing.contains("MUTED_MACS")) {
           final Statement s = conn.createStatement();
-          s.execute("create table muted_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
+          s.execute("create table muted_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  "
+              + ")");
           s.close();
         }
         if (!existing.contains("BAD_WORDS")) {
@@ -211,7 +211,6 @@ public class Database {
 
   /**
    * This must be the first db call made.
-   *
    * Run Database as a main method to run the backup.
    *
    * @param backupDir
@@ -233,7 +232,8 @@ public class Database {
   }
 
   public static void backup() {
-    final String backupDirName = "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
+    final String backupDirName =
+        "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
     final File backupRootDir = getBackupDir();
     final File backupDir = new File(backupRootDir, backupDirName);
     if (!backupDir.mkdirs()) {
@@ -277,7 +277,6 @@ public class Database {
   }
 
   /**
-   *
    * Restore the database.
    */
   public static void main(final String[] args) {

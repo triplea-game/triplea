@@ -42,8 +42,8 @@ public class AutoPlacementFinder {
   private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
   private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
   private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
-  private static final JTextAreaOptionPane textOptionPane =
-      new JTextAreaOptionPane(null, "AutoPlacementFinder Log\r\n\r\n", "", "AutoPlacementFinder Log", null, 500, 300, true, 1, null);
+  private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
+      "AutoPlacementFinder Log\r\n\r\n", "", "AutoPlacementFinder Log", null, 500, 300, true, 1, null);
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
@@ -51,26 +51,24 @@ public class AutoPlacementFinder {
 
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
-    JOptionPane.showMessageDialog(null, new JLabel("<html>"
-        + "This is the AutoPlacementFinder, it will create a place.txt file for you. "
-        + "<br>In order to run this, you must already have created a centers.txt file and a polygons.txt file, "
-        + "<br>and you must have already created the map directory structure in its final place."
-        + "<br>Example: the map folder should have a name, with the 2 text files already in that folder, and "
-        + "<br>the folder should be located in your users\\yourname\\triplea\\maps\\ directory."
-        + "<br><br>The program will ask for the folder name (just the name, not the full path)."
-        + "<br>Then it will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0]"
-        + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]."
-        + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size."
-        + "<br><br>When done, the program will attempt to make placements for all territories on your map."
-        + "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good idea"
-        + "<br>to use the PlacementPicker to check all placements and redo some of them by hand."
-        + "</html>"));
+    JOptionPane.showMessageDialog(null,
+        new JLabel("<html>" + "This is the AutoPlacementFinder, it will create a place.txt file for you. "
+            + "<br>In order to run this, you must already have created a centers.txt file and a polygons.txt file, "
+            + "<br>and you must have already created the map directory structure in its final place."
+            + "<br>Example: the map folder should have a name, with the 2 text files already in that folder, and "
+            + "<br>the folder should be located in your users\\yourname\\triplea\\maps\\ directory."
+            + "<br><br>The program will ask for the folder name (just the name, not the full path)."
+            + "<br>Then it will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0]"
+            + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]."
+            + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size."
+            + "<br><br>When done, the program will attempt to make placements for all territories on your map."
+            + "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good idea"
+            + "<br>to use the PlacementPicker to check all placements and redo some of them by hand." + "</html>"));
     calculate();
   }
 
   /**
    * calculate()
-   *
    * Will calculate the placements on the map automatically.
    */
   static void calculate() {
@@ -83,7 +81,8 @@ public class AutoPlacementFinder {
     }
     File file = new File(GameRunner2.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
     if (!file.exists()) {
-      file = new File(GameRunner2.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
+      file = new File(GameRunner2.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator
+          + "map.properties");
     }
     if (file.exists() && s_mapFolderLocation == null) {
       s_mapFolderLocation = file.getParentFile();
@@ -98,7 +97,6 @@ public class AutoPlacementFinder {
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-
           final FileReader reader = new FileReader(file);
           final LineNumberReader reader2 = new LineNumberReader(reader);
           int i = 0;
@@ -124,7 +122,8 @@ public class AutoPlacementFinder {
             }
             if (line.contains(heightProperty)) {
               try {
-                height = Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
+                height =
+                    Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
                 found = true;
               } catch (final NumberFormatException ex) {
               }
@@ -134,10 +133,10 @@ public class AutoPlacementFinder {
           i++;
           if (found) {
             final int result = JOptionPane.showConfirmDialog(new JPanel(),
-                "A map.properties file was found in the map's folder, " +
-                    "\r\n do you want to use the file to supply the info for the placement box size? " +
-                    "\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height +
-                    ",    Result = (" + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")",
+                "A map.properties file was found in the map's folder, "
+                    + "\r\n do you want to use the file to supply the info for the placement box size? "
+                    + "\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height + ",    Result = ("
+                    + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")",
                 "File Suggestion", 1);
             // if (result == 2)
             // return;
@@ -152,26 +151,26 @@ public class AutoPlacementFinder {
       } catch (final Exception ex) {
       }
     }
-    if (!placeDimensionsSet
-        || JOptionPane.showConfirmDialog(new JPanel(), "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), " +
-            "do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.",
-            "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
+    if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
+        "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), "
+            + "do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.",
+        "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
       try {
         final String result = getUnitsScale();
         try {
           unit_zoom_percent = Double.parseDouble(result.toLowerCase());
         } catch (final NumberFormatException ex) {
         }
-        final String width =
-            JOptionPane.showInputDialog(null, "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+        final String width = JOptionPane.showInputDialog(null,
+            "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
         if (width != null) {
           try {
             PLACEWIDTH = (int) (unit_zoom_percent * Integer.parseInt(width));
           } catch (final NumberFormatException ex) {
           }
         }
-        final String height =
-            JOptionPane.showInputDialog(null, "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+        final String height = JOptionPane.showInputDialog(null,
+            "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
         if (height != null) {
           try {
             PLACEHEIGHT = (int) (unit_zoom_percent * Integer.parseInt(height));
@@ -185,8 +184,8 @@ public class AutoPlacementFinder {
     try {
       s_mapData = new MapData(mapDir); // makes TripleA read all the text data files for the map.
     } catch (final Exception ex) {
-      JOptionPane.showMessageDialog(null,
-          new JLabel("Could not find map. Make sure it is in finalized location and contains centers.txt and polygons.txt"));
+      JOptionPane.showMessageDialog(null, new JLabel(
+          "Could not find map. Make sure it is in finalized location and contains centers.txt and polygons.txt"));
       System.out.println("Caught Exception.");
       System.out.println("Could be due to some missing text files.");
       System.out.println("Or due to the map folder not being in the right location.");
@@ -205,11 +204,12 @@ public class AutoPlacementFinder {
         for (final String containedName : s_mapData.getContainedTerritory(name)) {
           containedPolygons.addAll(s_mapData.getPolygons(containedName));
         }
-        points = getPlacementsStartingAtTopLeft(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name), s_mapData.getCenter(name),
-            containedPolygons);
+        points = getPlacementsStartingAtTopLeft(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name),
+            s_mapData.getCenter(name), containedPolygons);
         m_placements.put(name, points);
       } else {
-        points = getPlacementsStartingAtMiddle(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name), s_mapData.getCenter(name));
+        points = getPlacementsStartingAtMiddle(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name),
+            s_mapData.getCenter(name));
         m_placements.put(name, points);
       }
       textOptionPane.appendNewLine(name + ": " + points.size());
@@ -217,7 +217,8 @@ public class AutoPlacementFinder {
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
     try {
-      final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
+      final String fileName =
+          new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
       if (fileName == null) {
         textOptionPane.appendNewLine("You chose not to save, Shutting down");
         textOptionPane.dispose();
@@ -249,8 +250,8 @@ public class AutoPlacementFinder {
   }
 
   private static String getUnitsScale() {
-    final String unitsScale =
-        JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
+    final String unitsScale = JOptionPane.showInputDialog(null,
+        "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
     if (unitsScale != null) {
       return unitsScale;
     } else {
@@ -326,8 +327,8 @@ public class AutoPlacementFinder {
    *        .util.Collection
    * @return java.util.List
    */
-  static List<Point> getPlacementsStartingAtTopLeft(final Collection<Polygon> countryPolygons, final Rectangle bounding, final Point center,
-      final Collection<Polygon> containedCountryPolygons) {
+  static List<Point> getPlacementsStartingAtTopLeft(final Collection<Polygon> countryPolygons, final Rectangle bounding,
+      final Point center, final Collection<Polygon> containedCountryPolygons) {
     final List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
     final List<Point> placementPoints = new ArrayList<Point>();
     final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
@@ -366,8 +367,8 @@ public class AutoPlacementFinder {
    * @param java
    *        .lang.int y
    */
-  private static void isPlacement(final Collection<Polygon> countryPolygons, final Collection<Polygon> containedCountryPolygons,
-      final List<Rectangle2D> placementRects,
+  private static void isPlacement(final Collection<Polygon> countryPolygons,
+      final Collection<Polygon> containedCountryPolygons, final List<Rectangle2D> placementRects,
       final List<Point> placementPoints, final Rectangle2D place, final int x, final int y) {
     place.setFrame(x, y, PLACEWIDTH, PLACEHEIGHT);
     if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects) &&
@@ -382,7 +383,6 @@ public class AutoPlacementFinder {
 
   /**
    * java.lang.boolean containedIn(java.awt.geom.Rectangle2D, java.util.Collection)
-   *
    * Function to test if the given 2D rectangle
    * is contained in any of the given shapes
    * in the collection.
@@ -403,7 +403,6 @@ public class AutoPlacementFinder {
 
   /**
    * java.lang.boolean intersectsOneOf(java.awt.geom.Rectangle2D, java.util.Collection)
-   *
    * Function to test if the given 2D rectangle
    * intersects any of the shapes given in the
    * collection.
@@ -459,7 +458,6 @@ public class AutoPlacementFinder {
         System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
       } catch (final Exception ex) {
       }
-
       String value1;
       if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
         value1 = getValue(args[1]);
@@ -472,7 +470,6 @@ public class AutoPlacementFinder {
       } catch (final Exception ex) {
       }
     }
-
     boolean usagePrinted = false;
     for (final String arg2 : args) {
       boolean found = false;
@@ -494,11 +491,9 @@ public class AutoPlacementFinder {
         System.out.println("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          System.out.println("Arguments\r\n"
-              + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
-              + "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
-              + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
-              + "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+          System.out.println("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+              + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
+              + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
       }
     }

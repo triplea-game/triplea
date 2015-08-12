@@ -7,9 +7,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 
 /**
- *
- *
- *          At the end of the turn collect NO income.
+ * At the end of the turn collect NO income.
  */
 @AutoSave(afterStepEnd = true)
 public class NoPUEndTurnDelegate extends EndTurnDelegate {

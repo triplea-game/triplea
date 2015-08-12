@@ -8,8 +8,6 @@ import java.util.List;
  * want the "end" to not be null.
  * If the Route only has a start, it will return the start when you call .end(), and it will return a length of 1 if the length is really
  * zero.
- *
- *
  */
 public class RouteScripted extends Route {
   private static final long serialVersionUID = 604474811874966546L;

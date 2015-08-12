@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A simple thread pool.
- *
  */
 public class ThreadPool {
   private final String m_name;
@@ -113,7 +112,6 @@ public class ThreadPool {
       m_pendingTasks.offer(dummy);
     }
   }
-
 
   private class ThreadTracker implements Runnable {
     @Override

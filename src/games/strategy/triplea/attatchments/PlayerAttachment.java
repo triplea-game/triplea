@@ -20,7 +20,6 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
-
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
 
@@ -54,31 +53,34 @@ public class PlayerAttachment extends DefaultAttachment {
   private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and
                                                                                       // at what attack power
   private HashSet<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // placement
-                                                                                                                                            // limits
-                                                                                                                                            // on
-                                                                                                                                            // a
-                                                                                                                                            // flexible
-                                                                                                                                            // per
-                                                                                                                                            // player
-                                                                                                                                            // basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // movement
-                                                                                                                                           // limits
-                                                                                                                                           // on
-                                                                                                                                           // a
-                                                                                                                                           // flexible
-                                                                                                                                           // per
-                                                                                                                                           // player
-                                                                                                                                           // basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // attacking
-                                                                                                                                            // number
-                                                                                                                                            // limits
-                                                                                                                                            // on
-                                                                                                                                            // a
-                                                                                                                                            // flexible
-                                                                                                                                            // per
-                                                                                                                                            // player
-                                                                                                                                            // basis
+  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit =
+      new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // placement
+                                                                 // limits
+                                                                 // on
+                                                                 // a
+                                                                 // flexible
+                                                                 // per
+                                                                 // player
+                                                                 // basis
+  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit =
+      new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // movement
+                                                                 // limits
+                                                                 // on
+                                                                 // a
+                                                                 // flexible
+                                                                 // per
+                                                                 // player
+                                                                 // basis
+  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit =
+      new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // attacking
+                                                                 // number
+                                                                 // limits
+                                                                 // on
+                                                                 // a
+                                                                 // flexible
+                                                                 // per
+                                                                 // player
+                                                                 // basis
 
   /** Creates new PlayerAttachment */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -241,9 +243,8 @@ public class PlayerAttachment extends DefaultAttachment {
     m_attackingLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
   }
 
-  public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType, final Collection<Unit> unitsMoving,
-      final Territory toMoveInto, final PlayerID owner,
-      final GameData data) {
+  public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType,
+      final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerID owner, final GameData data) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);
     if (pa == null) {
       return true;
@@ -256,7 +257,8 @@ public class PlayerAttachment extends DefaultAttachment {
     } else if (limitType.equals("placementLimit")) {
       stackingLimits = pa.getPlacementLimit();
     } else {
-      throw new IllegalStateException("getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: " + limitType);
+      throw new IllegalStateException(
+          "getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: " + limitType);
     }
     if (stackingLimits.isEmpty()) {
       return true;

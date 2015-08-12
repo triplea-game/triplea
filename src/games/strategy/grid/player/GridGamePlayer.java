@@ -20,7 +20,6 @@ import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * Represents a human player of Grid Games.
- *
  */
 public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements IGridGamePlayer {
   public GridGamePlayer(final String name, final String type) {
@@ -33,7 +32,6 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
       return;
     }
     super.start(stepName); // must call super.start
-
     enableEditModeMenu();
     boolean badStep = false;
     if (stepName.endsWith("Play")) {
@@ -43,14 +41,11 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
     } else {
       badStep = true;
     }
-
     disableEditModeMenu();
-
     if (badStep) {
       throw new IllegalArgumentException("Unrecognized step stepName:" + stepName);
     }
   }
-
 
   protected void play() {
     // change to active player
@@ -101,8 +96,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
   }
 
   @Override
-  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory, final PlayerID player,
-      final GameData data, final String message) {
+  public UnitType selectUnit(final Unit startUnit, final Collection<UnitType> options, final Territory territory,
+      final PlayerID player, final GameData data, final String message) {
     return m_ui.selectUnit(startUnit, options, territory, player, data, message);
   }
 
@@ -140,7 +135,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame>implements
       try {
         // Set edit mode
         // All GameDataChangeListeners will be notified upon success
-        final IGridEditDelegate editDelegate = (IGridEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
+        final IGridEditDelegate editDelegate =
+            (IGridEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
         editDelegate.setEditMode(editMode);
       } catch (final Exception e) {
         e.printStackTrace();

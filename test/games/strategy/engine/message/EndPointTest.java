@@ -5,7 +5,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-
 public class EndPointTest extends TestCase {
   @SuppressWarnings("rawtypes")
   public void testEndPoint() {
@@ -16,8 +15,8 @@ public class EndPointTest extends TestCase {
         return 2;
       }
     });
-    final RemoteMethodCall call =
-        new RemoteMethodCall("", "compare", new Object[] {"", ""}, new Class[] {Object.class, Object.class}, Comparator.class);
+    final RemoteMethodCall call = new RemoteMethodCall("", "compare", new Object[] {"", ""},
+        new Class[] {Object.class, Object.class}, Comparator.class);
     final List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, endPoint.takeANumber(), null);
     assertEquals(results.size(), 1);
     assertEquals(2, (results.iterator().next()).getRVal());

@@ -123,7 +123,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     if (notesProperty != null && notesProperty.trim().length() != 0) {
       final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
       m_gameNotesPane = new SoftJEditorPane(notes);
-
       parentMenu.add(new AbstractAction("Game Notes...") {
         private static final long serialVersionUID = -1817640666359299617L;
 
@@ -222,8 +221,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   /**
    * @param parentMenu
    */
-  protected final void addAllowObserversToJoin(final JMenu parentMenu) {
-  }
+  protected final void addAllowObserversToJoin(final JMenu parentMenu) {}
 
   protected void addBootPlayer(final JMenu parentMenu) {
     if (!getGame().getMessenger().isServer()) {
@@ -315,8 +313,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher
-              .openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
+          DesktopUtilityBrowserLauncher.openURL(
+              "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
         } catch (final Exception e1) {
           ClientLogger.logQuietly(e1);
         }
@@ -347,7 +345,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
+          DesktopUtilityBrowserLauncher
+              .openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
         } catch (final Exception e1) {
           ClientLogger.logQuietly(e1);
         }
@@ -422,8 +421,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
    */
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
-        + games.strategy.engine.EngineVersion.VERSION.toString() + "<br><b>Game:</b> "
-        + getData().getGameName() + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
+        + games.strategy.engine.EngineVersion.VERSION.toString() + "<br><b>Game:</b> " + getData().getGameName()
+        + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
         + "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
     final JEditorPane editorPane = new JEditorPane();
@@ -488,7 +487,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         }
       });
       fileDialog.setVisible(true);
-
       String fileName = fileDialog.getFile();
       final String dirName = fileDialog.getDirectory();
       if (fileName == null) {
@@ -526,9 +524,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       }
       // A small warning so users will not over-write a file
       if (f.exists()) {
-        final int choice = JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
-            "Over-write?", JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE);
+        final int choice =
+            JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
+                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (choice != JOptionPane.OK_OPTION) {
           return null;
         }
@@ -536,8 +534,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       return f;
     }
   }
-
-
 
   protected void addSaveMenu(final JMenu parent) {
     final JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...") {
@@ -553,7 +549,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       }
     });
     menuFileSave.setMnemonic(KeyEvent.VK_S);
-    menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    menuFileSave.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     parent.add(menuFileSave);
   }
 
@@ -574,8 +571,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         try {
           data.acquireReadLock();
           final GameStep step = data.getSequence().getStep();
-          final PlayerID currentPlayer =
-              (step == null ? PlayerID.NULL_PLAYERID : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
+          final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
+              : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
           final int round = data.getSequence().getRound();
           final HistoryLog historyLog = new HistoryLog();
           historyLog.printFullTurn(data, false, GameStepPropertiesHelper.getTurnSummaryPlayers(data));
@@ -587,7 +584,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       }
     });
     menuPBEM.setMnemonic(KeyEvent.VK_P);
-    menuPBEM.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    menuPBEM.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     parent.add(menuPBEM);
   }
 
@@ -604,11 +602,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
                  // so set the command-L key combo for the Leave Game action
-      leaveGameMenuExit
-          .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+      leaveGameMenuExit.setAccelerator(
+          KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
-      leaveGameMenuExit
-          .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+      leaveGameMenuExit.setAccelerator(
+          KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
     parentMenu.add(leaveGameMenuExit);
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
@@ -648,43 +646,41 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       substanceLooks.remove("javax.swing.plaf.nimbus.NimbusLookAndFeel");
     }
     if (isJavaGreatThan5()) {
-      substanceLooks.addAll(new ArrayList<String>(Arrays.asList(new String[] {
-          "org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
-          "org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"
-      })));
+      substanceLooks.addAll(new ArrayList<String>(
+          Arrays.asList(new String[] {"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
+              "org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"})));
     }
     return substanceLooks;
   }
 
   /**
    * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
-   *
    */
   public static Triple<JList, Map<String, String>, String> getLookAndFeelList() {
     final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
@@ -696,7 +692,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         final LookAndFeel lf = (LookAndFeel) c.newInstance();
         lookAndFeels.put(lf.getName(), s);
       }
-
     } catch (final Exception t) {
       t.printStackTrace();
       // we know all machines have these 3, so use them
@@ -755,13 +750,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         text.setText(id);
         final JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("Game UUID:"),
-            new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text,
-            new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID", JOptionPane.OK_OPTION,
-            JOptionPane.INFORMATION_MESSAGE, null,
-            new String[] {"OK"}, "OK");
+        panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0), 0, 0));
+        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Game UUID",
+            JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
       }
     }).setMnemonic(KeyEvent.VK_U);
   }
@@ -790,13 +784,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         text.setText(String.valueOf(AbstractUIContext.getAIPauseDuration()));
         final JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.add(new JLabel("AI Pause Duration (ms):"),
-            new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        panel.add(text,
-            new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel, "Set AI Pause Duration",
-            JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
-            new String[] {"OK"}, "OK");
+        panel.add(new JLabel("AI Pause Duration (ms):"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
+            GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0), 0, 0));
+        JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(BasicGameMenuBar.this), panel,
+            "Set AI Pause Duration", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"},
+            "OK");
         try {
           AbstractUIContext.setAIPauseDuration(Integer.parseInt(text.getText()));
         } catch (final Exception ex) {
@@ -843,7 +837,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
         } finally {
           getData().releaseReadLock();
         }
-        String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
+        String defaultFileName =
+            "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + round;
         defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
         defaultFileName = defaultFileName + ".xml";
         chooser.setSelectedFile(new File(rootDir, defaultFileName));
@@ -881,5 +876,4 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
   public GameData getData() {
     return m_frame.getGame().getData();
   }
-
 }

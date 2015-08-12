@@ -41,7 +41,8 @@ public class CanalAttachment extends DefaultAttachment {
       }
     }
     if (rVal.size() != 2) {
-      throw new IllegalStateException("Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + rVal);
+      throw new IllegalStateException(
+          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + rVal);
     }
     return rVal;
   }
@@ -63,7 +64,8 @@ public class CanalAttachment extends DefaultAttachment {
   public static CanalAttachment get(final Territory t, final String nameOfAttachment) {
     final CanalAttachment rVal = (CanalAttachment) t.getAttachment(nameOfAttachment);
     if (rVal == null) {
-      throw new IllegalStateException("CanalAttachment: No canal attachment for:" + t.getName() + " with name: " + nameOfAttachment);
+      throw new IllegalStateException(
+          "CanalAttachment: No canal attachment for:" + t.getName() + " with name: " + nameOfAttachment);
     }
     return rVal;
   }
@@ -152,7 +154,8 @@ public class CanalAttachment extends DefaultAttachment {
 
   public HashSet<UnitType> getExcludedUnits(final GameData data) {
     if (m_excludedUnits == null) {
-      return new HashSet<UnitType>(Match.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir));
+      return new HashSet<UnitType>(
+          Match.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir));
     }
     return m_excludedUnits;
   }

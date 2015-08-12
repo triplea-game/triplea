@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.AbstractUIContext;
 
-
 public class LocalizeHTML {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
   public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
@@ -19,11 +18,9 @@ public class LocalizeHTML {
    * So here are the best one I could find.
    * Regex's found at http://www.mkyong.com/
    */
-
   // frigoref suggested we use this one instead, however it is overly complicated:
   // private static final String PATTERN_HTML_IMG_SRC_URL = ".*<img
   // [^>\"]*src\\s*=\\s*\"((https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})[^\"]*)\".*";
-
   /*
    * Match an <a></a> tag.
    * ( # start of group #1
@@ -38,7 +35,6 @@ public class LocalizeHTML {
    * </a> # end with "</a>
    */
   public static final String PATTERN_HTML_A_TAG = "(?i)<a([^>]+)>(.*?)</a>";
-
   /*
    * Match the href attribute.
    * \s* # can start with whitespace
@@ -54,10 +50,8 @@ public class LocalizeHTML {
    * ) # end of group #1
    */
   public static final String PATTERN_HTML_A_HREF_TAG = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
-
   /* Match the <img /> tag */
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
-
   /* Match the src attribute */
   public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
@@ -111,7 +105,8 @@ public class LocalizeHTML {
     return localizeImgLinksInHTML(htmlText, AbstractUIContext.getResourceLoader(), null);
   }
 
-  public static String localizeImgLinksInHTML(final String htmlText, final ResourceLoader resourceLoader, final String mapNameDir) {
+  public static String localizeImgLinksInHTML(final String htmlText, final ResourceLoader resourceLoader,
+      final String mapNameDir) {
     if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
       return htmlText;
     }
@@ -157,21 +152,22 @@ public class LocalizeHTML {
   }
 
   public static void main(final String[] args) {
-    final String htmlText = "<br><img src=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview0.png\" alt=\"blah, blah\"/>"
-        + "\n<br /><img src=\"\" alt=\"<em>formatted, alt text for a no source image</em>\"/>"
-        + "\n<br/><img src=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/somePicture.gif\"/>"
-        + "\n<br><img src=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces.JPEG\" alt=\"<em>formatted, alt text</em>\"/>"
-        + "\n<br><img src='http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces2.JPEG' alt='formatted, alt text for single quote img tag'/>"
-        + "\n<br/><IMG ALT=\"reverse order alt and src tags and capitalized\" SRC=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/somePicture2.gif\"/>"
-        + "\n<br /><br><img src=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview1.png\" alt=\"technically legal to have separate end tag on img\"></img>"
-        + "\n<br>And here is a normal link in plain text: http://tripleamaps.sourceforge.net/images/tww/TechOverview1.png"
-        + "\n<br />And <SPAN>some regular old html <b>text that</b> might <i>have other</i> formatting in it</SPAN> and stuff."
-        + "\n<br />And now for some normal links as links:"
-        + "\n<br /><a href=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview2.png\">picture</a>"
-        + "\n<br /><a href=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview3.png\"/>"
-        + "\n<br /><A HREF=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview4.png\"><em><SPAN>formatted, alt text, with capitalization</SPAN></em></A>"
-        + "\n<br /><a href=\"\"><em>formatted, alt text for a no href link</em></a>"
-        + "\n<br /><a target='_blank' href='http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces3.JPEG'><b>reverse order with single quotes and formatted text</b></a>";
+    final String htmlText =
+        "<br><img src=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview0.png\" alt=\"blah, blah\"/>"
+            + "\n<br /><img src=\"\" alt=\"<em>formatted, alt text for a no source image</em>\"/>"
+            + "\n<br/><img src=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/somePicture.gif\"/>"
+            + "\n<br><img src=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces.JPEG\" alt=\"<em>formatted, alt text</em>\"/>"
+            + "\n<br><img src='http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces2.JPEG' alt='formatted, alt text for single quote img tag'/>"
+            + "\n<br/><IMG ALT=\"reverse order alt and src tags and capitalized\" SRC=\"http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/somePicture2.gif\"/>"
+            + "\n<br /><br><img src=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview1.png\" alt=\"technically legal to have separate end tag on img\"></img>"
+            + "\n<br>And here is a normal link in plain text: http://tripleamaps.sourceforge.net/images/tww/TechOverview1.png"
+            + "\n<br />And <SPAN>some regular old html <b>text that</b> might <i>have other</i> formatting in it</SPAN> and stuff."
+            + "\n<br />And now for some normal links as links:"
+            + "\n<br /><a href=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview2.png\">picture</a>"
+            + "\n<br /><a href=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview3.png\"/>"
+            + "\n<br /><A HREF=\"http://tripleamaps.sourceforge.net/images/tww/TechOverview4.png\"><em><SPAN>formatted, alt text, with capitalization</SPAN></em></A>"
+            + "\n<br /><a href=\"\"><em>formatted, alt text for a no href link</em></a>"
+            + "\n<br /><a target='_blank' href='http://www.someWebsite.com/some%20Folder/someOtherFolder Which May Contain Spaces/some Picture%20WithSpaces3.JPEG'><b>reverse order with single quotes and formatted text</b></a>";
     System.out.println(htmlText);
     System.out.println("\n\n\n");
     final List<String> links1 = getAllAhrefLinksFromHTML(htmlText);

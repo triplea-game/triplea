@@ -7,8 +7,6 @@ import java.util.concurrent.CountDownLatch;
 /**
  * A handler for CountDownLatch's with methods to release latches being waited on from outside of their threads.
  * Is Thread Safe.
- *
- *
  */
 public class CountDownLatchHandler {
   private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();

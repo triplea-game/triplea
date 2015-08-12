@@ -22,8 +22,6 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 
 /**
  * Server setup model.
- *
- *
  */
 public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   private static final long serialVersionUID = 9021977178348892504L;
@@ -44,8 +42,8 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   public void createLobbyWatcher() {
     if (m_lobbyWatcher != null) {
-      m_lobbyWatcher.setInGameLobbyWatcher(
-          InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null, m_lobbyWatcher.getInGameLobbyWatcher()));
+      m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null,
+          m_lobbyWatcher.getInGameLobbyWatcher()));
       m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
     }
   }

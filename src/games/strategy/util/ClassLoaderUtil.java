@@ -17,12 +17,9 @@ import sun.misc.URLClassPath;
 
 /**
  * Provides utility functions related to URLClassLoaders or subclasses of it.
- *
  * W A R N I N G
- *
  * This class uses undocumented, unpublished, private data structures inside
  * java.net.URLClassLoader and sun.misc.URLClassPath. Use with extreme caution.
- *
  */
 public class ClassLoaderUtil {
   /** records whether initialization has been completed */
@@ -92,7 +89,8 @@ public class ClassLoaderUtil {
       field.setAccessible(true);
       return field;
     } catch (final NoSuchFieldException nsfe) {
-      final NoSuchFieldException e = new NoSuchFieldException(getMessage("classloaderutil.errorGettingField", fieldName));
+      final NoSuchFieldException e =
+          new NoSuchFieldException(getMessage("classloaderutil.errorGettingField", fieldName));
       e.initCause(nsfe);
       throw e;
     }
@@ -209,7 +207,6 @@ public class ClassLoaderUtil {
        * the released class loader will trigger an exception if the
        * class or resource would have been resolved by the class
        * loader (and no other) if it had not been released.
-       *
        * The list of URLs might provide some hints to the person as to where
        * in the code the class loader was set up, which might in turn suggest
        * where in the code the class loader needs to stop being used.
@@ -219,7 +216,6 @@ public class ClassLoaderUtil {
        */
       /*
        * For each loader, close the jar file associated with that loader.
-       *
        * The URLClassPath's use of loaders is sync-ed on the entire URLClassPath
        * object.
        */
@@ -247,7 +243,8 @@ public class ClassLoaderUtil {
                    * could not be closed and add it to the list
                    * of IOExceptions to be returned to the caller.
                    */
-                  final String jarFileName = (jarFile == null) ? getMessage("classloaderutil.jarFileNameNotAvailable") : jarFile.getName();
+                  final String jarFileName =
+                      (jarFile == null) ? getMessage("classloaderutil.jarFileNameNotAvailable") : jarFile.getName();
                   final String msg = getMessage("classloaderutil.errorClosingJar", jarFileName);
                   final IOException newIOE = new IOException(msg);
                   newIOE.initCause(ioe);

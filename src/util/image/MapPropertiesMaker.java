@@ -56,8 +56,6 @@ import games.strategy.util.Tuple;
  * the size of the unit images, and how zoomed out they are, etc. <br>
  * To use, just fill in the information in the fields below, and click on 'Show More' to
  * show other, optional, fields.
- *
- *
  */
 public class MapPropertiesMaker extends JFrame {
   private static final long serialVersionUID = 8182821091131994702L;
@@ -155,19 +153,18 @@ public class MapPropertiesMaker extends JFrame {
     final JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());
     int row = 0;
-    panel.add(new JLabel("<html>"
-        + "This is the MapPropertiesMaker, it will create a map.properties file for you. "
-        + "<br>The map.properties is located in the map's directory, and it will tell TripleA various "
-        + "<br>display related information about your map. "
-        + "<br>Such things as the dimensions of your map, the colors of each of the players, "
-        + "<br>the size of the unit images, and how zoomed out they are, etc. "
-        + "<br>To use, just fill in the information in the fields below, and click on 'Show More' to "
-        + "<br>show other, optional, fields. "
-        + "</html>"),
-        new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
-
-    panel.add(new JLabel("The Width in Pixels of your map: "),
-        new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(
+        new JLabel("<html>" + "This is the MapPropertiesMaker, it will create a map.properties file for you. "
+            + "<br>The map.properties is located in the map's directory, and it will tell TripleA various "
+            + "<br>display related information about your map. "
+            + "<br>Such things as the dimensions of your map, the colors of each of the players, "
+            + "<br>the size of the unit images, and how zoomed out they are, etc. "
+            + "<br>To use, just fill in the information in the fields below, and click on 'Show More' to "
+            + "<br>show other, optional, fields. " + "</html>"),
+        new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+            new Insets(20, 20, 20, 20), 0, 0));
+    panel.add(new JLabel("The Width in Pixels of your map: "), new GridBagConstraints(0, row, 1, 1, 1, 1,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final IntTextField widthField = new IntTextField(0, Integer.MAX_VALUE);
     widthField.setText("" + s_mapProperties.getMAP_WIDTH());
     widthField.addFocusListener(new FocusListener() {
@@ -183,11 +180,10 @@ public class MapPropertiesMaker extends JFrame {
         widthField.setText("" + s_mapProperties.getMAP_WIDTH());
       }
     });
-    panel.add(widthField,
-        new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-
-    panel.add(new JLabel("The Height in Pixels of your map: "),
-        new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(widthField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(new JLabel("The Height in Pixels of your map: "), new GridBagConstraints(0, row, 1, 1, 1, 1,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final IntTextField heightField = new IntTextField(0, Integer.MAX_VALUE);
     heightField.setText("" + s_mapProperties.getMAP_HEIGHT());
     heightField.addFocusListener(new FocusListener() {
@@ -203,12 +199,13 @@ public class MapPropertiesMaker extends JFrame {
         heightField.setText("" + s_mapProperties.getMAP_HEIGHT());
       }
     });
-    panel.add(heightField,
-        new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-
-    panel.add(new JLabel("<html>The initial Scale (zoom) of your unit images: "
-        + "<br>Must be one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5</html>"),
-        new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(heightField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(
+        new JLabel("<html>The initial Scale (zoom) of your unit images: "
+            + "<br>Must be one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5</html>"),
+        new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
+            new Insets(10, 10, 10, 10), 0, 0));
     final DoubleTextField scaleField = new DoubleTextField(0.1d, 2.0d);
     scaleField.setText("" + s_mapProperties.getUNITS_SCALE());
     scaleField.addFocusListener(new FocusListener() {
@@ -225,14 +222,13 @@ public class MapPropertiesMaker extends JFrame {
         scaleField.setText("" + s_mapProperties.getUNITS_SCALE());
       }
     });
-    panel.add(scaleField,
-        new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-
-    panel.add(new JLabel("Create Players and Click on the Color to set their Color: "),
-        new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 50, 20, 50), 0, 0));
+    panel.add(scaleField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(new JLabel("Create Players and Click on the Color to set their Color: "), new GridBagConstraints(0, row++,
+        2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 50, 20, 50), 0, 0));
     createPlayerColorChooser();
-    panel.add(s_playerColorChooser,
-        new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(s_playerColorChooser, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
+        GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final JButton showMore = new JButton("Show All Options");
     showMore.addActionListener(new AbstractAction("Show All Options") {
       private static final long serialVersionUID = -794092512377464803L;
@@ -240,7 +236,8 @@ public class MapPropertiesMaker extends JFrame {
       @Override
       public void actionPerformed(final ActionEvent e) {
         @SuppressWarnings("rawtypes")
-        final Tuple<PropertiesUI, List<MapPropertyWrapper>> propertyWrapperUI = MapPropertiesMaker.s_mapProperties.propertyWrapperUI(true);
+        final Tuple<PropertiesUI, List<MapPropertyWrapper>> propertyWrapperUI =
+            MapPropertiesMaker.s_mapProperties.propertyWrapperUI(true);
         JOptionPane.showMessageDialog(MapPropertiesMaker.this, propertyWrapperUI.getFirst());
         s_mapProperties.writePropertiesToObject(propertyWrapperUI.getSecond());
         MapPropertiesMaker.this.createPlayerColorChooser();
@@ -248,8 +245,8 @@ public class MapPropertiesMaker extends JFrame {
         MapPropertiesMaker.this.repaint();
       }
     });
-    panel.add(showMore,
-        new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    panel.add(showMore, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(10, 10, 10, 10), 0, 0));
     return panel;
   }
 
@@ -258,8 +255,8 @@ public class MapPropertiesMaker extends JFrame {
     s_playerColorChooser.setLayout(new GridBagLayout());
     int row = 0;
     for (final Entry<String, Color> entry : s_mapProperties.getCOLOR_MAP().entrySet()) {
-      s_playerColorChooser.add(new JLabel(entry.getKey()),
-          new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+      s_playerColorChooser.add(new JLabel(entry.getKey()), new GridBagConstraints(0, row, 1, 1, 1, 1,
+          GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
       final JLabel label = new JLabel(entry.getKey()) {
         private static final long serialVersionUID = 5624227155029721033L;
 
@@ -294,8 +291,8 @@ public class MapPropertiesMaker extends JFrame {
         @Override
         public void mouseReleased(final MouseEvent e) {}
       });
-      s_playerColorChooser.add(label,
-          new GridBagConstraints(1, row, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+      s_playerColorChooser.add(label, new GridBagConstraints(1, row, 1, 1, 1, 1, GridBagConstraints.CENTER,
+          GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
       final JButton removePlayer = new JButton("Remove " + entry.getKey());
       removePlayer.addActionListener(new AbstractAction("Remove " + entry.getKey()) {
         private static final long serialVersionUID = -3593575469168341735L;
@@ -308,8 +305,8 @@ public class MapPropertiesMaker extends JFrame {
           MapPropertiesMaker.this.repaint();
         }
       });
-      s_playerColorChooser.add(removePlayer,
-          new GridBagConstraints(2, row, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+      s_playerColorChooser.add(removePlayer, new GridBagConstraints(2, row, 1, 1, 1, 1, GridBagConstraints.WEST,
+          GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
       row++;
     }
     final JTextField nameTextField = new JTextField("Player" + (s_mapProperties.getCOLOR_MAP().size() + 1));
@@ -328,17 +325,18 @@ public class MapPropertiesMaker extends JFrame {
         MapPropertiesMaker.this.repaint();
       }
     });
-    s_playerColorChooser.add(addPlayer,
-        new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-    s_playerColorChooser.add(nameTextField,
-        new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    s_playerColorChooser.add(addPlayer, new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
+    s_playerColorChooser.add(nameTextField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
   }
 
   private void loadProperties() {
     final Properties properties = new Properties();
     try {
       System.out.println("Load a properties file");
-      final String centerName = new FileOpen("Load A Properties File", s_mapFolderLocation, ".properties").getPathString();
+      final String centerName =
+          new FileOpen("Load A Properties File", s_mapFolderLocation, ".properties").getPathString();
       if (centerName == null) {
         return;
       }
@@ -356,7 +354,8 @@ public class MapPropertiesMaker extends JFrame {
       if (!startsWithSet) {
         continue;
       }
-      final String propertyName = setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
+      final String propertyName =
+          setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
       final String value = properties.getProperty(propertyName);
       if (value == null) {
         continue;
@@ -369,7 +368,8 @@ public class MapPropertiesMaker extends JFrame {
 
   private void saveProperties() {
     try {
-      final String fileName = new FileSave("Where To Save map.properties ?", "map.properties", s_mapFolderLocation).getPathString();
+      final String fileName =
+          new FileSave("Where To Save map.properties ?", "map.properties", s_mapFolderLocation).getPathString();
       if (fileName == null) {
         return;
       }
@@ -443,11 +443,9 @@ public class MapPropertiesMaker extends JFrame {
         System.out.println("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          System.out.println("Arguments\r\n"
-              + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
-              + "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
-              + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
-              + "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+          System.out.println("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+              + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
+              + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
       }
     }

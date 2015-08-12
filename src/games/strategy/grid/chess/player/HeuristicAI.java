@@ -25,8 +25,6 @@ import games.strategy.util.Tuple;
 
 /**
  * A not good AI for Chess that uses some heuristics to be slightly better than random.
- *
- *
  */
 public class HeuristicAI extends GridAbstractAI {
   public HeuristicAI(final String name, final String type) {
@@ -41,7 +39,8 @@ public class HeuristicAI extends GridAbstractAI {
     final PlayerID me = getPlayerID();
     final GameData data = getGameData();
     // triple<start, end, captures>
-    final List<Triple<Territory, Territory, Collection<Territory>>> availableMoves = getAllAvailableMoves(me, data, true);
+    final List<Triple<Territory, Territory, Collection<Territory>>> availableMoves =
+        getAllAvailableMoves(me, data, true);
     if (availableMoves.isEmpty()) {
       System.err.println("No available moves for " + me.getName());
       return;
@@ -51,7 +50,8 @@ public class HeuristicAI extends GridAbstractAI {
     final Collection<PlayerID> enemies = data.getPlayerList().getPlayers();
     enemies.remove(me);
     final PlayerID enemy = enemies.iterator().next();
-    final List<Triple<Territory, Territory, Integer>> movesWithPoints = new ArrayList<Triple<Territory, Territory, Integer>>();
+    final List<Triple<Territory, Territory, Integer>> movesWithPoints =
+        new ArrayList<Triple<Territory, Territory, Integer>>();
     for (final Triple<Territory, Territory, Collection<Territory>> move1 : availableMoves) {
       final Triple<Territory, Territory, Integer> move =
           getMoveWithPoints(move1.getFirst(), move1.getSecond(), move1.getThird(), me, enemy, data, true);
@@ -69,9 +69,10 @@ public class HeuristicAI extends GridAbstractAI {
   }
 
   static Triple<Territory, Territory, Integer> getMoveWithPoints(final Territory start, final Territory end,
-      final Collection<Territory> captures, final PlayerID me, final PlayerID enemy,
-      final GameData data, final boolean returnEarlyIfWin) {
-    final Quadruple<Territory, Territory, PlayerID, GameData> temp = PlayDelegate.copyGameDataAndAttemptMove(start, end, me, data);
+      final Collection<Territory> captures, final PlayerID me, final PlayerID enemy, final GameData data,
+      final boolean returnEarlyIfWin) {
+    final Quadruple<Territory, Territory, PlayerID, GameData> temp =
+        PlayDelegate.copyGameDataAndAttemptMove(start, end, me, data);
     final PlayerID enemyTemp = (PlayerID) GameDataUtils.translateIntoOtherGameData(enemy, temp.getForth());
     // send only temp data (except captures, which is only one that can be temp or non-temp)
     final int points = getPointsForBoardSituation(temp.getThird(), enemyTemp, captures, temp.getForth(), true);
@@ -82,8 +83,8 @@ public class HeuristicAI extends GridAbstractAI {
     return new Triple<Territory, Territory, Integer>(start, end, points);
   }
 
-  static int getPointsForBoardSituation(final PlayerID me, final PlayerID enemy, final Collection<Territory> captures, final GameData data,
-      final boolean returnEarlyIfWin) {
+  static int getPointsForBoardSituation(final PlayerID me, final PlayerID enemy, final Collection<Territory> captures,
+      final GameData data, final boolean returnEarlyIfWin) {
     int points = 0;
     // can we checkmate?
     if (EndTurnDelegate.doWeWin(me, data, 1)) {
@@ -111,8 +112,8 @@ public class HeuristicAI extends GridAbstractAI {
     return points;
   }
 
-  static List<Triple<Territory, Territory, Collection<Territory>>> getAllAvailableMoves(final PlayerID player, final GameData data,
-      final boolean shuffle) {
+  static List<Triple<Territory, Territory, Collection<Territory>>> getAllAvailableMoves(final PlayerID player,
+      final GameData data, final boolean shuffle) {
     final List<Territory> allTerritories1 = new ArrayList<Territory>(data.getMap().getTerritories());
     final List<Territory> allTerritories2 = new ArrayList<Territory>(allTerritories1);
     if (shuffle) {
@@ -136,7 +137,8 @@ public class HeuristicAI extends GridAbstractAI {
   static Comparator<Triple<Territory, Territory, Integer>> getBestPointsComparatorInt() {
     return new Comparator<Triple<Territory, Territory, Integer>>() {
       @Override
-      public int compare(final Triple<Territory, Territory, Integer> t1, final Triple<Territory, Territory, Integer> t2) {
+      public int compare(final Triple<Territory, Territory, Integer> t1,
+          final Triple<Territory, Territory, Integer> t2) {
         if ((t1 == null && t2 == null) || t1 == t2) {
           return 0;
         }
@@ -219,8 +221,8 @@ public class HeuristicAI extends GridAbstractAI {
     };
   }
 
-  static final void doMove(final Territory start, final Territory end, final GameData data, final IGridPlayDelegate playDel,
-      final PlayerID me) {
+  static final void doMove(final Territory start, final Territory end, final GameData data,
+      final IGridPlayDelegate playDel, final PlayerID me) {
     String error;
     final IGridPlayData play = new GridPlayData(start, end, me);
     error = playDel.play(play);

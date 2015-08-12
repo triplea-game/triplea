@@ -20,7 +20,6 @@ import games.strategy.net.IMessenger;
 public class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
 
-
   enum Column {
     Host, Name, GV, Round, Players, P, B, EV, Started, Status, Comments, GUID
   }
@@ -32,7 +31,8 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final List<GUID> m_gameIDs = new ArrayList<GUID>();
   private final List<GameDescription> m_games = new ArrayList<GameDescription>();
 
-  public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger) {
+  public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
+      final IRemoteMessenger remoteMessenger) {
     m_messenger = messenger;
     m_channelMessenger = channelMessenger;
     m_remoteMessenger = remoteMessenger;

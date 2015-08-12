@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
 
-
 public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable {
   private static final long serialVersionUID = -2284878450555315947L;
   private final boolean m_optional;
@@ -130,20 +129,20 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
    * If I have no units with movement,
    * And I own zero factories or have have no owned land,
    * then I am basically dead, and therefore should not participate in things like politics.
-   *
    */
   public boolean amNotDeadYet(final GameData data) {
     boolean hasFactory = false;
     boolean ownsLand = false;
     for (final Territory t : data.getMap().getTerritories()) {
-      if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.unitHasAttackValueOfAtLeast(1),
-          Matches.UnitCanMove, Matches.UnitIsLand))) {
+      if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this),
+          Matches.unitHasAttackValueOfAtLeast(1), Matches.UnitCanMove, Matches.UnitIsLand))) {
         return true;
       }
       if (t.getOwner().equals(this)) {
         ownsLand = true;
       }
-      if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
+      if (t.getUnits()
+          .someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
         hasFactory = true;
       }
       if (ownsLand && hasFactory) {
@@ -163,7 +162,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
     }
     return rVal;
   }
-
 
   /**
    * Do not use this ever. The Null PlayerID has no GameData associated with it, so you WILL get a Null Pointer error.

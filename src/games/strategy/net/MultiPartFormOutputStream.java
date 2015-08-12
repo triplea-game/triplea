@@ -13,7 +13,6 @@ import java.net.URLConnection;
  * MultiPartFormOutputStream is used to write
  * "multipart/form-data" to a java.net.URLConnection for
  * POSTing. This is primarily for file uploading to HTTP servers.
- *
  */
 public class MultiPartFormOutputStream {
   /**
@@ -234,7 +233,8 @@ public class MultiPartFormOutputStream {
    * @throws java.io.IOException
    *         on input/output errors
    */
-  public void writeFile(final String name, final String mimeType, final String fileName, final InputStream is) throws java.io.IOException {
+  public void writeFile(final String name, final String mimeType, final String fileName, final InputStream is)
+      throws java.io.IOException {
     if (is == null) {
       throw new IllegalArgumentException("Input stream cannot be null.");
     }
@@ -290,7 +290,8 @@ public class MultiPartFormOutputStream {
    * @throws java.io.IOException
    *         on input/output errors
    */
-  public void writeFile(final String name, final String mimeType, final String fileName, final byte[] data) throws java.io.IOException {
+  public void writeFile(final String name, final String mimeType, final String fileName, final byte[] data)
+      throws java.io.IOException {
     if (data == null) {
       throw new IllegalArgumentException("Data cannot be null.");
     }

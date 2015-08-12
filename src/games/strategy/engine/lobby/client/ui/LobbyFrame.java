@@ -111,8 +111,8 @@ public class LobbyFrame extends JFrame {
     if (clickedOn.equals(m_client.getMessenger().getLocalNode())) {
       return Collections.emptyList();
     }
-    final IModeratorController controller =
-        (IModeratorController) m_client.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+    final IModeratorController controller = (IModeratorController) m_client.getRemoteMessenger()
+        .getRemote(ModeratorController.getModeratorControllerName());
     final List<Action> rVal = new ArrayList<Action>();
     rVal.add(new AbstractAction("Boot " + clickedOn.getName()) {
       private static final long serialVersionUID = -114807409972939767L;
@@ -160,9 +160,9 @@ public class LobbyFrame extends JFrame {
         timeUnits.add("Year");
         timeUnits.add("Forever");
         timeUnits.add("Cancel");
-        final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ", "Select Timespan Unit",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
+        final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
+            "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+            timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
         if (resultTU < 0) {
           return;
         }
@@ -254,9 +254,9 @@ public class LobbyFrame extends JFrame {
         timeUnits.add("Year");
         timeUnits.add("Forever");
         timeUnits.add("Cancel");
-        final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ", "Select Timespan Unit",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
+        final int resultTU = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
+            "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+            timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
         if (resultTU < 0) {
           return;
         }
@@ -322,7 +322,8 @@ public class LobbyFrame extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(label);
         panel.add(spinner);
-        if (JOptionPane.showConfirmDialog(LobbyFrame.this, panel, "Mute Player", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+        if (JOptionPane.showConfirmDialog(LobbyFrame.this, panel, "Mute Player",
+            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
           final Object value = spinner.getValue();
           if (value == null) {
             return;
@@ -356,7 +357,8 @@ public class LobbyFrame extends JFrame {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final String newPassword = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");
+        final String newPassword =
+            JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");
         if (newPassword == null || newPassword.length() < 2) {
           return;
         }
@@ -369,8 +371,8 @@ public class LobbyFrame extends JFrame {
   }
 
   private boolean confirm(final String question) {
-    final int rVal =
-        JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(this), question, "Question", JOptionPane.OK_CANCEL_OPTION);
+    final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(this), question, "Question",
+        JOptionPane.OK_CANCEL_OPTION);
     return rVal == JOptionPane.OK_OPTION;
   }
 
@@ -390,7 +392,7 @@ public class LobbyFrame extends JFrame {
 
   private void connectionToServerLost() {
     EventThreadJOptionPane.showMessageDialog(LobbyFrame.this,
-        "Connection to Server Lost.  Please close this instance and reconnect to the lobby.", "Connection Lost", JOptionPane.ERROR_MESSAGE,
-        new CountDownLatchHandler(true));
+        "Connection to Server Lost.  Please close this instance and reconnect to the lobby.", "Connection Lost",
+        JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
   }
 }

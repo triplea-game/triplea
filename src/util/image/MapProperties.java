@@ -13,8 +13,6 @@ import games.strategy.util.Tuple;
 
 /**
  * An object to hold all the map.properties values.
- *
- *
  */
 public class MapProperties {
   public final String MAP_PROPERTIES_FILENAME = MapData.MAP_PROPERTIES;

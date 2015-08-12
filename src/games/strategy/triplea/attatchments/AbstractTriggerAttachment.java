@@ -19,21 +19,17 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition {
   private static final long serialVersionUID = 5866039180681962697L;
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
-
   // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for backwards
   // compatibility.
   private int m_uses = -1;
   @InternalDoNotExport
   private boolean m_usedThisRound = false; // Do Not Export (do not include in IAttachment).
-
   private String m_notification = null;
-
   private ArrayList<Tuple<String, String>> m_when = new ArrayList<Tuple<String, String>>();
 
   public AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -218,16 +214,16 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       Thread.sleep(100);
     } catch (final InterruptedException e) {
     }
-    final int rollResult =
-        aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName()))
-            + 1;
+    final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE,
+        "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
     final boolean testChance = rollResult <= hitTarget;
-    final String notificationMessage = (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget
-        + " out of " + diceSides + " Result: " + rollResult
-        + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
+    final String notificationMessage =
+        (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget + " out of "
+            + diceSides + " Result: " + rollResult + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
     aBridge.getHistoryWriter().startEvent(notificationMessage);
     changeChanceDecrementOrIncrementOnSuccessOrFailure(aBridge, testChance, true);
-    ((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+    ((ITripleaPlayer) aBridge.getRemotePlayer(aBridge.getPlayerID())).reportMessage(notificationMessage,
+        notificationMessage);
     return testChance;
   }
 

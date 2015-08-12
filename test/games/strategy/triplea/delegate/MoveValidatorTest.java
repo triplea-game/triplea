@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.util.Match;
 
-
 public class MoveValidatorTest extends DelegateTest {
   /** Creates new PlaceDelegateTest */
   public MoveValidatorTest(final String name) {

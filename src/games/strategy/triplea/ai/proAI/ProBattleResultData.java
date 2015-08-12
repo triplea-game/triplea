@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.proAI;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import games.strategy.engine.data.Unit;
 
 public class ProBattleResultData {
@@ -69,5 +68,4 @@ public class ProBattleResultData {
   public double getBattleRounds() {
     return battleRounds;
   }
-
 }

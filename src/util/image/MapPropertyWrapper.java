@@ -35,7 +35,6 @@ import games.strategy.util.Tuple;
  * and a field '[name]' which is public, then it will take these and create an editable UI component
  * for each of these based on the games.strategy.engine.data.properties classes.
  *
- *
  * @param <T>
  *        parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
@@ -48,7 +47,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   private final Method m_setter;
   private final Method m_getter;
 
-  public MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter, final Method getter) {
+  public MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter,
+      final Method getter) {
     super(name, description);
     // m_clazz = clazz;
     m_setter = setter;
@@ -67,16 +67,19 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     } else if (defaultValue instanceof Map || defaultValue instanceof HashMap) {
       m_property = new MapProperty(name, description, ((Map) defaultValue));
     } else if (defaultValue instanceof Integer) {
-      m_property = new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
+      m_property =
+          new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
     } else if (defaultValue instanceof Double) {
-      m_property = new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
+      m_property =
+          new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
     } else {
-      throw new IllegalArgumentException("Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
+      throw new IllegalArgumentException(
+          "Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
     }
   }
 
-  public MapPropertyWrapper(final String name, final String description, final T defaultValue, final Collection<T> possibleValues,
-      final Method setter, final Method getter) {
+  public MapPropertyWrapper(final String name, final String description, final T defaultValue,
+      final Collection<T> possibleValues, final Method setter, final Method getter) {
     super(name, description);
     // m_clazz = clazz;
     m_setter = setter;
@@ -85,12 +88,13 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     if (defaultValue instanceof Collection) {
       m_property = new ComboProperty<T>(name, description, defaultValue, possibleValues);
     } else {
-      throw new IllegalArgumentException("Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
+      throw new IllegalArgumentException(
+          "Can not instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
     }
   }
 
-  public MapPropertyWrapper(final String name, final String description, final int max, final int min, final int defaultValue,
-      final Method setter, final Method getter) {
+  public MapPropertyWrapper(final String name, final String description, final int max, final int min,
+      final int defaultValue, final Method setter, final Method getter) {
     super(name, description);
     // m_clazz = clazz;
     m_setter = setter;
@@ -99,8 +103,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     m_property = new NumberProperty(name, description, max, min, defaultValue);
   }
 
-  public MapPropertyWrapper(final String name, final String description, final double max, final double min, final double defaultValue,
-      final int places, final Method setter, final Method getter) {
+  public MapPropertyWrapper(final String name, final String description, final double max, final double min,
+      final double defaultValue, final int places, final Method setter, final Method getter) {
     super(name, description);
     // m_clazz = clazz;
     m_setter = setter;
@@ -109,8 +113,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     m_property = new DoubleProperty(name, description, max, min, defaultValue, places);
   }
 
-  public MapPropertyWrapper(final String name, final String description, final File defaultValue, final String[] acceptableSuffixes,
-      final Method setter, final Method getter) {
+  public MapPropertyWrapper(final String name, final String description, final File defaultValue,
+      final String[] acceptableSuffixes, final Method setter, final Method getter) {
     super(name, description);
     // m_clazz = clazz;
     m_setter = setter;
@@ -182,7 +186,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       if (!startsWithSet) {
         continue;
       }
-      final String propertyName = setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
+      final String propertyName =
+          setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
       final Method getter;
       try {
         getter = object.getClass().getMethod("get" + propertyName);
@@ -223,11 +228,13 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  public static PropertiesUI createPropertiesUI(final List<? extends IEditableProperty> properties, final boolean editable) {
+  public static PropertiesUI createPropertiesUI(final List<? extends IEditableProperty> properties,
+      final boolean editable) {
     return new PropertiesUI(properties, editable);
   }
 
-  public static Tuple<PropertiesUI, List<MapPropertyWrapper>> createPropertiesUI(final Object object, final boolean editable) {
+  public static Tuple<PropertiesUI, List<MapPropertyWrapper>> createPropertiesUI(final Object object,
+      final boolean editable) {
     final List<MapPropertyWrapper> properties = createProperties(object);
     final PropertiesUI ui = new PropertiesUI(properties, editable);
     return new Tuple<PropertiesUI, List<MapPropertyWrapper>>(ui, properties);

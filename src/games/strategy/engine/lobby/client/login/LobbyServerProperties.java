@@ -13,17 +13,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 /**
  * Server properties.
  * <p>
- *
  * Generally there is one lobby server, but that server may move.
  * <p>
- *
  * To keep track of this, we always have a properties file in a constant location that points to the current lobby server.
  * <p>
- *
  * The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
  * <p>
- *
- *
  */
 public class LobbyServerProperties {
   private final static Logger s_logger = Logger.getLogger(LobbyServerProperties.class.getName());
@@ -33,7 +28,8 @@ public class LobbyServerProperties {
   private final String m_serverMessage;
   private volatile boolean m_done;
 
-  public LobbyServerProperties(final String host, final int port, final String serverErrorMessage, final String serverMessage) {
+  public LobbyServerProperties(final String host, final int port, final String serverErrorMessage,
+      final String serverMessage) {
     m_host = host;
     m_port = port;
     m_serverErrorMessage = serverErrorMessage;
@@ -68,7 +64,6 @@ public class LobbyServerProperties {
     // add the proxy
     // GameRunner2.addProxy(config); // since lobby actually uses a different port and connection type (TCP), we should not use a proxy for
     // the properties file until we allow the lobby to accept proxy connections
-
     final GetMethod method = new GetMethod(url.getPath());
     // pretend to be ie
     method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
@@ -94,7 +89,6 @@ public class LobbyServerProperties {
   }
 
   /**
-   *
    * @return the error message for the server.
    */
   public String getServerErrorMessage() {
@@ -102,7 +96,6 @@ public class LobbyServerProperties {
   }
 
   /**
-   *
    * @return if the server is available. If the server is not available then getServerErrorMessage will give a reason.
    */
   public boolean isServerAvailable() {

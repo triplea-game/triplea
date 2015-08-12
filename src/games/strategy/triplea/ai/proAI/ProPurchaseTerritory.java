@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.proAI;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -16,7 +15,8 @@ public class ProPurchaseTerritory {
   private int unitProduction;
   private List<ProPlaceTerritory> canPlaceTerritories;
 
-  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player, final int unitProduction) {
+  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
+      final int unitProduction) {
     this.territory = territory;
     this.unitProduction = unitProduction;
     canPlaceTerritories = new ArrayList<ProPlaceTerritory>();
@@ -67,5 +67,4 @@ public class ProPurchaseTerritory {
   public void setCanPlaceTerritories(final List<ProPlaceTerritory> canPlaceTerritories) {
     this.canPlaceTerritories = canPlaceTerritories;
   }
-
 }

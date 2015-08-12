@@ -129,8 +129,9 @@ public class CommentPanel extends JPanel {
           final Document doc = m_text.getDocument();
           final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
           final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
-          final String title = child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
-              : (node != null ? node.getTitle() : "");
+          final String title =
+              child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
+                  : (node != null ? node.getTitle() : "");
           final Pattern p = Pattern.compile("^COMMENT: (.*)");
           final Matcher m = p.matcher(title);
           if (m.matches()) {

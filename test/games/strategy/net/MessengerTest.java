@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import games.strategy.test.TestUtil;
 import junit.framework.TestCase;
 
-
 public class MessengerTest extends TestCase {
   private static int SERVER_PORT = -1;
   private IServerMessenger m_server;

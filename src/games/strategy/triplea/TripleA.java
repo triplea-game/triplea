@@ -41,7 +41,6 @@ import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 
-
 public class TripleA extends AbstractGameLoader implements IGameLoader {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = -8374315848374732436L;
@@ -189,13 +188,9 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
    */
   @Override
   public String[] getServerPlayerTypes() {
-    return new String[] {HUMAN_PLAYER_TYPE,
-        WEAK_COMPUTER_PLAYER_TYPE,
-        STRONG_COMPUTER_PLAYER_TYPE,
-        PRO_COMPUTER_PLAYER_TYPE,
-        DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
+    return new String[] {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE,
+        PRO_COMPUTER_PLAYER_TYPE, DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
   }
-
 
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {

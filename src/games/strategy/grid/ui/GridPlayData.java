@@ -10,10 +10,8 @@ import games.strategy.triplea.formatter.MyFormatter;
 
 /**
  * Represents a play in a game of a Grid Game.
- *
  * A play has a start Territory and an end territory,
  * which correspond to the piece to be moved, and the desination for the move.
- *
  */
 public class GridPlayData implements IGridPlayData {
   private static final long serialVersionUID = -1450796130971955757L;
@@ -35,7 +33,8 @@ public class GridPlayData implements IGridPlayData {
     this(start, new ArrayList<Territory>(), end, player);
   }
 
-  public GridPlayData(final Territory start, final List<Territory> middleSteps, final Territory end, final PlayerID player) {
+  public GridPlayData(final Territory start, final List<Territory> middleSteps, final Territory end,
+      final PlayerID player) {
     m_start = start;
     m_end = end;
     m_middleSteps = (middleSteps == null ? new ArrayList<Territory>() : middleSteps);
@@ -166,7 +165,6 @@ public class GridPlayData implements IGridPlayData {
       return 1;
     }
   };
-
   public static Comparator<IGridPlayData> SmallestToLargestPlays = new Comparator<IGridPlayData>() {
     @Override
     public int compare(final IGridPlayData p1, final IGridPlayData p2) {
@@ -255,10 +253,10 @@ public class GridPlayData implements IGridPlayData {
     }
     return (m_player == null ? "" : m_player.getName() + " moving ")
         + (m_start == null ? ""
-            : (m_start.getUnits().getUnitCount() > 0 ? MyFormatter.unitsToTextNoOwner(m_start.getUnits().getUnits()) + " " : ""))
+            : (m_start.getUnits().getUnitCount() > 0
+                ? MyFormatter.unitsToTextNoOwner(m_start.getUnits().getUnits()) + " " : ""))
         + (m_end == null ? "to " : "from ") + (m_start == null ? "null" : m_start.getName())
-        + (m_end == null ? "" : " to " + m_end.getName())
-        + (m_middleSteps == null || m_middleSteps.isEmpty() ? "" : " by way of: " + MyFormatter.defaultNamedToTextList(m_middleSteps));
+        + (m_end == null ? "" : " to " + m_end.getName()) + (m_middleSteps == null || m_middleSteps.isEmpty() ? ""
+            : " by way of: " + MyFormatter.defaultNamedToTextList(m_middleSteps));
   }
-
 }

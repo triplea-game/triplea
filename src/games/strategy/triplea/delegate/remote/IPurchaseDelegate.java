@@ -9,10 +9,8 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.util.IntegerMap;
 
-
 public interface IPurchaseDelegate extends IRemote, IDelegate {
   /**
-   *
    * @param productionRules
    *        - units maps ProductionRule -> count
    * @return null if units bought, otherwise an error message

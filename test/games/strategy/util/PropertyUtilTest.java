@@ -4,7 +4,6 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import junit.framework.TestCase;
 
 public class PropertyUtilTest extends TestCase {
-
   public void testGetFieldObject() {
     final RulesAttachment at = new RulesAttachment("test", null, null);
     int uses = (Integer) PropertyUtil.getPropertyFieldObject("uses", at);
