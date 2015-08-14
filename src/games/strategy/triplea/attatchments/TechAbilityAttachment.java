@@ -1259,11 +1259,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allSubs =
               Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsSub);
-          // final int defenseBonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(data);
           for (final UnitType sub : allSubs) {
             taa.setAttackBonus("1:" + sub.getName());
-            // if (defenseBonus != 0)
-            // taa.setDefenseBonus(defenseBonus + ":" + sub.getName());
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_JET_POWER)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);

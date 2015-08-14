@@ -64,18 +64,6 @@ public class BetterAI extends GridAbstractAI {
         break;
       }
     }
-    // m_attacker = null;
-    // m_defender = null;
-    // for (PlayerID player : m_bridge.getGameData().getPlayerList().getPlayers())
-    // {
-    // PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
-    // if (pa==null)
-    // m_attacker = player;
-    // else if (pa.needsKing())
-    // m_defender = player;
-    // else
-    // m_attacker = player;
-    // }
   }
 
   @Override
@@ -89,8 +77,6 @@ public class BetterAI extends GridAbstractAI {
       } else {
         move = AIAlgorithm.minimaxSearch(initial_state);
       }
-      // System.out.println(m_id.getName() + " should move from (" + move.getStart().getFirst() + "," +move.getStart().getSecond() + ") to
-      // (" + move.getEnd().getFirst()+ "," +move.getEnd().getSecond() + ")");
       final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemoteDelegate();
       final PlayerID me = getPlayerID();
       final Territory start =

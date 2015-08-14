@@ -179,10 +179,6 @@ public final class TileImageFactory {
     return loadImage(url, fileName, false, false, false);
   }
 
-  /**
-   * @param x
-   * @param y
-   */
   private String getBaseTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
     final String fileName = "baseTiles" + "/" + x + "_" + y + ".png";
@@ -200,11 +196,7 @@ public final class TileImageFactory {
       }
       // This is null if there is no image
       final URL url = m_resourceLoader.getResource(fileName);
-      /*
-       * if (url == null)
-       * return null;
-       */
-      // return null if url is null and (not blending or relief or transparent)
+
       if ((!s_showMapBlends || !s_showReliefImages || !transparent) && url == null) {
         return null;
       }
@@ -227,10 +219,6 @@ public final class TileImageFactory {
     return loadImage(url, fileName, true, false, false);
   }
 
-  /**
-   * @param x
-   * @param y
-   */
   private String getReliefTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
     final String fileName = "reliefTiles" + "/" + x + "_" + y + ".png";
@@ -252,9 +240,7 @@ public final class TileImageFactory {
     return compatibleImage;
   }
 
-  /**
-   * @param imageLocation
-   */
+
   private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
       final boolean cache, final boolean scale) {
     if (s_showMapBlends && s_showReliefImages && transparent) {
@@ -277,10 +263,7 @@ public final class TileImageFactory {
     // blank relief tile
     final String blankReliefFileName = "reliefTiles/blank_relief.png";
     final URL urlBlankRelief = m_resourceLoader.getResource(blankReliefFileName);
-    /*
-     * if(imageLocation.equals(urlBase) && !transparent)
-     * return loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
-     */
+
     // Get buffered images
     try {
       final Stopwatch loadingImages =
@@ -295,10 +278,7 @@ public final class TileImageFactory {
     } catch (final IOException e) {
       e.printStackTrace();
     }
-    /*
-     * if(imageLocation.equals(urlBase) && !transparent && reliefFile != null)
-     * return loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
-     */
+
     // This does the blend
     final float alpha = getShowMapBlendAlpha();
     final int overX = 0;
@@ -409,42 +389,9 @@ public final class TileImageFactory {
   public HashMap<String, ImageRef> getM_imageCache() {
     return m_imageCache;
   }
-  // a failed experiment
-  // to load a png directly as an argb image
-  // throws an exception on both linux and mac
-  // http://lists.apple.com/archives/java-dev/2005/Apr/msg00456.html
-  // http://archives.java.sun.com/archives/jai-interest.html
-  // http://forums.java.net/jive/thread.jspa?threadID=9862&tstart=30
-  // private BufferedImage createImageDirectly(URL input, String fileName, boolean transparent) throws IOException
-  // {
-  // InputStream istream = null;
-  // try {
-  // istream = input.openStream();
-  // } catch (IOException e) {
-  // throw new IIOException("Can't get input stream from URL!", e);
-  // }
-  // ImageInputStream stream = ImageIO.createImageInputStream(istream);
-  // Iterator iter = ImageIO.getImageReaders(stream);
-  // if (!iter.hasNext()) {
-  // return null;
-  // }
-  // ImageReader reader = (ImageReader)iter.next();
-  // ImageReadParam param = new ImageReadParam(); //reader.getDefaultReadParam();
-  // BufferedImage destination = Util.createImage(TileManager.TILE_SIZE, TileManager.TILE_SIZE, transparent);
-  // //param.setDestination(destination);
-  // //param.setDestinationBands(null);
-  // //param.setDestinationType(ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_4BYTE_ABGR));
-  // //param.setDestinationType(new ImageTypeSpecifier(Util.createImage(1,1, transparent)));
-  // reader.setInput(stream, true, true);
-  // BufferedImage bi = reader.read(0, param);
-  // stream.close();
-  // reader.dispose();
-  // return bi;
-  // }
 }
 
 
-// end class TerritoryImageFactory
 /**
  * We keep a soft reference to the image to allow it to be garbage collected.
  * Also, the image may not have finished watching when we are created, but the
@@ -622,12 +569,6 @@ class BlendComposite implements java.awt.Composite {
             }
           };
         case OVERLAY:
-          /*
-           * if (Base > pi) R = 1 - (1-2?(Base-pi)) ? (1-Blend)
-           * if (Base <= pi) R = (2?Base) pi Blend
-           * Version from code has:
-           * if (Base > pi) R = 1 - (1-Base) ? (1-Blend) x 2
-           */
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
@@ -637,20 +578,7 @@ class BlendComposite implements java.awt.Composite {
                   Math.min(255, src[3] + dst[3])};
             }
           };
-        /*
-         * dst[0] < 128 ? dst[0] * src[0] >> 7 :
-         * 255 - (255 - (2 * (dst[0] - 128)) * (255 - src[0])),
-         * dst[1] < 128 ? dst[1] * src[1] >> 7 :
-         * 255 - (255 - (2 * (dst[1] - 128)) * (255 - src[1])),
-         * dst[2] < 128 ? dst[2] * src[2] >> 7 :
-         * 255 - (255 - (2 * (dst[2] - 128)) * (255 - src[2])),
-         * Math.min(255, src[3] + dst[3])
-         */
         case LINEAR_LIGHT:
-          /*
-           * if (Blend > pi) R = Base + 2?(Blend-pi)
-           * if (Blend <= pi) R = Base + 2?Blend - 1
-           */
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {

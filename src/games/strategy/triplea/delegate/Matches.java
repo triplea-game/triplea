@@ -1904,8 +1904,6 @@ public class Matches {
       @Override
       public boolean match(final Unit unit) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
-        // if (ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
-        // return false;
         return ua.getDefense(unit.getOwner()) >= minDefense;
       }
     };
@@ -3446,12 +3444,6 @@ public class Matches {
         if (bt.wasConquered(t)) {
           return false;
         }
-        // I can't think of why we have this... If there is a pending battle, and the owner is enemy, then we will be prevented from landing
-        // when we check the owner. And if the owner is us, we will be prevented from landing if we have conquered it.
-        // So this seems like duplication. I will comment out, because if we have taken over a territory from a friendly neutral, we should
-        // be allowed to land there.
-        // if (bt.hasPendingBattle(t, false))
-        // return false;
         final PlayerID owner = t.getOwner();
         if (owner == null || owner.isNull()) {
           return false;

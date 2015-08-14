@@ -476,9 +476,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
-    // if (!Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(),
-    // data).match(paa))
-    // return;
+
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
     final Collection<PlayerID> p1AlliedWith =
         Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));

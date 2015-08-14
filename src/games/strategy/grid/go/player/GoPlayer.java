@@ -27,8 +27,7 @@ public class GoPlayer extends GridGamePlayer {
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
-    // if (playDel.haveTwoPassedInARow())
-    // return;
+
     // change to active player
     m_ui.changeActivePlayer(getPlayerID());
     final GoMapPanel mapPanel = ((GoMapPanel) m_ui.getMainPanel());
@@ -72,8 +71,7 @@ public class GoPlayer extends GridGamePlayer {
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
-    // if (!endTurnDel.haveTwoPassedInARow())
-    // return;
+
     m_ui.changeActivePlayer(getPlayerID());
     final GoMapPanel mapPanel = ((GoMapPanel) m_ui.getMainPanel());
     if (mapPanel != null) {

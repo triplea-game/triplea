@@ -1895,18 +1895,7 @@ public class ProNonCombatMoveAI {
       LogUtils.log(Level.FINEST,
           "  " + attackTerritoryData.getValue() + "  " + attackTerritoryData.getTerritory().getName());
     }
-    // Print transport map
-    // LogUtils.log(Level.FINER, "Amphib territories: ");
-    // int count = 0;
-    // for (final Territory t : moveMap.keySet())
-    // {
-    // final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(t).getAmphibAttackMap();
-    // for (final Unit u : amphibAttackMap.keySet())
-    // {
-    // count++;
-    // LogUtils.log(Level.FINEST, count + ". Can attack " + t.getName() + " with " + amphibAttackMap.get(u));
-    // }
-    // }
+
     // Print enemy territories with enemy units vs my units
     LogUtils.log(Level.FINER, "Territories that can be attacked:");
     int count = 0;

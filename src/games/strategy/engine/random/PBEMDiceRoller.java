@@ -31,7 +31,7 @@ public class PBEMDiceRoller implements IRandomSource {
   private final IRemoteDiceServer m_remoteDiceServer;
   private static Frame s_focusWindow;
 
-  /*
+  /**
    * If the game has multiple frames, allows the ui to
    * set what frame should be the parent of the dice rolling window
    * if set to null, or not set, we try to guess by finding the currently
@@ -57,9 +57,7 @@ public class PBEMDiceRoller implements IRandomSource {
     dialog.roll();
   }
 
-  /**
-   * getRandom
-   */
+
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
     if (!SwingUtilities.isEventDispatchThread()) {
@@ -102,15 +100,6 @@ public class PBEMDiceRoller implements IRandomSource {
     return rVal;
   }
 
-  /**
-   * getRandom
-   *
-   * @param max
-   *        int
-   * @param annotation
-   *        String
-   * @return int
-   */
   @Override
   public int getRandom(final int max, final String annotation) throws IllegalStateException {
     return getRandom(max, 1, annotation)[0];
@@ -346,5 +335,5 @@ class HttpDiceRollerDialog extends JDialog {
       }
       notifyError();
     }
-  }// end of method
+  }
 }

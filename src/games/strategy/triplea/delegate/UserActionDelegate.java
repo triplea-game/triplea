@@ -52,14 +52,10 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   public void loadState(final Serializable state) {
     final UserActionExtendedDelegateState s = (UserActionExtendedDelegateState) state;
     super.loadState(s.superState);
-    // m_testedConditions = s.m_testedConditions;
-    // load other variables from state here:
   }
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    // if (!m_player.amNotDeadYet(getData()))
-    // return false;
     if (getValidActions().isEmpty()) {
       return false;
     }

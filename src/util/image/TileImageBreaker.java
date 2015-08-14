@@ -86,24 +86,8 @@ public class TileImageBreaker {
       System.exit(0);
       return;
     }
-    // m_baseMap = doBaseMap(); //ask user wether it is sea zone only or
-    // not
-    // String mapDir = getMapDirectory(); //ask user where the map is
-    // if (mapDir == null || mapDir.equals(""))
-    // {
-    // System.out.println("You need to specify a map name for this to work");
-    // System.out.println("Shutting down");
-    // System.exit(0);
-    // }
-    // try
-    // {
-    // MapData.setMapDir(mapDir); //makes TripleA read all the text data
-    // // files for the map.
-    // } catch (NullPointerException npe)
-    // {
-    // System.out.println("Bad data given or missing text files, shutting down");
-    // System.exit(0);
-    // }
+
+
     textOptionPane.show();
     for (int x = 0; (x) * TileManager.TILE_SIZE < map.getWidth(null); x++) {
       for (int y = 0; (y) * TileManager.TILE_SIZE < map.getHeight(null); y++) {
@@ -115,28 +99,9 @@ public class TileImageBreaker {
             TileManager.TILE_SIZE, m_baseMap ? Transparency.BITMASK : Transparency.TRANSLUCENT);
         relief.getGraphics().drawImage(map, 0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE, bounds.x, bounds.y,
             bounds.x + TileManager.TILE_SIZE, bounds.y + TileManager.TILE_SIZE, observer);
-        // boolean match = false;
-        // Iterator territories = MapData.getInstance().getTerritories().iterator();
-        // while(territories.hasNext())
-        // {
-        // String territoryName = territories.next().toString();
-        // Rectangle territoryBounds = MapData.getInstance().getBoundingRect(territoryName);
-        // boolean seaZone = (territoryName.toUpperCase().indexOf("SEA") != -1) ||
-        // (territoryName.toUpperCase().indexOf("SZ") != -1 );
-        // if( (seaZone == m_baseMap) &&
-        // (territoryBounds.contains(bounds) || bounds.contains(territoryBounds) || bounds.intersects(territoryBounds))
-        // )
-        // {
-        // //match = true;
-        // break;
-        // }
-        // }
+
         final String outFileName = location + File.separator + x + "_" + y + ".png";
-        // if(!match)
-        // {
-        // System.out.println("Skipping" + outFileName);
-        // continue;
-        // }
+
         ImageIO.write(relief, "png", new File(outFileName));
         textOptionPane.appendNewLine("wrote " + outFileName);
       }
@@ -147,58 +112,8 @@ public class TileImageBreaker {
     JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
     System.exit(0);
   }
-  /**
-   * java.lang.boolean doSeaZone()
-   * Asks user wether to do base map or not
-   *
-   * @return java.lang.boolean TRUE to do base map
-   */
-  // private static boolean doBaseMap()
-  // {
-  // String ans = "";
-  // while (true)
-  // {
-  // ans = JOptionPane.showInputDialog(null, "Do Base map (ie not relief map)? Enter [Y/N]");
-  // if (ans == null)
-  // {
-  // System.out.println("Cannot leave this blank!");
-  // System.out.println("Retry");
-  // } else
-  // {
-  // if (ans.equalsIgnoreCase("Y"))
-  // {
-  // return true;
-  // } else if (ans.equalsIgnoreCase("N"))
-  // {
-  // return false;
-  // } else
-  // {
-  // System.out.println("You must enter Y or N");
-  // }
-  // }
-  // }//while
-  // }
-  /**
-   * java.lang.String getMapDirectory()
-   * Asks the user to input a valid map name that will be used to form the map
-   * directory in the core of TripleA in the class TerritoryData.
-   * we need the exact map name as indicated in the XML game file ie."revised"
-   * "classic" "pact_of_steel" of course, without the quotes.
-   *
-   * @return java.lang.String mapDir the map name
-   */
 
-  // private static String getMapDirectory()
-  // {
-  // String mapDir = JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
-  // if (mapDir != null)
-  // {
-  // return mapDir;
-  // } else
-  // {
-  // return null;
-  // }
-  // }
+
   /**
    * java.awt.Image loadImage()
    * Asks the user to select an image and then it loads it up into an Image
@@ -264,4 +179,4 @@ public class TileImageBreaker {
       }
     }
   }
-}// end class ReliefImageBreaker
+}

@@ -129,8 +129,6 @@ public class RocketsFireHelper {
     final CompositeMatch<Unit> ownedRockets = rocketMatch(player, data);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
     for (final Territory current : data.getMap()) {
-      // if (current.isWater())
-      // continue;
       if (tracker.wasConquered(current)) {
         continue;
       }

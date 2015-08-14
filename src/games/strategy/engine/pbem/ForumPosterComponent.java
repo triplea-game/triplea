@@ -149,19 +149,11 @@ public class ForumPosterComponent extends JPanel {
     m_bridge = bridge;
     // Nothing to do if there are no PBEM messengers
     m_poster = poster;
-    // if (!m_poster.hasMessengers())
-    // return;
-    // if (skipPosting() || Boolean.parseBoolean(m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))
-    // return;
-    // SwingUtilities.invokeLater(new Runnable()
-    // {
-    // public void run()
-    // {
     m_historyLog = new HistoryLog();
     updateHistoryLog();
     // only show widgets if there are PBEM messengers
     removeAll();
-    // add(m_actionLabel);
+
     if (allowIncludeTerritorySummary) {
       add(m_includeTerritoryCheckbox);
     }

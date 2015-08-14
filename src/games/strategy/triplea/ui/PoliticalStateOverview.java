@@ -152,9 +152,7 @@ public class PoliticalStateOverview extends JPanel {
                 iter.remove();
               }
             }
-            // final RelationshipType newRelation = m_data.getRelationshipTypeList().getRelationshipType(chosenRelationship);
-            // if (newRelation == null)
-            // return;
+
             // see if there is actually a change
             RelationshipType actualRelationship = null;
             m_data.acquireReadLock();
@@ -217,7 +215,6 @@ public class PoliticalStateOverview extends JPanel {
     this.removeAll();
     this.drawPoliticsUI();
     this.revalidate();
-    // this.updateUI();
   }
 
   public Collection<Triple<PlayerID, PlayerID, RelationshipType>> getEditChanges() {

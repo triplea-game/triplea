@@ -1701,7 +1701,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       final List<Territory> neighborList2 = SUtils.getExactNeighbors(myTerr, 2, player, data, true);
       boolean skipTerr = false;
       for (final Territory nTerr : neighborList2) {
-        // if (Matches.territoryHasRouteToEnemyCapital(data, player).match(nTerr))
         if (SUtils.hasLandRouteToEnemyOwnedCapitol(nTerr, player, data)) {
           skipTerr = true;
         }
@@ -1760,11 +1759,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     if (waterCapNeighbors.isEmpty()) {
       return;
     }
-    // List<Territory> terrsWithOurTransports = SUtils.findUnitTerr(data, player, ourTransports);
-    // Set<Territory> waterNearCap = data.getMap().getNeighbors(capitol, 4);
-    // terrsWithOurTransports.retainAll(waterNearCap);
-    // if (terrsWithOurTransports.isEmpty() && !getDidPurchaseTransports())
-    // return;
+
     // populate alreadyMoved before we begin
     final List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
     for (final Unit u : data.getUnits().getUnits()) {
@@ -1886,8 +1881,6 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       xRoutes.clear();
     }
     // put a ship at the end of the first route we ever made, unless it is a 1 territory route
-    // if (terrsWithOurTransports.isEmpty())
-    // return;
     if (!firstEndTerr.equals(startTerr) && Matches.TerritoryIsWater.match(firstEndTerr)
         && Matches.territoryHasNoEnemyUnits(player, data).match(firstEndTerr) && firstEndNeededStrength > 0) {
       // check to see if there is no way we can win if we move there
@@ -2099,8 +2092,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         continue;
       }
       SUtils.reorder(tmpTerrList, landTerrMap2, true);
-      // if (ourTransports.isEmpty())
-      // continue;
+
       // first pass, in theory tmpTerrList only contains valid landing zones, and is ordererd
       // neighbours of the current transport location
       final List<Territory> tTerrNeighbors = new ArrayList<Territory>(data.getMap().getNeighbors(transTerr));
@@ -2657,22 +2649,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         rStrength -= blitzStrength;
         final float landStrength = SUtils.inviteLandAttack(false, invadeTerr, rStrength, xAlreadyMoved, xMoveUnits,
             xMoveRoutes, data, player, true, false, alreadyAttacked);
-        /*
-         * List<Unit> aBattleUnit = new ArrayList<Unit>(units);
-         * for (Collection<Unit> qUnits : xMoveUnits)
-         * aBattleUnit.addAll(qUnits);
-         * aBattleUnit.addAll(invadeTerr.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
-         * List<Unit> dBattleUnit = invadeTerr.getUnits().getMatches(landOrAirEnemy);
-         * IntegerMap<UnitType> aMap = SUtils.convertListToMap(aBattleUnit);
-         * IntegerMap<UnitType> dMap = SUtils.convertListToMap(dBattleUnit);
-         * boolean weWin = SUtils.quickBattleEstimator(aMap, dMap, player, invadeTerr.getOwner(), false,
-         * Properties.getAirAttackSubRestricted(data));
-         */
         final boolean weWin = (planeStrength + blitzStrength + landStrength + ourStrength) > (eS * 1.15F + 2.0F);
-        /**
+
+        /*
          * Invade if we should win...or we should barely lose (enemy projected to only have 1 remaining defender)
          */
-        // if (weWin || (dMap.totalValues()==1 && dBattleUnit.size() > 3))
         if (weWin) {
           final Route route = new Route();
           route.setStart(t);
@@ -4102,9 +4083,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       boolean attackGroup = false;
       // only doing anything at all if we have a capital and we are building ships there
       // checking seaPlaceFact makes it irrelevant
-      // if (myCapital != null && seaPlaceFact == myCapital)
       if (myCapital != null && seaPlaceFact != null) {
-        // List<Territory> eSTerr = SUtils.findUnits(myCapital, data, enemySeaUnit, 3);
         final List<Territory> eSTerr = SUtils.findUnits(seaPlaceFact, data, enemySeaUnit, 3);
         float totStrengthEnemyShips = 0.0F;
         int maxUnitCount = 0, totUnitCount = 0;
@@ -4238,12 +4217,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       float strengthNeeded = attackFactor * enemyStrength + 3.0F;
       float ourStrength = 0.0F, alliedStrength = 0.0F;
       float maxStrengthNeeded = 2.4F * enemyStrength + 3.0F;
-      // float minStrengthNeeded = Math.min(strengthNeeded + 5.0F, maxStrengthNeeded);
       float minStrengthNeeded = strengthNeeded;
-      // float starterStrength = minStrengthNeeded;
-      // pointless? if transports can be casualties and str == 0 is impossible
-      // if (tFirst && enemyStrength == 0.0F)
-      // continue;
+
       attackUnits.clear();
       attackRoute.clear();
       float planeStrength = 0.0F;
@@ -4297,13 +4272,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
           }
           s_logger.finer("SCM moving " + xMoves + " to attack undefendables: " + xRoutes);
           unitsAlreadyMoved.addAll(xAlreadyMoved);
-          // not used
-          // if (maxStrengthNeeded > 0.0F)
-          // checkForMorePlanes.put(enemy, maxStrengthNeeded);
         }
         continue;
       }
-      // starterStrength = minStrengthNeeded;
       final boolean subNeedsDestroyer = Properties.getAirAttackSubRestricted(data);
       final boolean enemySubsOnly = enemy.getUnits().allMatch(Matches.UnitIsSub);
       float shipStrength = 0.0F, destroyerStrength = 0.0F;
@@ -4318,9 +4289,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
               true, tFirst, tFirst);
           minStrengthNeeded -= shipStrength;
         }
-      } else
-      // all other cases
-      {
+      } else {
         if (subNeedsDestroyer && subStrength > 0.0F) // send a destroyer if we need em
         {
           destroyerStrength = SUtils.inviteShipAttack(enemy, 1, xAlreadyMoved, xMoves, xRoutes, data, player, true,
@@ -4340,31 +4309,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         shipsAttacked = true; // we have sent some ships
       }
       ourStrength += shipStrength;
-      // alliedStrength += shipStrength;
       ourStrength += planeStrength;
       alliedStrength = ourStrength;
-      // implies attacking with only planes increase threshold
-      // i.e. only go through with attack if we can add something else
-      // dubious this has value, invalid way to handle in any case
-      // if (planeStrength > strengthNeeded && !shipsAttacked && !enemySubsOnly) //good chance of losing a plane
-      // {
-      // starterStrength += 3.0F;
-      // minStrengthNeeded = Math.max(minStrengthNeeded, 3.0F);
-      // }
+
       // if we can't win yet, calculate local allied ship str. our own ships are allied!
       if (minStrengthNeeded > 0.0F) {
         // needs rewrite, arbitrary distance
         final Set<Territory> alliedCheck = data.getMap().getNeighbors(enemy, 2); // TODO: assumption of distance = 2
         for (final Territory qAlliedCheck : alliedCheck) {
           final List<Unit> qAlliedUnits = qAlliedCheck.getUnits().getMatches(alliedSeaAirUnitNotOwned);
-          // qAlliedUnits.removeAll(unitsAlreadyMoved);
           alliedStrength += SUtils.strength(qAlliedUnits, true, true, tFirst);
         }
-        // if local str is sufficient, make attack 15% more likely, not required
-        // if (alliedStrength > strengthNeeded)
-        // minStrengthNeeded -= (strengthNeeded*0.15F);
       }
-      // boolean considerSubStrength = true;
+
       final boolean destroyerAttacked = destroyerStrength > 0.0F;
       if (!subNeedsDestroyer && !shipsAttacked) // only planes...enemy sub strength doesn't matter
       {
@@ -6116,8 +6073,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
       float alliedCapStrength = 0.0F;
       float ourXStrength = 0.0F;
       final List<Territory> alliedCapTerr = SUtils.getNeighboringLandTerritories(data, player, badCapitol);
-      // if (alliedCapTerr == null || alliedCapTerr.isEmpty())
-      // continue;
+
       final List<Unit> alliedCUnits = new ArrayList<Unit>();
       final List<Unit> ourCUnits = new ArrayList<Unit>();
       if (!alliedCapTerr.isEmpty()) {
@@ -6130,7 +6086,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
         ourXStrength += SUtils.strength(ourCUnits, true, false, tFirst);
       }
       remainingStrengthNeeded = badCapStrength * 2.5F + 8.0F; // bring everything to get the capital
-      // float origSNeeded = remainingStrengthNeeded;
+
       final float blitzStrength = SUtils.inviteBlitzAttack(false, badCapitol, remainingStrengthNeeded, xAlreadyMoved,
           xMoveUnits, xMoveRoutes, data, player, true, true);
       remainingStrengthNeeded -= blitzStrength;
@@ -6365,11 +6321,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer 
     }
     // find the territories we can reasonably expect to take
     float alliedStrength = 0.0F;
-    // StrengthEvaluator capStrEval = StrengthEvaluator.evalStrengthAt(data, player, myCapital, false, true, tFirst,
-    // true);
-    // boolean useCapNeighbors = true;
-    // if (capStrEval.inDanger(0.90F)) // TODO: really evaluate the territories around the capitol
-    // useCapNeighbors = false; // don't use the capital neighbors to attack terr which are not adjacent to cap
+
     SUtils.reorder(enemyOwned, rankMap, true);
     enemyOwned.removeAll(alreadyAttacked);
     for (final Territory enemy : enemyOwned) {

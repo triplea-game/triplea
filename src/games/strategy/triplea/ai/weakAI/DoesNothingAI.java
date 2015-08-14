@@ -84,8 +84,6 @@ public class DoesNothingAI extends AbstractAI {
     if (!politics) {
       return true;
     }
-    // if (Math.random() < .5)
-    // return true;
     return true;
   }
 }

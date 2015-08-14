@@ -130,14 +130,13 @@ public abstract class AbstractDelegate implements IDelegate {
    * You should override this class with some variation of the following code (changing the AI to be something meaningful if needed)
    * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote:
    * <p>
-   * if (player.isNull()) { return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);} return bridge.getRemotePlayer(player);
+   * if (player.isNull()) {
+   *    return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+   * }
+   * return bridge.getRemotePlayer(player);
    * </p>
    */
   protected IRemotePlayer getRemotePlayer(final PlayerID player) {
-    // you should over ride this. (also, do not make a static version of this, in this class.)
-    // if its the null player, return a do nothing proxy
-    // if (player.isNull())
-    // return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     return m_bridge.getRemotePlayer(player);
   }
 }
