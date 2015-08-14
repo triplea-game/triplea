@@ -1,11 +1,5 @@
 package games.strategy.triplea.ai.proAI;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.logging.Level;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -20,6 +14,12 @@ import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Pro retreat AI.
@@ -52,23 +52,29 @@ public class ProRetreatAI {
 
   public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory,
       final Collection<Territory> possibleTerritories, final String message) {
+
     // Get battle data
     final GameData data = ai.getGameData();
     final PlayerID player = ai.getPlayerID();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleID);
+
     // Get units and determine if attacker
     final boolean isAttacker = player.equals(battle.getAttacker());
     final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
+
     // Calculate battle results
-    final ProBattleResultData result = battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders,
-        new HashSet<Unit>(), isAttacker);
+    final ProBattleResultData result =
+        battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders,
+            new HashSet<Unit>(), isAttacker);
+
     // Determine if it has a factory
     int isFactory = 0;
     if (ProMatches.territoryHasInfraFactoryAndIsLand(player).match(battleTerritory)) {
       isFactory = 1;
     }
+
     // Determine production value and if it is a capital
     int production = 0;
     int isCapital = 0;
@@ -79,6 +85,7 @@ public class ProRetreatAI {
         isCapital = 1;
       }
     }
+
     // Calculate current attack value
     double territoryValue = 0;
     if (result.isHasLandUnitRemaining() || Match.noneMatch(attackers, Matches.UnitIsAir)) {
@@ -88,14 +95,16 @@ public class ProRetreatAI {
     if (!isAttacker) {
       battleValue = -battleValue;
     }
+
     // Decide if we should retreat
     if (battleValue < 0) {
+
       // Retreat to capital if available otherwise the territory with highest defense strength
       Territory retreatTerritory = null;
       double maxStrength = Double.NEGATIVE_INFINITY;
       final Territory myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
       for (final Territory t : possibleTerritories) {
-        if (myCapital.equals(t)) {
+        if (t.equals(myCapital)) {
           retreatTerritory = t;
           break;
         }
