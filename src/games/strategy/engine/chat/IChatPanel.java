@@ -7,6 +7,8 @@ import javax.swing.DefaultListCellRenderer;
  * or non-headless versions as we like.
  */
 public interface IChatPanel {
+  public boolean isHeadless();
+
   public void shutDown();
 
   public void setChat(final Chat chat);
