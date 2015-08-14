@@ -86,7 +86,7 @@ public class GameSelectorModel extends Observable {
     final GameDataManager manager = new GameDataManager();
     GameData newData;
     try {
-      newData = manager.loadGame(input, null);
+      newData = manager.loadGame(input);
       if (newData != null) {
         m_fileName = fileName;
         setGameData(newData);
@@ -112,7 +112,7 @@ public class GameSelectorModel extends Observable {
     final GameDataManager manager = new GameDataManager();
     GameData newData;
     try {
-      newData = manager.loadGame(input, null);
+      newData = manager.loadGame(input);
       if (newData != null) {
         return newData;
       }
