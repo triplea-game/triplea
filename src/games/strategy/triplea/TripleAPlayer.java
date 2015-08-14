@@ -210,10 +210,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
-    /*
-     * if (!iPoliticsDelegate.stuffToDoInThisDelegate())
-     * return;
-     */
+
     final PoliticalActionAttachment actionChoice =
         m_ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
     if (actionChoice != null) {
@@ -237,10 +234,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
-    /*
-     * if (!iUserActionDelegate.stuffToDoInThisDelegate())
-     * return;
-     */
     final UserActionAttachment actionChoice = m_ui.getUserActionChoice(getPlayerID(), firstRun, iUserActionDelegate);
     if (actionChoice != null) {
       iUserActionDelegate.attemptAction(actionChoice);
@@ -274,10 +267,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
-    /*
-     * if (!techDelegate.stuffToDoInThisDelegate())
-     * return;
-     */
+
+
     final PlayerID id = getPlayerID();
     // play a sound for this phase
     if (!m_soundPlayedAlreadyTechnology) {
@@ -312,10 +303,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
       e.printStackTrace();
       throw new IllegalStateException(errorContext, e);
     }
-    /*
-     * if (!moveDel.stuffToDoInThisDelegate())
-     * return;
-     */
+
     final PlayerID id = getPlayerID();
     // play a sound for this phase
     if (nonCombat && !m_soundPlayedAlreadyNonCombatMove) {
@@ -399,10 +387,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame>implements I
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    /*
-     * if (!purchaseDel.stuffToDoInThisDelegate())
-     * return;
-     */
+
     final PlayerID id = getPlayerID();
     // play a sound for this phase
     if (!bid && !m_soundPlayedAlreadyPurchase) {
