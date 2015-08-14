@@ -62,7 +62,7 @@ public class ProBattleUtils {
     final int attackPower = DiceRoll
         .getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList,
             defendingUnits, false, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data)
-            .getFirst();
+        .getFirst();
     final List<Unit> defendersWithHitPoints = Match.getMatches(defendingUnits, Matches.UnitIsInfrastructure.invert());
     final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
@@ -110,7 +110,7 @@ public class ProBattleUtils {
     final int myPower = DiceRoll
         .getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, sortedUnitsList,
             enemyUnits, !attacking, false, player, data, t, TerritoryEffectHelper.getEffects(t), false, null), data)
-            .getFirst();
+        .getFirst();
     return (myPower * 6.0 / data.getDiceSides());
   }
 
@@ -232,25 +232,22 @@ public class ProBattleUtils {
   public boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
     final GameData data = ai.getGameData();
+
     if (t == null) {
       return true;
     }
+
     for (int i = 2; i <= distance; i++) {
+
       // Find enemy strength
       final Set<Territory> nearbyTerritoriesForEnemy =
           data.getMap().getNeighbors(t, i, ProMatches.territoryCanMoveLandUnits(player, data, false));
       nearbyTerritoriesForEnemy.add(t);
       final List<Unit> enemyUnits = new ArrayList<Unit>();
-      System.out.println("--------------------------");
-      System.out.println(player + ", t=" + t + ", distance=" + distance + ", i=" + i + ", nearbyTerritoriesForEnemy="
-          + nearbyTerritoriesForEnemy);
       for (final Territory nearbyTerritory : nearbyTerritoriesForEnemy) {
-        System.out.println("1. " + nearbyTerritory);
-        System.out.println("2. " + nearbyTerritory.getUnits());
-        System.out.println("3. "
-            + nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
         enemyUnits.addAll(nearbyTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotNeutral(player, data)));
       }
+
       // Find allied strength
       final Set<Territory> nearbyTerritoriesForAllied =
           data.getMap().getNeighbors(t, i - 1, ProMatches.territoryCanMoveLandUnits(player, data, false));
@@ -266,11 +263,11 @@ public class ProBattleUtils {
           }
         }
       }
+
       // Determine strength difference
       final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
       LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", distance="
-          + i
-          + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
+          + i + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
       if (strengthDifference > 50) {
         return false;
       }
@@ -333,7 +330,7 @@ public class ProBattleUtils {
     final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<Unit>();
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       enemyUnitsInLandTerritories
-      .addAll(nearbyLandTerritory.getUnits().getMatches(ProMatches.unitIsEnemyAir(player, data)));
+          .addAll(nearbyLandTerritory.getUnits().getMatches(ProMatches.unitIsEnemyAir(player, data)));
     }
     for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
       final List<Unit> enemySeaUnits =
@@ -355,10 +352,10 @@ public class ProBattleUtils {
     }
     for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories) {
       myUnitsInSeaTerritories
-      .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
+          .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player, data)));
       myUnitsInSeaTerritories.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));
       alliedUnitsInSeaTerritories
-      .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
+          .addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
     }
     LogUtils.log(Level.FINEST,
         t + ", enemyDistance=" + enemyDistance + ", alliedDistance=" + alliedDistance + ", enemyAirUnits="
