@@ -34,8 +34,10 @@ import games.strategy.util.ClassLoaderUtil;
 
 public class NewGameChooserModel extends DefaultListModel {
   private static final long serialVersionUID = -2044689419834812524L;
+  private final ClearGameChooserCacheMessenger clearCacheMessenger;
 
-  public NewGameChooserModel() {
+  public NewGameChooserModel(ClearGameChooserCacheMessenger clearCacheMessenger ) {
+    this.clearCacheMessenger = clearCacheMessenger;
     populate();
   }
 
@@ -79,6 +81,9 @@ public class NewGameChooserModel extends DefaultListModel {
   private void populate() {
     final List<NewGameChooserEntry> entries = new ArrayList<NewGameChooserEntry>();
     for (final File map : allMapFiles()) {
+      if(clearCacheMessenger.isCancelled()) {
+        return;
+      }
       if (map.isDirectory()) {
         populateFromDirectory(map, entries);
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {

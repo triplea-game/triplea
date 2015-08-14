@@ -30,10 +30,17 @@ import javax.swing.event.ListSelectionListener;
 import games.strategy.engine.data.GameData;
 import games.strategy.util.LocalizeHTML;
 
+
 public class NewGameChooser extends JDialog {
+
   private static final long serialVersionUID = -3223711652118741132L;
-  // any methods touching s_cachedGameModel should be both static and synchronized
+
+  // Use synchronization when accessing s_cachedGameModel, it is accessed by both
+  // the Swing AWT event thread and also background threads (which pre-load games in the background)
   private static NewGameChooserModel s_cachedGameModel = null;
+  private static volatile boolean mapParsingInProgress = false;
+  private static ClearGameChooserCacheMessenger cacheClearedMessenger;
+
   private JButton m_okButton;
   private JButton m_cancelButton;
   private JButton m_refreshGamesButton;
@@ -230,7 +237,7 @@ public class NewGameChooser extends JDialog {
     });
   }
 
-  // any methods touching s_cachedGameModel should be both static and synchronized
+  /** Populates the NewGameChooserModel cache if empty, then returns the cached instance */
   public synchronized static NewGameChooserModel getNewGameChooserModel() {
     if (s_cachedGameModel == null) {
       refreshNewGameChooserModel();
@@ -238,19 +245,28 @@ public class NewGameChooser extends JDialog {
     return s_cachedGameModel;
   }
 
-  // any methods touching s_cachedGameModel should be both static and synchronized
+  /** Starts updating the NewGameChooserModel cache, this can be a lengthy process (seconds) */
   public synchronized static void refreshNewGameChooserModel() {
-    clearNewGameChooserModel();
-    s_cachedGameModel = new NewGameChooserModel();
+    mapParsingInProgress = true;
+    cacheClearedMessenger = new ClearGameChooserCacheMessenger();
+
+    NewGameChooserModel model = new NewGameChooserModel(cacheClearedMessenger);
+      // Cache might not be populated if another thread has cleared
+      // the cache while we were loading.
+    if (mapParsingInProgress) {
+      s_cachedGameModel = model;
+    }
+    mapParsingInProgress = false;
   }
 
-  // any methods touching s_cachedGameModel should be both static and synchronized
-  public synchronized static void clearNewGameChooserModel() {
-    if (s_cachedGameModel != null) {
-      s_cachedGameModel.clear();
-      s_cachedGameModel = null;
-    }
+  /** (Non-blocking) Clears the game chooser cache and cancels any in-progress updates of the cache */
+  public static void clearNewGameChooserModel() {
+    mapParsingInProgress = false;
+    cacheClearedMessenger.sendCancel();
+    cacheClearedMessenger = null;
+    s_cachedGameModel = null;
   }
+
 
   /**
    * Refreshes the game list (from disk) then caches the new list
