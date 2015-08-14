@@ -26,12 +26,7 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.util.Version;
 
 /**
- * <p>
- * Title: TripleA
- * </p>
- * <p>
- * Description: Responsible for loading saved games, new games from xml, and saving games
- * </p>
+ * Responsible for loading saved games, new games from xml, and saving games
  */
 public class GameDataManager {
   private final static String DELEGATE_START = "<DelegateStart>";
@@ -65,6 +60,10 @@ public class GameDataManager {
     return loadGame(new ObjectInputStream(new GZIPInputStream(input)), path);
   }
 
+  public GameData loadGame(final InputStream input) throws IOException {
+    return loadGame(input, null);
+  }
+
   public GameData loadGame(final ObjectInputStream input, final String savegamePath) throws IOException {
     try {
       final Version readVersion = (Version) input.readObject();
@@ -84,6 +83,7 @@ public class GameDataManager {
         if (savegamePath == null) {
           throw new IOException(error);
         }
+
         // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was
         // used for this savegame, and if so try to run it
         try {
@@ -96,6 +96,7 @@ public class GameDataManager {
               + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
               + "<br><b>You may choose to either Close or Keep the current instance of TripleA!</b> (If hosting, you must close it). Please report any bugs or issues."
               + "<br><br>Do you wish to continue?</html>";
+
           final String yesClose = "Yes & Close Current";
           final String yesOpen = "Yes & Do Not Close";
           final String cancel = "Cancel";
@@ -157,6 +158,7 @@ public class GameDataManager {
   /**
    * Use this to keep compatibility between savegames when it is easy to do so.
    * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for triplea.
+   *
    * FYI: Engine version numbers work like this with regards to savegames:
    * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
    * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
