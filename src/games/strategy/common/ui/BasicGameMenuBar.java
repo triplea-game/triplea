@@ -209,7 +209,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     }
     final JMenu menuNetwork = new JMenu("Network");
     menuNetwork.setMnemonic(KeyEvent.VK_N);
-    addAllowObserversToJoin(menuNetwork);
     addBootPlayer(menuNetwork);
     addBanPlayer(menuNetwork);
     addMutePlayer(menuNetwork);
@@ -217,11 +216,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     addShowPlayers(menuNetwork);
     menuBar.add(menuNetwork);
   }
-
-  /**
-   * @param parentMenu
-   */
-  protected final void addAllowObserversToJoin(final JMenu parentMenu) {}
 
   protected void addBootPlayer(final JMenu parentMenu) {
     if (!getGame().getMessenger().isServer()) {
@@ -416,9 +410,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     }).setMnemonic(KeyEvent.VK_C);
   }
 
-  /**
-   * @param parentMenu
-   */
   protected void addAboutMenu(final JMenu parentMenu) {
     final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> "
         + games.strategy.engine.EngineVersion.VERSION.toString() + "<br><b>Game:</b> " + getData().getGameName()
@@ -458,9 +449,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
     }
   }
 
-  /**
-   * @param menuBar
-   */
+
   protected void createFileMenu(final JMenuBar menuBar) {
     final JMenu fileMenu = new JMenu("File");
     fileMenu.setMnemonic(KeyEvent.VK_F);
