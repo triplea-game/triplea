@@ -55,9 +55,7 @@ dependencies {
     compile 'org.swinglabs.swingx:swingx-all:1.6.4'
     compile 'com.sun.mail:mailapi:1.5.1'
     compile 'com.sun.mail:smtp:1.5.1'
-
     compile 'com.google.guava:guava:18.0'
-
     compile files('lib/upnp.jar')
     compile files('lib/AppleJavaExtensions-1.6.jar')
 
@@ -68,5 +66,5 @@ dependencies {
 }
 
 task wrapper(type: Wrapper, group: 'gradle') {
-    distributionUrl = "http://services.gradle.org/distributions/gradle-2.5-all.zip"
+    distributionUrl = "http://services.gradle.org/distributions/gradle-2.6-all.zip"
 }
