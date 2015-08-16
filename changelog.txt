@@ -20,6 +20,8 @@ Changes for 1.8.0.7
 
 * Hard AI - Added politics support for 2 team maps such as Global 1940. (redrum)
 
+* Hard AI - Improved capital defense. (redrum)
+
 * Hard AI - Added support for WW2v1 non-limit placing of units. (redrum)
 
 * Hard AI - Added support for territory effects. (redrum)
@@ -35,6 +37,14 @@ Changes for 1.8.0.7
 * Hard AI - Units of the same type are now moved all at once rather than one at a time. (redrum)
 
 * Hard AI - Fixed several rare NullPointerException errors. (redrum)
+
+* Hard AI - Added support for nations without capitals. (redrum)
+
+* Fixed maxBuilt to include unplaced units. (DanVanAtta)
+
+* Added a convenience button to undo all moves during a phase. (DanVanAtta)
+
+* Removed obsolete Dynamix (land-only) AI. (veqryn)
 
 * Fixed issue with TripleA logging users out of axisandallies.org when posting turns. (redrum)
 
