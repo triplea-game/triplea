@@ -29,6 +29,7 @@
 			<include name="*.jar" />
 			<exclude name="junit*" />
 			<exclude name="derby*" />
+			<exclude name="mockito*" />
 		</fileset>
 	</path>
 
@@ -39,7 +40,7 @@
 
 	<path id="test.classpath">
 		<path refid="src.classpath" />
-		<fileset dir="lib" includes="junit*.jar,derby*.jar" />
+		<fileset dir="lib" includes="junit*.jar,derby*.jar,mockito*.jar" />
 	</path>
 
 	<path id="build.data">
