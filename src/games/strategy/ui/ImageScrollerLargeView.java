@@ -29,7 +29,9 @@ import javax.swing.SwingUtilities;
  * our location and size. Subclasses must take care of rendering
  */
 public class ImageScrollerLargeView extends JComponent {
+
   private static final long serialVersionUID = -7212817233833868483L;
+
   // bit flags for determining which way we are scrolling
   final static int NONE = 0;
   final static int LEFT = 1;
@@ -37,14 +39,25 @@ public class ImageScrollerLargeView extends JComponent {
   final static int TOP = 4;
   final static int BOTTOM = 8;
   final static int WHEEL_SCROLL_AMOUNT = 60;
+
   // how close to an edge we have to be before we scroll
-  private final static int TOLERANCE = 25;
+  private final static int TOLERANCE = 70;
+
+  // if we get even closer to the edge, we scroll a bit faster
+  private int FASTER_TOLERANCE = TOLERANCE / 4;
+
   // how much we scroll
   private final static int SCROLL_DISTANCE = 30;
+  private final static float FASTER_SCROLL_MULTIPLIER = 1.5f;
+
   protected final ImageScrollModel m_model;
   protected double m_scale = 1;
+
   private int m_drag_scrolling_lastx;
   private int m_drag_scrolling_lasty;
+
+
+
   private final ActionListener m_timerAction = new ActionListener() {
     @Override
     public final void actionPerformed(final ActionEvent e) {
@@ -55,8 +68,7 @@ public class ImageScrollerLargeView extends JComponent {
       if (m_inside && m_edge != NONE) {
         m_insideCount++;
         if (m_insideCount > 6) {
-          // we are in the timer thread, make sure the update occurs
-          // in the swing thread
+          // Scroll the map when the mouse has hovered inside the scroll zone for long enough
           SwingUtilities.invokeLater(new Scroller());
         }
       }
@@ -65,13 +77,11 @@ public class ImageScrollerLargeView extends JComponent {
   // scrolling
   private final javax.swing.Timer m_timer = new javax.swing.Timer(50, m_timerAction);
   private boolean m_inside = false;
+  private boolean m_insideFasterPosition;
   private int m_insideCount = 0;
   private int m_edge = NONE;
   private final List<ScrollListener> m_scrollListeners = new ArrayList<ScrollListener>();
 
-  /**
-   * Creates new ImageScroller
-   */
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
     m_model = model;
@@ -146,6 +156,11 @@ public class ImageScrollerLargeView extends JComponent {
     } else if ((m_edge & RIGHT) != 0) {
       dx = SCROLL_DISTANCE;
     }
+    if( this.m_insideFasterPosition ) {
+      dx *= FASTER_SCROLL_MULTIPLIER;
+      dy *= FASTER_SCROLL_MULTIPLIER;
+    }
+
     dx = (int) (dx / m_scale);
     dy = (int) (dy / m_scale);
     final int newX = (m_model.getX() + dx);
@@ -182,15 +197,28 @@ public class ImageScrollerLargeView extends JComponent {
 
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
+    this.m_insideFasterPosition = false;
     if (x < TOLERANCE) {
       newEdge += LEFT;
+      if( x < FASTER_TOLERANCE ) {
+        this.m_insideFasterPosition = true;
+      }
     } else if (width - x < TOLERANCE) {
       newEdge += RIGHT;
+      if( (width - x) < FASTER_TOLERANCE ) {
+        this.m_insideFasterPosition = true;
+      }
     }
     if (y < TOLERANCE) {
       newEdge += TOP;
+      if( y < FASTER_TOLERANCE ) {
+        this.m_insideFasterPosition = true;
+      }
     } else if (height - y < TOLERANCE) {
       newEdge += BOTTOM;
+      if( (height - y) < FASTER_TOLERANCE ) {
+        this.m_insideFasterPosition = true;
+      }
     }
     return newEdge;
   }
@@ -207,8 +235,8 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   /**
-   * @param value
-   *        - a double between 0 and 1.
+   * @param value The new scale value. Constrained to the bounds of no less than 0.15 and no greater than 1.
+   * If out of bounds the nearest boundary value is used.
    */
   public void setScale(double value) {
     if (value < 0.15) {
@@ -224,9 +252,6 @@ public class ImageScrollerLargeView extends JComponent {
     refreshBoxSize();
   }
 
-  /**
-   * used for the mouse wheel
-   */
   private final MouseWheelListener MOUSE_WHEEL_LISTENER = new MouseWheelListener() {
     @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
