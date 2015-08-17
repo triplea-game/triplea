@@ -149,7 +149,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
             + "Right click and Drag the mouse to move your screen over the map.<br>"
             + "Left click the map (anywhere), use the arrow keys (or WASD keys) to move your map around. Holding down control will move the map faster.<br />"
             + "Left click in the Minimap at the top right of the screen, and Drag the mouse.<br>"
-            + "Move the mouse to the edge of the map window, and the screen will scroll in that direction.<br>"
+            + "Move the mouse to the edge of the map to scroll in that direction. Moving the mouse even closer to the edge will scroll faster.<br>"
             + "Scrolling the mouse wheel will move the map up and down.<br>" + "<br><b> Zooming Out</b><br>"
             + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
             + "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
