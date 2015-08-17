@@ -1745,14 +1745,14 @@ public class TripleAFrame extends MainGameFrame {
     }
   };
   final KeyListener m_arrowKeyActionListener = new KeyListener() {
-    final int diffPixel = 50;
-
     @Override
     public void keyPressed(final KeyEvent e) {
       // scroll map according to wasd/arrowkeys
+      final int diffPixel = computeScrollSpeed(e);
       final int x = m_mapPanel.getXOffset();
       final int y = m_mapPanel.getYOffset();
       final int keyCode = e.getKeyCode();
+
       if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
         getMapPanel().setTopLeft(x + diffPixel, y);
       } else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
@@ -1817,6 +1817,17 @@ public class TripleAFrame extends MainGameFrame {
     @Override
     public void keyReleased(final KeyEvent e) {}
   };
+
+  private static int computeScrollSpeed(final KeyEvent e) {
+    int multiplier = 1;
+
+    if (e.isControlDown()) {
+      multiplier = 5;
+    }
+
+    final int starterDiffPixel = 100;
+    return (starterDiffPixel * multiplier);
+  }
 
   private void showEditMode() {
     m_tabsPanel.addTab("Edit", m_editPanel);
