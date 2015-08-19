@@ -10,11 +10,7 @@
  (original authors: Sean Bridges, and many others)
 -->
 
-<project name="TripleA" basedir="." default="makejar"
-	xmlns:fb="antlib:edu.umd.cs.findbugs">
-
-	<taskdef uri="antlib:edu.umd.cs.findbugs" resource="edu/umd/cs/findbugs/anttask/tasks.properties"
-		classpath="ant/findbugs-1.3.9/lib/findbugs-ant.jar" />
+<project name="TripleA" basedir="." default="makejar">
 
 	<property file=".ant.properties" />
 	<property name="bin" location="bin" />
@@ -907,20 +903,6 @@
 		</junit>
 
 		<fail if="junit.failed" message="Some tests failed, see above for details" />
-	</target>
-
-	<!-- analyze code for bugs. run compile first -->
-	<target name="findbugs" description="run findbugs" depends="compile">
-
-		<jar destfile="classes.jar" basedir="${classes}" />
-
-		<pathconvert refid="src.classpath" property="findbugs-path" />
-		<fb:findbugs home="ant/findbugs-1.3.9" excludeFilter="ant/FindbugsExcludeFilter.txt"
-			output="xml" outputFile="fb.xml" timeout="3600000" jvmargs="-Xmx1000m">
-			<sourcePath path="${src}" />
-			<auxclasspath path="${findbugs-path}" />
-			<class location="classes.jar" />
-		</fb:findbugs>
 	</target>
 
 	<macrodef name="winInstaller">
