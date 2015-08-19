@@ -39,9 +39,11 @@ Changes for 1.8.0.7
 
 * Hard AI - Added support for nations without capitals. (redrum)
 
-* Fixed maxBuilt to include unplaced units. (DanVanAtta)
+* Source code migrated to github - http://github.com/triplea-game/triplea
 
-* Added a convenience button to undo all moves during a phase. (DanVanAtta)
+* Fixed maxBuilt to include unplaced units. (LaFayette)
+
+* Added a convenience button to undo all moves during a phase. (LaFayette)
 
 * Removed obsolete Dynamix (land-only) AI. (veqryn)
 
