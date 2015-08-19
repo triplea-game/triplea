@@ -31,6 +31,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -99,9 +100,10 @@ public class GameParser {
     // SAX errors we need to show
     if (!errorsSAX.isEmpty()) {
       for (final SAXParseException error : errorsSAX) {
-        System.err.println("SAXParseException: game: "
+        String msg = "SAXParseException: game: "
             + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: "
-            + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
+            + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage();
+        ClientLogger.logQuietly(msg);
       }
     }
     parseDiceSides(getSingleChild("diceSides", root, true));
