@@ -39,7 +39,7 @@ Changes for 1.8.0.7
 
 * Hard AI - Added support for nations without capitals. (redrum)
 
-* Source code migrated to github - http://github.com/triplea-game/triplea
+* Source code migrated to github - http://github.com/triplea-game/triplea (veqryn)
 
 * Fixed maxBuilt to include unplaced units. (LaFayette)
 
