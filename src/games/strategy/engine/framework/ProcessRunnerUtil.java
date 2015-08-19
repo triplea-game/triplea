@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.Version;
 
 /**
@@ -56,10 +57,13 @@ public class ProcessRunnerUtil {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
       final File icons = new File(GameRunner2.getRootFolder(), "icons/triplea_icon.png");
-      if (!icons.exists()) {
-        throw new IllegalStateException("Icon file not found");
+      if (icons.exists()) {
+        commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
+      } else {
+        ClientLogger.logQuietly(
+            "Warning: Icon file does not exist: (tripleA will have a default java application log instead of the tripleA icon)"
+                + icons.getAbsoluteFile());
       }
-      commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
     }
     final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
     if (version != null && version.length() > 0) {
