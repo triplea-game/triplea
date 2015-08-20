@@ -11,8 +11,25 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner2;
 
 public class LoadGameUtil {
+
+  public static GameData loadGame( final String game ) {
+    return loadGame(game, new String[] { "maps" } );
+  }
+
+  public static GameData loadTestGame( final String game ) {
+    return loadGame(game, new String[] { "test_data" } );
+  }
+
+  /**
+   * @deprecated drop the first parameter and call either loadGame(String game)
+   * or LoadTestGame(String game) instead
+   */
   public static GameData loadGame(final String map, final String game) {
-    final InputStream is = openInputStream(game);
+    return loadGame(game,new String[] { "maps", "test_data" }  );
+  }
+
+  private static GameData loadGame(final String game, final String[] possibleFolders) {
+    final InputStream is = openInputStream(game, possibleFolders);
     if (is == null) {
       throw new IllegalStateException(game + " does not exist");
     }
@@ -31,19 +48,15 @@ public class LoadGameUtil {
    * First try to load the game as a file on the classpath, if not found there
    * then try to load it from either the "maps" or "test_data" folders.
    */
-  private static InputStream openInputStream(final String game) {
+  private static InputStream openInputStream(final String game, String[] possibleFolders ) {
     InputStream is = LoadGameUtil.class.getResourceAsStream(game);
     if (is == null) {
-      File f = new File(new File(GameRunner2.getRootFolder(), "maps"), game);
-      if (!f.exists()) {
-        f = new File(new File(GameRunner2.getRootFolder(), "test_data"), game);
-      }
+      File f = GameRunner2.getFile( game, possibleFolders );
       if (f.exists()) {
         try {
           is = new FileInputStream(f);
         } catch (final FileNotFoundException e) {
-          // ignore, can't happen because of the if check, and we'll throw
-          // an exception anyways when the client sees we returned null
+          // ignore, we'll throw an exception anyways when the client sees we returned null
         }
       }
     }
