@@ -1,12 +1,11 @@
 package games.strategy.triplea.delegate;
 
+
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-
-import java.io.File;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -20,8 +19,7 @@ public class BigWorldTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("Big World : 1942",
-        "big_world" + File.separator + "games" + File.separator + "big_world_1942.xml");
+    m_data = LoadGameUtil.loadTestGame("big_world_1942_test.xml");
   }
 
   @Override
