@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
@@ -33,6 +34,7 @@ import javax.swing.UIManager;
 import org.apache.commons.httpclient.HostConfiguration;
 
 import games.strategy.common.ui.BasicGameMenuBar;
+import games.strategy.debug.ClientLogger;
 import games.strategy.debug.Console;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.mapDownload.DownloadFileDescription;
@@ -973,48 +975,118 @@ public class GameRunner2 {
    * Get the root folder for the application
    */
   public static File getRootFolder() {
-    // We know that the class file is in a directory one above the games root folder,
-    // So navigate up from the class file, and we have root.
-    // Find the url of our class
-    final URL url = GameRunner2.class.getResource("GameRunner2.class");
-    // We want to move up 1 directory for each package
-    final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
+    String fileName = getGameRunnerFileLocation( "GameRunner2.class");
+
+    final String tripleaJarName = "triplea.jar!";
+    if (fileName.indexOf(tripleaJarName) != -1) {
+      return getRootFolderRelativeToJar(fileName, tripleaJarName);
+    }
+
+    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
+    if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1) {
+      return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
+    }
+
+    return getRootRelativeToClassFile(fileName);
+  }
+
+  private static String getGameRunnerFileLocation( String runnerClassName ) {
+    final URL url = GameRunner2.class.getResource(runnerClassName);
     String fileName = url.getFile();
+
     try {
       // Deal with spaces in the file name which would be url encoded
       fileName = URLDecoder.decode(fileName, "UTF-8");
     } catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
+      ClientLogger.logError("Unsupported encoding of fileName: "+ fileName + ", error: "+ e.getMessage());
     }
-    final String tripleaJarName = "triplea.jar!";
-    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    // We are in a jar file
-    if (fileName.indexOf(tripleaJarName) != -1) {
-      final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
-          fileName.indexOf(tripleaJarName) - 1);
-      final File f = new File(subString).getParentFile();
-      if (!f.exists()) {
-        throw new IllegalStateException("File not found:" + f);
-      }
-      return f;
-    } else if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1) {
-      final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
-          fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
-      final File f = new File(subString).getParentFile();
-      if (!f.exists()) {
-        throw new IllegalStateException("File not found:" + f);
-      }
-      return f;
-    } else {
-      File f = new File(fileName);
-      for (int i = 0; i < moveUpCount; i++) {
-        f = f.getParentFile();
-      }
-      if (!f.exists()) {
-        System.err.println("Could not find root folder, does  not exist:" + f);
-        return new File(System.getProperties().getProperty("user.dir"));
-      }
-      return f;
+    return fileName;
+  }
+
+  private static File getRootFolderRelativeToJar(String fileName, final String tripleaJarName) {
+    final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
+        fileName.indexOf(tripleaJarName) - 1);
+    final File f = new File(subString).getParentFile();
+    if (!f.exists()) {
+      throw new IllegalStateException("File not found:" + f);
     }
+    return f;
+  }
+
+  private static File getRootRelativeToClassFile(String fileName) {
+    File f = new File(fileName);
+
+    // move up 1 directory for each package
+    final int moveUpCount = GameRunner2.class.getName().split("\\.").length + 1;
+    for (int i = 0; i < moveUpCount; i++) {
+      f = f.getParentFile();
+    }
+    if (!f.exists()) {
+      System.err.println("Could not find root folder, does  not exist:" + f);
+      return new File(System.getProperties().getProperty("user.dir"));
+    }
+    return f;
+  }
+
+
+  /* Check if a folder contains another folder or file */
+  private static boolean folderContains(File folder, String childToFind ) {
+    if( folder == null || folder.list() == null || folder.list().length == 0 ) {
+      return false;
+    }
+    return Arrays.asList(folder.list()).contains(childToFind);
+  }
+
+  /**
+   * Search for a file that may be contained in one of multiple folders.
+   *
+   * The file to search for is given by first parameter, second is the list of folders.
+   * We will search all possible paths of the first folder before moving on to the next,
+   * so ordering of the possible folders is more important than the ordering of search paths.
+   *
+   * The search paths vary by if this class is being run from a class file instance,
+   * or a copy compiled into a jar.
+   *
+   * @param game The name of the file to find
+   * @param possibleFolders An array containing a sequence of possible folders that may contain
+   *   the search file.
+   * @return Throws illegal state if not found. Otherwise returns a file reference whose name
+   *  matches the first parameter and parent folder matches an element of "possibleFolders"
+   */
+  public static File getFile(String game, String[] possibleFolders) {
+    for( String possibleFolder : possibleFolders ) {
+      File start = GameRunner2.getRootFolder();
+      if( folderContainsFolderAndFile( start, possibleFolder, game )) {
+        return new File( new File( start, possibleFolder ), game);
+      }
+
+      File secondStart = GameRunner2.getParentFolder(possibleFolder);
+      if( folderContainsFolderAndFile( secondStart, possibleFolder, game )) {
+        return new File( new File( secondStart, possibleFolder ), game);
+      }
+
+    }
+    throw new IllegalStateException("Could not find any of these folders: " + Arrays.asList(possibleFolders) + ", containing game file: " + game );
+  }
+
+  /* Check if a given folder contains another folder that in turn contains a given file */
+  private static boolean folderContainsFolderAndFile( File f, String childFolder, String child) {
+    if( folderContains( f , childFolder )) {
+      File possibleParent = new File( f, childFolder);
+      if( folderContains(possibleParent, child)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* From the Game Runner root location, walk up directories until we find a given folder */
+  private static File getParentFolder(String folderToFind) {
+    File f= new File(getGameRunnerFileLocation("GameRunner2.class"));
+
+    while(f != null && f.exists() && !folderContains(f,folderToFind)) {
+      f = f.getParentFile();
+    }
+    return f;
   }
 }
