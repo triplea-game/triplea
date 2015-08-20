@@ -100,15 +100,8 @@ public class GameRunner2 {
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
   public static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
       Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
-  public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10; // need
-                                                                                                                 // time
-                                                                                                                 // for
-                                                                                                                 // network
-                                                                                                                 // transmission
-                                                                                                                 // of a
-                                                                                                                 // large
-                                                                                                                 // game
-                                                                                                                 // data
+  // need time for network transmission of a large game data
+  public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10;
   public static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
       Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
   public static final int ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME = 10;
@@ -277,10 +270,11 @@ public class GameRunner2 {
           try {
             UIManager.setLookAndFeel(getDefaultLookAndFeel());
             // FYI if you are getting a null pointer exception in Substance, like this:
-            // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities.getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
+            // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
+            // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
             // Then it is because you included the swingx substance library without including swingx.
-            // You can solve by including both swingx libraries or removing both, or by setting the look and feel twice
-            // in a row.
+            // You can solve by including both swingx libraries or removing both,
+            // or by setting the look and feel twice in a row.
           } catch (final Throwable t) {
             if (!GameRunner.isMac()) {
               try {
@@ -338,8 +332,8 @@ public class GameRunner2 {
   private static void checkForMemoryXMX() {
     final String memSetString = System.getProperty(TRIPLEA_MEMORY_SET, "false");
     final boolean memSet = Boolean.parseBoolean(memSetString);
-    // if we have already set the memory, then return. (example: we used process runner to create a new triplea with a
-    // specific memory)
+    // if we have already set the memory, then return.
+    // (example: we used process runner to create a new triplea with a specific memory)
     if (memSet) {
       return;
     }
@@ -360,9 +354,8 @@ public class GameRunner2 {
     final long currentMaxMemory = Runtime.getRuntime().maxMemory();
     System.out.println("Current max memory: " + currentMaxMemory + ";  and new xmx should be: " + xmx);
     final long diff = Math.abs(currentMaxMemory - xmx);
-    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%, so if our difference is less than 22% we
-    // should just ignore the
-    // difference
+    // Runtime.maxMemory is never accurate, and is usually off by 5% to 15%,
+    // so if our difference is less than 22% we should just ignore the difference
     if (diff <= xmx * 0.22) {
       return;
     }
@@ -388,8 +381,8 @@ public class GameRunner2 {
     final String useDefaultMaxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_USE_DEFAULT, "true");
     final boolean useDefaultMaxMemory = Boolean.parseBoolean(useDefaultMaxMemoryString);
     final String maxMemoryString = systemIni.getProperty(TRIPLEA_MEMORY_XMX, "").trim();
-    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value. Just something to be
-    // aware of.
+    // for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value.
+    // Just something to be aware of.
     long max = Runtime.getRuntime().maxMemory();
     if (!useDefaultMaxMemory && maxMemoryString.length() > 0) {
       try {
@@ -758,8 +751,8 @@ public class GameRunner2 {
           } catch (final InterruptedException e) {
           }
         }
-        // the main screen may take just a little itty bit longer after releasing the latch, so sleep for just a little
-        // bit.
+        // the main screen may take just a little bit longer after releasing the latch,
+        // so sleep for just a little bit.
         try {
           Thread.sleep(500);
         } catch (final InterruptedException e) {
@@ -797,10 +790,7 @@ public class GameRunner2 {
         pref.sync();
       } catch (final BackingStoreException e) {
       }
-      // System.out.println("Checking for latest version");
       final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
-      // System.out.println("Check complete: " + (latestEngineOut == null ? "null" :
-      // latestEngineOut.getLatestVersionOut().toString()));
       if (latestEngineOut == null) {
         return false;
       }
