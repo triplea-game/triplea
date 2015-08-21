@@ -94,15 +94,12 @@ public class ChatTest extends TestCase {
     // and we really need to test it working with sockets
     // rather than some mocked up implementation
     final ChatController controller = new ChatController("c", m_server, m_srm, m_scm, m_smc);
-    flush();
-    Thread.sleep(20);
     final Chat server = new Chat(m_server, "c", m_scm, m_srm, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
     server.addChatListener(m_serverChatListener);
     final Chat client1 = new Chat(m_client1, "c", m_c1cm, m_c1rm, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
     client1.addChatListener(m_client1ChatListener);
     final Chat client2 = new Chat(m_client2, "c", m_c2cm, m_c2rm, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
     client2.addChatListener(m_client2ChatListener);
-    flush();
     // we need to wait for all the messages to write
     for (int i = 0; i < 10; i++) {
       try {
@@ -144,7 +141,6 @@ public class ChatTest extends TestCase {
     }
     serverThread.join();
     clientThread.join();
-    flush();
     // we need to wait for all the messages to write
     for (int i = 0; i < 10; i++) {
       try {
@@ -161,7 +157,6 @@ public class ChatTest extends TestCase {
     assertEquals(m_serverChatListener.m_messages.size(), 3 * messageCount);
     client1.shutdown();
     client2.shutdown();
-    flush();
     // we need to wait for all the messages to write
     for (int i = 0; i < 10; i++) {
       try {
@@ -182,17 +177,6 @@ public class ChatTest extends TestCase {
       }
     }
     assertEquals(m_serverChatListener.m_players.size(), 0);
-  }
-
-  private void flush() {
-    // this doesnt really flush
-    // but it does something
-    for (int i = 0; i < 5; i++) {
-      m_sum.waitForAllJobs();
-      m_c1um.waitForAllJobs();
-      m_c2um.waitForAllJobs();
-      Thread.yield();
-    }
   }
 }
 
