@@ -10,7 +10,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 /**
  * Utility class to get image for a Unit.
@@ -62,7 +62,7 @@ public class UnitImageFactory {
     }
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
     try {
-      Util.ensureImageLoaded(image);
+      SwingLib.ensureImageLoaded(image);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }

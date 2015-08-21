@@ -14,7 +14,7 @@ import javax.swing.ListSelectionModel;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
@@ -92,7 +92,7 @@ class PlayerChooserRenderer extends DefaultListCellRenderer {
       final boolean isSelected, final boolean cellHasFocus) {
     super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
     if (m_uiContext == null || (PlayerID) value == PlayerID.NULL_PLAYERID) {
-      setIcon(new ImageIcon(Util.createImage(32, 32, true)));
+      setIcon(new ImageIcon(SwingLib.createImage(32, 32, true)));
     } else {
       setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
     }

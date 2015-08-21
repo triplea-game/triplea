@@ -20,32 +20,48 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
-public class Util {
-  // all we have is static methods
-  private Util() {}
+public final class SwingLib {
+  // all we have are static methods
+  private SwingLib() {}
 
   public static interface Task<T> {
     public T run();
   }
 
-  public static void runInSwingEventThread(final Runnable r) {
+  public static void requestWindowFocus(final Component componentRequestingFocus) {
+    SwingLib.invokeAndWait(new Runnable() {
+      @Override
+      public void run() {
+        componentRequestingFocus.requestFocusInWindow();
+        componentRequestingFocus.transferFocus();
+      }
+    });
+  }
+
+  public static void invokeLater(final Runnable r) {
+    SwingUtilities.invokeLater(r);
+  }
+
+  public static void invokeAndWait(final Runnable r) {
     if (SwingUtilities.isEventDispatchThread()) {
       r.run();
     } else {
       try {
-        SwingUtilities.invokeAndWait(r);
+          SwingUtilities.invokeAndWait(r);
       } catch (final InterruptedException e) {
-        throw new IllegalStateException(e);
+        ClientLogger.logQuietly(e);
       } catch (final InvocationTargetException e) {
-        throw new IllegalStateException(e);
+        ClientLogger.logError(e);
       }
     }
+
   }
 
-  public static <T> T runInSwingEventThread(final Task<T> task) {
+  public static <T> T invokeAndWait(final Task<T> task) {
     if (SwingUtilities.isEventDispatchThread()) {
       return task.run();
     }
@@ -89,12 +105,6 @@ public class Util {
         JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
   }
 
-  // public static Image createVolatileImage(int width, int height)
-  // {
-  // GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-  // .getDefaultConfiguration();
-  // return localGraphicSystem.createCompatibleVolatileImage(width, height);
-  // }
   /**
    * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
    * problems. Fix is to use 3Byte rather than INT.
@@ -105,22 +115,6 @@ public class Util {
     } else {
       return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
     }
-    // the code below should be the correct way to get graphics, but it is
-    // makes the ui quite
-    // unresponsive when drawing the map (as seen when updating the map for
-    // different routes
-    // in combat move phase)
-    // For jdk1.3 on linux and windows, and jdk1.4 on linux there is a very
-    // noticeable difference
-    // jdk1.4 on windows doesnt have a difference
-    // local graphic system is used to create compatible bitmaps
-    // GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-    // .getDefaultConfiguration();
-    // // Create a buffered image in the most optimal format, which allows a
-    // // fast blit to the screen.
-    // BufferedImage workImage = localGraphicSystem.createCompatibleImage(width, height, needAlpha ? Transparency.TRANSLUCENT :
-    // Transparency.OPAQUE);
-    // return workImage;
   }
 
   public static Dimension getDimension(final Image anImage, final ImageObserver obs) {
@@ -143,8 +137,6 @@ public class Util {
     w.setLocation(x, y);
   }
 
-  // code stolen from swingx
-  // swingx is lgpl, so no problems with copyright
   public static Image getBanner(final String text) {
     final int w = 400;
     final int h = 60;

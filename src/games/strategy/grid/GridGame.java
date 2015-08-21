@@ -36,6 +36,7 @@ import games.strategy.grid.ui.display.IGridGameDisplay;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.DummySound;
 import games.strategy.sound.ISound;
+import games.strategy.ui.SwingLib;
 
 /**
  * Abstract Game Loader for grid games.
@@ -78,91 +79,80 @@ abstract public class GridGame extends AbstractGameLoader implements IGameLoader
 
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception {
-    try {
-      m_game = game;
-      if (game.getData().getDelegateList().getDelegate("edit") == null) {
-        // an evil awful hack
-        // we don't want to change the game xml
-        // and invalidate mods so hack it
-        // and force the addition here
-        final EditDelegate delegate = new EditDelegate();
-        delegate.initialize("edit", "edit");
-        m_game.getData().getDelegateList().addDelegate(delegate);
-        if (game instanceof ServerGame) {
-          ((ServerGame) game).addDelegateMessenger(delegate);
-        }
+    m_game = game;
+    if (game.getData().getDelegateList().getDelegate("edit") == null) {
+      // an evil awful hack
+      // we don't want to change the game xml
+      // and invalidate mods so hack it
+      // and force the addition here
+      final EditDelegate delegate = new EditDelegate();
+      delegate.initialize("edit", "edit");
+      m_game.getData().getDelegateList().addDelegate(delegate);
+      if (game instanceof ServerGame) {
+        ((ServerGame) game).addDelegateMessenger(delegate);
       }
-      final LocalPlayers localPlayers = new LocalPlayers(players);
-      if (headless) {
-        final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
-        final HeadlessGameServerUI headlessFrameUI;
-        if (useServerUI) {
-          headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, null);
-        } else {
-          headlessFrameUI = null;
-        }
-        m_display = new DummyGridGameDisplay(headlessFrameUI);
-        m_soundChannel = new DummySound();
-        m_game.addDisplay(m_display);
-        m_game.addSoundChannel(m_soundChannel);
-        initializeGame();
-        connectPlayers(players, null); // technically not needed because we won't have any "local human players" in a headless game.
-        if (headlessFrameUI != null) {
-          headlessFrameUI.setLocationRelativeTo(null);
-          headlessFrameUI.setSize(700, 400);
-          headlessFrameUI.setVisible(true);
-          headlessFrameUI.toFront();
-        }
+    }
+    final LocalPlayers localPlayers = new LocalPlayers(players);
+    if (headless) {
+      final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
+      final HeadlessGameServerUI headlessFrameUI;
+      if (useServerUI) {
+        headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, null);
       } else {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            final GridGameFrame frame = new GridGameFrame(game, localPlayers, getGridMapPanelClass(),
-                getGridMapDataClass(), getGridTableMenuClass(), getSquareWidth(), getSquareHeight(), getBevelSize());
-            m_display = new GridGameDisplay(frame);
-            m_game.addDisplay(m_display);
-            m_soundChannel = new DefaultSoundChannel(localPlayers);
-            m_game.addSoundChannel(m_soundChannel);
-            initializeGame();
-            connectPlayers(players, frame);
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-                final int availHeight = screenResolution.height - 30;
-                final int availWidth = screenResolution.width;
-                // frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                final Dimension currentSize = frame.getPreferredSize();
-                // add a little, since we have stuff like history tab, etc, that increases the width
-                currentSize.height = Math.min(availHeight, currentSize.height + 10);
-                currentSize.width = Math.min(availWidth, currentSize.width + 10);
-                frame.setPreferredSize(currentSize);
-                frame.setSize(currentSize);
-                if (currentSize.height > availHeight - 100 && currentSize.width > availWidth - 200) {
-                  frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                } else if (currentSize.height > availHeight) {
-                  frame.setExtendedState(Frame.MAXIMIZED_VERT);
-                } else if (currentSize.width > availWidth) {
-                  frame.setExtendedState(Frame.MAXIMIZED_HORIZ);
-                }
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-                frame.toFront();
-                frame.minimizeRightSidePanel();
+        headlessFrameUI = null;
+      }
+      m_display = new DummyGridGameDisplay(headlessFrameUI);
+      m_soundChannel = new DummySound();
+      m_game.addDisplay(m_display);
+      m_game.addSoundChannel(m_soundChannel);
+      initializeGame();
+      connectPlayers(players, null); // technically not needed because we won't have any "local human players" in a headless game.
+      if (headlessFrameUI != null) {
+        headlessFrameUI.setLocationRelativeTo(null);
+        headlessFrameUI.setSize(700, 400);
+        headlessFrameUI.setVisible(true);
+        headlessFrameUI.toFront();
+      }
+    } else {
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          final GridGameFrame frame = new GridGameFrame(game, localPlayers, getGridMapPanelClass(),
+              getGridMapDataClass(), getGridTableMenuClass(), getSquareWidth(), getSquareHeight(), getBevelSize());
+          m_display = new GridGameDisplay(frame);
+          m_game.addDisplay(m_display);
+          m_soundChannel = new DefaultSoundChannel(localPlayers);
+          m_game.addSoundChannel(m_soundChannel);
+          initializeGame();
+          connectPlayers(players, frame);
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+              final int availHeight = screenResolution.height - 30;
+              final int availWidth = screenResolution.width;
+              // frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+              final Dimension currentSize = frame.getPreferredSize();
+              // add a little, since we have stuff like history tab, etc, that increases the width
+              currentSize.height = Math.min(availHeight, currentSize.height + 10);
+              currentSize.width = Math.min(availWidth, currentSize.width + 10);
+              frame.setPreferredSize(currentSize);
+              frame.setSize(currentSize);
+              if (currentSize.height > availHeight - 100 && currentSize.width > availWidth - 200) {
+                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+              } else if (currentSize.height > availHeight) {
+                frame.setExtendedState(Frame.MAXIMIZED_VERT);
+              } else if (currentSize.width > availWidth) {
+                frame.setExtendedState(Frame.MAXIMIZED_HORIZ);
               }
-            });
-          }
-        });
-      }
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      if (e.getCause() instanceof Exception) {
-        throw (Exception) e.getCause();
-      } else {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getCause().getMessage());
-      }
+              frame.setLocationRelativeTo(null);
+              frame.setVisible(true);
+              frame.toFront();
+              frame.minimizeRightSidePanel();
+            }
+          });
+        }
+      });
     }
   }
 

@@ -43,8 +43,8 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
-import games.strategy.ui.Util;
-import games.strategy.ui.Util.Task;
+import games.strategy.ui.SwingLib;
+import games.strategy.ui.SwingLib.Task;
 import games.strategy.util.EventThreadJOptionPane;
 
 /**
@@ -249,56 +249,50 @@ public class BattlePanel extends ActionPanel {
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker, final PlayerID defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          if (m_battleDisplay != null) {
-            cleanUpBattleWindow();
-            m_currentBattleDisplayed = null;
-          }
-          if (!getMap().getUIContext().getShowMapOnly()) {
-            m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
-                killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap(),
-                isAmphibious, battleType, amphibiousLandAttackers);
-            m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-            m_battleFrame.getContentPane().removeAll();
-            m_battleFrame.getContentPane().add(m_battleDisplay);
-            m_battleFrame.setSize(800, 600);
-            m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-            games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
-            boolean foundHumanInBattle = false;
-            for (final IGamePlayer gamePlayer : getMap().getUIContext().getLocalPlayers().getLocalPlayers()) {
-              if ((gamePlayer.getPlayerID().equals(attacker) && gamePlayer instanceof TripleAPlayer)
-                  || (gamePlayer.getPlayerID().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
-                foundHumanInBattle = true;
-                break;
-              }
-            }
-            if (getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle) {
-              m_battleFrame.setVisible(true);
-              m_battleFrame.validate();
-              m_battleFrame.invalidate();
-              m_battleFrame.repaint();
-            } else {
-              m_battleFrame.setVisible(false);
-            }
-            m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-            m_currentBattleDisplayed = battleID;
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                m_battleFrame.toFront();
-              }
-            });
-          }
+    SwingLib.invokeAndWait(new Runnable() {
+      @Override
+      public void run() {
+        if (m_battleDisplay != null) {
+          cleanUpBattleWindow();
+          m_currentBattleDisplayed = null;
         }
-      });
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      e.printStackTrace();
-    }
+        if (!getMap().getUIContext().getShowMapOnly()) {
+          m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
+              killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID, BattlePanel.this.getMap(),
+              isAmphibious, battleType, amphibiousLandAttackers);
+          m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+          m_battleFrame.getContentPane().removeAll();
+          m_battleFrame.getContentPane().add(m_battleDisplay);
+          m_battleFrame.setSize(800, 600);
+          m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+          games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
+          boolean foundHumanInBattle = false;
+          for (final IGamePlayer gamePlayer : getMap().getUIContext().getLocalPlayers().getLocalPlayers()) {
+            if ((gamePlayer.getPlayerID().equals(attacker) && gamePlayer instanceof TripleAPlayer)
+                || (gamePlayer.getPlayerID().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
+              foundHumanInBattle = true;
+              break;
+            }
+          }
+          if (getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle) {
+            m_battleFrame.setVisible(true);
+            m_battleFrame.validate();
+            m_battleFrame.invalidate();
+            m_battleFrame.repaint();
+          } else {
+            m_battleFrame.setVisible(false);
+          }
+          m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+          m_currentBattleDisplayed = battleID;
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              m_battleFrame.toFront();
+            }
+          });
+        }
+      }
+    });
   }
 
   public FightBattleDetails waitForBattleSelection() {
@@ -314,7 +308,7 @@ public class BattlePanel extends ActionPanel {
    */
   public Territory getBombardment(final Unit unit, final Territory unitTerritory,
       final Collection<Territory> territories, final boolean noneAvailable) {
-    final BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>() {
+    final BombardComponent comp = SwingLib.invokeAndWait(new SwingLib.Task<BombardComponent>() {
       @Override
       public BombardComponent run() {
         return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
@@ -449,7 +443,7 @@ public class BattlePanel extends ActionPanel {
         return response;
       }
     };
-    return Util.runInSwingEventThread(task);
+    return SwingLib.invokeAndWait(task);
   }
 
   public Territory getRetreat(final GUID battleID, final String message, final Collection<Territory> possible,

@@ -128,6 +128,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 
         @Override
         public void actionPerformed(final ActionEvent e) {
+
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

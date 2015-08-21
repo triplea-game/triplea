@@ -28,7 +28,7 @@ import javax.swing.border.EmptyBorder;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class DownloadMapDialog extends JDialog {
   private static final long serialVersionUID = -4719699814187468325L;
@@ -101,13 +101,13 @@ public class DownloadMapDialog extends JDialog {
       public void actionPerformed(final ActionEvent event) {
         final String selectedUrl = (String) m_urlComboBox.getSelectedItem();
         if (selectedUrl == null || selectedUrl.trim().length() == 0) {
-          Util.notifyError(m_cancelButton, "nothing selected");
+          SwingLib.notifyError(m_cancelButton, "nothing selected");
           return;
         }
         final DownloadRunnable download = new DownloadRunnable(selectedUrl, true);
         BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading....", download);
         if (download.getError() != null) {
-          Util.notifyError(m_cancelButton, download.getError());
+          SwingLib.notifyError(m_cancelButton, download.getError());
           return;
         }
         if (getPrefNode().getBoolean(FIRST_TIME_DOWNLOADING_PREF, true)) {
@@ -122,7 +122,7 @@ public class DownloadMapDialog extends JDialog {
         }
         final List<DownloadFileDescription> downloads = download.getDownloads();
         if (downloads == null || downloads.isEmpty() || download.getError() != null) {
-          Util.notifyError(m_cancelButton, download.getError());
+          SwingLib.notifyError(m_cancelButton, download.getError());
           return;
         }
         addDownloadSites(selectedUrl.trim());
@@ -139,7 +139,7 @@ public class DownloadMapDialog extends JDialog {
           DesktopUtilityBrowserLauncher.openURL(
               "http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
         } catch (final Exception ex) {
-          Util.notifyError(m_cancelButton, ex.getMessage());
+          SwingLib.notifyError(m_cancelButton, ex.getMessage());
           return;
         }
       }

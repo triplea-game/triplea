@@ -75,7 +75,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -530,7 +530,7 @@ public class BattleDisplay extends JPanel {
       final int width = 250;
       final int height = 250;
       final Image img = m_mapPanel.getTerritoryImage((Territory) m_list.getSelectedValue(), m_location);
-      final Image finalImage = Util.createImage(width, height, true);
+      final Image finalImage = SwingLib.createImage(width, height, true);
       final Graphics g = finalImage.getGraphics();
       g.drawImage(img, 0, 0, width, height, this);
       g.dispose();
@@ -757,7 +757,7 @@ public class BattleDisplay extends JPanel {
   private static final int MY_HEIGHT = 100;
 
   private JComponent getTerritoryComponent() {
-    final Image finalImage = Util.createImage(MY_WIDTH, MY_HEIGHT, true);
+    final Image finalImage = SwingLib.createImage(MY_WIDTH, MY_HEIGHT, true);
     final Image territory = m_mapPanel.getTerritoryImage(m_location);
     final Graphics g = finalImage.getGraphics();
     g.drawImage(territory, 0, 0, MY_WIDTH, MY_HEIGHT, this);

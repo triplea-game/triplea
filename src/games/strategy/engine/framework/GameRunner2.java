@@ -45,6 +45,7 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
@@ -154,18 +155,14 @@ public class GameRunner2 {
     checkForMemoryXMX();
     setupLookAndFeel();
     s_countDownLatch = new CountDownLatch(1);
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          s_waitWindow = new WaitWindow("TripleA is starting...");
-          s_waitWindow.setVisible(true);
-          s_waitWindow.showWait();
-        }
-      });
-    } catch (final Exception e) {
-      // just don't show the wait window
-    }
+    SwingLib.invokeAndWait(new Runnable() {
+      @Override
+      public void run() {
+        s_waitWindow = new WaitWindow("TripleA is starting...");
+        s_waitWindow.setVisible(true);
+        s_waitWindow.showWait();
+      }
+    });
     setupProxies();
     showMainFrame();
     // lastly, check and see if there are new versions of TripleA out
@@ -266,7 +263,7 @@ public class GameRunner2 {
 
   public static void setupLookAndFeel() {
     try {
-      SwingUtilities.invokeAndWait(new Runnable() {
+      SwingLib.invokeAndWait(new Runnable() {
         @Override
         public void run() {
           try {
@@ -282,13 +279,14 @@ public class GameRunner2 {
               try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
               } catch (final Exception e) {
+                ClientLogger.logQuietly(e);
               }
             }
           }
         }
       });
     } catch (final Throwable t) {
-      t.printStackTrace(System.out);
+      ClientLogger.logQuietly(t);
     }
   }
 

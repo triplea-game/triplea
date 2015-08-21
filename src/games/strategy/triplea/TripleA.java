@@ -40,6 +40,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.DummyTripleaDisplay;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
+import games.strategy.ui.SwingLib;
 
 public class TripleA extends AbstractGameLoader implements IGameLoader {
   // compatible with 0.9.0.2 saved games
@@ -89,89 +90,78 @@ public class TripleA extends AbstractGameLoader implements IGameLoader {
 
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) throws Exception {
-    try {
-      /*
-       * Retreive the map name from xml file
-       * This is the key for triplea to find the maps
-       */
-      m_game = game;
-      // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
-      if (game.getData().getDelegateList().getDelegate("edit") == null) {
-        // an evil awful hack
-        // we don't want to change the game xml
-        // and invalidate mods so hack it
-        // and force the addition here
-        final EditDelegate delegate = new EditDelegate();
-        delegate.initialize("edit", "edit");
-        m_game.getData().getDelegateList().addDelegate(delegate);
-        if (game instanceof ServerGame) {
-          ((ServerGame) game).addDelegateMessenger(delegate);
-        }
+    /*
+     * Retreive the map name from xml file
+     * This is the key for triplea to find the maps
+     */
+    m_game = game;
+    // final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
+    if (game.getData().getDelegateList().getDelegate("edit") == null) {
+      // an evil awful hack
+      // we don't want to change the game xml
+      // and invalidate mods so hack it
+      // and force the addition here
+      final EditDelegate delegate = new EditDelegate();
+      delegate.initialize("edit", "edit");
+      m_game.getData().getDelegateList().addDelegate(delegate);
+      if (game instanceof ServerGame) {
+        ((ServerGame) game).addDelegateMessenger(delegate);
       }
-      final LocalPlayers localPlayers = new LocalPlayers(players);
-      if (headless) {
-        final IUIContext uiContext = new HeadlessUIContext();
-        uiContext.setDefaultMapDir(game.getData());
-        // uiContext.getMapData().verify(game.getData());
-        uiContext.setLocalPlayers(localPlayers);
-        final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
-        final HeadlessGameServerUI headlessFrameUI;
-        if (useServerUI) {
-          headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
-        } else {
-          headlessFrameUI = null;
-        }
-        m_display = new DummyTripleaDisplay(headlessFrameUI);
-        m_soundChannel = new DummySound();
-        game.addDisplay(m_display);
-        game.addSoundChannel(m_soundChannel);
-        initializeGame();
-        connectPlayers(players, null);// technically not needed because we won't have any "local human players" in a headless game.
-        if (headlessFrameUI != null) {
-          headlessFrameUI.setLocationRelativeTo(null);
-          headlessFrameUI.setSize(700, 400);
-          headlessFrameUI.setVisible(true);
-          headlessFrameUI.toFront();
-        }
+    }
+    final LocalPlayers localPlayers = new LocalPlayers(players);
+    if (headless) {
+      final IUIContext uiContext = new HeadlessUIContext();
+      uiContext.setDefaultMapDir(game.getData());
+      // uiContext.getMapData().verify(game.getData());
+      uiContext.setLocalPlayers(localPlayers);
+      final boolean useServerUI = HeadlessGameServer.getUseGameServerUI();
+      final HeadlessGameServerUI headlessFrameUI;
+      if (useServerUI) {
+        headlessFrameUI = new HeadlessGameServerUI(game, localPlayers, uiContext);
       } else {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            final TripleAFrame frame;
-            try {
-              frame = new TripleAFrame(game, localPlayers);
-            } catch (final IOException e) {
-              e.printStackTrace();
-              System.exit(-1);
-              return;
-            }
-            m_display = new TripleaDisplay(frame);
-            game.addDisplay(m_display);
-            m_soundChannel = new DefaultSoundChannel(localPlayers);
-            game.addSoundChannel(m_soundChannel);
-            frame.setSize(700, 400);
-            frame.setVisible(true);
-            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_GAME_START, null);
-            connectPlayers(players, frame);
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-                frame.toFront();
-              }
-            });
+        headlessFrameUI = null;
+      }
+      m_display = new DummyTripleaDisplay(headlessFrameUI);
+      m_soundChannel = new DummySound();
+      game.addDisplay(m_display);
+      game.addSoundChannel(m_soundChannel);
+      initializeGame();
+      connectPlayers(players, null);// technically not needed because we won't have any "local human players" in a headless game.
+      if (headlessFrameUI != null) {
+        headlessFrameUI.setLocationRelativeTo(null);
+        headlessFrameUI.setSize(700, 400);
+        headlessFrameUI.setVisible(true);
+        headlessFrameUI.toFront();
+      }
+    } else {
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          final TripleAFrame frame;
+          try {
+            frame = new TripleAFrame(game, localPlayers);
+          } catch (final IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+            return;
           }
-        });
-      }
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      if (e.getCause() instanceof Exception) {
-        throw (Exception) e.getCause();
-      } else {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getCause().getMessage());
-      }
+          m_display = new TripleaDisplay(frame);
+          game.addDisplay(m_display);
+          m_soundChannel = new DefaultSoundChannel(localPlayers);
+          game.addSoundChannel(m_soundChannel);
+          frame.setSize(700, 400);
+          frame.setVisible(true);
+          DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_GAME_START, null);
+          connectPlayers(players, frame);
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+              frame.toFront();
+            }
+          });
+        }
+      });
     }
   }
 

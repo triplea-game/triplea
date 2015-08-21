@@ -40,7 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.PointFileReaderWriter;
 
 public class CenterPicker extends JFrame {
@@ -225,7 +225,7 @@ public class CenterPicker extends JFrame {
   private void createImage(final String mapName) {
     m_image = Toolkit.getDefaultToolkit().createImage(mapName);
     try {
-      Util.ensureImageLoaded(m_image);
+      SwingLib.ensureImageLoaded(m_image);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }

@@ -24,7 +24,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class Tile {
   public static final LockUtil S_TILE_LOCKUTIL = new LockUtil();
@@ -85,7 +85,7 @@ public class Tile {
   }
 
   private BufferedImage createBlankImage() {
-    return Util.createImage((int) (m_bounds.getWidth() * m_scale), (int) (m_bounds.getHeight() * m_scale), false);
+    return SwingLib.createImage((int) (m_bounds.getWidth() * m_scale), (int) (m_bounds.getHeight() * m_scale), false);
   }
 
   /**

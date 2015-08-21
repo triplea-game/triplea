@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class CreateUpdateAccountPanel extends JPanel {
   private static final long serialVersionUID = 2285956517232671122L;
@@ -69,7 +69,7 @@ public class CreateUpdateAccountPanel extends JPanel {
   }
 
   private void layoutComponents(final boolean create) {
-    final JLabel label = new JLabel(new ImageIcon(Util.getBanner(create ? "Create Account" : "Update Account")));
+    final JLabel label = new JLabel(new ImageIcon(SwingLib.getBanner(create ? "Create Account" : "Update Account")));
     setLayout(new BorderLayout());
     add(label, BorderLayout.NORTH);
     final JPanel main = new JPanel();

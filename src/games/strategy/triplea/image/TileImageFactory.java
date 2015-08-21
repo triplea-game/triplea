@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.BlendComposite.BlendingMode;
 import games.strategy.triplea.util.Stopwatch;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public final class TileImageFactory {
   private final Object m_mutex = new Object();
@@ -359,7 +359,7 @@ public final class TileImageFactory {
       // this step is a significant bottle neck in the image drawing process
       // we should try to find a way to avoid it, and load the
       // png directly as the right type
-      image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+      image = SwingLib.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
       if (scale && m_scale != 1.0) {
         final AffineTransform transform = new AffineTransform();
