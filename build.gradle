@@ -7,7 +7,9 @@ plugins {
 }
 
 group = 'triplea'
-version = '1.8.0.5'
+
+version = System.getenv("TRAVIS_TAG") ?: ""
+
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
 

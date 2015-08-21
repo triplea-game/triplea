@@ -1,4 +1,21 @@
 language: java
 jdk:
-  - oraclejdk8
   - oraclejdk7
+  - oraclejdk8
+addons:
+  apt:
+    packages:
+      - nsis
+before_deploy:
+  - ./gradlew releaseArtifacts
+deploy:
+  - provider: releases
+    api-key:
+      secure: s+LO3IxHk6fG7z/8RRBz7dCSPABmAGCaPgFqJQrbVes5Ev4UJZJjzZnWJk0b5md0PzwDP5Ie0GjL8hGn8xXWjY1ffheTJ+ByEUosyksB4V+/r8apUT9xqBTdS/GaCTXHkqasmdtmWMivdsnYb2eA+Nu/INFyqAETzLhLgur1wpqygBferh1HmjMU0pegXG6reUIKvIKoD1KieQ1KxDtckzVEqVoUNWH5p3vtXdSiERYTOEN0GqTcysEAym5SNmQZI/Q1ZrTUZ3AAQcjOXm3XzG3LdH9FTCQREuoILMrnLXEPl20z79yj7AkXLqUr3ZvhMCKNd5V3QBgMmRGhSyWC/Y3yp7Ux9tXT9CgPc7ch6Vk9DmgpZXbESRXwt5vyQJucSsKd/sWzERKu3r0GXhU0EflTdkBAXGjpY+lLjiYwfHfBGJNmh9wL5l4Cygagk3ioPHqIZ9FodYONm2KVlndl4KfrSj+nXvnYO+evODefr9KqZMkTUbL6nBNQGkLy5mhggaW6dJE5luu+Tjsv2VzuYapXIc1bzLmbwZ2K7Oh/8P9THH1xoVKyHkGduj7gyjUTpRHp7FGNdaBBJiQJulC8/zwZa9Sf/I9mQrnYTQR2SebkeTtZggNmsD5jW/Hl7TLEbx9iwpwf/e1YdAt9x3tNmJvtoMduTM52oUEcQdlHmlM=
+    file:
+      - artifacts/triplea-$TRAVIS_TAG-all.jar
+      - artifacts/triplea-$TRAVIS_TAG.zip
+    skip_clean: true
+    on:
+      repo: DanVanAtta/triplea
+      tags: true
