@@ -13,7 +13,7 @@ public class ThreadPoolTest extends TestCase {
   }
 
   public void testRunOneTask() {
-    final ThreadPool pool = new ThreadPool(50, "test");
+    final ThreadPool pool = new ThreadPool(50);
     final Task task = new Task();
     pool.runTask(task);
     pool.waitForAll();
@@ -21,7 +21,7 @@ public class ThreadPoolTest extends TestCase {
   }
 
   public void testSingleThread() {
-    final ThreadPool pool = new ThreadPool(1, "test");
+    final ThreadPool pool = new ThreadPool(1);
     final Collection<Runnable> tasks = new ArrayList<Runnable>();
     for (int i = 0; i < 30; i++) {
       final Runnable task = new Task();
@@ -37,14 +37,14 @@ public class ThreadPoolTest extends TestCase {
   }
 
   public void testSimple() {
-    final ThreadPool pool = new ThreadPool(5, "test");
+    final ThreadPool pool = new ThreadPool(5);
     final Collection<Task> tasks = new ArrayList<Task>();
     for (int i = 0; i < 3000; i++) {
       final Task task = new Task();
       tasks.add(task);
       pool.runTask(task);
     }
-    assertEquals(5, pool.getThreadCount());
+
     pool.waitForAll();
     final Iterator<Task> iter = tasks.iterator();
     while (iter.hasNext()) {
@@ -76,8 +76,8 @@ public class ThreadPoolTest extends TestCase {
     }
   }
 
-  private void threadTestBlock() {
-    final ThreadPool pool = new ThreadPool(8, "test");
+  private static void threadTestBlock() {
+    final ThreadPool pool = new ThreadPool(8);
     final ArrayList<BlockedTask> blockedTasks = new ArrayList<BlockedTask>();
     for (int i = 0; i < 40; i++) {
       final BlockedTask task = new BlockedTask();
