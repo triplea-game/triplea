@@ -7,7 +7,9 @@ plugins {
 }
 
 group = 'triplea'
-version = '1.8.0.5'
+
+version = System.getenv("TRAVIS_TAG") ?: ""
+
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
@@ -64,3 +66,66 @@ dependencies {
 task wrapper(type: Wrapper, group: 'gradle') {
     distributionUrl = "http://services.gradle.org/distributions/gradle-2.5-all.zip"
 }
+
+task copyShadowSetup(dependsOn: shadowJar) << {
+   def binDir = new File( "bin")
+   binDir.mkdir()
+}
+
+String zipBase = group + '-' + version
+String zipDestFile = zipBase + '.zip'
+
+task copyShadow(dependsOn: copyShadowSetup, type: Copy) {
+   from 'build/libs/' + zipBase + '-all.jar'
+   into 'bin/' + group + '.jar' 
+}
+
+
+
+task zip(dependsOn: copyShadow) << {
+  ant.zip(destfile: zipDestFile, compress: true) {
+    zipfileset(dir: 'doc', prefix: zipBase + '/doc')
+    zipfileset(dir: 'license', prefix: zipBase + '/license')
+    zipfileset(dir: 'icons', prefix: zipBase + '/icons') {
+       include(name: '**/*.png')
+       include(name: '**/*.bmp')
+       include(name: '**/*.ico')
+    }
+    zipfileset(dir: 'assets', prefix: zipBase + '/assets')
+    zipfileset(dir: 'maps', prefix: zipBase + '/maps')
+    zipfileset(dir: 'old', prefix: zipBase + '/old')
+    zipfileset(dir: '.', prefix: zipBase + '/') {
+       include(name: 'readme.html')
+       include(name: 'system.ini')
+       include(name: 'scripts/*.bat')
+       include(name: 'triplea.exe')
+       include(name: 'changelog.txt')
+       include(name: 'TripleA_RuleBook.pdf')
+       include(name: 'MacOS_users_read_this_first.txt')
+    }
+    zipfileset(dir: 'bin', prefix: zipBase + "/bin", filemode: '755') {
+       include(name: 'triplea.jar')
+    }
+  }
+}
+
+def artifactsDir = new File( "artifacts")
+
+task copyZip(dependsOn: ['zip', 'setupArtifactsDir'], type: Copy) {
+  from zipDestFile
+  into artifactsDir
+}
+
+
+task setupArtifactsDir << {
+   artifactsDir.mkdir()
+}
+
+task copyShadowJar(dependsOn: 'shadowJar', type: Copy) {
+   from 'build/libs/' + zipBase + '-all.jar'
+   into artifactsDir
+}
+
+
+task releaseArtifacts( dependsOn: ['setupArtifactsDir', 'copyZip', 'copyShadowJar']) 
+
