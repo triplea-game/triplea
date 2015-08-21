@@ -72,29 +72,7 @@ public class LobbyGameTableModelTest {
   }
 
   @Test
-  public void addGame() {
-    testObj.getLobbyGameBroadcaster().gameAdded( new GUID(),  new GameDescription());
-    TestUtil.waitForSwingThreads();
-    assertThat( testObj.getRowCount(), is(2));
-  }
-
-  @Test
-  public void addGameWithDuplicateGuid() {
-    testObj.getLobbyGameBroadcaster().gameAdded( fakeGame.getFirst(), fakeGame.getSecond());
-    TestUtil.waitForSwingThreads();
-    assertThat( "Row count should remain at 1, already added this GUID before.",
-        testObj.getRowCount(), is(1));
-  }
-  @Test
-  public void addGameWithNullGuid() {
-    testObj.getLobbyGameBroadcaster().gameAdded( null, fakeGame.getSecond());
-    TestUtil.waitForSwingThreads();
-    assertThat( "Row count shoudl remain at 1, null GUID is bogus and best ignored.",
-        testObj.getRowCount(), is(1));
-  }
-
-  @Test
-  public void updateGames() {
+  public void updateGame() {
     int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments );
     assertThat((String) testObj.getValueAt(0, commentColumnIndex),nullValue());
 
@@ -109,21 +87,19 @@ public class LobbyGameTableModelTest {
   }
 
   @Test
-  public void updateGameAddsIfDoesAlreadyNotExist() {
+  public void updateGameAddsIfDoesNotExist() {
     testObj.getLobbyGameBroadcaster().gameUpdated(new GUID(), new GameDescription());
     TestUtil.waitForSwingThreads();
     assertThat( testObj.getRowCount(), is(2));
   }
 
   @Test
-  public void updateGameWithNullGuid() {
+  public void updateGameWithNullGuidIsIgnored() {
     testObj.getLobbyGameBroadcaster().gameUpdated(null, new GameDescription());
     TestUtil.waitForSwingThreads();
     assertThat( "expect row count to remain 1, null guid is bogus data",
         testObj.getRowCount(), is(1));
   }
-
-
 
   @Test
   public void removeGame() {
@@ -133,7 +109,7 @@ public class LobbyGameTableModelTest {
   }
 
   @Test
-  public void removeGameThatDoesNotExist() {
+  public void removeGameThatDoesNotExistIsIgnored() {
     testObj.getLobbyGameBroadcaster().gameRemoved(new GUID());
     TestUtil.waitForSwingThreads();
     assertThat( testObj.getRowCount(), is(1));
