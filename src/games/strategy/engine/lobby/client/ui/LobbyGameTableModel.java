@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,8 @@ public class LobbyGameTableModel extends AbstractTableModel {
   private final IRemoteMessenger m_remoteMessenger;
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID,GameDescription>> gameList;
+  private final ILobbyGameBroadcaster lobbyGameBroadcaster;
+
 
   public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
@@ -40,7 +41,7 @@ public class LobbyGameTableModel extends AbstractTableModel {
     m_messenger = messenger;
     m_channelMessenger = channelMessenger;
     m_remoteMessenger = remoteMessenger;
-    m_channelMessenger.registerChannelSubscriber(new ILobbyGameBroadcaster() {
+    lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
       @Override
       public void gameUpdated(final GUID gameId, final GameDescription description) {
         assertSentFromServer();
@@ -58,7 +59,9 @@ public class LobbyGameTableModel extends AbstractTableModel {
         assertSentFromServer();
         removeGame(gameId);
       }
-    }, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+    };
+    m_channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+
     final Map<GUID, GameDescription> games =
         ((ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
     for (final GUID id : games.keySet()) {
@@ -66,22 +69,14 @@ public class LobbyGameTableModel extends AbstractTableModel {
     }
   }
 
-  public GameDescription get(final int i) {
-    return gameList.get(i).getSecond();
-  }
-
-  @Override
-  public Class<?> getColumnClass(final int columnIndex) {
-    if (columnIndex == getColumnIndex(Column.Started)) {
-      return Date.class;
-    }
-    return Object.class;
-  }
-
   private void removeGame(final GUID gameId) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
+        if( gameId == null ) {
+          return;
+        }
+
         Tuple<GUID, GameDescription> gameToRemove = findGame( gameId );
         if( gameToRemove != null ) {
           int index = gameList.indexOf(gameToRemove);
@@ -105,10 +100,31 @@ public class LobbyGameTableModel extends AbstractTableModel {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
+          // bad data
+        if( gameId == null || findGame(gameId ) != null ) {
+          return;
+        }
         gameList.add( new Tuple<GUID,GameDescription>( gameId, description ));
         fireTableRowsInserted(gameList.size() - 1, gameList.size() - 1);
       }
     });
+  }
+
+
+  protected ILobbyGameBroadcaster getLobbyGameBroadcaster() {
+    return lobbyGameBroadcaster;
+  }
+
+  public GameDescription get(final int i) {
+    return gameList.get(i).getSecond();
+  }
+
+  @Override
+  public Class<?> getColumnClass(final int columnIndex) {
+    if (columnIndex == getColumnIndex(Column.Started)) {
+      return Date.class;
+    }
+    return Object.class;
   }
 
   private void assertSentFromServer() {
@@ -121,10 +137,18 @@ public class LobbyGameTableModel extends AbstractTableModel {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
+        if( gameId == null ) {
+          return;
+        }
+
         Tuple<GUID,GameDescription> toReplace = findGame(gameId);
-        int replaceIndex = gameList.indexOf(toReplace);
-        gameList.set(replaceIndex, new Tuple<GUID,GameDescription>(gameId, description));
-        fireTableRowsUpdated(replaceIndex, replaceIndex);
+        if( toReplace == null ) {
+          gameList.add( new Tuple<GUID,GameDescription>(gameId,description));
+        } else {
+          int replaceIndex = gameList.indexOf(toReplace);
+          gameList.set(replaceIndex, new Tuple<GUID,GameDescription>(gameId, description));
+          fireTableRowsUpdated(replaceIndex, replaceIndex);
+        }
       }
     });
   }
