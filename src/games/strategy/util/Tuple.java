@@ -1,11 +1,25 @@
 package games.strategy.util;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Tuple<T, S> implements Serializable {
   private static final long serialVersionUID = -5091545494950868125L;
   private final T m_first;
   private final S m_second;
+
+
+  /**
+   * Static creation method to create a new instance of a tuple with the parameters provided.
+   *
+   * This method allows for nicer tuple creation syntax, namely:
+   *    Tuple<String,Integer> myTuple = Tuple.of("abc",123);
+   * Instead of:
+   *    Tuple<String,Integer> myTuple = new Tuple<String,Integer>("abc",123);
+   */
+  public static <T,S> Tuple<T,S> of( final T first, final S second ) {
+    return new Tuple<T,S>(first,second);
+  }
 
   public Tuple(final T first, final S second) {
     m_first = first;
@@ -28,11 +42,7 @@ public class Tuple<T, S> implements Serializable {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((m_first == null) ? 0 : m_first.hashCode());
-    result = prime * result + ((m_second == null) ? 0 : m_second.hashCode());
-    return result;
+    return Objects.hash(m_first,m_second);
   }
 
   @SuppressWarnings("rawtypes")
