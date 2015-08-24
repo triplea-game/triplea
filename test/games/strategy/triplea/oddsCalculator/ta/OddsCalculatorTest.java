@@ -61,9 +61,9 @@ public class OddsCalculatorTest extends TestCase {
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, eastCanada,
         attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(eastCanada), 500);
     calculator.shutdown();
-    assertEquals(0.33, results.getAttackerWinPercent(), 0.06);
-    assertEquals(0.33, results.getDefenderWinPercent(), 0.06);
-    assertEquals(0.33, results.getDrawPercent(), 0.06);
+    assertEquals(0.33, results.getAttackerWinPercent(), 0.09);
+    assertEquals(0.33, results.getDefenderWinPercent(), 0.09);
+    assertEquals(0.33, results.getDrawPercent(), 0.09);
   }
 
   public void testKeepOneAttackingLand() {
