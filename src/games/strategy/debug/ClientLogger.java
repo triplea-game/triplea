@@ -29,4 +29,9 @@ public class ClientLogger {
     userOutputStream.println(msg);
   }
 
+  public static void logQuietly(final String msg, final Exception e) {
+    logQuietly(msg);
+    logQuietly(e);
+  }
+
 }
