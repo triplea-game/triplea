@@ -23,7 +23,7 @@ public class OddsCalculatorTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("World War II Revised Test", "revised_test.xml");
+    m_data = LoadGameUtil.loadTestGame("revised_test.xml");
   }
 
   @Override
@@ -59,7 +59,7 @@ public class OddsCalculatorTest extends TestCase {
     final IOddsCalculator calculator = new ConcurrentOddsCalculator("Test");
     calculator.setGameData(m_data);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, eastCanada,
-        attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(eastCanada), 2000);
+        attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(eastCanada), 500);
     calculator.shutdown();
     assertEquals(0.33, results.getAttackerWinPercent(), 0.06);
     assertEquals(0.33, results.getDefenderWinPercent(), 0.06);
@@ -81,7 +81,7 @@ public class OddsCalculatorTest extends TestCase {
     final OddsCalculator calculator = new OddsCalculator(m_data);
     calculator.setKeepOneAttackingLandUnit(true);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, eastCanada,
-        attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(eastCanada), 2000);
+        attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(eastCanada), 1000);
     calculator.shutdown();
     assertEquals(0.8, results.getAttackerWinPercent(), 0.04);
     assertEquals(0.16, results.getDefenderWinPercent(), 0.04);
@@ -99,7 +99,7 @@ public class OddsCalculatorTest extends TestCase {
     final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, british);
     final OddsCalculator calculator = new OddsCalculator(m_data);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, uk, attackingUnits,
-        defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(uk), 2000);
+        defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(uk), 1000);
     calculator.shutdown();
     assertEquals(0.33, results.getAttackerWinPercent(), 0.05);
     assertEquals(0.33, results.getDefenderWinPercent(), 0.05);
@@ -117,25 +117,13 @@ public class OddsCalculatorTest extends TestCase {
     final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, british);
     final OddsCalculator calculator = new OddsCalculator(m_data);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, sz2, attackingUnits,
-        defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(sz2), 500);
+        defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(sz2), 100);
     calculator.shutdown();
     assertTrue(results.getAttackerWinPercent() > 0.65);
   }
 
-  public void testSubInfLoop() {
-    m_data = LoadGameUtil.loadGame("World War II v3 1942 Test", "ww2v3_1942_test.xml");
-    final Territory sz1 = territory("1 Sea Zone", m_data);
-    final List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
-    final List<Unit> defending = submarine(m_data).create(2, germans(m_data));
-    final OddsCalculator calculator = new OddsCalculator(m_data);
-    calculator.setKeepOneAttackingLandUnit(false);
-    calculator.setCalculateDataAndCalculate(americans(m_data), germans(m_data), sz1, attacking, defending,
-        Collections.<Unit>emptyList(), TerritoryEffectHelper.getEffects(sz1), 1000);
-    calculator.shutdown();
-  }
 
   public void testAttackingTransports() {
-    m_data = LoadGameUtil.loadGame("World War II v3 1942 Test", "ww2v3_1942_test.xml");
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final List<Unit> attacking = transports(m_data).create(2, americans(m_data));
     final List<Unit> defending = submarine(m_data).create(2, germans(m_data));
@@ -149,7 +137,8 @@ public class OddsCalculatorTest extends TestCase {
   }
 
   public void testDefendingTransports() {
-    m_data = LoadGameUtil.loadGame("World War II v3 1942 Test", "ww2v3_1942_test.xml");
+      // use v3 rule set
+    m_data = LoadGameUtil.loadTestGame("ww2v3_1942_test.xml");
     final Territory sz1 = territory("1 Sea Zone", m_data);
     final List<Unit> attacking = submarine(m_data).create(2, americans(m_data));
     final List<Unit> defending = transports(m_data).create(2, germans(m_data));
