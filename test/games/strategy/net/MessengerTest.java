@@ -259,7 +259,7 @@ public class MessengerTest extends TestCase {
   }
 
   public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException {
-    final int count = 75;
+    final int count = 5;
     final List<ClientMessenger> clients = new ArrayList<ClientMessenger>();
     final List<MessageListener> listeners = new ArrayList<MessageListener>();
     for (int i = 0; i < count; i++) {
@@ -271,14 +271,7 @@ public class MessengerTest extends TestCase {
       clients.add(messenger);
       listeners.add(listener);
     }
-    // wait for all the nodes to join
-    // +3 since we have the 2 client nodes created by setup
-    // and the server node
-    int waitCount = 0;
-    while (m_server.getNodes().size() < count + 3 && waitCount < 10) {
-      Thread.sleep(40);
-      waitCount++;
-    }
+
     m_server.broadcast("TEST");
     for (final MessageListener listener : listeners) {
       assertEquals("TEST", listener.getLastMessage());
