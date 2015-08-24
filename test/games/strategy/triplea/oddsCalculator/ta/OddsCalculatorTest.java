@@ -117,7 +117,7 @@ public class OddsCalculatorTest extends TestCase {
     final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, british);
     final OddsCalculator calculator = new OddsCalculator(m_data);
     final AggregateResults results = calculator.setCalculateDataAndCalculate(germans, british, sz2, attackingUnits,
-        defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(sz2), 100);
+        defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(sz2), 500);
     calculator.shutdown();
     assertTrue(results.getAttackerWinPercent() > 0.65);
   }
