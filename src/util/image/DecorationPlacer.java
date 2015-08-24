@@ -675,12 +675,12 @@ public class DecorationPlacer extends JFrame {
         } else {
           System.out.println("Found point for: " + entry.getKey());
         }
-        m_currentImagePoints.put(entry.getKey(), new Tuple<Image, List<Point>>(s_staticImageForPlacing, points));
+        m_currentImagePoints.put(entry.getKey(), Tuple.of(s_staticImageForPlacing, points));
       }
     } else {
       for (final Entry<String, List<Point>> entry : m_currentPoints.entrySet()) {
         m_currentImagePoints.put(entry.getKey(),
-            new Tuple<Image, List<Point>>(s_staticImageForPlacing, entry.getValue()));
+            Tuple.of(s_staticImageForPlacing, entry.getValue()));
       }
     }
     // !fillInAllTerritories;
@@ -717,7 +717,7 @@ public class DecorationPlacer extends JFrame {
         allTerritories.remove(possibleTerritoryName);
       }
       m_currentImagePoints.put((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
-          new Tuple<Image, List<Point>>(image, points));
+          Tuple.of(image, points));
     }
     if (!allTerritories.isEmpty() && s_imagePointType == ImagePointType.name_place) {
       JOptionPane.showMessageDialog(this, new JLabel("Territory images not found in folder: " + allTerritories));
@@ -773,7 +773,7 @@ public class DecorationPlacer extends JFrame {
         for (final Point p : entry.getValue().getSecond()) {
           if (testPoint == null || p.distance(m_currentMousePoint) < testPoint.distance(m_currentMousePoint)) {
             testPoint = p;
-            m_currentSelectedImage = new Triple<String, Image, Point>(entry.getKey(), entry.getValue().getFirst(), p);
+            m_currentSelectedImage = Triple.of(entry.getKey(), entry.getValue().getFirst(), p);
           }
         }
       }
@@ -784,7 +784,7 @@ public class DecorationPlacer extends JFrame {
       points.remove(m_currentSelectedImage.getThird());
       points.add(new Point(m_currentMousePoint));
       m_currentImagePoints.put(new String(m_currentSelectedImage.getFirst()),
-          new Tuple<Image, List<Point>>(m_currentSelectedImage.getSecond(), points));
+          Tuple.of(m_currentSelectedImage.getSecond(), points));
       m_currentSelectedImage = null;
     } else if (rightMouse && !ctrlDown && s_createNewImageOnRightClick && s_staticImageForPlacing != null
         && m_currentSelectedImage == null) {
@@ -793,7 +793,7 @@ public class DecorationPlacer extends JFrame {
       if (territoryName != null) {
         final List<Point> points = new ArrayList<Point>();
         points.add(new Point(m_currentMousePoint));
-        m_currentImagePoints.put(territoryName, new Tuple<Image, List<Point>>(s_staticImageForPlacing, points));
+        m_currentImagePoints.put(territoryName, Tuple.of(s_staticImageForPlacing, points));
       }
     } else if (rightMouse && !ctrlDown && s_imagePointType.isCanHaveMultiplePoints()) {
       // if none selected find the image we are clicking on, and duplicate it (not replace/move it)
@@ -804,12 +804,12 @@ public class DecorationPlacer extends JFrame {
             if (testPoint == null || p.distance(m_currentMousePoint) < testPoint.distance(m_currentMousePoint)) {
               testPoint = p;
               m_currentSelectedImage =
-                  new Triple<String, Image, Point>(entry.getKey(), entry.getValue().getFirst(), null);
+                  Triple.of(entry.getKey(), entry.getValue().getFirst(), null);
             }
           }
         }
       } else {
-        m_currentSelectedImage = new Triple<String, Image, Point>(m_currentSelectedImage.getFirst(),
+        m_currentSelectedImage = Triple.of(m_currentSelectedImage.getFirst(),
             m_currentSelectedImage.getSecond(), null);
       }
       // then save (same code as above for saving)
@@ -818,7 +818,7 @@ public class DecorationPlacer extends JFrame {
       points.remove(m_currentSelectedImage.getThird());
       points.add(new Point(m_currentMousePoint));
       m_currentImagePoints.put(new String(m_currentSelectedImage.getFirst()),
-          new Tuple<Image, List<Point>>(m_currentSelectedImage.getSecond(), points));
+          Tuple.of(m_currentSelectedImage.getSecond(), points));
       m_currentSelectedImage = null;
     } else if (rightMouse && ctrlDown) {
       // must be right click AND ctrl down to delete an image

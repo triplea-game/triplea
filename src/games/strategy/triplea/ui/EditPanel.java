@@ -376,8 +376,7 @@ public class EditPanel extends ActionPanel {
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
             new HashMap<Unit, Triple<Integer, Integer, Integer>>();
         for (final Unit u : units) {
-          currentDamageMap.put(u, new Triple<Integer, Integer, Integer>(
-              UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
+          currentDamageMap.put(u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage",
             getData(), getMap().getUIContext(), -1, true, true, null);
@@ -425,8 +424,7 @@ public class EditPanel extends ActionPanel {
             new HashMap<Unit, Triple<Integer, Integer, Integer>>();
         for (final Unit u : units) {
           currentDamageMap.put(u,
-              new Triple<Integer, Integer, Integer>(
-                  ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory), 0,
+              Triple.of(((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory), 0,
                   ((TripleAUnit) u).getUnitDamage()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage",

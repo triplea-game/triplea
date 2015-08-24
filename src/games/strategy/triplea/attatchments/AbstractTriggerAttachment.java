@@ -151,7 +151,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (!(s[0].equals(AFTER) || s[0].equals(BEFORE))) {
       throw new GameParseException("when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
     }
-    m_when.add(new Tuple<String, String>(s[0], s[1]));
+    m_when.add(Tuple.of(s[0], s[1]));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

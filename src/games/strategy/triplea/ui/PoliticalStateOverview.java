@@ -163,7 +163,7 @@ public class PoliticalStateOverview extends JPanel {
             }
             if (!chosenRelationship.equals(actualRelationship)) {
               // add new change
-              m_editChanges.add(new Triple<PlayerID, PlayerID, RelationshipType>(player1, player2, chosenRelationship));
+              m_editChanges.add(Triple.of(player1, player2, chosenRelationship));
             }
             // redraw everything
             redrawPolitics();

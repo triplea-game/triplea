@@ -702,7 +702,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       }
     }
     list.setSelectedValue(currentKey, false);
-    return new Triple<JList, Map<String, String>, String>(list, lookAndFeels, currentKey);
+    return Triple.of(list, lookAndFeels, currentKey);
   }
 
   protected void addSetLookAndFeel(final JMenu menuView) {

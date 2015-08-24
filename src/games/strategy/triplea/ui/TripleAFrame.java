@@ -979,7 +979,7 @@ public class TripleAFrame extends MainGameFrame {
         }
         final JScrollPane scroll = new JScrollPane(list);
         panel.add(scroll, BorderLayout.CENTER);
-        return new Tuple<JPanel, JList>(panel, list);
+        return Tuple.of(panel, list);
       }
     });
     final JPanel panel = comps.getFirst();
@@ -1038,7 +1038,7 @@ public class TripleAFrame extends MainGameFrame {
         text.setWrapStyleWord(true);
         panel.add(text, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
-        return new Tuple<JPanel, JList>(panel, list);
+        return Tuple.of(panel, list);
       }
     });
     final JPanel panel = comps.getFirst();
@@ -1054,8 +1054,8 @@ public class TripleAFrame extends MainGameFrame {
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player,
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (m_messageAndDialogThreadPool == null) {
-      return new Tuple<Territory, Set<Unit>>(territoryChoices.iterator().next(),
-          new HashSet<Unit>(Match.getNMatches(unitChoices, unitsPerPick, Match.<Unit>getAlwaysMatch())));
+      return Tuple.of(territoryChoices.iterator().next(),
+          (Set<Unit>) new HashSet<Unit>(Match.getNMatches(unitChoices, unitsPerPick, Match.<Unit>getAlwaysMatch())));
     }
     // total hacks
     m_messageAndDialogThreadPool.waitForAll();
@@ -1252,7 +1252,7 @@ public class TripleAFrame extends MainGameFrame {
           final UnitChooser chooser =
               new UnitChooser(possible, Collections.<Unit, Collection<Unit>>emptyMap(), m_data, false, m_uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
-          choosers.add(new Tuple<Territory, UnitChooser>(from, chooser));
+          choosers.add(Tuple.of(from, chooser));
           panelChooser.add(chooser);
           chooserScrollPane = new JScrollPane(panelChooser);
           panel2.add(chooserScrollPane);

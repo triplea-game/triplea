@@ -243,7 +243,7 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
             "We should not be using ww2v3 categories if we have custom techs: " + propertyString);
       }
     }
-    return new Tuple<List<TechAdvance>, List<TechAdvance>>(airAndNaval, landAndProduction);
+    return Tuple.of(airAndNaval, landAndProduction);
   }
 
   /**

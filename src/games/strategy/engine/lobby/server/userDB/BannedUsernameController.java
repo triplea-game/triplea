@@ -111,8 +111,8 @@ public class BannedUsernameController {
     }
     if (expired) {
       removeBannedUsername(username);
-      return new Tuple<Boolean, Timestamp>(false, banTill);
+      return Tuple.of(false, banTill);
     }
-    return new Tuple<Boolean, Timestamp>(found, banTill);
+    return Tuple.of(found, banTill);
   }
 }

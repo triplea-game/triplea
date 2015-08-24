@@ -230,7 +230,7 @@ public class TripleAUnit extends Unit {
     if (max < min) {
       min = max;
     }
-    return new Tuple<Integer, Integer>(min, max);
+    return Tuple.of(min, max);
   }
 
   public int getUnitDamage() {

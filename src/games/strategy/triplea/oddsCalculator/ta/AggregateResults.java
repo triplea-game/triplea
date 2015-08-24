@@ -84,7 +84,7 @@ public class AggregateResults implements Serializable {
       final IntegerMap<UnitType> defenderCostsForTUV) {
     if (m_results.isEmpty()) // can be empty!
     {
-      return new Tuple<Double, Double>(0.0, 0.0);
+      return Tuple.of(0.0, 0.0);
     }
     double attackerTUV = 0;
     double defenderTUV = 0;
@@ -92,7 +92,7 @@ public class AggregateResults implements Serializable {
       attackerTUV += BattleCalculator.getTUV(result.getRemainingAttackingUnits(), attackerCostsForTUV);
       defenderTUV += BattleCalculator.getTUV(result.getRemainingDefendingUnits(), defenderCostsForTUV);
     }
-    return new Tuple<Double, Double>(attackerTUV / m_results.size(), defenderTUV / m_results.size());
+    return Tuple.of(attackerTUV / m_results.size(), defenderTUV / m_results.size());
   }
 
   public double getAverageTUVswing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,

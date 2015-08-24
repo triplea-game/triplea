@@ -3,10 +3,12 @@ package games.strategy.util;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.google.common.base.MoreObjects;
+
 public class Tuple<T, S> implements Serializable {
   private static final long serialVersionUID = -5091545494950868125L;
-  private final T m_first;
-  private final S m_second;
+  private final T first;
+  private final S second;
 
 
   /**
@@ -15,63 +17,50 @@ public class Tuple<T, S> implements Serializable {
    * This method allows for nicer tuple creation syntax, namely:
    *    Tuple<String,Integer> myTuple = Tuple.of("abc",123);
    * Instead of:
-   *    Tuple<String,Integer> myTuple = new Tuple<String,Integer>("abc",123);
+   *    Tuple<String,Integer> myTuple = Tuple.of("abc",123);
    */
   public static <T,S> Tuple<T,S> of( final T first, final S second ) {
-    return new Tuple<T,S>(first,second);
+    return new Tuple(first,second);
   }
 
-  public Tuple(final T first, final S second) {
-    m_first = first;
-    m_second = second;
+  private Tuple(final T first, final S second) {
+    this.first = first;
+    this.second = second;
   }
 
   public T getFirst() {
-    return m_first;
+    return first;
   }
 
   public S getSecond() {
-    return m_second;
+    return second;
   }
 
   @Override
   public String toString() {
-    return "[" + (m_first == null ? "null" : m_first.toString()) + ", "
-        + (m_second == null ? "null" : m_second.toString()) + "]";
+    return MoreObjects.toStringHelper(this)
+        .add("first", getFirst())
+        .add("second", getSecond())
+        .toString();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_first,m_second);
+    return Objects.hash(first, second);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
+
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
+
     final Tuple other = (Tuple) obj;
-    if (m_first == null) {
-      if (other.m_first != null) {
-        return false;
-      }
-    } else if (!m_first.equals(other.m_first)) {
-      return false;
-    }
-    if (m_second == null) {
-      if (other.m_second != null) {
-        return false;
-      }
-    } else if (!m_second.equals(other.m_second)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(getFirst(), other.getFirst())
+        && Objects.equals(getSecond(), other.getSecond());
   }
 }
