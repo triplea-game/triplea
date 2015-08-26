@@ -57,8 +57,9 @@ dependencies {
     compile files('lib/AppleJavaExtensions-1.6.jar')
 
     testCompile 'org.apache.derby:derby:10.10.1.1'
-    testCompile 'org.hamcrest:hamcrest-core:1.3'
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.10.19'
 }
 
 task wrapper(type: Wrapper, group: 'gradle') {
