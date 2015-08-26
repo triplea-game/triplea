@@ -45,6 +45,11 @@ public class ChatPanel extends JPanel implements IChatPanel {
   }
 
   @Override
+  public boolean isHeadless() {
+    return false;
+  }
+
+  @Override
   public String getAllText() {
     return m_chatMessagePanel.getAllText();
   }

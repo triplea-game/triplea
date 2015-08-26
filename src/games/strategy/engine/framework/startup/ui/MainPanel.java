@@ -122,15 +122,18 @@ public class MainPanel extends JPanel implements Observer {
     remove(m_chatSplit);
     m_chatPanelHolder.removeAll();
     final IChatPanel chat = m_gameTypePanelModel.getPanel().getChatPanel();
-    if (chat != null && chat instanceof ChatPanel) {
-      final ChatPanel chatPanel = (ChatPanel) chat;
+    if (chat != null && !chat.isHeadless() ) {
       m_chatPanelHolder = new JPanel();
       m_chatPanelHolder.setLayout(new BorderLayout());
+      m_chatPanelHolder.setPreferredSize(new Dimension(m_chatPanelHolder.getPreferredSize().width, 62));
+
+      final ChatPanel chatPanel = (ChatPanel) chat;
       m_chatPanelHolder.add(chatPanel, BorderLayout.CENTER);
+
       m_chatSplit.setTopComponent(m_mainPanel);
       m_chatSplit.setBottomComponent(m_chatPanelHolder);
+
       add(m_chatSplit, BorderLayout.CENTER);
-      m_chatPanelHolder.setPreferredSize(new Dimension(m_chatPanelHolder.getPreferredSize().width, 62));
     } else {
       add(m_mainPanel, BorderLayout.CENTER);
     }
