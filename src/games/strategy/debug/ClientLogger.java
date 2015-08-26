@@ -24,4 +24,9 @@ public class ClientLogger {
   public static void logError(final Exception e) {
     log(userOutputStream, e);
   }
+
+  public static void logError(final String msg) {
+    userOutputStream.println(msg);
+  }
+
 }
