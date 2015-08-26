@@ -227,7 +227,6 @@ public class MainPanel extends JPanel implements Observer {
   }
 
   private void play() {
-    ErrorHandler.setGameOver(false);
     m_gameSetupPanel.preStartGame();
     final ILauncher launcher = m_gameTypePanelModel.getPanel().getLauncher();
     if (launcher != null) {

@@ -147,7 +147,7 @@ public class GameRunner2 {
     setupLogging();
     Console.getConsole().displayStandardError();
     Console.getConsole().displayStandardOutput();
-    System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
+    ErrorHandler.registerExceptionHandler();
     System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
     handleCommandLineArgs(args);
     // do after we handle command line args
