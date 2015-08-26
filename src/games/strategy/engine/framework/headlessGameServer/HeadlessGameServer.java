@@ -676,7 +676,6 @@ public class HeadlessGameServer {
   private synchronized static boolean startHeadlessGame(final SetupPanelModel setupPanelModel) {
     try {
       if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
-        ErrorHandler.setGameOver(false);
         System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
             + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
         setupPanelModel.getPanel().preStartGame();
