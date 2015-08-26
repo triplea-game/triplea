@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 /**
  * Responsible for drawing countries on the map.
@@ -173,7 +173,7 @@ public class MapImage {
 
   public void loadMaps(final ResourceLoader loader) {
     final Image smallFromFile = loadImage(loader, Constants.SMALL_MAP_FILENAME);
-    m_smallMapImage = Util.createImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
+    m_smallMapImage = SwingLib.createImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
     final Graphics g = m_smallMapImage.getGraphics();
     g.drawImage(smallFromFile, 0, 0, null);
     g.dispose();

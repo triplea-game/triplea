@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileFilter;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.ui.SwingLib;
 
 /**
  * User editable property representing a file.
@@ -96,7 +97,7 @@ public class FileProperty extends AEditableProperty {
           m_file = selection;
           label.setText(m_file.getAbsolutePath());
           // Ask Swing to repaint this label when it's convenient
-          SwingUtilities.invokeLater(new Runnable() {
+          SwingLib.invokeLater(new Runnable() {
             @Override
             public void run() {
               label.repaint();

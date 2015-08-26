@@ -87,6 +87,7 @@ import games.strategy.common.delegate.BaseEditDelegate;
 import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -153,7 +154,7 @@ import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ScrollableTextField;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LocalizeHTML;
@@ -717,22 +718,7 @@ public class TripleAFrame extends MainGameFrame {
     m_actionButtons.changeToMove(player, nonCombat, stepName);
     // workaround for panel not receiving focus at beginning of n/c move phase
     if (!getBattlePanel().getBattleFrame().isVisible()) {
-      if (!SwingUtilities.isEventDispatchThread()) {
-        try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-              requestFocusInWindow();
-              transferFocus();
-            }
-          });
-        } catch (final Exception e) {
-          e.printStackTrace();
-        }
-      } else {
-        requestFocusInWindow();
-        transferFocus();
-      }
+      SwingLib.requestWindowFocus(this);
     }
     return m_actionButtons.waitForMove(bridge);
   }
@@ -915,19 +901,13 @@ public class TripleAFrame extends MainGameFrame {
       @Override
       public void run() {
         final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<TechResultsDisplay>();
-        try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-              final TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext, m_data);
-              displayRef.set(display);
-            }
-          });
-        } catch (final InterruptedException e) {
-          throw new IllegalStateException();
-        } catch (final InvocationTargetException e) {
-          throw new IllegalStateException();
-        }
+        SwingLib.invokeAndWait(new Runnable() {
+          @Override
+          public void run() {
+            final TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext, m_data);
+            displayRef.set(display);
+          }
+        });
         EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION,
             JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUIContext().getCountDownLatchHandler());
       }
@@ -965,7 +945,7 @@ public class TripleAFrame extends MainGameFrame {
     m_messageAndDialogThreadPool.waitForAll();
     final AtomicReference<Unit> selected = new AtomicReference<Unit>();
     final String message = "Select bombing target in " + territory.getName();
-    final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
+    final Tuple<JPanel, JList> comps = SwingLib.invokeAndWait(new SwingLib.Task<Tuple<JPanel, JList>>() {
       @Override
       public Tuple<JPanel, JList> run() {
         final JList list = new JList(new Vector<Unit>(potentialTargets));
@@ -999,7 +979,7 @@ public class TripleAFrame extends MainGameFrame {
       return new int[numDice];
     }
     m_messageAndDialogThreadPool.waitForAll();
-    final DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>() {
+    final DiceChooser chooser = SwingLib.invokeAndWait(new SwingLib.Task<DiceChooser>() {
       @Override
       public DiceChooser run() {
         return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides, m_data);
@@ -1021,7 +1001,7 @@ public class TripleAFrame extends MainGameFrame {
       return candidates.iterator().next();
     }
     m_messageAndDialogThreadPool.waitForAll();
-    final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
+    final Tuple<JPanel, JList> comps = SwingLib.invokeAndWait(new SwingLib.Task<Tuple<JPanel, JList>>() {
       @Override
       public Tuple<JPanel, JList> run() {
         m_mapPanel.centerOn(currentTerritory);
@@ -1086,6 +1066,7 @@ public class TripleAFrame extends MainGameFrame {
     if (index != -1 && m_inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
       SwingUtilities.invokeLater(new Runnable() {
+
         @Override
         public void run() {
           if (m_tabsPanel != null) {
@@ -1096,9 +1077,14 @@ public class TripleAFrame extends MainGameFrame {
       });
       try {
         latch2.await();
-      } catch (final InterruptedException e) {
+      } catch (
+
+      final InterruptedException e)
+
+      {
         e.printStackTrace();
       }
+
     }
     if (m_actionButtons != null && m_actionButtons.getCurrent() != null) {
       m_actionButtons.getCurrent().setActive(false);
@@ -1431,20 +1417,7 @@ public class TripleAFrame extends MainGameFrame {
     m_messageAndDialogThreadPool.waitForAll();
     m_actionButtons.changeToPolitics(player);
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            requestFocusInWindow();
-            transferFocus();
-          }
-        });
-      } catch (final Exception e) {
-        e.printStackTrace();
-      }
-    } else {
-      requestFocusInWindow();
-      transferFocus();
+      SwingLib.requestWindowFocus(this);
     }
     return m_actionButtons.waitForPoliticalAction(firstRun, iPoliticsDelegate);
   }
@@ -1457,20 +1430,7 @@ public class TripleAFrame extends MainGameFrame {
     m_messageAndDialogThreadPool.waitForAll();
     m_actionButtons.changeToUserActions(player);
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            requestFocusInWindow();
-            transferFocus();
-          }
-        });
-      } catch (final Exception e) {
-        e.printStackTrace();
-      }
-    } else {
-      requestFocusInWindow();
-      transferFocus();
+      SwingLib.requestWindowFocus(this);
     }
     return m_actionButtons.waitForUserActionAction(firstRun, iUserActionDelegate);
   }
@@ -1483,20 +1443,7 @@ public class TripleAFrame extends MainGameFrame {
     m_actionButtons.changeToTech(id);
     // workaround for panel not receiving focus at beginning of tech phase
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            requestFocusInWindow();
-            transferFocus();
-          }
-        });
-      } catch (final Exception e) {
-        e.printStackTrace();
-      }
-    } else {
-      requestFocusInWindow();
-      transferFocus();
+      SwingLib.requestWindowFocus(this);
     }
     return m_actionButtons.waitForTech();
   }
@@ -1508,34 +1455,28 @@ public class TripleAFrame extends MainGameFrame {
     m_messageAndDialogThreadPool.waitForAll();
     m_mapPanel.centerOn(from);
     final AtomicReference<Territory> selected = new AtomicReference<Territory>();
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          final JList list = new JList(new Vector<Territory>(candidates));
-          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-          list.setSelectedIndex(0);
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JScrollPane scroll = new JScrollPane(list);
-          panel.add(scroll, BorderLayout.CENTER);
-          if (from != null) {
-            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
-          }
-          final String[] options = {"OK", "Dont attack"};
-          final String message = "Select Rocket Target";
-          final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
-              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-          if (selection == 0) {
-            selected.set((Territory) list.getSelectedValue());
-          }
+    SwingLib.invokeAndWait(new Runnable() {
+      @Override
+      public void run() {
+        final JList list = new JList(new Vector<Territory>(candidates));
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(0);
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        final JScrollPane scroll = new JScrollPane(list);
+        panel.add(scroll, BorderLayout.CENTER);
+        if (from != null) {
+          panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
         }
-      });
-    } catch (final InterruptedException e) {
-      throw new IllegalStateException(e);
-    } catch (final InvocationTargetException e) {
-      throw new IllegalStateException(e);
-    }
+        final String[] options = {"OK", "Dont attack"};
+        final String message = "Select Rocket Target";
+        final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+        if (selection == 0) {
+          selected.set((Territory) list.getSelectedValue());
+        }
+      }
+    });
     return selected.get();
   }
 
@@ -1593,53 +1534,58 @@ public class TripleAFrame extends MainGameFrame {
     // change, we need to ensure that no further history
     // events are run until our historySynchronizer is set up
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            updateStep();
-          }
-        });
-      } catch (final InterruptedException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.getCause().printStackTrace();
-        throw new IllegalStateException(e.getCause().getMessage());
-      }
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          updateStep();
+        }
+      });
       return;
     }
+
+
     int round;
     String stepDisplayName;
     PlayerID player;
     m_data.acquireReadLock();
-    try {
+    try
+
+    {
       round = m_data.getSequence().getRound();
       stepDisplayName = m_data.getSequence().getStep().getDisplayName();
       player = m_data.getSequence().getStep().getPlayerID();
-    } finally {
+    } finally
+
+    {
       m_data.releaseReadLock();
     }
     m_round.setText("Round:" + round + " ");
     m_step.setText(stepDisplayName);
+
     final boolean isPlaying = m_localPlayers.playing(player);
-    if (player != null) {
+    if (player != null)
+
+    {
       m_player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
     }
-    if (player != null && !player.isNull()) {
+    if (player != null && !player.isNull())
+
+    {
       m_round.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
       m_lastStepPlayer = m_currentStepPlayer;
       m_currentStepPlayer = player;
     }
     // if the game control has passed to someone else and we are not just showing the map
     // show the history
-    if (player != null && !player.isNull()) {
+    if (player != null && !player.isNull())
+
+    {
       if (isPlaying) {
         if (m_inHistory) {
           m_requiredTurnSeries.put(player, true);
           // if the game control is with us
           // show the current game
           showGame();
-          // System.out.println("Changing step to " + stepDisplayName + " for " + player.getName());
         }
       } else {
         if (!m_inHistory && !m_uiContext.getShowMapOnly()) {
@@ -1650,6 +1596,7 @@ public class TripleAFrame extends MainGameFrame {
         }
       }
     }
+
   }
 
   public void requiredTurnSeries(final PlayerID player) {
@@ -1657,39 +1604,30 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     try {
-      try {
-        Thread.sleep(300);
-      } catch (final InterruptedException e1) {
-      }
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          final Boolean play = m_requiredTurnSeries.get(player);
-          // System.out.println("Starting for " + player.getName() + ", with requiredTurnSeries equal to " + (play == null ? "null" : play)
-          // + ", with m_lastStepPlayer equal to " + (m_lastStepPlayer == null ? "null" : m_lastStepPlayer.getName()));
-          if (play != null && play.booleanValue()) {
-            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
-            m_requiredTurnSeries.put(player, false);
-            // System.out.println("Playing Sound for " + player.getName());
-          }
-          // center on capital of player, if it is a new player
-          if (!player.equals(m_lastStepPlayer)) {
-            m_lastStepPlayer = player;
-            m_data.acquireReadLock();
-            try {
-              m_mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, m_data));
-              // System.out.println("Centering on " + player.getName());
-            } finally {
-              m_data.releaseReadLock();
-            }
+      Thread.sleep(300);
+    } catch (final InterruptedException e) {
+      ClientLogger.logQuietly(e);
+    }
+    SwingLib.invokeAndWait(new Runnable() {
+      @Override
+      public void run() {
+        final Boolean play = m_requiredTurnSeries.get(player);
+        if (play != null && play.booleanValue()) {
+          DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
+          m_requiredTurnSeries.put(player, false);
+        }
+        // center on capital of player, if it is a new player
+        if (!player.equals(m_lastStepPlayer)) {
+          m_lastStepPlayer = player;
+          m_data.acquireReadLock();
+          try {
+            m_mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, m_data));
+          } finally {
+            m_data.releaseReadLock();
           }
         }
-      });
-    } catch (final InterruptedException e) {
-      e.printStackTrace();
-    } catch (final InvocationTargetException e) {
-      e.printStackTrace();
-    }
+      }
+    });
   }
 
   GameDataChangeListener m_dataChangeListener = new GameDataChangeListener() {
@@ -2132,8 +2070,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     final double scale = m_uiContext.getScale();
     // print map panel to image
-    final BufferedImage mapImage =
-        Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
+    final BufferedImage mapImage = SwingLib.createImage((int) (scale * mapPanel.getImageWidth()),
+        (int) (scale * mapPanel.getImageHeight()), false);
     final Graphics2D mapGraphics = mapImage.createGraphics();
     try {
       final GameData data = mapPanel.getData();
@@ -2236,10 +2174,10 @@ public class TripleAFrame extends MainGameFrame {
         final int hdrWidth = tableWidth; // use tableWidth not hdrWidth!
         final int hdrHeight = table.getTableHeader().getSize().height;
         // create image for capturing table header
-        final BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
+        final BufferedImage tblHdrImage = SwingLib.createImage(hdrWidth, hdrHeight, false);
         final Graphics2D tblHdrGraphics = tblHdrImage.createGraphics();
         // create image for capturing table (support transparencies)
-        final BufferedImage tblImage = Util.createImage(tableWidth, tableHeight, true);
+        final BufferedImage tblImage = SwingLib.createImage(tableWidth, tableHeight, true);
         final Graphics2D tblGraphics = tblImage.createGraphics();
         // create a custom renderer that paints selected cells transparently
         final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
@@ -2336,15 +2274,7 @@ public class TripleAFrame extends MainGameFrame {
           }
         }
       };
-      if (!SwingUtilities.isEventDispatchThread()) {
-        try {
-          SwingUtilities.invokeAndWait(t);
-        } catch (final Exception e2) {
-          e2.printStackTrace();
-        }
-      } else {
-        t.run();
-      }
+      SwingLib.invokeAndWait(t);
     }
   }
 
@@ -2513,27 +2443,21 @@ public class TripleAFrame extends MainGameFrame {
     m_mapPanel.centerOn(where);
     final AtomicReference<ScrollableTextField> textRef = new AtomicReference<ScrollableTextField>();
     final AtomicReference<JPanel> panelRef = new AtomicReference<JPanel>();
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final ScrollableTextField text = new ScrollableTextField(0, fighters.size());
-          text.setBorder(new EmptyBorder(8, 8, 8, 8));
-          panel.add(text, BorderLayout.CENTER);
-          panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"),
-              BorderLayout.NORTH);
-          panelRef.set(panel);
-          textRef.set(text);
-          panelRef.set(panel);
-        }
-      });
-    } catch (final InterruptedException e) {
-      throw new IllegalStateException(e);
-    } catch (final InvocationTargetException e) {
-      throw new IllegalStateException(e);
-    }
+    SwingLib.invokeAndWait(new Runnable() {
+      @Override
+      public void run() {
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        final ScrollableTextField text = new ScrollableTextField(0, fighters.size());
+        text.setBorder(new EmptyBorder(8, 8, 8, 8));
+        panel.add(text, BorderLayout.CENTER);
+        panel.add(new JLabel("How many fighters do you want to move from " + where.getName() + " to new carrier?"),
+            BorderLayout.NORTH);
+        panelRef.set(panel);
+        textRef.set(text);
+        panelRef.set(panel);
+      }
+    });
     final int choice = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(), "Place fighters on new carrier?",
         JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new String[] {"OK", "Cancel"}, "OK",
         getUIContext().getCountDownLatchHandler());

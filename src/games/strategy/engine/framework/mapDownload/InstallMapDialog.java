@@ -43,7 +43,7 @@ import javax.swing.event.ListSelectionListener;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
@@ -299,7 +299,7 @@ public class InstallMapDialog extends JDialog {
         "Downloading" + ((total > 1) ? (" (" + count + " of " + total + "): ") : ": ") + selected.getMapName();
     BackgroundTaskRunner.runInBackground(getRootPane(), message, download);
     if (download.getError() != null) {
-      Util.notifyError(this, download.getError());
+      SwingLib.notifyError(this, download.getError());
       return;
     }
     FileOutputStream sink = null;
@@ -312,7 +312,7 @@ public class InstallMapDialog extends JDialog {
       props.setFrom(selected);
       DownloadFileProperties.saveForZip(destination, props);
     } catch (final IOException e) {
-      Util.notifyError(this, "Could not create write to temp file:" + e.getMessage());
+      SwingLib.notifyError(this, "Could not create write to temp file:" + e.getMessage());
       return;
     } finally {
       if (sink != null) {
@@ -334,7 +334,7 @@ public class InstallMapDialog extends JDialog {
         zis.close();
       }
     } catch (final IOException e) {
-      Util.notifyError(this, "Invalid zip file:" + e.getMessage());
+      SwingLib.notifyError(this, "Invalid zip file:" + e.getMessage());
       return;
     }
     // move it to the games folder
@@ -355,7 +355,7 @@ public class InstallMapDialog extends JDialog {
           tempFile.delete();
         }
       } catch (final IOException e) {
-        Util.notifyError(this, e.getMessage());
+        SwingLib.notifyError(this, e.getMessage());
         return;
       }
     }

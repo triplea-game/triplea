@@ -29,7 +29,7 @@ public class ImageScrollerSmallView extends JComponent {
   public ImageScrollerSmallView(final Image image, final ImageScrollModel model) {
     m_model = model;
     try {
-      Util.ensureImageLoaded(image);
+      SwingLib.ensureImageLoaded(image);
       setDoubleBuffered(false);
     } catch (final InterruptedException ie) {
       ie.printStackTrace();
@@ -54,7 +54,7 @@ public class ImageScrollerSmallView extends JComponent {
 
   public void changeImage(final Image image) {
     try {
-      Util.ensureImageLoaded(image);
+      SwingLib.ensureImageLoaded(image);
       setDoubleBuffered(false);
     } catch (final InterruptedException ie) {
       ie.printStackTrace();
@@ -84,7 +84,7 @@ public class ImageScrollerSmallView extends JComponent {
   }
 
   public Dimension getImageDimensions() {
-    return Util.getDimension(m_image, this);
+    return SwingLib.getDimension(m_image, this);
   }
 
   @Override

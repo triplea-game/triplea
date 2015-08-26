@@ -52,7 +52,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
@@ -367,7 +367,7 @@ public class DecorationPlacer extends JFrame {
   private Image createImage(final String mapName) {
     final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
     try {
-      Util.ensureImageLoaded(image);
+      SwingLib.ensureImageLoaded(image);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }

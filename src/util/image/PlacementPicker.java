@@ -49,7 +49,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.PointFileReaderWriter;
 
 public class PlacementPicker extends JFrame {
@@ -406,7 +406,7 @@ public class PlacementPicker extends JFrame {
   private void createImage(final String mapName) {
     m_image = Toolkit.getDefaultToolkit().createImage(mapName);
     try {
-      Util.ensureImageLoaded(m_image);
+      SwingLib.ensureImageLoaded(m_image);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }

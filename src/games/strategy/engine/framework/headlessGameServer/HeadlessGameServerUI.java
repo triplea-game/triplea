@@ -33,6 +33,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.ui.IUIContext;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -175,19 +176,12 @@ public class HeadlessGameServerUI extends MainGameFrame {
     // change, we need to ensure that no further history
     // events are run until our historySynchronizer is set up
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            updateStep();
-          }
-        });
-      } catch (final InterruptedException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.getCause().printStackTrace();
-        throw new IllegalStateException(e.getCause().getMessage());
-      }
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          updateStep();
+        }
+      });
       return;
     }
     int round;

@@ -35,6 +35,7 @@ import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.ui.SwingLib;
 
 /**
  * Simple selector panel for the headless game ui.
@@ -70,7 +71,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
 
   private void updateGameData() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
+      SwingLib.invokeLater(new Runnable() {
         @Override
         public void run() {
           updateGameData();
@@ -217,7 +218,7 @@ public class HeadlessGameSelectorPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
+      SwingLib.invokeLater(new Runnable() {
         @Override
         public void run() {
           setWidgetActivation();

@@ -11,7 +11,7 @@ import javax.swing.ImageIcon;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class ResourceImageFactory {
   public static final int DEFAULT_RESOURCE_ICON_SIZE = 12;
@@ -90,7 +90,7 @@ public class ResourceImageFactory {
     final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     // Ensure the scaling is completed.
     try {
-      Util.ensureImageLoaded(scaledImage);
+      SwingLib.ensureImageLoaded(scaledImage);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }
@@ -107,7 +107,7 @@ public class ResourceImageFactory {
     }
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
     try {
-      Util.ensureImageLoaded(image);
+      SwingLib.ensureImageLoaded(image);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }

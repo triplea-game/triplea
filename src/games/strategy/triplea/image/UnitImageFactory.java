@@ -20,7 +20,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
@@ -125,7 +125,7 @@ public class UnitImageFactory {
     final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     // Ensure the scaling is completed.
     try {
-      Util.ensureImageLoaded(scaledImage);
+      SwingLib.ensureImageLoaded(scaledImage);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }
@@ -151,7 +151,7 @@ public class UnitImageFactory {
   private Image getBaseImage(final String baseImageName, final PlayerID id) {
     final Image image = Toolkit.getDefaultToolkit().getImage(getBaseImageURL(baseImageName, id));
     try {
-      Util.ensureImageLoaded(image);
+      SwingLib.ensureImageLoaded(image);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }
@@ -161,7 +161,7 @@ public class UnitImageFactory {
   public Image getHighlightImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged,
       final boolean disabled) {
     final Image base = getImage(type, player, data, damaged, disabled);
-    final BufferedImage newImage = Util.createImage(base.getWidth(null), base.getHeight(null), true);
+    final BufferedImage newImage = SwingLib.createImage(base.getWidth(null), base.getHeight(null), true);
     // copy the real image
     final Graphics2D g = newImage.createGraphics();
     g.drawImage(base, 0, 0, null);

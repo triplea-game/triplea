@@ -31,10 +31,10 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import games.strategy.net.INode;
+import games.strategy.ui.SwingLib;
 
 public class ChatPlayerPanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = -3153022965393962945L;
@@ -261,12 +261,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
         }
       }
     };
-    // invoke in the swing event thread
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    SwingLib.invokeLater(runner);
   }
 
   @Override

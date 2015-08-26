@@ -33,6 +33,7 @@ import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.SoundPath;
+import games.strategy.ui.SwingLib;
 
 /**
  * A Chat window.
@@ -90,18 +91,12 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   public void setChat(final Chat chat) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            setChat(chat);
-          }
-        });
-      } catch (final InterruptedException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.printStackTrace();
-      }
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          setChat(chat);
+        }
+      });
       return;
     }
     if (m_chat != null) {
@@ -251,12 +246,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         DefaultSoundChannel.playSoundOnLocalMachine(sound, null);
       }
     };
-    // invoke in the swing event thread
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    SwingLib.invokeLater(runner);
   }
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {

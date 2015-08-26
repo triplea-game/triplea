@@ -30,7 +30,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class LoginPanel extends JPanel {
   private static final long serialVersionUID = -1115199161238394717L;
@@ -87,7 +87,7 @@ public class LoginPanel extends JPanel {
   }
 
   private void layoutComponents() {
-    final JLabel label = new JLabel(new ImageIcon(Util.getBanner("Login")));
+    final JLabel label = new JLabel(new ImageIcon(SwingLib.getBanner("Login")));
     setLayout(new BorderLayout());
     add(label, BorderLayout.NORTH);
     final JPanel main = new JPanel();

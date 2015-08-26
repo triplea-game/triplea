@@ -11,6 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import games.strategy.ui.SwingLib;
+
 /**
  * User editable property representing a color.
  * <p>
@@ -77,7 +79,7 @@ public class ColorProperty extends AEditableProperty {
             m_color = color;
             System.out.println("New color: " + m_color);
             // Ask Swing to repaint this label when it's convenient
-            SwingUtilities.invokeLater(new Runnable() {
+            SwingLib.invokeLater(new Runnable() {
               @Override
               public void run() {
                 label.repaint();

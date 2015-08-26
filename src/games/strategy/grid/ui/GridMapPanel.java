@@ -54,7 +54,7 @@ import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.ScrollListener;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Tuple;
@@ -388,7 +388,7 @@ public abstract class GridMapPanel extends ImageScrollerLargeView implements Mou
     final int icon_width = m_mapData.getSquareWidth();
     final int icon_height = m_mapData.getSquareHeight();
     final int xSpace = m_mapData.getSquareWidth() / 5;
-    final BufferedImage img = Util.createImage(units.size() * (xSpace + icon_width), icon_height, true);
+    final BufferedImage img = SwingLib.createImage(units.size() * (xSpace + icon_width), icon_height, true);
     final Graphics2D g = (Graphics2D) img.getGraphics();
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
     g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);

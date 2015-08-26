@@ -11,18 +11,16 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.ui.SwingLib;
 
 /**
  * Wrapper for properties selection window.
  */
 public class PropertiesSelector {
   /**
-   * @param parent
-   *        parent component
-   * @param properties
-   *        properties that will get displayed
-   * @param buttonOptions
-   *        button options. They will be displayed in a row on the bottom
+   * @param parent parent component
+   * @param properties properties that will get displayed
+   * @param buttonOptions button options. They will be displayed in a row on the bottom
    * @return pressed button
    */
   static public Object getButton(final JComponent parent, final String title,
@@ -30,16 +28,12 @@ public class PropertiesSelector {
     if (!SwingUtilities.isEventDispatchThread()) {
       // throw new IllegalStateException("Must run from EventDispatchThread");
       final AtomicReference<Object> rVal = new AtomicReference<Object>();
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            rVal.set(showDialog(parent, title, properties, buttonOptions));
-          }
-        });
-      } catch (final Exception e) {
-        e.printStackTrace();
-      }
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          rVal.set(showDialog(parent, title, properties, buttonOptions));
+        }
+      });
       return rVal.get();
     } else {
       return showDialog(parent, title, properties, buttonOptions);

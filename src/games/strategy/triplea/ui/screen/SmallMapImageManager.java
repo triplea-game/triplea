@@ -17,7 +17,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.ImageScrollerSmallView;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 public class SmallMapImageManager {
   private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
@@ -29,13 +29,13 @@ public class SmallMapImageManager {
   public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen,
       final TileManager tileManager) {
     m_view = view;
-    m_offscreen = Util.copyImage(offscreen, false);
+    m_offscreen = SwingLib.copyImage(offscreen, false);
     m_tileManager = tileManager;
   }
 
   public void updateOffscreenImage(final BufferedImage offscreen) {
     m_offscreen.flush();
-    m_offscreen = Util.copyImage(offscreen, false);
+    m_offscreen = SwingLib.copyImage(offscreen, false);
   }
 
   public void update(final GameData data, final MapData mapData) {
@@ -58,7 +58,7 @@ public class SmallMapImageManager {
     }
     final Rectangle bounds = new Rectangle(mapData.getBoundingRect(t.getName()));
     // create a large image for the territory
-    final Image largeImage = Util.createImage(bounds.width, bounds.height, true);
+    final Image largeImage = SwingLib.createImage(bounds.width, bounds.height, true);
     // make it transparent
     // http://www-106.ibm.com/developerworks/library/j-begjava/
     {
@@ -88,7 +88,7 @@ public class SmallMapImageManager {
     final int thumbsX = (int) (bounds.x * m_view.getRatioX()) - 1;
     final int thumbsY = (int) (bounds.y * m_view.getRatioY()) - 1;
     // create the thumb image
-    final Image thumbImage = Util.createImage(thumbWidth, thumbHeight, true);
+    final Image thumbImage = SwingLib.createImage(thumbWidth, thumbHeight, true);
     {
       final Graphics g = thumbImage.getGraphics();
       g.drawImage(largeImage, 0, 0, thumbImage.getWidth(null), thumbImage.getHeight(null), null);

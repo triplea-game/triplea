@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
 
 import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.ImageIoCompletionWatcher;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 /**
  * Utility for breaking an image into seperate smaller images.
@@ -205,7 +205,7 @@ public class ReliefImageBreaker {
     final Rectangle bounds = m_mapData.getBoundingRect(territory);
     final int width = bounds.width;
     final int height = bounds.height;
-    final BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
+    final BufferedImage alphaChannelImage = SwingLib.createImage(bounds.width, bounds.height, true);
     final Iterator<Polygon> iter = m_mapData.getPolygons(territory).iterator();
     while (iter.hasNext()) {
       Polygon item = iter.next();

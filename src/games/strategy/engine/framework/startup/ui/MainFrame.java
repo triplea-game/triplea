@@ -11,6 +11,7 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.ui.SwingLib;
 
 /**
  * arguments
@@ -77,18 +78,12 @@ public class MainFrame extends JFrame {
    */
   public void clientLeftGame() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            clientLeftGame();
-          }
-        });
-      } catch (final InterruptedException e) {
-        throw new IllegalStateException(e);
-      } catch (final InvocationTargetException e) {
-        throw new IllegalStateException(e);
-      }
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          clientLeftGame();
+        }
+      });
       return;
     }
     try {

@@ -94,7 +94,7 @@ import games.strategy.grid.delegate.remote.IGridEditDelegate;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.ImageScrollModel;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Tuple;
 
@@ -602,15 +602,7 @@ public class GridGameFrame extends MainGameFrame {
           }
         }
       };
-      if (!SwingUtilities.isEventDispatchThread()) {
-        try {
-          SwingUtilities.invokeAndWait(t);
-        } catch (final Exception e2) {
-          e2.printStackTrace();
-        }
-      } else {
-        t.run();
-      }
+      SwingLib.invokeAndWait(t);
     }
   }
 
@@ -634,7 +626,7 @@ public class GridGameFrame extends MainGameFrame {
     }
     final double scale = 1;
     // print map panel to image
-    final BufferedImage mapImage = Util.createImage((int) (scale * m_mapPanel.getImageWidth()),
+    final BufferedImage mapImage = SwingLib.createImage((int) (scale * m_mapPanel.getImageWidth()),
         (int) (scale * m_mapPanel.getImageHeight()), false);
     final Graphics2D mapGraphics = mapImage.createGraphics();
     try {
@@ -992,7 +984,7 @@ public class GridGameFrame extends MainGameFrame {
       return options.iterator().next();
     }
     final AtomicReference<UnitType> selected = new AtomicReference<UnitType>();
-    final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>() {
+    final Tuple<JPanel, JList> comps = SwingLib.invokeAndWait(new SwingLib.Task<Tuple<JPanel, JList>>() {
       @Override
       public Tuple<JPanel, JList> run() {
         final JList list = new JList(new Vector<UnitType>(options));

@@ -20,6 +20,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.ui.SwingLib;
+
 /**
  * Its a bit messy, but the threads are a pain to deal with We want to be able
  * to call this from any thread, and have a dialog that doesnt close until the
@@ -62,18 +64,12 @@ public class PBEMDiceRoller implements IRandomSource {
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
     if (!SwingUtilities.isEventDispatchThread()) {
       final AtomicReference<int[]> result = new AtomicReference<int[]>();
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            result.set(getRandom(max, count, annotation));
-          }
-        });
-      } catch (final InterruptedException e) {
-        throw new IllegalStateException(e);
-      } catch (final InvocationTargetException e) {
-        throw new IllegalStateException(e);
-      }
+      SwingLib.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          result.set(getRandom(max, count, annotation));
+        }
+      });
       return result.get();
     }
     final HttpDiceRollerDialog dialog =
@@ -180,7 +176,7 @@ class HttpDiceRollerDialog extends JDialog {
     getContentPane().add(new JScrollPane(m_text));
     m_text.setEditable(false);
     setSize(400, 300);
-    games.strategy.ui.Util.center(this); // games.strategy.ui.Util
+    games.strategy.ui.SwingLib.center(this); // games.strategy.ui.Util
   }
 
   /**

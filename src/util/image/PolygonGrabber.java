@@ -47,7 +47,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.PointFileReaderWriter;
 
 /**
@@ -323,7 +323,7 @@ public class PolygonGrabber extends JFrame {
   private void createImage(final String mapName) {
     final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
     try {
-      Util.ensureImageLoaded(image);
+      SwingLib.ensureImageLoaded(image);
     } catch (final InterruptedException ex) {
       ex.printStackTrace();
     }

@@ -26,7 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import games.strategy.triplea.ui.screen.TileManager;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.JTextAreaOptionPane;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -143,7 +143,7 @@ public class TileImageReconstructor {
         }
         final Image tile = Toolkit.getDefaultToolkit().createImage(tileFile.getPath());
         try {
-          Util.ensureImageLoaded(tile);
+          SwingLib.ensureImageLoaded(tile);
         } catch (final InterruptedException ex) {
           ex.printStackTrace();
         }

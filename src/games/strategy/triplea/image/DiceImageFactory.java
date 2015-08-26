@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 
 /**
  * Utility for creating dice images
@@ -60,7 +60,7 @@ public class DiceImageFactory {
       if (img != null) {
         images.put(Integer.valueOf(i), img);
       } else {
-        final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
+        final Image canvas = SwingLib.createImage(DIE_WIDTH, DIE_HEIGHT, true);
         final Graphics graphics = canvas.getGraphics();
         graphics.setColor(color);
         graphics.drawRoundRect(1, 1, DIE_WIDTH - 3, DIE_HEIGHT - 3, 5, 5);
@@ -111,7 +111,7 @@ public class DiceImageFactory {
       throw new IllegalArgumentException("die must be greater than 0, not:" + i);
     }
     if (i > m_diceSides) {
-      final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
+      final Image canvas = SwingLib.createImage(DIE_WIDTH, DIE_HEIGHT, true);
       final Graphics graphics = canvas.getGraphics();
       graphics.setFont(new Font("Arial", Font.BOLD, 16));
       switch (type) {

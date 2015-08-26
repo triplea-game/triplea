@@ -37,7 +37,7 @@ import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.Tuple;
 
 public class TileManager {
@@ -438,7 +438,7 @@ public class TileManager {
           bounds.y = mapDataHeight - bounds.height;
         }
       }
-      final Image rVal = Util.createImage(square_length, square_length, false);
+      final Image rVal = SwingLib.createImage(square_length, square_length, false);
       final Graphics2D graphics = (Graphics2D) rVal.getGraphics();
       graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,

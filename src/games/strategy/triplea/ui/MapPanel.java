@@ -61,7 +61,7 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.ScrollListener;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.ListenerList;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -785,7 +785,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final Set<UnitCategory> categories = UnitSeperator.categorize(units);
     final int icon_width = m_uiContext.getUnitImageFactory().getUnitImageWidth();
     final int xSpace = 5;
-    final BufferedImage img = Util.createImage(categories.size() * (xSpace + icon_width),
+    final BufferedImage img = SwingLib.createImage(categories.size() * (xSpace + icon_width),
         m_uiContext.getUnitImageFactory().getUnitImageHeight(), true);
     final Graphics2D g = (Graphics2D) img.getGraphics();
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));

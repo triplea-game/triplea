@@ -58,7 +58,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
-import games.strategy.ui.Util;
+import games.strategy.ui.SwingLib;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
@@ -243,7 +243,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       m_objectStreamFactory.setData(null);
-      Util.runInSwingEventThread(new Runnable() {
+      SwingLib.invokeAndWait(new Runnable() {
         @Override
         public void run() {
           MainFrame.getInstance().setVisible(true);

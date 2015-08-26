@@ -16,7 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.ui.SwingLib;
 
 /**
  * GUI class used to display logging window and logging settings.
@@ -406,7 +408,7 @@ public class LogWindow extends javax.swing.JDialog {
 
   public void notifyNewRound(final int roundNumber, final String name) {
     try {
-      SwingUtilities.invokeAndWait(new Runnable() {
+      SwingLib.invokeAndWait(new Runnable() {
         @Override
         public void run() {
           final JPanel newPanel = new JPanel();
@@ -457,8 +459,9 @@ public class LogWindow extends javax.swing.JDialog {
             }
           }
         };
-        SwingUtilities.invokeAndWait(runner);
-      } catch (final Exception ex) {
+        SwingLib.invokeAndWait(runner);
+      } catch (final Exception e) {
+        ClientLogger.logQuietly(e);
       }
     }
   }
