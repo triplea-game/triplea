@@ -4,7 +4,10 @@ import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.awt.Component;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class TestUtil {
@@ -57,5 +60,9 @@ public class TestUtil {
       assertThat(component.isVisible(), is(true));
       assertThat(component.isEnabled(), is(true));
     }
+  }
+
+  public static void closeFrame(JFrame frame) {
+    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 }
