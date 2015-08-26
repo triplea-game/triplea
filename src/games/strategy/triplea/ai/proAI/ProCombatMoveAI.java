@@ -1461,27 +1461,7 @@ public class ProCombatMoveAI {
       LogUtils.log(Level.FINEST, "  " + attackTerritoryData.getMaxBattleResult().getTUVSwing() + "  "
           + attackTerritoryData.getValue() + "  " + attackTerritoryData.getTerritory().getName());
     }
-    // Print transport map
-    // LogUtils.log(Level.FINER, "Transport territories:");
-    // int tcount = 0;
-    // int count = 0;
-    // for (final ProAmphibData proTransportData : transportMapList)
-    // {
-    // final Map<Territory, Set<Territory>> transportMap = proTransportData.getTransportMap();
-    // tcount++;
-    // LogUtils.log(Level.FINEST, "Transport #" + tcount);
-    // for (final Territory t : transportMap.keySet())
-    // {
-    // count++;
-    // LogUtils.log(Level.FINEST, count + ". Can attack " + t.getName());
-    // final Set<Territory> territories = transportMap.get(t);
-    // LogUtils.log(Level.FINEST, " --- From territories ---");
-    // for (final Territory fromTerritory : territories)
-    // {
-    // LogUtils.log(Level.FINEST, " " + fromTerritory.getName());
-    // }
-    // }
-    // }
+
     // Print enemy territories with enemy units vs my units
     LogUtils.log(Level.FINER, "Territories that can be attacked:");
     int count = 0;

@@ -1183,9 +1183,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.removeAll();
               dialog.dispose();
               continueLatch.countDown();
-            } else
-            // if (option.equals(optionWait))
-            {
+            } else {
               unitPanels.clear();
               selection.clear();
               dialog.setVisible(false);
@@ -1298,9 +1296,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.removeAll();
               dialog.dispose();
               continueLatch.countDown();
-            } else
-            // if (option.equals(optionWait))
-            {
+            } else {
               choosers.clear();
               selection.clear();
               dialog.setVisible(false);
@@ -1400,9 +1396,7 @@ public class TripleAFrame extends MainGameFrame {
               dialog.removeAll();
               dialog.dispose();
               continueLatch.countDown();
-            } else
-            // if (option.equals(optionWait))
-            {
+            } else {
               selection.clear();
               dialog.setVisible(false);
               dialog.removeAll();

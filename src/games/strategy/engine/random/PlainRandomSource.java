@@ -26,7 +26,7 @@ public class PlainRandomSource implements IRandomSource {
     return seed;
   }
 
-  // private static Random s_random;
+
   private static MersenneTwister s_random;
 
   @Override

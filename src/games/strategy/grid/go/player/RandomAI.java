@@ -31,8 +31,7 @@ public class RandomAI extends GridAbstractAI {
     final IGoPlayDelegate playDel = (IGoPlayDelegate) this.getPlayerBridge().getRemoteDelegate();
     final PlayerID me = getPlayerID();
     final GameData data = getGameData();
-    // if (playDel.haveTwoPassedInARow())
-    // return;
+
     pause();
     String error;
     final Triple<List<Territory>, List<Tuple<Territory, Collection<Territory>>>, List<Territory>> totalMoves;
@@ -76,8 +75,6 @@ public class RandomAI extends GridAbstractAI {
   @Override
   protected void endTurn() {
     final IGoEndTurnDelegate endTurnDel = (IGoEndTurnDelegate) getPlayerBridge().getRemoteDelegate();
-    // if (!endTurnDel.haveTwoPassedInARow())
-    // return;
     pause();
     final IGridEndTurnData lastPlayersEndTurn = endTurnDel.getTerritoryAdjustment();
     if (lastPlayersEndTurn == null) {

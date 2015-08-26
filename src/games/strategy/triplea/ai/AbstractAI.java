@@ -417,40 +417,21 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
     final PlayerID id = getPlayerID();
     if (name.endsWith("Bid")) {
       final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-      /*
-       * if (!purchaseDelegate.stuffToDoInThisDelegate())
-       * return;
-       */
       final String propertyName = id.getName() + " bid";
       final int bidAmount = getGameData().getProperties().get(propertyName, 0);
       purchase(true, bidAmount, purchaseDelegate, getGameData(), id);
     } else if (name.endsWith("Purchase")) {
       final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-      /*
-       * if (!purchaseDelegate.stuffToDoInThisDelegate())
-       * return;
-       */
       final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
       final int leftToSpend = id.getResources().getQuantity(PUs);
       purchase(false, leftToSpend, purchaseDelegate, getGameData(), id);
     } else if (name.endsWith("Tech")) {
       final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
-      /*
-       * if (!techDelegate.stuffToDoInThisDelegate())
-       * return;
-       */
       tech(techDelegate, getGameData(), id);
     } else if (name.endsWith("Move")) {
       final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
-      /*
-       * if (!moveDel.stuffToDoInThisDelegate())
-       * return;
-       */
       if (name.endsWith("AirborneCombatMove")) {
         return;
-        // if (!SpecialMoveDelegate.allowAirborne(id, getGameData()))
-        // return;
-        // airborneMove(); // TODO: implement me
       } else {
         move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
       }
@@ -460,10 +441,6 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
       politicalActions();
     } else if (name.endsWith("Place")) {
       final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      /*
-       * if (!placeDel.stuffToDoInThisDelegate())
-       * return;
-       */
       place(name.indexOf("Bid") != -1, placeDel, getGameData(), id);
     } else if (name.endsWith("EndTurn")) {
       endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
@@ -514,10 +491,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 
   public void politicalActions() {
     final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
-    /*
-     * if (!iPoliticsDelegate.stuffToDoInThisDelegate())
-     * return;
-     */
+
     final GameData data = getGameData();
     final PlayerID id = getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();

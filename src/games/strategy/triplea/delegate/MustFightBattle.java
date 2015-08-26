@@ -629,20 +629,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
     if (m_battleSite.isWater()) {
       if (canSubsSubmerge()) {
         if (!isSubRetreatBeforeBattle()) {
-          // Removing the logic of seeing if we can submerge subs now, because there is a chance we could kill that destroyer during combat,
-          // then submerge
-          // if (canAttackerRetreatSubs())
-          // {
           if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub)) {
             steps.add(m_attacker.getName() + SUBS_SUBMERGE);
           }
-          // }
-          // if (canDefenderRetreatSubs())
-          // {
           if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub)) {
             steps.add(m_defender.getName() + SUBS_SUBMERGE);
           }
-          // }
         }
       } else {
         if (canAttackerRetreatSubs()) {
@@ -1255,11 +1247,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   private boolean canAttackerRetreat() {
-    if (onlyDefenselessDefendingTransportsLeft()) // || onlyDefenselessAttackingTransportsLeft()
+    if (onlyDefenselessDefendingTransportsLeft())
     {
       return false;
     }
-    // if (m_amphibious && !isPartialAmphibiousRetreat())
     if (m_isAmphibious) {
       return false;
     }
@@ -1326,8 +1317,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
   }
 
   private boolean canDefenderRetreatSubs() {
-    // if (m_headless)
-    // return false;
     if (Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer)) {
       return false;
     }

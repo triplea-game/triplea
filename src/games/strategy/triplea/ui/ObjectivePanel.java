@@ -349,7 +349,6 @@ public class ObjectivePanel extends AbstractStatPanel {
             final String comment = satisfied ? "Used" : "used";
             conditionsComments.put(entry.getKey(), comment);
           } else {
-            // if (uses > 0)
             final String comment = uses + "" + (satisfied ? (each > 1 ? "T" + each : "T") : "F");
             conditionsComments.put(entry.getKey(), comment);
           }
@@ -364,7 +363,6 @@ public class ObjectivePanel extends AbstractStatPanel {
             final String comment = satisfied ? "Used" : "used";
             conditionsComments.put(entry.getKey(), comment);
           } else {
-            // if (uses > 0)
             final String comment = uses + "" + (satisfied ? (each > 1 ? "T" + each : "T") : "F");
             conditionsComments.put(entry.getKey(), comment);
           }

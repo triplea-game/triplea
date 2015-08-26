@@ -107,8 +107,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
     if (trigger == null) {
       throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
     }
-    // if (trigger == this)
-    // throw new GameParseException("Can not have a trigger activate itself!" + thisErrorMsg());
     String options = value;
     options = options.replaceFirst((s[0] + ":"), "");
     final int numberOfTimes = getInt(s[1]);
@@ -192,13 +190,10 @@ public class UserActionAttachment extends AbstractUserActionAttachment implement
   }
 
   /**
-   * @param player
    * @return gets the valid actions for this player.
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
-    // if (!player.amNotDeadYet(data))
-    // return new ArrayList<UserActionAttachment>();
     return Match.getMatches(getUserActionAttachments(player), new CompositeMatchAnd<UserActionAttachment>(
         Matches.AbstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }

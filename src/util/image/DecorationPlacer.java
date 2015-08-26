@@ -471,10 +471,9 @@ public class DecorationPlacer extends JFrame {
         return;
       }
       final FileOutputStream out = new FileOutputStream(fileName);
-      // if (s_imagePointType.isCanHaveMultiplePoints())
+
       PointFileReaderWriter.writeOneToMany(out, m_currentPoints);
-      // else
-      // PointFileReaderWriter.writeOneToOne(out, m_currentPoints);
+
       out.flush();
       out.close();
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());

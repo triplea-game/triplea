@@ -170,7 +170,8 @@ public class TechPanel extends ActionPanel {
       m_currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
       // Notify user if there are no more techs to acheive
       final List<TechnologyFrontier> techCategories = getAvailableCategories();
-      // if (available.isEmpty())
+
+
       if (techCategories.isEmpty()) {
         JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
         return;

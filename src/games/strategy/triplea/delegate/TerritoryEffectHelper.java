@@ -17,8 +17,6 @@ import games.strategy.triplea.attatchments.TerritoryEffectAttachment;
  */
 public class TerritoryEffectHelper {
   public static Collection<TerritoryEffect> getEffects(final Territory location) {
-    // if (location == null)
-    // return new ArrayList<TerritoryEffect>();
     final TerritoryAttachment ta = TerritoryAttachment.get(location);
     if (ta != null) {
       return TerritoryAttachment.get(location).getTerritoryEffect();

@@ -476,12 +476,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   // TODO Here's the spot for special air placement rules
   protected String moveAirOntoNewCarriers(final Territory at, final Territory producer, final Collection<Unit> units,
       final PlayerID player, final CompositeChange placeChange) {
-    // not water, dont bother
     if (!at.isWater()) {
       return null;
     }
-    // not enabled
-    // if (!canProduceFightersOnCarriers())
     if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) {
       return null;
     }

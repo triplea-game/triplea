@@ -737,9 +737,9 @@ public class PolygonGrabber extends JFrame {
             move(currentPoint, currentDirection);
           }
           break;
-        } // if
-      } // for
-    } // while
+        }
+      }
+    }
     final int[] xpoints = new int[points.size()];
     final int[] ypoints = new int[points.size()];
     int i = 0;
@@ -791,4 +791,4 @@ public class PolygonGrabber extends JFrame {
       }
     }
   }
-}// end class PolygonGrabber
+}

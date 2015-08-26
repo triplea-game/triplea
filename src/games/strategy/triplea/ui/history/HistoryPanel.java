@@ -380,8 +380,7 @@ public class HistoryPanel extends JPanel {
     final TreePath parent = path.getParentPath();
     if (!m_mouseOverPanel) {
       // make sure we undo our change of the lock property
-      // if (m_mouseWasOverPanel)
-      // m_uiContext.setLockMap(m_lockBefore);
+
       gotoNode(last);
       if (m_lastParent == null) {
         m_lastParent = m_tree.getSelectionPath();
@@ -395,8 +394,7 @@ public class HistoryPanel extends JPanel {
     } else {
       if (m_mouseWasOverPanel == false) {
         // save the lock property so that we can undo it
-        // m_lockBefore = m_uiContext.getLockMap();
-        // m_uiContext.setLockMap(true);
+
         TreePath root = parent;
         while (root.getPathCount() > 1) {
           root = root.getParentPath();

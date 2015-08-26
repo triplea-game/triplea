@@ -807,8 +807,6 @@ public class BattleTracker implements java.io.Serializable {
           final Tuple<String, IntegerMap<UnitType>> toCreate = map.get(value);
           final boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
           for (final UnitType ut : toCreate.getSecond().keySet()) {
-            // if (ut.equals(u.getType()))
-            // continue;
             toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
           }
           if (!toAdd.isEmpty()) {

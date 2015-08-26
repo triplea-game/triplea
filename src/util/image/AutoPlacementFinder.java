@@ -138,8 +138,7 @@ public class AutoPlacementFinder {
                     + "\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height + ",    Result = ("
                     + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")",
                 "File Suggestion", 1);
-            // if (result == 2)
-            // return;
+
             if (result == 0) {
               unit_zoom_percent = scale;
               PLACEWIDTH = (int) (unit_zoom_percent * width);

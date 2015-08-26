@@ -212,8 +212,6 @@ public class LobbyGamePanel extends JPanel {
       if (a == null) {
         continue;
       }
-      // if (hasActions)
-      // menu.addSeparator();
       hasActions = true;
       menu.add(a);
     }
