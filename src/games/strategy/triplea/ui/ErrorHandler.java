@@ -1,26 +1,46 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.GameOverException;
+import games.strategy.debug.ClientLogger;
 
 /**
- * NOt entirly safe or elegant.
- * We want to ignore game over exceptions when the game is actually over.
- * This assumes only 1 game in a vm at a time.
+ * When dealing with swing threads and new threads, exception handling can get tricky. Namely without
+ * a handler to catch exceptions in these new threads, the stack traces will be poor. Specifically you
+ * will get a stack trace that points to where you started the thread and not to the actual line within
+ * the thread that had the problem.
+ *
+ * To solve this unhandled exception handlers get registered. For more details, see:
+ * http://stackoverflow.com/questions/75218/how-can-i-detect-when-an-exceptions-been-thrown-globally-in-java#75439
  */
-public class ErrorHandler {
-  private static volatile boolean m_isGameOver;
+public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 
-  public static void setGameOver(final boolean aBool) {
-    m_isGameOver = aBool;
+  @Override
+  public void uncaughtException(Thread t, Throwable e) {
+    handle(e);
   }
 
-  public ErrorHandler() {}
-
-  public void handle(final Throwable t) {
-    if (t instanceof GameOverException && m_isGameOver) {
-      // ignore
-      return;
+  /**
+   * Method used to handle errors. Called directly and auto-magically by sun event thread.
+   */
+  public void handle(Throwable throwable) {
+    try {
+      ClientLogger.logError(throwable);
+    } catch (Throwable t) {
+      try {
+          // if client logger fails fall back to methods that may still work
+        String msg = "Original error: " + throwable.getMessage() + ", next error while handling it: " + t.getMessage();
+        System.err.println(msg);
+        t.printStackTrace();
+      } catch (Throwable fatal) {
+        // Swallow this last error, if anything is thrown we can have an infinite loop of error handling.
+      }
     }
-    t.printStackTrace();
+  }
+
+  /**
+   * Registers this class as an uncaught exception error handler.
+   */
+  public static void registerExceptionHandler() {
+    Thread.setDefaultUncaughtExceptionHandler(new ErrorHandler());
+    System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
   }
 }

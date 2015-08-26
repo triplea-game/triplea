@@ -20,8 +20,7 @@ public class ChangeTripleATest extends TestCase {
 
   @Override
   public void setUp() throws Exception {
-    m_data = LoadGameUtil.loadGame("Big World : 1942",
-        "big_world" + File.separator + "games" + File.separator + "big_world_1942.xml");
+    m_data = LoadGameUtil.loadGame("Big World : 1942", "big_world_1942_test.xml");
   }
 
   private Change serialize(final Change aChange) throws Exception {
