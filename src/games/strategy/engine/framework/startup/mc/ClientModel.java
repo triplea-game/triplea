@@ -63,6 +63,7 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public class ClientModel implements IMessengerErrorListener {
+
   public static final RemoteName CLIENT_READY_CHANNEL =
       new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
   private static Logger s_logger = Logger.getLogger(ClientModel.class.getName());
@@ -183,7 +184,7 @@ public class ClientModel implements IMessengerErrorListener {
     m_gameDataOnStartup = m_gameSelectorModel.getGameData();
     final IServerStartupRemote serverStartup = getServerStartup();
     final PlayerListing players = serverStartup.getPlayerListing();
-    internalePlayerListingChanged(players);
+    internalPlayerListingChanged(players);
     if (!serverStartup.isGameStarted(m_messenger.getLocalNode())) {
       m_remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(m_messenger.getLocalNode()));
     }
@@ -236,7 +237,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final IClientChannel m_channelListener = new IClientChannel() {
     @Override
     public void playerListingChanged(final PlayerListing listing) {
-      internalePlayerListingChanged(listing);
+      internalPlayerListingChanged(listing);
     }
 
     @Override
@@ -389,7 +390,7 @@ public class ClientModel implements IMessengerErrorListener {
     getServerStartup().enablePlayer(playerName);
   }
 
-  private void internalePlayerListingChanged(final PlayerListing listing) {
+  private void internalPlayerListingChanged(final PlayerListing listing) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
