@@ -392,8 +392,6 @@ public class BattleTracker implements java.io.Serializable {
     conquerable.add(new CompositeMatchOr<Territory>(
         Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data)));
-    // new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(id, data)
-    // Matches.TerritoryIsPassableAndNotRestricted(id, data))));
     final Collection<Territory> conquered = new ArrayList<Territory>();
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
