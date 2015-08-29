@@ -1,3 +1,11 @@
+Changes for 1.8.0.9
+* Bug fix, retreat from naval combat was not possible, now fixed (redrum)
+
+* Increase scroll speed when using arrow keys. Holding down control speeds up arrow key scroll. (lafayette)
+
+* Map edge scroll zone now larger, placing map next to the very edge of the map increases scroll speed even more. (lafayette)
+
+
 Changes for 1.8.0.7
 * Hard AI - Improved performance on large maps. (redrum)
 
