@@ -88,8 +88,6 @@ public class ValidateAttachmentsTest extends TestCase {
   @SuppressWarnings("unchecked")
   private static Class<? extends IAttachment>[] getKnownAttachmentClasses() {
     return new Class[] {games.strategy.engine.data.DefaultAttachment.class,
-        games.strategy.grid.kingstable.attachments.PlayerAttachment.class,
-        games.strategy.grid.kingstable.attachments.TerritoryAttachment.class,
         games.strategy.triplea.attatchments.CanalAttachment.class,
         games.strategy.triplea.attatchments.PlayerAttachment.class,
         games.strategy.triplea.attatchments.PoliticalActionAttachment.class,
