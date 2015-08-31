@@ -3,7 +3,7 @@ Changes for 1.8.0.9
 
 * Increase scroll speed when using arrow keys. Holding down control speeds up arrow key scroll. (lafayette)
 
-* Pacing cursor next to the very edge of the map increases scroll speed. (lafayette)
+* Placing cursor next to the very edge of the map increases scroll speed. (lafayette)
 
 * Hard AI - Fixed calculating defenses on maps with air/naval bases to properly calculate enemy range. (redrum)
 
