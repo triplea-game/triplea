@@ -55,13 +55,6 @@ public class TestUtil {
     }
   }
 
-  public static void assertVisibleAndEnabled(Component... components) {
-    for (Component component : components) {
-      assertThat(component.isVisible(), is(true));
-      assertThat(component.isEnabled(), is(true));
-    }
-  }
-
   public static void closeFrame(JFrame frame) {
     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
