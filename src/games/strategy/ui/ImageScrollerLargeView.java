@@ -41,10 +41,10 @@ public class ImageScrollerLargeView extends JComponent {
   final static int WHEEL_SCROLL_AMOUNT = 60;
 
   // how close to an edge we have to be before we scroll
-  private final static int TOLERANCE = 28;
+  private final static int TOLERANCE = 30;
 
   // if we get even closer to the edge, we scroll a bit faster
-  private final int FASTER_TOLERANCE = TOLERANCE / 4;
+  private final int FASTER_TOLERANCE = 10;
 
   // how much we scroll
   private final static int SCROLL_DISTANCE = 30;

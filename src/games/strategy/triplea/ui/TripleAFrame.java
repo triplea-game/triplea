@@ -1807,10 +1807,10 @@ public class TripleAFrame extends MainGameFrame {
     int multiplier = 1;
 
     if (e.isControlDown()) {
-      multiplier = 3;
+      multiplier = 4;
     }
 
-    final int starterDiffPixel = 60;
+    final int starterDiffPixel = 70;
     return (starterDiffPixel * multiplier);
   }
 
