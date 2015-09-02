@@ -354,8 +354,9 @@ public class TripleAFrame extends MainGameFrame {
         }
         if (pane.getComponentAt(sel).equals(m_notesPanel)) {
           m_notesPanel.layoutNotes();
-        } else { // for memory management reasons the notes are in a SoftReference, so we must remove our hard reference link to them so it
-                 // can be reclaimed if needed
+        } else {
+          // for memory management reasons the notes are in a SoftReference,
+          // so we must remove our hard reference link to them so it can be reclaimed if needed
           m_notesPanel.removeNotes();
         }
         if (pane.getComponentAt(sel).equals(m_editPanel)) {
@@ -1153,8 +1154,6 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        // final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " +
-        // attackResourceToken.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
         optionPane.addPropertyChangeListener(new PropertyChangeListener() {
           @Override
           public void propertyChange(final PropertyChangeEvent e) {
@@ -1271,8 +1270,6 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        // final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(),
-        // JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
         optionPane.addPropertyChangeListener(new PropertyChangeListener() {
           @Override
           public void propertyChange(final PropertyChangeEvent e) {
@@ -1374,8 +1371,6 @@ public class TripleAFrame extends MainGameFrame {
         dialog.pack();
         dialog.setVisible(true);
         dialog.requestFocusInWindow();
-        // final int option = JOptionPane.showOptionDialog(getParent(), panel, message, JOptionPane.YES_NO_CANCEL_OPTION,
-        // JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
         optionPane.addPropertyChangeListener(new PropertyChangeListener() {
           @Override
           public void propertyChange(final PropertyChangeEvent e) {
@@ -1665,12 +1660,9 @@ public class TripleAFrame extends MainGameFrame {
         @Override
         public void run() {
           final Boolean play = m_requiredTurnSeries.get(player);
-          // System.out.println("Starting for " + player.getName() + ", with requiredTurnSeries equal to " + (play == null ? "null" : play)
-          // + ", with m_lastStepPlayer equal to " + (m_lastStepPlayer == null ? "null" : m_lastStepPlayer.getName()));
           if (play != null && play.booleanValue()) {
-            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
+            DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName());
             m_requiredTurnSeries.put(player, false);
-            // System.out.println("Playing Sound for " + player.getName());
           }
           // center on capital of player, if it is a new player
           if (!player.equals(m_lastStepPlayer)) {
@@ -1678,7 +1670,6 @@ public class TripleAFrame extends MainGameFrame {
             m_data.acquireReadLock();
             try {
               m_mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, m_data));
-              // System.out.println("Centering on " + player.getName());
             } finally {
               m_data.releaseReadLock();
             }
@@ -1816,10 +1807,10 @@ public class TripleAFrame extends MainGameFrame {
     int multiplier = 1;
 
     if (e.isControlDown()) {
-      multiplier = 5;
+      multiplier = 4;
     }
 
-    final int starterDiffPixel = 100;
+    final int starterDiffPixel = 70;
     return (starterDiffPixel * multiplier);
   }
 
@@ -1968,9 +1959,11 @@ public class TripleAFrame extends MainGameFrame {
               final GameData datacopy = GameDataUtils.cloneGameData(m_data, true);
               datacopy.getHistory().gotoNode(m_historyPanel.getCurrentPopupNode());
               datacopy.getHistory().removeAllHistoryAfterNode(m_historyPanel.getCurrentPopupNode());
-              // TODO: the saved current delegate is still the current delegate, rather than the delegate at that history popup node
+              // TODO: the saved current delegate is still the current delegate,
+              // rather than the delegate at that history popup node
               // TODO: it still shows the current round number, rather than the round at the history popup node
-              // TODO: this could be solved easily if rounds/steps were changes, but that could greatly increase the file size :(
+              // TODO: this could be solved easily if rounds/steps were changes,
+              // but that could greatly increase the file size :(
               // TODO: this also does not undo the runcount of each delegate step
               @SuppressWarnings("rawtypes")
               final Enumeration enumeration =
@@ -2177,8 +2170,7 @@ public class TripleAFrame extends MainGameFrame {
       mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
       mapGraphics.setColor(title_color);
       if (m_uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
-        mapGraphics.drawString(data.getGameName() + " Round " + round, title_x, title_y); // + ": " + (player != null ? player.getName() :
-                                                                                          // "") + " - " + step
+        mapGraphics.drawString(data.getGameName() + " Round " + round, title_x, title_y);
       }
       // overlay stats, if enabled
       final boolean stats_enabled =

@@ -74,9 +74,8 @@ public class BattleTracker implements java.io.Serializable {
   private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand =
       new HashMap<Territory, Collection<Unit>>();
   private BattleRecords m_battleRecords = null;
-  // to keep track of all relationships that have changed this turn (so we can validate things like transports loading
-  // in newly created
-  // hostile zones)
+  // to keep track of all relationships that have changed this turn
+  // (so we can validate things like transports loading in newly created hostile zones)
   private final Collection<Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>> m_relationshipChangesThisTurn =
       new ArrayList<Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>>();
 
@@ -161,8 +160,8 @@ public class BattleTracker implements java.io.Serializable {
   }
 
   public boolean didThesePlayersJustGoToWarThisTurn(final PlayerID p1, final PlayerID p2) {
-    // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war, and newRelation is
-    // war
+    // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war,
+    // and newRelation is war
     for (final Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>> t : m_relationshipChangesThisTurn) {
       final Tuple<PlayerID, PlayerID> players = t.getFirst();
       if (players.getFirst().equals(p1)) {
@@ -220,9 +219,8 @@ public class BattleTracker implements java.io.Serializable {
     }
     final RelationshipTracker relationshipTracker = bridge.getData().getRelationshipTracker();
     // if we have no longer conquered it, clear the blitz state
-    // EW: Does this have to look at all Territories? or just middle-territories or steps? // answer: veq: yes, we look
-    // at all, because we
-    // could have conquered the end territory if there are no units there
+    // We must look at all territories,
+    // because we could have conquered the end territory if there are no units there
     for (final Territory current : route.getAllTerritories()) {
       if (!relationshipTracker.isAllied(current.getOwner(), player) && m_conquered.contains(current)) {
         m_conquered.remove(current);
@@ -261,8 +259,8 @@ public class BattleTracker implements java.io.Serializable {
       final boolean airBattleCompleted) {
     final GameData data = bridge.getData();
     if (bombing) {
-      // create only either an air battle OR a bombing battle. (the air battle will create a bombing battle when done,
-      // if needed)
+      // create only either an air battle OR a bombing battle.
+      // (the air battle will create a bombing battle when done, if needed)
       if (!airBattleCompleted && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing)) {
         addAirBattle(route, units, id, data, true);
@@ -407,8 +405,7 @@ public class BattleTracker implements java.io.Serializable {
     m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
     for (final Territory current : conquered) {
       IBattle nonFight = getPendingBattle(current, false, BattleType.NORMAL);
-      // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this stuff (currently doesn't
-      // work because then the
+      // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this
       if (nonFight == null) {
         nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data,
             BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
@@ -430,9 +427,8 @@ public class BattleTracker implements java.io.Serializable {
         precede = getPendingBattle(route.getEnd(), true, null);
       }
       // if we have a preceding battle, then we must use a non-fighting-battle
-      // if we have scrambling on, and this is an amphibious attack, we may wish to scramble to kill the transports, so
-      // must use
-      // non-fighting-battle also
+      // if we have scrambling on, and this is an amphibious attack,
+      // we may wish to scramble to kill the transports, so must use non-fighting-battle also
       if (precede != null || (scramblingEnabled && route.isUnload() && route.hasExactlyOneStep())) {
         IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
         if (nonFight == null) {
@@ -481,13 +477,10 @@ public class BattleTracker implements java.io.Serializable {
     }
     final GameData data = bridge.getData();
     final Collection<Unit> arrivedUnits = (arrivingUnits == null ? null : new ArrayList<Unit>(arrivingUnits));
-    // final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
-    final boolean isTerritoryOwnerAnEnemy = relationshipTracker.canTakeOverOwnedTerritory(id, territory.getOwner()); // .isAtWar(id,
-                                                                                                                     // territory.getOwner());
-    // If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just
-    // transports. If they
-    // don't, exit here.
+    final boolean isTerritoryOwnerAnEnemy = relationshipTracker.canTakeOverOwnedTerritory(id, territory.getOwner());
+    // If this is a convoy (we wouldn't be in this method otherwise)
+    // check to make sure attackers have more than just transports. If they don't, exit here.
     if (territory.isWater() && arrivedUnits != null) {
       int totalMatches = 0;
       // Total Attacking Sea units = all units - land units - air units - submerged subs
@@ -562,25 +555,20 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // if its a capital we take the money
-    // NOTE: this is not checking to see if it is an enemy. instead it is relying on the fact that the capital should be
-    // owned by the person
-    // it is attached to
+    // NOTE: this is not checking to see if it is an enemy.
+    // instead it is relying on the fact that the capital should be owned by the person it is attached to
     if (ta != null && isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
-      // if the capital is owned by the capitols player
-      // take the money
+      // if the capital is owned by the capitols player take the money
       final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
       final PlayerAttachment pa = PlayerAttachment.get(id);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
       final List<Territory> capitalsList =
           new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data));
-      if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) // we are losing one
-                                                                                                   // right now, so it
-                                                                                                   // is
-                                                                                                   // < not <=
-      {
+      // we are losing one right now, so it is < not <=
+      if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
         // do nothing, we keep our money since we still control enough capitals
-        bridge.getHistoryWriter()
-            .addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
+        bridge.getHistoryWriter().addChildToEvent(
+            id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
         final Resource PUs = data.getResourceList().getResource(Constants.PUS);
         final int capturedPUCount = whoseCapital.getResources().getQuantity(PUs);
@@ -626,12 +614,11 @@ public class BattleTracker implements java.io.Serializable {
         }
       }
     }
-    // is this an allied territory
-    // revert to original owner if it is, unless they dont own there captital
+    // is this an allied territory, revert to original owner if it is, unless they dont own there captital
     final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
     PlayerID newOwner = id;
-    // if the original owner is the current owner, and the current owner is our enemy / canTakeOver, then we do not
-    // worry about this.
+    // if the original owner is the current owner, and the current owner is our enemy or canTakeOver,
+    // then we do not worry about this.
     if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id)
         && !terrOrigOwner.equals(territory.getOwner())) {
       final List<Territory> capitalsListOwned =
@@ -644,15 +631,14 @@ public class BattleTracker implements java.io.Serializable {
             new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(terrOrigOwner, data));
         for (final Territory current : capitalsListOriginal) {
           if (territory.equals(current) || current.getOwner().equals(PlayerID.NULL_PLAYERID)) {
-            newOwner = terrOrigOwner; // if a neutral controls our capital, our territories get liberated (ie: china in
-                                      // ww2v3)
+            // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
+            newOwner = terrOrigOwner;
           }
         }
       }
     }
-    // if we have specially set this territory to have whenCapturedByGoesTo, then we set that here (except we don't set
-    // it if we are
-    // liberating allied owned territory)
+    // if we have specially set this territory to have whenCapturedByGoesTo,
+    // then we set that here (except we don't set it if we are liberating allied owned territory)
     if (ta != null && isTerritoryOwnerAnEnemy && newOwner.equals(id)
         && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory)) {
       for (final String value : ta.getWhenCapturedByGoesTo()) {
@@ -678,17 +664,8 @@ public class BattleTracker implements java.io.Serializable {
       }
       // play a sound
       if (territory.isWater()) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName()); // should
-                                                                                                                 // probably
-                                                                                                                 // see
-                                                                                                                 // if
-                                                                                                                 // there
-                                                                                                                 // is
-                                                                                                                 // something
-                                                                                                                 // actually
-                                                                                                                 // happening
-                                                                                                                 // for
-                                                                                                                 // water
+        // should probably see if there is something actually happening for water
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName());
       } else if (ta != null && ta.getCapital() != null) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
       } else if (m_blitzed.contains(territory) && Match.someMatch(arrivedUnits, Matches.UnitCanBlitz)) {
@@ -719,8 +696,7 @@ public class BattleTracker implements java.io.Serializable {
         && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
         && relationshipTracker.isAllied(terrOrigOwner, id)) {
       // if it is give it back to the original owner
-      final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner); // origOwnerTracker.getOriginallyOwned(data,
-                                                                                                                  // terrOrigOwner);
+      final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
           Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       // give back the factories as well.
@@ -745,9 +721,8 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // say they were in combat
-    // if the territory being taken over is water, then do not say any land units were in combat (they may want to
-    // unload from the transport
-    // and attack)
+    // if the territory being taken over is water, then do not say any land units were in combat
+    // (they may want to unload from the transport and attack)
     if (Matches.TerritoryIsWater.match(territory) && arrivedUnits != null) {
       arrivedUnits.removeAll(Match.getMatches(arrivedUnits, Matches.UnitIsLand));
     }
@@ -853,9 +828,9 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     if (!nonCom.isEmpty()) {
-      // FYI: a dummy delegate will not do anything with this change, meaning that the battle calculator will think this
-      // unit lived even
-      // though it died or was captured, etc!
+      // FYI: a dummy delegate will not do anything with this change,
+      // meaning that the battle calculator will think this unit lived,
+      // even though it died or was captured, etc!
       final Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
       bridge.addChange(capture);
       if (changeTracker != null) {

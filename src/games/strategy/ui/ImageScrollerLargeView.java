@@ -41,10 +41,10 @@ public class ImageScrollerLargeView extends JComponent {
   final static int WHEEL_SCROLL_AMOUNT = 60;
 
   // how close to an edge we have to be before we scroll
-  private final static int TOLERANCE = 70;
+  private final static int TOLERANCE = 30;
 
   // if we get even closer to the edge, we scroll a bit faster
-  private int FASTER_TOLERANCE = TOLERANCE / 4;
+  private final int FASTER_TOLERANCE = 10;
 
   // how much we scroll
   private final static int SCROLL_DISTANCE = 30;
@@ -156,7 +156,7 @@ public class ImageScrollerLargeView extends JComponent {
     } else if ((m_edge & RIGHT) != 0) {
       dx = SCROLL_DISTANCE;
     }
-    if( this.m_insideFasterPosition ) {
+    if (this.m_insideFasterPosition) {
       dx *= FASTER_SCROLL_MULTIPLIER;
       dy *= FASTER_SCROLL_MULTIPLIER;
     }
@@ -200,23 +200,23 @@ public class ImageScrollerLargeView extends JComponent {
     this.m_insideFasterPosition = false;
     if (x < TOLERANCE) {
       newEdge += LEFT;
-      if( x < FASTER_TOLERANCE ) {
+      if (x < FASTER_TOLERANCE) {
         this.m_insideFasterPosition = true;
       }
     } else if (width - x < TOLERANCE) {
       newEdge += RIGHT;
-      if( (width - x) < FASTER_TOLERANCE ) {
+      if ((width - x) < FASTER_TOLERANCE) {
         this.m_insideFasterPosition = true;
       }
     }
     if (y < TOLERANCE) {
       newEdge += TOP;
-      if( y < FASTER_TOLERANCE ) {
+      if (y < FASTER_TOLERANCE) {
         this.m_insideFasterPosition = true;
       }
     } else if (height - y < TOLERANCE) {
       newEdge += BOTTOM;
-      if( (height - y) < FASTER_TOLERANCE ) {
+      if ((height - y) < FASTER_TOLERANCE) {
         this.m_insideFasterPosition = true;
       }
     }
@@ -236,7 +236,7 @@ public class ImageScrollerLargeView extends JComponent {
 
   /**
    * @param value The new scale value. Constrained to the bounds of no less than 0.15 and no greater than 1.
-   * If out of bounds the nearest boundary value is used.
+   *        If out of bounds the nearest boundary value is used.
    */
   public void setScale(double value) {
     if (value < 0.15) {

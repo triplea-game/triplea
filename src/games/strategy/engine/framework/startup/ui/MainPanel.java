@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -24,7 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
-import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -128,13 +128,12 @@ public class MainPanel extends JPanel implements Observer {
     remove(m_chatSplit);
     m_chatPanelHolder.removeAll();
     final IChatPanel chat = m_gameTypePanelModel.getPanel().getChatPanel();
-    if (chat != null && !chat.isHeadless() ) {
+    if (chat != null && !chat.isHeadless()) {
       m_chatPanelHolder = new JPanel();
       m_chatPanelHolder.setLayout(new BorderLayout());
       m_chatPanelHolder.setPreferredSize(new Dimension(m_chatPanelHolder.getPreferredSize().width, 62));
 
-      final ChatPanel chatPanel = (ChatPanel) chat;
-      m_chatPanelHolder.add(chatPanel, BorderLayout.CENTER);
+      m_chatPanelHolder.add((Component) chat, BorderLayout.CENTER);
 
       m_chatSplit.setTopComponent(m_mainPanel);
       m_chatSplit.setBottomComponent(m_chatPanelHolder);
