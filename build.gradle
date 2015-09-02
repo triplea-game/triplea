@@ -14,8 +14,8 @@ description = 'TripleA is a free online turn based strategy game and board game 
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
 compileJava.options.encoding = 'UTF-8'
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 tasks.withType(JavaCompile) { options.incremental = true }
 
 sourceSets {
