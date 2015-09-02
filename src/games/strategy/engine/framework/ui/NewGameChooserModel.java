@@ -1,8 +1,10 @@
 package games.strategy.engine.framework.ui;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -17,13 +19,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.util.ClassLoaderUtil;
 
 public class NewGameChooserModel extends DefaultListModel {
@@ -94,6 +100,7 @@ public class NewGameChooserModel extends DefaultListModel {
   }
 
   private void populateFromZip(final File map, final List<NewGameChooserEntry> entries) {
+    boolean badMapZip = false;
     try {
       final FileInputStream fis = new FileInputStream(map);
       try {
@@ -107,7 +114,9 @@ public class NewGameChooserModel extends DefaultListModel {
               // we have to close the loader to allow files to be deleted on windows
               ClassLoaderUtil.closeLoader(loader);
               if (url == null) {
-                continue;
+                // not loading the URL means the XML is truncated or otherwise in bad shape
+                badMapZip = true;
+                break;
               }
               try {
                 addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
@@ -125,7 +134,47 @@ public class NewGameChooserModel extends DefaultListModel {
         fis.close();
       }
     } catch (final IOException ioe) {
-      ioe.printStackTrace();
+      ClientLogger.logQuietly(ioe);
+    }
+
+    if( badMapZip) {
+      confirmWithUserAndThenDeleteCorruptZipFile(map);
+    }
+  }
+
+  /*
+   * Open up a confirmation dialog, if user says yes, delete the map specified by
+   * parameter, then show confirmation of deletion.
+   */
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map) {
+    try {
+      SwingUtilities.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          Component parentComponent = MainFrame.getInstance();
+          String message =
+              "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath() + "\n(You may see this error message again if you keep the file)";
+          String title = "Corrup Map File Found";
+          int optionType = JOptionPane.YES_NO_OPTION;
+          int messageType = JOptionPane.WARNING_MESSAGE;
+          int result = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType, messageType);
+          if (result == JOptionPane.YES_OPTION) {
+            boolean deleted = map.delete();
+            if (deleted) {
+              messageType = JOptionPane.INFORMATION_MESSAGE;
+              message = "File was deleted successfully.";
+            } else if (!deleted && map.exists()) {
+              message = "Unable to delete file, please remove it by hand:\n" + map.getAbsolutePath();
+            }
+            title = "File Removal Result";
+            JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
+          }
+        }
+      });
+    } catch (InvocationTargetException e) {
+      ClientLogger.logError(e);
+    } catch (InterruptedException e) {
+      ClientLogger.logQuietly(e);
     }
   }
 
