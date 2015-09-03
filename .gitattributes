@@ -26,4 +26,5 @@ MacOS_users_read_this_first.txt text eol=lf
 *.docx binary
 *.wav binary
 *.mp3 binary
-
+*.jar binary
+*.ico binary
