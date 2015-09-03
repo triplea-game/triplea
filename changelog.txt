@@ -1,6 +1,8 @@
 Changes for 1.8.0.9
 * Bug fix, retreat from naval combat was not possible, now fixed. (redrum)
 
+* Fixed possible infinite loop bug when a corrupt map exists in the map downloads. (lafayette)
+
 * Increase scroll speed when using arrow keys. Holding down control speeds up arrow key scroll. (lafayette)
 
 * Placing cursor next to the very edge of the map increases scroll speed. (lafayette)
