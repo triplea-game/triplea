@@ -15,7 +15,8 @@ public class InvalidFieldNameExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  private String attribute; // should have been prefixed with "m_". Should cause test to fail.
+  // should have been prefixed with "m_". Should cause test to fail.
+  private String attribute;
 
   public String getAttribute() {
     return attribute;

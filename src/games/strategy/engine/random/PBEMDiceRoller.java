@@ -180,7 +180,8 @@ class HttpDiceRollerDialog extends JDialog {
     getContentPane().add(new JScrollPane(m_text));
     m_text.setEditable(false);
     setSize(400, 300);
-    games.strategy.ui.Util.center(this); // games.strategy.ui.Util
+    // games.strategy.ui.Util
+    games.strategy.ui.Util.center(this);
   }
 
   /**

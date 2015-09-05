@@ -40,23 +40,19 @@ public class TimerClock<T> extends Observable {
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicBoolean runnableFinishedSuccessfully = new AtomicBoolean(false);
     final AtomicBoolean runnableHadRuntimeException = new AtomicBoolean(false);
-    final AtomicReference<RuntimeException> exception = new AtomicReference<RuntimeException>(); // we want to catch exceptions and
-                                                                                                 // propagate them back up
+    // we want to catch exceptions and propagate them back up
+    final AtomicReference<RuntimeException> exception = new AtomicReference<RuntimeException>();
     // start the task
     final Thread t = new Thread(new Runnable() {
       @Override
       public void run() {
         try {
-          // System.out.println("Starting: " + task.toString());
           task.run();
-          // System.out.println("Finished: " + task.toString());
           runnableFinishedSuccessfully.set(true);
           if (latch != null) {
             latch.countDown();
           }
         } catch (final RuntimeException e) {
-          // System.out.println("Task " + task.toString() + " threw exception: " + e.getMessage());
-          // e.printStackTrace();
           exception.set(e);
           runnableHadRuntimeException.set(true);
           if (latch != null) {
@@ -66,9 +62,10 @@ public class TimerClock<T> extends Observable {
       }
     });
     t.start();
-    // start the timer
+
     final long delay = delaySeconds * 1000;
-    final long period = 1000; // count every second
+    // count every second
+    final long period = 1000;
     final Timer timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
       int seconds = interruptAfterSecondsIfNotFinished;
@@ -79,7 +76,6 @@ public class TimerClock<T> extends Observable {
         TimerClock.this.setChanged();
         TimerClock.this.notifyObservers(new TimerClockNotification(seconds, false));
         // count down our timer
-        // System.out.println("Seconds left: " + seconds);
         if (seconds-- <= 0) {
           timer.cancel();
           if (latch != null) {
@@ -93,20 +89,20 @@ public class TimerClock<T> extends Observable {
       try {
         latch.await();
       } catch (final InterruptedException e) {
-        // System.out.println("TimerClock latch interrupted");
-        e.printStackTrace(); // if we are planning on interrupting this clock, we should change this
+        // if we are planning on interrupting this clock, we should change this
+        e.printStackTrace();
       }
     }
     // interrupt the task if it is not yet done
     boolean interrupted = false;
     timer.cancel();
     if (!runnableFinishedSuccessfully.get() && !runnableHadRuntimeException.get()) {
-      // System.out.println("Interrupting: " + task.toString());
       // notify listeners
       setChanged();
       notifyObservers(new TimerClockNotification(0, true));
       try {
-        Thread.sleep(1000); // wait a second to gracefully allow a remote player to receive the notice that they are out of time
+        // wait a second to gracefully allow a remote player to receive the notice that they are out of time
+        Thread.sleep(1000);
       } catch (final InterruptedException e1) {
         e1.printStackTrace();
       }
@@ -114,16 +110,16 @@ public class TimerClock<T> extends Observable {
       t.interrupt();
       try {
         t.join();
-        // System.out.println("Joined: " + task.toString());
       } catch (final InterruptedException e) {
-        e.printStackTrace(); // if we are planning on interrupting this clock, we should change this
+        // if we are planning on interrupting this clock, we should change this
+        e.printStackTrace();
       }
     }
     deleteObservers();
     if (exception.get() != null
         && !(interrupted && exceptionsToIgnoreOnInterrupt.contains(exception.get().getClass()))) {
-      // System.out.println("Throwing Exception: " + exception.get());
-      throw exception.get(); // throw the exception back up
+      // throw the exception back up
+      throw exception.get();
     }
     // return default value if one is specified
     return defaultReturnValue;

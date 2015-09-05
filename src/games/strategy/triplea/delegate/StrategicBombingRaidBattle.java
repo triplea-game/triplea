@@ -45,8 +45,8 @@ import games.strategy.util.Match;
 public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings {
   private static final long serialVersionUID = 8490171037606078890L;
   private final static String RAID = "Strategic bombing raid";
-  protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other
-                                                                                               // targets. does not include aa.
+  // these would be the factories or other targets. does not include aa.
+  protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>();
   protected final ExecutionStack m_stack = new ExecutionStack();
   protected List<String> m_steps;
   protected List<Unit> m_defendingAA;
@@ -187,7 +187,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
     m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
-    Collections.reverse(m_AAtypes); // reverse since stacks are in reverse order
+    // reverse since stacks are in reverse order
+    Collections.reverse(m_AAtypes);
     final boolean hasAA = m_defendingAA.size() > 0;
     m_steps = new ArrayList<String>();
     if (hasAA) {
@@ -571,8 +572,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             m_attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against "
                 + m_defender.getName() + " in " + m_battleSite.getName();
         final ITripleaPlayer attacker = (ITripleaPlayer) bridge.getRemotePlayer(m_attacker);
-        m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides()); // does not take into account bombers with
-                                                                                                  // dice sides higher than getDiceSides
+        // does not take into account bombers with dice sides higher than getDiceSides
+        m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides());
       } else {
         final boolean doNotUseBombingBonus =
             !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
@@ -772,7 +773,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           getDisplay(bridge).bombingResults(m_battleID, dice, currentUnitCost);
           if (currentUnitCost > 0) {
             // play a sound
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
+            // play sound
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName());
           }
           // Record production lost
           DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, currentUnitCost);
@@ -797,7 +799,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         getDisplay(bridge).bombingResults(m_battleID, dice, cost);
         if (cost > 0) {
           // play a sound
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
+          // play sound
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName());
         }
         // get resources
         final Resource PUs = m_data.getResourceList().getResource(Constants.PUS);

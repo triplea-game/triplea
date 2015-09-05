@@ -108,8 +108,9 @@ public class ClipPlayer {
   private final HashMap<String, List<URL>> m_sounds = new HashMap<String, List<URL>>();
   private final ResourceLoader m_resourceLoader;
   private final Set<String> m_subFolders = new HashSet<String>();
-  private final ClipCache m_clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
-                                                           // so we'll be safe and pick 24
+  // MacOS and Linux can only handle 30 or 32 sound files being open at same time,
+  // so we'll be safe and pick 24
+  private final ClipCache m_clipCache = new ClipCache(24);
   // standard settings
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
@@ -152,7 +153,8 @@ public class ClipPlayer {
      * m_mutedClips.add(SoundPath.CLIP_CHAT_SLAP);
      */
     for (final String sound : choices) {
-      final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false); // true until we get better sounds
+      // true until we get better sounds
+      final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false);
       if (muted) {
         m_mutedClips.add(sound);
       }
@@ -348,8 +350,9 @@ public class ClipPlayer {
     if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty()) {
       return null;
     }
-    Collections.shuffle(availableSounds); // we want to pick a random sound from this folder, as users don't like hearing the same ones over
-                                          // and over again
+    // we want to pick a random sound from this folder, as users don't like hearing the same ones over
+    // and over again
+    Collections.shuffle(availableSounds);
     final URL clipFile = availableSounds.get(0);
     return m_clipCache.get(clipFile);
   }
@@ -447,8 +450,9 @@ public class ClipPlayer {
           try {
             String decoded;
             try {
-              decoded = URLDecoder.decode(zipFilePath, "UTF-8"); // the file path may have spaces, which in a URL are equal to %20, but if
-                                                                 // we make a file using that it will fail, so we need to decode
+              // the file path may have spaces, which in a URL are equal to %20, but if
+              // we make a file using that it will fail, so we need to decode
+              decoded = URLDecoder.decode(zipFilePath, "UTF-8");
             } catch (final UnsupportedEncodingException uee) {
               decoded = zipFilePath.replaceAll("%20", " ");
             }
@@ -468,7 +472,6 @@ public class ClipPlayer {
                       if (zipSoundURL == null) {
                         continue;
                       }
-                      // System.out.println("Zipped Sound URL: " + zipSoundURL);
                       if (testClipSuccessful(zipSoundURL)) {
                         availableSounds.add(zipSoundURL);
                       }

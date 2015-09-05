@@ -41,46 +41,38 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private int m_vps = 0;
-  private int m_captureVps = 0; // need to store some data during a turn
-  private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
-  private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
+  // need to store some data during a turn
+  private int m_captureVps = 0;
+  // number of capitals needed before we lose all our money
+  private int m_retainCapitalNumber = 1;
+  // number of capitals needed before we lose ability to gain money and produce units
+  private int m_retainCapitalProduceNumber = 1;
   private ArrayList<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
   private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
-  private ArrayList<PlayerID> m_shareTechnology = new ArrayList<PlayerID>(); // gives any technology researched to this player automatically
-  private ArrayList<PlayerID> m_helpPayTechCost = new ArrayList<PlayerID>(); // allows these players to help pay for technology
-  private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
-  private boolean m_immuneToBlockade = false; // are we immune to being blockaded?
-  private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and
-                                                                                      // at what attack power
-  private HashSet<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
+  // gives any technology researched to this player automatically
+  private ArrayList<PlayerID> m_shareTechnology = new ArrayList<PlayerID>();
+  // allows these players to help pay for technology
+  private ArrayList<PlayerID> m_helpPayTechCost = new ArrayList<PlayerID>();
+  // do we lose our money and have it disappear or is that money captured?
+  private boolean m_destroysPUs = false;
+  // are we immune to being blockaded?
+  private boolean m_immuneToBlockade = false;
+  // what resources can be used for suicide attacks, and
+  private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>();
+  // at what attack power
+  // what can be hit by suicide attacks
+  private HashSet<UnitType> m_suicideAttackTargets = null;
+  // placement limits on a flexible per player basis
   private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit =
-      new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // placement
-                                                                 // limits
-                                                                 // on
-                                                                 // a
-                                                                 // flexible
-                                                                 // per
-                                                                 // player
-                                                                 // basis
+      new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+
+  // movement limits on a flexible per player basis
   private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit =
-      new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // movement
-                                                                 // limits
-                                                                 // on
-                                                                 // a
-                                                                 // flexible
-                                                                 // per
-                                                                 // player
-                                                                 // basis
+      new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+
+  // attacking limits on a flexible per player basis
   private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit =
-      new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // attacking
-                                                                 // number
-                                                                 // limits
-                                                                 // on
-                                                                 // a
-                                                                 // flexible
-                                                                 // per
-                                                                 // player
-                                                                 // basis
+      new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
 
   /** Creates new PlayerAttachment */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {

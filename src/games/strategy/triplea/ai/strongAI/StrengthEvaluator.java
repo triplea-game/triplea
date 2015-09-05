@@ -55,7 +55,8 @@ public class StrengthEvaluator {
     float inRangeStrength = 0.0F, thisStrength = 0.0F;
     float inRangeAirStrength = 0.0F, thisAirStrength = 0.0F;
     if (!ourTerr.isWater() && sea) {
-      r = 3; // if we have a land terr and looking at sea...look 3 out rather than 2
+      // if we have a land terr and looking at sea...look 3 out rather than 2
+      r = 3;
     }
     final List<Territory> nearNeighbors = new ArrayList<Territory>();
     final Set<Territory> nN = data.getMap().getNeighbors(ourTerr, r);

@@ -35,11 +35,8 @@ public class NonFightingBattle extends AbstractBattle {
   private static final long serialVersionUID = -1699534010648145123L;
   private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units
-                                                                                                                  // (stores a collection of
-                                                                                                                  // who is attacking from
-                                                                                                                  // where, needed for
-                                                                                                                  // undoing moves)
+  // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
+  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>();
 
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {

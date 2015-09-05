@@ -306,7 +306,8 @@ public class LogWindow extends javax.swing.JDialog {
         JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all Dynamix AI settings?",
             "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
     if (result == JOptionPane.OK_OPTION) {
-      final LogSettings defaultSettings = new LogSettings(); // Default settings are already contained in a new DSettings instance
+      // Default settings are already contained in a new DSettings instance
+      final LogSettings defaultSettings = new LogSettings();
       loadSettings(defaultSettings);
       JOptionPane.showMessageDialog(rootPane,
           "Default settings restored.\r\n\r\n(If you don't want to keep these default settings, just hit cancel)",
@@ -441,7 +442,8 @@ public class LogWindow extends javax.swing.JDialog {
       if (LogSettings.loadSettings().EnableAILogging) {
         maxHistoryRounds = LogSettings.loadSettings().LimitLogHistoryTo;
       } else {
-        maxHistoryRounds = 1; // If we're not logging, trim to 1
+        // If we're not logging, trim to 1
+        maxHistoryRounds = 1;
       }
       try {
         final Runnable runner = new Runnable() {

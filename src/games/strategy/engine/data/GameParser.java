@@ -56,7 +56,6 @@ public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private GameData data;
   private final Collection<SAXParseException> errorsSAX = new ArrayList<SAXParseException>();
-  // public static final String OPTION_SEPARATOR = "<>";
   private static HashMap<String, String> newClassesForOldNames;
 
   public GameParser() {}
@@ -89,11 +88,13 @@ public class GameParser {
     final Element root = doc.getDocumentElement();
     data = new GameData();
     // mandatory fields
-    parseInfo(getSingleChild("info", root)); // get the name of the map
+    // get the name of the map
+    parseInfo(getSingleChild("info", root));
     if (gameName != null) {
       gameName.set(data.getGameName());
     }
-    parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true)); // test minimum engine version FIRST
+    // test minimum engine version FIRST
+    parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
     parseGameLoader(getSingleChild("loader", root));
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and see if we have any
     // SAX errors we need to show
@@ -154,10 +155,11 @@ public class GameParser {
       parseInitialization(initialization);
     }
     // set & override default relationships
-    data.getRelationshipTracker().setNullPlayerRelations(); // sets the relationship between all players and the NullPlayer to NullRelation
-                                                            // (with archeType War)
-    data.getRelationshipTracker().setSelfRelations(); // sets the relationship for all players with themselfs to the SelfRelation (with
-                                                      // archeType Allied)
+    // sets the relationship between all players and the NullPlayer to NullRelation
+    // (with archeType War)
+    data.getRelationshipTracker().setNullPlayerRelations();
+    // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
+    data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game options/properties)
     if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
       checkThatAllUnitsHaveAttachments(data);
@@ -842,20 +844,26 @@ public class GameParser {
       final RelationshipTypeList relationshipTypeList = data.getRelationshipTypeList();
       // iterate through all players to get known allies and enemies
       for (final PlayerID currentPlayer : players) {
-        final HashSet<PlayerID> enemies = new HashSet<PlayerID>(players); // start with all players as enemies
-        final HashSet<PlayerID> allies = new HashSet<PlayerID>(); // start with no players as allies
+        // start with all players as enemies
+        final HashSet<PlayerID> enemies = new HashSet<PlayerID>(players);
+        // start with no players as allies
+        final HashSet<PlayerID> allies = new HashSet<PlayerID>();
         // iterate through all alliances the player is in
         if (allianceTracker.getAlliancesMap().get(currentPlayer) != null) {
           for (final String alliance : allianceTracker.getAlliancesMap().get(currentPlayer)) {
             // iterate through the members of the alliances
             for (final PlayerID alliedPlayer : allianceTracker.getPlayersInAlliance(alliance)) {
-              allies.add(alliedPlayer); // add each allianceMember to the alliesList
-              enemies.remove(alliedPlayer); // remove each allianceMember from the enemiesList
+              // add each allianceMember to the alliesList
+              allies.add(alliedPlayer);
+              // remove each allianceMember from the enemiesList
+              enemies.remove(alliedPlayer);
             }
           }
         }
-        enemies.remove(currentPlayer); // remove self from enemieslist (in case of free-for-all)
-        allies.remove(currentPlayer); // remove self from allieslist (in case you are a member of an alliance)
+        // remove self from enemieslist (in case of free-for-all)
+        enemies.remove(currentPlayer);
+        // remove self from allieslist (in case you are a member of an alliance)
+        allies.remove(currentPlayer);
         // At this point enemies and allies should be set for this player.
         for (final PlayerID alliedPLayer : allies) {
           relationshipTracker.setRelationship(currentPlayer, alliedPLayer,

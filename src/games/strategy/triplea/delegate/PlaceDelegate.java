@@ -22,7 +22,8 @@ public class PlaceDelegate extends AbstractPlaceDelegate {
    */
   @Override
   protected int getProduction(final Territory territory) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory); // Can be null!
+    // Can be null!
+    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta != null) {
       return ta.getProduction();
     }

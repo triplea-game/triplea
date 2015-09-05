@@ -183,8 +183,10 @@ public class CountUpAndDownLatch implements Serializable {
  * waitIfZeroSync = new Sync();
  * }
  ** Constructs a {@link CountUpAndDownLatch} initialized with the given count.
+ *
  * @param count
  * the number of times {@link #countDown} must be invoked before threads can pass through {@link #await}
+ *
  * @throws IllegalArgumentException
  * if {@code count} is negative
  * public CountUpAndDownLatch(final int count) {
@@ -203,30 +205,43 @@ public class CountUpAndDownLatch implements Serializable {
  * }
  * }
  ** If our state is already at zero, we will wait until it becomes positive again before counting down.
+ *
  * @see CountDownLatch#countDown()
+ *
  * @see CountDownLatch#await()
+ *
  * @param countDownIfInterrupted
  * if true, we will countDown after we are interrupted, before we throw the interruption up.
+ *
  * @throws InterruptedException
  * public void countDownOrWaitIfZero(final boolean countDownIfInterrupted) throws InterruptedException {
  * countDownOrWaitIfZero(countDownIfInterrupted, 0L, TimeUnit.MILLISECONDS);
  * }
  ** If our state is already at zero, we will wait until it becomes positive again before counting down.
+ *
  * @see CountDownLatch#countDown()
+ *
  * @see CountDownLatch#await(long,TimeUnit)
+ *
  * @param countDownIfInterrupted
  * if true, we will countDown after we are interrupted, before we throw the interruption up.
+ *
  * @param timeout
  * length of time to wait for the state to become positive
+ *
  * @param unit
  * TimeUnit
+ *
  * @return true if we waited successfully, false if interrupted
+ *
  * @throws InterruptedException
  * public boolean countDownOrWaitIfZero(final boolean countDownIfInterrupted, final long timeout, final TimeUnit unit)
  * throws InterruptedException {
  * return applyDeltaOrWaitIfZero(-1, countDownIfInterrupted, timeout, unit);
  * }
- ** @see CountDownLatch#countDown()
+ **
+ * @see CountDownLatch#countDown()
+ *
  * @param delta
  * the amount to increment (or if negative, decrement countDown)
  * public void applyDelta(final int delta) {
@@ -240,28 +255,41 @@ public class CountUpAndDownLatch implements Serializable {
  * }
  * }
  ** If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
+ *
  * @see CountDownLatch#countDown()
+ *
  * @see CountDownLatch#await()
+ *
  * @param delta
  * the amount to increment (or if negative, decrement countDown)
+ *
  * @param applyDeltaIfInterrupted
  * if true, we will apply the delta after we are interrupted, before we throw the interruption up.
+ *
  * @throws InterruptedException
  * public void applyDeltaOrWaitIfZero(final int delta, final boolean applyDeltaIfInterrupted) throws InterruptedException {
  * applyDeltaOrWaitIfZero(delta, applyDeltaIfInterrupted, 0L, TimeUnit.MILLISECONDS);
  * }
  ** If delta is negative, and our state is already at zero, we will wait until it becomes positive again before counting down.
+ *
  * @see CountDownLatch#countDown()
+ *
  * @see CountDownLatch#await(long,TimeUnit)
+ *
  * @param delta
  * the amount to increment (or if negative, decrement countDown)
+ *
  * @param applyDeltaIfInterrupted
  * if true, we will apply the delta after we are interrupted, before we throw the interruption up.
+ *
  * @param timeout
  * length of time to wait for the state to become positive
+ *
  * @param unit
  * TimeUnit
+ *
  * @return true if we waited successfully, false if interrupted
+ *
  * @throws InterruptedException
  * public boolean applyDeltaOrWaitIfZero(final int delta, final boolean applyDeltaIfInterrupted, final long timeout, final TimeUnit unit)
  * throws InterruptedException {
@@ -306,11 +334,13 @@ public class CountUpAndDownLatch implements Serializable {
  * }
  * }
  ** If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
+ *
  * @see CountDownLatch#await()
  * public void awaitOrWaitIfZeroToStartAwaiting() throws InterruptedException {
  * awaitOrWaitIfZeroToStartAwaiting(0, 0, TimeUnit.MILLISECONDS);
  * }
  ** If the current latch is at zero, we will wait until it is positive before we begin awaiting the latch.
+ *
  * @see CountDownLatch#await(long,TimeUnit)
  * public boolean awaitOrWaitIfZeroToStartAwaiting(final long timeoutToWaitOnceAwaiting, final long timeoutToWaitIfZeroToStartAwaiting,
  * final TimeUnit unit) throws InterruptedException {

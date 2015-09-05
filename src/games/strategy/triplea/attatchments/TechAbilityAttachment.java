@@ -75,11 +75,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> m_airAttackBonus = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_airDefenseBonus = new IntegerMap<UnitType>();
   private IntegerMap<UnitType> m_productionBonus = new IntegerMap<UnitType>();
-  private int m_minimumTerritoryValueForProductionBonus = -1; // -1 means not set
-  private int m_repairDiscount = -1; // -1 means not set
-  private int m_warBondDiceSides = -1; // -1 means not set
+  // -1 means not set
+  private int m_minimumTerritoryValueForProductionBonus = -1;
+  // -1 means not set
+  private int m_repairDiscount = -1;
+  // -1 means not set
+  private int m_warBondDiceSides = -1;
   private int m_warBondDiceNumber = 0;
-  // private int m_rocketDiceSides = -1; // -1 means not set // not needed because this is controlled in the unit attachment with
+  // -1 means not set // not needed because this is controlled in the unit attachment with
+  // private int m_rocketDiceSides = -1;
   // bombingBonus and bombingMaxDieSides
   private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<UnitType>();
   private int m_rocketDistance = 0;
@@ -1283,7 +1287,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
           for (final UnitType factory : allFactories) {
             taa.setProductionBonus("2:" + factory.getName());
             taa.setMinimumTerritoryValueForProductionBonus("3");
-            taa.setRepairDiscount("50"); // means a 50% discount, which is half price
+            // means a 50% discount, which is half price
+            taa.setRepairDiscount("50");
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_WAR_BONDS)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
@@ -1318,15 +1323,16 @@ public class TechAbilityAttachment extends DefaultAttachment {
           final boolean heavyBombersLHTR = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
           for (final UnitType bomber : allBombers) {
             // TODO: The bomber dice rolls get set when the xml is parsed.
+            // we subtract the base rolls to get the bonus
             final int heavyBomberDiceRollsBonus =
-                heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID); // we subtract the base rolls
-                                                                                                               // to get the bonus
+                heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID);
             taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
             if (heavyBombersLHTR) {
               // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this does not get changed.
               // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on, in the xml.)
               taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
-              taa.setBombingBonus("1:" + bomber.getName()); // LHTR adds 1 to base roll
+              // LHTR adds 1 to base roll
+              taa.setBombingBonus("1:" + bomber.getName());
             }
           }
         }

@@ -131,7 +131,7 @@ public abstract class AbstractDelegate implements IDelegate {
    * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote:
    * <p>
    * if (player.isNull()) {
-   *    return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+   * return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
    * }
    * return bridge.getRemotePlayer(player);
    * </p>
@@ -147,6 +147,7 @@ public abstract class AbstractDelegate implements IDelegate {
  * Serializable superState;
  * // add other variables here:
  * }
+ *
  * @Override
  * public Serializable saveState()
  * {
@@ -155,6 +156,7 @@ public abstract class AbstractDelegate implements IDelegate {
  * // add other variables to state here:
  * return state;
  * }
+ *
  * @Override
  * public void loadState(Serializable state)
  * {

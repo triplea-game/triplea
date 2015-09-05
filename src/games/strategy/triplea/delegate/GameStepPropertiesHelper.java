@@ -39,9 +39,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);// parse
-                                                                                                         // allowed
-                                                                                                         // players
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);
       if (allowedPlayers != null) {
         allowedIDs = new HashSet<PlayerID>();
         for (final String p : allowedPlayers.split(":")) {
@@ -252,9 +250,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_combinedTurns);// parse
-                                                                                                    // allowed
-                                                                                                    // players
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_combinedTurns);
       if (player != null) {
         allowedIDs.add(player);
       }
@@ -346,9 +342,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairPlayers);// parse
-                                                                                                    // allowed
-                                                                                                    // players
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairPlayers);
       if (player != null) {
         allowedIDs.add(player);
       }

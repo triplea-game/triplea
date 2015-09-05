@@ -876,7 +876,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
       int maxUnits = (totPU - 1) / minimumUnitPrice;
       int currentProduction = 0;
       int maxProduction = 0;
-      Collections.shuffle(rfactories); // we should sort this
+      // we should sort this
+      Collections.shuffle(rfactories);
       for (final Territory fixTerr : rfactories) {
         if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
             .match(fixTerr)) {
@@ -941,8 +942,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
             purchaseDelegate.purchaseRepair(repair);
             repair.clear();
             repairMap.clear();
-            maxUnits = (leftToSpend - 1) / minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate
-                                                             // everything.
+            // ideally we would adjust this after each single PU spent, then re-evaluate
+            // everything.
+            maxUnits = (leftToSpend - 1) / minimumUnitPrice;
           }
         }
       }
@@ -987,8 +989,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer {
               purchaseDelegate.purchaseRepair(repair);
               repair.clear();
               repairMap.clear();
-              maxUnits = (leftToSpend - 1) / minimumUnitPrice; // ideally we would adjust this after each single PU spent, then re-evaluate
-                                                               // everything.
+              // ideally we would adjust this after each single PU spent, then re-evaluate
+              // everything.
+              maxUnits = (leftToSpend - 1) / minimumUnitPrice;
             }
           }
         }

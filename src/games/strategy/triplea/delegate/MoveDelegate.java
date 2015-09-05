@@ -46,8 +46,9 @@ import games.strategy.util.Util;
  */
 public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate {
   public static String CLEANING_UP_DURING_MOVEMENT_PHASE = "Cleaning up during movement phase";
-  private boolean m_needToInitialize = true; // needToInitialize means we only do certain things once, so that if a game is saved then
-                                             // loaded, they aren't done again
+  // needToInitialize means we only do certain things once, so that if a game is saved then
+  // loaded, they aren't done again
+  private boolean m_needToInitialize = true;
   private boolean m_needToDoRockets = true;
   private IntegerMap<Territory> m_PUsLost = new IntegerMap<Territory>();
 
@@ -216,7 +217,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   private Serializable saveState(final boolean saveUndo) {
     final MoveExtendedDelegateState state = new MoveExtendedDelegateState();
     state.superState = super.saveState();
-    // add other variables to state here:
     state.m_needToInitialize = m_needToInitialize;
     state.m_needToDoRockets = m_needToDoRockets;
     state.m_PUsLost = m_PUsLost;
@@ -227,7 +227,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   public void loadState(final Serializable state) {
     final MoveExtendedDelegateState s = (MoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_needToInitialize = s.m_needToInitialize;
     m_needToDoRockets = s.m_needToDoRockets;
     m_PUsLost = s.m_PUsLost;
@@ -237,10 +236,9 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   public boolean delegateCurrentlyRequiresUserInput() {
     final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
     moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_player));
+    // right now, land units on transports have movement taken away when they their transport moves
     moveableUnitOwnedByMe.add(new CompositeMatchOr<Unit>(Matches.unitHasMovementLeft,
-        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsBeingTransported())));// right now, land units on transports have
-                                                                                            // movement taken away when they their transport
-                                                                                            // moves
+        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.unitIsBeingTransported())));
     // if not non combat, can not move aa units
     if (GameStepPropertiesHelper.isCombatMove(getData(), false)) {
       moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
@@ -265,8 +263,9 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
   }
 
   private void resetUnitStateAndDelegateState() {
-    m_PUsLost.clear(); // while not a 'unit state', this is fine here for now. since we only have one instance of this delegate, as long as
-                       // it gets cleared once per player's turn block, we are fine.
+    // while not a 'unit state', this is fine here for now. since we only have one instance of this delegate, as long as
+    // it gets cleared once per player's turn block, we are fine.
+    m_PUsLost.clear();
     final Change change = getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
       // if no non-combat occurred, we may have cleanup left from combat
@@ -405,9 +404,11 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       final Set<Unit> damaged;
       if (!games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
         if (repairOnlyOwn) {
-          damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnitsOwned));// we only repair ours
+          // we only repair ours
+          damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnitsOwned));
         } else {
-          damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnits));// we repair everyone's
+          // we repair everyone's
+          damaged = new HashSet<Unit>(current.getUnits().getMatches(damagedUnits));
         }
       } else {
         damaged = new HashSet<Unit>(current.getUnits().getMatches(new CompositeMatchAnd<Unit>(damagedUnitsOwned,
@@ -809,7 +810,8 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate 
       public int compare(final Unit o1, final Unit o2) {
         final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
         final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
-        return cost2 - cost1; // descending transportCost
+        // descending transportCost
+        return cost2 - cost1;
       }
     };
     Collections.sort((List<Unit>) units, c);

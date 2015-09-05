@@ -1,5 +1,11 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.logging.Level;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -14,12 +20,6 @@ import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Pro retreat AI.
@@ -65,9 +65,8 @@ public class ProRetreatAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
 
     // Calculate battle results
-    final ProBattleResultData result =
-        battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders,
-            new HashSet<Unit>(), isAttacker);
+    final ProBattleResultData result = battleUtils.calculateBattleResults(player, battleTerritory, attackers, defenders,
+        new HashSet<Unit>(), isAttacker);
 
     // Determine if it has a factory
     int isFactory = 0;

@@ -25,18 +25,28 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // conditions at all.
   protected String m_movementRestrictionType = null;
   protected String[] m_movementRestrictionTerritories = null;
-  protected boolean m_placementAnyTerritory = false; // allows placing units in any owned land
-  protected boolean m_placementAnySeaZone = false; // allows placing units in any sea by owned land
-  protected boolean m_placementCapturedTerritory = false; // allows placing units in a captured territory
-  protected boolean m_unlimitedProduction = false; // turns of the warning to the player when they produce more than they can place
-  protected boolean m_placementInCapitalRestricted = false; // can only place units in the capital
-  protected boolean m_dominatingFirstRoundAttack = false; // enemy units will defend at 1
-  protected boolean m_negateDominatingFirstRoundAttack = false; // negates m_dominatingFirstRoundAttack
-  protected IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>(); // automatically produces 1 unit of a certain
-                                                                                           // type per every X territories owned
-  protected int m_placementPerTerritory = -1; // stops the user from placing units in any territory that already contains more than this
-                                              // number of owned units
-  protected int m_maxPlacePerTerritory = -1; // maximum number of units that can be placed in each territory.
+  // allows placing units in any owned land
+  protected boolean m_placementAnyTerritory = false;
+  // allows placing units in any sea by owned land
+  protected boolean m_placementAnySeaZone = false;
+  // allows placing units in a captured territory
+  protected boolean m_placementCapturedTerritory = false;
+  // turns of the warning to the player when they produce more than they can place
+  protected boolean m_unlimitedProduction = false;
+  // can only place units in the capital
+  protected boolean m_placementInCapitalRestricted = false;
+  // enemy units will defend at 1
+  protected boolean m_dominatingFirstRoundAttack = false;
+  // negates m_dominatingFirstRoundAttack
+  protected boolean m_negateDominatingFirstRoundAttack = false;
+  // automatically produces 1 unit of a certain
+  protected IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>();
+  // type per every X territories owned
+  // stops the user from placing units in any territory that already contains more than this
+  protected int m_placementPerTerritory = -1;
+  // number of owned units
+  // maximum number of units that can be placed in each territory.
+  protected int m_maxPlacePerTerritory = -1;
 
   // It would wreck most map xmls to move the rulesAttatchment's to another class, so don't move them out of here please!
   // However, any new rules attachments that are not conditions, should be put into the "PlayerAttachment" class.

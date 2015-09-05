@@ -137,26 +137,3 @@ class BaseDelegateState implements Serializable {
   public boolean m_startBaseStepsFinished = false;
   public boolean m_endBaseStepsFinished = false;
 }
-/*
- * All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
- * class ExtendedDelegateState implements Serializable
- * {
- * Serializable superState;
- * // add other variables here:
- * }
- * @Override
- * public Serializable saveState()
- * {
- * ExtendedDelegateState state = new ExtendedDelegateState();
- * state.superState = super.saveState();
- * // add other variables to state here:
- * return state;
- * }
- * @Override
- * public void loadState(Serializable state)
- * {
- * ExtendedDelegateState s = (ExtendedDelegateState) state;
- * super.loadState(s.superState);
- * // load other variables from state here:
- * }
- */

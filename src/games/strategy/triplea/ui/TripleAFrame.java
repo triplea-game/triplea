@@ -467,7 +467,8 @@ public class TripleAFrame extends MainGameFrame {
     this.setVisible(false);
     TripleAFrame.this.dispose();
     if (GameRunner.isMac()) {
-      MacWrapper.unregisterShutdownHandler();// this frame should not handle shutdowns anymore
+      // this frame should not handle shutdowns anymore
+      MacWrapper.unregisterShutdownHandler();
     }
     m_messageAndDialogThreadPool.shutDown();
     m_uiContext.shutDown();
@@ -1068,7 +1069,8 @@ public class TripleAFrame extends MainGameFrame {
             showGame();
           }
           if (m_tabsPanel.indexOfTab("Actions") == -1) {
-            m_tabsPanel.insertTab("Actions", null, m_actionButtons, null, 0); // add actions tab
+            // add actions tab
+            m_tabsPanel.insertTab("Actions", null, m_actionButtons, null, 0);
           }
           m_tabsPanel.setSelectedIndex(0);
           latch1.countDown();
@@ -1090,7 +1092,8 @@ public class TripleAFrame extends MainGameFrame {
         @Override
         public void run() {
           if (m_tabsPanel != null) {
-            m_tabsPanel.remove(index); // remove actions tab
+            // remove actions tab
+            m_tabsPanel.remove(index);
           }
           latch2.countDown();
         }
@@ -2225,7 +2228,8 @@ public class TripleAFrame extends MainGameFrame {
         // initialize table/header dimensions
         final int tableWidth = table.getSize().width;
         final int tableHeight = table.getSize().height;
-        final int hdrWidth = tableWidth; // use tableWidth not hdrWidth!
+        // use tableWidth not hdrWidth!
+        final int hdrWidth = tableWidth;
         final int hdrHeight = table.getTableHeader().getSize().height;
         // create image for capturing table header
         final BufferedImage tblHdrImage = Util.createImage(hdrWidth, hdrHeight, false);
@@ -2584,7 +2588,8 @@ public class TripleAFrame extends MainGameFrame {
     final Image small = m_uiContext.getMapImage().getSmallMapImage();
     m_smallView.changeImage(small);
     m_mapPanel.changeSmallMapOffscreenMap();
-    m_mapPanel.resetMap(); // redraw territories
+    // redraw territories
+    m_mapPanel.resetMap();
   }
 
   @Override

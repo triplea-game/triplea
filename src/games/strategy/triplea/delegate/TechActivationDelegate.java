@@ -123,7 +123,6 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
     state.superState = super.saveState();
-    // add other variables to state here:
     state.m_needToInitialize = m_needToInitialize;
     return state;
   }
@@ -132,7 +131,6 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_needToInitialize = s.m_needToInitialize;
   }
 
@@ -165,6 +163,5 @@ public class TechActivationDelegate extends BaseTripleADelegate {
 class TechActivationExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = 1742776261442260882L;
   Serializable superState;
-  // add other variables here:
   public boolean m_needToInitialize;
 }

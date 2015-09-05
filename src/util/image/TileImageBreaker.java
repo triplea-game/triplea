@@ -79,7 +79,8 @@ public class TileImageBreaker {
    *            throws
    */
   public void createMaps() throws IOException {
-    final Image map = loadImage(); // ask user to input image location
+    // ask user to input image location
+    final Image map = loadImage();
     if (map == null) {
       System.out.println("You need to select a map image for this to work");
       System.out.println("Shutting down");

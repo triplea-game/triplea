@@ -392,10 +392,6 @@ class RelationshipChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    /*
-     * if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
-     * throw new IllegalStateException("RelationshipChange may not have null arguments");
-     */
     data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1),
         data.getPlayerList().getPlayerID(m_player2), data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
     // now redraw territories in case of new hostility
@@ -411,10 +407,6 @@ class RelationshipChange extends Change {
 
   @Override
   public String toString() {
-    /*
-     * if (m_player1 == null || m_player2 == null || m_OldRelation == null || m_NewRelation == null)
-     * throw new IllegalStateException("RelationshipChange may not have null arguments");
-     */
     return "Add relation change. " + m_player1 + " and " + m_player2 + " change from " + m_OldRelation + " to "
         + m_NewRelation;
   }
@@ -449,22 +441,12 @@ class AddUnits extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    /*
-     * if (m_name == null || m_type == null || m_units == null)
-     * throw new IllegalStateException("AddUnits change may not have null arguments: m_name: " + m_name + ", m_type: " + m_type +
-     * ", m_units: " + m_units);
-     */
     final UnitHolder holder = data.getUnitHolder(m_name, m_type);
     holder.getUnits().addAllUnits(m_units);
   }
 
   @Override
   public String toString() {
-    /*
-     * if (m_name == null || m_type == null || m_units == null)
-     * throw new IllegalStateException("AddUnits change may not have null arguments: m_name: " + m_name + ", m_type: " + m_type +
-     * ", m_units: " + m_units);
-     */
     return "Add unit change.  Add to:" + m_name + " units:" + m_units;
   }
 }
@@ -608,10 +590,6 @@ class PlayerOwnerChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    /*
-     * if (m_location == null || m_old == null || m_new == null)
-     * throw new IllegalStateException("PlayerOwnerChange may not have null arguments");
-     */
     for (final GUID id : m_new.keySet()) {
       final Unit unit = data.getUnits().get(id);
       if (!m_old.get(id).equals(unit.getOwner().getName())) {
@@ -626,10 +604,6 @@ class PlayerOwnerChange extends Change {
 
   @Override
   public String toString() {
-    /*
-     * if (m_location == null || m_old == null || m_new == null)
-     * throw new IllegalStateException("PlayerOwnerChange may not have null arguments");
-     */
     return "Some units change owners in territory " + m_location;
   }
 }
@@ -663,10 +637,6 @@ class ChangeUnitProduction extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    /*
-     * if (m_location == null)
-     * throw new IllegalStateException("ChangeUnitProduction may not have null arguments");
-     */
     final TerritoryAttachment ta = TerritoryAttachment.get(m_location);
     ta.setUnitProduction(m_unitProduction);
     m_location.notifyChanged();
@@ -674,10 +644,6 @@ class ChangeUnitProduction extends Change {
 
   @Override
   public String toString() {
-    /*
-     * if (m_location == null)
-     * throw new IllegalStateException("ChangeUnitProduction may not have null arguments");
-     */
     return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
   }
 }
@@ -1242,22 +1208,25 @@ class AddBattleRecordsChange extends Change {
 
   AddBattleRecordsChange(final BattleRecords battleRecords, final GameData data) {
     m_round = data.getSequence().getRound();
-    m_recordsToAdd = new BattleRecords(battleRecords); // make a copy because this is only done once, and only externally from battle
-                                                       // tracker, and the source will be cleared (battle tracker clears out the records
-                                                       // each turn)
+    // make a copy because this is only done once, and only externally from battle
+    // tracker, and the source will be cleared (battle tracker clears out the records
+    // each turn)
+    m_recordsToAdd = new BattleRecords(battleRecords);
   }
 
   AddBattleRecordsChange(final BattleRecords battleRecords, final int round) {
     m_round = round;
-    m_recordsToAdd = battleRecords; // do not make a copy, this is only called from RemoveBattleRecordsChange, and we make a copy when we
-                                    // perform, so no need for another copy.
+    // do not make a copy, this is only called from RemoveBattleRecordsChange, and we make a copy when we
+    // perform, so no need for another copy.
+    m_recordsToAdd = battleRecords;
   }
 
   @Override
   protected void perform(final GameData data) {
     final Map<Integer, BattleRecords> currentRecords = data.getBattleRecordsList().getBattleRecordsMap();
-    BattleRecordsList.addRecords(currentRecords, m_round, new BattleRecords(m_recordsToAdd)); // make a copy because otherwise ours will be
-                                                                                              // cleared when we RemoveBattleRecordsChange
+    // make a copy because otherwise ours will be
+    // cleared when we RemoveBattleRecordsChange
+    BattleRecordsList.addRecords(currentRecords, m_round, new BattleRecords(m_recordsToAdd));
   }
 
   @Override
@@ -1284,15 +1253,16 @@ class RemoveBattleRecordsChange extends Change {
 
   RemoveBattleRecordsChange(final BattleRecords battleRecords, final int round) {
     m_round = round;
-    m_recordsToRemove = battleRecords; // do not make a copy, this is only called from AddBattleRecordsChange, and we make a copy when we
-                                       // perform, so no need for another copy.
+    // do not make a copy, this is only called from AddBattleRecordsChange, and we make a copy when we
+    // perform, so no need for another copy.
+    m_recordsToRemove = battleRecords;
   }
 
   @Override
   protected void perform(final GameData data) {
     final Map<Integer, BattleRecords> currentRecords = data.getBattleRecordsList().getBattleRecordsMap();
-    BattleRecordsList.removeRecords(currentRecords, m_round, new BattleRecords(m_recordsToRemove)); // make a copy else we will get a
-                                                                                                    // concurrent modification error
+    // make a copy else we will get a concurrent modification error
+    BattleRecordsList.removeRecords(currentRecords, m_round, new BattleRecords(m_recordsToRemove));
   }
 
   @Override

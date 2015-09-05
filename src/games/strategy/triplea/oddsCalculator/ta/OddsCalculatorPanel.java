@@ -51,6 +51,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -198,10 +199,12 @@ public class OddsCalculatorPanel extends JPanel {
   }
 
   public void shutdown() {
-    try { // use this if not using a static calc, so that we gc the calc and shutdown all threads.
-      m_calculator.shutdown(); // must be shutdown, as it has a thread pool per each instance.
+    try {
+      // use this if not using a static calc, so that we gc the calc and shutdown all threads.
+      // must be shutdown, as it has a thread pool per each instance.
+      m_calculator.shutdown();
     } catch (final Exception e) {
-      // ignore
+      ClientLogger.logQuietly(e);
     }
   }
 
@@ -484,7 +487,6 @@ public class OddsCalculatorPanel extends JPanel {
           });
         }
       }
-      // }, "Odds calc thread").start();
     }, "Odds calc thread");
     // Actually start thread.
     calcThread.start();
@@ -540,23 +542,6 @@ public class OddsCalculatorPanel extends JPanel {
     final boolean isLand = isLand();
     units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, 1, false, false, false));
     m_defendingUnitsPanel.init(getDefender(), units, isLand);
-    /*
-     * setWidgetActivation now does all this
-     * final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(false, isLand, m_data, false, true, true));
-     * m_defenderUnitsTotalNumber.setText("Units: " + mainCombatUnits.size());
-     * m_defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(mainCombatUnits, getDefender(),
-     * BattleCalculator.getCostsForTUV(getDefender(), m_data), m_data));
-     * final int defenseHP = BattleCalculator.getTotalHitpoints(mainCombatUnits);
-     * m_defenderUnitsTotalHitpoints.setText("HP: " + defenseHP);
-     * final boolean isAmphibiousBattle = isAmphibiousBattle();
-     * final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-     * final int defensePower = DiceRoll.getTotalPower(mainCombatUnits, true, getDefender(), m_location, territoryEffects, m_data,
-     * isAmphibiousBattle, new ArrayList<Unit>()); // defender is never amphibious
-     * m_defenderUnitsTotalPower.setText("Power: " + defensePower);
-     * m_defenderUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(defensePower, defenseHP,
-     * m_data.getDiceSides())
-     * + "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
-     */
   }
 
   private void updateAttacker(List<Unit> units) {
@@ -566,24 +551,6 @@ public class OddsCalculatorPanel extends JPanel {
     final boolean isLand = isLand();
     units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, 1, false, false, false));
     m_attackingUnitsPanel.init(getAttacker(), units, isLand);
-    /*
-     * setWidgetActivation now does all this
-     * final List<Unit> mainCombatUnits = Match.getMatches(units, Matches.UnitCanBeInBattle(true, isLand, m_data, false, true, true));
-     * m_attackerUnitsTotalNumber.setText("Units: " + mainCombatUnits.size());
-     * m_attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(mainCombatUnits, getAttacker(),
-     * BattleCalculator.getCostsForTUV(getAttacker(), m_data), m_data));
-     * final int attackHP = BattleCalculator.getTotalHitpoints(mainCombatUnits);
-     * m_attackerUnitsTotalHitpoints.setText("HP: " + attackHP);
-     * final boolean isAmphibiousBattle = isAmphibiousBattle();
-     * final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-     * final int attackPower = DiceRoll.getTotalPower(mainCombatUnits, false, getAttacker(), m_location, territoryEffects, m_data,
-     * isAmphibiousBattle,
-     * (isAmphibiousBattle ? mainCombatUnits : new ArrayList<Unit>()));
-     * m_attackerUnitsTotalPower.setText("Power: " + attackPower);
-     * m_attackerUnitsTotalPower.setToolTipText("<html>Meta Power: " + BattleCalculator.getNormalizedMetaPower(attackPower, attackHP,
-     * m_data.getDiceSides())
-     * + "<br /> (is equal to  Power  +  (2 * HitPoints * DiceSides / 6))</html>");
-     */
   }
 
   private boolean isLand() {
@@ -744,7 +711,8 @@ public class OddsCalculatorPanel extends JPanel {
     final JScrollPane resultsScroll = new JScrollPane(m_resultsPanel);
     resultsScroll.setBorder(BorderFactory.createEmptyBorder());
     final Dimension resultsScrollDimensions = resultsScroll.getPreferredSize();
-    resultsScrollDimensions.width += 22; // add some so that we don't have double scroll bars appear when only one is needed
+    // add some so that we don't have double scroll bars appear when only one is needed
+    resultsScrollDimensions.width += 22;
     resultsScroll.setPreferredSize(resultsScrollDimensions);
     main.add(resultsScroll, BorderLayout.EAST);
     final JPanel south = new JPanel();
@@ -776,7 +744,8 @@ public class OddsCalculatorPanel extends JPanel {
         m_territoryEffectsJList = new JList(effectNames);
         m_territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         m_territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
-        m_territoryEffectsJList.setVisibleRowCount(4); // equal to the amount of space left (number of remaining items on the right)
+        // equal to the amount of space left (number of remaining items on the right)
+        m_territoryEffectsJList.setVisibleRowCount(4);
         if (m_location != null) {
           final Collection<TerritoryEffect> currentEffects = TerritoryEffectHelper.getEffects(m_location);
           if (!currentEffects.isEmpty()) {
@@ -878,12 +847,13 @@ public class OddsCalculatorPanel extends JPanel {
       final int attackPower = DiceRoll.getTotalPowerAndRolls(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers,
           attackers, defenders, false, false, getAttacker(), m_data, m_location, territoryEffects, isAmphibiousBattle,
           (isAmphibiousBattle ? attackers : new ArrayList<Unit>())), m_data).getFirst();
+      // defender is never amphibious
       final int defensePower =
           DiceRoll
               .getTotalPowerAndRolls(
                   DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, defenders, attackers, true, false,
                       getDefender(), m_data, m_location, territoryEffects, isAmphibiousBattle, new ArrayList<Unit>()),
-              m_data).getFirst(); // defender is never amphibious
+              m_data).getFirst();
       m_attackerUnitsTotalPower.setText("Power: " + attackPower);
       m_defenderUnitsTotalPower.setText("Power: " + defensePower);
       m_attackerUnitsTotalPower.setToolTipText(
@@ -1137,10 +1107,8 @@ class UnitPanel extends JPanel {
         }
       }
       if (m_category.getDisabled() && Matches.UnitTypeCanBeDamaged.match(m_category.getType())) {
-        final int uDamage = Math.max(0, 1 + UnitAttachment.get(m_category.getType()).getMaxOperationalDamage()); // add 1 because it is the
-                                                                                                                 // max operational damage
-                                                                                                                 // and we want to disable
-                                                                                                                 // it
+        // add 1 because it is the max operational damage and we want to disable it
+        final int uDamage = Math.max(0, 1 + UnitAttachment.get(m_category.getType()).getMaxOperationalDamage());
         for (final Unit u : units) {
           ((TripleAUnit) u).setUnitDamage(uDamage);
         }

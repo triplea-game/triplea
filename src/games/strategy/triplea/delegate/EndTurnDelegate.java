@@ -157,7 +157,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     }
     final List<Territory> list = new ArrayList<Territory>(territories);
     final int random =
-        bridge.getRandom(list.size(), null, DiceType.ENGINE, "Random territory selection for creating units");// ZERO BASED
+        // ZERO BASED
+        bridge.getRandom(list.size(), null, DiceType.ENGINE, "Random territory selection for creating units");
     return list.get(random);
   }
 

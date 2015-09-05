@@ -67,14 +67,16 @@ public class LocalBeanCache {
         } finally {
           if (fin != null) {
             try {
-              fin.close();// close stream, or we can delete the file (on windows)
+              // close stream, or we can delete the file (on windows)
+              fin.close();
             } catch (final IOException e) {
               // ignore
             }
           }
           if (oin != null) {
             try {
-              oin.close();// close stream, or we can delete the file (on windows)
+              // close stream, or we can delete the file (on windows)
+              oin.close();
             } catch (final IOException e) {
               // ignore
             }

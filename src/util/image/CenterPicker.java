@@ -45,9 +45,12 @@ import games.strategy.util.PointFileReaderWriter;
 
 public class CenterPicker extends JFrame {
   private static final long serialVersionUID = -5633998810385136625L;
-  private Image m_image; // The map image will be stored here
-  private Map<String, Point> m_centers = new HashMap<String, Point>(); // hash map for center points
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // hash map for polygon points
+  // The map image will be stored here
+  private Image m_image;
+  // hash map for center points
+  private Map<String, Point> m_centers = new HashMap<String, Point>();
+  // hash map for polygon points
+  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
   private final JLabel m_location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -410,4 +413,4 @@ public class CenterPicker extends JFrame {
       }
     }
   }
-}// end class CenterPicker
+}

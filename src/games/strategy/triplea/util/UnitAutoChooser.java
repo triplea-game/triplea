@@ -645,7 +645,8 @@ class UnitAutoChooser {
       // handle stopping condition
       if (curIndex.intValue() == candidateCategoriesWithDependentsList.size()) {
         if (indexStack.empty()) {
-          break; // finished!
+          // finished!
+          break;
         }
         // System.out.println("Reached end of iteration; popping stack.");
         curIndex = indexStack.pop();

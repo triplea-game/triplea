@@ -42,8 +42,8 @@ public class EngineVersionProperties {
   private final String m_linkAlt;
   private final String m_changelogLink;
   private volatile boolean m_done = false;
-  // private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties"; // only for testing when
-  // sourceforge is down
+  // only for testing when sourceforge is down
+  // private static final String s_linkToTripleA = "http://www.tripleawarclub.org/lobby/latest_version.properties";
   private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
 
   private EngineVersionProperties(final URL url) {

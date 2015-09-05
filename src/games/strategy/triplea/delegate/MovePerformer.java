@@ -159,11 +159,11 @@ public class MovePerformer implements Serializable {
         presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
         final CompositeChange change = new CompositeChange();
         if (games.strategy.triplea.Properties.getUseFuelCost(data)) {
-          change.add(markFuelCostResourceChange(units, route, id, data /* , createdBattle */)); // markFuelCostResourceChange must be done
-                                                                                                // before we load/unload units
+          // markFuelCostResourceChange must be done
+          // before we load/unload units
+          change.add(markFuelCostResourceChange(units, route, id, data));
         }
         markTransportsMovement(arrived, transporting, route);
-        // boolean createdBattle = false;
         if (route.someMatch(mustFightThrough) && arrived.size() != 0) {
           boolean bombing = false;
           boolean ignoreBattle = false;
@@ -201,7 +201,8 @@ public class MovePerformer implements Serializable {
               } else if (!enemyTargets.isEmpty()) {
                 target = enemyTargets.iterator().next();
               } else {
-                target = enemyTargetsTotal.iterator().next(); // in case we are escorts only
+                // in case we are escorts only
+                target = enemyTargetsTotal.iterator().next();
               }
               if (target == null) {
                 bombing = false;
@@ -283,12 +284,7 @@ public class MovePerformer implements Serializable {
   }
 
   private Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id,
-      final GameData data /*
-                           * ,
-                           * final
-                           * boolean
-                           * mustFight
-                           */) {
+      final GameData data) {
     return ChangeFactory.removeResourceCollection(id,
         Route.getMovementFuelCostCharge(units, route, id, data /* , mustFight */));
   }
@@ -303,7 +299,8 @@ public class MovePerformer implements Serializable {
     if (routeEnd != null) {
       taRouteEnd = TerritoryAttachment.get(routeEnd);
     }
-    final Iterator<Unit> iter = Match.getMatches(units, Matches.unitIsOwnedBy(id)).iterator(); // only units owned by us need to be marked
+    // only units owned by us need to be marked
+    final Iterator<Unit> iter = Match.getMatches(units, Matches.unitIsOwnedBy(id)).iterator();
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     while (iter.hasNext()) {
       final TripleAUnit unit = (TripleAUnit) iter.next();

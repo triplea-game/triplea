@@ -207,7 +207,8 @@ public class MetaSetupPanel extends SetupPanel {
       DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
       // BareBonesBrowserLaunch.openURL("https://sourceforge.net/projects/triplea/files/help/");
     } catch (final Exception ex) {
-      System.out.println("Error: " + ex); // print the error
+      // print the error
+      System.out.println("Error: " + ex);
     }
     /*
      * Or we could try opening the file on the computer, since triplea comes with it:

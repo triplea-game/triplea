@@ -63,7 +63,8 @@ public class DefaultSoundChannel implements ISound {
       boolean isObserver = true;
       if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers) {
         for (final IGamePlayer player : m_localPlayers.getLocalPlayers()) {
-          isObserver = false; // if we have any local players, we are not an observer
+          // if we have any local players, we are not an observer
+          isObserver = false;
           if (player instanceof TripleAPlayer) {
             if (IGameLoader.CLIENT_PLAYER_TYPE.equals(((TripleAPlayer) player).getType())) {
               isClient = true;

@@ -497,7 +497,8 @@ public class Matches {
         // return taUnit.getUnitDamage() >= ta.getProduction();
         return false;
       }
-      return taUnit.getUnitDamage() > ua.getMaxOperationalDamage(); // only greater than. if == then we can still operate
+      // only greater than. if == then we can still operate
+      return taUnit.getUnitDamage() > ua.getMaxOperationalDamage();
     }
   };
   public static Match<Unit> UnitIsNotDisabled = new InverseMatch<Unit>(UnitIsDisabled);
@@ -1148,7 +1149,7 @@ public class Matches {
   public static final Match<Territory> TerritoryIsLandOrWater = new Match<Territory>() {
     @Override
     public boolean match(final Territory t) {
-      return t != null;// && t instanceof Territory;
+      return t != null;
     }
   };
   public static final Match<Territory> TerritoryIsWater = new Match<Territory>() {
@@ -1182,9 +1183,6 @@ public class Matches {
    * Tests for Land, Convoys Centers and Convoy Routes, and Contested Territories.
    * Assumes player is either the owner of the territory we are testing, or about to become the owner (ie: this doesn't test ownership).
    * If the game option for contested territories not producing is on, then will also remove any contested territories.
-   *
-   * @param player
-   * @param data
    */
   public static Match<Territory> territoryCanCollectIncomeFrom(final PlayerID player, final GameData data) {
     final boolean contestedDoNotProduce =
@@ -1538,7 +1536,8 @@ public class Matches {
         final CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
         nonCom.add(UnitIsInfrastructure);
         nonCom.add(enemyUnit(player, data).invert());
-        // nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data)); //this is causing issues where the newly captured
+        // this is causing issues where the newly captured
+        // nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data));
         // units fight against themselves
         return t.getUnits().allMatch(nonCom);
       }
@@ -2111,7 +2110,8 @@ public class Matches {
           return false;
         }
         final CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
-        blitzableUnits.add(Matches.enemyUnit(player, data).invert()); // we ignore neutral units
+        // we ignore neutral units
+        blitzableUnits.add(Matches.enemyUnit(player, data).invert());
         // WW2V2, cant blitz through factories and aa guns
         // WW2V1, you can
         if (!games.strategy.triplea.Properties.getWW2V2(data)
@@ -2984,7 +2984,8 @@ public class Matches {
       // is the unit being transported?
       final Unit transport = TripleAUnit.get(unit).getTransportedBy();
       if (transport == null) {
-        return true; // Unit isn't transported so can Invade
+        // Unit isn't transported so can Invade
+        return true;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       return ua.canInvadeFrom(transport.getUnitType().getName());
@@ -3567,7 +3568,8 @@ public class Matches {
                 Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data));
         final Match<UnitType> combat;
         if (attack) {
-          final CompositeMatch<UnitType> attackMatchAND = new CompositeMatchAnd<UnitType>();// AND match
+          // AND match
+          final CompositeMatch<UnitType> attackMatchAND = new CompositeMatchAnd<UnitType>();
           attackMatchAND.add(supporterOrNotInfrastructure);
           if (!includeAttackersThatCanNotMove) {
             attackMatchAND.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
@@ -3580,11 +3582,14 @@ public class Matches {
           } else { // is sea battle
             attackMatchAND.add(Matches.UnitTypeIsLand.invert());
           }
-          combat = attackMatchAND; // assign it
+          // assign it
+          combat = attackMatchAND;
         } else { // defense
-          final CompositeMatch<UnitType> defenseMatchAND = new CompositeMatchAnd<UnitType>();// AND match
+          // AND match
+          final CompositeMatch<UnitType> defenseMatchAND = new CompositeMatchAnd<UnitType>();
           {
-            final CompositeMatch<UnitType> defenseMatchOR = new CompositeMatchOr<UnitType>();// OR match
+            // OR match
+            final CompositeMatch<UnitType> defenseMatchOR = new CompositeMatchOr<UnitType>();
             if (!doNotIncludeAA) {
               defenseMatchOR.add(new CompositeMatchAnd<UnitType>(Matches.UnitTypeIsAAforCombatOnly,
                   Matches.UnitTypeIsAAthatCanFireOnRound(battleRound)));
@@ -3597,7 +3602,8 @@ public class Matches {
           } else { // is sea battle
             defenseMatchAND.add(Matches.UnitTypeIsLand.invert());
           }
-          combat = defenseMatchAND; // assign it
+          // assign it
+          combat = defenseMatchAND;
         }
         return combat.match(ut);
       }

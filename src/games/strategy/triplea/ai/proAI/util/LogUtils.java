@@ -33,11 +33,13 @@ public class LogUtils {
       ProAI.getLogger().log(level, addIndentationCompensation(message, level), t);
     }
     if (!LogSettings.loadSettings().EnableAILogging) {
-      return; // Skip displaying to settings window if settings window option is turned off
+      // Skip displaying to settings window if settings window option is turned off
+      return;
     }
     final Level logDepth = LogSettings.loadSettings().AILoggingDepth;
     if (logDepth.equals(Level.FINE) && (level.equals(Level.FINER) || level.equals(Level.FINEST))) {
-      return; // If the settings window log depth is a higher level than this messages, skip
+      // If the settings window log depth is a higher level than this messages, skip
+      return;
     }
     if (logDepth.equals(Level.FINER) && level.equals(Level.FINEST)) {
       return;

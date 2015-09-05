@@ -114,11 +114,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<Unit>();
     final CompositeMatch<Unit> groundUnits =
-        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction); // we add
-                                                                                        // factories
-                                                                                        // and
-                                                                                        // constructions
-                                                                                        // later
+        // we add factories and constructions later
+        new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
     final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));

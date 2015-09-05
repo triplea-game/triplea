@@ -65,7 +65,8 @@ public class ClientSetupPanel extends SetupPanel {
     final Map<String, Boolean> enabledPlayers = m_model.getPlayersEnabledListing();
     final Collection<String> disableable = m_model.getPlayersAllowedToBeDisabled();
     if (!m_model.getIsServerHeadlessCached()) {
-      disableable.clear();// clients only get to change bot settings
+      // clients only get to change bot settings
+      disableable.clear();
     }
     m_playerRows = new ArrayList<PlayerRow>();
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();

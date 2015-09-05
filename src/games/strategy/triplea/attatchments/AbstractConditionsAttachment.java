@@ -31,14 +31,20 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   protected static final String XOR = "XOR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
-  protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can
-                                                                                        // contain
-  protected String m_conditionType = AND; // m_conditionType modifies the relationship of m_conditions
-  protected boolean m_invert = false; // will logically negate the entire condition, including contained conditions
-  protected String m_chance = DEFAULT_CHANCE; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always
-                                              // successful
-  protected int m_chanceIncrementOnFailure = 0; // if chance fails, we should increment the chance by x
-  protected int m_chanceDecrementOnSuccess = 0; // if chance succeeds, we should decrement the chance by x
+  // list of conditions that this condition can
+  protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>();
+  // contain
+  // m_conditionType modifies the relationship of m_conditions
+  protected String m_conditionType = AND;
+  // will logically negate the entire condition, including contained conditions
+  protected boolean m_invert = false;
+  // chance (x out of y) that this action is successful when attempted, default = 1:1 = always
+  protected String m_chance = DEFAULT_CHANCE;
+  // successful
+  // if chance fails, we should increment the chance by x
+  protected int m_chanceIncrementOnFailure = 0;
+  // if chance succeeds, we should decrement the chance by x
+  protected int m_chanceDecrementOnSuccess = 0;
 
   public AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);

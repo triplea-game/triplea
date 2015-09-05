@@ -63,30 +63,38 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
   private IntegerMap<UnitType> m_purchase = null;
   private String m_resource = null;
   private int m_resourceCount = 0;
-  private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an attachment. java will not
-                                                           // be able to deserialize it.
-  private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this
-                                                                            // trigger hits.
+  // never use a map of other attachments, inside of an attachment. java will not
+  // be able to deserialize it.
+  private LinkedHashMap<String, Boolean> m_support = null;
+  // List of relationshipChanges that should be executed when this
+  // trigger hits.
+  private ArrayList<String> m_relationshipChange = new ArrayList<String>();
   private String m_victory = null;
   private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<Tuple<String, String>>();
   private ArrayList<String> m_changeOwnership = new ArrayList<String>();
   // raw property changes below:
-  private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will
-                                                                      // break all existing maps
-  private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
+  // really m_unitTypes, but we are not going to rename because it will
+  // break all existing maps
+  private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>();
+  // covers UnitAttachment, UnitSupportAttachment
+  private Tuple<String, String> m_unitAttachmentName = null;
   private ArrayList<Tuple<String, String>> m_unitProperty = null;
   private ArrayList<Territory> m_territories = new ArrayList<Territory>();
-  private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
+  // covers TerritoryAttachment, CanalAttachment
+  private Tuple<String, String> m_territoryAttachmentName = null;
   private ArrayList<Tuple<String, String>> m_territoryProperty = null;
   private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
-  private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment,
-                                                               // TechAttachment, UserActionAttachment
+  // covers PlayerAttachment, TriggerAttachment, RulesAttachment,
+  // TechAttachment, UserActionAttachment
+  private Tuple<String, String> m_playerAttachmentName = null;
   private ArrayList<Tuple<String, String>> m_playerProperty = null;
   private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
-  private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
+  // covers RelationshipTypeAttachment
+  private Tuple<String, String> m_relationshipTypeAttachmentName = null;
   private ArrayList<Tuple<String, String>> m_relationshipTypeProperty = null;
   private ArrayList<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
-  private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
+  // covers TerritoryEffectAttachment
+  private Tuple<String, String> m_territoryEffectAttachmentName = null;
   private ArrayList<Tuple<String, String>> m_territoryEffectProperty = null;
 
   public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -255,7 +263,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     triggerResourceChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // Activating other triggers, and trigger victory, should ALWAYS be LAST in this list!
     triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, aBridge, beforeOrAfter, stepName, useUses,
-        testUses, false, testWhen); // Triggers firing other triggers
+        // Triggers firing other triggers
+        testUses, false, testWhen);
     // Victory messages and recording of winners
     triggerVictory(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of each round)
@@ -781,8 +790,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_unitProperty == null) {
       m_unitProperty = new ArrayList<Tuple<String, String>>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing
+    // it to
+    final String property = s[s.length - 1];
     m_unitProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
@@ -900,8 +910,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_territoryProperty == null) {
       m_territoryProperty = new ArrayList<Tuple<String, String>>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing
+    // it to
+    final String property = s[s.length - 1];
     m_territoryProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
@@ -1039,8 +1050,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_playerProperty == null) {
       m_playerProperty = new ArrayList<Tuple<String, String>>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing
+    // it to
+    final String property = s[s.length - 1];
     m_playerProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
@@ -1156,8 +1168,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_relationshipTypeProperty == null) {
       m_relationshipTypeProperty = new ArrayList<Tuple<String, String>>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing
+    // it to
+    final String property = s[s.length - 1];
     m_relationshipTypeProperty
         .add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
@@ -1274,8 +1287,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
     if (m_territoryEffectProperty == null) {
       m_territoryEffectProperty = new ArrayList<Tuple<String, String>>();
     }
-    final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing
-                                             // it to
+    // the last one is the property we are changing, while the rest is the string we are changing
+    // it to
+    final String property = s[s.length - 1];
     m_territoryEffectProperty
         .add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
@@ -1631,7 +1645,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
         if (sounds != null) {
           aBridge.getSoundChannelBroadcaster().playSoundToPlayers(
               SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), null, t.getPlayers(), null,
-              t.getPlayers().containsAll(data.getPlayerList().getPlayers())); // play to observers if we are playing to everyone
+              // play to observers if we are playing to everyone
+              t.getPlayers().containsAll(data.getPlayerList().getPlayers()));
         }
         final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
         if (message != null) {
@@ -1871,9 +1886,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
             final TerritoryAttachment attachment =
                 TerritoryAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
             if (attachment == null) {
-              throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName()); // water territories may not
-                                                                                                                // have an attachment, so
-                                                                                                                // this could be null
+              // water territories may not have an attachment, so this could be null
+              throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName());
             }
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
@@ -2240,7 +2254,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
       }
     }
     if (!change.isEmpty()) {
-      aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
+      // TODO: we should sort the frontier list if we make changes to it...
+      aBridge.addChange(change);
     }
   }
 
@@ -2327,13 +2342,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
           final Territory territorySet = data.getMap().getTerritory(s[0]);
           territories.add(territorySet);
         }
-        final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]); // if null, then is must be "any", so then any player
+        // if null, then is must be "any", so then any player
+        final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]);
         final PlayerID newOwner = data.getPlayerList().getPlayerID(s[2]);
         final boolean captured = getBool(s[3]);
         for (final Territory terr : territories) {
           final PlayerID currentOwner = terr.getOwner();
           if (TerritoryAttachment.get(terr) == null) {
-            continue; // any territory that has no territory attachment should definitely not be changed
+            // any territory that has no territory attachment should definitely not be changed
+            continue;
           }
           if (oldOwner != null && !oldOwner.equals(currentOwner)) {
             continue;

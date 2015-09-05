@@ -16,10 +16,14 @@ public class MacFinder {
   // For quick testing
   public static void main(final String[] args) {
     System.out.println(GetHashedMacAddress());
-    System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false)); // should be valid
-    System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true)); // should be valid
-    System.out.println(isMacValid("00.00.00.00.00.E0") ? "valid" : "not valid"); // should not be valid
-    System.out.println(isMacValid("00.00.00.00.00.D0") ? "valid" : "not valid"); // rest should be valid
+    // should be valid
+    System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false));
+    // should be valid
+    System.out.println(tryToParseMACFromOutput("ether 0:00:00:00:01:34 ", Arrays.asList("-", ":", "."), true));
+    // should not be valid
+    System.out.println(isMacValid("00.00.00.00.00.E0") ? "valid" : "not valid");
+    // rest should be valid
+    System.out.println(isMacValid("00.00.00.00.00.D0") ? "valid" : "not valid");
     System.out.println(isMacValid("00.1b.63.9f.b4.d3") ? "valid" : "not valid");
     System.out.println(isMacValid("00.60.08.C4.99.AA") ? "valid" : "not valid");
   }
@@ -108,8 +112,8 @@ public class MacFinder {
       ex.printStackTrace();
     }
     try {
-      final String results = executeCommandAndGetResults("ipconfig /all"); // ipconfig -all does not work on my computer, while ipconfig
-                                                                           // /all does not work on others computers
+      // ipconfig -all does not work on my computer, while ipconfig /all does not work on others computers
+      final String results = executeCommandAndGetResults("ipconfig /all");
       final String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
       if (isMacValid(mac)) {
         return mac;
@@ -126,8 +130,9 @@ public class MacFinder {
      */
     try {
       final String results = executeCommandAndGetResults("ifconfig -a");
-      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to
-                                                                                               // the beginning
+      // Allow the parser to try adding a zero to
+      // the beginning
+      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true);
       if (isMacValid(mac)) {
         return mac;
       }
@@ -143,8 +148,9 @@ public class MacFinder {
      */
     try {
       final String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to
-                                                                                               // the beginning
+      // Allow the parser to try adding a zero to
+      // the beginning
+      final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true);
       if (isMacValid(mac)) {
         return mac;
       }

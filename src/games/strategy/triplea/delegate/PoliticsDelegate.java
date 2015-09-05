@@ -84,8 +84,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   public Serializable saveState() {
     final PoliticsExtendedDelegateState state = new PoliticsExtendedDelegateState();
     state.superState = super.saveState();
-    // state.m_testedConditions = m_testedConditions;
-    // add other variables to state here:
     return state;
   }
 
@@ -93,8 +91,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   public void loadState(final Serializable state) {
     final PoliticsExtendedDelegateState s = (PoliticsExtendedDelegateState) state;
     super.loadState(s.superState);
-    // m_testedConditions = s.m_testedConditions;
-    // load other variables from state here:
   }
 
   @Override
@@ -143,23 +139,31 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
     if (paa.canPerform(getTestedConditions())) {
       if (checkEnoughMoney(paa)) { // See if the player has got enough money to pay for the action
-        chargeForAction(paa); // Charge for attempting the action
-        paa.useAttempt(getBridge()); // take one of the uses this round
+        // Charge for attempting the action
+        chargeForAction(paa);
+        // take one of the uses this round
+        paa.useAttempt(getBridge());
         if (actionRollSucceeds(paa)) { // See if the action is successful
           if (actionIsAccepted(paa)) {
-            changeRelationships(paa); // change the relationships
-            notifySuccess(paa); // notify the players
+            // change the relationships
+            changeRelationships(paa);
+            // notify the players
+            notifySuccess(paa);
           } else {
-            notifyFailure(paa); // notify the players of the failed attempt
+            // notify the players of the failed attempt
+            notifyFailure(paa);
           }
         } else {
-          notifyFailure(paa); // notify the players of the failed attempt
+          // notify the players of the failed attempt
+          notifyFailure(paa);
         }
       } else {
-        notifyMoney(paa, false); // notify the player he hasn't got enough money;
+        // notify the player he hasn't got enough money;
+        notifyMoney(paa, false);
       }
     } else {
-      notifyNoValidAction(paa); // notify the player the action isn't valid anymore (shouldn't happen)
+      // notify the player the action isn't valid anymore (shouldn't happen)
+      notifyNoValidAction(paa);
     }
   }
 
@@ -278,7 +282,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     } else {
       final String transcriptText = m_bridge.getPlayerID().getName() + " takes Political Action: "
           + MyFormatter.attachmentNameToText(paa.getName());
-      m_bridge.getHistoryWriter().startEvent(transcriptText); // we must start an event anyway
+      // we must start an event anyway
+      m_bridge.getHistoryWriter().startEvent(transcriptText);
     }
   }
 
@@ -349,7 +354,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
-      this.getRemotePlayer().reportMessage(text, text); // "To " + m_player.getName() + ": " +
+      // "To " + m_player.getName() + ": " +
+      this.getRemotePlayer().reportMessage(text, text);
     }
   }
 

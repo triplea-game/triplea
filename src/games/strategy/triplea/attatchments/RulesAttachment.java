@@ -39,35 +39,40 @@ import games.strategy.util.Tuple;
 
 public class RulesAttachment extends AbstractPlayerRulesAttachment implements ICondition {
   private static final long serialVersionUID = 7301965634079412516L;
-  private ArrayList<TechAdvance> m_techs = null; // condition for having techs
+  // condition for having techs
+  private ArrayList<TechAdvance> m_techs = null;
   @InternalDoNotExport
-  private int m_techCount = -1; // Do Not Export (do not include in IAttachment).
-  private ArrayList<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
-  private HashSet<PlayerID> m_atWarPlayers = null; // condition for being at war
+  // Do Not Export (do not include in IAttachment).
+  private int m_techCount = -1;
+  // condition for having specific relationships
+  private ArrayList<String> m_relationship = new ArrayList<String>();
+  // condition for being at war
+  private HashSet<PlayerID> m_atWarPlayers = null;
   @InternalDoNotExport
-  private int m_atWarCount = -1; // Do Not Export (do not include in IAttachment).
-  private String m_destroyedTUV = null; // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to
-                                        // the prices the defender pays for the units]
+  // Do Not Export (do not include in IAttachment).
+  private int m_atWarCount = -1;
+  // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to
+  // the prices the defender pays for the units]
+  private String m_destroyedTUV = null;
+  // condition for having had a battle in some territory, attacker or defender, win
+  // or lost, etc. these next 9 variables use m_territoryCount for determining the number needed.
   private ArrayList<Tuple<String, ArrayList<Territory>>> m_battle =
-      new ArrayList<Tuple<String, ArrayList<Territory>>>(); // condition for
-                                                            // having had a
-                                                            // battle in some
-                                                            // territory,
-                                                            // attacker or
-                                                            // defender, win
-                                                            // or lost, etc.
-  // these next 9 variables use m_territoryCount for determining the number needed.
-  private String[] m_alliedOwnershipTerritories = null; // ownership related
+      new ArrayList<Tuple<String, ArrayList<Territory>>>();
+  // ownership related
+  private String[] m_alliedOwnershipTerritories = null;
   private String[] m_directOwnershipTerritories = null;
-  private String[] m_alliedExclusionTerritories = null; // exclusion of units
+  // exclusion of units
+  private String[] m_alliedExclusionTerritories = null;
   private String[] m_directExclusionTerritories = null;
   private String[] m_enemyExclusionTerritories = null;
   private String[] m_enemySurfaceExclusionTerritories = null;
-  private String[] m_directPresenceTerritories = null; // presence of units
+  // presence of units
+  private String[] m_directPresenceTerritories = null;
   private String[] m_alliedPresenceTerritories = null;
   private String[] m_enemyPresenceTerritories = null;
-  private IntegerMap<String> m_unitPresence = new IntegerMap<String>(); // used with above 3 to determine the type of unit that must be
-                                                                        // present
+  // used with above 3 to determine the type of unit that must be present
+  private IntegerMap<String> m_unitPresence = new IntegerMap<String>();
+
 
   /** Creates new RulesAttachment */
   public RulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -77,10 +82,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   /**
    * Convenience method, for use with rules attachments, objectives, and condition attachments. Should return RulesAttachments.
    *
-   * @param player
-   *        PlayerID
-   * @param nameOfAttachment
-   *        exact full name of attachment
+   * @param player PlayerID
+   * @param nameOfAttachment exact full name of attachment
    * @return new rule attachment
    */
   public static RulesAttachment get(final PlayerID player, final String nameOfAttachment) {
@@ -122,9 +125,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
    * Conditions that do not give money are not prefixed with "objectiveAttachment",
    * and the trigger attachment that uses these kinds of conditions gets them a different way because they are specifically named inside
    * that trigger.
-   *
-   * @param player
-   * @param data
    */
   public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data) {
     final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
@@ -173,9 +173,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   *
-   * @param value
-   * @throws GameParseException
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setBattle(final String value) throws GameParseException {
@@ -237,9 +234,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
    * Condition to check if a certain relationship exists between 2 players.
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
-   * @param value
-   *        should be a string containing: "player:player:relationship"
-   * @throws GameParseException
+   * @param value should be a string containing: "player:player:relationship"
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRelationship(final String value) throws GameParseException {
@@ -1169,8 +1164,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
   /**
    * Called after the attachment is created.
    *
-   * @throws GameParseException
-   *         validation failed
+   * @throws GameParseException validation failed
    */
   @Override
   public void validate(final GameData data) throws GameParseException {

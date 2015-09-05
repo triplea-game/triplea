@@ -79,11 +79,11 @@ public class TabbedProductionPanel extends ProductionPanel {
     final Dimension dtab = tabs.getPreferredSize();
     final Dimension dthis = this.getPreferredSize();
     if (dtab != null && dthis != null) {
-      tabs.setPreferredSize(new Dimension(dtab.width + 4, dtab.height + 4)); // for whatever dumb reason, the tabs need a couple extra
-                                                                             // height and width or else scroll bars will appear
-      this.setPreferredSize(new Dimension(dthis.width + 8, dthis.height + 24)); // for whatever dumb reason, the window needs to be at least
-                                                                                // 16 pixels greater in height than normal, to accommodate
-                                                                                // the tabs
+      // for an unknown reason, the tabs need a couple extra height and width or else scroll bars will appear
+      tabs.setPreferredSize(new Dimension(dtab.width + 4, dtab.height + 4));
+      // for an unknown reason, the window needs to be at least 16 pixels greater in height than normal, to accommodate the tabs
+      this.setPreferredSize(new Dimension(dthis.width + 8, dthis.height + 24));
+
     }
     tabs.validate();
     this.validate();
@@ -109,7 +109,8 @@ public class TabbedProductionPanel extends ProductionPanel {
           Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(m_rows), BigDecimal.ROUND_UP).intValue());
     } else {
       m_rows = Math.max(2, properties.getRows());
-      m_columns = Math.max(3, properties.getColumns()); // There are small display problems if the size is less than 2x3 cells.
+      // There are small display problems if the size is less than 2x3 cells.
+      m_columns = Math.max(3, properties.getColumns());
     }
   }
 

@@ -277,21 +277,24 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         if (!m_liveMutedUsernames.contains(realName)) {
           final long muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
-            m_liveMutedUsernames.add(realName); // Signal the player as muted
+            // Signal the player as muted
+            m_liveMutedUsernames.add(realName);
             ScheduleUsernameUnmuteAt(realName, muteTill);
           }
         }
         if (!m_liveMutedIpAddresses.contains(ip)) {
           final long muteTill = new MutedIpController().getIpUnmuteTime(ip);
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
-            m_liveMutedIpAddresses.add(ip); // Signal the player as muted
+            // Signal the player as muted
+            m_liveMutedIpAddresses.add(ip);
             ScheduleIpUnmuteAt(ip, muteTill);
           }
         }
         if (!m_liveMutedMacAddresses.contains(mac)) {
           final long muteTill = new MutedMacController().getMacUnmuteTime(mac);
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
-            m_liveMutedMacAddresses.add(mac); // Signal the player as muted
+            // Signal the player as muted
+            m_liveMutedMacAddresses.add(mac);
             ScheduleMacUnmuteAt(mac, muteTill);
           }
         }
@@ -315,16 +318,12 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     }
   }
 
+  // Special character to stop spoofing by server
   public static final String YOU_HAVE_BEEN_MUTED_LOBBY =
-      "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; // Special
-                                                                                          // character
-                                                                                          // to
-                                                                                          // stop
-                                                                                          // spoofing
-                                                                                          // by
-                                                                                          // server
-  public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; // Special character to
-                                                                                                                    // stop spoofing by host
+      "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER";
+
+  // Special character to stop spoofing by host
+  public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST";
 
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
@@ -668,7 +667,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         if ((isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame())) // If the mute has expired
         {
           synchronized (m_cachedListLock) {
-            m_liveMutedUsernames.remove(username); // Remove the username from the list of live username's muted
+            // Remove the username from the list of live username's muted
+            m_liveMutedUsernames.remove(username);
           }
         }
       }
@@ -682,7 +682,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         if ((isLobby() && new MutedIpController().getIpUnmuteTime(ip) == -1) || (isGame())) // If the mute has expired
         {
           synchronized (m_cachedListLock) {
-            m_liveMutedIpAddresses.remove(ip); // Remove the ip from the list of live ip's muted
+            // Remove the ip from the list of live ip's muted
+            m_liveMutedIpAddresses.remove(ip);
           }
         }
       }
@@ -696,7 +697,8 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
         if ((isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame())) // If the mute has expired
         {
           synchronized (m_cachedListLock) {
-            m_liveMutedMacAddresses.remove(mac); // Remove the mac from the list of live mac's muted
+            // Remove the mac from the list of live mac's muted
+            m_liveMutedMacAddresses.remove(mac);
           }
         }
       }

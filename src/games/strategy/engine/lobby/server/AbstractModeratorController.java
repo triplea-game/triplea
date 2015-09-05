@@ -51,7 +51,8 @@ public abstract class AbstractModeratorController implements IModeratorControlle
       }
     }
     if (builder.length() > 100) {
-      return builder.toString().replace(", ", "\r\n"); // So replace comma's to keep names within screen
+      // So replace comma's to keep names within screen
+      return builder.toString().replace(", ", "\r\n");
     }
     return builder.toString();
   }

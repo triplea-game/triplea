@@ -44,9 +44,11 @@ public class ConnectionFinder {
   private static boolean dimensionsSet = false;
   private static StringBuffer territoryDefinitions = null;
   // how many pixels should each area become bigger in both x and y axis to see which area it overlaps?
-  public static int scalePixels = 8; // default 8, or if LINE_THICKNESS if given 4x linethickness
+  // default 8, or if LINE_THICKNESS if given 4x linethickness
+  public static int scalePixels = 8;
   // how many pixels should the boundingbox of the overlapping area have for it to be considered a valid connection?
-  public static double minOverlap = 32.0; // default 32, or if LINE_THICKNESS is given 16 x linethickness
+  // default 32, or if LINE_THICKNESS is given 16 x linethickness
+  public static double minOverlap = 32.0;
 
   public static void main(final String[] args) {
     handleCommandLineArgs(args);

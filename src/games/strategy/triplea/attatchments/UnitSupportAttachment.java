@@ -22,9 +22,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
   private HashSet<UnitType> m_unitType = null;
   @InternalDoNotExport
-  private boolean m_offence = false; // Do Not Export
+  // Do Not Export
+  private boolean m_offence = false;
   @InternalDoNotExport
-  private boolean m_defence = false; // Do Not Export
+  // Do Not Export
+  private boolean m_defence = false;
   @InternalDoNotExport
   private boolean m_roll = false;
   @InternalDoNotExport
@@ -39,9 +41,12 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
   private boolean m_impArtTech = false;
   // strings
-  private String m_dice = null; // roll or strength
-  private String m_faction = null; // allied or enemy
-  private String m_side = null; // offence or defence
+  // roll or strength
+  private String m_dice = null;
+  // allied or enemy
+  private String m_faction = null;
+  // offence or defence
+  private String m_side = null;
 
   public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);

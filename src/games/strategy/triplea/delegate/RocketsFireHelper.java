@@ -213,7 +213,8 @@ public class RocketsFireHelper {
       final Collection<Unit> enemyTargets =
           Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
       if (enemyTargets.isEmpty()) {
-        return; // TODO: this sucks
+        // TODO: this sucks
+        return;
       }
       Unit target = null;
       if (enemyTargets.size() == 1) {
@@ -238,7 +239,8 @@ public class RocketsFireHelper {
         final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING,
             "Rocket fired by " + player.getName() + " at " + attacked.getName());
         for (final int r : rolls) {
-          cost += r + 1; // we are zero based
+          // we are zero based
+          cost += r + 1;
         }
         transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
             + MyFormatter.asDice(rolls);
@@ -272,7 +274,8 @@ public class RocketsFireHelper {
           for (int i = 0; i < rolls.length; i++) {
             final int r = rolls[i] + highestBonus;
             rolls[i] = r;
-            cost += r + 1; // we are zero based
+            // we are zero based
+            cost += r + 1;
           }
           transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
               + MyFormatter.asDice(rolls);
@@ -292,7 +295,8 @@ public class RocketsFireHelper {
         for (int i = 0; i < rolls.length; i++) {
           final int r = rolls[i] + bonus;
           rolls[i] = r;
-          cost += r + 1; // we are zero based
+          // we are zero based
+          cost += r + 1;
         }
         transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
             + MyFormatter.asDice(rolls);
@@ -331,7 +335,8 @@ public class RocketsFireHelper {
           for (int i = 0; i < rolls.length; i++) {
             final int r = rolls[i] + highestBonus;
             rolls[i] = r;
-            cost += r + 1; // we are zero based
+            // we are zero based
+            cost += r + 1;
           }
           transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
               + MyFormatter.asDice(rolls);

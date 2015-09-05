@@ -471,9 +471,11 @@ public class BattleTracker implements java.io.Serializable {
 
   public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge,
       final UndoableMove changeTracker, final Collection<Unit> arrivingUnits) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory); // This could be NULL if unowned water
+    // This could be NULL if unowned water
+    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta == null) {
-      return; // TODO: allow capture/destroy of infrastructure on unowned water
+      // TODO: allow capture/destroy of infrastructure on unowned water
+      return;
     }
     final GameData data = bridge.getData();
     final Collection<Unit> arrivedUnits = (arrivingUnits == null ? null : new ArrayList<Unit>(arrivingUnits));
@@ -548,10 +550,9 @@ public class BattleTracker implements java.io.Serializable {
         System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay "
             + PUChargeIdeal + ", but did not have enough PUs to pay! This is a bug.");
         bridge.getHistoryWriter()
-            .addChildToEvent(
-                id.getName() + " loses " + -PUChargeReal + " " + MyFormatter.pluralize("PU", -PUChargeReal)
-                    + " for violating " + territory.getName() + "s neutrality.  Correct amount to charge is: "
-                    + PUChargeIdeal + ".  Player should not have been able to make this attack!");
+            .addChildToEvent(id.getName() + " loses " + -PUChargeReal + " " + MyFormatter.pluralize("PU", -PUChargeReal)
+                + " for violating " + territory.getName() + "s neutrality.  Correct amount to charge is: "
+                + PUChargeIdeal + ".  Player should not have been able to make this attack!");
       }
     }
     // if its a capital we take the money
@@ -567,8 +568,8 @@ public class BattleTracker implements java.io.Serializable {
       // we are losing one right now, so it is < not <=
       if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
         // do nothing, we keep our money since we still control enough capitals
-        bridge.getHistoryWriter().addChildToEvent(
-            id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
+        bridge.getHistoryWriter()
+            .addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
         final Resource PUs = data.getResourceList().getResource(Constants.PUS);
         final int capturedPUCount = whoseCapital.getResources().getQuantity(PUs);

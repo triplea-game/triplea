@@ -844,8 +844,9 @@ public class MovePanel extends AbstractMovePanel {
         // check for alt key - add 1/10 of total units (useful for splitting large armies)
         final List<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
         Collections.sort(unitsToMove, UnitComparator.getHighestToLowestMovementComparator());
-        final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(unitsToMove.size() /
-                                                                       // s_deselectNumber))
+
+        final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
+
         int addCount = 0;
         for (final Unit unit : unitsToMove) {
           if (!m_selectedUnits.contains(unit)) {
@@ -1021,8 +1022,7 @@ public class MovePanel extends AbstractMovePanel {
           }
         } else if (!unitsWithoutDependents.isEmpty()) {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(unitsWithoutDependents.size() /
-                                                                         // s_deselectNumber))
+          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
           // remove the last iterCount elements
           for (int i = 0; i < iterCount; i++) {
             unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
@@ -1061,7 +1061,8 @@ public class MovePanel extends AbstractMovePanel {
           // doesn't matter which unit we remove since units are assigned to routes later
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
           // changed to just remove 10 units
-          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(units.size() / s_deselectNumber))
+          // (int) Math.max(1, Math.floor(units.size() / s_deselectNumber))
+          final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1;
           int remCount = 0;
           for (final Unit unit : units) {
             if (m_selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
@@ -1471,16 +1472,19 @@ public class MovePanel extends AbstractMovePanel {
       final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
           new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
       if (!m_nonCombat) {
-        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units
+        // if not non combat, can not move aa units
+        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
       }
       final int size = allTerritories.size();
-      int newFocusedIndex = m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory) + 1; // new focused index is
-                                                                                                                     // 1 greater
+      // new focused index is 1 greater
+      int newFocusedIndex = m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory) + 1;
       if (newFocusedIndex >= size) {
-        newFocusedIndex = 0; // if we are larger than the number of territories, we must start back at zero
+        // if we are larger than the number of territories, we must start back at zero
+        newFocusedIndex = 0;
       }
       Territory newFocusedTerritory = null;
-      int i = 0; // make sure we go through every single territory on the board
+      // make sure we go through every single territory on the board
+      int i = 0;
       while (i < size) {
         final Territory t = allTerritories.get(newFocusedIndex);
         final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
@@ -1515,7 +1519,8 @@ public class MovePanel extends AbstractMovePanel {
       final CompositeMatchAnd<Unit> moveableUnitOwnedByMe =
           new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
       if (!m_nonCombat) {
-        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units
+        // if not non combat, can not move aa units
+        moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
       }
       final Map<Territory, List<Unit>> highlight = new HashMap<Territory, List<Unit>>();
       for (final Territory t : allTerritories) {

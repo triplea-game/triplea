@@ -103,8 +103,9 @@ public class DiceRoll implements Externalizable {
       }
     }
     if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1) {
-      highestAttack = chosenDiceSize / 2; // TODO: sadly the whole low luck section falls apart if AA are hitting at greater than half the
-                                          // value of dice, and I don't feel like rewriting it
+      // TODO: sadly the whole low luck section falls apart if AA are hitting at greater than half the
+      // value of dice, and I don't feel like rewriting it
+      highestAttack = chosenDiceSize / 2;
     }
     return new Tuple<Integer, Integer>(highestAttack, chosenDiceSize);
   }
@@ -212,7 +213,8 @@ public class DiceRoll implements Externalizable {
     if (defendingAA.size() <= 0) {
       return new Triple<Integer, Integer, Boolean>(0, 0, false);
     }
-    sortAAHighToLow(defendingAA, data, defending); // we want to make sure the higher powers fire
+    // we want to make sure the higher powers fire
+    sortAAHighToLow(defendingAA, data, defending);
     // this is confusing, but what we want to do is the following:
     // any aa that are NOT infinite attacks, and NOT overstack, will fire first individually ((because their power/dicesides might be
     // different [example: radar tech on a german aa gun, in the same territory as an italian aagun without radar, neither is infinite])
@@ -250,8 +252,10 @@ public class DiceRoll implements Externalizable {
     // determine highest attack for infinite group
     final Tuple<Integer, Integer> attackThenDiceSidesForInfinite =
         getAAattackAndMaxDiceSides(infiniteAA, data, defending);
-    final int hitAtForInfinite = attackThenDiceSidesForInfinite.getFirst(); // not zero based
-    // final int powerForInfinite = highestAttackForInfinite; // not zero based
+    // not zero based
+    final int hitAtForInfinite = attackThenDiceSidesForInfinite.getFirst();
+    // not zero based
+    // final int powerForInfinite = highestAttackForInfinite;
     // if we are low luck, we only want to know the power and total attacks, while if we are dice we will be filling the sorted dice
     final boolean recordSortedDice =
         fillInSortedDiceAndRecordHits && dice != null && dice.length > 0 && sortedDice != null;
@@ -264,14 +268,16 @@ public class DiceRoll implements Externalizable {
     final Iterator<Unit> normalAAiter = normalNonInfiniteAA.iterator();
     while (i < runningMaximum && normalAAiter.hasNext()) {
       final Unit aaGun = normalAAiter.next();
-      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks(); // should be > 0 at this point
+      // should be > 0 at this point
+      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks();
       final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
       if (hitAt < hitAtForInfinite) {
         continue;
       }
       while (i < runningMaximum && numAttacks > 0) {
         if (recordSortedDice) {
-          final boolean hit = dice[i] < hitAt; // dice are zero based
+          // dice are zero based
+          final boolean hit = dice[i] < hitAt;
           sortedDice.add(new Die(dice[i], hitAt, hit ? DieType.HIT : DieType.MISS));
           if (hit) {
             hits++;
@@ -288,7 +294,8 @@ public class DiceRoll implements Externalizable {
     while (i < runningMaximum) {
       // we use the highest attack of this group, since each is infinite. (this is the default behavior in revised)
       if (recordSortedDice) {
-        final boolean hit = dice[i] < hitAtForInfinite; // dice are zero based
+        // dice are zero based
+        final boolean hit = dice[i] < hitAtForInfinite;
         sortedDice.add(new Die(dice[i], hitAtForInfinite, hit ? DieType.HIT : DieType.MISS));
         if (hit) {
           hits++;
@@ -303,11 +310,14 @@ public class DiceRoll implements Externalizable {
     final Iterator<Unit> overstackAAiter = overstackAA.iterator();
     while (i < runningMaximum && overstackAAiter.hasNext()) {
       final Unit aaGun = overstackAAiter.next();
-      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks(); // should be > 0 at this point
-      final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst(); // zero based, so subtract 1
+      // should be > 0 at this point
+      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks();
+      // zero based, so subtract 1
+      final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
       while (i < runningMaximum && numAttacks > 0) {
         if (recordSortedDice) {
-          final boolean hit = dice[i] < hitAt; // dice are zero based
+          // dice are zero based
+          final boolean hit = dice[i] < hitAt;
           sortedDice.add(new Die(dice[i], hitAt, hit ? DieType.HIT : DieType.MISS));
           if (hit) {
             hits++;
@@ -445,10 +455,9 @@ public class DiceRoll implements Externalizable {
         new HashMap<UnitSupportAttachment, LinkedIntegerMap<Unit>>();
     getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data,
         !defending, false);
+    // copy for rolls
     final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls =
-        new IntegerMap<UnitSupportAttachment>(supportLeftFriendly); // copy
-                                                                    // for
-                                                                    // rolls
+        new IntegerMap<UnitSupportAttachment>(supportLeftFriendly);
     final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls =
         new IntegerMap<UnitSupportAttachment>(supportLeftEnemy);
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
@@ -484,8 +493,9 @@ public class DiceRoll implements Externalizable {
           }
         }
         if (ua.getIsSea() && isAmphibiousBattle && Matches.TerritoryIsLand.match(location)) {
-          strength = ua.getBombard(current.getOwner()); // change the strength to be bombard, not attack/defense, because this is a
-                                                        // bombarding naval unit
+          // change the strength to be bombard, not attack/defense, because this is a
+          strength = ua.getBombard(current.getOwner());
+          // bombarding naval unit
         }
         strength += getSupport(current, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
             unitSupportPowerMap, true, false);
@@ -523,7 +533,8 @@ public class DiceRoll implements Externalizable {
     final int diceSides = data.getDiceSides();
     final boolean lowLuck = games.strategy.triplea.Properties.getLow_Luck(data);
     final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
-    final int extraRollBonus = Math.max(1, data.getDiceSides() / 6); // bonus is normally 1 for most games
+    // bonus is normally 1 for most games
+    final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
     int totalPower = 0;
     int totalRolls = 0;
     for (final Entry<Unit, Tuple<Integer, Integer>> entry : unitPowerAndRollsMap.entrySet()) {
@@ -600,7 +611,8 @@ public class DiceRoll implements Externalizable {
       random = new int[0];
     } else {
       random = bridge.getRandom(data.getDiceSides(), 1, player, DiceType.COMBAT, annotation);
-      final boolean hit = rollFor > random[0]; // zero based
+      // zero based
+      final boolean hit = rollFor > random[0];
       if (hit) {
         hitCount++;
       }
@@ -891,14 +903,6 @@ public class DiceRoll implements Externalizable {
     }
   }
 
-  /**
-   * @param unitsList
-   * @param defending
-   * @param player
-   * @param bridge
-   * @param battle
-   * @param annotation
-   */
   public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation) {
     {
@@ -919,7 +923,8 @@ public class DiceRoll implements Externalizable {
     final List<Die> dice = new ArrayList<Die>();
     int hitCount = 0;
     if (games.strategy.triplea.Properties.getLow_Luck(data)) {
-      final int extraRollBonus = Math.max(1, data.getDiceSides() / 6); // bonus is normally 1 for most games
+      // bonus is normally 1 for most games
+      final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
       final Iterator<Unit> iter = units.iterator();
       int power = 0;
       // We iterate through the units to find the total strength of the units
@@ -1052,7 +1057,8 @@ public class DiceRoll implements Externalizable {
             smallestDieIndex = i;
           }
         }
-        final boolean hit = strength > random[diceIndex + smallestDieIndex]; // zero based
+        // zero based
+        final boolean hit = strength > random[diceIndex + smallestDieIndex];
         dice.add(new Die(random[diceIndex + smallestDieIndex], strength, hit ? DieType.HIT : DieType.MISS));
         for (int i = 0; i < rolls; i++) {
           if (i != smallestDieIndex) {
@@ -1065,11 +1071,8 @@ public class DiceRoll implements Externalizable {
         diceIndex += rolls;
       } else {
         for (int i = 0; i < rolls; i++) {
-          /*
-           * try
-           * {
-           */
-          final boolean hit = strength > random[diceIndex]; // zero based
+          // zero based
+          final boolean hit = strength > random[diceIndex];
           dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
           if (hit) {
             hitCount++;
@@ -1129,11 +1132,6 @@ public class DiceRoll implements Externalizable {
     return ta.getImprovedArtillerySupport();
   }
 
-  /**
-   * @param units
-   * @param player
-   * @param battle
-   */
   public static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     buffer.append(player.getName()).append(" roll dice for ").append(MyFormatter.unitsToTextNoOwner(units));

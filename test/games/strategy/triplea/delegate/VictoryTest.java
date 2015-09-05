@@ -87,7 +87,8 @@ public class VictoryTest extends TestCase {
     moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
     moveDelegate.start();
     String error = moveDelegate.move(libya.getUnits().getUnits(), m_data.getMap().getRoute(libya, a_egypt));
-    assertEquals(error, null); // first step is legal
+    // first step is legal
+    assertEquals(error, null);
     // second step isn't legal because we lost blitz even though we took the mountain
     error = moveDelegate.move(a_egypt.getUnits().getUnits(), m_data.getMap().getRoute(a_egypt, b_congo));
     moveDelegate.end();

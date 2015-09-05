@@ -95,9 +95,7 @@ public class RemoteMethodCall implements Externalizable {
         // be of the correct type
         if (strings[i] == null) {
           rVal[i] = args[i].getClass();
-        }
-        // handle primitives
-        else if (strings[i].equals("int")) {
+        } else if (strings[i].equals("int")) {
           rVal[i] = Integer.TYPE;
         } else if (strings[i].equals("short")) {
           rVal[i] = Short.TYPE;
@@ -111,15 +109,11 @@ public class RemoteMethodCall implements Externalizable {
           rVal[i] = Double.TYPE;
         } else if (strings[i].equals("boolean")) {
           rVal[i] = Boolean.TYPE;
-        }
-        // handle everything else
-        // why is everything else so much easier than primitives
-        else {
+        } else {
           rVal[i] = Class.forName(strings[i]);
         }
       } catch (final ClassNotFoundException e) {
-        e.printStackTrace();
-        throw new IllegalStateException(e.getMessage());
+        throw new IllegalStateException(e);
       }
     }
     return rVal;
@@ -150,8 +144,7 @@ public class RemoteMethodCall implements Externalizable {
     out.writeUTF(m_remoteName);
     out.writeByte(m_methodNumber);
     if (m_args == null) {
-      out.writeByte(Byte.MAX_VALUE);
-      ;
+      out.writeByte(Byte.MAX_VALUE);;
     } else {
       out.writeByte(m_args.length);
       for (final Object m_arg : m_args) {

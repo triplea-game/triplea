@@ -135,7 +135,8 @@ public class DummyTripleAPlayer implements ITripleaPlayer {
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     if (potentialTargets == null || potentialTargets.isEmpty()) {
-      return null; // is null even allowed?
+      // is null even allowed?
+      return null;
     }
     final Collection<Unit> typicalFactories =
         Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);

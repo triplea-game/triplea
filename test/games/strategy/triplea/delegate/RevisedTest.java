@@ -1342,7 +1342,8 @@ public class RevisedTest extends TestCase {
     final int finalPUs = germans.getResources().getQuantity("PUs");
     assertEquals(midPUs - 5, finalPUs);
     // Test the variable tech cost
-    ta.setTechCost("6");// Make a Successful roll
+    // Make a Successful roll
+    ta.setTechCost("6");
     delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {5}));
     final TechResults roll3 = techDelegate.rollTech(1, jet, 0, null);
     // Check to make sure it succeeded
@@ -1380,8 +1381,10 @@ public class RevisedTest extends TestCase {
     move(sz5.getUnits().getMatches(new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsTransport)),
         new Route(sz5, sz6));
     // unload transports, 1 each to a different country
-    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));// this move is illegal now
-    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));// this move is illegal now
+    // this move is illegal now
+    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));
+    // this move is illegal now
+    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));
     move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, uk));
     // fight the battle
     moveDelegate(m_data).end();

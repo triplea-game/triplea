@@ -68,7 +68,8 @@ public class ProPurchaseAI {
   private final ProPurchaseUtils purchaseUtils;
   // Current data
   private GameData data;
-  private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
+  // Used to count current units on map for maxBuiltPerPlayer
+  private GameData startOfTurnData;
   private PlayerID player;
   private Territory myCapital;
   private double minCostPerHitPoint;
@@ -239,7 +240,8 @@ public class ProPurchaseAI {
             landProductionRules, PUsToSpend, buyLimit, data, player, 2);
       } else {
         landPurchase = false;
-        buyLimit = PUsToSpend / 5; // assume a larger threshhold
+        // assume a larger threshhold
+        buyLimit = PUsToSpend / 5;
         if (Math.random() > 0.40) {
           SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack,
               seaProductionRules, PUsToSpend, buyLimit, data, player, 2);
@@ -298,7 +300,8 @@ public class ProPurchaseAI {
           landProductionRules, landPUs, buyLimit, data, player, 2);
     } else {
       landPurchase = false;
-      buyLimit = PUsToSpend / 8; // assume higher end purchase
+      // assume higher end purchase
+      buyLimit = PUsToSpend / 8;
       seaProductionRules.addAll(airProductionRules);
       if (Math.random() > 0.45) {
         SUtils.findPurchaseMix(bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack,
@@ -597,7 +600,8 @@ public class ProPurchaseAI {
     final List<Territory> ourEnemyTerr = new ArrayList<Territory>();
     final List<Territory> ourSemiRankedBidTerrs = new ArrayList<Territory>();
     final List<Territory> ourTerrs = SUtils.allOurTerritories(data, player);
-    ourTerrs.remove(capitol); // we'll check the cap last
+    // we'll check the cap last
+    ourTerrs.remove(capitol);
     final HashMap<Territory, Float> rankMap =
         SUtils.rankTerritories(data, ourFriendlyTerr, ourEnemyTerr, null, player, tFirst, false, true);
     final List<Territory> ourTerrWithEnemyNeighbors =
@@ -606,7 +610,8 @@ public class ProPurchaseAI {
     // ourFriendlyTerr.retainAll(ourTerrs);
     if (ourTerrWithEnemyNeighbors.contains(capitol)) {
       ourTerrWithEnemyNeighbors.remove(capitol);
-      ourTerrWithEnemyNeighbors.add(capitol); // move capitol to the end of the list, if it is touching enemies
+      // move capitol to the end of the list, if it is touching enemies
+      ourTerrWithEnemyNeighbors.add(capitol);
     }
     Territory bidLandTerr = null;
     if (ourTerrWithEnemyNeighbors.size() > 0) {

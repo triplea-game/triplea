@@ -44,8 +44,9 @@ public class GameSelectorModel extends Observable {
   private String m_fileName = "";
   private boolean m_canSelect = true;
   private boolean m_isHostHeadlessBot = false;
-  private ClientModel m_clientModelForHostBots = null; // just for host bots, so we can get the actions for loading/saving games on the bots
-                                                       // from this model
+  // just for host bots, so we can get the actions for loading/saving games on the bots
+  // from this model
+  private ClientModel m_clientModelForHostBots = null;
 
   public GameSelectorModel() {
     setGameData(null);

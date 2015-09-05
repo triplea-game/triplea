@@ -425,7 +425,8 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private int getRowTotal() {
-      int rowsTotal = m_sections.size() * 2; // we include a space between sections as well
+      // we include a space between sections as well
+      int rowsTotal = m_sections.size() * 2;
       for (final Map<ICondition, String> map : m_statsObjective.values()) {
         rowsTotal += map.size();
       }
@@ -904,11 +905,13 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
  * delegate = new DefaultCellEditor.EditorDelegate()
  * {
  * private static final long serialVersionUID = 382738058299167626L;
+ *
  * @Override
  * public void setValue(final Object value)
  * {
  * textArea.setText((value != null) ? value.toString() : "");
  * }
+ *
  * @Override
  * public Object getCellEditorValue()
  * {
@@ -918,6 +921,7 @@ class EditorPaneTableCellRenderer extends JEditorPane implements TableCellRender
  * }
  * }
  * // author: Heinz M. Kabutz
+ *
  * @SuppressWarnings({ "unchecked", "rawtypes" })
  * class TextAreaTableCellRenderer extends JTextArea implements TableCellRenderer
  * {

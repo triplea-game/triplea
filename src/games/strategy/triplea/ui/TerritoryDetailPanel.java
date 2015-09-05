@@ -40,7 +40,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   private final JButton m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
   private Territory m_currentTerritory;
   private final TripleAFrame m_frame;
-  private Territory m_new_territory = null; // if not null, shift is pressed
+  // if not null, shift is pressed
+  private Territory m_new_territory = null;
 
   public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext,
       final TripleAFrame frame) {

@@ -96,7 +96,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
     if (hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")
         || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
-      return INVALID_MAC; // Must have been tampered with
+      // Must have been tampered with
+      return INVALID_MAC;
     }
     final Tuple<Boolean, Timestamp> macBanned = new BannedMacController().isMacBanned(hashedMac);
     if (macBanned.getFirst()) {

@@ -89,22 +89,20 @@ public class PoliticsPanel extends ActionPanel {
    * waits till someone calls release() and then returns the political action
    * chosen
    *
-   * @param firstRun
    * @return the choice of political action
    */
   public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
       final IPoliticsDelegate iPoliticsDelegate) {
     m_firstRun = firstRun;
-    // NEVER EVER ACCESS A DELEGATE OR BRIDGE FROM A UI!!!! (or the game won't work in multiplayer) (in other words, do not use the
-    // DelegateFinder in any way, or access local delegates, or pass the bridge)
-    m_validPoliticalActions = new ArrayList<PoliticalActionAttachment>(iPoliticsDelegate.getValidActions()); // reset each time, we need to
-                                                                                                             // retest the conditions...
+
+    // Never use a delegate or bridge from a UI. Multiplayer games will not work.
+    m_validPoliticalActions = new ArrayList<PoliticalActionAttachment>(iPoliticsDelegate.getValidActions());
     Collections.sort(m_validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
     if (m_firstRun && m_validPoliticalActions.isEmpty()) {
-      return null; // No Valid political actions, do nothing
+      // No Valid political actions, do nothing
+      return null;
     } else {
       if (m_firstRun) {
-        // play a sound for this phase
         DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer().getName());
       }
       SwingUtilities.invokeLater(new Runnable() {

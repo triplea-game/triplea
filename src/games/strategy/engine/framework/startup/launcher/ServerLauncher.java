@@ -150,8 +150,8 @@ public class ServerLauncher extends AbstractLauncher {
       // signal that they are ready.
       ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME))
           .doneSelectingPlayers(gameDataAsBytes, m_serverGame.getPlayerManager().getPlayerMapping());
-      final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty();// && !m_localPlayerMapping.isEmpty(); // do we need to have a local
-                                                                        // player? i don't think we do...
+
+      final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty();
       if (useSecureRandomSource) {
         // server game.
         // try to find an opponent to be the other side of the crypto random source.
@@ -255,8 +255,9 @@ public class ServerLauncher extends AbstractLauncher {
             stopGame();
           }
           try {
-            Thread.sleep(200); // having an oddball issue with the zip stream being closed while parsing to load default game. might be
-                               // caused by closing of stream while unloading map resources.
+            // having an oddball issue with the zip stream being closed while parsing to load default game. might be
+            // caused by closing of stream while unloading map resources.
+            Thread.sleep(200);
           } catch (final InterruptedException e) {
           }
           // either game ended, or aborted, or a player left or disconnected
@@ -264,8 +265,9 @@ public class ServerLauncher extends AbstractLauncher {
             try {
               System.out.println("Game ended, going back to waiting.");
               if (m_serverModel != null) {
-                m_serverModel.setAllPlayersToNullNodes(); // if we do not do this, we can get into an infinite loop of launching a game,
-                                                          // then crashing out, then launching, etc.
+                // if we do not do this, we can get into an infinite loop of launching a game,
+                // then crashing out, then launching, etc.
+                m_serverModel.setAllPlayersToNullNodes();
               }
               final File f1 =
                   new File(SaveGameFileChooser.DEFAULT_DIRECTORY, SaveGameFileChooser.getAutoSaveFileName());

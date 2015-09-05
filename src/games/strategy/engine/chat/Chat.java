@@ -34,11 +34,13 @@ public class Chat {
   private final SentMessagesHistory m_sentMessages;
   private volatile long m_chatInitVersion = -1;
   // mutex used for access synchronization to nodes
-  private final Object m_mutexNodes = new Object(); // TODO: check if this mutex is used for something else as well
+  // TODO: check if this mutex is used for something else as well
+  private final Object m_mutexNodes = new Object();
   private List<INode> m_nodes;
   // this queue is filled ONLY in init phase when m_chatInitVersion is default (-1) and nodes should not be changed until end of
   // initialization
-  private final Object m_mutexQueue = new Object(); // synchronizes access to queue
+  // synchronizes access to queue
+  private final Object m_mutexQueue = new Object();
   private List<Runnable> m_queuedInitMessages = new ArrayList<Runnable>();
   private final List<ChatMessage> m_chatHistory = new ArrayList<ChatMessage>();
   private final StatusManager m_statusManager;

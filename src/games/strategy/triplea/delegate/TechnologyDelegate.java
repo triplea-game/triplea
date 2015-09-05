@@ -110,7 +110,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   public Serializable saveState() {
     final TechnologyExtendedDelegateState state = new TechnologyExtendedDelegateState();
     state.superState = super.saveState();
-    // add other variables to state here:
     state.m_needToInitialize = m_needToInitialize;
     state.m_techs = m_techs;
     return state;
@@ -120,7 +119,6 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   public void loadState(final Serializable state) {
     final TechnologyExtendedDelegateState s = (TechnologyExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_needToInitialize = s.m_needToInitialize;
     m_techs = s.m_techs;
   }

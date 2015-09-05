@@ -117,7 +117,8 @@ public class MutedIpController {
     // If the mute has expired, allow the ip
     if (expired) {
       removeMutedIp(ip);
-      result = -1; // Signal as not-muted
+      // Signal as not-muted
+      result = -1;
     }
     return result;
   }

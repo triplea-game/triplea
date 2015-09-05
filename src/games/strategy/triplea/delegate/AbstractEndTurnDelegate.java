@@ -203,16 +203,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   public void loadState(final Serializable state) {
     final EndTurnExtendedDelegateState s = (EndTurnExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_needToInitialize = s.m_needToInitialize;
     m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
   }
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    return true; // currently we need to call this regardless, because it resets player sounds for the turn.
-    // return PBEMMessagePoster.GameDataHasPlayByEmailOrForumMessengers(getData()) || m_player.isAI(); // we could have a pbem/forum post to
-    // do
+    // currently we need to call this regardless, because it resets player sounds for the turn.
+    return true;
   }
 
   private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data) {
@@ -248,7 +246,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (shareWith == null || shareWith.isEmpty()) {
       return "";
     }
-    PlayerID giveWarBondsTo = null; // take first one
+    // take first one
+    PlayerID giveWarBondsTo = null;
     for (final PlayerID p : shareWith) {
       final int pCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
       final int pSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
@@ -403,7 +402,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
           rolledDice = true;
           for (final int d : dice) {
-            final int roll = d + 1; // we are zero based
+            // we are zero based
+            final int roll = d + 1;
             loss += (roll <= 3 ? roll : 0);
           }
         }

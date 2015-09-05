@@ -138,7 +138,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return undoMove(moveIndex, false);
   }
 
-  protected final String undoMove(final int moveIndex, boolean suppressError) {
+  protected final String undoMove(final int moveIndex, final boolean suppressError) {
     // clean up any state we may have
     m_CANCEL_MOVE_ACTION.actionPerformed(null);
     // undo the move

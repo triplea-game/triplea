@@ -32,7 +32,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   protected int m_attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
   @InternalDoNotExport
-  protected int m_attemptsLeftThisTurn = 1; // Do Not Export (do not include in IAttachment).
+  // Do Not Export (do not include in IAttachment).
+  protected int m_attemptsLeftThisTurn = 1;
   // which players should accept this action? this could be the player who is the target of this action in the case of proposing a treaty or
   // the players in your 'alliance' in case you want to declare war...
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as well. it is good to

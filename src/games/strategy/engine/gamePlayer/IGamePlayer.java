@@ -35,6 +35,7 @@ public interface IGamePlayer extends IRemotePlayer {
   public void stopGame();
   /*
    * (now in superclass)
+   *
    * @return the id of this player. This id is initialized by the initialize method in IGamePlayer.
    * public PlayerID getPlayerID();
    */

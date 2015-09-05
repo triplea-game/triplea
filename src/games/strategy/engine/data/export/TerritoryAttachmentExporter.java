@@ -40,7 +40,8 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter {
     if (originalOwner == null && (t.getOwner() != null && !t.getOwner().equals(PlayerID.NULL_PLAYERID))) {
       return printDefaultOption("originalOwner", PlayerID.NULL_PLAYERID.getName());
     } else if (originalOwner == null) {
-      return ""; // must be that original owner and current owner are both null
+      // must be that original owner and current owner are both null
+      return "";
     }
     if (!originalOwner.equals(t.getOwner())) {
       return printDefaultOption("originalOwner", originalOwner.getName());

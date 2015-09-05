@@ -186,14 +186,16 @@ public class AdvancedUtils {
       for (final Territory ter : nextSet) {
         processed.add(ter);
         if (routeMatch.match(ter)) {
-          newSet.addAll(data.getMap().getNeighbors(ter)); // Add all this ter's neighbors to the next set for checking
+          // Add all this ter's neighbors to the next set for checking
+          newSet.addAll(data.getMap().getNeighbors(ter));
           // (don't worry, neighbors already processed or in this current nextSet will be removed)
         }
         if (match.match(ter)) {
           result.add(ter);
         }
       }
-      newSet.removeAll(processed); // Don't check any that have been processed
+      // Don't check any that have been processed
+      newSet.removeAll(processed);
       nextSet = newSet;
       dist++;
     }
@@ -219,8 +221,10 @@ public class AdvancedUtils {
       if (ua.getCarrierCost() > 0) {
         // If we haven't ignored enough trailing planes
         if (processedPlaneCount < planesThatDontNeedToLand) {
-          processedPlaneCount++; // Increase number of trailing planes ignored
-          continue; // And skip any processing
+          // Increase number of trailing planes ignored
+          processedPlaneCount++;
+          // And skip any processing
+          continue;
         }
         // If this is the first carrier seek
         if (seekedCarrier == null) {
@@ -228,10 +232,12 @@ public class AdvancedUtils {
               new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
               result.size() - 1);
           if (seekedCarrierIndex == -1) {
-            break; // No carriers left
+            // No carriers left
+            break;
           }
           seekedCarrier = result.get(seekedCarrierIndex);
-          indexToPlaceCarrierAt = i + 1; // Tell the code to insert carrier to the right of this plane
+          // Tell the code to insert carrier to the right of this plane
+          indexToPlaceCarrierAt = i + 1;
           spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
         }
         spaceLeftOnSeekedCarrier -= ua.getCarrierCost();
@@ -247,14 +253,16 @@ public class AdvancedUtils {
             // (index decreased cause removal of carrier reduced indexes)
             result.remove(seekedCarrier);
             result.add(indexToPlaceCarrierAt - 1, seekedCarrier);
-            i--; // We removed carrier in earlier part of list, so decrease index
+            // We removed carrier in earlier part of list, so decrease index
+            i--;
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
                 new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
                 result.size() - 1);
             if (seekedCarrier == null) {
-              break; // No carriers left
+              // No carriers left
+              break;
             }
             // Place next carrier right before this plane (which just filled the old carrier that was just moved)
             indexToPlaceCarrierAt = i;
@@ -294,7 +302,8 @@ public class AdvancedUtils {
                 new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)),
                 result.size() - 1);
             if (seekedCarrier == null) {
-              break; // No carriers left
+              // No carriers left
+              break;
             }
             // Since we only moved planes up, just reduce next carrier place index by plane move count
             indexToPlaceCarrierAt = carrierPlaceLocation - planeMoveCount;

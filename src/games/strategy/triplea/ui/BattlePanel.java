@@ -606,7 +606,8 @@ public class BattlePanel extends ActionPanel {
       if (selected instanceof Territory) {
         return (Territory) selected;
       }
-      return null; // User selected "None" option
+      // User selected "None" option
+      return null;
     }
   }
 }

@@ -145,7 +145,8 @@ public class GameDataManager {
         }
       }
       final GameData data = (GameData) input.readObject();
-      updateDataToBeCompatibleWithNewEngine(readVersion, data); // TODO: expand this functionality (and keep it updated)
+      // TODO: expand this functionality (and keep it updated)
+      updateDataToBeCompatibleWithNewEngine(readVersion, data);
       loadDelegates(input, data);
       data.postDeSerialize();
       return data;

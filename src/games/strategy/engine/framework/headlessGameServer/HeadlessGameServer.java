@@ -3,7 +3,6 @@ package games.strategy.engine.framework.headlessGameServer;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.util.Date;
 import java.util.HashSet;
@@ -24,7 +23,6 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -308,8 +306,8 @@ public class HeadlessGameServer {
     }
     final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
-    final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(60 * 24 * 2, minutes)) * 1000 * 60); // milliseconds (48 hours
-                                                                                                                // max)
+    // milliseconds (48 hours max)
+    final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(60 * 24 * 2, minutes)) * 1000 * 60);
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(new Runnable() {
         @Override
@@ -398,7 +396,8 @@ public class HeadlessGameServer {
     }
     final String localPassword = System.getProperty(GameRunner2.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
-    final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(24 * 30, hours)) * 1000 * 60 * 60); // milliseconds (30 days max)
+    // milliseconds (30 days max)
+    final long expire = System.currentTimeMillis() + (Math.max(0, Math.min(24 * 30, hours)) * 1000 * 60 * 60);
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(new Runnable() {
         @Override
@@ -535,7 +534,8 @@ public class HeadlessGameServer {
             Thread.sleep(10 * 60 * 1000);
           } catch (final InterruptedException e1) {
           }
-          restartLobbyWatcher(m_setupPanelModel, m_iGame); // try again, but don't catch it this time
+          // try again, but don't catch it this time
+          restartLobbyWatcher(m_setupPanelModel, m_iGame);
         }
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
@@ -624,7 +624,8 @@ public class HeadlessGameServer {
       if (m_setupPanelModel != null) {
         final ISetupPanel setup = m_setupPanelModel.getPanel();
         if (setup != null && setup instanceof ServerSetupPanel) {
-          // ((ServerSetupPanel) setup).shutDown();// this is causing a deadlock when in a shutdown hook, due to swing/awt
+          // this is causing a deadlock when in a shutdown hook, due to swing/awt
+          // ((ServerSetupPanel) setup).shutDown();
         } else if (setup != null && setup instanceof HeadlessServerSetup) {
           ((HeadlessServerSetup) setup).shutDown();
         }
@@ -663,7 +664,8 @@ public class HeadlessGameServer {
             if (!started) {
               System.out.println("Error in launcher, going back to waiting.");
             } else {
-              break; // TODO: need a latch instead?
+              // TODO: need a latch instead?
+              break;
             }
           }
         }
@@ -691,8 +693,9 @@ public class HeadlessGameServer {
       e.printStackTrace();
       final ServerModel model = getServerModel(setupPanelModel);
       if (model != null) {
-        model.setAllPlayersToNullNodes();// if we do not do this, we can get into an infinite loop of launching a game, then crashing out,
-                                         // then launching, etc.
+        // if we do not do this, we can get into an infinite loop of launching a game, then crashing out,
+        // then launching, etc.
+        model.setAllPlayersToNullNodes();
       }
     }
     return false;
@@ -756,7 +759,8 @@ public class HeadlessGameServer {
     // grab these before we override them with the loggers
     final InputStream in = System.in;
     final PrintStream out = System.out;
-    setupLogging();// after handling the command lines, because we use the triplea.game.name= property in our log file name
+    // after handling the command lines, because we use the triplea.game.name= property in our log file name
+    setupLogging();
     final boolean startUI = getUseGameServerUI();
     if (!startUI) {
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);

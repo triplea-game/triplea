@@ -143,6 +143,7 @@ public interface ITripleaPlayer extends IRemotePlayer {
 
   /*
    * send a political notification to this player
+   *
    * @param message
    * the message sent
    * public void reportPoliticalMessage(String message);
@@ -230,12 +231,16 @@ public interface ITripleaPlayer extends IRemotePlayer {
 
   /*
    * Ask the player if he wishes to scramble units to the battle.
+   *
    * @param battleID
    * - the battle
+   *
    * @param possibleTerritories
    * - where the player can retreat to
+   *
    * @param message
    * - user displayable message
+   *
    * @return the territory to retreat to, or null if the player doesn't wish to retreat
    * public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player);
    */

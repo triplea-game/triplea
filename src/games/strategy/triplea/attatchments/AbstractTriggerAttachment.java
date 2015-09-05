@@ -28,7 +28,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // compatibility.
   private int m_uses = -1;
   @InternalDoNotExport
-  private boolean m_usedThisRound = false; // Do Not Export (do not include in IAttachment).
+  // Do Not Export (do not include in IAttachment).
+  private boolean m_usedThisRound = false;
   private String m_notification = null;
   private ArrayList<Tuple<String, String>> m_when = new ArrayList<Tuple<String, String>>();
 

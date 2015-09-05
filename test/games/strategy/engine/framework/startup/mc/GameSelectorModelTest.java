@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -32,18 +31,18 @@ import games.strategy.util.Version;
 @RunWith(MockitoJUnitRunner.class)
 public class GameSelectorModelTest {
 
-  private static void assertHasEmptyData(GameSelectorModel objectToCheck) {
+  private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
     assertThat(objectToCheck.getGameData(), Matchers.nullValue());
     assertHasEmptyDisplayData(objectToCheck);
   }
 
-  private static void assertHasEmptyDisplayData(GameSelectorModel objectToCheck) {
+  private static void assertHasEmptyDisplayData(final GameSelectorModel objectToCheck) {
     assertThat(objectToCheck.getFileName(), Matchers.is("-"));
     assertThat(objectToCheck.getGameName(), Matchers.is("-"));
     assertThat(objectToCheck.getGameRound(), Matchers.is("-"));
   }
 
-  private static void assertHasFakeTestData(GameSelectorModel objectToCheck) {
+  private static void assertHasFakeTestData(final GameSelectorModel objectToCheck) {
     assertThat(objectToCheck.getGameName(), Matchers.is(fakeGameName));
     assertThat(objectToCheck.getGameRound(), Matchers.is(fakeGameRound));
     assertThat(objectToCheck.getGameVersion(), Matchers.is(fakeGameVersion));
@@ -157,9 +156,9 @@ public class GameSelectorModelTest {
   public void testClearDataButKeepGameInfo() {
     this.testObjectSetMockGameData();
 
-    String newGameName = " 123";
-    String newGameRound = "gameRound xyz";
-    String newGameVersion = "gameVersion abc";
+    final String newGameName = " 123";
+    final String newGameRound = "gameRound xyz";
+    final String newGameVersion = "gameVersion abc";
 
     testObj.clearDataButKeepGameInfo(newGameName, newGameRound, newGameVersion);
     verifyTestObjectObserverUpdateSent();
@@ -172,14 +171,14 @@ public class GameSelectorModelTest {
 
   @Test
   public void testLoadFromNewGameChooserEntry() {
-    String fileName = "testname";
+    final String fileName = "testname";
     when(mockEntry.getLocation()).thenReturn(fileName);
 
     when(mockEntry.getGameData()).thenReturn(mockGameData);
     prepareMockGameDataExpectations();
     try {
       when(mockEntry.getURI()).thenReturn(new URI("abc"));
-    } catch (URISyntaxException e) {
+    } catch (final URISyntaxException e) {
       throw new RuntimeException(e);
     }
     testObj.load(mockEntry);

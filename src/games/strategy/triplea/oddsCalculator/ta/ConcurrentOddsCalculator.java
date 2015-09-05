@@ -36,18 +36,23 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private int m_currentThreads = MAX_THREADS;
   private final ExecutorService m_executor;
   private final CopyOnWriteArrayList<OddsCalculator> m_workers = new CopyOnWriteArrayList<OddsCalculator>();
-  private volatile boolean m_isDataSet = false; // do not let calc be set up til data is set
-  private volatile boolean m_isCalcSet = false; // do not let calc start until it is set
-  private volatile boolean m_isShutDown = false; // shortcut everything if we are shutting down
-  private volatile int m_cancelCurrentOperation = 0; // shortcut setting of previous game data if we are trying to set it to a new one, or
-                                                     // shutdown
-  private final CountUpAndDownLatch m_latchSetData = new CountUpAndDownLatch(); // do not let calcing happen while we are setting game data
-  private final CountUpAndDownLatch m_latchWorkerThreadsCreation = new CountUpAndDownLatch(); // do not let setting of game data happen
-                                                                                              // multiple times while we offload creating
-                                                                                              // workers and copying data to a different
-                                                                                              // thread
-  private final Object m_mutexSetGameData = new Object(); // do not let setting of game data happen at same time
-  private final Object m_mutexCalcIsRunning = new Object(); // do not let multiple calculations or setting calc data happen at same time
+  // do not let calc be set up til data is set
+  private volatile boolean m_isDataSet = false;
+  // do not let calc start until it is set
+  private volatile boolean m_isCalcSet = false;
+  // shortcut everything if we are shutting down
+  private volatile boolean m_isShutDown = false;
+  // shortcut setting of previous game data if we are trying to set it to a new one, or shutdown
+  private volatile int m_cancelCurrentOperation = 0;
+  // do not let calcing happen while we are setting game data
+  private final CountUpAndDownLatch m_latchSetData = new CountUpAndDownLatch();
+  // do not let setting of game data happen multiple times while we offload creating workers and copying data to a different thread
+  private final CountUpAndDownLatch m_latchWorkerThreadsCreation = new CountUpAndDownLatch();
+
+  // do not let setting of game data happen at same time
+  private final Object m_mutexSetGameData = new Object();
+  // do not let multiple calculations or setting calc data happen at same time
+  private final Object m_mutexCalcIsRunning = new Object();
   private final List<OddsCalculatorListener> m_listeners = new ArrayList<OddsCalculatorListener>();
 
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
@@ -58,13 +63,17 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setGameData(final GameData data) {
-    m_latchSetData.increment(); // increment so that a new calc doesn't take place (since they all wait on this latch)
-    --m_cancelCurrentOperation; // cancel any current setting of data
-    cancel(); // cancel any existing calcing (it won't stop immediately, just quicker)
+    // increment so that a new calc doesn't take place (since they all wait on this latch)
+    m_latchSetData.increment();
+    // cancel any current setting of data
+    --m_cancelCurrentOperation;
+    // cancel any existing calcing (it won't stop immediately, just quicker)
+    cancel();
     synchronized (m_mutexSetGameData) {
       try {
-        m_latchWorkerThreadsCreation.await(); // since setting data takes place on a different thread, this is our token. wait on it since
-                                              // we could have exited the synchronized block already.
+        // since setting data takes place on a different thread, this is our token. wait on it since
+        m_latchWorkerThreadsCreation.await();
+        // we could have exited the synchronized block already.
       } catch (final InterruptedException e) {
       }
       cancel();
@@ -73,11 +82,12 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       if (data == null || m_isShutDown) {
         m_workers.clear();
         ++m_cancelCurrentOperation;
-        m_latchSetData.countDown(); // allow calcing and other stuff to go ahead
+        // allow calcing and other stuff to go ahead
+        m_latchSetData.countDown();
       } else {
         ++m_cancelCurrentOperation;
-        m_latchWorkerThreadsCreation.increment();// increment our token, so that we can set the data in a different thread and return from
-                                                 // this one
+        // increment our token, so that we can set the data in a different thread and return from this one
+        m_latchWorkerThreadsCreation.increment();
         m_executor.submit(new Runnable() {
           @Override
           public void run() {
@@ -96,54 +106,55 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private static int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy) { // use both time and memory left to
                                                                                                        // determine how many copies to make
     if (timeToCopyInMillis > 20000 || MAX_THREADS == 1) {
-      return 1; // just use 1 thread if we took more than 20 seconds to copy
+      // just use 1 thread if we took more than 20 seconds to copy
+      return 1;
     }
     final Runtime runtime = Runtime.getRuntime();
     final long usedMemoryAfterCopy = runtime.totalMemory() - runtime.freeMemory();
-    final long memoryLeftBeforeMax = runtime.maxMemory() - (Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy)); // we can not predict how
-                                                                                                                  // the gc works
-    final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy)); // make sure it is a decent size
-                                                                                                  // regardless of how stupid the gc is
+    // we can not predict how the gc works
+    final long memoryLeftBeforeMax = runtime.maxMemory() - (Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy));
+    // make sure it is a decent size
+    final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy));
+    // regardless of how stupid the gc is
+    // we leave some memory left over just in case
     final int numberOfTimesWeCanCopyMax =
-        Math.max(1, (int) (Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)))); // we
-                                                                                                    // leave
-                                                                                                    // some
-                                                                                                    // memory
-                                                                                                    // left
-                                                                                                    // over
-                                                                                                    // just
-                                                                                                    // in
-                                                                                                    // case
+        Math.max(1, (int) (Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy))));
+
     if (timeToCopyInMillis > 3000) {
-      return Math.min(numberOfTimesWeCanCopyMax, Math.max(1, (MAX_THREADS / 2))); // use half the number of threads available if we took
-                                                                                  // more than 3 seconds to copy
+      // use half the number of threads available if we took
+      // more than 3 seconds to copy
+      return Math.min(numberOfTimesWeCanCopyMax, Math.max(1, (MAX_THREADS / 2)));
     }
-    return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS); // use all threads
+    // use all threads
+    return Math.min(numberOfTimesWeCanCopyMax, MAX_THREADS);
   }
 
   private void createWorkers(final GameData data) {
     m_workers.clear();
     if (data != null && m_cancelCurrentOperation >= 0) {
-      final long startTime = System.currentTimeMillis(); // see how long 1 copy takes (some games can get REALLY big)
+      // see how long 1 copy takes (some games can get REALLY big)
+      final long startTime = System.currentTimeMillis();
       final long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
       final GameData newData;
       try { // make first copy, then release lock on it so game can continue (ie: we don't want to lock on it while we copy it 16 times,
             // when once is enough)
-        data.acquireReadLock(); // don't let the data change while we make the first copy
+        // don't let the data change while we make the first copy
+        data.acquireReadLock();
         newData = GameDataUtils.cloneGameData(data, false);
       } finally {
         data.releaseReadLock();
       }
       m_currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
       try {
-        newData.acquireReadLock(); // make sure all workers are using the same data
+        // make sure all workers are using the same data
+        newData.acquireReadLock();
         int i = 0;
         if (m_currentThreads <= 2 || MAX_THREADS <= 2) // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
         { // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most only 1 more copy to
           // make)
           while (m_cancelCurrentOperation >= 0 && i < m_currentThreads) {
-            m_workers.add(new OddsCalculator(newData, (m_currentThreads == ++i))); // the last one will use our already copied data from
-                                                                                   // above, without copying it again
+            // the last one will use our already copied data from above, without copying it again
+            m_workers.add(new OddsCalculator(newData, (m_currentThreads == ++i)));
           }
         } else { // multi-thread our copying, cus why the heck not (it increases the speed of copying by about double)
           final CountDownLatch workerLatch = new CountDownLatch(m_currentThreads - 1);
@@ -159,8 +170,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
               }
             });
           }
-          m_workers.add(new OddsCalculator(newData, true)); // the last one will use our already copied data from above, without copying it
-                                                            // again
+          // the last one will use our already copied data from above, without copying it again
+          m_workers.add(new OddsCalculator(newData, true));
           try {
             workerLatch.await();
           } catch (final InterruptedException e) {
@@ -171,14 +182,18 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       }
     }
     if (m_cancelCurrentOperation < 0 || data == null) {
-      m_workers.clear(); // we could have cancelled while setting data, so clear the workers again if so
+      // we could have cancelled while setting data, so clear the workers again if so
+      m_workers.clear();
       m_isDataSet = false;
     } else {
-      m_isDataSet = true;// should make sure that all workers have their game data set before we can call calculate and other things
+      // should make sure that all workers have their game data set before we can call calculate and other things
+      m_isDataSet = true;
       notifyListenersGameDataIsSet();
     }
-    m_latchWorkerThreadsCreation.countDown(); // allow setting new data to take place if it is waiting on us
-    m_latchSetData.countDown(); // allow calcing and other stuff to go ahead
+    // allow setting new data to take place if it is waiting on us
+    m_latchWorkerThreadsCreation.countDown();
+    // allow calcing and other stuff to go ahead
+    m_latchSetData.countDown();
     s_logger.fine("Initialized worker thread pool with size: " + m_workers.size());
   }
 
@@ -201,8 +216,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   private void awaitLatch() {
     try {
-      m_latchSetData.await();// there is a small chance calculate or setCalculateData or something could be called in between calls to
-                             // setGameData
+      // there is a small chance calculate or setCalculateData or something could be called in between calls to setGameData
+      m_latchSetData.await();
     } catch (final InterruptedException e) {
     }
   }
@@ -218,8 +233,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       final int workerRunCount = Math.max(1, (runCount / Math.max(1, workerNum)));
       for (final OddsCalculator worker : m_workers) {
         if (!m_isDataSet || m_isShutDown) {
-          return;// we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null
-                 // data
+          // we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
+          return;
         }
         worker.setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects,
             (runCount <= 0 ? 0 : workerRunCount));
@@ -246,8 +261,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       final List<Future<AggregateResults>> list = new ArrayList<Future<AggregateResults>>();
       for (final OddsCalculator worker : m_workers) {
         if (!getIsReady()) {
-          return new AggregateResults(0);// we could have attempted to set a new game data, while the old one was still being set, causing
-                                         // it to abort with null data
+          // we could have attempted to set a new game data, while the old one was still being set, causing it to abort with null data
+          return new AggregateResults(0);
         }
         if (!worker.getIsReady()) {
           throw new IllegalStateException("Called calculate before setting calculate data!");

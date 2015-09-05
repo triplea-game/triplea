@@ -81,9 +81,11 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         if (delegate == null) {
           final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() can not be null. CurrentStep: "
               + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
-          System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
-                                            // too
-          throw new IllegalStateException(errorMessage); // Veqryn: hope that this suffices...?
+          // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
+          // too
+          System.err.println(errorMessage);
+          // Veqryn: hope that this suffices...?
+          throw new IllegalStateException(errorMessage);
         }
         final RemoteName remoteName;
         try {
@@ -93,8 +95,9 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           final String errorMessage =
               "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
                   + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
-          System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
-                                            // too
+          // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
+          // too
+          System.err.println(errorMessage);
           throw new IllegalStateException(errorMessage, e);
         }
         return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(remoteName));
@@ -118,8 +121,9 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         if (delegate == null) {
           final String errorMessage =
               "IDelegate in DefaultPlayerBridge.getRemote() can not be null. Looking for delegate named: " + name;
-          System.err.println(errorMessage); // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
-                                            // too
+          // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
+          System.err.println(errorMessage);
+          // too
           throw new IllegalStateException(errorMessage);
         }
         if (!(delegate instanceof IPersistentDelegate)) {

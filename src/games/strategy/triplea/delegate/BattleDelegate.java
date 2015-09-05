@@ -155,9 +155,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   public void loadState(final Serializable state) {
     final BattleExtendedDelegateState s = (BattleExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_battleTracker = s.m_battleTracker;
-    // m_originalOwnerTracker = s.m_originalOwnerTracker;
     m_needToInitialize = s.m_needToInitialize;
     m_needToScramble = s.m_needToScramble;
     m_needToKamikazeSuicideAttacks = s.m_needToKamikazeSuicideAttacks;
@@ -185,14 +183,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   public static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
     setupUnitsInSameTerritoryBattles(battleTracker, aBridge);
     setupTerritoriesAbandonedToTheEnemy(battleTracker, aBridge);
-    battleTracker.clearFinishedBattles(aBridge); // these are "blitzed" and "conquered" territories without a fight, without a pending
-                                                 // battle
+    // these are "blitzed" and "conquered" territories without a fight, without a pending
+    // battle
+    battleTracker.clearFinishedBattles(aBridge);
     resetMaxScrambleCount(aBridge);
   }
 
   public static void clearEmptyAirBattleAttacks(final BattleTracker battleTracker, final IDelegateBridge aBridge) {
-    battleTracker.clearEmptyAirBattleAttacks(aBridge); // these are air battle and air raids where there is no defender, probably because no
-                                                       // air is in range to defend
+    // these are air battle and air raids where there is no defender, probably because no
+    // air is in range to defend
+    battleTracker.clearEmptyAirBattleAttacks(aBridge);
   }
 
   @Override
@@ -380,7 +380,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (bombardingTerritory != null) {
       return battleTerritories.get(bombardingTerritory);
     }
-    return null; // User elected not to bombard with this unit
+    // User elected not to bombard with this unit
+    return null;
   }
 
   private static void landParatroopers(final PlayerID player, final Territory battleSite, final GameData data,
@@ -444,8 +445,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           dependants.addAll(entry.getValue());
         }
       }
-      dependants.removeAll(attackingUnits); // no duplicates
-      attackingUnits.addAll(dependants); // add the dependants to the attacking list
+      // no duplicates
+      dependants.removeAll(attackingUnits);
+      // add the dependants to the attacking list
+      attackingUnits.addAll(dependants);
       final List<Unit> enemyUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
       final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
@@ -583,8 +586,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             dependants.addAll(entry.getValue());
           }
         }
-        dependants.removeAll(abandonedToUnits); // no duplicates
-        abandonedToUnits.addAll(dependants); // add the dependants to the attacking list
+        // no duplicates
+        dependants.removeAll(abandonedToUnits);
+        // add the dependants to the attacking list
+        abandonedToUnits.addAll(dependants);
       }
       // either we have abandoned the territory (so there are no more units that are enemy units of our enemy units)
       // or we are possibly bombing the territory (so we may have units there still)
@@ -834,7 +839,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
             change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
           }
-          change.add(ChangeFactory.moveUnits(t, to, scrambling)); // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
+          // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
+          change.add(ChangeFactory.moveUnits(t, to, scrambling));
           m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles " + scrambling.size()
               + " units out of " + t.getName() + " to defend against the attack in " + to.getName(), scrambling);
           scrambledHere = true;

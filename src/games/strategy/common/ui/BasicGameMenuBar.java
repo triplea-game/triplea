@@ -136,7 +136,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
               scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
               final JDialog dialog = new JDialog(m_frame);
               dialog.setModal(false);
-              // dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
+              // needs java 1.6 at least...
+              // dialog.setModalityType(ModalityType.MODELESS);
               dialog.setAlwaysOnTop(true);
               dialog.add(scroll, BorderLayout.CENTER);
               final JPanel buttons = new JPanel();
@@ -441,7 +442,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
       Application.getApplication().addApplicationListener(new ApplicationAdapter() {
         @Override
         public void handleAbout(final ApplicationEvent event) {
-          event.setHandled(true); // otherwise the default About menu will still show appear
+          // otherwise the default About menu will still show appear
+          event.setHandled(true);
           JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(),
               JOptionPane.PLAIN_MESSAGE);
         }

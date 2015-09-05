@@ -42,8 +42,8 @@ abstract public class AbstractLauncher implements ILauncher {
     final Runnable r = new Runnable() {
       @Override
       public void run() {
-        NewGameChooser.clearNewGameChooserModel(); // we don't want to keep around all the memory for this, since we have the gamedata that
-                                                   // we want
+        // we don't want to keep around all the memory for this, since we have the gamedata that we want
+        NewGameChooser.clearNewGameChooserModel();
         launchInNewThread(parent);
       }
     };

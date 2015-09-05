@@ -77,7 +77,8 @@ public class CompositeRouteFinder {
             }
           }
           if (bestRouteToEndScore <= routeScore) {
-            continue; // Ignore this route leader, as we know we already have a better route
+            // Ignore this route leader, as we know we already have a better route
+            continue;
           }
           routeScoreMap.put(ter, routeScore);
           newLeaders.add(ter);

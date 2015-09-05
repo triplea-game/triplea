@@ -233,9 +233,9 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         final JScrollPane scroll = new JScrollPane(editorPane);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-        final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to
-                                                               // account for
-        final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
+        // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus the window sides
+        final int availHeight = screenResolution.height - 120;
+        final int availWidth = screenResolution.width - 40;
         scroll.setPreferredSize(new Dimension(
             (scroll.getPreferredSize().width > availWidth ? availWidth
                 : (scroll.getPreferredSize().height > availHeight
@@ -246,7 +246,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
                     : scroll.getPreferredSize().height))));
         final JDialog dialog = new JDialog(m_frame);
         dialog.setModal(false);
-        // dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
+        // needs java 1.6 at least...
+        // dialog.setModalityType(ModalityType.MODELESS);
         dialog.setAlwaysOnTop(true);
         dialog.add(scroll, BorderLayout.CENTER);
         final JPanel buttons = new JPanel();
@@ -521,14 +522,15 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
         final JScrollPane scroll = new JScrollPane(ui);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-        final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to
-                                                               // account for
-        final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
-        // availHeight = (int) ((float) availHeight * 2 / 3);
+        // not only do we have a start bar, but we also have the message dialog to account for
+        final int availHeight = screenResolution.height - 120;
+        // just the scroll bars plus the window sides
+        final int availWidth = screenResolution.width - 40;
+
         scroll.setPreferredSize(
             new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
                 (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
-        // scroll.setMaximumSize(new Dimension(availWidth, availHeight));
+
         JOptionPane.showMessageDialog(m_frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
       }
     };
@@ -544,7 +546,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
       public void actionPerformed(final ActionEvent e) {
         final boolean tfselected = showUnitsBox.isSelected();
         getUIContext().setShowUnits(tfselected);
-        // games.strategy.triplea.ui.screen.TileManager.store(tfselected);
         m_frame.getMapPanel().resetMap();
       }
     });
@@ -1328,7 +1329,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame> {
           data.releaseReadLock();
         }
         final JComponent newContentPane = new SetupFrame(clonedGameData);
-        newContentPane.setOpaque(true); // content panes must be opaque
+        // content panes must be opaque
+        newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
         // Display the window.
         frame.pack();

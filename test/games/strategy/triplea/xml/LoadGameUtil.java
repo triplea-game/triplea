@@ -12,20 +12,21 @@ import games.strategy.engine.framework.GameRunner2;
 
 public class LoadGameUtil {
 
-  public static GameData loadGame( final String game ) {
-    return loadGame(game, new String[] { "maps" } );
+  public static GameData loadGame(final String game) {
+    return loadGame(game, new String[] {"maps"});
   }
 
-  public static GameData loadTestGame( final String game ) {
-    return loadGame(game, new String[] { "test_data" } );
+  public static GameData loadTestGame(final String game) {
+    return loadGame(game, new String[] {"test_data"});
   }
 
   /**
    * @deprecated drop the first parameter and call either loadGame(String game)
-   * or LoadTestGame(String game) instead
+   *             or LoadTestGame(String game) instead
    */
+  @Deprecated
   public static GameData loadGame(final String map, final String game) {
-    return loadGame(game,new String[] { "maps", "test_data" }  );
+    return loadGame(game, new String[] {"maps", "test_data"});
   }
 
   private static GameData loadGame(final String game, final String[] possibleFolders) {
@@ -48,10 +49,10 @@ public class LoadGameUtil {
    * First try to load the game as a file on the classpath, if not found there
    * then try to load it from either the "maps" or "test_data" folders.
    */
-  private static InputStream openInputStream(final String game, String[] possibleFolders ) {
+  private static InputStream openInputStream(final String game, final String[] possibleFolders) {
     InputStream is = LoadGameUtil.class.getResourceAsStream(game);
     if (is == null) {
-      File f = GameRunner2.getFile( game, possibleFolders );
+      final File f = GameRunner2.getFile(game, possibleFolders);
       if (f.exists()) {
         try {
           is = new FileInputStream(f);

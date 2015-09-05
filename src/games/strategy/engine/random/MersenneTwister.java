@@ -1,4 +1,4 @@
-package games.strategy.engine.random; // so it will work with TripleA
+package games.strategy.engine.random;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -71,14 +71,19 @@ public class MersenneTwister extends java.util.Random implements Serializable {
   // Period parameters
   private static final int N = 624;
   private static final int M = 397;
-  private static final int MATRIX_A = 0x9908b0df; // private static final * constant vector a
-  private static final int UPPER_MASK = 0x80000000; // most significant w-r bits
-  private static final int LOWER_MASK = 0x7fffffff; // least significant r bits
+  // private static final * constant vector a
+  private static final int MATRIX_A = 0x9908b0df;
+  // most significant w-r bits
+  private static final int UPPER_MASK = 0x80000000;
+  // least significant r bits
+  private static final int LOWER_MASK = 0x7fffffff;
   // Tempering parameters
   private static final int TEMPERING_MASK_B = 0x9d2c5680;
   private static final int TEMPERING_MASK_C = 0xefc60000;
-  private int m_mt[]; // the array for the state vector
-  private int m_mti; // mti==N+1 means mt[N] is not initialized
+  // the array for the state vector
+  private int m_mt[];
+  // mti==N+1 means mt[N] is not initialized
+  private int m_mti;
   private int m_mag01[];
   // a good initial seed (of int size, though stored in a long)
   // private static final long GOOD_SEED = 4357;
@@ -188,8 +193,10 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     if (m_mti >= N) // generate N words at one time
     {
       int kk;
-      final int[] mt = this.m_mt; // locals are slightly faster
-      final int[] mag01 = this.m_mag01; // locals are slightly faster
+      // locals are slightly faster
+      final int[] mt = this.m_mt;
+      // locals are slightly faster
+      final int[] mag01 = this.m_mag01;
       for (kk = 0; kk < N - M; kk++) {
         y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
         mt[kk] = mt[kk + M] ^ (y >>> 1) ^ mag01[y & 0x1];
@@ -203,11 +210,16 @@ public class MersenneTwister extends java.util.Random implements Serializable {
       m_mti = 0;
     }
     y = m_mt[m_mti++];
-    y ^= y >>> 11; // TEMPERING_SHIFT_U(y)
-    y ^= (y << 7) & TEMPERING_MASK_B; // TEMPERING_SHIFT_S(y)
-    y ^= (y << 15) & TEMPERING_MASK_C; // TEMPERING_SHIFT_T(y)
-    y ^= (y >>> 18); // TEMPERING_SHIFT_L(y)
-    return y >>> (32 - bits); // hope that's right!
+    // TEMPERING_SHIFT_U(y)
+    y ^= y >>> 11;
+    // TEMPERING_SHIFT_S(y)
+    y ^= (y << 7) & TEMPERING_MASK_B;
+    // TEMPERING_SHIFT_T(y)
+    y ^= (y << 15) & TEMPERING_MASK_C;
+    // TEMPERING_SHIFT_L(y)
+    y ^= (y >>> 18);
+    // hope that's right!
+    return y >>> (32 - bits);
   }
 
   /*
@@ -244,9 +256,11 @@ public class MersenneTwister extends java.util.Random implements Serializable {
       throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
     }
     if (probability == 0.0f) {
-      return false; // fix half-open issues
+      // fix half-open issues
+      return false;
     } else if (probability == 1.0f) {
-      return true; // fix half-open issues
+      // fix half-open issues
+      return true;
     }
     return nextFloat() < probability;
   }
@@ -260,9 +274,11 @@ public class MersenneTwister extends java.util.Random implements Serializable {
       throw new IllegalArgumentException("probability must be between 0.0 and 1.0 inclusive.");
     }
     if (probability == 0.0) {
-      return false; // fix half-open issues
+      // fix half-open issues
+      return false;
     } else if (probability == 1.0) {
-      return true; // fix half-open issues
+      // fix half-open issues
+      return true;
     }
     return nextDouble() < probability;
   }
@@ -364,8 +380,10 @@ public class MersenneTwister extends java.util.Random implements Serializable {
     } else {
       double v1, v2, s;
       do {
-        v1 = 2 * nextDouble() - 1; // between -1.0 and 1.0
-        v2 = 2 * nextDouble() - 1; // between -1.0 and 1.0
+        // between -1.0 and 1.0
+        v1 = 2 * nextDouble() - 1;
+        // between -1.0 and 1.0
+        v2 = 2 * nextDouble() - 1;
         s = v1 * v1 + v2 * v2;
       } while (s >= 1 || s == 0);
       final double multiplier = /* Strict */Math.sqrt(-2 * /* Strict */Math.log(s) / s);
@@ -389,11 +407,13 @@ public class MersenneTwister extends java.util.Random implements Serializable {
       // first, convert the int from signed to "unsigned"
       long l = r.nextInt();
       if (l < 0) {
-        l += 4294967296L; // max int value
+        // max int value
+        l += 4294967296L;
       }
       String s = String.valueOf(l);
       while (s.length() < 10) {
-        s = " " + s; // buffer
+        // buffer
+        s = " " + s;
       }
       System.out.print(s + " ");
       if (j % 5 == 4) {

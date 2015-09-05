@@ -124,8 +124,9 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, m_bridge, null, null,
             true, true, true, true);
-        TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true); // will call
-                                                                                                                  // signalGameOver itself
+        // will call
+        TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+        // signalGameOver itself
       }
     }
     if (isWW2V2() || isWW2V3()) {
@@ -196,7 +197,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final EndRoundExtendedDelegateState state = new EndRoundExtendedDelegateState();
     state.superState = super.saveState();
-    // add other variables to state here:
     state.m_gameOver = m_gameOver;
     state.m_winners = m_winners;
     return state;
@@ -206,7 +206,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final EndRoundExtendedDelegateState s = (EndRoundExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_gameOver = s.m_gameOver;
     m_winners = s.m_winners;
   }
@@ -279,11 +278,9 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
       final String title = "Victory Achieved"
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
-      getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true); // we send the bridge, because we
-                                                                                                         // can call this method from
-                                                                                                         // outside this delegate, which
-                                                                                                         // means our local copy of m_bridge
-                                                                                                         // could be null.
+      // we send the bridge, because we can call this method from outside this delegate, which
+      // means our local copy of m_bridge could be null.
+      getDisplay(aBridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {
         // a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the game.

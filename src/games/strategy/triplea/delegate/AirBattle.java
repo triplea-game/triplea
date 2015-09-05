@@ -49,7 +49,8 @@ public class AirBattle extends AbstractBattle {
   protected final Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
   protected final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
   protected boolean m_intercept = false;
-  protected final int m_maxRounds; // -1 would mean forever until one side is eliminated. (default is 1 round)
+  // -1 would mean forever until one side is eliminated. (default is 1 round)
+  protected final int m_maxRounds;
 
   public AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker,
       final BattleTracker battleTracker) {

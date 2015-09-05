@@ -211,7 +211,8 @@ public class Route implements java.io.Serializable, Iterable<Territory> {
    * @return the total cost of the route including modifications due to territoryEffects and territoryConnections
    */
   public int getMovementCost(final Unit u) {
-    return m_steps.size(); // TODO implement me
+    // TODO implement me
+    return m_steps.size();
   }
 
   /**

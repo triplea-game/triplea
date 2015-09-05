@@ -33,11 +33,8 @@ public class FinishedBattle extends AbstractBattle {
   private static final long serialVersionUID = -5852495231826940879L;
   private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units
-                                                                                                                  // (stores a collection of
-                                                                                                                  // who is attacking from
-                                                                                                                  // where, needed for
-                                                                                                                  // undoing moves)
+  // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
+  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>();
 
   public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data,
@@ -153,7 +150,8 @@ public class FinishedBattle extends AbstractBattle {
         final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
         final int tuvLostAttacker = (withdrawn ? 0 : BattleCalculator.getTUV(lost, m_attacker, costs, m_data));
         m_attackerLostTUV += tuvLostAttacker;
-        m_whoWon = WhoWon.DEFENDER; // scripted?
+        // scripted?
+        m_whoWon = WhoWon.DEFENDER;
         if (!m_headless) {
           m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender,
               m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,

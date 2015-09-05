@@ -84,7 +84,8 @@ public class GameRunner2 {
   public static final String PROXY_PORT = "proxy.port";
   // other stuff
   public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
-  public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set"; // has the memory been manually set or not?
+  // has the memory been manually set or not?
+  public static final String TRIPLEA_MEMORY_SET = "triplea.memory.set";
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
   // non-commandline-argument-properties (for preferences)
@@ -93,8 +94,10 @@ public class GameRunner2 {
       "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
   private static final String TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE = "triplea.lastCheckForEngineUpdate";
   private static final String TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES = "triplea.lastCheckForMapUpdates";
-  public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly"; // only for Online?
-  public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx"; // what should our xmx be approximately?
+  // only for Online?
+  public static final String TRIPLEA_MEMORY_ONLINE_ONLY = "triplea.memory.onlineOnly";
+  // what should our xmx be approximately?
+  public static final String TRIPLEA_MEMORY_XMX = "triplea.memory.Xmx";
   public static final String TRIPLEA_MEMORY_USE_DEFAULT = "triplea.memory.useDefault";
   public static final String SYSTEM_INI = "system.ini";
   private static WaitWindow s_waitWindow;
@@ -303,8 +306,10 @@ public class GameRunner2 {
 
   public static String getDefaultLookAndFeel() {
     final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-    String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel"; // substance 7.x
-    // String defaultLookAndFeel = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel"; // substance 5.x
+    // substance 7.x
+    String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
+    // substance 5.x
+    // String defaultLookAndFeel = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel";
     // macs are already beautiful
     if (GameRunner.isMac()) {
       defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
@@ -369,7 +374,8 @@ public class GameRunner2 {
       s_countDownLatch.countDown();
     }
     TripleAProcessRunner.startNewTripleA(xmx);
-    System.exit(0); // must exit now
+    // must exit now
+    System.exit(0);
   }
 
   public static boolean useDefaultMaxMemory(final Properties systemIni) {
@@ -389,7 +395,8 @@ public class GameRunner2 {
     if (!useDefaultMaxMemory && maxMemoryString.length() > 0) {
       try {
         final int maxMemorySet = Integer.parseInt(maxMemoryString);
-        max = 1024 * 1024 * ((long) maxMemorySet); // it is in MB
+        // it is in MB
+        max = 1024 * 1024 * ((long) maxMemorySet);
       } catch (final NumberFormatException e) {
         e.printStackTrace();
       }
@@ -491,10 +498,12 @@ public class GameRunner2 {
   }
 
   private static void setupProxies() {
-    String proxyHostArgument = System.getProperty(PROXY_HOST); // System properties, not user pref
+    // System properties, not user pref
+    String proxyHostArgument = System.getProperty(PROXY_HOST);
     String proxyPortArgument = System.getProperty(PROXY_PORT);
     if (proxyHostArgument == null) {
-      proxyHostArgument = System.getProperty(HTTP_PROXYHOST); // in case it was set by -D we also check this
+      // in case it was set by -D we also check this
+      proxyHostArgument = System.getProperty(HTTP_PROXYHOST);
     }
     if (proxyPortArgument == null) {
       proxyPortArgument = System.getProperty(HTTP_PROXYPORT);
@@ -544,7 +553,8 @@ public class GameRunner2 {
       choice = ProxyChoice.valueOf(pref.get(PROXY_CHOICE, ProxyChoice.NONE.toString()));
     }
     if (proxyHost != null && proxyHost.trim().length() > 0) {
-      pref.put(PROXY_HOST, proxyHost); // user pref, not system properties
+      // user pref, not system properties
+      pref.put(PROXY_HOST, proxyHost);
       if (choice == ProxyChoice.USE_USER_PREFERENCES) {
         System.setProperty(HTTP_PROXYHOST, proxyHost);
       }
@@ -552,7 +562,8 @@ public class GameRunner2 {
     if (proxyPort != null && proxyPort.trim().length() > 0) {
       try {
         Integer.parseInt(proxyPort);
-        pref.put(PROXY_PORT, proxyPort); // user pref, not system properties
+        // user pref, not system properties
+        pref.put(PROXY_PORT, proxyPort);
         if (choice == ProxyChoice.USE_USER_PREFERENCES) {
           System.setProperty(HTTP_PROXYPORT, proxyPort);
         }
@@ -749,7 +760,8 @@ public class GameRunner2 {
         }
         if (s_countDownLatch != null) {
           try {
-            s_countDownLatch.await(); // wait til the main screen has shown.
+            // wait til the main screen has shown.
+            s_countDownLatch.await();
           } catch (final InterruptedException e) {
           }
         }
@@ -780,7 +792,8 @@ public class GameRunner2 {
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);
       final int day = calendar.get(Calendar.DAY_OF_YEAR);
-      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, ""); // format year:day
+      // format year:day
+      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
       if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0) {
         final String[] yearDay = lastCheckTime.split(":");
         if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day) {
@@ -839,7 +852,8 @@ public class GameRunner2 {
       final Calendar calendar = Calendar.getInstance();
       final int year = calendar.get(Calendar.YEAR);
       final int month = calendar.get(Calendar.MONTH);
-      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, ""); // format year:month
+      // format year:month
+      final String lastCheckTime = pref.get(TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, "");
       if (lastCheckTime != null && lastCheckTime.trim().length() > 0) {
         final String[] yearMonth = lastCheckTime.split(":");
         if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month) {
@@ -975,7 +989,7 @@ public class GameRunner2 {
    * Get the root folder for the application
    */
   public static File getRootFolder() {
-    String fileName = getGameRunnerFileLocation( "GameRunner2.class");
+    final String fileName = getGameRunnerFileLocation("GameRunner2.class");
 
     final String tripleaJarName = "triplea.jar!";
     if (fileName.indexOf(tripleaJarName) != -1) {
@@ -990,7 +1004,7 @@ public class GameRunner2 {
     return getRootRelativeToClassFile(fileName);
   }
 
-  private static String getGameRunnerFileLocation( String runnerClassName ) {
+  private static String getGameRunnerFileLocation(final String runnerClassName) {
     final URL url = GameRunner2.class.getResource(runnerClassName);
     String fileName = url.getFile();
 
@@ -998,14 +1012,14 @@ public class GameRunner2 {
       // Deal with spaces in the file name which would be url encoded
       fileName = URLDecoder.decode(fileName, "UTF-8");
     } catch (final UnsupportedEncodingException e) {
-      ClientLogger.logError("Unsupported encoding of fileName: "+ fileName + ", error: "+ e.getMessage());
+      ClientLogger.logError("Unsupported encoding of fileName: " + fileName + ", error: " + e.getMessage());
     }
     return fileName;
   }
 
-  private static File getRootFolderRelativeToJar(String fileName, final String tripleaJarName) {
-    final String subString = fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1),
-        fileName.indexOf(tripleaJarName) - 1);
+  private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
+    final String subString =
+        fileName.substring("file:/".length() - (GameRunner.isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
     final File f = new File(subString).getParentFile();
     if (!f.exists()) {
       throw new IllegalStateException("File not found:" + f);
@@ -1013,7 +1027,7 @@ public class GameRunner2 {
     return f;
   }
 
-  private static File getRootRelativeToClassFile(String fileName) {
+  private static File getRootRelativeToClassFile(final String fileName) {
     File f = new File(fileName);
 
     // move up 1 directory for each package
@@ -1030,8 +1044,8 @@ public class GameRunner2 {
 
 
   /* Check if a folder contains another folder or file */
-  private static boolean folderContains(File folder, String childToFind ) {
-    if( folder == null || folder.list() == null || folder.list().length == 0 ) {
+  private static boolean folderContains(final File folder, final String childToFind) {
+    if (folder == null || folder.list() == null || folder.list().length == 0) {
       return false;
     }
     return Arrays.asList(folder.list()).contains(childToFind);
@@ -1049,31 +1063,32 @@ public class GameRunner2 {
    *
    * @param game The name of the file to find
    * @param possibleFolders An array containing a sequence of possible folders that may contain
-   *   the search file.
+   *        the search file.
    * @return Throws illegal state if not found. Otherwise returns a file reference whose name
-   *  matches the first parameter and parent folder matches an element of "possibleFolders"
+   *         matches the first parameter and parent folder matches an element of "possibleFolders"
    */
-  public static File getFile(String game, String[] possibleFolders) {
-    for( String possibleFolder : possibleFolders ) {
-      File start = GameRunner2.getRootFolder();
-      if( folderContainsFolderAndFile( start, possibleFolder, game )) {
-        return new File( new File( start, possibleFolder ), game);
+  public static File getFile(final String game, final String[] possibleFolders) {
+    for (final String possibleFolder : possibleFolders) {
+      final File start = GameRunner2.getRootFolder();
+      if (folderContainsFolderAndFile(start, possibleFolder, game)) {
+        return new File(new File(start, possibleFolder), game);
       }
 
-      File secondStart = GameRunner2.getParentFolder(possibleFolder);
-      if( folderContainsFolderAndFile( secondStart, possibleFolder, game )) {
-        return new File( new File( secondStart, possibleFolder ), game);
+      final File secondStart = GameRunner2.getParentFolder(possibleFolder);
+      if (folderContainsFolderAndFile(secondStart, possibleFolder, game)) {
+        return new File(new File(secondStart, possibleFolder), game);
       }
 
     }
-    throw new IllegalStateException("Could not find any of these folders: " + Arrays.asList(possibleFolders) + ", containing game file: " + game );
+    throw new IllegalStateException(
+        "Could not find any of these folders: " + Arrays.asList(possibleFolders) + ", containing game file: " + game);
   }
 
   /* Check if a given folder contains another folder that in turn contains a given file */
-  private static boolean folderContainsFolderAndFile( File f, String childFolder, String child) {
-    if( folderContains( f , childFolder )) {
-      File possibleParent = new File( f, childFolder);
-      if( folderContains(possibleParent, child)) {
+  private static boolean folderContainsFolderAndFile(final File f, final String childFolder, final String child) {
+    if (folderContains(f, childFolder)) {
+      final File possibleParent = new File(f, childFolder);
+      if (folderContains(possibleParent, child)) {
         return true;
       }
     }
@@ -1081,10 +1096,10 @@ public class GameRunner2 {
   }
 
   /* From the Game Runner root location, walk up directories until we find a given folder */
-  private static File getParentFolder(String folderToFind) {
-    File f= new File(getGameRunnerFileLocation("GameRunner2.class"));
+  private static File getParentFolder(final String folderToFind) {
+    File f = new File(getGameRunnerFileLocation("GameRunner2.class"));
 
-    while(f != null && f.exists() && !folderContains(f,folderToFind)) {
+    while (f != null && f.exists() && !folderContains(f, folderToFind)) {
       f = f.getParentFile();
     }
     return f;

@@ -87,10 +87,14 @@ import games.strategy.util.Tuple;
  */
 public class DecorationPlacer extends JFrame {
   private static final long serialVersionUID = 6385408390173085656L;
-  private Image m_image; // The map image will be stored here
-  private Map<String, List<Point>> m_currentPoints = new HashMap<String, List<Point>>(); // hash map for image points
-  private Map<String, Point> m_centers = new HashMap<String, Point>(); // hash map for center points
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // hash map for polygon points
+  // The map image will be stored here
+  private Image m_image;
+  // hash map for image points
+  private Map<String, List<Point>> m_currentPoints = new HashMap<String, List<Point>>();
+  // hash map for center points
+  private Map<String, Point> m_centers = new HashMap<String, Point>();
+  // hash map for polygon points
+  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
   private final JLabel m_location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -669,7 +673,8 @@ public class DecorationPlacer extends JFrame {
             new Tuple<Image, List<Point>>(s_staticImageForPlacing, entry.getValue()));
       }
     }
-    s_createNewImageOnRightClick = true; // !fillInAllTerritories;
+    // !fillInAllTerritories;
+    s_createNewImageOnRightClick = true;
   }
 
   private void fillCurrentImagePointsBasedOnImageFolder(final boolean pointsAreExactlyTerritoryNames) {

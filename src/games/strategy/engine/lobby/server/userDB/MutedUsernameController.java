@@ -118,7 +118,8 @@ public class MutedUsernameController {
     // If the mute has expired, allow the username
     if (expired) {
       removeMutedUsername(username);
-      result = -1; // Signal as not-muted
+      // Signal as not-muted
+      result = -1;
     }
     return result;
   }

@@ -92,7 +92,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
         if (refreshHeader == null) {
           throw new Exception("Missing refresh header after login");
         }
-        final String value = refreshHeader.getValue(); // refresh: 0; URL=http://...
+        // refresh: 0; URL=http://...
+        final String value = refreshHeader.getValue();
         final Pattern p = Pattern.compile("[^;]*;\\s*url=(.*)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         final Matcher m = p.matcher(value);
         if (m.matches()) {
@@ -183,7 +184,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             // the site has spam prevention which means you can't post until 15 seconds after login
             Thread.sleep(15 * 1000);
           } catch (final InterruptedException ie) {
-            ie.printStackTrace(); // this should never happen
+            // this should never happen
+            ie.printStackTrace();
           }
           post.setFollowRedirects(false);
           status = m_client.executeMethod(m_hostConfiguration, post, m_httpState);
@@ -213,7 +215,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             final Header refreshHeader = post.getResponseHeader("Refresh");
             if (refreshHeader != null) {
               // sometimes the message will be flagged as spam, and a refresh url is given
-              final String value = refreshHeader.getValue(); // refresh: 0; URL=http://...topic=26114.new%3bspam=true#new
+              // refresh: 0; URL=http://...topic=26114.new%3bspam=true#new
+              final String value = refreshHeader.getValue();
               final Pattern p =
                   Pattern.compile("[^;]*;\\s*url=.*spam=true.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
               m = p.matcher(value);

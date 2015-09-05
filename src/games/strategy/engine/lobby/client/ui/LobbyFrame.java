@@ -180,7 +180,8 @@ public class LobbyFrame extends JFrame {
           if (selectedBanType.toLowerCase().contains("mac")) {
             controller.banMac(clickedOn, null);
           }
-          controller.boot(clickedOn); // Should we keep this auto?
+          // Should we keep this auto?
+          controller.boot(clickedOn);
           return;
         }
         final String resultLOT = JOptionPane.showInputDialog(LobbyFrame.this,
@@ -216,7 +217,8 @@ public class LobbyFrame extends JFrame {
         if (selectedBanType.toLowerCase().contains("mac")) {
           controller.banMac(clickedOn, new Date(expire));
         }
-        controller.boot(clickedOn); // Should we keep this auto?
+        // Should we keep this auto?
+        controller.boot(clickedOn);
       }
     });
     rVal.add(new AbstractAction("Mute Player") {

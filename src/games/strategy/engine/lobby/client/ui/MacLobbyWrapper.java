@@ -12,7 +12,8 @@ public class MacLobbyWrapper {
   // we try to load the game and the stubs arent in the classpath
   // i think the java validator triggers this
   public static void registerMacShutdownHandler(final LobbyFrame frame) {
-    final Application application = Application.getApplication();// new Application();
+    // new Application();
+    final Application application = Application.getApplication();
     application.addApplicationListener(new ApplicationAdapter() {
       @Override
       public void handleQuit(final ApplicationEvent event) {

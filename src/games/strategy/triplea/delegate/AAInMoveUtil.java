@@ -175,8 +175,10 @@ class AAInMoveUtil implements Serializable {
         TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
     final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units,
         airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
-    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // comes ordered alphabetically already
-    Collections.reverse(AAtypes); // stacks are backwards
+    // comes ordered alphabetically already
+    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA);
+    // stacks are backwards
+    Collections.reverse(AAtypes);
     for (final String currentTypeAA : AAtypes) {
       final Collection<Unit> currentPossibleAA = Match.getMatches(defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
       final Set<UnitType> targetUnitTypesForThisTypeAA =
@@ -195,7 +197,8 @@ class AAInMoveUtil implements Serializable {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          validTargetedUnitsForThisRoll.removeAll(m_casualties); // get rid of units already killed, so we don't target them twice
+          // get rid of units already killed, so we don't target them twice
+          validTargetedUnitsForThisRoll.removeAll(m_casualties);
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
             dice[0] = DiceRoll.rollAA(validTargetedUnitsForThisRoll, currentPossibleAA, m_bridge, territory, true);
           }

@@ -43,15 +43,7 @@ public class ReliefImageBreaker {
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
   /**
-   * main(java.lang.String[] args)
-   * Main program begins here. Creates a new instance of ReliefImageBreaker
-   * and calls createMaps() method to start the computations.
-   *
-   * @param java
-   *        .lang.String[]
-   *        args the command line parameters
-   * @exception java.lang.Exception
-   *            throws
+   * Creates a new instance of ReliefImageBreaker and calls createMaps() method to start the computations.
    */
   public static void main(final String[] args) throws Exception {
     handleCommandLineArgs(args);
@@ -76,23 +68,22 @@ public class ReliefImageBreaker {
   }
 
   /**
-   * createMaps()
    * One of the main methods that is used to create the actual maps. Calls on
    * various methods to get user input and create the maps.
-   *
-   * @exception java.io.IOException
-   *            throws
    */
   public void createMaps() throws IOException {
-    final Image map = loadImage(); // ask user to input image location
+    // ask user to input image location
+    final Image map = loadImage();
     if (map == null) {
       System.out.println("You need to select a map image for this to work");
       System.out.println("Shutting down");
       System.exit(0);
     }
-    m_seaZoneOnly = doSeaZone(); // ask user wether it is sea zone only or
-                                 // not
-    final String mapDir = getMapDirectory(); // ask user where the map is
+    // ask user wether it is sea zone only or not
+    m_seaZoneOnly = doSeaZone();
+
+    // ask user where the map is
+    final String mapDir = getMapDirectory();
     if (mapDir == null || mapDir.equals("")) {
       System.out.println("You need to specify a map name for this to work");
       System.out.println("Shutting down");
@@ -120,7 +111,6 @@ public class ReliefImageBreaker {
   }
 
   /**
-   * java.lang.boolean doSeaZone()
    * Asks user wether to do sea zones only or not
    *
    * @return java.lang.boolean TRUE to do seazones only.
@@ -141,17 +131,16 @@ public class ReliefImageBreaker {
           System.out.println("You must enter Y or N");
         }
       }
-    } // while
+    }
   }
 
   /**
-   * java.lang.String getMapDirectory()
    * Asks the user to input a valid map name that will be used to form the map
    * directory in the core of TripleA in the class TerritoryData.
    * we need the exact map name as indicated in the XML game file ie."revised"
    * "classic" "pact_of_steel" of course, without the quotes.
    *
-   * @return java.lang.String mapDir the map name
+   * @return map name entered by the user (if any, null returned if canceled)
    */
   private static String getMapDirectory() {
     final String mapDir = JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
@@ -163,7 +152,6 @@ public class ReliefImageBreaker {
   }
 
   /**
-   * java.awt.Image loadImage()
    * Asks the user to select an image and then it loads it up into an Image
    * object and returns it to the calling class.
    *
@@ -188,19 +176,6 @@ public class ReliefImageBreaker {
     }
   }
 
-  /**
-   * processImage(java.lang.String, java.awt.Image)
-   * This method does the actual processing of the relief images
-   *
-   * @param java
-   *        .lang.String
-   *        territory the territory name
-   * @param java
-   *        .awt.Image
-   *        map the image map
-   * @exception java.io.IOException
-   *            throws
-   */
   private void processImage(final String territory, final Image map) throws IOException {
     final Rectangle bounds = m_mapData.getBoundingRect(territory);
     final int width = bounds.width;
@@ -232,19 +207,12 @@ public class ReliefImageBreaker {
   }
 
   /**
-   * blankOutLine(java.awt.Image, java.awt.Image.BufferedImage)
    * Sets the alpha channel to the same as that of the base image
-   *
-   * @param java
-   *        .awt.Image
-   *        alphaChannelImage
-   * @param java
-   *        .awt.Image.BufferedImage
-   *        relief
    */
   private void blankOutline(final Image alphaChannelImage, final BufferedImage relief) {
     final Graphics2D gc = (Graphics2D) relief.getGraphics();
-    final Composite prevComposite = gc.getComposite(); // setup our composite
+
+    final Composite prevComposite = gc.getComposite();
     gc.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
     /*
      * draw the image, and check for the possibility it doesn't complete now
@@ -298,4 +266,4 @@ public class ReliefImageBreaker {
       }
     }
   }
-}// end class ReliefImageBreaker
+}

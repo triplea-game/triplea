@@ -84,24 +84,19 @@ public class UserActionPanel extends ActionPanel {
   /**
    * waits till someone calls release() and then returns the action chosen
    *
-   * @param firstRun
    * @return the choice of action
    */
   public UserActionAttachment waitForUserActionAction(final boolean firstRun,
       final IUserActionDelegate iUserActionsDelegate) {
     m_firstRun = firstRun;
-    // NEVER EVER ACCESS A DELEGATE OR BRIDGE FROM A UI!!!! (or the game won't work in multiplayer) (in other words, do not use the
-    // DelegateFinder in any way, or access local delegates, or pass the bridge)
-    m_validUserActions = new ArrayList<UserActionAttachment>(iUserActionsDelegate.getValidActions()); // reset each time, we need to retest
-                                                                                                      // the conditions...
+
+    m_validUserActions = new ArrayList<UserActionAttachment>(iUserActionsDelegate.getValidActions());
     Collections.sort(m_validUserActions, new UserActionComparator(getCurrentPlayer(), getData()));
-    if (m_validUserActions.isEmpty()) // change to (m_firstRun && m_validUserActions.isEmpty()) if you want to have it show the panel again
-                                      // after making an action even if no actions are left.
-    {
-      return null; // No Valid User actions, do nothing
+    if (m_validUserActions.isEmpty()) {
+      // No Valid User actions, do nothing
+      return null;
     } else {
       if (m_firstRun) {
-        // play a sound for this phase
         DefaultSoundChannel.playSoundOnLocalMachine(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer().getName());
       }
       SwingUtilities.invokeLater(new Runnable() {

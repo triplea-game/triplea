@@ -42,7 +42,8 @@ public class RemoteRandom implements IRemoteRandom {
       throws IllegalStateException {
     if (m_waitingForUnlock) {
       throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation. "
-          + "Asked for: " + count + "x" + max + " for " + annotation);// TODO: maybe we should wait instead of crashing the game?
+          // TODO: maybe we should wait instead of crashing the game?
+          + "Asked for: " + count + "x" + max + " for " + annotation);
     }
     m_waitingForUnlock = true;
     // clean up here, we know these keys arent needed anymore so release them

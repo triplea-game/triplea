@@ -102,7 +102,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public Serializable saveState() {
     final PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
     state.superState = super.saveState();
-    // add other variables to state here:
     state.m_needToInitialize = m_needToInitialize;
     return state;
   }
@@ -111,7 +110,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public void loadState(final Serializable state) {
     final PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
     super.loadState(s.superState);
-    // load other variables from state here:
     m_needToInitialize = s.m_needToInitialize;
   }
 

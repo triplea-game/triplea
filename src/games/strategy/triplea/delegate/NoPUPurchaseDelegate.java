@@ -81,7 +81,8 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
   }
 
   private int getBurmaRoad(final PlayerID player) {
-    int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf
+    // only for pacific - should equal 4 for extra inf
+    int burmaRoadCount = 0;
     for (final Territory current : getData().getMap().getTerritories()) {
       final String terrName = current.getName();
       if ((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan")

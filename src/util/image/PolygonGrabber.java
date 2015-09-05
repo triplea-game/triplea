@@ -63,11 +63,15 @@ public class PolygonGrabber extends JFrame {
   private static final long serialVersionUID = 6381498094805120687L;
   private static boolean s_islandMode;
   private final JCheckBoxMenuItem modeItem;
-  private List<Polygon> m_current; // the current set of polyongs
-  // private Image m_image; // holds the map image
+  // the current set of polyongs
+  private List<Polygon> m_current;
+  // holds the map image
+  // private Image m_image;
   private BufferedImage m_bufferedImage;
-  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // maps String -> List of polygons
-  private Map<String, Point> m_centers; // holds the centers for the polygons
+  // maps String -> List of polygons
+  private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
+  // holds the centers for the polygons
+  private Map<String, Point> m_centers;
   private final JLabel location = new JLabel();
   private static File s_mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -569,22 +573,26 @@ public class PolygonGrabber extends JFrame {
    */
   private final boolean isBlack(final int x, final int y) {
     if (!inBounds(x, y)) {
-      return false; // not inbounds, can't be black
+      // not inbounds, can't be black
+      return false;
     }
     // gets ARGB integer value and we LOGICAL AND mask it
     // with ARGB value of 00,FF,FF,FF to determine if it
     // it black or not.
-    return (m_bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0; // maybe here ?
+    // maybe here ?
+    return (m_bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
   }
 
   private static final boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
     if (!inBounds(x, y, bufferedImage)) {
-      return false; // not inbounds, can't be black
+      // not inbounds, can't be black
+      return false;
     }
     // gets ARGB integer value and we LOGICAL AND mask it
     // with ARGB value of 00,FF,FF,FF to determine if it
     // it black or not.
-    return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0; // maybe here ?
+    // maybe here ?
+    return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
   }
 
   /**
@@ -639,7 +647,8 @@ public class PolygonGrabber extends JFrame {
     }
   }
 
-  private final Point m_testPoint = new Point(); // used below
+  // used below
+  private final Point m_testPoint = new Point();
 
   /**
    * java.lang.boolean isOnEdge(java.lang.int, java.awt.Point)

@@ -1,5 +1,13 @@
 package games.strategy.triplea.ai.proAI.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -21,14 +29,6 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * Pro AI battle utilities.
@@ -266,8 +266,8 @@ public class ProBattleUtils {
 
       // Determine strength difference
       final double strengthDifference = estimateStrengthDifference(t, enemyUnits, alliedUnits);
-      LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", distance="
-          + i + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
+      LogUtils.log(Level.FINEST, t + ", current enemy land strengthDifference=" + strengthDifference + ", distance=" + i
+          + ", enemySize=" + enemyUnits.size() + ", alliedSize=" + alliedUnits.size());
       if (strengthDifference > 50) {
         return false;
       }
@@ -379,5 +379,4 @@ public class ProBattleUtils {
     // If I have naval attack/defense superiority then break
     return (defenseStrengthDifference < 50 && attackStrengthDifference > 50);
   }
-
 }

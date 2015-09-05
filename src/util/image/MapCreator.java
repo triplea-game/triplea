@@ -627,8 +627,8 @@ public class MapCreator extends JFrame {
     final List<String> commands = new ArrayList<String>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
     if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath()); // no need for quotes, that will just screw up
-                                                                                             // the process builder
+      // no need for quotes, that will just screw up the process builder
+      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath());
     }
     commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + s_unit_zoom);
     commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + s_unit_width);

@@ -40,8 +40,9 @@ public class ProcessRunnerUtil {
       commands.add(System.getProperty("java.class.path"));
     }
     commands.add("-Xmx" + maxMemory);
-    // commands.add("-Xmx896m"); // this should never ever go above 1000mb, because some users have errors because some JVM's can't handle
+    // this should never ever go above 1000mb, because some users have errors because some JVM's can't handle
     // that much
+    // commands.add("-Xmx896m");
     // preserve noddraw to fix 1742775
     final String[] preservedSystemProperties = {"sun.java2d.noddraw"};
     for (final String key : preservedSystemProperties) {
@@ -71,9 +72,10 @@ public class ProcessRunnerUtil {
         // nothing
       }
     }
-    commands.add("-D" + GameRunner2.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString()); // since we are setting the xmx already, we need to
-                                                                                         // make sure this property is set so that triplea
-                                                                                         // doesn't restart
+    // since we are setting the xmx already, we need to
+    // make sure this property is set so that triplea
+    // doesn't restart
+    commands.add("-D" + GameRunner2.TRIPLEA_MEMORY_SET + "=" + Boolean.TRUE.toString());
   }
 
   public static void exec(final List<String> commands) {
@@ -110,13 +112,9 @@ public class ProcessRunnerUtil {
     // Getting the runtime reference from system
     final Runtime runtime = Runtime.getRuntime();
     System.out.println("Heap utilization statistics [MB]");
-    // Print used memory
     System.out.println("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / mb);
-    // Print free memory
     System.out.println("Free Memory:" + runtime.freeMemory() / mb);
-    // Print total available memory
     System.out.println("Total Memory:" + runtime.totalMemory() / mb);
-    // Print Maximum available memory
     System.out.println("Max Memory:" + runtime.maxMemory() / mb);
     final List<String> commands = new ArrayList<String>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);

@@ -525,8 +525,10 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
 
 class DummyPlayer extends AbstractAI {
   private final boolean m_keepAtLeastOneLand;
-  private final int m_retreatAfterRound; // negative = do not retreat
-  private final int m_retreatAfterXUnitsLeft; // negative = do not retreat
+  // negative = do not retreat
+  private final int m_retreatAfterRound;
+  // negative = do not retreat
+  private final int m_retreatAfterXUnitsLeft;
   private final boolean m_retreatWhenOnlyAirLeft;
   private final boolean m_retreatWhenMetaPowerIsLower;
   private final DummyDelegateBridge m_bridge;
