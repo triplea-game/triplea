@@ -62,7 +62,7 @@ public class DownloadRunnable implements Runnable {
       return;
     }
 
-    try ( InputStream stream = url.openStream();){
+    try ( InputStream stream = url.openStream()){
       final ByteArrayOutputStream sink = new ByteArrayOutputStream();
       InstallMapDialog.copy(sink, stream);
       contents = sink.toByteArray();

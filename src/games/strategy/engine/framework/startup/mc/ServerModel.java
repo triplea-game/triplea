@@ -333,7 +333,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       System.out.println("Sending save game");
 
       byte[] bytes = null;
-      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);) {
+      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000)) {
         new GameDataManager().saveGame(sink, m_data);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
@@ -352,7 +352,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       final List<IEditableProperty> currentEditableProperties = m_data.getProperties().getEditableProperties();
 
-      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);) {
+      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
         GameProperties.toOutputStream(sink, currentEditableProperties);
         bytes = sink.toByteArray();
       } catch (final IOException e) {

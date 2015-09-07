@@ -297,7 +297,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     }
     // Create the byte array to hold the data
     final byte[] bytes = new byte[(int) length];
-    try (InputStream is = new FileInputStream(file);) {
+    try (InputStream is = new FileInputStream(file)) {
       is.read(bytes);
     } catch (final IOException e) {
       ClientLogger.logQuietly("Failed to read file: " + file);

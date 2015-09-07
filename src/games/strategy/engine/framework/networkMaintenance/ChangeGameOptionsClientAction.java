@@ -52,7 +52,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
         // ok was clicked. changing them in the ui changes the underlying properties,
         // but it doesn't change the hosts, so we need to send it back to the host.
         byte[] newBytes = null;
-        try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);) {
+        try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
           GameProperties.toOutputStream(sink, properties);
           newBytes = sink.toByteArray();
         } catch (final IOException e2) {

@@ -20,7 +20,7 @@ class DownloadFileProperties {
       return new DownloadFileProperties();
     }
     final DownloadFileProperties rVal = new DownloadFileProperties();
-    try (final FileInputStream fis = new FileInputStream(fromZip(zipFile));) {
+    try (final FileInputStream fis = new FileInputStream(fromZip(zipFile))) {
       rVal.props.load(fis);
     } catch (final IOException e) {
       e.printStackTrace(System.out);
@@ -29,7 +29,7 @@ class DownloadFileProperties {
   }
 
   public static void saveForZip(final File zipFile, final DownloadFileProperties props) {
-    try ( final FileOutputStream fos = new FileOutputStream(fromZip(zipFile));) {
+    try ( final FileOutputStream fos = new FileOutputStream(fromZip(zipFile))) {
         props.props.store(fos, null);
     } catch (final IOException e) {
       e.printStackTrace(System.out);
